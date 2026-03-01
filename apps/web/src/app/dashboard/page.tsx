@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Home,
   LayoutDashboard,
@@ -26,6 +26,7 @@ import {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   // Redirect to signin if not authenticated
   useEffect(() => {
@@ -34,13 +35,46 @@ export default function DashboardPage() {
     }
   }, [status, router]);
 
-  // Show loading while checking session
-  if (status === 'loading') {
+  // Add timeout for loading state to prevent infinite buffering
+  useEffect(() => {
+    if (status === 'loading') {
+      const timer = setTimeout(() => {
+        setLoadingTimeout(true);
+      }, 3000); // 3 second timeout
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
+  // Show loading while checking session (with timeout to prevent infinite loading)
+  if (status === 'loading' && !loadingTimeout) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
           <p className="text-sm text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If loading timed out, show error message
+  if (status === 'loading' && loadingTimeout) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
+        <div className="text-center max-w-md p-6">
+          <div className="mb-4 text-yellow-500">
+            <AlertCircle className="h-12 w-12 mx-auto" />
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Session Loading Issue</h2>
+          <p className="text-sm text-gray-400 mb-4">
+            The session is taking longer than expected to load. This might be a configuration issue.
+          </p>
+          <button
+            onClick={() => router.push('/auth/signin')}
+            className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
+          >
+            Go to Sign In
+          </button>
         </div>
       </div>
     );
@@ -106,6 +140,14 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {/* Dashboard Switcher */}
+            <button
+              onClick={() => router.push('/dashboard/new')}
+              className="flex items-center gap-2 rounded-md border border-[#1C8C7D] px-4 py-2 text-sm font-semibold text-[#1C8C7D] hover:bg-[#1C8C7D] hover:text-white transition-colors"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Try New Dashboard
+            </button>
             <button className="flex items-center gap-2 rounded-md bg-[#1C8C7D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#156B60]">
               <Plus className="h-4 w-4" />
               Create

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle, Loader2, Mail, Lock, User, CheckCircle2, Calendar, Globe, Sparkles, Smartphone } from 'lucide-react';
+import { AlertCircle, Loader2, Mail, Lock, User, CheckCircle2, Calendar, Globe, Sparkles, Smartphone, ArrowRight } from 'lucide-react';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -15,6 +15,8 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [verificationUrl, setVerificationUrl] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,17 +48,10 @@ export default function SignUpPage() {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      // Auto sign in after successful signup
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Account created but failed to sign in. Please try signing in manually.');
-      } else {
-        router.push('/dashboard');
+      // Show email verification message instead of auto sign-in
+      setVerificationSent(true);
+      if (data.verificationUrl) {
+        setVerificationUrl(data.verificationUrl);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
@@ -198,6 +193,86 @@ export default function SignUpPage() {
             </p>
           </div>
 
+          {/* Success Modal - Email verification sent */}
+          {verificationSent && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+              <div className="w-full max-w-md animate-in fade-in zoom-in duration-200 rounded-2xl bg-white shadow-2xl">
+                {/* Success Icon */}
+                <div className="flex flex-col items-center border-b border-gray-100 px-6 pt-8 pb-6">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                    <CheckCircle2 className="h-10 w-10 text-green-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Welcome to Onekof!</h2>
+                  <p className="mt-2 text-center text-sm text-gray-600">
+                    Your account has been created successfully
+                  </p>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 py-6">
+                  <div className="mb-6 rounded-lg bg-blue-50 p-4">
+                    <div className="flex items-start gap-3">
+                      <Mail className="h-5 w-5 flex-shrink-0 text-blue-600" />
+                      <div>
+                        <h3 className="font-semibold text-blue-900">Check your email</h3>
+                        <p className="mt-1 text-sm text-blue-700">
+                          We've sent a verification link to:
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-blue-900">{email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 rounded-lg bg-gray-50 p-4">
+                    <h4 className="text-sm font-semibold text-gray-900">Next steps:</h4>
+                    <ol className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-start gap-2">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#0EA5E9] text-xs font-semibold text-white">1</span>
+                        <span>Open your email inbox</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#0EA5E9] text-xs font-semibold text-white">2</span>
+                        <span>Click the verification link</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#0EA5E9] text-xs font-semibold text-white">3</span>
+                        <span>Start managing your projects!</span>
+                      </li>
+                    </ol>
+                  </div>
+
+                  {/* Dev Mode Quick Access - Only in development */}
+                  {verificationUrl && process.env.NODE_ENV === 'development' && (
+                    <div className="mt-4 rounded-lg border-2 border-dashed border-orange-200 bg-orange-50 p-3">
+                      <p className="mb-2 text-xs font-semibold text-orange-800">⚡ Quick Access (Dev Mode)</p>
+                      <a
+                        href={verificationUrl}
+                        className="inline-flex items-center gap-2 rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        Verify Email Now
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="border-t border-gray-100 px-6 py-4">
+                  <Link
+                    href="/auth/signin"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] px-4 py-3 text-sm font-semibold text-white hover:bg-[#0284C7]"
+                  >
+                    Go to Sign In
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <p className="mt-3 text-center text-xs text-gray-500">
+                    Didn't receive the email? Check your spam folder
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Error message */}
           {error && (
             <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
@@ -207,6 +282,7 @@ export default function SignUpPage() {
           )}
 
           {/* Sign up form */}
+          {!verificationSent && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -308,7 +384,10 @@ export default function SignUpPage() {
               </Link>
             </p>
           </form>
+          )}
 
+          {!verificationSent && (
+          <>
           {/* Divider */}
           <div className="my-6 flex items-center gap-4">
             <div className="h-px flex-1 bg-gray-200" />
@@ -377,6 +456,8 @@ export default function SignUpPage() {
               <span className="hidden sm:inline">Apple</span>
             </button>
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>

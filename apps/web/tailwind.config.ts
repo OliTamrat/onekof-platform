@@ -1,12 +1,18 @@
 import type { Config } from 'tailwindcss';
-import sharedConfig from '@onekof/config/tailwind';
 
 const config: Config = {
-  ...sharedConfig,
+  darkMode: ['class'],
   content: [
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
   ],
 };
 

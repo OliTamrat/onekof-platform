@@ -53,6 +53,7 @@ model Organization {
   // Relations
   members     OrganizationMember[]
   invitations Invitation[]
+  projects    Project[]
 
   @@map("organizations")
   @@schema("public")
@@ -79,6 +80,9 @@ model User {
 
   // Preferences
   preferences Json @default("{}") // UI preferences, notifications, etc.
+
+  // Default organization (for quick access)
+  defaultOrganizationId String? @map("default_organization_id")
 
   // Metadata
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -229,6 +233,200 @@ enum Language {
 enum Calendar {
   GREGORIAN
   ETHIOPIAN
+
+  @@schema("public")
+}
+
+// ============================================================================
+// PROJECT MANAGEMENT MODELS
+// ============================================================================
+
+// Projects within an organization
+model Project {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Project details
+  name        String
+  key         String // Project key (e.g., "ONEKOF", "PROJ")
+  description String?
+  icon        String? // Emoji or icon identifier
+  color       String? // Hex color
+
+  // Settings
+  defaultAssignee String? @map("default_assignee")
+  leadId          String? @map("lead_id")
+
+  // Project type and status
+  template    ProjectTemplate @default(KANBAN)
+  isArchived  Boolean         @default(false) @map("is_archived")
+  isFavorite  Boolean         @default(false) @map("is_favorite")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdBy String    @map("created_by")
+
+  // Relations
+  tasks   Task[]
+  members ProjectMember[]
+
+  @@unique([organizationId, key])
+  @@map("projects")
+  @@schema("public")
+}
+
+// Project members (separate from org members for project-specific roles)
+model ProjectMember {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  role   ProjectRole @default(MEMBER)
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([projectId, userId])
+  @@map("project_members")
+  @@schema("public")
+}
+
+// Tasks/Issues
+model Task {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Task identification
+  key         String // Task key (e.g., "ONEKOF-123")
+  title       String
+  description String?
+
+  // Task properties
+  type     TaskType     @default(TASK)
+  status   TaskStatus   @default(TODO)
+  priority TaskPriority @default(MEDIUM)
+
+  // Assignment
+  assigneeId String? @map("assignee_id")
+  reporterId String  @map("reporter_id")
+
+  // Hierarchy
+  parentId String? @map("parent_id")
+
+  // Time tracking
+  estimate       Int?      @map("estimate") // In hours
+  timeSpent      Int?      @map("time_spent") // In hours
+  dueDate        DateTime? @map("due_date")
+  startDate      DateTime? @map("start_date")
+  completedAt    DateTime? @map("completed_at")
+
+  // Labels and custom fields
+  labels Json @default("[]")
+  customFields Json @default("{}") @map("custom_fields")
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  comments    Comment[]
+  attachments Attachment[]
+
+  @@unique([projectId, key])
+  @@map("tasks")
+  @@schema("public")
+}
+
+// Task comments
+model Comment {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  content  String
+  authorId String @map("author_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("comments")
+  @@schema("public")
+}
+
+// Task attachments
+model Attachment {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  filename String
+  url      String
+  mimeType String @map("mime_type")
+  size     Int // In bytes
+
+  uploadedBy String   @map("uploaded_by")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  @@map("attachments")
+  @@schema("public")
+}
+
+// ============================================================================
+// PROJECT MANAGEMENT ENUMS
+// ============================================================================
+
+enum ProjectTemplate {
+  KANBAN
+  SCRUM
+  CUSTOM
+
+  @@schema("public")
+}
+
+enum ProjectRole {
+  ADMIN
+  MEMBER
+  VIEWER
+
+  @@schema("public")
+}
+
+enum TaskType {
+  TASK
+  STORY
+  BUG
+  EPIC
+  SUBTASK
+
+  @@schema("public")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  BLOCKED
+
+  @@schema("public")
+}
+
+enum TaskPriority {
+  HIGHEST
+  HIGH
+  MEDIUM
+  LOW
+  LOWEST
 
   @@schema("public")
 }
