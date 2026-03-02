@@ -29,9 +29,15 @@ import {
   Bell,
   Plus,
   ChevronDown,
+  ChevronRight,
   LogOut,
   Building2,
   Layers,
+  BookOpen,
+  FileText,
+  Folders,
+  Users,
+  Target,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,15 +51,22 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const pathname = usePathname();
   const { currentOrganization, organizations, projects, currentProject, switchOrganization, setCurrentProject } = useWorkspace();
 
+  const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
+  const [isDocsExpanded, setIsDocsExpanded] = React.useState(true);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = React.useState(false);
+
   const isInProject = pathname?.includes('/project/');
   const isActive = (href: string) => pathname === href;
 
   // Dashboard navigation (when not in a project)
   const dashboardNav = [
     { name: 'Home', href: '/dashboard', icon: Home },
-    { name: 'My Issues', href: '/dashboard/my-issues', icon: ListChecks },
+    { name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
+    { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
+    { name: 'Teams', href: '/dashboard/teams', icon: Users },
+    { name: 'Goals', href: '/dashboard/goals', icon: Target },
+    { name: 'Docs & Wiki', href: '/dashboard/docs', icon: BookOpen },
     { name: 'Starred', href: '/dashboard/starred', icon: Star },
-    { name: 'Dashboards', href: '/dashboard/boards', icon: LayoutDashboard },
   ];
 
   // Project navigation (when in a specific project)
@@ -66,6 +79,10 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   ];
 
   const navigation = isInProject ? projectNav : dashboardNav;
+
+  // Get recent and favorite projects for sidebar
+  const recentProjects = projects.filter(p => !p.isFavorite).slice(0, 5);
+  const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
@@ -165,17 +182,38 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         <div className="flex-1" />
 
         {/* Right side actions */}
-        <Button variant="default" size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Create</span>
-        </Button>
+        <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="default" size="sm" className="gap-2">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Create</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Create new...</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push("/dashboard/issues?create=issue")}>
+              <ListChecks className="mr-2 h-4 w-4" />
+              Issue
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/dashboard/projects?create=project")}>
+              <FolderKanban className="mr-2 h-4 w-4" />
+              Project
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/dashboard/docs?create=page")}>
+              <FileText className="mr-2 h-4 w-4" />
+              Wiki Page
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => router.push("/dashboard/search")} title="Search">
           <Search className="h-4 w-4" />
         </Button>
 
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button variant="ghost" size="icon" className="h-9 w-9 relative" onClick={() => router.push("/dashboard/notifications")} title="Notifications">
           <Bell className="h-4 w-4" />
+          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
         </Button>
 
         <ThemeToggle />
@@ -225,7 +263,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                     isActive(href)
-                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
+                      ? 'bg-[#1C8C7D]/10 dark:bg-[#1C8C7D]/20 text-[#1C8C7D] dark:text-[#1C8C7D] border-l-2 border-[#1C8C7D] font-semibold'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                   )}
                 >
@@ -235,6 +273,108 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               );
             })}
           </nav>
+
+          {/* Collapsible Projects Section - Only in Dashboard */}
+          {!isInProject && (
+            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+              <button
+                onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <span>PROJECTS</span>
+                <ChevronRight
+                  className={cn(
+                    'h-3 w-3 transition-transform',
+                    isProjectsExpanded && 'rotate-90'
+                  )}
+                />
+              </button>
+
+              {isProjectsExpanded && (
+                <div className="space-y-0.5 mt-1">
+                  {favoriteProjects.length > 0 && (
+                    <>
+                      {favoriteProjects.map((project) => (
+                        <Link
+                          key={project.id}
+                          href={`/project/${project.key}/board`}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 group"
+                        >
+                          <div
+                            className="flex h-5 w-5 items-center justify-center rounded text-xs shrink-0"
+                            style={{ backgroundColor: project.color || '#3B82F6' }}
+                          >
+                            {project.icon || '📁'}
+                          </div>
+                          <span className="truncate flex-1">{project.name}</span>
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 opacity-0 group-hover:opacity-100" />
+                        </Link>
+                      ))}
+                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
+                    </>
+                  )}
+                  {recentProjects.map((project) => (
+                    <Link
+                      key={project.id}
+                      href={`/project/${project.key}/board`}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                    >
+                      <div
+                        className="flex h-5 w-5 items-center justify-center rounded text-xs shrink-0"
+                        style={{ backgroundColor: project.color || '#3B82F6' }}
+                      >
+                        {project.icon || '📁'}
+                      </div>
+                      <span className="truncate">{project.name}</span>
+                    </Link>
+                  ))}
+                  <Link
+                    href="/dashboard/projects"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 mt-2"
+                  >
+                    View all projects →
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
+          {!isInProject && (
+            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+              <button
+                onClick={() => setIsDocsExpanded(!isDocsExpanded)}
+                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <span>DOCS & SPACES</span>
+                <ChevronRight
+                  className={cn(
+                    'h-3 w-3 transition-transform',
+                    isDocsExpanded && 'rotate-90'
+                  )}
+                />
+              </button>
+
+              {isDocsExpanded && (
+                <div className="space-y-0.5 mt-1">
+                  <Link
+                    href="/dashboard/docs"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                  >
+                    <Folders className="h-4 w-4" />
+                    <span>All Spaces</span>
+                  </Link>
+                  <Link
+                    href="/dashboard/docs/recent"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span>Recent Pages</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* If in project, show quick project info */}
           {isInProject && currentProject && (
