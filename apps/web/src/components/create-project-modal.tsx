@@ -236,7 +236,7 @@ export function CreateProjectModal({
                   template: e.target.value as 'KANBAN' | 'SCRUM' | 'CUSTOM',
                 }))
               }
-              className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
+              className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
             >
               <option value="KANBAN">Kanban Board</option>
               <option value="SCRUM">Scrum Board</option>

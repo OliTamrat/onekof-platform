@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { CreateProjectModal } from '@/components/create-project-modal';
+import { ProjectManagementDialog } from '@/components/project-management-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Plus,
@@ -17,7 +18,14 @@ import {
   Folder,
   Users,
   CheckCircle2,
+  Settings,
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function ProjectsPage() {
   const { data: session, status } = useSession();
@@ -27,6 +35,8 @@ export default function ProjectsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
 
   // Redirect to signin if not authenticated
   useEffect(() => {
@@ -136,12 +146,41 @@ export default function ProjectsPage() {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                onClick={() => router.push(`/project/${project.key}/board`)}
+                onClick={() => {
+                  setSelectedProject(project);
+                  setIsManageDialogOpen(true);
+                }}
                 className="group relative cursor-pointer rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 transition-all hover:border-slate-900 dark:hover:border-slate-600 hover:shadow-md"
               >
-                {project.isFavorite && (
-                  <Star className="absolute right-4 top-4 h-4 w-4 fill-yellow-400 text-yellow-400" />
-                )}
+                <div className="absolute right-4 top-4 flex items-center gap-1">
+                  {project.isFavorite && (
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                          setIsManageDialogOpen(true);
+                        }}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Manage Members & Teams
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
 
                 <div
                   className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg text-2xl"
@@ -181,7 +220,10 @@ export default function ProjectsPage() {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                onClick={() => router.push(`/project/${project.key}/board`)}
+                onClick={() => {
+                  setSelectedProject(project);
+                  setIsManageDialogOpen(true);
+                }}
                 className="group flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-4 transition-all hover:border-slate-900 dark:hover:border-slate-600 hover:shadow-sm"
               >
                 <div className="flex items-center gap-4">
@@ -218,9 +260,29 @@ export default function ProjectsPage() {
                     <Users className="h-4 w-4" />
                     <span>{project.memberCount || 0}</span>
                   </div>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                          setIsManageDialogOpen(true);
+                        }}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Manage Members & Teams
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
@@ -231,6 +293,12 @@ export default function ProjectsPage() {
       <CreateProjectModal
         open={isCreateModalOpen}
         onOpenChange={setIsCreateModalOpen}
+      />
+
+      <ProjectManagementDialog
+        project={selectedProject}
+        open={isManageDialogOpen}
+        onOpenChange={setIsManageDialogOpen}
       />
     </AppLayout>
   );

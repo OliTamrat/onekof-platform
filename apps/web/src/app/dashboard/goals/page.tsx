@@ -14,7 +14,9 @@ import {
   AlertCircle,
   Users,
   Flag,
-  ChevronRight,
+  Folder,
+  X,
+  Link2,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -40,6 +42,7 @@ import { cn } from '@/lib/utils';
 // Types
 interface Goal {
   id: string;
+  organizationId: string;
   title: string;
   description?: string;
   status: 'NOT_STARTED' | 'IN_PROGRESS' | 'AT_RISK' | 'COMPLETED' | 'CANCELLED';
@@ -78,6 +81,15 @@ export default function GoalsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [contributionWeight, setContributionWeight] = useState(100);
+  const [isAddingKeyResult, setIsAddingKeyResult] = useState(false);
+  const [keyResultForm, setKeyResultForm] = useState({
+    description: '',
+    unit: '',
+    target: '',
+    current: '0',
+  });
   const queryClient = useQueryClient();
 
   // Form state
@@ -143,6 +155,116 @@ export default function GoalsPage() {
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('Failed to delete goal');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+    },
+  });
+
+  // Fetch goal projects
+  const { data: goalProjectsData } = useQuery({
+    queryKey: ['goal-projects', selectedGoal?.id],
+    queryFn: async () => {
+      if (!selectedGoal?.id) return { projects: [] };
+      const res = await fetch(`/api/goals/${selectedGoal.id}/projects`);
+      if (!res.ok) throw new Error('Failed to fetch goal projects');
+      return res.json();
+    },
+    enabled: !!selectedGoal?.id && isDetailDialogOpen,
+  });
+
+  // Fetch all projects for selection
+  const { data: allProjectsData } = useQuery({
+    queryKey: ['projects', selectedGoal?.organizationId],
+    queryFn: async () => {
+      if (!selectedGoal?.organizationId) return { projects: [] };
+      const res = await fetch(`/api/organizations/${selectedGoal.organizationId}/projects`);
+      if (!res.ok) throw new Error('Failed to fetch projects');
+      return res.json();
+    },
+    enabled: !!selectedGoal?.organizationId && isDetailDialogOpen,
+  });
+
+  // Link project to goal mutation
+  const linkProjectMutation = useMutation({
+    mutationFn: async ({ goalId, projectId, contributionWeight }: { goalId: string; projectId: string; contributionWeight: number }) => {
+      const res = await fetch(`/api/goals/${goalId}/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, contributionWeight }),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to link project');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal-projects', selectedGoal?.id] });
+      setSelectedProjectId('');
+      setContributionWeight(100);
+    },
+  });
+
+  // Unlink project from goal mutation
+  const unlinkProjectMutation = useMutation({
+    mutationFn: async ({ goalId, projectId }: { goalId: string; projectId: string }) => {
+      const res = await fetch(`/api/goals/${goalId}/projects/${projectId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to unlink project');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goal-projects', selectedGoal?.id] });
+    },
+  });
+
+  // Create key result mutation
+  const createKeyResultMutation = useMutation({
+    mutationFn: async (data: { description: string; unit: string; target: string; current: string }) => {
+      const res = await fetch(`/api/goals/${selectedGoal?.id}/key-results`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to create key result');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      setKeyResultForm({ description: '', unit: '', target: '', current: '0' });
+      setIsAddingKeyResult(false);
+    },
+  });
+
+  // Update key result mutation
+  const updateKeyResultMutation = useMutation({
+    mutationFn: async ({ krId, current }: { krId: string; current: number }) => {
+      const res = await fetch(`/api/goals/${selectedGoal?.id}/key-results/${krId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ current }),
+      });
+      if (!res.ok) throw new Error('Failed to update key result');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+    },
+  });
+
+  // Delete key result mutation
+  const deleteKeyResultMutation = useMutation({
+    mutationFn: async (krId: string) => {
+      const res = await fetch(`/api/goals/${selectedGoal?.id}/key-results/${krId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete key result');
       return res.json();
     },
     onSuccess: () => {
@@ -253,7 +375,7 @@ export default function GoalsPage() {
               <div className="text-gray-500">Loading goals...</div>
             </div>
           ) : filteredGoals.length > 0 ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredGoals.map((goal: Goal) => (
                 <GoalCard
                   key={goal.id}
@@ -401,8 +523,82 @@ export default function GoalsPage() {
                 )}
 
                 {/* Key Results */}
-                <div>
-                  <h3 className="mb-3 text-sm font-semibold">Key Results</h3>
+                <div className="mb-6">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Key Results</h3>
+                    {!isAddingKeyResult && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsAddingKeyResult(true)}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add Key Result
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Add Key Result Form */}
+                  {isAddingKeyResult && (
+                    <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+                      <div>
+                        <Label className="text-xs">Description</Label>
+                        <Input
+                          value={keyResultForm.description}
+                          onChange={(e) => setKeyResultForm({ ...keyResultForm, description: e.target.value })}
+                          placeholder="e.g., Increase user engagement"
+                        />
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <Label className="text-xs">Unit</Label>
+                          <Input
+                            value={keyResultForm.unit}
+                            onChange={(e) => setKeyResultForm({ ...keyResultForm, unit: e.target.value })}
+                            placeholder="e.g., users"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Target</Label>
+                          <Input
+                            type="number"
+                            value={keyResultForm.target}
+                            onChange={(e) => setKeyResultForm({ ...keyResultForm, target: e.target.value })}
+                            placeholder="100"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Current</Label>
+                          <Input
+                            type="number"
+                            value={keyResultForm.current}
+                            onChange={(e) => setKeyResultForm({ ...keyResultForm, current: e.target.value })}
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => createKeyResultMutation.mutate(keyResultForm)}
+                          disabled={!keyResultForm.description || !keyResultForm.unit || !keyResultForm.target || createKeyResultMutation.isPending}
+                        >
+                          {createKeyResultMutation.isPending ? 'Adding...' : 'Add'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setIsAddingKeyResult(false);
+                            setKeyResultForm({ description: '', unit: '', target: '', current: '0' });
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   {selectedGoal.keyResults && selectedGoal.keyResults.length > 0 ? (
                     <div className="space-y-2">
                       {selectedGoal.keyResults.map((kr) => (
@@ -417,19 +613,186 @@ export default function GoalsPage() {
                           )}
                           <div className="flex-1">
                             <p className="text-sm font-medium">{kr.description}</p>
-                            <p className="text-xs text-gray-500">
-                              {kr.current} / {kr.target} {kr.unit}
-                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Input
+                                type="number"
+                                value={kr.current}
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value) || 0;
+                                  updateKeyResultMutation.mutate({ krId: kr.id, current: newValue });
+                                }}
+                                className="h-7 w-20 text-xs"
+                              />
+                              <span className="text-xs text-gray-500">/ {kr.target} {kr.unit}</span>
+                            </div>
                           </div>
-                          <div className="text-sm font-medium">
-                            {Math.round((kr.current / kr.target) * 100)}%
+                          <div className="flex items-center gap-2">
+                            <div className="text-sm font-medium">
+                              {Math.round((kr.current / kr.target) * 100)}%
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => deleteKeyResultMutation.mutate(kr.id)}
+                              disabled={deleteKeyResultMutation.isPending}
+                            >
+                              <X className="h-4 w-4 text-red-600" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    !isAddingKeyResult && (
+                      <div className="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-slate-700">
+                        <Target className="mx-auto mb-2 h-8 w-8 text-gray-400" />
+                        <p>No key results defined yet</p>
+                        <p className="text-xs mt-1">Add measurable outcomes to track your goal progress</p>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                {/* Linked Projects */}
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold">Linked Projects</h3>
+
+                  {/* Add Project Section */}
+                  <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+                    <Label className="mb-2 block text-sm">Link Project</Label>
+                    <div className="space-y-3">
+                      <select
+                        value={selectedProjectId}
+                        onChange={(e) => setSelectedProjectId(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-[#2D3748] dark:text-white"
+                      >
+                        <option value="">Select a project...</option>
+                        {allProjectsData?.projects
+                          ?.filter((project: any) =>
+                            !goalProjectsData?.projects?.some((gp: any) => gp.id === project.id)
+                          )
+                          .map((project: any) => (
+                            <option key={project.id} value={project.id}>
+                              {project.name} ({project.key})
+                            </option>
+                          ))}
+                      </select>
+
+                      {selectedProjectId && (
+                        <div>
+                          <Label className="mb-2 block text-sm">
+                            Contribution Weight: {contributionWeight}%
+                          </Label>
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            step="5"
+                            value={contributionWeight}
+                            onChange={(e) => setContributionWeight(parseInt(e.target.value))}
+                            className="w-full"
+                          />
+                          <div className="mt-1 flex justify-between text-xs text-gray-500">
+                            <span>0%</span>
+                            <span>50%</span>
+                            <span>100%</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <Button
+                        onClick={() => {
+                          if (selectedProjectId && selectedGoal?.id) {
+                            linkProjectMutation.mutate({
+                              goalId: selectedGoal.id,
+                              projectId: selectedProjectId,
+                              contributionWeight,
+                            });
+                          }
+                        }}
+                        disabled={!selectedProjectId || linkProjectMutation.isPending}
+                        className="w-full"
+                      >
+                        <Link2 className="mr-2 h-4 w-4" />
+                        {linkProjectMutation.isPending ? 'Linking...' : 'Link Project'}
+                      </Button>
+
+                      {linkProjectMutation.isError && (
+                        <p className="text-sm text-red-600">
+                          {linkProjectMutation.error?.message || 'Failed to link project'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Linked Projects List */}
+                  {goalProjectsData?.projects && goalProjectsData.projects.length > 0 ? (
+                    <div className="space-y-2">
+                      {goalProjectsData.projects.map((project: any) => (
+                        <div
+                          key={project.id}
+                          className="group flex items-start gap-3 rounded-lg border border-gray-200 p-4 dark:border-slate-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors"
+                        >
+                          <div
+                            className="flex h-12 w-12 items-center justify-center rounded-lg text-2xl shrink-0"
+                            style={{ backgroundColor: project.color || '#3B82F6' }}
+                          >
+                            {project.icon || '📁'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                  {project.name}
+                                </p>
+                                <p className="text-xs text-gray-500">{project.key}</p>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => {
+                                  if (selectedGoal?.id) {
+                                    unlinkProjectMutation.mutate({
+                                      goalId: selectedGoal.id,
+                                      projectId: project.id,
+                                    });
+                                  }
+                                }}
+                                disabled={unlinkProjectMutation.isPending}
+                              >
+                                <X className="h-4 w-4 text-red-600" />
+                              </Button>
+                            </div>
+                            {project.description && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mb-2">
+                                {project.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between text-xs mb-1">
+                                  <span className="text-gray-500">Contributes</span>
+                                  <span className="font-medium text-teal-600">{project.contributionWeight}%</span>
+                                </div>
+                                <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-slate-700">
+                                  <div
+                                    className="h-1.5 rounded-full bg-teal-600 transition-all"
+                                    style={{ width: `${project.contributionWeight}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <div className="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-slate-700">
-                      No key results defined yet
+                      <Folder className="mx-auto mb-2 h-8 w-8 text-gray-400" />
+                      <p>No projects linked to this goal yet</p>
+                      <p className="text-xs mt-1">Link projects that contribute to achieving this goal</p>
                     </div>
                   )}
                 </div>
@@ -485,103 +848,95 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-[#22272B]"
+      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-teal-500 dark:border-slate-700 dark:bg-[#22272B] dark:hover:border-teal-500"
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          {/* Header */}
-          <div className="mb-3 flex items-start gap-3">
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {goal.title}
-              </h3>
-              {goal.description && (
-                <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
-                  {goal.description}
-                </p>
-              )}
-            </div>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
-                >
-                  <MoreHorizontal className="h-4 w-4 text-gray-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClick(); }}>
-                  View Details
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(goal.id);
-                  }}
-                  className="text-red-600"
-                >
-                  Delete Goal
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mb-4">
-            <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="text-gray-500">Progress</span>
-              <span className="font-medium text-gray-900 dark:text-white">{goal.progress}%</span>
-            </div>
-            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-slate-700">
-              <div
-                className="h-2 rounded-full bg-teal-600 transition-all"
-                style={{ width: `${goal.progress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Status Badge */}
-              <div className={cn('flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium', statusConfig.bg, statusConfig.color)}>
-                <StatusIcon className="h-3 w-3" />
-                {statusConfig.label}
-              </div>
-
-              {/* Priority Badge */}
-              <div className="flex items-center gap-1 text-xs">
-                <Flag className={cn('h-3 w-3', priorityConfig.color)} />
-                <span className={priorityConfig.color}>{priorityConfig.label}</span>
-              </div>
-            </div>
-
-            {/* Due Date */}
-            {goal.dueDate && (
-              <div className="flex items-center gap-1 text-xs text-gray-500">
-                <Calendar className="h-3 w-3" />
-                {new Date(goal.dueDate).toLocaleDateString()}
-              </div>
-            )}
-          </div>
-
-          {/* Team/Owner */}
-          {(goal.team || goal.owner) && (
-            <div className="mt-3 flex items-center gap-2">
-              {goal.team && (
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <Users className="h-3 w-3" />
-                  {goal.team.name}
-                </div>
-              )}
-            </div>
+      {/* Header */}
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
+            {goal.title}
+          </h3>
+          {goal.description && (
+            <p className="mt-1 line-clamp-1 text-xs text-gray-500 dark:text-gray-400">
+              {goal.description}
+            </p>
           )}
         </div>
 
-        <ChevronRight className="h-5 w-5 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
+            >
+              <MoreHorizontal className="h-4 w-4 text-gray-400" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClick(); }}>
+              View Details
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(goal.id);
+              }}
+              className="text-red-600"
+            >
+              Delete Goal
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      {/* Progress Bar */}
+      <div className="mb-3">
+        <div className="mb-1 flex items-center justify-between text-xs">
+          <span className="text-gray-500">Progress</span>
+          <span className="font-medium text-gray-900 dark:text-white">{goal.progress}%</span>
+        </div>
+        <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-slate-700">
+          <div
+            className="h-1.5 rounded-full bg-teal-600 transition-all"
+            style={{ width: `${goal.progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Badges & Info */}
+      <div className="flex items-center flex-wrap gap-2">
+        {/* Status Badge */}
+        <div className={cn('flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium', statusConfig.bg, statusConfig.color)}>
+          <StatusIcon className="h-3 w-3" />
+          <span className="hidden sm:inline">{statusConfig.label}</span>
+        </div>
+
+        {/* Priority Badge */}
+        <div className="flex items-center gap-1">
+          <Flag className={cn('h-3 w-3', priorityConfig.color)} />
+          <span className={cn('text-xs hidden sm:inline', priorityConfig.color)}>{priorityConfig.label}</span>
+        </div>
+
+        {/* Due Date */}
+        {goal.dueDate && (
+          <div className="flex items-center gap-1 text-xs text-gray-500 ml-auto">
+            <Calendar className="h-3 w-3" />
+            {new Date(goal.dueDate).toLocaleDateString()}
+          </div>
+        )}
+      </div>
+
+      {/* Team/Owner */}
+      {(goal.team || goal.owner) && (
+        <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+          {goal.team && (
+            <>
+              <Users className="h-3 w-3" />
+              {goal.team.name}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star } from 'lucide-react';
+import { Plus, Search, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,6 +53,10 @@ export default function TeamsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isManageTeamOpen, setIsManageTeamOpen] = useState(false);
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [invitationData, setInvitationData] = useState<{ email: string; token: string; invited: boolean } | null>(null);
   const queryClient = useQueryClient();
 
   // Form state
@@ -117,6 +121,63 @@ export default function TeamsPage() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+  });
+
+  // Fetch team members
+  const { data: membersData } = useQuery({
+    queryKey: ['team-members', selectedTeam?.id],
+    queryFn: async () => {
+      if (!selectedTeam?.id) return { members: [] };
+      const res = await fetch(`/api/teams/${selectedTeam.id}/members`);
+      if (!res.ok) throw new Error('Failed to fetch members');
+      return res.json();
+    },
+    enabled: !!selectedTeam?.id && isManageTeamOpen,
+  });
+
+  // Add member mutation
+  const addMemberMutation = useMutation({
+    mutationFn: async ({ teamId, userEmail }: { teamId: string; userEmail: string }) => {
+      const res = await fetch(`/api/teams/${teamId}/members`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail, role: 'MEMBER' }),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to add member');
+      }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['team-members', selectedTeam?.id] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+      setIsAddMemberDialogOpen(false);
+      setNewMemberEmail('');
+
+      // Show success modal with invitation details
+      setInvitationData({
+        email: data.invited ? data.invitation.email : data.member.email,
+        token: data.invited ? data.invitation.token : '',
+        invited: data.invited || false,
+      });
+      setIsSuccessModalOpen(true);
+    },
+  });
+
+  // Remove member mutation
+  const removeMemberMutation = useMutation({
+    mutationFn: async ({ teamId, userId }: { teamId: string; userId: string }) => {
+      const res = await fetch(`/api/teams/${teamId}/members/${userId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to remove member');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['team-members', selectedTeam?.id] });
       queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
@@ -365,23 +426,222 @@ export default function TeamsPage() {
 
               <div className="py-4">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold">Team Members ({selectedTeam.memberCount})</h3>
-                  <Button size="sm" className="gap-2">
+                  <h3 className="text-sm font-semibold">
+                    Team Members ({membersData?.members?.length || 0})
+                  </h3>
+                  <Button
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => setIsAddMemberDialogOpen(true)}
+                  >
                     <UserPlus className="h-4 w-4" />
                     Add Member
                   </Button>
                 </div>
 
-                {/* Member list would go here */}
+                {/* Member list */}
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700">
-                  <div className="p-8 text-center text-sm text-gray-500">
-                    Member management UI will be implemented in the next iteration
-                  </div>
+                  {membersData?.members && membersData.members.length > 0 ? (
+                    <div className="divide-y divide-gray-200 dark:divide-slate-700">
+                      {membersData.members.map((member: TeamMember) => (
+                        <div
+                          key={member.id}
+                          className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-sm font-semibold text-white">
+                              {member.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                {member.name}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {member.email}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            {member.role === 'LEAD' && (
+                              <div className="flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                <Crown className="h-3 w-3" />
+                                Lead
+                              </div>
+                            )}
+                            {member.role === 'MEMBER' && (
+                              <div className="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                                <Users className="h-3 w-3" />
+                                Member
+                              </div>
+                            )}
+
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    `Are you sure you want to remove ${member.name} from this team?`
+                                  )
+                                ) {
+                                  removeMemberMutation.mutate({
+                                    teamId: selectedTeam.id,
+                                    userId: member.userId,
+                                  });
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-sm text-gray-500">
+                      No members yet. Add your first team member!
+                    </div>
+                  )}
                 </div>
               </div>
             </DialogContent>
           </Dialog>
         )}
+
+        {/* Add Member Dialog */}
+        {selectedTeam && (
+          <Dialog open={isAddMemberDialogOpen} onOpenChange={setIsAddMemberDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Member to {selectedTeam.name}</DialogTitle>
+                <DialogDescription>
+                  Enter the email address of the user you want to add to this team.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="py-4">
+                <Label htmlFor="member-email">User Email</Label>
+                <Input
+                  id="member-email"
+                  type="email"
+                  placeholder="user@example.com"
+                  value={newMemberEmail}
+                  onChange={(e) => setNewMemberEmail(e.target.value)}
+                  className="mt-2"
+                />
+                {addMemberMutation.isError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {addMemberMutation.error?.message || 'Failed to add member'}
+                  </p>
+                )}
+              </div>
+
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsAddMemberDialogOpen(false);
+                    setNewMemberEmail('');
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (newMemberEmail.trim()) {
+                      addMemberMutation.mutate({
+                        teamId: selectedTeam.id,
+                        userEmail: newMemberEmail.trim(),
+                      });
+                    }
+                  }}
+                  disabled={!newMemberEmail.trim() || addMemberMutation.isPending}
+                >
+                  {addMemberMutation.isPending ? 'Adding...' : 'Add Member'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Success Modal */}
+        <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <div className="flex flex-col items-center gap-4 py-6">
+              {/* Success Icon */}
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+
+              {/* Title */}
+              <DialogTitle className="text-center text-2xl font-bold">
+                {invitationData?.invited ? 'Invitation Sent!' : 'Member Added!'}
+              </DialogTitle>
+
+              {/* Message */}
+              <DialogDescription className="text-center">
+                {invitationData?.invited ? (
+                  <>
+                    <p className="mb-4">
+                      An invitation has been sent to <span className="font-semibold text-gray-900 dark:text-white">{invitationData.email}</span>
+                    </p>
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/30">
+                      <div className="flex items-start gap-3">
+                        <Mail className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
+                        <div className="flex-1 text-left text-sm">
+                          <p className="font-medium text-blue-900 dark:text-blue-100">Email Invitation</p>
+                          <p className="mt-1 text-blue-700 dark:text-blue-300">
+                            The user will receive an email to join the organization and team.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Invitation Link */}
+                    {invitationData.token && (
+                      <div className="mt-4">
+                        <Label className="text-xs text-gray-600 dark:text-gray-400">Invitation Link</Label>
+                        <div className="mt-2 flex items-center gap-2">
+                          <Input
+                            readOnly
+                            value={`${window.location.origin}/invite/${invitationData.token}`}
+                            className="text-xs"
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              navigator.clipboard.writeText(`${window.location.origin}/invite/${invitationData.token}`);
+                            }}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <p className="mt-2 text-xs text-gray-500">
+                          You can also share this link directly with the user.
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p>
+                    <span className="font-semibold text-gray-900 dark:text-white">{invitationData?.email}</span> has been successfully added to the team.
+                  </p>
+                )}
+              </DialogDescription>
+
+              {/* Action Button */}
+              <Button
+                onClick={() => setIsSuccessModalOpen(false)}
+                className="mt-4 w-full"
+              >
+                Done
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   );

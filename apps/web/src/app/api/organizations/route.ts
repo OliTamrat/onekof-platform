@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
       slug: m.organization.slug,
       logo: m.organization.logo,
       description: m.organization.description,
-      ownerId: m.organization.ownerId,
       createdAt: m.organization.createdAt.toISOString(),
       memberCount: m.organization._count.members,
       projectCount: m.organization._count.projects,
@@ -106,17 +105,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create organization in a transaction
-    const result = await prisma.$transaction(async (tx) => {
-      // Create organization
-      const organization = await tx.organization.create({
-        data: {
-          name,
-          slug,
-          description,
-          ownerId: session.user.id,
-        },
-      });
+    // Generate unique schema name for multi-tenant architecture
+      const schemaName = `onekof_org_${slug.replace(/-/g, '_')}`;
+
+      // Create organization in a transaction
+      const result = await prisma.$transaction(async (tx) => {
+        // Create organization
+        const organization = await tx.organization.create({
+          data: {
+            name,
+            slug,
+            schemaName,
+            description,
+            // Owner tracked via OrganizationMember with role='OWNER'
+          },
+        });
 
       // Add creator as organization member with OWNER role
       await tx.organizationMember.create({
@@ -137,7 +140,6 @@ export async function POST(req: NextRequest) {
           name: result.name,
           slug: result.slug,
           description: result.description,
-          ownerId: result.ownerId,
           createdAt: result.createdAt.toISOString(),
         },
       },

@@ -19,23 +19,23 @@ datasource db {
 
 // Organizations (tenants)
 model Organization {
-  id         String   @id @default(cuid())
+  id         String @id @default(cuid())
   name       String
-  slug       String   @unique
-  schemaName String   @unique @map("schema_name") // e.g., "onekof_org_abc123"
+  slug       String @unique
+  schemaName String @unique @map("schema_name") // e.g., "onekof_org_abc123"
 
   // Subscription & billing
-  plan             Plan         @default(FREE)
-  status           OrgStatus    @default(TRIAL)
-  billingEmail     String?      @map("billing_email")
-  subscriptionId   String?      @map("subscription_id")
-  trialEndsAt      DateTime?    @map("trial_ends_at")
-  currentPeriodEnd DateTime?    @map("current_period_end")
+  plan             Plan      @default(FREE)
+  status           OrgStatus @default(TRIAL)
+  billingEmail     String?   @map("billing_email")
+  subscriptionId   String?   @map("subscription_id")
+  trialEndsAt      DateTime? @map("trial_ends_at")
+  currentPeriodEnd DateTime? @map("current_period_end")
 
   // Limits (based on plan)
-  maxMembers   Int @default(10) @map("max_members")
-  maxProjects  Int @default(10) @map("max_projects")
-  maxStorage   Int @default(5)  @map("max_storage") // GB
+  maxMembers  Int @default(10) @map("max_members")
+  maxProjects Int @default(10) @map("max_projects")
+  maxStorage  Int @default(5) @map("max_storage") // GB
 
   // Settings
   settings Json @default("{}")
@@ -54,6 +54,8 @@ model Organization {
   members     OrganizationMember[]
   invitations Invitation[]
   projects    Project[]
+  teams       Team[]
+  goals       Goal[]
 
   @@map("organizations")
   @@schema("public")
@@ -66,16 +68,16 @@ model User {
   emailVerified DateTime? @map("email_verified")
 
   // Profile
-  name        String?
-  avatar      String?
-  bio         String?
-  phone       String?
-  timezone    String   @default("Africa/Addis_Ababa")
-  language    Language @default(EN)
+  name     String?
+  avatar   String?
+  bio      String?
+  phone    String?
+  timezone String   @default("Africa/Addis_Ababa")
+  language Language @default(EN)
 
   // Authentication
-  password         String?   // Hashed with bcrypt
-  resetToken       String?   // Password reset token
+  password         String? // Hashed with bcrypt
+  resetToken       String? // Password reset token
   resetTokenExpiry DateTime? @map("reset_token_expiry") // Reset token expiration
 
   // Preferences
@@ -94,6 +96,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
   organizations OrganizationMember[]
+  teamMembers   TeamMember[]
+  assignedTasks Task[]               @relation("TaskAssignee")
+  reportedTasks Task[]               @relation("TaskReporter")
+  comments      Comment[]            @relation("CommentAuthor")
+  attachments   Attachment[]         @relation("AttachmentUploader")
 
   @@map("users")
   @@schema("public")
@@ -129,9 +136,9 @@ model Invitation {
 
   email      String
   role       OrgRole
-  token      String   @unique
-  invitedBy  String   @map("invited_by")
-  expiresAt  DateTime @map("expires_at")
+  token      String    @unique
+  invitedBy  String    @map("invited_by")
+  expiresAt  DateTime  @map("expires_at")
   acceptedAt DateTime? @map("accepted_at")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -260,18 +267,23 @@ model Project {
   leadId          String? @map("lead_id")
 
   // Project type and status
-  template    ProjectTemplate @default(KANBAN)
-  isArchived  Boolean         @default(false) @map("is_archived")
-  isFavorite  Boolean         @default(false) @map("is_favorite")
+  template   ProjectTemplate @default(KANBAN)
+  status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
+  isArchived Boolean         @default(false) @map("is_archived")
+  isFavorite Boolean         @default(false) @map("is_favorite")
+  settings   Json            @default("{}") // Color, icon, etc.
 
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
   createdBy String    @map("created_by")
 
   // Relations
   tasks   Task[]
   members ProjectMember[]
+  teams   ProjectTeam[]
+  goals   GoalProject[]
 
   @@unique([organizationId, key])
   @@map("projects")
@@ -285,7 +297,7 @@ model ProjectMember {
   projectId String  @map("project_id")
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  userId String @map("user_id")
+  userId String      @map("user_id")
   role   ProjectRole @default(MEMBER)
 
   addedAt DateTime @default(now()) @map("added_at")
@@ -321,21 +333,24 @@ model Task {
   parentId String? @map("parent_id")
 
   // Time tracking
-  estimate       Int?      @map("estimate") // In hours
-  timeSpent      Int?      @map("time_spent") // In hours
-  dueDate        DateTime? @map("due_date")
-  startDate      DateTime? @map("start_date")
-  completedAt    DateTime? @map("completed_at")
+  estimate    Int?      @map("estimate") // In hours
+  timeSpent   Int?      @map("time_spent") // In hours
+  dueDate     DateTime? @map("due_date")
+  startDate   DateTime? @map("start_date")
+  completedAt DateTime? @map("completed_at")
 
   // Labels and custom fields
-  labels Json @default("[]")
+  labels       Json @default("[]")
   customFields Json @default("{}") @map("custom_fields")
 
   // Metadata
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   // Relations
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter    User         @relation("TaskReporter", fields: [reporterId], references: [id])
   comments    Comment[]
   attachments Attachment[]
 
@@ -353,6 +368,7 @@ model Comment {
 
   content  String
   authorId String @map("author_id")
+  author   User   @relation("CommentAuthor", fields: [authorId], references: [id])
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -374,8 +390,9 @@ model Attachment {
   mimeType String @map("mime_type")
   size     Int // In bytes
 
-  uploadedBy String   @map("uploaded_by")
-  uploadedAt DateTime @default(now()) @map("uploaded_at")
+  uploadedById String   @map("uploaded_by")
+  uploadedBy   User     @relation("AttachmentUploader", fields: [uploadedById], references: [id])
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
 
   @@map("attachments")
   @@schema("public")
@@ -427,6 +444,204 @@ enum TaskPriority {
   MEDIUM
   LOW
   LOWEST
+
+  @@schema("public")
+}
+
+// ============================================================================
+// TEAM MANAGEMENT MODELS
+// ============================================================================
+
+// Teams within an organization
+model Team {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Team details
+  name        String
+  description String?
+  icon        String? // Emoji or icon identifier
+  color       String? // Hex color
+
+  // Settings
+  isDefault  Boolean @default(false) @map("is_default") // Default team for new members
+  isFavorite Boolean @default(false) @map("is_favorite")
+  settings   Json    @default("{}") // Team-specific settings
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  // Relations
+  members  TeamMember[]
+  projects ProjectTeam[]
+  goals    Goal[]
+
+  @@map("teams")
+  @@schema("public")
+}
+
+// Team membership
+model TeamMember {
+  id String @id @default(cuid())
+
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  userId String   @map("user_id")
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   TeamRole @default(MEMBER)
+
+  // Metadata
+  joinedAt DateTime @default(now()) @map("joined_at")
+  addedBy  String   @map("added_by")
+
+  @@unique([teamId, userId])
+  @@map("team_members")
+  @@schema("public")
+}
+
+// Project-Team relationship (projects can have multiple teams)
+model ProjectTeam {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([projectId, teamId])
+  @@map("project_teams")
+  @@schema("public")
+}
+
+// Project-Goal relationship (projects can contribute to multiple goals)
+model GoalProject {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Track how much this project contributes to the goal (percentage)
+  contributionWeight Int @default(100) @map("contribution_weight")
+
+  // Metadata
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([goalId, projectId])
+  @@index([goalId])
+  @@index([projectId])
+  @@map("goal_projects")
+  @@schema("public")
+}
+
+// ============================================================================
+// GOALS & OKR MODELS
+// ============================================================================
+
+// Goals (Objectives & Key Results)
+model Goal {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Goal details
+  title       String
+  description String?
+
+  // Goal properties
+  status   GoalStatus   @default(NOT_STARTED)
+  priority GoalPriority @default(MEDIUM)
+  progress Int          @default(0) // 0-100 percentage
+
+  // Ownership
+  ownerId String? @map("owner_id")
+  teamId  String? @map("team_id")
+  team    Team?   @relation(fields: [teamId], references: [id])
+
+  // Timeline
+  startDate DateTime? @map("start_date")
+  dueDate   DateTime? @map("due_date")
+
+  // Metadata
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+  deletedAt   DateTime? @map("deleted_at")
+  createdBy   String    @map("created_by")
+
+  // Relations
+  keyResults KeyResult[]
+  projects   GoalProject[]
+
+  @@map("goals")
+  @@schema("public")
+}
+
+// Key Results (measurable outcomes for goals)
+model KeyResult {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  // Key result details
+  description String
+  unit        String @default("units") // e.g., "users", "revenue", "tasks"
+  target      Float // Target value
+  current     Float  @default(0) // Current value
+
+  // Status
+  isCompleted Boolean @default(false) @map("is_completed")
+
+  // Metadata
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+
+  @@map("key_results")
+  @@schema("public")
+}
+
+// ============================================================================
+// TEAM & GOAL ENUMS
+// ============================================================================
+
+enum TeamRole {
+  LEAD
+  MEMBER
+
+  @@schema("public")
+}
+
+enum GoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  AT_RISK
+  COMPLETED
+  CANCELLED
+
+  @@schema("public")
+}
+
+enum GoalPriority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
 
   @@schema("public")
 }

@@ -11,15 +11,18 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/docs') ||
     pathname.startsWith('/settings');
 
-  // For now, allow all routes (we'll add auth check after fixing NextAuth)
-  // This prevents the middleware error while we work on other features
+  // Check if user is authenticated for protected routes
   if (isProtectedRoute) {
-    // TODO: Add auth check here once NextAuth is working
-    // For now, redirect to signin
-    const signInUrl = new URL('/auth/signin', request.url);
-    signInUrl.searchParams.set('callbackUrl', pathname);
-    // Uncomment to enforce auth:
-    // return NextResponse.redirect(signInUrl);
+    // Check for session token (NextAuth uses next-auth.session-token cookie)
+    const token = request.cookies.get('next-auth.session-token') ||
+                  request.cookies.get('__Secure-next-auth.session-token');
+
+    // If no token, redirect to signin
+    if (!token) {
+      const signInUrl = new URL('/auth/signin', request.url);
+      signInUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(signInUrl);
+    }
   }
 
   return NextResponse.next();

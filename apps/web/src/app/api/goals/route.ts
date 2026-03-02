@@ -1,0 +1,200 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+
+// GET /api/goals - Get all goals for the current organization
+export async function GET(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get user's current organization
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { defaultOrganizationId: true },
+    });
+
+    if (!user?.defaultOrganizationId) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
+    }
+
+    // Verify user is a member of the organization
+    const membership = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: user.defaultOrganizationId,
+          userId: session.user.id,
+        },
+      },
+    });
+
+    if (!membership) {
+      return NextResponse.json({ error: 'Not a member of this organization' }, { status: 403 });
+    }
+
+    // Get status filter from query params
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get('status');
+
+    // Fetch goals with key results
+    const goals = await prisma.goal.findMany({
+      where: {
+        organizationId: user.defaultOrganizationId,
+        deletedAt: null,
+        ...(status && status !== 'all' && { status: status as any }),
+      },
+      include: {
+        keyResults: {
+          orderBy: { createdAt: 'asc' },
+        },
+        team: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+            color: true,
+          },
+        },
+      },
+      orderBy: [
+        { priority: 'desc' },
+        { createdAt: 'desc' },
+      ],
+    });
+
+    // Format response
+    const formattedGoals = goals.map((goal) => ({
+      id: goal.id,
+      organizationId: goal.organizationId,
+      title: goal.title,
+      description: goal.description,
+      status: goal.status,
+      priority: goal.priority,
+      progress: goal.progress,
+      ownerId: goal.ownerId,
+      team: goal.team ? {
+        id: goal.team.id,
+        name: goal.team.name,
+        icon: goal.team.icon,
+        color: goal.team.color,
+      } : null,
+      startDate: goal.startDate?.toISOString(),
+      dueDate: goal.dueDate?.toISOString(),
+      keyResults: goal.keyResults.map((kr) => ({
+        id: kr.id,
+        description: kr.description,
+        unit: kr.unit,
+        target: kr.target,
+        current: kr.current,
+        isCompleted: kr.isCompleted,
+      })),
+      createdAt: goal.createdAt.toISOString(),
+      updatedAt: goal.updatedAt.toISOString(),
+      completedAt: goal.completedAt?.toISOString(),
+    }));
+
+    return NextResponse.json({ goals: formattedGoals });
+  } catch (error) {
+    console.error('Error fetching goals:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch goals' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/goals - Create a new goal
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { title, description, priority, dueDate, teamId } = body;
+
+    if (!title) {
+      return NextResponse.json({ error: 'Goal title is required' }, { status: 400 });
+    }
+
+    // Get user's current organization
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { defaultOrganizationId: true },
+    });
+
+    if (!user?.defaultOrganizationId) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
+    }
+
+    // Verify user is a member of the organization
+    const membership = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: user.defaultOrganizationId,
+          userId: session.user.id,
+        },
+      },
+    });
+
+    if (!membership) {
+      return NextResponse.json({ error: 'Not a member of this organization' }, { status: 403 });
+    }
+
+    // Create goal
+    const goal = await prisma.goal.create({
+      data: {
+        organizationId: user.defaultOrganizationId,
+        title,
+        description,
+        priority: priority || 'MEDIUM',
+        ownerId: session.user.id,
+        createdBy: session.user.id,
+        ...(teamId && { teamId }),
+        ...(dueDate && { dueDate: new Date(dueDate) }),
+      },
+      include: {
+        keyResults: true,
+        team: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+            color: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      goal: {
+        id: goal.id,
+        organizationId: goal.organizationId,
+        title: goal.title,
+        description: goal.description,
+        status: goal.status,
+        priority: goal.priority,
+        progress: goal.progress,
+        ownerId: goal.ownerId,
+        team: goal.team,
+        startDate: goal.startDate?.toISOString(),
+        dueDate: goal.dueDate?.toISOString(),
+        keyResults: goal.keyResults,
+        createdAt: goal.createdAt.toISOString(),
+        updatedAt: goal.updatedAt.toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error('Error creating goal:', error);
+    return NextResponse.json(
+      { error: 'Failed to create goal' },
+      { status: 500 }
+    );
+  }
+}
