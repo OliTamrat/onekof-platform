@@ -123,6 +123,9 @@ model OrganizationMember {
 
   role OrgRole @default(MEMBER)
 
+  // 🚀 NEW: Budget access level
+  budgetAccess BudgetAccess @default(NO_ACCESS) @map("budget_access")
+
   // Metadata
   joinedAt  DateTime @default(now()) @map("joined_at")
   invitedBy String?  @map("invited_by")
@@ -289,6 +292,7 @@ model Project {
   members ProjectMember[]
   teams   ProjectTeam[]
   goals   GoalProject[]
+  budget  Budget? // 🚀 NEW: 1:1 Budget relationship
 
   @@unique([organizationId, key])
   @@map("projects")
@@ -304,6 +308,9 @@ model ProjectMember {
 
   userId String      @map("user_id")
   role   ProjectRole @default(MEMBER)
+
+  // 🚀 NEW: Project-level budget access (can override org-level)
+  budgetAccess BudgetAccess? @map("budget_access")
 
   addedAt DateTime @default(now()) @map("added_at")
   addedBy String   @map("added_by")
@@ -354,11 +361,12 @@ model Task {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  assignee    User?          @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  reporter    User           @relation("TaskReporter", fields: [reporterId], references: [id])
-  comments    Comment[]
-  attachments Attachment[]
-  watchers    TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
+  assignee          User?          @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter          User           @relation("TaskReporter", fields: [reporterId], references: [id])
+  comments          Comment[]
+  attachments       Attachment[]
+  watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
+  budgetAllocations TaskBudget[] // 🚀 NEW: Budget category allocations
 
   @@unique([projectId, key])
   @@map("tasks")
@@ -476,6 +484,10 @@ model Team {
   isFavorite Boolean @default(false) @map("is_favorite")
   settings   Json    @default("{}") // Team-specific settings
 
+  // 🚀 NEW: Default hourly rate for team (for budget calculations)
+  defaultHourlyRate Decimal?  @map("default_hourly_rate") @db.Decimal(10, 2)
+  rateCurrency      Currency? @map("rate_currency")
+
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -501,6 +513,10 @@ model TeamMember {
   userId String   @map("user_id")
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   role   TeamRole @default(MEMBER)
+
+  // 🚀 NEW: Per-member hourly rate (overrides team default)
+  hourlyRate   Decimal?  @map("hourly_rate") @db.Decimal(10, 2)
+  rateCurrency Currency? @map("rate_currency")
 
   // Metadata
   joinedAt DateTime @default(now()) @map("joined_at")
@@ -925,6 +941,236 @@ enum ActivityType {
   AUTOMATION_EXECUTED
   AUTOMATION_FAILED
 
+  @@schema("public")
+}
+
+// ============================================================================
+// BUDGET MANAGEMENT ENUMS
+// ============================================================================
+
+enum Currency {
+  ETB // Ethiopian Birr
+  USD // US Dollar
+  EUR // Euro
+  GBP // British Pound
+  CNY // Chinese Yuan
+
+  @@schema("public")
+}
+
+enum BudgetStatus {
+  DRAFT            // Being configured
+  PENDING_APPROVAL // Awaiting approval
+  APPROVED         // Approved but not active
+  ACTIVE           // Currently in use
+  CLOSED           // Project completed
+  CANCELLED        // Budget cancelled
+
+  @@schema("public")
+}
+
+enum BudgetAccess {
+  NO_ACCESS    // Cannot see any budget information
+  VIEW_ONLY    // Can view budget but not edit
+  EDIT         // Can view and edit budget
+  APPROVE      // Can view, edit, and approve expenses
+  FULL_CONTROL // Full budget management
+
+  @@schema("public")
+}
+
+enum ExpenseType {
+  ACTUAL    // Money already spent
+  COMMITTED // Contractually obligated
+  RESERVED  // Planned/budgeted
+
+  @@schema("public")
+}
+
+enum ExpenseStatus {
+  PENDING  // Awaiting approval
+  APPROVED // Approved, ready for payment
+  REJECTED // Rejected by approver
+  PAID     // Payment completed
+
+  @@schema("public")
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+
+  @@schema("public")
+}
+
+// ============================================================================
+// BUDGET MANAGEMENT MODELS
+// ============================================================================
+
+// Project Budget (1:1 with Project)
+model Budget {
+  id String @id @default(cuid())
+
+  // Link to project (1:1 relationship)
+  projectId String  @unique @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Budget amounts
+  totalBudget Decimal  @map("total_budget") @db.Decimal(19, 2)
+  currency    Currency @default(ETB)
+
+  // Additional funding sources (for multi-currency)
+  additionalFunding Json @default("[]") @map("additional_funding")
+  // Format: [{ source: "World Bank", amount: 5000000, currency: "USD", exchangeRate: 57.8, date: "2025-01-01" }]
+
+  // Budget status
+  status   BudgetStatus @default(DRAFT)
+  isPublic Boolean      @default(false) @map("is_public") // For government transparency
+
+  // Timeline
+  fiscalYearStart DateTime? @map("fiscal_year_start")
+  fiscalYearEnd   DateTime? @map("fiscal_year_end")
+
+  // Settings
+  settings Json @default("{}") @map("settings")
+  // Format: {
+  //   alertThresholds: [50, 80, 90],
+  //   autoApproval: false,
+  //   requireReceipts: true,
+  //   approvalLevels: { "< 10000": ["PROJECT_MANAGER"], ... }
+  // }
+
+  // Visibility settings
+  visibilitySettings Json @default("{}") @map("visibility_settings")
+  // Format: { restrictedFields: ["totalBudget"], publicFields: ["progress"] }
+
+  // Metadata
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  createdBy  String    @map("created_by")
+  approvedAt DateTime? @map("approved_at")
+  approvedBy String?   @map("approved_by")
+
+  // Relations
+  categories BudgetCategory[]
+  expenses   Expense[]
+
+  @@map("budgets")
+  @@schema("public")
+}
+
+// Budget Categories (Line Items)
+model BudgetCategory {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  // Category details
+  name        String
+  code        String? // For government accounting codes (e.g., "5210-Personnel")
+  description String?
+
+  // Budget allocation
+  allocatedAmount Decimal  @map("allocated_amount") @db.Decimal(19, 2)
+  currency        Currency @default(ETB)
+
+  // Hierarchy (for subcategories)
+  parentId String? @map("parent_id")
+
+  // Display order
+  order Int @default(0)
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  expenses    Expense[]
+  taskBudgets TaskBudget[]
+
+  @@map("budget_categories")
+  @@schema("public")
+}
+
+// Expenses (Actual Expenditures)
+model Expense {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  categoryId String?         @map("category_id")
+  category   BudgetCategory? @relation(fields: [categoryId], references: [id])
+
+  // Expense details
+  description String
+  amount      Decimal  @db.Decimal(19, 2)
+  currency    Currency @default(ETB)
+
+  // Expense type
+  type ExpenseType @default(ACTUAL)
+
+  // Transaction details
+  transactionDate DateTime @map("transaction_date")
+  invoiceNumber   String?  @map("invoice_number")
+  vendor          String?
+  receiptUrl      String?  @map("receipt_url")
+
+  // Approval workflow
+  status          ExpenseStatus @default(PENDING)
+  submittedBy     String        @map("submitted_by")
+  approvedBy      String?       @map("approved_by")
+  approvedAt      DateTime?     @map("approved_at")
+  rejectionReason String?       @map("rejection_reason")
+
+  // Payment tracking
+  paymentStatus PaymentStatus @default(UNPAID) @map("payment_status")
+  paidDate      DateTime?     @map("paid_date")
+  paymentMethod String?       @map("payment_method")
+
+  // Notes
+  notes String?
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([budgetId, status])
+  @@index([categoryId])
+  @@index([transactionDate])
+  @@map("expenses")
+  @@schema("public")
+}
+
+// Task Budget (Link Tasks to Budget Categories)
+model TaskBudget {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  categoryId String         @map("category_id")
+  category   BudgetCategory @relation(fields: [categoryId], references: [id])
+
+  // Cost estimation
+  estimatedCost Decimal? @map("estimated_cost") @db.Decimal(19, 2)
+  currency      Currency @default(ETB)
+
+  // Actual cost (calculated from time logs)
+  actualCost Decimal? @map("actual_cost") @db.Decimal(19, 2)
+
+  // Override hourly rate for this task (if different from user/team rate)
+  overrideHourlyRate Decimal? @map("override_hourly_rate") @db.Decimal(10, 2)
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([taskId, categoryId])
+  @@map("task_budgets")
   @@schema("public")
 }
 
