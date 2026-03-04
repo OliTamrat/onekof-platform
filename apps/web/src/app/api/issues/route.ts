@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
+import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 
 /**
  * GET /api/issues
@@ -23,6 +24,8 @@ export async function GET(request: NextRequest) {
     const projectId = searchParams.get('projectId');
     const status = searchParams.get('status');
     const assigneeId = searchParams.get('assigneeId');
+    const teamId = searchParams.get('teamId');
+    const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
 
     // Get user from database
@@ -80,6 +83,20 @@ export async function GET(request: NextRequest) {
       where.assigneeId = assigneeId;
     }
 
+    // TODO: Add team filtering when TeamTask relation is added to schema
+    // if (teamId) {
+    //   where.teamId = teamId;
+    // }
+
+    // TODO: Add goal filtering when TaskGoal model is added to schema
+    // if (goalId) {
+    //   where.goals = {
+    //     some: {
+    //       goalId: goalId,
+    //     },
+    //   };
+    // }
+
     // Filter by type
     if (type) {
       where.type = type;
@@ -113,6 +130,24 @@ export async function GET(request: NextRequest) {
             avatar: true,
           },
         },
+        // TODO: Add watchers when TaskWatcher model is added to schema
+        // watchers: {
+        //   select: {
+        //     userId: true,
+        //   },
+        // },
+        // TODO: Add goals when TaskGoal model is added to schema
+        // goals: {
+        //   include: {
+        //     goal: {
+        //       select: {
+        //         id: true,
+        //         title: true,
+        //         status: true,
+        //       },
+        //     },
+        //   },
+        // },
         comments: {
           where: {
             deletedAt: null,
@@ -137,6 +172,9 @@ export async function GET(request: NextRequest) {
       ...issue,
       commentCount: issue.comments.length,
       attachmentCount: issue.attachments.length,
+      // TODO: Add when watchers/goals are added to schema
+      // watcherIds: issue.watchers.map(w => w.userId),
+      // goalLinks: issue.goals.map(g => g.goal),
       // Remove the arrays since we only need counts
       comments: undefined,
       attachments: undefined,
@@ -192,10 +230,13 @@ export async function POST(request: NextRequest) {
       status,
       priority,
       assigneeId,
+      teamId,
       labels,
       dueDate,
       estimate,
       parentId,
+      watchers, // Array of user IDs to watch this task
+      goalIds,  // Array of goal IDs to link this task to
     } = body;
 
     // Validate required fields
@@ -220,6 +261,11 @@ export async function POST(request: NextRequest) {
           },
           take: 1,
         },
+        organization: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -239,50 +285,119 @@ export async function POST(request: NextRequest) {
     }
     const issueKey = `${project.key}-${nextNumber}`;
 
-    // Create issue
-    const issue = await prisma.task.create({
-      data: {
-        key: issueKey,
-        title,
-        description: description || null,
-        type: type || 'TASK',
-        status: status || 'TODO',
-        priority: priority || 'MEDIUM',
-        projectId,
-        assigneeId: assigneeId || null,
-        reporterId: user.id,
-        labels: labels || [],
-        dueDate: dueDate ? new Date(dueDate) : null,
-        estimate: estimate || null,
-        parentId: parentId || null,
-      },
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-            key: true,
-            color: true,
+    // Create issue with transaction for watchers and goal links
+    const issue = await prisma.$transaction(async (tx) => {
+      // Create the task
+      const newTask = await tx.task.create({
+        data: {
+          key: issueKey,
+          title,
+          description: description || null,
+          type: type || 'TASK',
+          status: status || 'TODO',
+          priority: priority || 'MEDIUM',
+          projectId,
+          assigneeId: assigneeId || null,
+          // TODO: Add teamId when TeamTask relation is added to schema
+          // teamId: teamId || null,
+          reporterId: user.id,
+          labels: labels || [],
+          dueDate: dueDate ? new Date(dueDate) : null,
+          estimate: estimate || null,
+          parentId: parentId || null,
+        },
+        include: {
+          project: {
+            select: {
+              id: true,
+              name: true,
+              key: true,
+              color: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            },
+          },
+          reporter: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            },
           },
         },
-        assignee: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-          },
+      });
+
+      // Smart Auto-Watch: Creator automatically watches their own task
+      await tx.taskWatcher.create({
+        data: {
+          taskId: newTask.id,
+          userId: user.id,
+          watchReason: 'AUTO_CREATED',
+          addedBy: user.id,
         },
-        reporter: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
+      });
+
+      // Smart Auto-Watch: If assignee is different from creator, auto-add them as watcher
+      if (assigneeId && assigneeId !== user.id) {
+        await tx.taskWatcher.create({
+          data: {
+            taskId: newTask.id,
+            userId: assigneeId,
+            watchReason: 'AUTO_ASSIGNED',
+            addedBy: user.id,
           },
-        },
-      },
+        });
+      }
+
+      // Add additional manual watchers if provided
+      if (watchers && Array.isArray(watchers) && watchers.length > 0) {
+        await tx.taskWatcher.createMany({
+          data: watchers
+            .filter((userId: string) => userId !== user.id && userId !== assigneeId) // Avoid duplicates
+            .map((userId: string) => ({
+              taskId: newTask.id,
+              userId,
+              watchReason: 'MANUAL',
+              addedBy: user.id,
+            })),
+          skipDuplicates: true,
+        });
+      }
+
+      // TODO: Link to goals when TaskGoal model is added to schema
+      // if (goalIds && Array.isArray(goalIds) && goalIds.length > 0) {
+      //   await tx.taskGoal.createMany({
+      //     data: goalIds.map((goalId: string) => ({
+      //       taskId: newTask.id,
+      //       goalId,
+      //       addedBy: user.id,
+      //     })),
+      //     skipDuplicates: true,
+      //   });
+      // }
+
+      return newTask;
     });
+
+    // Smart Auto-Watch: Parse @mentions in title and description
+    if (description || title) {
+      const contentToCheck = `${title} ${description || ''}`;
+      await autoWatchMentionedUsers(
+        issue.id,
+        contentToCheck,
+        project.organization.id,
+        user.id
+      ).catch(err => {
+        console.error('Auto-watch mentioned users error:', err);
+      });
+    }
 
     return NextResponse.json({
       issue: {

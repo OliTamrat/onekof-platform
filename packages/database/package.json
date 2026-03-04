@@ -5,6 +5,9 @@
   "description": "Prisma database schema and client for Onekof platform",
   "main": "./index.ts",
   "types": "./index.ts",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "db:generate": "prisma generate",
     "db:push": "prisma db push",

@@ -1,0 +1,233 @@
+'use client';
+
+import { useState } from 'react';
+import { AppLayout } from '@/components/layouts/app-layout';
+import Link from 'next/link';
+import { BarChart3, Code, FileText, Clock, Book, Users, Plus, FileIcon, FolderIcon } from 'lucide-react';
+
+const TAB_ITEMS = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
+  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
+  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
+  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
+  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages', active: true },
+] as const;
+
+const PAGE_TEMPLATES = [
+  {
+    id: 'team-charter',
+    name: 'Team Charter',
+    description: 'Define team mission, values, and goals',
+    icon: '📋',
+  },
+  {
+    id: 'team-handbook',
+    name: 'Team Handbook',
+    description: 'Document team processes and best practices',
+    icon: '📖',
+  },
+  {
+    id: 'meeting-notes',
+    name: 'Meeting Notes',
+    description: 'Template for team meeting minutes',
+    icon: '📝',
+  },
+  {
+    id: 'retrospective',
+    name: 'Retrospective',
+    description: 'Sprint or quarterly retrospective template',
+    icon: '🔄',
+  },
+  {
+    id: 'team-goals',
+    name: 'Team Goals',
+    description: 'Document quarterly or annual team objectives',
+    icon: '🎯',
+  },
+  {
+    id: 'team-roster',
+    name: 'Team Roster',
+    description: 'Team member directory with roles and contacts',
+    icon: '👥',
+  },
+];
+
+const EXISTING_PAGES = [
+  { id: 1, name: 'Engineering Team Charter', team: 'Engineering', lastModified: '2024-03-15', author: 'Alice Johnson' },
+  { id: 2, name: 'Q1 2024 Retrospective', team: 'Engineering', lastModified: '2024-03-10', author: 'Bob Smith' },
+  { id: 3, name: 'Design Team Handbook', team: 'Design', lastModified: '2024-03-08', author: 'Carol White' },
+  { id: 4, name: 'Weekly Sync Notes - March', team: 'Marketing', lastModified: '2024-03-12', author: 'David Brown' },
+];
+
+export default function TeamsPagesPage() {
+  const [selectedView, setSelectedView] = useState<'templates' | 'pages'>('pages');
+
+  return (
+    <AppLayout>
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Header Section */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+          {/* Title and Actions */}
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+                <Book className="h-5 w-5" />
+              </div>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Team Pages</h1>
+            </div>
+            <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]">
+              <Plus className="h-4 w-4" />
+              Create Page
+            </button>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-1 px-6">
+            {TAB_ITEMS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                    tab.active
+                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {Icon && <Icon className="h-4 w-4" />}
+                  {tab.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* View Selector */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSelectedView('pages')}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                selectedView === 'pages'
+                  ? 'bg-[#0065FF] text-white'
+                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+              }`}
+            >
+              All Pages
+            </button>
+            <button
+              onClick={() => setSelectedView('templates')}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                selectedView === 'templates'
+                  ? 'bg-[#0065FF] text-white'
+                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+              }`}
+            >
+              Templates
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {selectedView === 'templates' ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Page Templates</h2>
+                <p className="text-gray-600 dark:text-[#9FADBC]">
+                  Choose a template to create team documentation and collaboration pages
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {PAGE_TEMPLATES.map((template) => (
+                  <button
+                    key={template.id}
+                    className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] hover:border-[#0065FF] hover:shadow-md transition-all"
+                  >
+                    <div className="text-4xl mb-4">{template.icon}</div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      {template.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-4">
+                      {template.description}
+                    </p>
+                    <div className="flex items-center gap-2 text-sm text-[#0065FF]">
+                      <Plus className="h-4 w-4" />
+                      Create {template.name}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="max-w-6xl mx-auto">
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Team Pages</h2>
+                <p className="text-gray-600 dark:text-[#9FADBC]">
+                  Browse and manage team documentation
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A]">
+                <table className="w-full">
+                  <thead className="border-b border-gray-200 dark:border-[#2C333A]">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                        Page
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                        Team
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                        Author
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                        Last Modified
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-[#2C333A]">
+                    {EXISTING_PAGES.map((page) => (
+                      <tr
+                        key={page.id}
+                        className="hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <FileIcon className="h-5 w-5 text-[#0065FF]" />
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">
+                              {page.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                            {page.team}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                            {page.author}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-gray-500 dark:text-[#6B7684]">
+                            {new Date(page.lastModified).toLocaleDateString()}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
@@ -8,15 +8,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  SlideoutPanel,
+  SlideoutPanelContent,
+} from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Users,
   UserPlus,
   Trash2,
   UsersRound,
   X,
+  FileText,
+  Settings2,
+  Info,
+  Globe,
+  Lock,
 } from 'lucide-react';
 import {
   Tabs,
@@ -24,12 +34,20 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
+import { IconRenderer } from '@/components/ui/icon-renderer';
+import { IconPicker } from '@/components/ui/icon-picker';
 
 interface Project {
   id: string;
   name: string;
   key: string;
+  description?: string;
+  icon?: string;
+  color?: string;
   organizationId: string;
+  leadId?: string;
+  defaultAssignee?: string;
+  isArchived?: boolean;
 }
 
 interface ProjectManagementDialogProps {
@@ -43,10 +61,36 @@ export function ProjectManagementDialog({
   open,
   onOpenChange,
 }: ProjectManagementDialogProps) {
-  const [activeTab, setActiveTab] = useState('members');
+  const [activeTab, setActiveTab] = useState('details');
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const queryClient = useQueryClient();
+
+  // Project details form state
+  const [projectForm, setProjectForm] = useState({
+    name: '',
+    key: '',
+    description: '',
+    icon: 'FileText',
+    color: '#0065FF',
+    leadId: '',
+    defaultAssignee: 'UNASSIGNED',
+  });
+
+  // Update form when project changes
+  useEffect(() => {
+    if (project) {
+      setProjectForm({
+        name: project.name || '',
+        key: project.key || '',
+        description: project.description || '',
+        icon: project.icon || 'FileText',
+        color: project.color || '#0065FF',
+        leadId: project.leadId || '',
+        defaultAssignee: project.defaultAssignee || 'UNASSIGNED',
+      });
+    }
+  }, [project]);
 
   // Fetch project members
   const { data: membersData, error: membersError } = useQuery({
@@ -99,6 +143,26 @@ export function ProjectManagementDialog({
       return res.json();
     },
     enabled: !!project?.organizationId && open,
+  });
+
+  // Update project mutation
+  const updateProjectMutation = useMutation({
+    mutationFn: async (data: Partial<typeof projectForm>) => {
+      const res = await fetch(`/api/projects/${project?.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to update project');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['organization-projects'] });
+    },
   });
 
   // Add member mutation
@@ -185,33 +249,158 @@ export function ProjectManagementDialog({
   );
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Manage Project: {project?.name}</DialogTitle>
-        </DialogHeader>
-
+    <SlideoutPanel
+      open={open}
+      onClose={() => onOpenChange(false)}
+      title={`Manage Project: ${project?.name || ''}`}
+      size="lg"
+    >
+      <SlideoutPanelContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="members">
+          <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-[#1B1F23] border border-gray-200 dark:border-[#2C333A]">
+            <TabsTrigger
+              value="details"
+              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+            >
+              <Info className="mr-2 h-4 w-4" />
+              Details
+            </TabsTrigger>
+            <TabsTrigger
+              value="members"
+              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+            >
               <Users className="mr-2 h-4 w-4" />
               Members ({members.length})
             </TabsTrigger>
-            <TabsTrigger value="teams">
+            <TabsTrigger
+              value="teams"
+              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+            >
               <UsersRound className="mr-2 h-4 w-4" />
               Teams ({teams.length})
             </TabsTrigger>
+            <TabsTrigger
+              value="settings"
+              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+            >
+              <Settings2 className="mr-2 h-4 w-4" />
+              Settings
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="members" className="space-y-4">
+          {/* Details Tab */}
+          <TabsContent value="details" className="space-y-6 mt-4">
+            {/* Basic Information */}
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="project-name" className="text-gray-900 dark:text-white">
+                    Project Name <span className="text-red-400">*</span>
+                  </Label>
+                  <Input
+                    id="project-name"
+                    value={projectForm.name}
+                    onChange={(e) => setProjectForm({ ...projectForm, name: e.target.value })}
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="project-key" className="text-gray-900 dark:text-white">
+                    Project Key <span className="text-red-400">*</span>
+                  </Label>
+                  <Input
+                    id="project-key"
+                    value={projectForm.key}
+                    onChange={(e) => setProjectForm({ ...projectForm, key: e.target.value.toUpperCase() })}
+                    placeholder="PROJ"
+                    maxLength={10}
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                  />
+                  <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                    A short identifier for your project (used in issue keys)
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="project-description" className="text-gray-900 dark:text-white">Description</Label>
+                  <Textarea
+                    id="project-description"
+                    value={projectForm.description}
+                    onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
+                    rows={4}
+                    placeholder="Describe your project's purpose and goals..."
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Appearance */}
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Appearance</h3>
+              <div className="space-y-4">
+                <IconPicker
+                  value={projectForm.icon}
+                  onChange={(icon) => setProjectForm({ ...projectForm, icon })}
+                  label="Project Icon"
+                />
+
+                <div className="space-y-2">
+                  <Label htmlFor="project-color" className="text-gray-900 dark:text-white">Project Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="project-color"
+                      type="color"
+                      value={projectForm.color}
+                      onChange={(e) => setProjectForm({ ...projectForm, color: e.target.value })}
+                      className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A]"
+                    />
+                    <Input
+                      type="text"
+                      value={projectForm.color}
+                      onChange={(e) => setProjectForm({ ...projectForm, color: e.target.value })}
+                      placeholder="#0065FF"
+                      className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                    Choose a color to identify this project
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <Button
+                onClick={() => updateProjectMutation.mutate(projectForm)}
+                disabled={updateProjectMutation.isPending || !projectForm.name || !projectForm.key}
+                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+              >
+                {updateProjectMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+            {updateProjectMutation.isError && (
+              <p className="text-sm text-red-400 text-center">
+                {updateProjectMutation.error?.message || 'Failed to update project'}
+              </p>
+            )}
+            {updateProjectMutation.isSuccess && (
+              <p className="text-sm text-green-400 text-center">Project updated successfully!</p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="members" className="space-y-4 mt-4">
             {/* Add Member Section */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-              <Label className="mb-2 block">Add Member</Label>
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-4">
+              <Label className="mb-2 block text-gray-900 dark:text-white">Add Member</Label>
               <div className="flex gap-2">
                 <select
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  className="flex h-10 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-[#2D3748] dark:text-white"
+                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
                 >
                   <option value="">Select a member...</option>
                   {availableMembers.map((member: any) => (
@@ -227,13 +416,14 @@ export function ProjectManagementDialog({
                     }
                   }}
                   disabled={!newMemberEmail || addMemberMutation.isPending}
+                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Add
                 </Button>
               </div>
               {addMemberMutation.isError && (
-                <p className="mt-2 text-sm text-red-600">
+                <p className="mt-2 text-sm text-red-400">
                   {addMemberMutation.error?.message || 'Failed to add member'}
                 </p>
               )}
@@ -245,17 +435,17 @@ export function ProjectManagementDialog({
                 members.map((member: any) => (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-700 p-3"
+                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 font-medium">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-white font-medium">
                         {member.name?.[0]?.toUpperCase() || member.email[0]?.toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900 dark:text-white">
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {member.name || member.email}
                         </p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
                           {member.email}
                         </p>
                       </div>
@@ -265,28 +455,29 @@ export function ProjectManagementDialog({
                       size="icon"
                       onClick={() => removeMemberMutation.mutate(member.userId)}
                       disabled={removeMemberMutation.isPending}
+                      className="hover:bg-gray-200 dark:hover:bg-[#2C333A]"
                     >
-                      <Trash2 className="h-4 w-4 text-red-600" />
+                      <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 ))
               ) : (
-                <p className="text-center text-sm text-slate-500 dark:text-slate-400 py-8">
+                <p className="text-center text-sm text-gray-600 dark:text-[#9FADBC] py-8">
                   No members assigned to this project yet
                 </p>
               )}
             </div>
           </TabsContent>
 
-          <TabsContent value="teams" className="space-y-4">
+          <TabsContent value="teams" className="space-y-4 mt-4">
             {/* Add Team Section */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-              <Label className="mb-2 block">Assign Team</Label>
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-4">
+              <Label className="mb-2 block text-gray-900 dark:text-white">Assign Team</Label>
               <div className="flex gap-2">
                 <select
                   value={selectedTeamId}
                   onChange={(e) => setSelectedTeamId(e.target.value)}
-                  className="flex h-10 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-[#2D3748] dark:text-white"
+                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
                 >
                   <option value="">Select a team...</option>
                   {availableTeams.map((team: any) => (
@@ -302,13 +493,14 @@ export function ProjectManagementDialog({
                     }
                   }}
                   disabled={!selectedTeamId || addTeamMutation.isPending}
+                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Assign
                 </Button>
               </div>
               {addTeamMutation.isError && (
-                <p className="mt-2 text-sm text-red-600">
+                <p className="mt-2 text-sm text-red-400">
                   {addTeamMutation.error?.message || 'Failed to assign team'}
                 </p>
               )}
@@ -320,20 +512,20 @@ export function ProjectManagementDialog({
                 teams.map((team: any) => (
                   <div
                     key={team.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-700 p-3"
+                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className="flex h-10 w-10 items-center justify-center rounded-lg text-xl"
-                        style={{ backgroundColor: team.color || '#3B82F6' }}
+                        className="flex h-10 w-10 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: team.color || '#0065FF' }}
                       >
-                        {team.icon || '👥'}
+                        <IconRenderer iconName={team.icon} className="h-5 w-5 text-white" fallback="👥" />
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900 dark:text-white">
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {team.name}
                         </p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
                           {team.memberCount} members
                         </p>
                       </div>
@@ -343,20 +535,118 @@ export function ProjectManagementDialog({
                       size="icon"
                       onClick={() => removeTeamMutation.mutate(team.id)}
                       disabled={removeTeamMutation.isPending}
+                      className="hover:bg-gray-200 dark:hover:bg-[#2C333A]"
                     >
-                      <X className="h-4 w-4 text-red-600" />
+                      <X className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 ))
               ) : (
-                <p className="text-center text-sm text-slate-500 dark:text-slate-400 py-8">
+                <p className="text-center text-sm text-gray-600 dark:text-[#9FADBC] py-8">
                   No teams assigned to this project yet
                 </p>
               )}
             </div>
           </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6 mt-4">
+            {/* Project Lead */}
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Project Lead</h3>
+              <div className="space-y-2">
+                <Label htmlFor="project-lead" className="text-gray-900 dark:text-white">Assign Project Lead</Label>
+                <select
+                  id="project-lead"
+                  value={projectForm.leadId}
+                  onChange={(e) => setProjectForm({ ...projectForm, leadId: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                >
+                  <option value="">No lead assigned</option>
+                  {members.map((member: any) => (
+                    <option key={member.userId} value={member.userId}>
+                      {member.name || member.email}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                  The project lead has full permissions to manage the project
+                </p>
+              </div>
+            </div>
+
+            {/* Default Assignee */}
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Default Assignee</h3>
+              <div className="space-y-2">
+                <Label htmlFor="default-assignee" className="text-gray-900 dark:text-white">Default Assignee for New Issues</Label>
+                <select
+                  id="default-assignee"
+                  value={projectForm.defaultAssignee}
+                  onChange={(e) => setProjectForm({ ...projectForm, defaultAssignee: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                >
+                  <option value="UNASSIGNED">Unassigned</option>
+                  <option value="PROJECT_LEAD">Project Lead</option>
+                  <option value="COMPONENT_LEAD">Component Lead</option>
+                </select>
+                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                  Who should new issues be assigned to by default?
+                </p>
+              </div>
+            </div>
+
+            {/* Access Settings */}
+            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Access & Visibility</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20 flex-shrink-0">
+                    <Globe className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">Public Project</h4>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                      All organization members can view and access this project
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4 opacity-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500/20 flex-shrink-0">
+                    <Lock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">Private Project</h4>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                      Only assigned members and teams can access (Premium feature)
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <Button
+                onClick={() => updateProjectMutation.mutate(projectForm)}
+                disabled={updateProjectMutation.isPending}
+                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+              >
+                {updateProjectMutation.isPending ? 'Saving...' : 'Save Settings'}
+              </Button>
+            </div>
+            {updateProjectMutation.isError && (
+              <p className="text-sm text-red-400 text-center">
+                {updateProjectMutation.error?.message || 'Failed to update settings'}
+              </p>
+            )}
+            {updateProjectMutation.isSuccess && (
+              <p className="text-sm text-green-400 text-center">Settings updated successfully!</p>
+            )}
+          </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </SlideoutPanelContent>
+    </SlideoutPanel>
   );
 }

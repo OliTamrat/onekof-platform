@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, Search, Filter, MoreHorizontal, Settings } from 'lucide-react';
+import { Plus, Search, Filter, Calendar, CheckSquare, Clock, MessageSquare, Paperclip, BarChart3, Code, FileText, Book } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { IssueDetailModal } from '@/components/issues/issue-detail-modal';
+import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { CreateIssueModal } from '@/components/issues/create-issue-modal';
+import Link from 'next/link';
 
 // Types
 interface Issue {
@@ -37,15 +39,29 @@ interface Issue {
 
 // Status columns configuration
 const STATUS_COLUMNS = [
-  { id: 'TODO', label: 'To Do', color: '#94A3B8' },
-  { id: 'IN_PROGRESS', label: 'In Progress', color: '#3B82F6' },
-  { id: 'IN_REVIEW', label: 'In Review', color: '#F59E0B' },
-  { id: 'DONE', label: 'Done', color: '#10B981' },
+  { id: 'TODO', label: 'TO DO' },
+  { id: 'IN_PROGRESS', label: 'IN PROGRESS' },
+  { id: 'IN_REVIEW', label: 'IN REVIEW' },
+  { id: 'DONE', label: 'DONE' },
+] as const;
+
+// Tab navigation items
+const TAB_ITEMS = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/issues/summary' },
+  { id: 'list', label: 'List', icon: null, href: '/dashboard/issues/list' },
+  { id: 'board', label: 'Board', icon: null, href: '/dashboard/issues', active: true },
+  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/issues/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/issues/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/issues/timeline' },
+  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/issues/pages' },
 ] as const;
 
 export default function IssuesPage() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [creatingInColumn, setCreatingInColumn] = useState<string | null>(null);
   const [newIssueTitle, setNewIssueTitle] = useState('');
@@ -61,13 +77,39 @@ export default function IssuesPage() {
     },
   });
 
-  // Fetch issues
+  // Fetch teams
+  const { data: teamsData } = useQuery({
+    queryKey: ['teams'],
+    queryFn: async () => {
+      const res = await fetch('/api/teams');
+      if (!res.ok) throw new Error('Failed to fetch teams');
+      return res.json();
+    },
+  });
+
+  // Fetch goals
+  const { data: goalsData } = useQuery({
+    queryKey: ['goals'],
+    queryFn: async () => {
+      const res = await fetch('/api/goals');
+      if (!res.ok) throw new Error('Failed to fetch goals');
+      return res.json();
+    },
+  });
+
+  // Fetch issues with filters
   const { data: issuesData, isLoading } = useQuery({
-    queryKey: ['issues', selectedProject],
+    queryKey: ['issues', selectedProject, selectedTeam, selectedGoal],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedProject) {
         params.append('projectId', selectedProject);
+      }
+      if (selectedTeam) {
+        params.append('teamId', selectedTeam);
+      }
+      if (selectedGoal) {
+        params.append('goalId', selectedGoal);
       }
       const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed to fetch issues');
@@ -171,155 +213,129 @@ export default function IssuesPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-slate-50 dark:bg-[#1B1F23]">
-      {/* Header */}
-      <div className="border-b border-gray-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-[#22272B]">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Kanban Board
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage and track your team's work
-            </p>
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Jira-style Header Section */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+          {/* Project Title and Actions */}
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+                {projectsData?.projects?.[0]?.key?.substring(0, 2) || 'MS'}
+              </div>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">
+                {projectsData?.projects?.[0]?.name || 'My Software Team'}
+              </h1>
+            </div>
+
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]"
+            >
+              <Plus className="h-4 w-4" />
+              Create
+            </button>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-1 px-6">
+            {TAB_ITEMS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                    tab.active
+                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {Icon && <Icon className="h-4 w-4" />}
+                  {tab.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="flex items-center gap-3 px-6 py-3">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
               <input
                 type="text"
-                placeholder="Search issues..."
+                placeholder="Search board"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-10 w-64 rounded-lg border border-gray-300 pl-10 pr-4 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-slate-600 dark:bg-[#2D3748] dark:text-white"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none"
               />
             </div>
 
-            {/* Filter */}
-            <button className="flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-[#2D3748] dark:text-gray-200 dark:hover:bg-gray-600">
+            <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-[#2C333A]">
               <Filter className="h-4 w-4" />
               Filter
             </button>
-
-            {/* Settings */}
-            <button className="flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-[#2D3748] dark:text-gray-200 dark:hover:bg-gray-600">
-              <Settings className="h-4 w-4" />
-            </button>
           </div>
         </div>
-      </div>
 
-      {/* Kanban Board */}
-      <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
-        {isLoading ? (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-gray-500">Loading issues...</div>
-          </div>
-        ) : (
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="flex h-full gap-4">
-              {STATUS_COLUMNS.map((column) => (
-                <div
-                  key={column.id}
-                  className="flex w-80 flex-shrink-0 flex-col rounded-lg bg-slate-100 dark:bg-[#22272B]"
-                >
-                  {/* Column Header */}
-                  <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-slate-700">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="h-3 w-3 rounded-full"
-                        style={{ backgroundColor: column.color }}
-                      />
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+        {/* Kanban Board */}
+        <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-gray-600 dark:text-[#9FADBC]">Loading issues...</div>
+            </div>
+          ) : (
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <div className="flex h-full gap-4">
+                {STATUS_COLUMNS.map((column) => (
+                  <div
+                    key={column.id}
+                    className="flex w-72 flex-shrink-0 flex-col"
+                  >
+                    {/* Column Header */}
+                    <div className="mb-3 flex items-center gap-2 px-1">
+                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
                         {column.label}
                       </h3>
-                      <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-[#2D3748] dark:text-gray-300">
+                      <span className="rounded-sm bg-gray-200 dark:bg-[#2C333A] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
                         {issuesByStatus[column.id]?.length || 0}
                       </span>
                     </div>
-                    <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </div>
 
-                  {/* Column Content */}
-                  <Droppable droppableId={column.id}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={`flex-1 space-y-2 overflow-y-auto p-3 ${
-                          snapshot.isDraggingOver ? 'bg-gray-200 dark:bg-[#2D3748]' : ''
-                        }`}
-                      >
-                        {issuesByStatus[column.id]?.map((issue, index) => (
-                          <Draggable key={issue.id} draggableId={issue.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => setSelectedIssue(issue)}
-                                className={`cursor-pointer rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:border-slate-600 dark:bg-[#1B1F23] ${
-                                  snapshot.isDragging ? 'shadow-lg' : ''
-                                }`}
-                              >
-                                <IssueCard issue={issue} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
+                    {/* Column Content */}
+                    <Droppable droppableId={column.id}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className="flex-1 space-y-2 overflow-y-auto"
+                        >
+                          {issuesByStatus[column.id]?.map((issue, index) => (
+                            <Draggable key={issue.id} draggableId={issue.id} index={index}>
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  onClick={() => setSelectedIssue(issue)}
+                                  className={`cursor-pointer rounded-md border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-3 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] ${
+                                    snapshot.isDragging ? 'shadow-lg ring-2 ring-[#0065FF]' : ''
+                                  }`}
+                                >
+                                  <IssueCard issue={issue} />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
 
-                        {/* Add Issue Button/Form */}
-                        {creatingInColumn === column.id ? (
-                          <div className="space-y-2 rounded-lg border-2 border-teal-500 bg-white p-3 dark:bg-[#1B1F23]">
-                            <input
-                              type="text"
-                              placeholder="Issue title..."
-                              value={newIssueTitle}
-                              onChange={(e) => setNewIssueTitle(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleCreateIssue(column.id);
-                                } else if (e.key === 'Escape') {
-                                  setCreatingInColumn(null);
-                                  setNewIssueTitle('');
-                                }
-                              }}
-                              className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-teal-500 focus:outline-none dark:border-slate-600 dark:bg-[#22272B] dark:text-white"
-                              autoFocus
-                            />
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleCreateIssue(column.id)}
-                                disabled={createIssueMutation.isPending}
-                                className="rounded bg-teal-600 px-3 py-1 text-xs text-white hover:bg-teal-700 disabled:opacity-50"
-                              >
-                                {createIssueMutation.isPending ? 'Creating...' : 'Add'}
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setCreatingInColumn(null);
-                                  setNewIssueTitle('');
-                                }}
-                                className="rounded px-3 py-1 text-xs text-gray-600 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
+                          {/* Add Issue Button */}
                           <button
-                            onClick={() => setCreatingInColumn(column.id)}
-                            className="flex w-full items-center gap-2 rounded-lg border-2 border-dashed border-gray-300 p-3 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700 dark:border-slate-600 dark:text-gray-400 dark:hover:border-gray-500 dark:hover:text-gray-300"
+                            onClick={() => setShowCreateModal(true)}
+                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
-                            Add issue
+                            Create
                           </button>
-                        )}
                       </div>
                     )}
                   </Droppable>
@@ -330,11 +346,19 @@ export default function IssuesPage() {
         )}
       </div>
 
-      {/* Issue Detail Modal */}
+      {/* Issue Detail Slide-Out */}
       {selectedIssue && (
-        <IssueDetailModal
+        <IssueDetailSlideout
           issue={selectedIssue}
           onClose={() => setSelectedIssue(null)}
+        />
+      )}
+
+      {/* Create Issue Modal */}
+      {showCreateModal && (
+        <CreateIssueModal
+          onClose={() => setShowCreateModal(false)}
+          defaultProjectId={selectedProject || undefined}
         />
       )}
     </div>
@@ -342,114 +366,57 @@ export default function IssuesPage() {
   );
 }
 
-// Issue Card Component
+// Issue Card Component - Clean Jira-style design
 function IssueCard({ issue }: { issue: Issue }) {
-  // Type icon
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'BUG':
-        return '🐛';
-      case 'STORY':
-        return '📖';
-      case 'EPIC':
-        return '⚡';
-      case 'SUBTASK':
-        return '📋';
-      default:
-        return '✓';
-    }
-  };
-
-  // Priority color
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'HIGHEST':
-        return 'text-red-600';
-      case 'HIGH':
-        return 'text-orange-600';
-      case 'MEDIUM':
-        return 'text-yellow-600';
-      case 'LOW':
-        return 'text-green-600';
-      case 'LOWEST':
-        return 'text-gray-600';
-      default:
-        return 'text-gray-600';
-    }
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
   };
 
   return (
-    <div className="space-y-2">
-      {/* Issue Key & Type */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{getTypeIcon(issue.type)}</span>
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-            {issue.key}
-          </span>
-        </div>
-        <div className={`text-lg ${getPriorityColor(issue.priority)}`}>
-          {issue.priority === 'HIGHEST' && '⬆️'}
-          {issue.priority === 'HIGH' && '🔺'}
-          {issue.priority === 'MEDIUM' && '➡️'}
-          {issue.priority === 'LOW' && '🔻'}
-          {issue.priority === 'LOWEST' && '⬇️'}
-        </div>
-      </div>
-
+    <div className="space-y-2.5">
       {/* Title */}
-      <h4 className="line-clamp-2 text-sm font-medium text-gray-900 dark:text-white">
+      <h4 className="line-clamp-2 text-sm font-normal text-gray-900 dark:text-white leading-snug">
         {issue.title}
       </h4>
 
-      {/* Labels */}
-      {issue.labels && issue.labels.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {issue.labels.map((label) => (
-            <span
-              key={label}
-              className="rounded bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900 dark:text-teal-200"
-            >
-              {label}
-            </span>
-          ))}
+      {/* Due Date */}
+      {issue.dueDate && (
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-[#9FADBC]">
+          <Calendar className="h-3.5 w-3.5" />
+          <span>{formatDate(issue.dueDate)}</span>
         </div>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pt-1">
+        {/* Issue Key */}
+        <div className="flex items-center gap-2">
+          <CheckSquare className="h-3.5 w-3.5 text-[#0065FF]" />
+          <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+            {issue.key}
+          </span>
+        </div>
+
         {/* Assignee */}
         <div className="flex items-center gap-2">
           {issue.assignee ? (
-            <>
-              {issue.assignee.avatar ? (
-                <img
-                  src={issue.assignee.avatar}
-                  alt={issue.assignee.name || ''}
-                  className="h-6 w-6 rounded-full"
-                />
-              ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-600 text-xs font-semibold text-white">
-                  {issue.assignee.name?.charAt(0) || '?'}
-                </div>
-              )}
-            </>
+            issue.assignee.avatar ? (
+              <img
+                src={issue.assignee.avatar}
+                alt={issue.assignee.name || ''}
+                className="h-6 w-6 rounded-full"
+              />
+            ) : (
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+                {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
+              </div>
+            )
           ) : (
-            <div className="h-6 w-6 rounded-full border-2 border-dashed border-gray-300 dark:border-slate-600" />
-          )}
-        </div>
-
-        {/* Meta Info */}
-        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-          {issue.commentCount > 0 && (
-            <span className="flex items-center gap-1">
-              💬 {issue.commentCount}
-            </span>
-          )}
-          {issue.attachmentCount > 0 && (
-            <span className="flex items-center gap-1">
-              📎 {issue.attachmentCount}
-            </span>
+            <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-[#2C333A]" />
           )}
         </div>
       </div>

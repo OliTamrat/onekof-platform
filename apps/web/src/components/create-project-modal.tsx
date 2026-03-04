@@ -1,20 +1,19 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  SlideoutPanel,
+  SlideoutPanelContent,
+  SlideoutPanelSection,
+} from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { IconPicker } from '@/components/ui/icon-picker';
+import { DateRangePicker } from '@/components/ui/date-picker';
 
 interface CreateProjectModalProps {
   open: boolean;
@@ -31,13 +30,37 @@ export function CreateProjectModal({
     name: '',
     key: '',
     description: '',
-    icon: '',
-    color: '#3B82F6',
+    icon: 'Briefcase',
+    color: '#0065FF',
     template: 'KANBAN' as 'KANBAN' | 'SCRUM' | 'CUSTOM',
+    projectType: 'SOFTWARE' as 'SOFTWARE' | 'BUSINESS' | 'MARKETING' | 'OPERATIONS' | 'OTHER',
+    startDate: '',
+    dueDate: '',
+    leadId: '',
+    teamIds: [] as string[],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [orgMembers, setOrgMembers] = useState<any[]>([]);
+  const [orgTeams, setOrgTeams] = useState<any[]>([]);
+
+  // Fetch organization members and teams when modal opens
+  useEffect(() => {
+    if (open && currentOrganization) {
+      // Fetch members
+      fetch(`/api/organizations/${currentOrganization.id}/members`)
+        .then(res => res.json())
+        .then(data => setOrgMembers(data.members || []))
+        .catch(err => console.error('Failed to fetch members:', err));
+
+      // Fetch teams
+      fetch(`/api/teams`)
+        .then(res => res.json())
+        .then(data => setOrgTeams(data.teams || []))
+        .catch(err => console.error('Failed to fetch teams:', err));
+    }
+  }, [open, currentOrganization]);
 
   // Auto-generate project key from name
   const handleNameChange = (name: string) => {
@@ -102,9 +125,14 @@ export function CreateProjectModal({
         name: '',
         key: '',
         description: '',
-        icon: '',
-        color: '#3B82F6',
+        icon: 'Briefcase',
+        color: '#0065FF',
         template: 'KANBAN',
+        projectType: 'SOFTWARE',
+        startDate: '',
+        dueDate: '',
+        leadId: '',
+        teamIds: [],
       });
 
       // Refresh projects list
@@ -120,151 +148,278 @@ export function CreateProjectModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
-          <DialogDescription>
-            Create a new project in {currentOrganization?.name}
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Project Name *</Label>
-            <Input
-              id="name"
-              placeholder="My Awesome Project"
-              value={formData.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="key">Project Key *</Label>
-            <Input
-              id="key"
-              placeholder="MAP"
-              value={formData.key}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  key: e.target.value.toUpperCase(),
-                }))
-              }
-              maxLength={10}
-              required
-            />
-            <p className="text-xs text-slate-500">
-              A short identifier (e.g., MAP for My Awesome Project)
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="What is this project about?"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="icon">Icon (Emoji)</Label>
-              <Input
-                id="icon"
-                placeholder="🚀"
-                value={formData.icon}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    icon: e.target.value,
-                  }))
-                }
-                maxLength={2}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="color">Color</Label>
-              <div className="flex gap-2">
+    <SlideoutPanel
+      open={open}
+      onClose={() => onOpenChange(false)}
+      title="Create New Project"
+      size="md"
+      showFooter
+      footer={
+        <div className="flex justify-end gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isSubmitting}
+            className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting || !formData.name || !formData.key}
+            className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+          >
+            {isSubmitting ? 'Creating...' : 'Create Project'}
+          </Button>
+        </div>
+      }
+    >
+      <SlideoutPanelContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Information Card */}
+          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+            <h3 className="mb-4 text-sm font-semibold text-white">Basic Information</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white">
+                  Project Name <span className="text-red-400">*</span>
+                </Label>
                 <Input
-                  id="color"
-                  type="color"
-                  value={formData.color}
+                  id="name"
+                  placeholder="e.g., Website Redesign, Mobile App, Q4 Campaign"
+                  value={formData.name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  required
+                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
+                />
+                <p className="text-xs text-[#9FADBC]">A clear, descriptive name for your project</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="key" className="text-white">
+                  Project Key <span className="text-red-400">*</span>
+                </Label>
+                <Input
+                  id="key"
+                  placeholder="MAP"
+                  value={formData.key}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      color: e.target.value,
+                      key: e.target.value.toUpperCase(),
                     }))
                   }
-                  className="w-16 h-10 p-1 cursor-pointer"
+                  maxLength={10}
+                  required
+                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
                 />
-                <Input
-                  type="text"
-                  value={formData.color}
+                <p className="text-xs text-[#9FADBC]">
+                  Short identifier (auto-generated from name, e.g., MAP)
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="project-type" className="text-white">Project Type</Label>
+                <select
+                  id="project-type"
+                  value={formData.projectType}
+                  onChange={(e) => setFormData({ ...formData, projectType: e.target.value as typeof formData.projectType })}
+                  className="flex h-10 w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                >
+                  <option value="SOFTWARE">Software Development</option>
+                  <option value="BUSINESS">Business Project</option>
+                  <option value="MARKETING">Marketing Campaign</option>
+                  <option value="OPERATIONS">Operations</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                <p className="text-xs text-[#9FADBC]">What kind of project is this?</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-white">Description</Label>
+                <Textarea
+                  id="description"
+                  placeholder="Describe the project's goals, objectives, and key deliverables..."
+                  value={formData.description}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      color: e.target.value,
+                      description: e.target.value,
                     }))
                   }
-                  placeholder="#3B82F6"
-                  className="flex-1"
+                  rows={4}
+                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
                 />
+                <p className="text-xs text-[#9FADBC]">Help team members understand the project scope</p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="template">Template</Label>
-            <select
-              id="template"
-              value={formData.template}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  template: e.target.value as 'KANBAN' | 'SCRUM' | 'CUSTOM',
-                }))
-              }
-              className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
-            >
-              <option value="KANBAN">Kanban Board</option>
-              <option value="SCRUM">Scrum Board</option>
-              <option value="CUSTOM">Custom</option>
-            </select>
+          {/* Timeline Card */}
+          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+            <h3 className="mb-4 text-sm font-semibold text-white">Project Timeline</h3>
+            <DateRangePicker
+              startDate={formData.startDate}
+              endDate={formData.dueDate}
+              onStartDateChange={(date) => setFormData({ ...formData, startDate: date })}
+              onEndDateChange={(date) => setFormData({ ...formData, dueDate: date })}
+              startLabel="Start Date"
+              endLabel="Target Due Date"
+            />
+          </div>
+
+          {/* Team & Leadership Card */}
+          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+            <h3 className="mb-4 text-sm font-semibold text-white">Team & Leadership</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="lead" className="text-white">Project Lead</Label>
+                <select
+                  id="lead"
+                  value={formData.leadId}
+                  onChange={(e) => setFormData({ ...formData, leadId: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                >
+                  <option value="">No lead assigned</option>
+                  {orgMembers.map((member) => (
+                    <option key={member.userId} value={member.userId}>
+                      {member.name || member.email}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-[#9FADBC]">Person responsible for this project's success</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="teams" className="text-white">Assign Teams</Label>
+                <select
+                  id="teams"
+                  multiple
+                  value={formData.teamIds}
+                  onChange={(e) => {
+                    const selected = Array.from(e.target.selectedOptions, option => option.value);
+                    setFormData({ ...formData, teamIds: selected });
+                  }}
+                  className="flex min-h-[120px] w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                >
+                  {orgTeams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.icon} {team.name} ({team.memberCount} members)
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-[#9FADBC]">Hold Ctrl/Cmd to select multiple teams</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Appearance Card */}
+          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+            <h3 className="mb-4 text-sm font-semibold text-white">Appearance</h3>
+            <div className="space-y-4">
+              <IconPicker
+                value={formData.icon}
+                onChange={(icon) => setFormData({ ...formData, icon })}
+                label="Project Icon"
+              />
+
+              <div className="space-y-2">
+                <Label htmlFor="color" className="text-white">Project Color</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="color"
+                    type="color"
+                    value={formData.color}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        color: e.target.value,
+                      }))
+                    }
+                    className="w-16 h-10 p-1 cursor-pointer bg-[#22272B] border-[#2C333A]"
+                  />
+                  <Input
+                    type="text"
+                    value={formData.color}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        color: e.target.value,
+                      }))
+                    }
+                    placeholder="#0065FF"
+                    className="flex-1 bg-[#22272B] border-[#2C333A] text-white focus:border-[#0065FF]"
+                  />
+                </div>
+                <p className="text-xs text-[#9FADBC]">Choose a color to identify this project</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Workflow Template Card */}
+          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+            <h3 className="mb-4 text-sm font-semibold text-white">Workflow Template</h3>
+            <div className="space-y-3">
+              {[
+                { value: 'KANBAN', name: 'Kanban Board', desc: 'Flexible workflow with columns like To Do, In Progress, Done' },
+                { value: 'SCRUM', name: 'Scrum Board', desc: 'Sprint-based workflow for agile teams with backlog and sprint planning' },
+                { value: 'CUSTOM', name: 'Custom Workflow', desc: 'Start with a blank board and create your own workflow' }
+              ].map((template) => (
+                <label
+                  key={template.value}
+                  className={`flex items-start gap-3 rounded-md border p-4 cursor-pointer transition-colors ${
+                    formData.template === template.value
+                      ? 'border-[#0065FF] bg-[#0065FF]/10'
+                      : 'border-[#2C333A] bg-[#22272B] hover:border-[#0065FF]/50'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="template"
+                    value={template.value}
+                    checked={formData.template === template.value}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        template: e.target.value as typeof formData.template,
+                      }))
+                    }
+                    className="mt-1 h-4 w-4 text-[#0065FF] focus:ring-[#0065FF] focus:ring-offset-0"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-white">{template.name}</p>
+                    <p className="mt-1 text-xs text-[#9FADBC]">{template.desc}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Info Box */}
+          <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-4">
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-300">About Projects</p>
+                <p className="mt-1 text-xs text-blue-400">
+                  Projects help organize work into manageable units. You can track issues, assign tasks to team members, and monitor progress toward your goals.
+                </p>
+              </div>
+            </div>
           </div>
 
           {error && (
-            <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3">
-              {error}
+            <div className="rounded-md border border-red-500/50 bg-red-500/10 p-4">
+              <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Project'}
-            </Button>
-          </DialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SlideoutPanelContent>
+    </SlideoutPanel>
   );
 }

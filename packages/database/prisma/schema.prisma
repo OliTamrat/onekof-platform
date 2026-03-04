@@ -51,11 +51,13 @@ model Organization {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  members     OrganizationMember[]
-  invitations Invitation[]
-  projects    Project[]
-  teams       Team[]
-  goals       Goal[]
+  members         OrganizationMember[]
+  invitations     Invitation[]
+  projects        Project[]
+  teams           Team[]
+  goals           Goal[]
+  automationRules AutomationRule[]
+  activities      UserActivity[] // 🚀 NEW: All activities in this organization
 
   @@map("organizations")
   @@schema("public")
@@ -93,14 +95,17 @@ model User {
   deletedAt   DateTime? @map("deleted_at")
 
   // Relations
-  accounts      Account[]
-  sessions      Session[]
-  organizations OrganizationMember[]
-  teamMembers   TeamMember[]
-  assignedTasks Task[]               @relation("TaskAssignee")
-  reportedTasks Task[]               @relation("TaskReporter")
-  comments      Comment[]            @relation("CommentAuthor")
-  attachments   Attachment[]         @relation("AttachmentUploader")
+  accounts        Account[]
+  sessions        Session[]
+  organizations   OrganizationMember[]
+  teamMembers     TeamMember[]
+  assignedTasks   Task[]               @relation("TaskAssignee")
+  reportedTasks   Task[]               @relation("TaskReporter")
+  comments        Comment[]            @relation("CommentAuthor")
+  attachments     Attachment[]         @relation("AttachmentUploader")
+  taskWatchers    TaskWatcher[]        @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
+  goalWatchers    GoalWatcher[]        @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
+  activities      UserActivity[]       @relation("UserActivity") // 🚀 NEW: All activities by this user
 
   @@map("users")
   @@schema("public")
@@ -349,10 +354,11 @@ model Task {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  reporter    User         @relation("TaskReporter", fields: [reporterId], references: [id])
+  assignee    User?          @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter    User           @relation("TaskReporter", fields: [reporterId], references: [id])
   comments    Comment[]
   attachments Attachment[]
+  watchers    TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
 
   @@unique([projectId, key])
   @@map("tasks")
@@ -586,6 +592,7 @@ model Goal {
   // Relations
   keyResults KeyResult[]
   projects   GoalProject[]
+  watchers   GoalWatcher[] // 🚀 NEW: Smart watchers for goal progress tracking
 
   @@map("goals")
   @@schema("public")
@@ -642,6 +649,281 @@ enum GoalPriority {
   HIGH
   MEDIUM
   LOW
+
+  @@schema("public")
+}
+
+// ============================================================================
+// AUTOMATION SYSTEM
+// ============================================================================
+
+// Automation Rules (Jira-inspired workflow automation)
+model AutomationRule {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Rule details
+  name              String
+  description       String?
+  icon              String? // Lucide icon name
+  color             String? // Hex color
+  naturalLanguage   String? @map("natural_language") // Human-readable description
+
+  // Rule configuration
+  isTemplate    Boolean           @default(false) @map("is_template") // Template vs active rule
+  isEnabled     Boolean           @default(true) @map("is_enabled")
+  scope         AutomationScope   @default(PROJECT) // Where this rule applies
+  entityType    AutomationEntity  @default(TASK) // What entity it operates on
+  triggerEvent  AutomationTrigger @default(CREATED) // What triggers the rule
+  runMode       AutomationRunMode @default(AUTOMATIC) // How it runs
+  executionOrder Int              @default(1) @map("execution_order") // Order of execution
+
+  // Rule logic (stored as JSON for flexibility)
+  conditions Json // Array of conditions that must be met
+  actions    Json // Array of actions to perform
+
+  // Project/Team scope (optional - for non-org-wide rules)
+  projectId String? @map("project_id")
+  teamId    String? @map("team_id")
+
+  // Statistics
+  executionCount Int      @default(0) @map("execution_count")
+  lastExecutedAt DateTime? @map("last_executed_at")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  @@map("automation_rules")
+  @@schema("public")
+}
+
+// Automation enums
+enum AutomationScope {
+  ORGANIZATION // Applies to entire organization
+  PROJECT      // Applies to specific project
+  TEAM         // Applies to specific team
+
+  @@schema("public")
+}
+
+enum AutomationEntity {
+  TASK
+  PROJECT
+  COMMENT
+  MILESTONE
+  GOAL
+
+  @@schema("public")
+}
+
+enum AutomationTrigger {
+  CREATED              // Entity created
+  UPDATED              // Entity updated
+  DELETED              // Entity deleted
+  STATUS_CHANGED       // Status field changed
+  FIELD_CHANGED        // Any field changed
+  ASSIGNED             // Task assigned
+  COMPLETED            // Task/Goal completed
+  DUE_DATE_APPROACHING // Due date is near
+  DUE_DATE_PASSED      // Due date passed
+  BLOCKED              // Task blocked
+  COMMENTED            // Comment added
+  PROGRESS_THRESHOLD_REACHED // Progress milestone reached
+  BUDGET_THRESHOLD_REACHED   // Budget limit reached
+
+  @@schema("public")
+}
+
+enum AutomationRunMode {
+  AUTOMATIC // Runs automatically when triggered
+  MANUAL    // Requires manual execution
+
+  @@schema("public")
+}
+
+// ============================================================================
+// WATCHERS & ACTIVITY TRACKING SYSTEM
+// ============================================================================
+
+// 🚀 INNOVATION: Task Watchers with Smart Notifications
+// Better than Jira: Track WHY they're watching + granular notification control
+model TaskWatcher {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation("TaskWatcher", fields: [userId], references: [id], onDelete: Cascade)
+
+  // 🚀 INNOVATION: Track watch reason for smart unwatch suggestions
+  watchReason WatchReason @default(MANUAL) @map("watch_reason")
+
+  // 🚀 INNOVATION: Granular notification preferences (better than Jira's all-or-nothing)
+  notifyOnComment        Boolean @default(true) @map("notify_on_comment")
+  notifyOnStatusChange   Boolean @default(true) @map("notify_on_status_change")
+  notifyOnAssignment     Boolean @default(true) @map("notify_on_assignment")
+  notifyOnPriorityChange Boolean @default(true) @map("notify_on_priority_change")
+  notifyOnDueDate        Boolean @default(true) @map("notify_on_due_date")
+
+  // Metadata
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String?  @map("added_by") // Who added this watcher
+
+  // 🚀 PERFORMANCE: Optimized indexes for fast lookups
+  @@unique([taskId, userId])
+  @@index([userId, addedAt]) // For "tasks I'm watching" query
+  @@index([taskId])          // For "who's watching this task" query
+  @@map("task_watchers")
+  @@schema("public")
+}
+
+// Goal Watchers (same smart features as task watchers)
+model GoalWatcher {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation("GoalWatcher", fields: [userId], references: [id], onDelete: Cascade)
+
+  watchReason WatchReason @default(MANUAL) @map("watch_reason")
+
+  // Notification preferences
+  notifyOnProgressUpdate Boolean @default(true) @map("notify_on_progress_update")
+  notifyOnStatusChange   Boolean @default(true) @map("notify_on_status_change")
+  notifyOnCompletion     Boolean @default(true) @map("notify_on_completion")
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String?  @map("added_by")
+
+  @@unique([goalId, userId])
+  @@index([userId, addedAt])
+  @@index([goalId])
+  @@map("goal_watchers")
+  @@schema("public")
+}
+
+// 🚀 INNOVATION: Rich Activity Tracking (far superior to Jira's basic audit log)
+model UserActivity {
+  id String @id @default(cuid())
+
+  // WHO performed the action
+  userId         String       @map("user_id")
+  user           User         @relation("UserActivity", fields: [userId], references: [id])
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // WHAT action was performed
+  activityType ActivityType @map("activity_type")
+  entityType   String       @map("entity_type") // TASK, PROJECT, GOAL, etc.
+  entityId     String       @map("entity_id")
+  action       String       // CREATED, UPDATED, ASSIGNED, COMPLETED, etc.
+
+  // DETAILS of the change
+  before   Json? // State before change (enables undo feature!)
+  after    Json? // State after change
+  metadata Json  @default("{}") // Flexible additional data
+
+  // WHERE action was performed
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+  location  String? // Derived from IP: "Addis Ababa, Ethiopia"
+
+  // 🚀 INNOVATION: AI-generated human-readable summary
+  // Example: "Sarah moved Task-123 from Todo to In Progress"
+  aiSummary String? @map("ai_summary")
+
+  // 🚀 INNOVATION: Impact score for analytics (1-10)
+  // High impact = completing tasks, low impact = viewing
+  impactScore Int @default(1) @map("impact_score")
+
+  // 🚀 INNOVATION: Session tracking for user journey analytics
+  sessionId String? @map("session_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // 🚀 PERFORMANCE: Comprehensive indexes for all query patterns
+  @@index([userId, createdAt])                   // User activity timeline
+  @@index([organizationId, createdAt])           // Org activity feed
+  @@index([entityType, entityId, createdAt])     // Entity history
+  @@index([activityType, createdAt])             // Activity type filtering
+  @@index([sessionId])                           // Session analysis
+  @@index([userId, activityType, createdAt])     // User-specific activity type
+  @@map("user_activities")
+  @@schema("public")
+}
+
+// Watch reason enum (for smart auto-watch)
+enum WatchReason {
+  MANUAL          // User manually clicked "Watch"
+  AUTO_ASSIGNED   // Auto-watch when assigned to task
+  AUTO_MENTIONED  // Auto-watch when @mentioned in comment
+  AUTO_CREATED    // Auto-watch when created the task
+  AUTO_PARTICIPATED // Auto-watch after commenting
+
+  @@schema("public")
+}
+
+// Activity type enum (comprehensive event tracking)
+enum ActivityType {
+  // Authentication
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGED
+
+  // Tasks
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_UNASSIGNED
+  TASK_PRIORITY_CHANGED
+  TASK_STATUS_CHANGED
+  TASK_COMPLETED
+  TASK_REOPENED
+  TASK_DELETED
+  TASK_COMMENTED
+  TASK_WATCHED
+  TASK_UNWATCHED
+  TASK_MOVED        // Moved to different project
+  TASK_BLOCKED
+  TASK_UNBLOCKED
+
+  // Projects
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PROJECT_ARCHIVED
+  PROJECT_DELETED
+  PROJECT_MEMBER_ADDED
+  PROJECT_MEMBER_REMOVED
+
+  // Goals
+  GOAL_CREATED
+  GOAL_UPDATED
+  GOAL_COMPLETED
+  GOAL_ARCHIVED
+  GOAL_PROGRESS_UPDATED
+
+  // Teams
+  TEAM_CREATED
+  TEAM_UPDATED
+  TEAM_MEMBER_ADDED
+  TEAM_MEMBER_REMOVED
+
+  // Watchers
+  WATCHER_ADDED
+  WATCHER_REMOVED
+
+  // Automation
+  AUTOMATION_CREATED
+  AUTOMATION_EXECUTED
+  AUTOMATION_FAILED
 
   @@schema("public")
 }

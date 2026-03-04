@@ -1,0 +1,129 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@onekof/database';
+
+/**
+ * POST /api/issues/[id]/subtasks
+ * Creates a new subtask for an issue
+ */
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Get the current user's session
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    // Parse request body
+    const body = await request.json();
+    const { title, description, assigneeId, status, priority } = body;
+
+    // Validate required fields
+    if (!title) {
+      return NextResponse.json(
+        { error: 'Title is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get parent task to get project info
+    const parentTask = await prisma.task.findUnique({
+      where: { id: params.id },
+      include: {
+        project: {
+          include: {
+            tasks: {
+              where: {
+                deletedAt: null,
+              },
+              select: { key: true },
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
+
+    if (!parentTask) {
+      return NextResponse.json(
+        { error: 'Parent task not found' },
+        { status: 404 }
+      );
+    }
+
+    // Generate next issue key
+    let nextNumber = 1;
+    if (parentTask.project.tasks.length > 0) {
+      const lastKey = parentTask.project.tasks[0].key;
+      const lastNumber = parseInt(lastKey.split('-')[1]);
+      nextNumber = lastNumber + 1;
+    }
+    const issueKey = `${parentTask.project.key}-${nextNumber}`;
+
+    // Create subtask
+    const subtask = await prisma.task.create({
+      data: {
+        key: issueKey,
+        title,
+        description: description || null,
+        type: 'SUBTASK',
+        status: status || 'TODO',
+        priority: priority || 'MEDIUM',
+        projectId: parentTask.projectId,
+        parentId: params.id,
+        assigneeId: assigneeId || null,
+        reporterId: user.id,
+      },
+      include: {
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+        reporter: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      subtask,
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Subtask creation error:', error);
+    return NextResponse.json(
+      { error: 'Failed to create subtask' },
+      { status: 500 }
+    );
+  }
+}

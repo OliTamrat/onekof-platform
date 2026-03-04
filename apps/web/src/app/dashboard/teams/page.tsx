@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy } from 'lucide-react';
+import Link from 'next/link';
+import { Plus, Search, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy, Briefcase, Target, BarChart3, Code, FileText, Clock, Book } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,9 +20,26 @@ import {
   DialogFooter,
   DialogDescription,
 } from '@/components/ui/dialog';
+import {
+  SlideoutPanel,
+  SlideoutPanelContent,
+  SlideoutPanelSection,
+} from '@/components/ui/slideout-panel';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { IconPicker } from '@/components/ui/icon-picker';
+import { IconRenderer } from '@/components/ui/icon-renderer';
+
+const TAB_ITEMS = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
+  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
+  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
+  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
+  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
+] as const;
 
 // Types
 interface TeamMember {
@@ -63,8 +81,11 @@ export default function TeamsPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    icon: '👥',
-    color: '#3B82F6',
+    icon: 'Users',
+    color: '#0065FF',
+    teamType: 'GENERAL' as 'GENERAL' | 'DEVELOPMENT' | 'DESIGN' | 'MARKETING' | 'SALES' | 'SUPPORT' | 'HR' | 'OPERATIONS',
+    defaultRole: 'MEMBER' as 'LEAD' | 'ADMIN' | 'MEMBER',
+    isPrivate: false,
   });
 
   // Fetch teams
@@ -157,7 +178,6 @@ export default function TeamsPage() {
       setIsAddMemberDialogOpen(false);
       setNewMemberEmail('');
 
-      // Show success modal with invitation details
       setInvitationData({
         email: data.invited ? data.invitation.email : data.member.email,
         token: data.invited ? data.invitation.token : '',
@@ -186,8 +206,11 @@ export default function TeamsPage() {
     setFormData({
       name: '',
       description: '',
-      icon: '👥',
-      color: '#3B82F6',
+      icon: 'Users',
+      color: '#0065FF',
+      teamType: 'GENERAL',
+      defaultRole: 'MEMBER',
+      isPrivate: false,
     });
   };
 
@@ -222,52 +245,78 @@ export default function TeamsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-slate-50 dark:bg-[#1B1F23]">
-        {/* Header */}
-        <div className="border-b border-gray-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-[#22272B]">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Teams
-              </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Organize your workspace into teams to collaborate more effectively
-              </p>
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Jira-style Header Section */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+          {/* Header Title and Actions */}
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+                <Users className="h-6 w-6" />
+              </div>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams</h1>
             </div>
 
-            <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
+            <button
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+            >
               <Plus className="h-4 w-4" />
-              Create Team
-            </Button>
+              Create
+            </button>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-1 px-6">
+            {TAB_ITEMS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                    tab.active
+                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {Icon && <Icon className="h-4 w-4" />}
+                  {tab.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Search Bar */}
-          <div className="mt-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <Input
+          <div className="px-6 py-3">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <input
                 type="text"
                 placeholder="Search teams..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
         </div>
 
-        {/* Teams Grid */}
+        {/* Teams Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-500">Loading teams...</div>
+              <div className="text-center">
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0065FF] border-t-transparent"></div>
+                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading teams...</p>
+              </div>
             </div>
           ) : (
             <div className="space-y-8">
               {/* Favorite Teams */}
               {favoriteTeams.length > 0 && (
                 <div>
-                  <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     STARRED TEAMS
                   </h2>
@@ -291,8 +340,8 @@ export default function TeamsPage() {
 
               {/* All Teams */}
               <div>
-                <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  {favoriteTeams.length > 0 ? 'ALL TEAMS' : 'YOUR TEAMS'}
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                  {favoriteTeams.length > 0 ? 'ALL TEAMS' : `YOUR TEAMS (${filteredTeams.length})`}
                 </h2>
                 {otherTeams.length > 0 ? (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -311,18 +360,21 @@ export default function TeamsPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-600">
-                    <Users className="h-12 w-12 text-gray-400" />
+                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-[#2C333A]">
+                    <Users className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
                     <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                       No teams found
                     </p>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
                       Create your first team to get started
                     </p>
-                    <Button onClick={() => setIsCreateDialogOpen(true)} className="mt-4 gap-2">
+                    <button
+                      onClick={() => setIsCreateDialogOpen(true)}
+                      className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                    >
                       <Plus className="h-4 w-4" />
                       Create Team
-                    </Button>
+                    </button>
                   </div>
                 )}
               </div>
@@ -330,209 +382,322 @@ export default function TeamsPage() {
           )}
         </div>
 
-        {/* Create Team Dialog */}
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Team</DialogTitle>
-              <DialogDescription>
-                Create a new team to organize your projects and collaborate with members.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="team-name">Team Name *</Label>
-                <Input
-                  id="team-name"
-                  placeholder="e.g., Engineering, Design, Marketing"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="team-description">Description</Label>
-                <Textarea
-                  id="team-description"
-                  placeholder="What does this team work on?"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="team-icon">Icon</Label>
-                  <Input
-                    id="team-icon"
-                    placeholder="👥"
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="team-color">Color</Label>
-                  <Input
-                    id="team-color"
-                    type="color"
-                    value={formData.color}
-                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter>
+        {/* Create Team Slide-out Panel */}
+        <SlideoutPanel
+          open={isCreateDialogOpen}
+          onClose={() => {
+            setIsCreateDialogOpen(false);
+            resetForm();
+          }}
+          title="Create New Team"
+          size="md"
+          showFooter
+          footer={
+            <div className="flex justify-end gap-3">
               <Button
                 variant="outline"
                 onClick={() => {
                   setIsCreateDialogOpen(false);
                   resetForm();
                 }}
+                disabled={createTeamMutation.isPending}
+                className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2C333A]"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleCreateTeam}
                 disabled={!formData.name || createTeamMutation.isPending}
+                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
               >
                 {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Manage Team Dialog */}
-        {selectedTeam && (
-          <Dialog open={isManageTeamOpen} onOpenChange={setIsManageTeamOpen}>
-            <DialogContent className="max-w-4xl">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-3">
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded text-xl"
-                    style={{ backgroundColor: selectedTeam.color }}
-                  >
-                    {selectedTeam.icon}
+            </div>
+          }
+        >
+          <SlideoutPanelContent>
+            <form onSubmit={(e) => { e.preventDefault(); handleCreateTeam(); }} className="space-y-6">
+              {/* Basic Information Card */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+                <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="team-name" className="text-gray-900 dark:text-white">
+                      Team Name <span className="text-red-400">*</span>
+                    </Label>
+                    <Input
+                      id="team-name"
+                      placeholder="e.g., Engineering Team, Design Squad"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                    />
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">A clear, descriptive name for your team</p>
                   </div>
-                  {selectedTeam.name}
-                </DialogTitle>
-                <DialogDescription>
-                  Manage team members, settings, and permissions
-                </DialogDescription>
-              </DialogHeader>
 
-              <div className="py-4">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold">
-                    Team Members ({membersData?.members?.length || 0})
-                  </h3>
-                  <Button
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => setIsAddMemberDialogOpen(true)}
-                  >
-                    <UserPlus className="h-4 w-4" />
-                    Add Member
-                  </Button>
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="team-type" className="text-gray-900 dark:text-white">Team Type</Label>
+                    <select
+                      id="team-type"
+                      value={formData.teamType}
+                      onChange={(e) => setFormData({ ...formData, teamType: e.target.value as typeof formData.teamType })}
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                    >
+                      <option value="GENERAL">General Team</option>
+                      <option value="DEVELOPMENT">Development</option>
+                      <option value="DESIGN">Design</option>
+                      <option value="MARKETING">Marketing</option>
+                      <option value="SALES">Sales</option>
+                      <option value="SUPPORT">Customer Support</option>
+                      <option value="HR">Human Resources</option>
+                      <option value="OPERATIONS">Operations</option>
+                    </select>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Helps organize teams by their primary function</p>
+                  </div>
 
-                {/* Member list */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700">
-                  {membersData?.members && membersData.members.length > 0 ? (
-                    <div className="divide-y divide-gray-200 dark:divide-slate-700">
-                      {membersData.members.map((member: TeamMember) => (
-                        <div
-                          key={member.id}
-                          className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-sm font-semibold text-white">
-                              {member.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                {member.name}
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {member.email}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            {member.role === 'LEAD' && (
-                              <div className="flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                <Crown className="h-3 w-3" />
-                                Lead
-                              </div>
-                            )}
-                            {member.role === 'MEMBER' && (
-                              <div className="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200">
-                                <Users className="h-3 w-3" />
-                                Member
-                              </div>
-                            )}
-
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                if (
-                                  confirm(
-                                    `Are you sure you want to remove ${member.name} from this team?`
-                                  )
-                                ) {
-                                  removeMemberMutation.mutate({
-                                    teamId: selectedTeam.id,
-                                    userId: member.userId,
-                                  });
-                                }
-                              }}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-8 text-center text-sm text-gray-500">
-                      No members yet. Add your first team member!
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="team-description" className="text-gray-900 dark:text-white">Description</Label>
+                    <Textarea
+                      id="team-description"
+                      placeholder="Describe the team's purpose, responsibilities, and goals..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={4}
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                    />
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Help members understand the team's mission</p>
+                  </div>
                 </div>
               </div>
-            </DialogContent>
-          </Dialog>
+
+              {/* Appearance Card */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+                <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Appearance</h3>
+                <div className="space-y-4">
+                  <IconPicker
+                    value={formData.icon}
+                    onChange={(icon) => setFormData({ ...formData, icon })}
+                    label="Team Icon"
+                  />
+
+                  <div className="space-y-2">
+                    <Label htmlFor="team-color" className="text-gray-900 dark:text-white">Team Color</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="team-color"
+                        type="color"
+                        value={formData.color}
+                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                        className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A]"
+                      />
+                      <Input
+                        type="text"
+                        value={formData.color}
+                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                        placeholder="#0065FF"
+                        className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white focus:border-[#0065FF]"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Choose a color to identify this team</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Team Settings Card */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+                <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Team Settings</h3>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="default-role" className="text-gray-900 dark:text-white">Default Member Role</Label>
+                    <select
+                      id="default-role"
+                      value={formData.defaultRole}
+                      onChange={(e) => setFormData({ ...formData, defaultRole: e.target.value as typeof formData.defaultRole })}
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                    >
+                      <option value="LEAD">Lead - Full control over team</option>
+                      <option value="ADMIN">Admin - Can manage members and settings</option>
+                      <option value="MEMBER">Member - Standard access</option>
+                    </select>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Role automatically assigned to new team members</p>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4">
+                    <input
+                      type="checkbox"
+                      id="is-private"
+                      checked={formData.isPrivate}
+                      onChange={(e) => setFormData({ ...formData, isPrivate: e.target.checked })}
+                      className="h-4 w-4 rounded border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] text-[#0065FF] focus:ring-[#0065FF] focus:ring-offset-0"
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="is-private" className="text-gray-900 dark:text-white font-medium cursor-pointer">
+                        Private Team
+                      </Label>
+                      <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                        Only invited members can see and access this team
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info Box */}
+              <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-4">
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-300">About Teams</p>
+                    <p className="mt-1 text-xs text-blue-400">
+                      Teams help organize people working together. You can assign teams to projects, track their progress, and manage access permissions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {createTeamMutation.isError && (
+                <div className="rounded-md border border-red-500/50 bg-red-500/10 p-4">
+                  <p className="text-sm text-red-400">
+                    {createTeamMutation.error?.message || 'Failed to create team'}
+                  </p>
+                </div>
+              )}
+            </form>
+          </SlideoutPanelContent>
+        </SlideoutPanel>
+
+        {/* Team Management Slide-out Panel */}
+        {selectedTeam && (
+          <SlideoutPanel
+            open={isManageTeamOpen}
+            onClose={() => setIsManageTeamOpen(false)}
+            title={selectedTeam.name}
+            size="lg"
+            headerActions={
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded"
+                style={{ backgroundColor: selectedTeam.color }}
+              >
+                <IconRenderer iconName={selectedTeam.icon} className="h-5 w-5 text-white" fallback="👥" />
+              </div>
+            }
+          >
+            <SlideoutPanelContent>
+              <div className="space-y-6">
+                <div>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      Team Members ({membersData?.members?.length || 0})
+                    </h3>
+                    <Button
+                      size="sm"
+                      className="gap-2 bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                      onClick={() => setIsAddMemberDialogOpen(true)}
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      Add Member
+                    </Button>
+                  </div>
+
+                  <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23]">
+                    {membersData?.members && membersData.members.length > 0 ? (
+                      <div className="divide-y divide-gray-200 dark:divide-[#2C333A]">
+                        {membersData.members.map((member: TeamMember) => (
+                          <div
+                            key={member.id}
+                            className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                                {member.name.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {member.name}
+                                </p>
+                                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                                  {member.email}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              {member.role === 'LEAD' && (
+                                <div className="flex items-center gap-1 rounded-full bg-yellow-400/20 px-2 py-1 text-xs font-medium text-yellow-400">
+                                  <Crown className="h-3 w-3" />
+                                  Lead
+                                </div>
+                              )}
+                              {member.role === 'MEMBER' && (
+                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-[#2C333A] px-2 py-1 text-xs font-medium text-gray-700 dark:text-[#9FADBC]">
+                                  <Users className="h-3 w-3" />
+                                  Member
+                                </div>
+                              )}
+
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  if (
+                                    confirm(
+                                      `Are you sure you want to remove ${member.name} from this team?`
+                                    )
+                                  ) {
+                                    removeMemberMutation.mutate({
+                                      teamId: selectedTeam.id,
+                                      userId: member.userId,
+                                    });
+                                  }
+                                }}
+                                className="text-red-500 hover:text-red-600 hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center text-sm text-gray-600 dark:text-[#9FADBC]">
+                        No members yet. Add your first team member!
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </SlideoutPanelContent>
+          </SlideoutPanel>
         )}
 
         {/* Add Member Dialog */}
         {selectedTeam && (
           <Dialog open={isAddMemberDialogOpen} onOpenChange={setIsAddMemberDialogOpen}>
-            <DialogContent>
+            <DialogContent className="bg-white dark:bg-[#22272B] border-gray-200 dark:border-[#2C333A]">
               <DialogHeader>
-                <DialogTitle>Add Member to {selectedTeam.name}</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-gray-900 dark:text-white">Add Member to {selectedTeam.name}</DialogTitle>
+                <DialogDescription className="text-gray-600 dark:text-[#9FADBC]">
                   Enter the email address of the user you want to add to this team.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="py-4">
-                <Label htmlFor="member-email">User Email</Label>
+                <Label htmlFor="member-email" className="text-gray-900 dark:text-white">User Email</Label>
                 <Input
                   id="member-email"
                   type="email"
                   placeholder="user@example.com"
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  className="mt-2"
+                  className="mt-2 bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
                 />
                 {addMemberMutation.isError && (
-                  <p className="mt-2 text-sm text-red-600">
+                  <p className="mt-2 text-sm text-red-500">
                     {addMemberMutation.error?.message || 'Failed to add member'}
                   </p>
                 )}
@@ -545,6 +710,7 @@ export default function TeamsPage() {
                     setIsAddMemberDialogOpen(false);
                     setNewMemberEmail('');
                   }}
+                  className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2C333A]"
                 >
                   Cancel
                 </Button>
@@ -558,6 +724,7 @@ export default function TeamsPage() {
                     }
                   }}
                   disabled={!newMemberEmail.trim() || addMemberMutation.isPending}
+                  className="bg-[#0065FF] hover:bg-[#0052CC]"
                 >
                   {addMemberMutation.isPending ? 'Adding...' : 'Add Member'}
                 </Button>
@@ -568,46 +735,42 @@ export default function TeamsPage() {
 
         {/* Success Modal */}
         <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md bg-white dark:bg-[#22272B] border-gray-200 dark:border-[#2C333A]">
             <div className="flex flex-col items-center gap-4 py-6">
-              {/* Success Icon */}
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
+                <CheckCircle2 className="h-8 w-8 text-green-500" />
               </div>
 
-              {/* Title */}
-              <DialogTitle className="text-center text-2xl font-bold">
+              <DialogTitle className="text-center text-2xl font-bold text-gray-900 dark:text-white">
                 {invitationData?.invited ? 'Invitation Sent!' : 'Member Added!'}
               </DialogTitle>
 
-              {/* Message */}
-              <DialogDescription className="text-center">
+              <DialogDescription className="text-center text-gray-600 dark:text-[#9FADBC]">
                 {invitationData?.invited ? (
                   <>
                     <p className="mb-4">
                       An invitation has been sent to <span className="font-semibold text-gray-900 dark:text-white">{invitationData.email}</span>
                     </p>
-                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/30">
+                    <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4">
                       <div className="flex items-start gap-3">
-                        <Mail className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
+                        <Mail className="h-5 w-5 flex-shrink-0 text-blue-400 mt-0.5" />
                         <div className="flex-1 text-left text-sm">
-                          <p className="font-medium text-blue-900 dark:text-blue-100">Email Invitation</p>
-                          <p className="mt-1 text-blue-700 dark:text-blue-300">
+                          <p className="font-medium text-blue-300">Email Invitation</p>
+                          <p className="mt-1 text-blue-400">
                             The user will receive an email to join the organization and team.
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Invitation Link */}
                     {invitationData.token && (
                       <div className="mt-4">
-                        <Label className="text-xs text-gray-600 dark:text-gray-400">Invitation Link</Label>
+                        <Label className="text-xs text-gray-600 dark:text-[#9FADBC]">Invitation Link</Label>
                         <div className="mt-2 flex items-center gap-2">
                           <Input
                             readOnly
                             value={`${window.location.origin}/invite/${invitationData.token}`}
-                            className="text-xs"
+                            className="text-xs bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
                           />
                           <Button
                             size="sm"
@@ -615,11 +778,12 @@ export default function TeamsPage() {
                             onClick={() => {
                               navigator.clipboard.writeText(`${window.location.origin}/invite/${invitationData.token}`);
                             }}
+                            className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] hover:bg-gray-300 dark:hover:bg-[#2C333A]"
                           >
                             <Copy className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="mt-2 text-xs text-gray-500">
+                        <p className="mt-2 text-xs text-gray-600 dark:text-[#9FADBC]">
                           You can also share this link directly with the user.
                         </p>
                       </div>
@@ -632,10 +796,9 @@ export default function TeamsPage() {
                 )}
               </DialogDescription>
 
-              {/* Action Button */}
               <Button
                 onClick={() => setIsSuccessModalOpen(false)}
-                className="mt-4 w-full"
+                className="mt-4 w-full bg-[#0065FF] hover:bg-[#0052CC]"
               >
                 Done
               </Button>
@@ -656,54 +819,42 @@ interface TeamCardProps {
 }
 
 function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps) {
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'OWNER':
-        return <Crown className="h-3 w-3 text-yellow-500" />;
-      case 'ADMIN':
-        return <Shield className="h-3 w-3 text-blue-500" />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-[#22272B]">
-      {/* Team Icon & Color */}
+    <div className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#0065FF]">
       <div className="mb-4 flex items-start justify-between">
         <div
-          className="flex h-12 w-12 items-center justify-center rounded-lg text-2xl"
+          className="flex h-12 w-12 items-center justify-center rounded-lg"
           style={{ backgroundColor: team.color }}
         >
-          {team.icon}
+          <IconRenderer iconName={team.icon} className="h-6 w-6 text-white" fallback="👥" />
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onToggleFavorite(team.id, team.isFavorite)}
-            className="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="rounded p-1 hover:bg-gray-200 dark:hover:bg-[#2C333A]"
           >
             <Star
               className={`h-4 w-4 ${
                 team.isFavorite
                   ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-400'
+                  : 'text-gray-400 dark:text-[#9FADBC]'
               }`}
             />
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800">
-                <MoreHorizontal className="h-4 w-4 text-gray-400" />
+              <button className="rounded p-1 hover:bg-gray-200 dark:hover:bg-[#2C333A]">
+                <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-[#9FADBC]" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onManage(team)}>
+            <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-[#2C333A]">
+              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]">
                 <Settings className="mr-2 h-4 w-4" />
                 Manage Team
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onManage(team)}>
+              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]">
                 <UserPlus className="mr-2 h-4 w-4" />
                 Add Members
               </DropdownMenuItem>
@@ -720,34 +871,31 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
         </div>
       </div>
 
-      {/* Team Info */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="mb-4 cursor-pointer" onClick={() => onManage(team)}>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors">
           {team.name}
         </h3>
         {team.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-[#9FADBC]">
             {team.description}
           </p>
         )}
       </div>
 
-      {/* Stats */}
-      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-[#9FADBC]">
+        <div className="flex items-center gap-1.5">
           <Users className="h-4 w-4" />
           <span>{team.memberCount} members</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Settings className="h-4 w-4" />
+        <div className="flex items-center gap-1.5">
+          <Briefcase className="h-4 w-4" />
           <span>{team.projectCount} projects</span>
         </div>
       </div>
 
-      {/* Default badge */}
       {team.isDefault && (
         <div className="mt-3">
-          <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <span className="inline-flex items-center rounded-full bg-blue-500/20 px-2 py-1 text-xs font-medium text-blue-400">
             Default Team
           </span>
         </div>

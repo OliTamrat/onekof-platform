@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { PricingModal } from '@/components/pricing-modal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -38,8 +39,13 @@ import {
   Folders,
   Users,
   Target,
+  HelpCircle,
+  Menu,
+  X,
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { IconRenderer } from '@/components/ui/icon-renderer';
 
 interface JiraStyleLayoutProps {
   children: React.ReactNode;
@@ -54,6 +60,13 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
   const [isDocsExpanded, setIsDocsExpanded] = React.useState(true);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = React.useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = React.useState(false);
+
+  // Mock trial end date - in production, this would come from the organization data
+  const trialEndDate = 'March 30, 2026';
 
   const isInProject = pathname?.includes('/project/');
   const isActive = (href: string) => pathname === href;
@@ -65,6 +78,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
     { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
     { name: 'Teams', href: '/dashboard/teams', icon: Users },
     { name: 'Goals', href: '/dashboard/goals', icon: Target },
+    { name: 'Automation', href: '/dashboard/automations', icon: Zap },
     { name: 'Docs & Wiki', href: '/dashboard/docs', icon: BookOpen },
     { name: 'Starred', href: '/dashboard/starred', icon: Star },
   ];
@@ -85,15 +99,25 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
-      {/* TOP BAR - Jira Style */}
-      <header className="flex h-14 items-center gap-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] px-4">
+    <div className="flex h-screen flex-col overflow-hidden bg-jira-gray-50 dark:bg-jira-dark-bg">
+      {/* TOP BAR - Jira Style with Centered Search */}
+      <header className="flex h-14 items-center gap-2 border-b border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-navbar px-3">
+        {/* Mobile Menu Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 md:hidden"
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        >
+          {isMobileSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
+
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-2 mr-2">
           <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm">
             O
           </div>
-          <span className="text-lg font-bold text-slate-900 dark:text-white hidden md:block">
+          <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
             Onekof
           </span>
         </Link>
@@ -101,9 +125,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* Workspace Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 h-9">
+            <Button variant="ghost" className="gap-2 h-9 hidden sm:flex">
               <Building2 className="h-4 w-4" />
-              <span className="hidden sm:inline">{currentOrganization?.name || 'Select Workspace'}</span>
+              <span className="hidden md:inline max-w-[120px] truncate">{currentOrganization?.name || 'Workspace'}</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -128,12 +152,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Project Selector - KEY FEATURE */}
+        {/* Project Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 h-9">
+            <Button variant="ghost" className="gap-2 h-9 hidden sm:flex">
               <Layers className="h-4 w-4" />
-              <span className="hidden sm:inline">
+              <span className="hidden md:inline max-w-[120px] truncate">
                 {currentProject?.name || 'Projects'}
               </span>
               <ChevronDown className="h-4 w-4" />
@@ -148,16 +172,16 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   key={project.id}
                   onClick={() => {
                     setCurrentProject(project);
-                    router.push(`/project/${project.key}/board`);
+                    router.push(`/dashboard/projects?projectId=${project.id}`);
                   }}
                   className="cursor-pointer"
                 >
                   <div className="flex items-center gap-3 w-full">
                     <div
-                      className="flex h-8 w-8 items-center justify-center rounded text-sm shrink-0"
+                      className="flex h-8 w-8 items-center justify-center rounded shrink-0"
                       style={{ backgroundColor: project.color || '#3B82F6' }}
                     >
-                      {project.icon || '📁'}
+                      <IconRenderer iconName={project.icon} className="h-4 w-4 text-white" fallback="📁" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{project.name}</p>
@@ -178,77 +202,186 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Spacer */}
-        <div className="flex-1" />
+        {/* Spacer to push search slightly right */}
+        <div className="hidden lg:block w-8"></div>
 
-        {/* Right side actions */}
-        <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="default" size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Create</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Create new...</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("/dashboard/issues?create=issue")}>
-              <ListChecks className="mr-2 h-4 w-4" />
-              Issue
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/dashboard/projects?create=project")}>
-              <FolderKanban className="mr-2 h-4 w-4" />
-              Project
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/dashboard/docs?create=page")}>
-              <FileText className="mr-2 h-4 w-4" />
-              Wiki Page
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => router.push("/dashboard/search")} title="Search">
-          <Search className="h-4 w-4" />
-        </Button>
-
-        <Button variant="ghost" size="icon" className="h-9 w-9 relative" onClick={() => router.push("/dashboard/notifications")} title="Notifications">
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-        </Button>
-
-        <ThemeToggle />
-
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-sm font-medium text-white">
-                {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+        {/* SEARCH BAR - Jira Style */}
+        <div className="hidden md:flex flex-1 max-w-md">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-jira-gray-500 dark:text-jira-gray-400" />
+            <input
+              type="text"
+              placeholder="Search issues, projects, docs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+              className="w-full h-9 pl-10 pr-4 text-sm bg-jira-gray-100 dark:bg-jira-dark-surface border border-jira-gray-300 dark:border-jira-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-jira-blue-500 focus:border-transparent transition-all text-jira-gray-900 dark:text-jira-gray-200 placeholder:text-jira-gray-600 dark:placeholder:text-jira-gray-500"
+            />
+            {/* Search Results Dropdown - Shows when focused and has query */}
+            {isSearchFocused && searchQuery && (
+              <div className="absolute top-full mt-2 w-full bg-white dark:bg-jira-dark-surface border border-jira-gray-200 dark:border-jira-dark-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                <div className="p-2">
+                  <p className="text-xs text-jira-gray-600 dark:text-jira-gray-400 px-2 py-1">Search results for "{searchQuery}"</p>
+                  <div className="mt-1 text-sm text-jira-gray-700 dark:text-jira-gray-300 px-2 py-3">
+                    Search functionality will be implemented here
+                  </div>
+                </div>
               </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <div className="px-2 py-1.5">
-              <p className="text-sm font-medium">{session?.user?.name}</p>
-              <p className="text-xs text-slate-500">{session?.user?.email}</p>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push('/settings')}>
-              <SettingsIcon className="mr-2 h-4 w-4" />
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            )}
+          </div>
+        </div>
+
+        {/* Spacer - pushes action buttons to the far right */}
+        <div className="flex-1 hidden md:block"></div>
+
+        {/* Right side actions - Stays on the far right */}
+        <div className="flex items-center gap-1 ml-auto">
+          <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="default" size="sm" className="gap-2 h-9 bg-jira-blue-500 hover:bg-jira-blue-600 text-white">
+                <Plus className="h-4 w-4" />
+                <span className="hidden lg:inline">Create</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Create new...</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/dashboard/issues?create=issue")}>
+                <ListChecks className="mr-2 h-4 w-4" />
+                Issue
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/projects?create=project")}>
+                <FolderKanban className="mr-2 h-4 w-4" />
+                Project
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/docs?create=page")}>
+                <FileText className="mr-2 h-4 w-4" />
+                Wiki Page
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* See Plans Button - Show for trial users */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 h-9 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold hidden sm:flex"
+            onClick={() => setIsPricingModalOpen(true)}
+          >
+            <Zap className="h-4 w-4 fill-purple-500" />
+            <span>See plans</span>
+          </Button>
+
+          {/* Mobile Search Icon */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 md:hidden"
+            onClick={() => router.push("/dashboard/search")}
+            title="Search"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 relative"
+            onClick={() => router.push("/dashboard/notifications")}
+            title="Notifications"
+          >
+            <Bell className="h-4 w-4" />
+            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 hidden sm:flex"
+            onClick={() => router.push("/settings")}
+            title="Settings"
+          >
+            <SettingsIcon className="h-4 w-4" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 hidden sm:flex"
+            onClick={() => router.push("/help")}
+            title="Help"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </Button>
+
+          <ThemeToggle />
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-sm font-medium text-white">
+                  {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-medium">{session?.user?.name}</p>
+                <p className="text-xs text-slate-500">{session?.user?.email}</p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push('/settings')}>
+                <SettingsIcon className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
+        {/* Mobile Sidebar Overlay */}
+        {isMobileSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 md:hidden"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+
         {/* LEFT SIDEBAR - Changes based on context */}
-        <aside className="w-56 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] overflow-y-auto">
+        <aside className={cn(
+          "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out z-50",
+          // Mobile: Fixed position with slide-in animation
+          "md:relative md:translate-x-0",
+          isMobileSidebarOpen ? "fixed inset-y-0 left-0 translate-x-0" : "fixed inset-y-0 left-0 -translate-x-full"
+        )}>
+          {/* Mobile Sidebar Header with Close Button */}
+          <div className="flex items-center justify-between p-3 border-b border-jira-gray-200 dark:border-jira-dark-border md:hidden">
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm">
+                O
+              </div>
+              <span className="text-lg font-bold text-slate-900 dark:text-white">
+                Onekof
+              </span>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="h-8 w-8"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
           <nav className="p-3 space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -297,14 +430,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                       {favoriteProjects.map((project) => (
                         <Link
                           key={project.id}
-                          href={`/project/${project.key}/board`}
+                          href={`/dashboard/projects?projectId=${project.id}`}
                           className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 group"
                         >
                           <div
-                            className="flex h-5 w-5 items-center justify-center rounded text-xs shrink-0"
+                            className="flex h-5 w-5 items-center justify-center rounded shrink-0"
                             style={{ backgroundColor: project.color || '#3B82F6' }}
                           >
-                            {project.icon || '📁'}
+                            <IconRenderer iconName={project.icon} className="h-3 w-3 text-white" fallback="📁" />
                           </div>
                           <span className="truncate flex-1">{project.name}</span>
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 opacity-0 group-hover:opacity-100" />
@@ -316,14 +449,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   {recentProjects.map((project) => (
                     <Link
                       key={project.id}
-                      href={`/project/${project.key}/board`}
+                      href={`/dashboard/projects?projectId=${project.id}`}
                       className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     >
                       <div
-                        className="flex h-5 w-5 items-center justify-center rounded text-xs shrink-0"
+                        className="flex h-5 w-5 items-center justify-center rounded shrink-0"
                         style={{ backgroundColor: project.color || '#3B82F6' }}
                       >
-                        {project.icon || '📁'}
+                        <IconRenderer iconName={project.icon} className="h-3 w-3 text-white" fallback="📁" />
                       </div>
                       <span className="truncate">{project.name}</span>
                     </Link>
@@ -396,10 +529,17 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
+        <main className="flex-1 overflow-y-auto bg-jira-gray-50 dark:bg-jira-dark-bg">
           {children}
         </main>
       </div>
+
+      {/* Pricing Modal */}
+      <PricingModal
+        open={isPricingModalOpen}
+        onOpenChange={setIsPricingModalOpen}
+        trialEndsDate={trialEndDate}
+      />
     </div>
   );
 }

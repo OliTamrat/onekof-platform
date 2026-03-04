@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useSession } from 'next-auth/react';
 
 // Types
 export interface Organization {
@@ -61,6 +62,7 @@ interface WorkspaceContextType {
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
   const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
@@ -134,10 +136,14 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Load organizations on mount
+  // Load organizations when session is ready
   useEffect(() => {
-    refreshOrganizations();
-  }, []);
+    if (status === 'authenticated' && session?.user) {
+      refreshOrganizations();
+    } else if (status === 'unauthenticated') {
+      setIsLoadingOrganizations(false);
+    }
+  }, [status, session]);
 
   // Load projects when organization changes
   useEffect(() => {

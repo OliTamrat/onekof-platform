@@ -17,9 +17,19 @@ import {
   MoreHorizontal,
   Grid3x3,
   List,
+  Settings,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { IconRenderer } from '@/components/ui/icon-renderer';
+
+const TAB_ITEMS = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary' },
+  { id: 'spaces', label: 'Spaces', icon: null, active: true, href: '/dashboard/docs' },
+  { id: 'recent', label: 'Recent', icon: null, href: '/dashboard/docs/recent' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/docs/settings' },
+] as const;
 
 export default function DocsPage() {
   const { currentOrganization } = useWorkspace();
@@ -32,7 +42,7 @@ export default function DocsPage() {
       id: '1',
       name: 'Product Documentation',
       description: 'Product specs, roadmaps, and technical documentation',
-      icon: '📚',
+      icon: 'BookOpen',
       color: '#3B82F6',
       pageCount: 24,
       memberCount: 8,
@@ -43,7 +53,7 @@ export default function DocsPage() {
       id: '2',
       name: 'Engineering Wiki',
       description: 'Architecture decisions, coding standards, and technical guides',
-      icon: '⚙️',
+      icon: 'Settings',
       color: '#8B5CF6',
       pageCount: 45,
       memberCount: 12,
@@ -54,7 +64,7 @@ export default function DocsPage() {
       id: '3',
       name: 'Team Handbook',
       description: 'Onboarding, processes, and company culture',
-      icon: '📖',
+      icon: 'Book',
       color: '#10B981',
       pageCount: 18,
       memberCount: 25,
@@ -65,7 +75,7 @@ export default function DocsPage() {
       id: '4',
       name: 'Marketing & Brand',
       description: 'Brand guidelines, marketing materials, and campaigns',
-      icon: '🎨',
+      icon: 'Palette',
       color: '#F59E0B',
       pageCount: 12,
       memberCount: 6,
@@ -87,243 +97,332 @@ export default function DocsPage() {
     space.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const favoriteSpaces = filteredSpaces.filter(s => s.isFavorite);
+  const otherSpaces = filteredSpaces.filter(s => !s.isFavorite);
+
   return (
     <AppLayout>
-      <div className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#161B22]">
-        <div className="px-8 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#16A085] shadow-lg">
-                <BookOpen className="h-6 w-6 text-white" />
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Jira-style Header Section */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+          {/* Header Title and Actions */}
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+                <BookOpen className="h-6 w-6" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  Onekof Wiki
-                </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {currentOrganization?.name} Knowledge Base
-                </p>
-              </div>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Docs</h1>
             </div>
 
-            <Button className="bg-[#1C8C7D] hover:bg-[#156B60] text-white">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Space
-            </Button>
+            <button
+              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Create
+            </button>
           </div>
 
-          {/* Search and View Controls */}
-          <div className="flex items-center gap-4">
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-1 px-6">
+            {TAB_ITEMS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                    tab.active
+                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {Icon && <Icon className="h-4 w-4" />}
+                  {tab.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <input
                 type="text"
                 placeholder="Search spaces and pages..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-slate-50 dark:bg-[#161B22] border-slate-200 dark:border-slate-700"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
               />
             </div>
 
-            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-lg">
-              <Button
-                variant="ghost"
-                size="sm"
+            <div className="flex items-center gap-2">
+              <button
                 onClick={() => setViewMode('grid')}
-                className={cn(
-                  'h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-600',
-                  viewMode === 'grid' && 'bg-[#1C8C7D] hover:bg-[#156B60] text-white shadow-sm'
-                )}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-[#0065FF] text-white'
+                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                }`}
               >
                 <Grid3x3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
+              </button>
+              <button
                 onClick={() => setViewMode('list')}
-                className={cn(
-                  'h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-600',
-                  viewMode === 'list' && 'bg-[#1C8C7D] hover:bg-[#156B60] text-white shadow-sm'
-                )}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  viewMode === 'list'
+                    ? 'bg-[#0065FF] text-white'
+                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                }`}
               >
                 <List className="h-4 w-4" />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="px-8 py-6">
-        {/* Recent Pages */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Clock className="h-5 w-5 text-slate-400" />
-              Recent Pages
-            </h2>
-            <Link
-              href="/dashboard/docs/recent"
-              className="text-sm text-[#1C8C7D] hover:text-[#156B60] font-medium"
-            >
-              View all →
-            </Link>
-          </div>
-
-          <div className="bg-white dark:bg-[#22272B] border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-            {recentPages.map((page, index) => (
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {/* Recent Pages Section */}
+          <div className="mb-8">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                <Clock className="h-4 w-4" />
+                RECENT PAGES
+              </h2>
               <Link
-                key={page.id}
-                href={`/dashboard/docs/pages/${page.id}`}
-                className={cn(
-                  'flex items-center gap-4 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors',
-                  index !== recentPages.length - 1 && 'border-b border-slate-200 dark:border-slate-700'
-                )}
+                href="/dashboard/docs/recent"
+                className="text-sm font-medium text-[#0065FF] hover:text-gray-900 dark:hover:text-white transition-colors"
               >
-                <FileText className="h-4 w-4 text-slate-400 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-900 dark:text-white truncate">
-                    {page.title}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {page.space} • Updated {page.updated}
-                  </p>
-                </div>
+                View all →
               </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* All Spaces */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Folders className="h-5 w-5 text-slate-400" />
-              All Spaces ({filteredSpaces.length})
-            </h2>
-          </div>
-
-          {/* Grid View */}
-          {viewMode === 'grid' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredSpaces.map((space) => (
-                <Link
-                  key={space.id}
-                  href={`/dashboard/docs/spaces/${space.id}`}
-                  className="group relative bg-white dark:bg-[#22272B] border border-slate-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-lg hover:border-[#1C8C7D]/50 dark:hover:border-[#1C8C7D]/70 transition-all"
-                >
-                  {space.isFavorite && (
-                    <Star className="absolute top-3 right-3 h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  )}
-
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-lg text-2xl mb-3"
-                    style={{ backgroundColor: space.color + '20' }}
-                  >
-                    {space.icon}
-                  </div>
-
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-[#1C8C7D] transition-colors">
-                    {space.name}
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
-                    {space.description}
-                  </p>
-
-                  <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                    <div className="flex items-center gap-1">
-                      <FileText className="h-3 w-3" />
-                      {space.pageCount}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      {space.memberCount}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {space.lastUpdated}
-                    </div>
-                  </div>
-                </Link>
-              ))}
             </div>
-          )}
 
-          {/* List View */}
-          {viewMode === 'list' && (
-            <div className="bg-white dark:bg-[#22272B] border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-              {filteredSpaces.map((space, index) => (
+            <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+              {recentPages.map((page, index) => (
                 <Link
-                  key={space.id}
-                  href={`/dashboard/docs/spaces/${space.id}`}
+                  key={page.id}
+                  href={`/dashboard/docs/pages/${page.id}`}
                   className={cn(
-                    'flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors',
-                    index !== filteredSpaces.length - 1 && 'border-b border-slate-200 dark:border-slate-700'
+                    'flex items-center gap-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
+                    index !== recentPages.length - 1 && 'border-b border-gray-200 dark:border-[#2C333A]'
                   )}
                 >
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-lg text-xl shrink-0"
-                    style={{ backgroundColor: space.color + '20' }}
-                  >
-                    {space.icon}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-slate-900 dark:text-white">
-                        {space.name}
-                      </h3>
-                      {space.isFavorite && (
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      )}
-                    </div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {space.description}
+                  <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-[#9FADBC]" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-gray-900 dark:text-white">
+                      {page.title}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                      {page.space} • Updated {page.updated}
                     </p>
                   </div>
-
-                  <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                    <div className="flex items-center gap-1">
-                      <FileText className="h-4 w-4" />
-                      <span>{space.pageCount} pages</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>{space.memberCount}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{space.lastUpdated}</span>
-                    </div>
-                  </div>
-
-                  <Button variant="ghost" size="icon" className="shrink-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
                 </Link>
               ))}
             </div>
-          )}
+          </div>
 
-          {filteredSpaces.length === 0 && (
-            <div className="text-center py-12">
-              <Folders className="h-12 w-12 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
-                No spaces found
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                Try adjusting your search or create a new space
-              </p>
-              <Button className="bg-[#1C8C7D] hover:bg-[#156B60] text-white">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Space
-              </Button>
+          {/* Starred Spaces */}
+          {favoriteSpaces.length > 0 && (
+            <div className="mb-8">
+              <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                STARRED SPACES
+              </h2>
+
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {favoriteSpaces.map((space) => (
+                    <SpaceCard key={space.id} space={space} />
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+                  {favoriteSpaces.map((space, index) => (
+                    <SpaceListItem
+                      key={space.id}
+                      space={space}
+                      showBorder={index !== favoriteSpaces.length - 1}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
+
+          {/* All Spaces */}
+          <div>
+            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+              {favoriteSpaces.length > 0 ? 'ALL SPACES' : `YOUR SPACES (${filteredSpaces.length})`}
+            </h2>
+
+            {otherSpaces.length > 0 ? (
+              viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {otherSpaces.map((space) => (
+                    <SpaceCard key={space.id} space={space} />
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+                  {otherSpaces.map((space, index) => (
+                    <SpaceListItem
+                      key={space.id}
+                      space={space}
+                      showBorder={index !== otherSpaces.length - 1}
+                    />
+                  ))}
+                </div>
+              )
+            ) : (
+              <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-[#2C333A]">
+                <Folders className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+                <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
+                  {searchQuery ? 'No spaces found' : 'No spaces yet'}
+                </p>
+                <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+                  {searchQuery
+                    ? 'Try adjusting your search or create a new space'
+                    : 'Create your first space to start building your knowledge base'}
+                </p>
+                {!searchQuery && (
+                  <button
+                    className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create Space
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </AppLayout>
+  );
+}
+
+// Space Card Component - Grid View
+interface SpaceCardProps {
+  space: {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    color: string;
+    pageCount: number;
+    memberCount: number;
+    lastUpdated: string;
+    isFavorite: boolean;
+  };
+}
+
+function SpaceCard({ space }: SpaceCardProps) {
+  return (
+    <Link
+      href={`/dashboard/docs/spaces/${space.id}`}
+      className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#0065FF]"
+    >
+      {space.isFavorite && (
+        <Star className="absolute right-3 top-3 h-4 w-4 fill-yellow-400 text-yellow-400" />
+      )}
+
+      <div
+        className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg"
+        style={{ backgroundColor: space.color + '20', color: space.color }}
+      >
+        <IconRenderer iconName={space.icon} className="h-6 w-6" />
+      </div>
+
+      <h3 className="mb-1 font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors">
+        {space.name}
+      </h3>
+      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-[#9FADBC]">
+        {space.description}
+      </p>
+
+      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+        <div className="flex items-center gap-1">
+          <FileText className="h-3 w-3" />
+          {space.pageCount}
+        </div>
+        <div className="flex items-center gap-1">
+          <Users className="h-3 w-3" />
+          {space.memberCount}
+        </div>
+        <div className="flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {space.lastUpdated}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// Space List Item Component - List View
+interface SpaceListItemProps {
+  space: {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    color: string;
+    pageCount: number;
+    memberCount: number;
+    lastUpdated: string;
+    isFavorite: boolean;
+  };
+  showBorder: boolean;
+}
+
+function SpaceListItem({ space, showBorder }: SpaceListItemProps) {
+  return (
+    <Link
+      href={`/dashboard/docs/spaces/${space.id}`}
+      className={cn(
+        'flex items-center gap-4 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
+        showBorder && 'border-b border-gray-200 dark:border-[#2C333A]'
+      )}
+    >
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+        style={{ backgroundColor: space.color + '20', color: space.color }}
+      >
+        <IconRenderer iconName={space.icon} className="h-5 w-5" />
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex items-center gap-2">
+          <h3 className="font-semibold text-gray-900 dark:text-white">
+            {space.name}
+          </h3>
+          {space.isFavorite && (
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+          )}
+        </div>
+        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+          {space.description}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-[#9FADBC]">
+        <div className="flex items-center gap-1">
+          <FileText className="h-4 w-4" />
+          <span>{space.pageCount} pages</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Users className="h-4 w-4" />
+          <span>{space.memberCount}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Clock className="h-4 w-4" />
+          <span>{space.lastUpdated}</span>
+        </div>
+      </div>
+
+      <Button variant="ghost" size="icon" className="shrink-0 hover:bg-gray-100 dark:hover:bg-[#2C333A]">
+        <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+      </Button>
+    </Link>
   );
 }

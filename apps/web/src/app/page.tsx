@@ -132,13 +132,13 @@ export default function HomePage() {
                 )}
               </div>
 
-              <a href="#" className="font-sans hidden text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 sm:inline">
+              <a href="/auth/signin" className="font-sans hidden text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 sm:inline">
                 Sign in
               </a>
-              <button className="font-sans group relative overflow-hidden rounded-lg bg-[#0EA5E9] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0EA5E9]/20 transition-all hover:shadow-xl hover:shadow-[#0EA5E9]/30">
+              <a href="/auth/signup" className="font-sans group relative overflow-hidden rounded-lg bg-[#0EA5E9] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0EA5E9]/20 transition-all hover:shadow-xl hover:shadow-[#0EA5E9]/30">
                 <span className="relative z-10">Get started</span>
                 <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#0EA5E9] via-[#0284C7] to-[#0EA5E9] bg-[length:200%_100%] transition-all group-hover:animate-gradient" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -186,10 +186,10 @@ export default function HomePage() {
 
               {/* CTA Buttons */}
               <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <button className="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-[#0EA5E9] px-7 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5E9]/25 transition-all hover:bg-[#0284C7] hover:shadow-xl hover:shadow-[#0EA5E9]/30">
+                <a href="/auth/signup" className="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-[#0EA5E9] px-7 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5E9]/25 transition-all hover:bg-[#0284C7] hover:shadow-xl hover:shadow-[#0EA5E9]/30">
                   Start building for free
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
-                </button>
+                </a>
                 <button className="group inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-gray-200 bg-white px-7 py-4 text-base font-semibold text-gray-900 transition-all hover:border-gray-300 hover:bg-gray-50">
                   <Play className="h-5 w-5 fill-current" />
                   Watch demo
@@ -931,10 +931,10 @@ export default function HomePage() {
 
                   {/* CTA Buttons */}
                   <div className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    <button className="group inline-flex items-center gap-3 rounded-xl bg-[#0EA5E9] px-10 py-5 text-lg font-semibold text-white shadow-lg shadow-[#0EA5E9]/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#0EA5E9]/40">
+                    <a href="/auth/signup" className="group inline-flex items-center gap-3 rounded-xl bg-[#0EA5E9] px-10 py-5 text-lg font-semibold text-white shadow-lg shadow-[#0EA5E9]/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#0EA5E9]/40">
                       Start free trial
                       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </button>
+                    </a>
                     <button className="inline-flex items-center gap-3 rounded-xl border-2 border-gray-900/10 bg-white px-10 py-5 text-lg font-semibold text-gray-900 transition-all hover:border-gray-900/20 hover:bg-gray-50">
                       <Play className="h-5 w-5 fill-current" />
                       Watch demo

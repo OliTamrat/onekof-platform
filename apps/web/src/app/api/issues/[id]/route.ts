@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
+import { handleTaskStatusChange } from '@/lib/progress-aggregation';
+import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 
 /**
  * GET /api/issues/[id]
@@ -85,6 +87,23 @@ export async function GET(
             uploadedAt: 'desc',
           },
         },
+        watchers: {
+          select: {
+            userId: true,
+          },
+        },
+        goals: {
+          include: {
+            goal: {
+              select: {
+                id: true,
+                title: true,
+                status: true,
+                description: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -95,8 +114,41 @@ export async function GET(
       );
     }
 
+    // Get subtasks (tasks with parentId matching this task's id)
+    const subtasks = await prisma.task.findMany({
+      where: {
+        parentId: params.id,
+        deletedAt: null,
+      },
+      include: {
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    // Calculate subtask completion percentage
+    const completedSubtasks = subtasks.filter(st => st.status === 'DONE').length;
+    const subtaskProgress = subtasks.length > 0
+      ? Math.round((completedSubtasks / subtasks.length) * 100)
+      : 0;
+
     return NextResponse.json({
-      issue,
+      issue: {
+        ...issue,
+        subtasks,
+        subtaskProgress,
+        commentCount: issue.comments.length,
+        attachmentCount: issue.attachments.length,
+      },
     });
   } catch (error) {
     console.error('Issue fetch error:', error);
@@ -123,6 +175,31 @@ export async function PATCH(
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
+      );
+    }
+
+    // Get user from database
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    // Get the current issue to check if assignee has changed
+    const currentIssue = await prisma.task.findUnique({
+      where: { id: params.id },
+      select: { assigneeId: true },
+    });
+
+    if (!currentIssue) {
+      return NextResponse.json(
+        { error: 'Issue not found' },
+        { status: 404 }
       );
     }
 
@@ -210,6 +287,63 @@ export async function PATCH(
         },
       },
     });
+
+    // Smart Auto-Watch: If assignee changed and there's a new assignee, auto-add them as watcher
+    if (assigneeId !== undefined && assigneeId !== null && assigneeId !== currentIssue.assigneeId) {
+      try {
+        await prisma.taskWatcher.upsert({
+          where: {
+            taskId_userId: {
+              taskId: params.id,
+              userId: assigneeId,
+            },
+          },
+          create: {
+            taskId: params.id,
+            userId: assigneeId,
+            watchReason: 'AUTO_ASSIGNED',
+            addedBy: currentUser.id,
+          },
+          update: {}, // Keep existing preferences if already watching
+        });
+      } catch (watcherError) {
+        // Don't fail the update if watcher creation fails
+        console.error('Auto-watch on assignment error:', watcherError);
+      }
+    }
+
+    // Smart Auto-Watch: Parse @mentions in description/title if updated
+    if (description !== undefined || title !== undefined) {
+      // Get organization ID for mention resolution
+      const projectWithOrg = await prisma.project.findUnique({
+        where: { id: issue.projectId },
+        select: {
+          organization: {
+            select: { id: true },
+          },
+        },
+      });
+
+      if (projectWithOrg?.organization) {
+        const contentToCheck = `${title || ''} ${description || ''}`;
+        await autoWatchMentionedUsers(
+          params.id,
+          contentToCheck,
+          projectWithOrg.organization.id,
+          currentUser.id
+        ).catch(err => {
+          console.error('Auto-watch mentioned users error:', err);
+        });
+      }
+    }
+
+    // If status was changed, trigger progress aggregation
+    if (status !== undefined) {
+      // Run in background to avoid blocking the response
+      handleTaskStatusChange(params.id, issue.projectId).catch(err => {
+        console.error('Progress aggregation error:', err);
+      });
+    }
 
     return NextResponse.json({
       issue: {
