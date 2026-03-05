@@ -76,6 +76,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
     { name: 'Home', href: '/dashboard', icon: Home },
     { name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
     { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
+    { name: 'Budget', href: '/dashboard/budget', icon: BarChart3 },
     { name: 'Teams', href: '/dashboard/teams', icon: Users },
     { name: 'Goals', href: '/dashboard/goals', icon: Target },
     { name: 'Automation', href: '/dashboard/automations', icon: Zap },
