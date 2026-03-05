@@ -266,8 +266,8 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="p-6">
-        {/* Stats Cards */}
-        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Stats Cards - Beautiful 2x2 grid on mobile */}
+        <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={tasksCompleted.toString()}
@@ -308,8 +308,13 @@ export default function DashboardPage() {
           <div className="lg:col-span-2">
             <button
               onClick={handleShowAllStatusOverview}
-              className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
+              className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
             >
+              {/* 3D depth effect */}
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+              <div className="relative z-10">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Status overview
@@ -322,9 +327,9 @@ export default function DashboardPage() {
                 Get a snapshot of the status of your work items. Click anywhere to drill down.
               </p>
 
-              {/* Donut Chart */}
-              <div className="flex items-center gap-8">
-                <div className="relative h-48 w-48">
+              {/* Donut Chart - Responsive Layout */}
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                <div className="relative h-40 w-40 md:h-48 md:w-48 shrink-0">
                   <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
                     {/* Background circle */}
                     <circle
@@ -376,52 +381,52 @@ export default function DashboardPage() {
                     )}
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">Total items</div>
+                    <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
+                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">Total items</div>
                   </div>
                 </div>
 
-                {/* Legend */}
-                <div className="flex-1 space-y-3">
+                {/* Legend - Properly aligned */}
+                <div className="flex-1 w-full space-y-2 md:space-y-3">
                   <button
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                      <span className="text-sm text-slate-700 dark:text-slate-300">To Do</span>
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">To Do</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">{statusCounts.TODO}</span>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-blue-500"></div>
-                      <span className="text-sm text-slate-700 dark:text-slate-300">In Progress</span>
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-blue-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Progress</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">{statusCounts.IN_PROGRESS}</span>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-                      <span className="text-sm text-slate-700 dark:text-slate-300">In Review</span>
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-yellow-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Review</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">{statusCounts.IN_REVIEW}</span>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-emerald-500"></div>
-                      <span className="text-sm text-slate-700 dark:text-slate-300">Done</span>
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">Done</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">{statusCounts.DONE}</span>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
                   </button>
                 </div>
               </div>
@@ -442,60 +447,68 @@ export default function DashboardPage() {
                   <PriorityBar label="Lowest" value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
                 </div>
               </div>
+              </div>
             </button>
           </div>
 
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Recent Activity - AI-Powered Timeline */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Recent activity
-                </h2>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span>AI-Powered</span>
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
+              <div className="relative z-10">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    Recent activity
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>AI-Powered</span>
+                    </div>
                   </div>
                 </div>
+                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                  Stay up to date with what's happening across your organization.
+                </p>
+                <ActivityTimeline limit={20} showFilters={true} />
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                Stay up to date with what's happening across your organization.
-              </p>
-              <ActivityTimeline limit={20} showFilters={true} />
             </div>
 
             {/* Types of Work */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Types of work
-                </h2>
-                <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
-                  View all items
-                </a>
-              </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                Get a breakdown of work items by their types.
-              </p>
-              <div className="space-y-2">
-                {totalIssues > 0 ? (
-                  <>
-                    <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
-                    <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
-                    <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
-                    <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
-                  </>
-                ) : (
-                  <p className="text-sm text-slate-400">No work items yet</p>
-                )}
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
+              <div className="relative z-10">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    Types of work
+                  </h2>
+                  <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
+                    View all items
+                  </a>
+                </div>
+                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                  Get a breakdown of work items by their types.
+                </p>
+                <div className="space-y-2">
+                  {totalIssues > 0 ? (
+                    <>
+                      <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
+                      <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
+                      <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
+                      <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
+                    </>
+                  ) : (
+                    <p className="text-sm text-slate-400">No work items yet</p>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Favorite Projects */}
             {favoriteProjects.length > 0 && (
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                     Favorite Projects
@@ -790,15 +803,28 @@ function StatCard({
   return (
     <button
       onClick={onClick}
-      className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left w-full"
+      className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
-      <div className="mb-4 flex items-center justify-between">
-        <div className={color}>{icon}</div>
-        <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">View details →</div>
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      {/* 3D depth effect - bottom shadow layer */}
+      <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
+
+      <div className="relative z-10">
+        <div className="mb-2 md:mb-4 flex items-center justify-between">
+          <div className={`${color} p-2 md:p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 group-hover:scale-110 transition-transform duration-300`}>
+            {icon}
+          </div>
+          <div className="text-[10px] md:text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-semibold hidden sm:flex items-center gap-1 group-hover:gap-2 transition-all">
+            <span>Details</span>
+            <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+        </div>
+        <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
+        <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
+        <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-1">{sublabel}</div>
       </div>
-      <div className="text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
-      <div className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="text-xs text-slate-500 dark:text-slate-400">{sublabel}</div>
     </button>
   );
 }

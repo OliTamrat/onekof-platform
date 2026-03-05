@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { BookOpen } from 'lucide-react';
 
-export default function IssuesPagesPage() {
+export default function IssuesWikiPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch projects
@@ -29,13 +30,14 @@ export default function IssuesPagesPage() {
           onCreateClick={() => setShowCreateModal(true)}
         />
 
-        {/* Page Content */}
+        {/* Wiki Content */}
         <div className="flex-1 overflow-auto p-6">
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">Pages</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
-                This page is under construction and will be available soon.
+              <BookOpen className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
+              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Wiki</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-[#9FADBC]">
+                This feature is coming soon. Stay tuned!
               </p>
             </div>
           </div>

@@ -3,19 +3,8 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
-import Link from 'next/link';
-import { Plus, Code, BarChart3, FileText, Clock, Book, CheckSquare, Calendar } from 'lucide-react';
-
-// Tab navigation items
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/issues/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/issues/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/issues' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/issues/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/issues/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/issues/timeline', active: true },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/issues/pages' },
-] as const;
+import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { Clock, CheckSquare, Calendar } from 'lucide-react';
 
 interface Issue {
   id: string;
@@ -30,6 +19,17 @@ interface Issue {
 
 export default function IssuesTimelinePage() {
   const [viewMode, setViewMode] = useState<'month' | 'quarter'>('month');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Fetch projects
+  const { data: projectsData } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const res = await fetch('/api/projects');
+      if (!res.ok) throw new Error('Failed to fetch projects');
+      return res.json();
+    },
+  });
 
   // Fetch issues
   const { data: issuesData, isLoading } = useQuery({
@@ -41,6 +41,7 @@ export default function IssuesTimelinePage() {
     },
   });
 
+  const currentProject = projectsData?.projects?.[0];
   const issues = issuesData?.issues || [];
 
   // Group issues by month
@@ -75,54 +76,26 @@ export default function IssuesTimelinePage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          {/* Project Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
-                <Clock className="h-5 w-5" />
-              </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Timeline
-              </h1>
-            </div>
+        {/* Project Page Header with Navigation */}
+        <ProjectPageHeader
+          project={currentProject}
+          onCreateClick={() => setShowCreateModal(true)}
+        />
 
-            <div className="flex items-center gap-2">
-              <select
-                value={viewMode}
-                onChange={(e) => setViewMode(e.target.value as 'month' | 'quarter')}
-                className="rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
-              >
-                <option value="month">Monthly</option>
-                <option value="quarter">Quarterly</option>
-              </select>
-              <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]">
-                <Plus className="h-4 w-4" />
-                Create
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
-            {TAB_ITEMS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <Link
-                  key={tab.id}
-                  href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
-                </Link>
-              );
-            })}
+        {/* Timeline View Controls */}
+        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+              Timeline View
+            </h2>
+            <select
+              value={viewMode}
+              onChange={(e) => setViewMode(e.target.value as 'month' | 'quarter')}
+              className="rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+            >
+              <option value="month">Monthly</option>
+              <option value="quarter">Quarterly</option>
+            </select>
           </div>
         </div>
 

@@ -45,13 +45,13 @@ export async function GET(
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
-        organizationMemberships: {
+        organizations: {
           where: { organizationId: document.organizationId },
         },
       },
     });
 
-    if (!user || !user.organizationMemberships.length) {
+    if (!user || !user.organizations.length) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 

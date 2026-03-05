@@ -275,6 +275,7 @@ model Project {
   leadId          String? @map("lead_id")
 
   // Project type and status
+  type       ProjectType     @default(BUSINESS) // Type of project (Software, Marketing, etc.)
   template   ProjectTemplate @default(KANBAN)
   status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
   isArchived Boolean         @default(false) @map("is_archived")
@@ -415,6 +416,18 @@ model Attachment {
 // ============================================================================
 // PROJECT MANAGEMENT ENUMS
 // ============================================================================
+
+enum ProjectType {
+  SOFTWARE      // Software development projects (Code, Board, Deployments, etc.)
+  BUSINESS      // General business projects (Tasks, Calendar, Reports)
+  MARKETING     // Marketing campaigns (Content, Analytics, Social Media)
+  OPERATIONS    // Operations & Infrastructure (Incidents, Monitoring, Docs)
+  RESEARCH      // Research & Analysis projects (Data, Reports, Findings)
+  CONSTRUCTION  // Construction & Engineering (Plans, Budget, Timeline)
+  CUSTOM        // Custom project type
+
+  @@schema("public")
+}
 
 enum ProjectTemplate {
   KANBAN

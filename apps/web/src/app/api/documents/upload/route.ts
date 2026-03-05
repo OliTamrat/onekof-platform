@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
-        organizationMemberships: {
+        organizations: {
           include: {
             organization: true,
           },
@@ -61,14 +61,14 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!user || !user.organizationMemberships.length) {
+    if (!user || !user.organizations.length) {
       return NextResponse.json(
         { error: 'User not found or not part of any organization' },
         { status: 404 }
       );
     }
 
-    const organization = user.organizationMemberships[0].organization;
+    const organization = user.organizations[0].organization;
 
     // Check AI quota
     const quotaCheck = await checkAIQuota(organization.id, user.id);

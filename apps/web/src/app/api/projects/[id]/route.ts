@@ -43,18 +43,7 @@ export async function GET(
             },
           },
         },
-        members: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-              },
-            },
-          },
-        },
+        members: true,
       },
     });
 
@@ -149,18 +138,7 @@ export async function PATCH(
             deletedAt: null,
           },
         },
-        members: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-              },
-            },
-          },
-        },
+        members: true,
       },
     });
 

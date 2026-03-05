@@ -88,6 +88,7 @@ export async function GET(request: NextRequest) {
         key: project.key,
         description: project.description,
         status: project.status,
+        type: project.type || 'BUSINESS', // Include project type for navigation
         color: project.settings ? (project.settings as any).color : '#3B82F6',
         icon: project.settings ? (project.settings as any).icon : '📁',
         lead: project.leadId ? project.members.find(m => m.userId === project.leadId)?.user : null,

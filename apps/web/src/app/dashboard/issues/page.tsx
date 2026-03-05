@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Plus, Search, Filter, Calendar, CheckSquare, Clock, MessageSquare, Paperclip, BarChart3, Code, FileText, Book } from 'lucide-react';
+import { Calendar, CheckSquare, Plus } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
-import Link from 'next/link';
+import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import type { ProjectType } from '@/lib/project-navigation';
 
 // Types
 interface Issue {
@@ -43,17 +44,6 @@ const STATUS_COLUMNS = [
   { id: 'IN_PROGRESS', label: 'IN PROGRESS' },
   { id: 'IN_REVIEW', label: 'IN REVIEW' },
   { id: 'DONE', label: 'DONE' },
-] as const;
-
-// Tab navigation items
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/issues/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/issues/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/issues', active: true },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/issues/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/issues/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/issues/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/issues/pages' },
 ] as const;
 
 export default function IssuesPage() {
@@ -151,6 +141,9 @@ export default function IssuesPage() {
     },
   });
 
+  // Get current project
+  const currentProject = projectsData?.projects?.[0];
+
   // Filter and organize issues by status
   const filteredIssues = issuesData?.issues?.filter((issue: Issue) => {
     if (!searchQuery) return true;
@@ -214,71 +207,18 @@ export default function IssuesPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          {/* Project Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
-                {projectsData?.projects?.[0]?.key?.substring(0, 2) || 'MS'}
-              </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                {projectsData?.projects?.[0]?.name || 'My Software Team'}
-              </h1>
-            </div>
-
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]"
-            >
-              <Plus className="h-4 w-4" />
-              Create
-            </button>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
-            {TAB_ITEMS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <Link
-                  key={tab.id}
-                  href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Search and Filter Bar */}
-          <div className="flex items-center gap-3 px-6 py-3">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
-              <input
-                type="text"
-                placeholder="Search board"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none"
-              />
-            </div>
-
-            <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-[#2C333A]">
-              <Filter className="h-4 w-4" />
-              Filter
-            </button>
-          </div>
-        </div>
+        {/* Project Page Header */}
+        <ProjectPageHeader
+          project={currentProject}
+          onCreateClick={() => setShowCreateModal(true)}
+          showSearch
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          showFilter
+        />
 
         {/* Kanban Board */}
-        <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-gray-600 dark:text-[#9FADBC]">Loading issues...</div>

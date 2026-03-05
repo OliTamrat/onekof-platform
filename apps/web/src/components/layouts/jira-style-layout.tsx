@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { PricingModal } from '@/components/pricing-modal';
+import { CollapsibleSidebar } from './collapsible-sidebar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -44,6 +45,7 @@ import {
   X,
   Zap,
   Sparkles,
+  MoreVertical,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconRenderer } from '@/components/ui/icon-renderer';
@@ -109,15 +111,15 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 md:hidden"
+          className="h-9 w-9 md:hidden shrink-0"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         >
           {isMobileSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 mr-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm">
+        <Link href="/dashboard" className="flex items-center gap-2 mr-2 shrink-0">
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm shadow-md">
             O
           </div>
           <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
@@ -205,25 +207,25 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Spacer to push search slightly right */}
+        {/* Spacer to push search slightly right on desktop */}
         <div className="hidden lg:block w-8"></div>
 
-        {/* SEARCH BAR - Jira Style */}
-        <div className="hidden md:flex flex-1 max-w-md">
+        {/* SEARCH BAR - Beautiful responsive design */}
+        <div className="flex flex-1 max-w-md">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-jira-gray-500 dark:text-jira-gray-400" />
             <input
               type="text"
-              placeholder="Search issues, projects, docs..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-              className="w-full h-9 pl-10 pr-4 text-sm bg-jira-gray-100 dark:bg-jira-dark-surface border border-jira-gray-300 dark:border-jira-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-jira-blue-500 focus:border-transparent transition-all text-jira-gray-900 dark:text-jira-gray-200 placeholder:text-jira-gray-600 dark:placeholder:text-jira-gray-500"
+              className="w-full h-9 pl-10 pr-4 text-sm bg-jira-gray-100 dark:bg-jira-dark-surface border border-jira-gray-300 dark:border-jira-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent transition-all text-jira-gray-900 dark:text-jira-gray-200 placeholder:text-jira-gray-500 dark:placeholder:text-jira-gray-500 shadow-sm"
             />
             {/* Search Results Dropdown - Shows when focused and has query */}
             {isSearchFocused && searchQuery && (
-              <div className="absolute top-full mt-2 w-full bg-white dark:bg-jira-dark-surface border border-jira-gray-200 dark:border-jira-dark-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+              <div className="absolute top-full mt-2 w-full md:w-96 bg-white dark:bg-jira-dark-surface border border-jira-gray-200 dark:border-jira-dark-border rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
                 <div className="p-2">
                   <p className="text-xs text-jira-gray-600 dark:text-jira-gray-400 px-2 py-1">Search results for "{searchQuery}"</p>
                   <div className="mt-1 text-sm text-jira-gray-700 dark:text-jira-gray-300 px-2 py-3">
@@ -235,14 +237,15 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </div>
         </div>
 
-        {/* Spacer - pushes action buttons to the far right */}
+        {/* Spacer - pushes action buttons to the far right on desktop */}
         <div className="flex-1 hidden md:block"></div>
 
-        {/* Right side actions - Stays on the far right */}
-        <div className="flex items-center gap-1 ml-auto">
+        {/* Right side actions - Clean mobile design */}
+        <div className="flex items-center gap-1 ml-auto shrink-0">
+          {/* Desktop: Create Button */}
           <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="default" size="sm" className="gap-2 h-9 bg-jira-blue-500 hover:bg-jira-blue-600 text-white">
+              <Button variant="default" size="sm" className="gap-2 h-9 bg-jira-blue-500 hover:bg-jira-blue-600 text-white hidden md:flex">
                 <Plus className="h-4 w-4" />
                 <span className="hidden lg:inline">Create</span>
               </Button>
@@ -265,32 +268,22 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* See Plans Button - Show for trial users */}
+          {/* Desktop: See Plans Button */}
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 h-9 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold hidden sm:flex"
+            className="gap-2 h-9 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold hidden md:flex"
             onClick={() => setIsPricingModalOpen(true)}
           >
             <Zap className="h-4 w-4 fill-purple-500" />
             <span>See plans</span>
           </Button>
 
-          {/* Mobile Search Icon */}
+          {/* Desktop: Notifications */}
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 md:hidden"
-            onClick={() => router.push("/dashboard/search")}
-            title="Search"
-          >
-            <Search className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 relative"
+            className="h-9 w-9 relative hidden md:flex"
             onClick={() => router.push("/dashboard/notifications")}
             title="Notifications"
           >
@@ -298,33 +291,82 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
           </Button>
 
+          {/* Desktop: Settings */}
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 hidden sm:flex"
+            className="h-9 w-9 hidden md:flex"
             onClick={() => router.push("/settings")}
             title="Settings"
           >
             <SettingsIcon className="h-4 w-4" />
           </Button>
 
+          {/* Desktop: Help */}
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 hidden sm:flex"
+            className="h-9 w-9 hidden lg:flex"
             onClick={() => router.push("/help")}
             title="Help"
           >
             <HelpCircle className="h-4 w-4" />
           </Button>
 
-          <ThemeToggle />
+          {/* Desktop: Theme Toggle */}
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
 
-          {/* User Menu */}
+          {/* Mobile: "More" Menu - Contains all actions */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9 md:hidden">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setIsCreateMenuOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/notifications")}>
+                <div className="flex items-center w-full">
+                  <Bell className="mr-2 h-4 w-4" />
+                  Notifications
+                  <span className="ml-auto h-2 w-2 rounded-full bg-red-500"></span>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsPricingModalOpen(true)}>
+                <Zap className="mr-2 h-4 w-4 fill-purple-500 text-purple-500" />
+                <span className="text-purple-600 dark:text-purple-400 font-medium">See plans</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/settings")}>
+                <SettingsIcon className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/help")}>
+                <HelpCircle className="mr-2 h-4 w-4" />
+                Help
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <div className="flex items-center justify-between w-full">
+                  <span>Dark mode</span>
+                  <ThemeToggle />
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* User Menu - Always visible */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-sm font-medium text-white">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-sm font-medium text-white shadow-sm">
                   {session?.user?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               </Button>
@@ -360,10 +402,10 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
-          "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out z-50",
-          // Mobile: Fixed position with slide-in animation
-          "md:relative md:translate-x-0",
-          isMobileSidebarOpen ? "fixed inset-y-0 left-0 translate-x-0" : "fixed inset-y-0 left-0 -translate-x-full"
+          "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out",
+          // Mobile: Fixed position with slide-in animation, positioned below header
+          "md:relative md:translate-x-0 md:z-auto",
+          isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
           {/* Mobile Sidebar Header with Close Button */}
           <div className="flex items-center justify-between p-3 border-b border-jira-gray-200 dark:border-jira-dark-border md:hidden">
@@ -385,30 +427,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             </Button>
           </div>
 
-          <nav className="p-3 space-y-1">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              const href = isInProject
-                ? `/project/${currentProject?.key}${item.href}`
-                : item.href;
-
-              return (
-                <Link
-                  key={item.name}
-                  href={href}
-                  className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    isActive(href)
-                      ? 'bg-[#1C8C7D]/10 dark:bg-[#1C8C7D]/20 text-[#1C8C7D] dark:text-[#1C8C7D] border-l-2 border-[#1C8C7D] font-semibold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Collapsible Sidebar Navigation - 7 Core Categories */}
+          <CollapsibleSidebar />
 
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
