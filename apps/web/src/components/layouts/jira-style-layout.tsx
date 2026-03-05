@@ -43,6 +43,7 @@ import {
   Menu,
   X,
   Zap,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconRenderer } from '@/components/ui/icon-renderer';
@@ -77,6 +78,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
     { name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
     { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
     { name: 'Budget', href: '/dashboard/budget', icon: BarChart3 },
+    { name: 'AI Documents', href: '/dashboard/documents', icon: Sparkles },
     { name: 'Teams', href: '/dashboard/teams', icon: Users },
     { name: 'Goals', href: '/dashboard/goals', icon: Target },
     { name: 'Automation', href: '/dashboard/automations', icon: Zap },

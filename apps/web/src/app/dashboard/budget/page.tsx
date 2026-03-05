@@ -254,7 +254,7 @@ export default function BudgetPage() {
             <div className="lg:col-span-3">
               <div
                 onClick={handleShowAllBudgetOverview}
-                className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
+                className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer h-full"
               >
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -503,8 +503,9 @@ export default function BudgetPage() {
               </div>
             </div>
 
-            {/* Recent Budget Activity - AI-Powered - Takes 2 columns */}
-            <div className="lg:col-span-2">
+            {/* Recent Budget Activity + Budget Watchers - Takes 2 columns */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Recent Budget Activity - AI-Powered */}
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -707,11 +708,9 @@ export default function BudgetPage() {
                 }
               `}</style>
               </div>
-            </div>
-          </div>
 
-          {/* Row 2: Budget Watchers */}
-          <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+              {/* Budget Watchers */}
+              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Budget watchers
@@ -813,9 +812,11 @@ export default function BudgetPage() {
                   opacity: 0;
                 }
               `}</style>
+              </div>
+            </div>
           </div>
 
-          {/* Row 3: Budget Alert + Budget Insights (side by side) */}
+          {/* Row 2: Budget Alert + Budget Insights (side by side) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Budget Alert */}
             <div>
