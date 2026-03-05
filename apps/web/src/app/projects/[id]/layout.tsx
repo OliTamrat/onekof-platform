@@ -14,6 +14,13 @@ import {
   Activity,
   Users,
   Target,
+  LayoutDashboard,
+  Wrench,
+  Leaf,
+  HardHat,
+  Home,
+  BarChart3,
+  FolderOpen,
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 
@@ -27,14 +34,14 @@ interface Project {
 }
 
 const TAB_ITEMS = [
-  { id: 'board', label: 'Board', icon: Kanban, href: '/projects/[id]/board' },
-  { id: 'list', label: 'List', icon: List, href: '/projects/[id]/list' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/projects/[id]/timeline' },
-  { id: 'budget', label: 'Budget', icon: DollarSign, href: '/projects/[id]/budget' },
-  { id: 'team', label: 'Team', icon: Users, href: '/projects/[id]/team' },
-  { id: 'goals', label: 'Goals', icon: Target, href: '/projects/[id]/goals' },
-  { id: 'activity', label: 'Activity', icon: Activity, href: '/projects/[id]/activity' },
-  { id: 'settings', label: 'Settings', icon: Settings, href: '/projects/[id]/settings' },
+  { id: 'board', label: 'Overview', icon: LayoutDashboard, href: '/projects/[id]/board' },
+  { id: 'list', label: 'Tasks & Milestones', icon: List, href: '/projects/[id]/list' },
+  { id: 'timeline', label: 'Construction Timeline', icon: HardHat, href: '/projects/[id]/timeline' },
+  { id: 'budget', label: 'Budget & Procurement', icon: DollarSign, href: '/projects/[id]/budget' },
+  { id: 'team', label: 'Team & Stakeholders', icon: Users, href: '/projects/[id]/team' },
+  { id: 'goals', label: 'Environmental & Social', icon: Leaf, href: '/projects/[id]/goals' },
+  { id: 'activity', label: 'Monitoring & Reports', icon: BarChart3, href: '/projects/[id]/activity' },
+  { id: 'settings', label: 'Project Settings', icon: Settings, href: '/projects/[id]/settings' },
 ] as const;
 
 export default function ProjectLayout({ children }: { children: React.Node }) {
