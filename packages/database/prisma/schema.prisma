@@ -95,17 +95,17 @@ model User {
   deletedAt   DateTime? @map("deleted_at")
 
   // Relations
-  accounts        Account[]
-  sessions        Session[]
-  organizations   OrganizationMember[]
-  teamMembers     TeamMember[]
-  assignedTasks   Task[]               @relation("TaskAssignee")
-  reportedTasks   Task[]               @relation("TaskReporter")
-  comments        Comment[]            @relation("CommentAuthor")
-  attachments     Attachment[]         @relation("AttachmentUploader")
-  taskWatchers    TaskWatcher[]        @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
-  goalWatchers    GoalWatcher[]        @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
-  activities      UserActivity[]       @relation("UserActivity") // 🚀 NEW: All activities by this user
+  accounts      Account[]
+  sessions      Session[]
+  organizations OrganizationMember[]
+  teamMembers   TeamMember[]
+  assignedTasks Task[]               @relation("TaskAssignee")
+  reportedTasks Task[]               @relation("TaskReporter")
+  comments      Comment[]            @relation("CommentAuthor")
+  attachments   Attachment[]         @relation("AttachmentUploader")
+  taskWatchers  TaskWatcher[]        @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
+  goalWatchers  GoalWatcher[]        @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
+  activities    UserActivity[]       @relation("UserActivity") // 🚀 NEW: All activities by this user
 
   @@map("users")
   @@schema("public")
@@ -361,8 +361,8 @@ model Task {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  assignee          User?          @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  reporter          User           @relation("TaskReporter", fields: [reporterId], references: [id])
+  assignee          User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter          User          @relation("TaskReporter", fields: [reporterId], references: [id])
   comments          Comment[]
   attachments       Attachment[]
   watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
@@ -681,20 +681,20 @@ model AutomationRule {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   // Rule details
-  name              String
-  description       String?
-  icon              String? // Lucide icon name
-  color             String? // Hex color
-  naturalLanguage   String? @map("natural_language") // Human-readable description
+  name            String
+  description     String?
+  icon            String? // Lucide icon name
+  color           String? // Hex color
+  naturalLanguage String? @map("natural_language") // Human-readable description
 
   // Rule configuration
-  isTemplate    Boolean           @default(false) @map("is_template") // Template vs active rule
-  isEnabled     Boolean           @default(true) @map("is_enabled")
-  scope         AutomationScope   @default(PROJECT) // Where this rule applies
-  entityType    AutomationEntity  @default(TASK) // What entity it operates on
-  triggerEvent  AutomationTrigger @default(CREATED) // What triggers the rule
-  runMode       AutomationRunMode @default(AUTOMATIC) // How it runs
-  executionOrder Int              @default(1) @map("execution_order") // Order of execution
+  isTemplate     Boolean           @default(false) @map("is_template") // Template vs active rule
+  isEnabled      Boolean           @default(true) @map("is_enabled")
+  scope          AutomationScope   @default(PROJECT) // Where this rule applies
+  entityType     AutomationEntity  @default(TASK) // What entity it operates on
+  triggerEvent   AutomationTrigger @default(CREATED) // What triggers the rule
+  runMode        AutomationRunMode @default(AUTOMATIC) // How it runs
+  executionOrder Int               @default(1) @map("execution_order") // Order of execution
 
   // Rule logic (stored as JSON for flexibility)
   conditions Json // Array of conditions that must be met
@@ -705,7 +705,7 @@ model AutomationRule {
   teamId    String? @map("team_id")
 
   // Statistics
-  executionCount Int      @default(0) @map("execution_count")
+  executionCount Int       @default(0) @map("execution_count")
   lastExecutedAt DateTime? @map("last_executed_at")
 
   // Metadata
@@ -721,8 +721,8 @@ model AutomationRule {
 // Automation enums
 enum AutomationScope {
   ORGANIZATION // Applies to entire organization
-  PROJECT      // Applies to specific project
-  TEAM         // Applies to specific team
+  PROJECT // Applies to specific project
+  TEAM // Applies to specific team
 
   @@schema("public")
 }
@@ -738,26 +738,26 @@ enum AutomationEntity {
 }
 
 enum AutomationTrigger {
-  CREATED              // Entity created
-  UPDATED              // Entity updated
-  DELETED              // Entity deleted
-  STATUS_CHANGED       // Status field changed
-  FIELD_CHANGED        // Any field changed
-  ASSIGNED             // Task assigned
-  COMPLETED            // Task/Goal completed
+  CREATED // Entity created
+  UPDATED // Entity updated
+  DELETED // Entity deleted
+  STATUS_CHANGED // Status field changed
+  FIELD_CHANGED // Any field changed
+  ASSIGNED // Task assigned
+  COMPLETED // Task/Goal completed
   DUE_DATE_APPROACHING // Due date is near
-  DUE_DATE_PASSED      // Due date passed
-  BLOCKED              // Task blocked
-  COMMENTED            // Comment added
+  DUE_DATE_PASSED // Due date passed
+  BLOCKED // Task blocked
+  COMMENTED // Comment added
   PROGRESS_THRESHOLD_REACHED // Progress milestone reached
-  BUDGET_THRESHOLD_REACHED   // Budget limit reached
+  BUDGET_THRESHOLD_REACHED // Budget limit reached
 
   @@schema("public")
 }
 
 enum AutomationRunMode {
   AUTOMATIC // Runs automatically when triggered
-  MANUAL    // Requires manual execution
+  MANUAL // Requires manual execution
 
   @@schema("public")
 }
@@ -794,7 +794,7 @@ model TaskWatcher {
   // 🚀 PERFORMANCE: Optimized indexes for fast lookups
   @@unique([taskId, userId])
   @@index([userId, addedAt]) // For "tasks I'm watching" query
-  @@index([taskId])          // For "who's watching this task" query
+  @@index([taskId]) // For "who's watching this task" query
   @@map("task_watchers")
   @@schema("public")
 }
@@ -840,7 +840,7 @@ model UserActivity {
   activityType ActivityType @map("activity_type")
   entityType   String       @map("entity_type") // TASK, PROJECT, GOAL, etc.
   entityId     String       @map("entity_id")
-  action       String       // CREATED, UPDATED, ASSIGNED, COMPLETED, etc.
+  action       String // CREATED, UPDATED, ASSIGNED, COMPLETED, etc.
 
   // DETAILS of the change
   before   Json? // State before change (enables undo feature!)
@@ -866,22 +866,22 @@ model UserActivity {
   createdAt DateTime @default(now()) @map("created_at")
 
   // 🚀 PERFORMANCE: Comprehensive indexes for all query patterns
-  @@index([userId, createdAt])                   // User activity timeline
-  @@index([organizationId, createdAt])           // Org activity feed
-  @@index([entityType, entityId, createdAt])     // Entity history
-  @@index([activityType, createdAt])             // Activity type filtering
-  @@index([sessionId])                           // Session analysis
-  @@index([userId, activityType, createdAt])     // User-specific activity type
+  @@index([userId, createdAt]) // User activity timeline
+  @@index([organizationId, createdAt]) // Org activity feed
+  @@index([entityType, entityId, createdAt]) // Entity history
+  @@index([activityType, createdAt]) // Activity type filtering
+  @@index([sessionId]) // Session analysis
+  @@index([userId, activityType, createdAt]) // User-specific activity type
   @@map("user_activities")
   @@schema("public")
 }
 
 // Watch reason enum (for smart auto-watch)
 enum WatchReason {
-  MANUAL          // User manually clicked "Watch"
-  AUTO_ASSIGNED   // Auto-watch when assigned to task
-  AUTO_MENTIONED  // Auto-watch when @mentioned in comment
-  AUTO_CREATED    // Auto-watch when created the task
+  MANUAL // User manually clicked "Watch"
+  AUTO_ASSIGNED // Auto-watch when assigned to task
+  AUTO_MENTIONED // Auto-watch when @mentioned in comment
+  AUTO_CREATED // Auto-watch when created the task
   AUTO_PARTICIPATED // Auto-watch after commenting
 
   @@schema("public")
@@ -907,7 +907,7 @@ enum ActivityType {
   TASK_COMMENTED
   TASK_WATCHED
   TASK_UNWATCHED
-  TASK_MOVED        // Moved to different project
+  TASK_MOVED // Moved to different project
   TASK_BLOCKED
   TASK_UNBLOCKED
 
@@ -959,39 +959,39 @@ enum Currency {
 }
 
 enum BudgetStatus {
-  DRAFT            // Being configured
+  DRAFT // Being configured
   PENDING_APPROVAL // Awaiting approval
-  APPROVED         // Approved but not active
-  ACTIVE           // Currently in use
-  CLOSED           // Project completed
-  CANCELLED        // Budget cancelled
+  APPROVED // Approved but not active
+  ACTIVE // Currently in use
+  CLOSED // Project completed
+  CANCELLED // Budget cancelled
 
   @@schema("public")
 }
 
 enum BudgetAccess {
-  NO_ACCESS    // Cannot see any budget information
-  VIEW_ONLY    // Can view budget but not edit
-  EDIT         // Can view and edit budget
-  APPROVE      // Can view, edit, and approve expenses
+  NO_ACCESS // Cannot see any budget information
+  VIEW_ONLY // Can view budget but not edit
+  EDIT // Can view and edit budget
+  APPROVE // Can view, edit, and approve expenses
   FULL_CONTROL // Full budget management
 
   @@schema("public")
 }
 
 enum ExpenseType {
-  ACTUAL    // Money already spent
+  ACTUAL // Money already spent
   COMMITTED // Contractually obligated
-  RESERVED  // Planned/budgeted
+  RESERVED // Planned/budgeted
 
   @@schema("public")
 }
 
 enum ExpenseStatus {
-  PENDING  // Awaiting approval
+  PENDING // Awaiting approval
   APPROVED // Approved, ready for payment
   REJECTED // Rejected by approver
-  PAID     // Payment completed
+  PAID // Payment completed
 
   @@schema("public")
 }
