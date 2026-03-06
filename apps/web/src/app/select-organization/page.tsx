@@ -59,7 +59,7 @@ export default function SelectOrganizationPage() {
   };
 
   const handleSelectOrganization = async (org: Organization) => {
-    // Set default organization and redirect to dashboard
+    // Set default organization first
     try {
       const response = await fetch('/api/user/default-organization', {
         method: 'PUT',
@@ -67,14 +67,31 @@ export default function SelectOrganizationPage() {
         body: JSON.stringify({ organizationId: org.id }),
       });
 
-      if (response.ok) {
-        // Redirect to dashboard on same domain (no subdomain for demo)
-        router.push('/dashboard');
-      } else {
+      if (!response.ok) {
         console.error('Failed to set organization:', await response.text());
+        return;
       }
     } catch (error) {
       console.error('Failed to set default organization:', error);
+      return;
+    }
+
+    // Redirect based on environment
+    const protocol = window.location.protocol;
+    const port = window.location.port ? `:${window.location.port}` : '';
+    const hostname = window.location.hostname;
+
+    // For Vercel production (onekof-platform-*.vercel.app) - use same domain
+    if (hostname.includes('vercel.app')) {
+      router.push('/dashboard');
+    }
+    // For custom domain production (onekof.com) - use subdomain
+    else if (hostname.includes('onekof.com')) {
+      window.location.href = `${protocol}//${org.slug}.onekof.com/dashboard`;
+    }
+    // For local development - use subdomain with localhost
+    else {
+      window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
     }
   };
 

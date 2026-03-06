@@ -80,7 +80,27 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         const data = await response.json();
         setOrganizations(data.organizations || []);
 
-        // Set default organization (user's default or first one)
+        // Multi-tenant: Check if we're on a subdomain
+        const hostname = window.location.hostname;
+        let organizationSlug: string | null = null;
+
+        // Extract subdomain from hostname
+        if (hostname.endsWith('.onekof.com')) {
+          organizationSlug = hostname.replace('.onekof.com', '');
+        } else if (hostname.endsWith('.localhost')) {
+          organizationSlug = hostname.replace('.localhost', '');
+        }
+
+        // If on subdomain, find organization by slug
+        if (organizationSlug && organizationSlug !== 'www') {
+          const orgBySlug = data.organizations?.find((org: Organization) => org.slug === organizationSlug);
+          if (orgBySlug) {
+            setCurrentOrganization(orgBySlug);
+            return;
+          }
+        }
+
+        // Fallback: Set default organization (user's default or first one)
         if (data.defaultOrganization) {
           setCurrentOrganization(data.defaultOrganization);
         } else if (data.organizations && data.organizations.length > 0) {
