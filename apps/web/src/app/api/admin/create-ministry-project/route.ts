@@ -7,7 +7,7 @@ import { prisma } from '@onekof/database';
  * Creates the Ministry of Water and Irrigation with Jira Water Dam project
  * This is an admin endpoint to set up demo data
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await getServerSession();
 

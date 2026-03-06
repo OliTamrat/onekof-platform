@@ -6,6 +6,10 @@ const nextConfig = {
   },
   // Transpile packages from monorepo
   transpilePackages: ['@onekof/database'],
+  // Disable ESLint during builds (Vercel monorepo config resolution issue)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: ['localhost'],
     formats: ['image/avif', 'image/webp'],
