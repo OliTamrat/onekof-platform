@@ -58,18 +58,21 @@ export default function SelectOrganizationPage() {
     }
   };
 
-  const handleSelectOrganization = (org: Organization) => {
-    // Redirect to organization subdomain
-    const protocol = window.location.protocol;
-    const port = window.location.port ? `:${window.location.port}` : '';
+  const handleSelectOrganization = async (org: Organization) => {
+    // Set default organization and redirect to dashboard
+    try {
+      const response = await fetch('/api/user/default-organization', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ organizationId: org.id }),
+      });
 
-    // For production
-    if (window.location.hostname.includes('onekof.com')) {
-      window.location.href = `${protocol}//${org.slug}.onekof.com/dashboard`;
-    }
-    // For local development
-    else {
-      window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
+      if (response.ok) {
+        // Redirect to dashboard on same domain (no subdomain for demo)
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Failed to set default organization:', error);
     }
   };
 
