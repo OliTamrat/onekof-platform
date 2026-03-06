@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next .turbo node_modules"
+    "clean": "rm -rf .next .turbo node_modules",
+    "postinstall": "cd ../../packages/database && prisma generate"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
