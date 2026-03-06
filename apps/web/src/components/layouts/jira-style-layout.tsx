@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { PricingModal } from '@/components/pricing-modal';
@@ -16,6 +17,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
   Home,
@@ -46,6 +50,9 @@ import {
   Zap,
   Sparkles,
   MoreVertical,
+  Moon,
+  Sun,
+  Monitor,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconRenderer } from '@/components/ui/icon-renderer';
@@ -58,6 +65,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const { currentOrganization, organizations, projects, currentProject, switchOrganization, setCurrentProject } = useWorkspace();
 
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
@@ -353,12 +361,27 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 Help
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <div className="px-2 py-1.5">
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-sm">Dark mode</span>
-                  <ThemeToggle />
-                </div>
-              </div>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="ml-4">Theme</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={() => setTheme('light')}>
+                    <Sun className="mr-2 h-4 w-4" />
+                    <span>Light</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme('dark')}>
+                    <Moon className="mr-2 h-4 w-4" />
+                    <span>Dark</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme('system')}>
+                    <Monitor className="mr-2 h-4 w-4" />
+                    <span>System</span>
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </DropdownMenuContent>
           </DropdownMenu>
 
