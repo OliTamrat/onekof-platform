@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
+import { getOrganizationContext } from '@/lib/api-organization';
 
 /**
  * GET /api/projects
@@ -8,43 +8,22 @@ import { prisma } from '@onekof/database';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get the current user's session
-    const session = await getServerSession();
-
-    if (!session?.user?.email) {
+    // Get organization context and validate access
+    const { data: context, error } = await getOrganizationContext();
+    if (error) return error;
+    if (!context) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Failed to get organization context' },
+        { status: 500 }
       );
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json(
-        { error: 'No organization found' },
-        { status: 404 }
-      );
-    }
-
-    // Get the user's default organization or first organization
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const { organization } = context;
 
     // Get all projects for the organization
     const projects = await prisma.project.findMany({
       where: {
-        organizationId,
+        organizationId: organization.id,
         deletedAt: null,
       },
       include: {
@@ -124,38 +103,17 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get the current user's session
-    const session = await getServerSession();
-
-    if (!session?.user?.email) {
+    // Get organization context and validate access
+    const { data: context, error } = await getOrganizationContext();
+    if (error) return error;
+    if (!context) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Failed to get organization context' },
+        { status: 500 }
       );
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json(
-        { error: 'No organization found' },
-        { status: 404 }
-      );
-    }
-
-    // Get the user's default organization or first organization
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const { organization, user } = context;
 
     // Parse request body
     const body = await request.json();
@@ -172,7 +130,7 @@ export async function POST(request: NextRequest) {
     // Check if project key already exists
     const existingProject = await prisma.project.findFirst({
       where: {
-        organizationId,
+        organizationId: organization.id,
         key: key.toUpperCase(),
         deletedAt: null,
       },
@@ -191,7 +149,7 @@ export async function POST(request: NextRequest) {
         name,
         description,
         key: key.toUpperCase(),
-        organizationId,
+        organizationId: organization.id,
         leadId: user.id,
         status: 'ACTIVE',
         color: color || '#3B82F6', // ✅ Use proper column

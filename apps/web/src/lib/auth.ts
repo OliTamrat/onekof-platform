@@ -57,15 +57,69 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+
+        // Fetch user's organizations
+        const organizations = await prisma.organizationMember.findMany({
+          where: { userId: user.id },
+          include: {
+            organization: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                plan: true,
+                status: true,
+              },
+            },
+          },
+        });
+
+        token.organizations = organizations.map((membership) => ({
+          id: membership.organization.id,
+          name: membership.organization.name,
+          slug: membership.organization.slug,
+          plan: membership.organization.plan,
+          status: membership.organization.status,
+          role: membership.role,
+        }));
       }
+
+      // Refresh organizations on update trigger
+      if (trigger === 'update' && token.id) {
+        const organizations = await prisma.organizationMember.findMany({
+          where: { userId: token.id as string },
+          include: {
+            organization: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                plan: true,
+                status: true,
+              },
+            },
+          },
+        });
+
+        token.organizations = organizations.map((membership) => ({
+          id: membership.organization.id,
+          name: membership.organization.name,
+          slug: membership.organization.slug,
+          plan: membership.organization.plan,
+          status: membership.organization.status,
+          role: membership.role,
+        }));
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.organizations = token.organizations as any[];
       }
       return session;
     },

@@ -1,10 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle, Loader2, Mail, Lock, User, CheckCircle2, Calendar, Globe, Sparkles, Smartphone, ArrowRight } from 'lucide-react';
+import { AlertCircle, Loader2, Mail, Lock, User, CheckCircle2, Calendar, Globe, Sparkles, Smartphone, ArrowRight, Building2, Info } from 'lucide-react';
+
+interface OrganizationInfo {
+  id: string;
+  name: string;
+  slug: string;
+  plan: string;
+  memberCount: number;
+}
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -17,6 +25,42 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [verificationUrl, setVerificationUrl] = useState('');
+  const [organization, setOrganization] = useState<OrganizationInfo | null>(null);
+  const [isMainDomain, setIsMainDomain] = useState(true);
+
+  // Detect organization from subdomain
+  useEffect(() => {
+    const detectOrganization = async () => {
+      const hostname = window.location.hostname;
+      const isSubdomain =
+        hostname.includes('.') &&
+        !hostname.startsWith('www.') &&
+        (hostname.endsWith('.onekof.com') || hostname.endsWith('.localhost'));
+
+      if (isSubdomain) {
+        setIsMainDomain(false);
+        let subdomain = '';
+
+        if (hostname.endsWith('.onekof.com')) {
+          subdomain = hostname.replace('.onekof.com', '');
+        } else if (hostname.endsWith('.localhost')) {
+          subdomain = hostname.replace('.localhost', '');
+        }
+
+        try {
+          const response = await fetch(`/api/organizations/${subdomain}`);
+          if (response.ok) {
+            const data = await response.json();
+            setOrganization(data.organization);
+          }
+        } catch (err) {
+          console.error('Failed to fetch organization:', err);
+        }
+      }
+    };
+
+    detectOrganization();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,14 +123,41 @@ export default function SignUpPage() {
         </div>
 
         <div className="space-y-8">
+          {/* Organization Badge - shown on subdomain */}
+          {!isMainDomain && organization && (
+            <div className="inline-flex items-center gap-3 rounded-xl bg-white/10 backdrop-blur-sm px-4 py-3 border border-white/20">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20">
+                <Building2 className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <div className="text-xs font-medium text-white/70">Joining</div>
+                <div className="text-sm font-semibold text-white">{organization.name}</div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <h1 className="text-4xl font-bold leading-tight text-white">
-              Join 500+ Teams
-              <br />
-              Building Better
+              {!isMainDomain && organization ? (
+                <>
+                  Join {organization.memberCount}+ Team Members
+                  <br />
+                  at {organization.name}
+                </>
+              ) : (
+                <>
+                  Join 500+ Teams
+                  <br />
+                  Building Better
+                </>
+              )}
             </h1>
             <p className="text-lg text-white/90">
-              Start shipping faster with the project management platform built for Ethiopian teams.
+              {!isMainDomain && organization ? (
+                <>Create your account to collaborate with {organization.name}'s team on Onekof.</>
+              ) : (
+                <>Start shipping faster with the project management platform built for Ethiopian teams.</>
+              )}
             </p>
           </div>
 
@@ -183,8 +254,23 @@ export default function SignUpPage() {
             <span className="text-xl font-bold text-gray-900">Onekof</span>
           </Link>
 
+          {/* Organization badge on mobile */}
+          {!isMainDomain && organization && (
+            <div className="mb-6 lg:hidden inline-flex items-center gap-3 rounded-xl bg-blue-50 px-4 py-3 border border-blue-200">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                <Building2 className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <div className="text-xs font-medium text-blue-600">Joining</div>
+                <div className="text-sm font-semibold text-gray-900">{organization.name}</div>
+              </div>
+            </div>
+          )}
+
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              {!isMainDomain && organization ? 'Join the team' : 'Create your account'}
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
               Already have an account?{' '}
               <Link href="/auth/signin" className="font-semibold text-[#0EA5E9] hover:text-[#0284C7]">
@@ -192,6 +278,26 @@ export default function SignUpPage() {
               </Link>
             </p>
           </div>
+
+          {/* Multi-tenant info box */}
+          {!isMainDomain && organization && (
+            <div className="mb-6 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-4 border border-blue-100">
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100">
+                  <Info className="h-4 w-4 text-blue-600" />
+                </div>
+                <div className="flex-1 text-sm">
+                  <p className="font-semibold text-gray-900 mb-1">
+                    Organization Signup
+                  </p>
+                  <p className="text-gray-600 leading-relaxed">
+                    You're signing up for <span className="font-semibold text-gray-900">{organization.name}</span>'s workspace.
+                    After verification, you'll be able to collaborate with their team on projects and goals.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Success Modal - Email verification sent */}
           {verificationSent && (
@@ -361,15 +467,19 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50"
+              className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50 disabled:hover:scale-100"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               {isLoading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                   Creating account...
                 </>
               ) : (
-                'Create account'
+                <>
+                  Create account
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </>
               )}
             </button>
 
@@ -400,7 +510,7 @@ export default function SignUpPage() {
             <button
               onClick={() => handleOAuthSignUp('google')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              className="group flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -426,7 +536,7 @@ export default function SignUpPage() {
             <button
               onClick={() => handleOAuthSignUp('azure-ad')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              className="group flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" fill="#00A4EF"/>
@@ -437,7 +547,7 @@ export default function SignUpPage() {
             <button
               onClick={() => handleOAuthSignUp('github')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              className="group flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -448,7 +558,7 @@ export default function SignUpPage() {
             <button
               onClick={() => handleOAuthSignUp('apple')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              className="group flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -457,6 +567,46 @@ export default function SignUpPage() {
             </button>
           </div>
           </>
+          )}
+
+          {/* Multi-tenant benefits - only show on main domain */}
+          {!verificationSent && isMainDomain && (
+            <div className="mt-8 space-y-4">
+              <div className="rounded-xl bg-gradient-to-br from-gray-50 to-blue-50 p-5 border border-gray-200">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-600">
+                    <Building2 className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      Your Own Dedicated Workspace
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Each organization gets its own subdomain (like <span className="font-mono text-xs bg-white px-1.5 py-0.5 rounded border border-gray-200">yourteam.onekof.com</span>)
+                      with completely isolated data and customized settings.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <span>Private workspace</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <span>Custom domain</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <span>Isolated data</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <span>Team collaboration</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

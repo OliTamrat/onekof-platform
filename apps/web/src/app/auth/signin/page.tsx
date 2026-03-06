@@ -1,10 +1,16 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle, Loader2, Mail, Lock, CheckCircle2, Smartphone, Calendar, Globe, Sparkles, ArrowRight } from 'lucide-react';
+import { AlertCircle, Loader2, Mail, Lock, Building2, CheckCircle2, Calendar, Globe, Sparkles, Info, ArrowRight } from 'lucide-react';
+
+interface OrganizationInfo {
+  name: string;
+  slug: string;
+  plan: string;
+}
 
 // SignIn content component that uses useSearchParams
 function SignInContent() {
@@ -16,6 +22,45 @@ function SignInContent() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [organization, setOrganization] = useState<OrganizationInfo | null>(null);
+  const [isMainDomain, setIsMainDomain] = useState(true);
+
+  // Detect organization from subdomain
+  useEffect(() => {
+    const detectOrganization = async () => {
+      const hostname = window.location.hostname;
+
+      // Check if we're on a subdomain
+      const isSubdomain = hostname.includes('.') &&
+                         !hostname.startsWith('www.') &&
+                         (hostname.endsWith('.onekof.com') || hostname.endsWith('.localhost'));
+
+      if (isSubdomain) {
+        setIsMainDomain(false);
+
+        // Extract subdomain
+        let subdomain = '';
+        if (hostname.endsWith('.onekof.com')) {
+          subdomain = hostname.replace('.onekof.com', '');
+        } else if (hostname.endsWith('.localhost')) {
+          subdomain = hostname.replace('.localhost', '');
+        }
+
+        // Fetch organization info
+        try {
+          const response = await fetch(`/api/organizations/${subdomain}`);
+          if (response.ok) {
+            const data = await response.json();
+            setOrganization(data.organization);
+          }
+        } catch (err) {
+          console.error('Failed to fetch organization:', err);
+        }
+      }
+    };
+
+    detectOrganization();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,9 +75,19 @@ function SignInContent() {
       });
 
       if (result?.error) {
-        setError('Invalid email or password');
+        if (result.error === 'CredentialsSignin') {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setError(result.error);
+        }
       } else {
-        router.push(callbackUrl);
+        // Check if user has access to this organization
+        if (!isMainDomain && organization) {
+          router.push(callbackUrl);
+        } else {
+          // Redirect to organization selector
+          router.push('/select-organization');
+        }
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');
@@ -60,18 +115,34 @@ function SignInContent() {
         </div>
 
         <div className="space-y-8">
+          {/* Organization Badge (if on subdomain) */}
+          {organization && (
+            <div className="rounded-2xl border-2 border-white/20 bg-white/10 p-6 backdrop-blur-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+                  <Building2 className="h-6 w-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-white/80">Signing in to</div>
+                  <div className="mt-1 text-xl font-bold text-white">{organization.name}</div>
+                  <div className="mt-2 inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white">
+                    {organization.plan} Plan
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Key Features */}
           <div className="space-y-4">
             <h1 className="text-4xl font-bold leading-tight text-white">
-              Built for Ethiopian Teams.
-              <br />
-              Loved Worldwide.
+              {organization ? `Welcome to ${organization.name}` : 'Built for Ethiopian Teams. Loved Worldwide.'}
             </h1>
             <p className="text-lg text-white/90">
               The only project management platform with Ethiopian calendar, 4 native languages, and AI-powered workflows.
             </p>
           </div>
 
-          {/* Key Features */}
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm">
@@ -102,41 +173,18 @@ function SignInContent() {
             </div>
           </div>
 
-          {/* App Download Section */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-xl font-semibold text-white">Download Our Mobile App</h3>
-              <p className="mt-1 text-sm text-white/80">
-                Get instant access to your projects on the go
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#"
-                className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-black px-5 py-3 transition-opacity hover:opacity-90"
-              >
-                <svg className="h-7 w-7" viewBox="0 0 24 24" fill="white">
-                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                </svg>
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] leading-none text-white/80">Download on the</span>
-                  <span className="text-lg font-semibold leading-tight text-white">App Store</span>
+          {/* Multi-tenant Info */}
+          {!organization && (
+            <div className="rounded-xl border border-white/20 bg-white/5 p-4 backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-white/80 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-white/90">
+                  <strong>Multi-Organization Support:</strong> If you belong to multiple organizations,
+                  you'll be able to choose which one to access after signing in.
                 </div>
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-black px-5 py-3 transition-opacity hover:opacity-90"
-              >
-                <svg className="h-7 w-7" viewBox="0 0 24 24" fill="white">
-                  <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/>
-                </svg>
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] leading-none text-white/80">GET IT ON</span>
-                  <span className="text-lg font-semibold leading-tight text-white">Google Play</span>
-                </div>
-              </a>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="text-sm text-white/70">
@@ -155,21 +203,38 @@ function SignInContent() {
             <span className="text-xl font-bold text-gray-900">Onekof</span>
           </Link>
 
+          {/* Organization badge (mobile) */}
+          {organization && (
+            <div className="mb-6 rounded-xl border-2 border-blue-100 bg-blue-50 p-4 lg:hidden">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                  <Building2 className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <div className="text-xs text-blue-600">Signing in to</div>
+                  <div className="font-semibold text-gray-900">{organization.name}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Sign in</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              {organization ? 'Welcome back' : 'Sign in to your account'}
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
               Don't have an account?{' '}
               <Link href="/auth/signup" className="font-semibold text-[#0EA5E9] hover:text-[#0284C7]">
-                Sign up
+                Sign up for free
               </Link>
             </p>
           </div>
 
           {/* Error message */}
           {error && (
-            <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-              <AlertCircle className="h-4 w-4" />
-              {error}
+            <div className="mb-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 text-sm text-red-800">{error}</div>
             </div>
           )}
 
@@ -177,9 +242,9 @@ function SignInContent() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+                Email address
               </label>
-              <div className="relative mt-1">
+              <div className="relative mt-1.5">
                 <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input
                   id="email"
@@ -187,7 +252,8 @@ function SignInContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-[#0EA5E9] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20"
+                  autoComplete="email"
+                  className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-[#0EA5E9] focus:outline-none focus:ring-4 focus:ring-[#0EA5E9]/10"
                   placeholder="you@company.com"
                 />
               </div>
@@ -205,7 +271,7 @@ function SignInContent() {
                   Forgot password?
                 </Link>
               </div>
-              <div className="relative mt-1">
+              <div className="relative mt-1.5">
                 <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input
                   id="password"
@@ -213,7 +279,8 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-[#0EA5E9] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20"
+                  autoComplete="current-password"
+                  className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-gray-900 placeholder-gray-400 transition-colors focus:border-[#0EA5E9] focus:outline-none focus:ring-4 focus:ring-[#0EA5E9]/10"
                   placeholder="••••••••"
                 />
               </div>
@@ -222,7 +289,7 @@ function SignInContent() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0284C7] hover:shadow-md focus:outline-none focus:ring-4 focus:ring-[#0EA5E9]/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -230,7 +297,10 @@ function SignInContent() {
                   Signing in...
                 </>
               ) : (
-                'Sign in'
+                <>
+                  Sign in
+                  <ArrowRight className="h-4 w-4" />
+                </>
               )}
             </button>
           </form>
@@ -238,7 +308,7 @@ function SignInContent() {
           {/* Divider */}
           <div className="my-6 flex items-center gap-4">
             <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-sm text-gray-500">OR</span>
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Or continue with</span>
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
@@ -247,7 +317,8 @@ function SignInContent() {
             <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              type="button"
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-[#0EA5E9]/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -267,42 +338,34 @@ function SignInContent() {
                   fill="#EA4335"
                 />
               </svg>
-              <span className="hidden sm:inline">Google</span>
+              Google
             </button>
 
             <button
               onClick={() => signIn('azure-ad', { callbackUrl })}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
+              type="button"
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-[#0EA5E9]/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" fill="#00A4EF"/>
               </svg>
-              <span className="hidden sm:inline">Microsoft</span>
-            </button>
-
-            <button
-              onClick={() => signIn('github', { callbackUrl })}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              <span className="hidden sm:inline">GitHub</span>
-            </button>
-
-            <button
-              onClick={() => signIn('apple', { callbackUrl })}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 disabled:opacity-50"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
-              <span className="hidden sm:inline">Apple</span>
+              Microsoft
             </button>
           </div>
+
+          {/* Info message for multi-tenant */}
+          {!organization && (
+            <div className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1 text-sm text-blue-800">
+                  <strong className="font-semibold">Tip:</strong> You can access your organization directly at{' '}
+                  <span className="font-mono text-xs bg-white px-1.5 py-0.5 rounded">your-org.onekof.com</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -312,10 +375,13 @@ function SignInContent() {
 // Loading fallback component
 function SignInLoading() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0EA5E9] mx-auto" />
-        <p className="mt-4 text-sm text-gray-600">Loading sign in page...</p>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7]">
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+        </div>
+        <p className="mt-4 text-sm font-medium text-gray-600">Loading sign in page...</p>
+        <p className="mt-1 text-xs text-gray-500">Please wait a moment</p>
       </div>
     </div>
   );
