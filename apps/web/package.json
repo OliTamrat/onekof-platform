@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate --schema=../../packages/database/prisma/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next .turbo node_modules",
-    "postinstall": "cd ../../packages/database && prisma generate"
+    "clean": "rm -rf .next .turbo node_modules"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
