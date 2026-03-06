@@ -3,10 +3,5 @@
   "framework": "nextjs",
   "buildCommand": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && pnpm exec next build",
   "devCommand": "next dev",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "functions": {
-    "app/api/**/*.ts": {
-      "includeFiles": ".prisma/client/**"
-    }
-  }
+  "installCommand": "pnpm install --no-frozen-lockfile"
 }

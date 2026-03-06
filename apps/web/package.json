@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && node copy-prisma-binaries.js && next build",
+    "build": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next .turbo node_modules",
-    "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && node copy-prisma-binaries.js"
+    "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
