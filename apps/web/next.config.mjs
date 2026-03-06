@@ -6,7 +6,7 @@ const nextConfig = {
     typedRoutes: false,
     // Include Prisma engine binaries in deployment
     outputFileTracingIncludes: {
-      '/api/**/*': ['../../node_modules/.prisma/client/**/*'],
+      '/api/**/*': ['.prisma/client/**/*'],
     },
   },
   // Transpile packages from monorepo

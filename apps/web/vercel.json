@@ -6,7 +6,7 @@
   "installCommand": "pnpm install --no-frozen-lockfile",
   "functions": {
     "app/api/**/*.ts": {
-      "includeFiles": "../../node_modules/.prisma/client/**"
+      "includeFiles": ".prisma/client/**"
     }
   }
 }
