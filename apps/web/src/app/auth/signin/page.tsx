@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, Loader2, Mail, Lock, CheckCircle2, Smartphone, Calendar, Globe, Sparkles, ArrowRight } from 'lucide-react';
 
-export default function SignInPage() {
+// SignIn content component that uses useSearchParams
+function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
@@ -305,5 +306,26 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function SignInLoading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0EA5E9] mx-auto" />
+        <p className="mt-4 text-sm text-gray-600">Loading sign in page...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<SignInLoading />}>
+      <SignInContent />
+    </Suspense>
   );
 }

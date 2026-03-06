@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, AlertCircle, Loader2, Mail, ArrowRight } from 'lucide-react';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -239,5 +239,83 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function VerifyEmailLoading() {
+  return (
+    <div className="flex min-h-screen">
+      {/* Left side - Branding */}
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0EA5E9] via-[#0284C7] to-[#0369A1] lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
+              <span className="text-2xl font-bold text-white">O</span>
+            </div>
+            <span className="text-2xl font-bold text-white">Onekof</span>
+          </Link>
+        </div>
+
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold leading-tight text-white">
+              Verify Your Email
+              <br />
+              Almost There!
+            </h1>
+            <p className="text-lg text-white/90">
+              Just one more step to get started with Onekof.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-lg bg-white/10 p-4 backdrop-blur-sm">
+            <Mail className="h-8 w-8 text-white" />
+            <div>
+              <div className="font-semibold text-white">Check your inbox</div>
+              <div className="text-sm text-white/70">
+                We've sent you a verification link
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-sm text-white/70">
+          © 2026 Onekof. Built with ❤️ in Ethiopia 🇪🇹
+        </div>
+      </div>
+
+      {/* Right side - Loading state */}
+      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+        <div className="mx-auto w-full max-w-md">
+          {/* Mobile logo */}
+          <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7]">
+              <span className="text-xl font-bold text-white">O</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900">Onekof</span>
+          </Link>
+
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Verifying your email...</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Please wait while we verify your email address.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-8">
+            <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0EA5E9]" />
+            <p className="text-sm text-gray-600">Verifying your email address...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<VerifyEmailLoading />}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

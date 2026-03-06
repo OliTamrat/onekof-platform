@@ -56,12 +56,12 @@ export async function POST(_request: NextRequest) {
 
     // Category mapping
     const categories = {
-      personnel: project.budget.categories.find((c) => c.code === '5210'),
-      construction: project.budget.categories.find((c) => c.code === '5220'),
-      equipment: project.budget.categories.find((c) => c.code === '5230'),
-      environmental: project.budget.categories.find((c) => c.code === '5240'),
-      management: project.budget.categories.find((c) => c.code === '5250'),
-      contingency: project.budget.categories.find((c) => c.code === '5260'),
+      personnel: project.budget.categories.find((c: { code: string }) => c.code === '5210'),
+      construction: project.budget.categories.find((c: { code: string }) => c.code === '5220'),
+      equipment: project.budget.categories.find((c: { code: string }) => c.code === '5230'),
+      environmental: project.budget.categories.find((c: { code: string }) => c.code === '5240'),
+      management: project.budget.categories.find((c: { code: string }) => c.code === '5250'),
+      contingency: project.budget.categories.find((c: { code: string }) => c.code === '5260'),
     };
 
     // Check if expenses already exist

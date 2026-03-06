@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy, Briefcase, Target } from 'lucide-react';
+import Link from 'next/link';
+import { Plus, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy, Briefcase, Target, BarChart3, Code, FileText, Clock, Book, Search } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DashboardSectionHeader } from '@/components/navigation/dashboard-section-header';
 import { Button } from '@/components/ui/button';
