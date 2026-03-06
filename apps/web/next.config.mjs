@@ -4,6 +4,10 @@ const nextConfig = {
   experimental: {
     // Disabled until all type errors are resolved
     typedRoutes: false,
+    // Ensure Prisma engine binaries are included in Vercel deployment
+    outputFileTracingIncludes: {
+      '/api/**/*': ['../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/**/*'],
+    },
   },
   // Transpile packages from monorepo
   transpilePackages: ['@onekof/database'],
