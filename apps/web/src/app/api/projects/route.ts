@@ -88,9 +88,9 @@ export async function GET(request: NextRequest) {
         key: project.key,
         description: project.description,
         status: project.status,
-        type: project.type || 'BUSINESS', // Include project type for navigation
-        color: project.settings ? (project.settings as any).color : '#3B82F6',
-        icon: project.settings ? (project.settings as any).icon : '📁',
+        type: project.type || 'BUSINESS',
+        color: project.color || '#3B82F6', // ✅ Use proper column
+        icon: project.icon || '📁', // ✅ Use proper column
         lead: project.leadId ? project.members.find(m => m.userId === project.leadId)?.user : null,
         memberCount: project.members.length,
         taskStats: {
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
         progress: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
-        isFavorite: false, // TODO: Implement favorites
+        isFavorite: project.isFavorite, // ✅ Use proper column
       };
     });
 
@@ -194,10 +194,9 @@ export async function POST(request: NextRequest) {
         organizationId,
         leadId: user.id,
         status: 'ACTIVE',
-        settings: {
-          color: color || '#3B82F6',
-          icon: icon || '📁',
-        },
+        color: color || '#3B82F6', // ✅ Use proper column
+        icon: icon || '📁', // ✅ Use proper column
+        settings: {}, // Keep for other settings
       },
       include: {
         members: {

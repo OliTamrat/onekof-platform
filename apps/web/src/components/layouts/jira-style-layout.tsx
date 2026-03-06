@@ -353,12 +353,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 Help
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <div className="px-2 py-1.5">
                 <div className="flex items-center justify-between w-full">
-                  <span>Dark mode</span>
+                  <span className="text-sm">Dark mode</span>
                   <ThemeToggle />
                 </div>
-              </DropdownMenuItem>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 
