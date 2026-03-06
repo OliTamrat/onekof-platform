@@ -5,10 +5,78 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
-  CheckCircle2, ArrowRight, Building2, Users, Calendar, Globe,
-  Sparkles, Loader2, ChevronRight, Target, Zap, Shield,
-  Download, Smartphone, AppWindow
+  CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
+  Sparkles, Loader2, Calendar, Target, Zap, Shield, Smartphone,
+  GraduationCap, HeartHandshake, Construction, Hospital, Landmark,
+  Briefcase, Languages
 } from 'lucide-react';
+
+// Organization types with icons and features
+const ORG_TYPES = [
+  {
+    id: 'government',
+    label: 'Government Ministry',
+    icon: Landmark,
+    color: 'blue',
+    features: ['Budget tracking', 'Compliance tools', 'Public procurement', 'Ethiopian calendar'],
+    description: 'For Ethiopian federal and regional government agencies'
+  },
+  {
+    id: 'private',
+    label: 'Private Company',
+    icon: Briefcase,
+    color: 'purple',
+    features: ['Agile workflows', 'Client projects', 'Team collaboration', 'Time tracking'],
+    description: 'For tech companies, startups, and businesses'
+  },
+  {
+    id: 'ngo',
+    label: 'NGO/INGO',
+    icon: HeartHandshake,
+    color: 'emerald',
+    features: ['Grant management', 'Impact tracking', 'Donor reporting', 'Multi-currency'],
+    description: 'For non-profit and international organizations'
+  },
+  {
+    id: 'education',
+    label: 'Educational Institution',
+    icon: GraduationCap,
+    color: 'amber',
+    features: ['Course projects', 'Research tracking', 'Academic calendar', 'Student collaboration'],
+    description: 'For universities, schools, and training centers'
+  },
+  {
+    id: 'construction',
+    label: 'Construction/Engineering',
+    icon: Construction,
+    color: 'orange',
+    features: ['Site management', 'Equipment tracking', 'Safety compliance', 'Progress photos'],
+    description: 'For construction firms and engineering companies'
+  },
+  {
+    id: 'healthcare',
+    label: 'Healthcare',
+    icon: Hospital,
+    color: 'red',
+    features: ['Facility management', 'Medical projects', 'Compliance tracking', 'Resource allocation'],
+    description: 'For hospitals, clinics, and health organizations'
+  },
+];
+
+const TEAM_SIZES = [
+  { value: '1-10', label: '1-10 people' },
+  { value: '11-50', label: '11-50 people' },
+  { value: '51-200', label: '51-200 people' },
+  { value: '201-500', label: '201-500 people' },
+  { value: '500+', label: '500+ people' },
+];
+
+const LANGUAGES = [
+  { value: 'english', label: 'English', native: 'English' },
+  { value: 'amharic', label: 'Amharic', native: 'አማርኛ' },
+  { value: 'oromo', label: 'Oromo', native: 'Afaan Oromo' },
+  { value: 'tigrinya', label: 'Tigrinya', native: 'ትግርኛ' },
+];
 
 function OnboardingContent() {
   const router = useRouter();
@@ -17,13 +85,16 @@ function OnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Form data
+  // Form data - COLLECTING FOR CATEGORIZATION
+  const [language, setLanguage] = useState('amharic'); // Ethiopian-first!
+  const [organizationType, setOrganizationType] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [organizationSlug, setOrganizationSlug] = useState('');
+  const [department, setDepartment] = useState(''); // For government
+  const [industry, setIndustry] = useState(''); // For private
   const [teamSize, setTeamSize] = useState('');
-  const [industry, setIndustry] = useState('');
-  const [useCase, setUseCase] = useState('');
-  const [language, setLanguage] = useState('english');
+  const [primaryUseCases, setPrimaryUseCases] = useState<string[]>([]);
+  const [calendarPreference, setCalendarPreference] = useState('ethiopian');
 
   const totalSteps = 4;
 
@@ -54,30 +125,34 @@ function OnboardingContent() {
     setIsLoading(true);
 
     try {
-      // Create organization
+      // Create organization with ALL categorization data
       const response = await fetch('/api/organizations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: organizationName,
           slug: organizationSlug,
-          teamSize,
+          // CATEGORIZATION DATA
+          type: organizationType,
+          department,
           industry,
-          useCase,
+          teamSize,
+          primaryUseCases,
           language,
+          calendarPreference,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Redirect to the new organization's subdomain
+        // Redirect to organization selection page instead of directly to dashboard
         const protocol = window.location.protocol;
         const port = window.location.port ? `:${window.location.port}` : '';
 
         if (window.location.hostname.includes('onekof.com')) {
-          window.location.href = `${protocol}//${organizationSlug}.onekof.com/dashboard`;
+          window.location.href = `${protocol}//onekof.com/select-organization`;
         } else {
-          window.location.href = `${protocol}//${organizationSlug}.localhost${port}/dashboard`;
+          window.location.href = `${protocol}//localhost${port}/select-organization`;
         }
       } else {
         alert('Failed to create organization. Please try again.');
@@ -90,384 +165,428 @@ function OnboardingContent() {
     }
   };
 
+  const canProceedStep1 = language !== '';
+  const canProceedStep2 = organizationType !== '';
+  const canProceedStep3 = organizationName && organizationSlug && teamSize;
+  const canComplete = true;
+
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-800/50">
+        <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
       </div>
     );
   }
 
+  const selectedOrgType = ORG_TYPES.find(t => t.id === organizationType);
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23] relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-blue-400/30 to-cyan-400/30 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-teal-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-40" />
+      {/* Ethiopian flag accent */}
+      <div className="fixed top-0 left-0 right-0 h-1 flex z-50">
+        <div className="flex-1 bg-[#078930]" />
+        <div className="flex-1 bg-[#FCDD09]" />
+        <div className="flex-1 bg-[#DA121A]" />
+      </div>
 
-      {/* Main Content */}
-      <div className="relative flex min-h-screen items-center justify-center p-4">
-        <div className="w-full max-w-6xl">
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-
-            {/* Left Section - Promo */}
-            <div className="flex flex-col justify-center space-y-8">
-              {/* Logo */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/50">
-                  <span className="text-2xl font-bold text-white">O</span>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Onekof</h1>
-                  <p className="text-sm text-gray-600">Project Management Platform</p>
-                </div>
+      <div className="relative z-10 flex min-h-screen items-center justify-center p-4 pt-8">
+        <div className="w-full max-w-4xl">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-emerald-600 shadow-lg">
+                <span className="text-xl font-bold text-white">O</span>
               </div>
-
-              {/* Main Heading */}
-              <div className="space-y-4">
-                <h2 className="text-4xl font-bold leading-tight text-gray-900 lg:text-5xl">
-                  Welcome to<br />
-                  <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Your Workspace
-                  </span>
-                </h2>
-                <p className="text-lg text-gray-600">
-                  Set up your organization in just a few steps. Get your team started with Ethiopian calendar, 4 native languages, and AI-powered workflows.
-                </p>
-              </div>
-
-              {/* Mobile Apps Section */}
-              <div className="rounded-2xl bg-white/60 backdrop-blur-xl border border-white/20 shadow-xl p-6">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500">
-                    <Smartphone className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">Download Our Mobile App</h3>
-                    <p className="text-sm text-gray-600">Access your projects on the go</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a
-                    href="#"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-black px-5 py-3 transition-opacity hover:opacity-90"
-                  >
-                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="white">
-                      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                    </svg>
-                    <div className="flex flex-col items-start">
-                      <span className="text-[10px] leading-none text-white/80">Download on the</span>
-                      <span className="text-base font-semibold leading-tight text-white">App Store</span>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-black px-5 py-3 transition-opacity hover:opacity-90"
-                  >
-                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="white">
-                      <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/>
-                    </svg>
-                    <div className="flex flex-col items-start">
-                      <span className="text-[10px] leading-none text-white/80">GET IT ON</span>
-                      <span className="text-base font-semibold leading-tight text-white">Google Play</span>
-                    </div>
-                  </a>
-                </div>
-              </div>
-
-              {/* Multi-Tenant Features */}
-              <div className="space-y-3">
-                <h3 className="text-lg font-bold text-gray-900">Multi-Tenant Features:</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-sm text-gray-700"><strong>Dedicated Subdomain:</strong> yourcompany.onekof.com</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-sm text-gray-700"><strong>Complete Data Isolation:</strong> Your data stays private</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-sm text-gray-700"><strong>Custom Branding:</strong> Make it your own</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-sm text-gray-700"><strong>Unlimited Members:</strong> Invite your whole team</span>
-                  </div>
-                </div>
+              <div className="text-left">
+                <h1 className="text-xl font-bold text-white">Onekof</h1>
+                <p className="text-xs text-slate-300">Enterprise Project Management</p>
               </div>
             </div>
 
-            {/* Right Section - Onboarding Steps */}
-            <div className="flex items-center justify-center">
-              <div className="w-full max-w-md">
-                {/* Progress Bar */}
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
-                    <span className="text-sm font-medium text-indigo-600">{Math.round((currentStep / totalSteps) * 100)}%</span>
+            {/* Ethiopian Greeting */}
+            {currentStep === 1 && (
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  እንኳን ደህና መጡ ወደ ኦነኮፍ!
+                </h2>
+                <p className="text-lg text-slate-300">
+                  Welcome to Onekof! • Baga nagaan dhuftan!
+                </p>
+              </div>
+            )}
+            {currentStep > 1 && (
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  {currentStep === 2 && 'What type of organization are you?'}
+                  {currentStep === 3 && 'Tell us about your organization'}
+                  {currentStep === 4 && 'Final step: Create your workspace'}
+                </h2>
+                <p className="text-slate-300">
+                  {currentStep === 2 && 'This helps us set up the right features for you'}
+                  {currentStep === 3 && 'We\'ll use this to personalize your experience'}
+                  {currentStep === 4 && 'Your workspace will be ready in seconds'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-slate-300">Step {currentStep} of {totalSteps}</span>
+              <span className="text-sm font-semibold text-[#1C8C7D]">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-slate-700/50">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-emerald-600 transition-all duration-500 shadow-lg shadow-[#1C8C7D]/30"
+                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Main Card */}
+          <div className="rounded-2xl bg-[#22272B]/60 backdrop-blur-xl border-2 border-slate-700/50 shadow-2xl p-8 md:p-10">
+            {/* STEP 1: Language Selection */}
+            {currentStep === 1 && (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-4">
+                    <Languages className="h-8 w-8 text-[#1C8C7D]" />
                   </div>
-                  <div className="h-2 w-full rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-500"
-                      style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                  <p className="text-slate-300">Choose your preferred language for the platform</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.value}
+                      onClick={() => setLanguage(lang.value)}
+                      className={`relative rounded-xl border-2 p-6 text-left transition-all ${
+                        language === lang.value
+                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
+                          : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
+                      }`}
+                    >
+                      {language === lang.value && (
+                        <div className="absolute top-4 right-4">
+                          <CheckCircle2 className="h-6 w-6 text-[#1C8C7D]" />
+                        </div>
+                      )}
+                      <div className="text-2xl font-bold text-white mb-1">{lang.native}</div>
+                      <div className="text-sm text-slate-400">{lang.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* STEP 2: Organization Type - CRITICAL FOR CATEGORIZATION */}
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {ORG_TYPES.map((type) => {
+                    const Icon = type.icon;
+                    return (
+                      <button
+                        key={type.id}
+                        onClick={() => setOrganizationType(type.id)}
+                        className={`relative rounded-xl border-2 p-6 text-left transition-all ${
+                          organizationType === type.id
+                            ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
+                            : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
+                        }`}
+                      >
+                        {organizationType === type.id && (
+                          <div className="absolute top-4 right-4">
+                            <CheckCircle2 className="h-6 w-6 text-[#1C8C7D]" />
+                          </div>
+                        )}
+                        <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-4">
+                          <Icon className="h-6 w-6 text-[#1C8C7D]" />
+                        </div>
+                        <div className="text-lg font-bold text-white mb-2">{type.label}</div>
+                        <p className="text-sm text-slate-400 mb-3">{type.description}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {type.features.slice(0, 2).map((feature) => (
+                            <span key={feature} className="text-xs bg-slate-700/50 text-slate-300 px-2 py-1 rounded border border-slate-600/30">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Organization Details - CONTEXTUAL! */}
+            {currentStep === 3 && (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Organization Name
+                  </label>
+                  <input
+                    type="text"
+                    value={organizationName}
+                    onChange={(e) => setOrganizationName(e.target.value)}
+                    className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                    placeholder={organizationType === 'government' ? 'e.g., Ministry of Water & Irrigation' : 'Your organization name'}
+                  />
+                </div>
+
+                {/* Conditional field for government */}
+                {organizationType === 'government' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Department/Bureau (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                      className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                      placeholder="e.g., Planning & Budget Bureau"
                     />
                   </div>
-                </div>
+                )}
 
-                {/* Glassmorphism Card */}
-                <div className="rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/20 shadow-2xl p-8">
+                {/* Conditional field for private */}
+                {organizationType === 'private' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Industry
+                    </label>
+                    <select
+                      value={industry}
+                      onChange={(e) => setIndustry(e.target.value)}
+                      className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                    >
+                      <option value="">Select industry</option>
+                      <option value="technology">Technology</option>
+                      <option value="finance">Finance</option>
+                      <option value="retail">Retail</option>
+                      <option value="manufacturing">Manufacturing</option>
+                      <option value="consulting">Consulting</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                )}
 
-                  {/* Step 1: Organization Name */}
-                  {currentStep === 1 && (
-                    <div className="space-y-6">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100">
-                            <Building2 className="h-5 w-5 text-indigo-600" />
-                          </div>
-                          <h3 className="text-2xl font-bold text-gray-900">Create Organization</h3>
-                        </div>
-                        <p className="text-gray-600">Let's start by naming your workspace</p>
-                      </div>
-
-                      <div>
-                        <label htmlFor="orgName" className="block text-sm font-semibold text-gray-700 mb-2">
-                          Organization Name
-                        </label>
-                        <input
-                          id="orgName"
-                          type="text"
-                          value={organizationName}
-                          onChange={(e) => setOrganizationName(e.target.value)}
-                          required
-                          className="w-full rounded-xl border-2 border-gray-200 bg-white/50 py-3.5 px-4 text-gray-900 placeholder-gray-400 transition-all focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
-                          placeholder="e.g., Ministry of Water, Acme Inc"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="orgSlug" className="block text-sm font-semibold text-gray-700 mb-2">
-                          Your Subdomain
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <input
-                            id="orgSlug"
-                            type="text"
-                            value={organizationSlug}
-                            onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                            required
-                            className="flex-1 rounded-xl border-2 border-gray-200 bg-white/50 py-3.5 px-4 text-gray-900 placeholder-gray-400 transition-all focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
-                            placeholder="my-company"
-                          />
-                          <span className="text-sm text-gray-500">.onekof.com</span>
-                        </div>
-                        {organizationSlug && (
-                          <p className="mt-2 text-xs text-indigo-600">
-                            Your workspace will be available at: <strong>{organizationSlug}.onekof.com</strong>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 2: Team Size */}
-                  {currentStep === 2 && (
-                    <div className="space-y-6">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100">
-                            <Users className="h-5 w-5 text-purple-600" />
-                          </div>
-                          <h3 className="text-2xl font-bold text-gray-900">Team Size</h3>
-                        </div>
-                        <p className="text-gray-600">How many people will use Onekof?</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        {['1-10', '11-50', '51-200', '200+'].map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => setTeamSize(size)}
-                            className={`rounded-xl border-2 py-4 px-4 text-center font-semibold transition-all ${
-                              teamSize === size
-                                ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                : 'border-gray-200 bg-white/50 text-gray-700 hover:border-gray-300'
-                            }`}
-                          >
-                            {size} members
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 3: Industry & Use Case */}
-                  {currentStep === 3 && (
-                    <div className="space-y-6">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-100">
-                            <Target className="h-5 w-5 text-pink-600" />
-                          </div>
-                          <h3 className="text-2xl font-bold text-gray-900">Tell Us More</h3>
-                        </div>
-                        <p className="text-gray-600">Help us personalize your experience</p>
-                      </div>
-
-                      <div>
-                        <label htmlFor="industry" className="block text-sm font-semibold text-gray-700 mb-2">
-                          Industry
-                        </label>
-                        <select
-                          id="industry"
-                          value={industry}
-                          onChange={(e) => setIndustry(e.target.value)}
-                          className="w-full rounded-xl border-2 border-gray-200 bg-white/50 py-3.5 px-4 text-gray-900 transition-all focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
-                        >
-                          <option value="">Select industry</option>
-                          <option value="government">Government/Public Sector</option>
-                          <option value="technology">Technology</option>
-                          <option value="construction">Construction</option>
-                          <option value="healthcare">Healthcare</option>
-                          <option value="education">Education</option>
-                          <option value="finance">Finance</option>
-                          <option value="other">Other</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label htmlFor="useCase" className="block text-sm font-semibold text-gray-700 mb-2">
-                          Primary Use Case
-                        </label>
-                        <select
-                          id="useCase"
-                          value={useCase}
-                          onChange={(e) => setUseCase(e.target.value)}
-                          className="w-full rounded-xl border-2 border-gray-200 bg-white/50 py-3.5 px-4 text-gray-900 transition-all focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
-                        >
-                          <option value="">Select use case</option>
-                          <option value="project-management">Project Management</option>
-                          <option value="task-tracking">Task Tracking</option>
-                          <option value="budget-management">Budget Management</option>
-                          <option value="team-collaboration">Team Collaboration</option>
-                          <option value="all">All of the above</option>
-                        </select>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 4: Language Preference */}
-                  {currentStep === 4 && (
-                    <div className="space-y-6">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
-                            <Globe className="h-5 w-5 text-green-600" />
-                          </div>
-                          <h3 className="text-2xl font-bold text-gray-900">Language Preference</h3>
-                        </div>
-                        <p className="text-gray-600">Choose your preferred language</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        {[
-                          { value: 'english', label: 'English' },
-                          { value: 'amharic', label: 'አማርኛ (Amharic)' },
-                          { value: 'oromo', label: 'Afaan Oromo' },
-                          { value: 'tigrinya', label: 'ትግርኛ (Tigrinya)' },
-                        ].map((lang) => (
-                          <button
-                            key={lang.value}
-                            onClick={() => setLanguage(lang.value)}
-                            className={`rounded-xl border-2 py-4 px-4 text-center font-semibold transition-all ${
-                              language === lang.value
-                                ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                                : 'border-gray-200 bg-white/50 text-gray-700 hover:border-gray-300'
-                            }`}
-                          >
-                            {lang.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="rounded-xl bg-green-50 border border-green-100 p-4">
-                        <div className="flex items-start gap-3">
-                          <Sparkles className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <div className="text-sm">
-                            <p className="font-semibold text-green-900 mb-1">You're all set!</p>
-                            <p className="text-green-700">
-                              Click "Complete Setup" to create your workspace and start collaborating.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Navigation Buttons */}
-                  <div className="mt-8 flex items-center justify-between">
-                    {currentStep > 1 && (
+                <div>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Team Size
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {TEAM_SIZES.map((size) => (
                       <button
-                        onClick={handleBack}
-                        className="rounded-xl border-2 border-gray-200 bg-white/50 px-6 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-white hover:border-gray-300"
+                        key={size.value}
+                        onClick={() => setTeamSize(size.value)}
+                        className={`rounded-xl border-2 py-3 px-4 text-sm font-semibold transition-all ${
+                          teamSize === size.value
+                            ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 text-[#1C8C7D]'
+                            : 'border-slate-600/50 text-white hover:border-slate-500'
+                        }`}
                       >
-                        Back
+                        {size.label}
                       </button>
-                    )}
-
-                    {currentStep < totalSteps ? (
-                      <button
-                        onClick={handleNext}
-                        disabled={
-                          (currentStep === 1 && (!organizationName || !organizationSlug)) ||
-                          (currentStep === 2 && !teamSize)
-                        }
-                        className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 disabled:opacity-50 disabled:hover:scale-100"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                        <div className="flex items-center gap-2">
-                          <span>Continue</span>
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </div>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleComplete}
-                        disabled={isLoading}
-                        className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/30 transition-all hover:shadow-xl hover:shadow-green-500/40 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:hover:scale-100"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                        {isLoading ? (
-                          <div className="flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span>Setting up...</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <span>Complete Setup</span>
-                            <CheckCircle2 className="h-4 w-4" />
-                          </div>
-                        )}
-                      </button>
-                    )}
+                    ))}
                   </div>
                 </div>
 
-                {/* Footer */}
-                <p className="mt-6 text-center text-xs text-gray-500">
-                  © 2026 Onekof. Built with ❤️ in Ethiopia 🇪🇹
-                </p>
+                <div>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Workspace URL
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={organizationSlug}
+                      onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                      className="flex-1 rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                      placeholder="my-organization"
+                    />
+                    <span className="text-sm text-slate-400 whitespace-nowrap">.onekof.com</span>
+                  </div>
+                  {organizationSlug && (
+                    <p className="mt-2 text-xs text-[#1C8C7D]">
+                      Your workspace: <strong>{organizationSlug}.onekof.com</strong>
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
+            {/* STEP 4: Workspace Setup + Calendar */}
+            {currentStep === 4 && (
+              <div className="space-y-8">
+                <div>
+                  <label className="block text-sm font-semibold text-white mb-4">
+                    Calendar Preference
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button
+                      onClick={() => setCalendarPreference('ethiopian')}
+                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                        calendarPreference === 'ethiopian'
+                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
+                          : 'border-slate-600/50 hover:border-slate-500'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <Calendar className="h-5 w-5 text-[#1C8C7D]" />
+                        {calendarPreference === 'ethiopian' && (
+                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                        )}
+                      </div>
+                      <div className="font-semibold text-white mb-1">Ethiopian</div>
+                      <div className="text-xs text-slate-300">የኢትዮጵያ ዘመን አቆጣጠር</div>
+                    </button>
+
+                    <button
+                      onClick={() => setCalendarPreference('gregorian')}
+                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                        calendarPreference === 'gregorian'
+                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
+                          : 'border-slate-600/50 hover:border-slate-500'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <Calendar className="h-5 w-5 text-slate-300" />
+                        {calendarPreference === 'gregorian' && (
+                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                        )}
+                      </div>
+                      <div className="font-semibold text-white mb-1">Gregorian</div>
+                      <div className="text-xs text-slate-300">International</div>
+                    </button>
+
+                    <button
+                      onClick={() => setCalendarPreference('both')}
+                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                        calendarPreference === 'both'
+                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
+                          : 'border-slate-600/50 hover:border-slate-500'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <Globe className="h-5 w-5 text-purple-600" />
+                        {calendarPreference === 'both' && (
+                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                        )}
+                      </div>
+                      <div className="font-semibold text-white mb-1">Both</div>
+                      <div className="text-xs text-slate-300">Show both calendars</div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mobile App Promo */}
+                <div className="rounded-xl bg-gradient-to-br from-[#1C8C7D]/10 to-emerald-100/50 border border-[#1C8C7D]/20 p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1C8C7D]">
+                      <Smartphone className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-white">Download Mobile App</div>
+                      <div className="text-sm text-slate-300">Manage on the go</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm text-white hover:bg-black/80 transition-colors">
+                      <span>📱 App Store</span>
+                    </a>
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm text-white hover:bg-black/80 transition-colors">
+                      <span>📱 Google Play</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Summary */}
+                <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-6">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-white mb-2">You're all set!</p>
+                      <p className="text-sm text-slate-300 mb-3">
+                        Based on your selections, we've enabled features for{' '}
+                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'amharic' ? 'አማርኛ' : language === 'oromo' ? 'Afaan Oromo' : language === 'tigrinya' ? 'ትግርኛ' : 'English'} language support.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedOrgType?.features.map((feature) => (
+                          <span key={feature} className="text-xs bg-slate-700/50 text-emerald-300 px-2 py-1 rounded border border-emerald-500/30">
+                            ✓ {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Navigation Buttons */}
+          <div className="mt-8 flex items-center justify-between">
+            {currentStep > 1 && (
+              <button
+                onClick={handleBack}
+                className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-600/50 bg-slate-800/50 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-700/30 hover:border-slate-500"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+            )}
+
+            {currentStep < totalSteps ? (
+              <button
+                onClick={handleNext}
+                disabled={
+                  (currentStep === 1 && !canProceedStep1) ||
+                  (currentStep === 2 && !canProceedStep2) ||
+                  (currentStep === 3 && !canProceedStep3)
+                }
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/30 disabled:opacity-50 disabled:hover:scale-100"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <div className="flex items-center gap-2">
+                  <span>Continue</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={handleComplete}
+                disabled={isLoading}
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-emerald-500/30 disabled:opacity-50 disabled:hover:scale-100"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Creating workspace...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>Launch Workspace</span>
+                    <CheckCircle2 className="h-4 w-4" />
+                  </div>
+                )}
+              </button>
+            )}
+          </div>
+
+          {/* Footer */}
+          <p className="mt-8 text-center text-xs text-slate-400">
+            © 2026 Onekof. Built with ❤️ for Ethiopia
+          </p>
         </div>
       </div>
     </div>
@@ -477,8 +596,8 @@ function OnboardingContent() {
 export default function OnboardingPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-800/50">
+        <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
       </div>
     }>
       <OnboardingContent />

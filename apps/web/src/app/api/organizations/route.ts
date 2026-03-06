@@ -83,7 +83,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, slug, description } = await req.json();
+    const {
+      name,
+      slug,
+      description,
+      // Categorization data from onboarding
+      type,
+      department,
+      industry,
+      teamSize,
+      primaryUseCases,
+      language,
+      calendarPreference,
+    } = await req.json();
 
     // Validation
     if (!name || !slug) {
@@ -110,13 +122,21 @@ export async function POST(req: NextRequest) {
 
       // Create organization in a transaction
       const result = await prisma.$transaction(async (tx) => {
-        // Create organization
+        // Create organization with categorization data
         const organization = await tx.organization.create({
           data: {
             name,
             slug,
             schemaName,
             description,
+            // Categorization data from onboarding
+            type: type || null,
+            department: department || null,
+            industry: industry || null,
+            teamSize: teamSize || null,
+            primaryUseCases: primaryUseCases || [],
+            language: language || 'english',
+            calendarPreference: calendarPreference || 'gregorian',
             // Owner tracked via OrganizationMember with role='OWNER'
           },
         });

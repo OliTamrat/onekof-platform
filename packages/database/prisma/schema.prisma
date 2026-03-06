@@ -45,6 +45,15 @@ model Organization {
   preferredCalendar Calendar @default(GREGORIAN) @map("preferred_calendar")
   primaryLanguage   Language @default(EN) @map("primary_language")
 
+  // Organization categorization (from onboarding)
+  type             String?   // government, private, ngo, education, construction, healthcare
+  department       String?   // for government orgs
+  industry         String?   // for private orgs
+  teamSize         String?   // 1-10, 11-50, 51-200, 201-500, 500+
+  primaryUseCases  String[]  @default([]) @map("primary_use_cases")
+  language         String?   // english, amharic, oromo, tigrinya
+  calendarPreference String? @map("calendar_preference") // ethiopian, gregorian, both
+
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")

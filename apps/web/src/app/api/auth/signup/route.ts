@@ -49,11 +49,12 @@ export async function POST(req: NextRequest) {
       });
 
       // Create default organization/workspace
+      const schemaName = `onekof_org_${email.split('@')[0]}_${Date.now()}`.replace(/[^a-z0-9_]/g, '_');
       const organization = await tx.organization.create({
         data: {
           name: `${name}'s Workspace`,
           slug: `${email.split('@')[0]}-workspace-${Date.now()}`,
-          ownerId: user.id,
+          schemaName: schemaName,
         },
       });
 
