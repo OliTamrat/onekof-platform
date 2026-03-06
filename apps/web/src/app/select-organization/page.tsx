@@ -62,7 +62,7 @@ export default function SelectOrganizationPage() {
     // Set default organization and redirect to dashboard
     try {
       const response = await fetch('/api/user/default-organization', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ organizationId: org.id }),
       });
@@ -70,6 +70,8 @@ export default function SelectOrganizationPage() {
       if (response.ok) {
         // Redirect to dashboard on same domain (no subdomain for demo)
         router.push('/dashboard');
+      } else {
+        console.error('Failed to set organization:', await response.text());
       }
     } catch (error) {
       console.error('Failed to set default organization:', error);
