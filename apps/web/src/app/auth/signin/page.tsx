@@ -48,7 +48,7 @@ function SignInContent() {
 
         // Fetch organization info
         try {
-          const response = await fetch(`/api/organizations/${subdomain}`);
+          const response = await fetch(`/api/organizations/by-slug/${subdomain}`);
           if (response.ok) {
             const data = await response.json();
             setOrganization(data.organization);
