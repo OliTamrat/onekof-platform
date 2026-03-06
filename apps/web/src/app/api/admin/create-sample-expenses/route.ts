@@ -6,7 +6,7 @@ import { prisma } from '@onekof/database';
  * POST /api/admin/create-sample-expenses
  * Creates sample expenses for the Jira Water Dam project
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await getServerSession();
 

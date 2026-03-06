@@ -209,9 +209,24 @@ export default function BudgetPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
-        {/* Stats Cards */}
-        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {/* Budget Page Header */}
+      <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 md:px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <DollarSign className="w-7 h-7 md:w-8 md:h-8 text-[#1C8C7D]" />
+              Budget Management
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Track and manage organization budget across all categories
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards - Sticky Header */}
+      <div className="sticky top-0 z-10 bg-white dark:bg-[#1B1F23] border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="p-4 md:p-6 grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             icon={<DollarSign className="h-5 w-5" />}
             value={`ETB ${(spent / 1000000).toFixed(1)}M`}
@@ -245,7 +260,10 @@ export default function BudgetPage() {
             onClick={handleShowUnderBudgetCategories}
           />
         </div>
+      </div>
 
+      {/* Main Content with Padding */}
+      <div className="p-4 md:p-6">
         {/* Main Grid - Redesigned for Better UI/UX */}
         <div className="grid grid-cols-1 gap-6">
           {/* Row 1: Budget Overview + (Activity + Watchers stacked) */}

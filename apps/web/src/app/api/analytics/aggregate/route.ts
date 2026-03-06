@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
  * GET /api/analytics/aggregate
  * Get status/info about metrics aggregation
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   return NextResponse.json({
     message: 'Metrics Aggregation API',
     usage: {

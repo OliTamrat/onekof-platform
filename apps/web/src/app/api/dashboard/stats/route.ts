@@ -6,7 +6,7 @@ import { prisma } from '@onekof/database';
  * GET /api/dashboard/stats
  * Returns dashboard statistics for the current user's organization
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Get the current user's session
     const session = await getServerSession();

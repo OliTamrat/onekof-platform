@@ -10,8 +10,6 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
   TrendingUp,
   Clock,
@@ -27,12 +25,11 @@ import {
   User,
 } from 'lucide-react';
 
-export default function IssuesSummaryPage() {
+export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { projects, isLoadingProjects } = useWorkspace();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   // INNOVATION: Lightning-fast drill-down modal state
@@ -60,19 +57,6 @@ export default function IssuesSummaryPage() {
       return () => clearTimeout(timer);
     }
   }, [status]);
-
-  // Fetch projects
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
-      return res.json();
-    },
-    enabled: !!session,
-  });
-
-  const currentProject = projectsData?.projects?.[0];
 
   // Fetch dashboard statistics
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -281,16 +265,9 @@ export default function IssuesSummaryPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-        />
-
-        <div className="flex-1 overflow-auto p-6">
-          {/* Stats Cards - Beautiful 2x2 grid on mobile */}
-          <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+      <div className="p-6">
+        {/* Stats Cards - Beautiful 2x2 grid on mobile */}
+        <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={tasksCompleted.toString()}
@@ -571,17 +548,9 @@ export default function IssuesSummaryPage() {
                 </div>
               </div>
             )}
-            </div>
           </div>
         </div>
       </div>
-
-      {/* Create Issue Modal */}
-      {showCreateModal && (
-        <CreateIssueModal
-          onClose={() => setShowCreateModal(false)}
-        />
-      )}
 
       {/* Create Project Modal */}
       <CreateProjectModal

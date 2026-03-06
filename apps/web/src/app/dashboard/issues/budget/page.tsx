@@ -1,46 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import { DollarSign } from 'lucide-react';
 
 export default function IssuesBudgetPage() {
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const router = useRouter();
 
-  // Fetch projects
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
-      return res.json();
-    },
-  });
-
-  const currentProject = projectsData?.projects?.[0];
+  // Redirect to main budget page
+  useEffect(() => {
+    router.push('/dashboard/budget');
+  }, [router]);
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-        />
-
-        {/* Budget Content */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="flex h-full items-center justify-center">
-            <div className="text-center">
-              <DollarSign className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
-              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Budget</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-[#9FADBC]">
-                This feature is coming soon. Stay tuned!
-              </p>
-            </div>
-          </div>
+      <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="text-center">
+          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
+          <DollarSign className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-4" />
+          <p className="text-sm text-slate-500 dark:text-slate-400">Redirecting to Budget...</p>
         </div>
       </div>
     </AppLayout>
