@@ -81,15 +81,26 @@ export default function SelectOrganizationPage() {
     const port = window.location.port ? `:${window.location.port}` : '';
     const hostname = window.location.hostname;
 
-    // For Vercel production (onekof-platform-*.vercel.app) - use same domain
+    // Determine if we're in development (localhost or local network)
+    const isDevelopment =
+      hostname === 'localhost' ||
+      hostname.startsWith('192.168.') ||
+      hostname.startsWith('10.') ||
+      port === '3000';
+
+    // For Vercel deployments (*.vercel.app) - use same domain without subdomains
     if (hostname.includes('vercel.app')) {
       router.push('/dashboard');
+    }
+    // For local development - use subdomain with localhost
+    else if (isDevelopment) {
+      window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
     }
     // For custom domain production (onekof.com) - use subdomain
     else if (hostname.includes('onekof.com')) {
       window.location.href = `${protocol}//${org.slug}.onekof.com/dashboard`;
     }
-    // For local development - use subdomain with localhost
+    // Fallback to localhost for unknown environments
     else {
       window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
     }
