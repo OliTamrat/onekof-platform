@@ -10,6 +10,25 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  cookies: {
+    // Configure cookies to work across subdomains
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        // Domain set to .localhost for dev, .onekof.com for production
+        // This allows cookies to be shared across subdomains
+        domain: process.env.NODE_ENV === 'production'
+          ? '.onekof.com'
+          : '.localhost',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',
