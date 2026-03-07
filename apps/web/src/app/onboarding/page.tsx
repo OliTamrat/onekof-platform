@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
   CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
   Sparkles, Loader2, Calendar, Target, Zap, Shield, Smartphone,
-  GraduationCap, HeartHandshake, Construction, Hospital, Landmark,
+  GraduationCap, HeartHandshake, Construction, HeartPulse, Landmark,
   Briefcase, Languages
 } from 'lucide-react';
 
@@ -56,7 +56,7 @@ const ORG_TYPES = [
   {
     id: 'healthcare',
     label: 'Healthcare',
-    icon: Hospital,
+    icon: HeartPulse,
     color: 'red',
     features: ['Facility management', 'Medical projects', 'Compliance tracking', 'Resource allocation'],
     description: 'For hospitals, clinics, and health organizations'
@@ -80,13 +80,12 @@ const LANGUAGES = [
 
 function OnboardingContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   // Form data - COLLECTING FOR CATEGORIZATION
-  const [language, setLanguage] = useState('amharic'); // Ethiopian-first!
+  const [language, setLanguage] = useState(''); // User must select
   const [organizationType, setOrganizationType] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [organizationSlug, setOrganizationSlug] = useState('');
