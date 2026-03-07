@@ -261,24 +261,24 @@ function OnboardingContent() {
                   <p className="text-slate-300">Choose your preferred language for the platform</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {LANGUAGES.map((lang) => (
                     <button
                       key={lang.value}
                       onClick={() => setLanguage(lang.value)}
-                      className={`relative rounded-xl border-2 p-6 text-left transition-all ${
+                      className={`relative rounded-lg border-2 p-4 text-left transition-all ${
                         language === lang.value
                           ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
                           : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
                       }`}
                     >
                       {language === lang.value && (
-                        <div className="absolute top-4 right-4">
-                          <CheckCircle2 className="h-6 w-6 text-[#1C8C7D]" />
+                        <div className="absolute top-3 right-3">
+                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D]" />
                         </div>
                       )}
-                      <div className="text-2xl font-bold text-white mb-1">{lang.native}</div>
-                      <div className="text-sm text-slate-400">{lang.label}</div>
+                      <div className="text-xl font-bold text-white mb-0.5">{lang.native}</div>
+                      <div className="text-xs text-slate-400">{lang.label}</div>
                     </button>
                   ))}
                 </div>
@@ -287,33 +287,33 @@ function OnboardingContent() {
 
             {/* STEP 2: Organization Type - CRITICAL FOR CATEGORIZATION */}
             {currentStep === 2 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {ORG_TYPES.map((type) => {
                     const Icon = type.icon;
                     return (
                       <button
                         key={type.id}
                         onClick={() => setOrganizationType(type.id)}
-                        className={`relative rounded-xl border-2 p-6 text-left transition-all ${
+                        className={`relative rounded-lg border-2 p-4 text-left transition-all ${
                           organizationType === type.id
                             ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
                             : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
                         }`}
                       >
                         {organizationType === type.id && (
-                          <div className="absolute top-4 right-4">
-                            <CheckCircle2 className="h-6 w-6 text-[#1C8C7D]" />
+                          <div className="absolute top-3 right-3">
+                            <CheckCircle2 className="h-5 w-5 text-[#1C8C7D]" />
                           </div>
                         )}
-                        <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-4">
-                          <Icon className="h-6 w-6 text-[#1C8C7D]" />
+                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-3">
+                          <Icon className="h-5 w-5 text-[#1C8C7D]" />
                         </div>
-                        <div className="text-lg font-bold text-white mb-2">{type.label}</div>
-                        <p className="text-sm text-slate-400 mb-3">{type.description}</p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="text-base font-bold text-white mb-1.5">{type.label}</div>
+                        <p className="text-xs text-slate-400 mb-2">{type.description}</p>
+                        <div className="flex flex-wrap gap-1.5">
                           {type.features.slice(0, 2).map((feature) => (
-                            <span key={feature} className="text-xs bg-slate-700/50 text-slate-300 px-2 py-1 rounded border border-slate-600/30">
+                            <span key={feature} className="text-xs bg-slate-700/50 text-slate-300 px-2 py-0.5 rounded border border-slate-600/30">
                               {feature}
                             </span>
                           ))}
@@ -383,12 +383,12 @@ function OnboardingContent() {
                   <label className="block text-sm font-semibold text-white mb-2">
                     Team Size
                   </label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {TEAM_SIZES.map((size) => (
                       <button
                         key={size.value}
                         onClick={() => setTeamSize(size.value)}
-                        className={`rounded-xl border-2 py-3 px-4 text-sm font-semibold transition-all ${
+                        className={`rounded-lg border-2 py-2 px-3 text-sm font-semibold transition-all ${
                           teamSize === size.value
                             ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 text-[#1C8C7D]'
                             : 'border-slate-600/50 text-white hover:border-slate-500'
@@ -427,61 +427,61 @@ function OnboardingContent() {
             {currentStep === 4 && (
               <div className="space-y-8">
                 <div>
-                  <label className="block text-sm font-semibold text-white mb-4">
+                  <label className="block text-sm font-semibold text-white mb-3">
                     Calendar Preference
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <button
                       onClick={() => setCalendarPreference('ethiopian')}
-                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                      className={`rounded-lg border-2 p-3 text-left transition-all ${
                         calendarPreference === 'ethiopian'
                           ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
                           : 'border-slate-600/50 hover:border-slate-500'
                       }`}
                     >
-                      <div className="flex items-center gap-3 mb-2">
-                        <Calendar className="h-5 w-5 text-[#1C8C7D]" />
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Calendar className="h-4 w-4 text-[#1C8C7D]" />
                         {calendarPreference === 'ethiopian' && (
-                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white mb-1">Ethiopian</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
                       <div className="text-xs text-slate-300">የኢትዮጵያ ዘመን አቆጣጠር</div>
                     </button>
 
                     <button
                       onClick={() => setCalendarPreference('gregorian')}
-                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                      className={`rounded-lg border-2 p-3 text-left transition-all ${
                         calendarPreference === 'gregorian'
                           ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
                           : 'border-slate-600/50 hover:border-slate-500'
                       }`}
                     >
-                      <div className="flex items-center gap-3 mb-2">
-                        <Calendar className="h-5 w-5 text-slate-300" />
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Calendar className="h-4 w-4 text-slate-300" />
                         {calendarPreference === 'gregorian' && (
-                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white mb-1">Gregorian</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
                       <div className="text-xs text-slate-300">International</div>
                     </button>
 
                     <button
                       onClick={() => setCalendarPreference('both')}
-                      className={`rounded-xl border-2 p-5 text-left transition-all ${
+                      className={`rounded-lg border-2 p-3 text-left transition-all ${
                         calendarPreference === 'both'
                           ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
                           : 'border-slate-600/50 hover:border-slate-500'
                       }`}
                     >
-                      <div className="flex items-center gap-3 mb-2">
-                        <Globe className="h-5 w-5 text-purple-600" />
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Globe className="h-4 w-4 text-purple-600" />
                         {calendarPreference === 'both' && (
-                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white mb-1">Both</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">Both</div>
                       <div className="text-xs text-slate-300">Show both calendars</div>
                     </button>
                   </div>
