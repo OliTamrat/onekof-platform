@@ -173,7 +173,10 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
     },
     onSuccess: async () => {
       await refetch();
+      // Invalidate all issues queries to refresh boards/lists
       queryClient.invalidateQueries({ queryKey: ['issues'] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
     },
   });
 
@@ -394,6 +397,7 @@ function DetailsTab({
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isEditingDueDate, setIsEditingDueDate] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
 
   // Status options
   const statusOptions = [
@@ -444,7 +448,7 @@ function DetailsTab({
         {/* Status Dropdown */}
         <div className="flex items-center gap-3">
           <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400 w-20">Status</span>
-          <div className="relative">
+          <div className="relative flex items-center gap-2">
             <button
               onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
               className={`inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium ${statusColors[issue.status]} hover:opacity-80 transition-opacity`}
@@ -452,6 +456,12 @@ function DetailsTab({
               {issue.status.replace('_', ' ')}
               <ChevronDown className="h-3 w-3" />
             </button>
+            {showSaved && (
+              <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 animate-fade-in">
+                <Check className="h-3 w-3" />
+                Saved
+              </span>
+            )}
             {isStatusDropdownOpen && (
               <div className="absolute left-0 top-full mt-1 z-10 w-40 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
                 {statusOptions.map((status) => (
@@ -460,6 +470,8 @@ function DetailsTab({
                     onClick={() => {
                       updateIssue.mutate({ status: status.value });
                       setIsStatusDropdownOpen(false);
+                      setShowSaved(true);
+                      setTimeout(() => setShowSaved(false), 2000);
                     }}
                     className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${
                       issue.status === status.value ? 'bg-gray-50 dark:bg-gray-700/50' : ''
@@ -495,6 +507,8 @@ function DetailsTab({
                     onClick={() => {
                       updateIssue.mutate({ priority: priority.value });
                       setIsPriorityDropdownOpen(false);
+                      setShowSaved(true);
+                      setTimeout(() => setShowSaved(false), 2000);
                     }}
                     className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${
                       issue.priority === priority.value ? 'bg-gray-50 dark:bg-gray-700/50' : ''
@@ -507,6 +521,8 @@ function DetailsTab({
                   onClick={() => {
                     updateIssue.mutate({ priority: null });
                     setIsPriorityDropdownOpen(false);
+                    setShowSaved(true);
+                    setTimeout(() => setShowSaved(false), 2000);
                   }}
                   className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
                 >
@@ -892,6 +908,7 @@ function SubtasksSection({ issue }: { issue: Issue }) {
 
 // Comments Section Component
 function CommentsSection({ issue, commentContent, setCommentContent }: { issue: Issue; commentContent: string; setCommentContent: (val: string) => void }) {
+  const queryClient = useQueryClient();
   const comments = issue.comments || [];
   const [isSending, setIsSending] = useState(false);
 
@@ -908,7 +925,9 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
 
       if (res.ok) {
         setCommentContent('');
-        // Refresh would happen here via React Query
+        // Refresh issue data to get new comments
+        await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+        await queryClient.invalidateQueries({ queryKey: ['issues'] });
       } else {
         alert('Failed to send comment');
       }

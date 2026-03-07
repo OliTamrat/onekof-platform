@@ -113,32 +113,37 @@ export async function processDocument(
  * Build context-aware prompt based on document type
  */
 function buildPrompt(content: string, type: DocumentType, fileName: string): string {
-  const basePrompt = `You are an expert financial and project management analyst for Ethiopian government infrastructure projects. Analyze the following document with extreme attention to detail.
+  const basePrompt = `You are an expert financial and project management analyst. Analyze the following document with extreme attention to detail.
 
 Document Name: ${fileName}
 Document Type: ${type.toUpperCase()}
 
 CRITICAL INSTRUCTIONS:
-1. Extract ALL financial data with 100% accuracy
-2. Use Ethiopian Birr (ETB) as the default currency
-3. Identify ALL dates in Ethiopian calendar if present, convert to Gregorian
-4. Flag any risks, compliance issues, or budget concerns
-5. Provide actionable recommendations
+1. READ THE ENTIRE DOCUMENT CAREFULLY - extract what is ACTUALLY written in the document
+2. Create a summary based on the ACTUAL content, not generic descriptions
+3. Extract ALL financial data EXACTLY as shown (amounts, dates, vendors, items)
+4. Use Ethiopian Birr (ETB) as default currency if not specified
+5. Provide specific insights based on what you see in the document
+6. Your confidence score should reflect how clearly the information is presented
 
 Document Content:
 ${content}
 
+IMPORTANT: Base your response entirely on what is ACTUALLY in this document. Do not make assumptions or use generic placeholders.
+
 RESPOND IN VALID JSON FORMAT ONLY (no markdown, no code blocks):
 {
-  "summary": "2-3 sentence executive summary",
+  "summary": "Write a specific 2-3 sentence summary describing what THIS SPECIFIC document contains, including key amounts, dates, and parties mentioned",
   "insights": {
-    "keyFindings": ["finding 1", "finding 2", ...],
-    "risks": ["risk 1", "risk 2", ...],
-    "recommendations": ["recommendation 1", "recommendation 2", ...],
+    "keyFindings": ["List specific findings from THIS document, including actual numbers and details"],
+    "risks": ["List any risks or concerns based on THIS specific document's content"],
+    "recommendations": ["Provide specific recommendations based on what you see in THIS document"],
     "confidence": 0.95
   },
   "extractedData": ${getExtractionTemplate(type)}
-}`;
+}
+
+Remember: Extract the ACTUAL data from the document. If the document says "$5" then extract "$5", not a placeholder like "50000".`;
 
   return basePrompt;
 }
@@ -151,23 +156,23 @@ function getExtractionTemplate(type: DocumentType): string {
     case 'invoice':
     case 'receipt':
       return `{
-    "vendor": "Company name",
-    "invoiceNumber": "INV-001",
-    "invoiceDate": "2026-03-04",
-    "dueDate": "2026-03-30",
-    "totalAmount": 50000.00,
-    "currency": "ETB",
+    "vendor": "EXTRACT the actual vendor/company name from document",
+    "invoiceNumber": "EXTRACT the actual invoice number if present",
+    "invoiceDate": "EXTRACT the actual date in YYYY-MM-DD format",
+    "dueDate": "EXTRACT the due date if present",
+    "totalAmount": "EXTRACT the actual total amount as a number",
+    "currency": "EXTRACT currency (USD, ETB, etc.) or use ETB as default",
     "lineItems": [
       {
-        "description": "Item description",
-        "quantity": 10,
-        "unitPrice": 5000,
-        "total": 50000,
-        "category": "Construction Materials"
+        "description": "EXTRACT each item description exactly as written",
+        "quantity": "EXTRACT quantity if present",
+        "unitPrice": "EXTRACT unit price if present",
+        "total": "EXTRACT line total",
+        "category": "Infer category from description"
       }
     ],
-    "taxAmount": 0,
-    "paymentTerms": "Net 30"
+    "taxAmount": "EXTRACT tax amount if present, otherwise 0",
+    "paymentTerms": "EXTRACT payment terms if mentioned"
   }`;
 
     case 'contract':
