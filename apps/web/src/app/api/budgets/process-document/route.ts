@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
+import { authOptions } from '@/lib/auth';
 
 // Initialize Claude API client
 const anthropic = new Anthropic({
@@ -15,7 +16,7 @@ const anthropic = new Anthropic({
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -213,7 +214,7 @@ Return ONLY valid JSON, no explanations.`,
  */
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

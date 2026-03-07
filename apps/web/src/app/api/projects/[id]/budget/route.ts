@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { checkBudgetAccess, getBudgetAccess, filterBudgetData } from '@/lib/budget-access';
 import { BudgetAccess } from '@prisma/client';
+import { authOptions } from '@/lib/auth';
 
 /**
  * 💰 BUDGET API - Integrated into OneKOF PM
@@ -28,7 +29,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -130,7 +131,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

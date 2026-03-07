@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
+import { authOptions } from '@/lib/auth';
 
 /**
  * POST /api/issues/[id]/subtasks
@@ -12,7 +13,7 @@ export async function POST(
 ) {
   try {
     // Get the current user's session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
+import { authOptions } from '@/lib/auth';
 
 /**
  * GET /api/issues
@@ -10,7 +11,7 @@ import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 export async function GET(request: NextRequest) {
   try {
     // Get the current user's session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -199,7 +200,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Get the current user's session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(

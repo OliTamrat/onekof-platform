@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { processDocument, extractTextFromFile, checkAIQuota } from '@/lib/ai/claude';
+import { authOptions } from '@/lib/auth';
 
 // Maximum file size: 10MB
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -44,7 +45,7 @@ function determineDocumentType(fileName: string, content: string): string {
 export async function POST(request: NextRequest) {
   try {
     // Get user session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

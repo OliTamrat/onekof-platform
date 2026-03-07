@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
+import { authOptions } from '@/lib/auth';
 
 /**
  * DELETE /api/issues/[id]/watchers/[userId]
@@ -16,7 +17,7 @@ export async function DELETE(
 ) {
   try {
     // Get the current user's session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -141,7 +142,7 @@ export async function PATCH(
 ) {
   try {
     // Get the current user's session
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(
