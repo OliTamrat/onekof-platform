@@ -10,6 +10,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  trustHost: true, // Allow NextAuth to work on any host (Vercel, custom domains, etc.)
   cookies: {
     // Configure cookies to work across subdomains
     sessionToken: {
@@ -20,10 +21,12 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        // Domain set to .localhost for dev, .onekof.com for production
-        // This allows cookies to be shared across subdomains
+        // Domain handling:
+        // - Development: .localhost for subdomain support
+        // - Production on custom domain: .onekof.com for subdomain support
+        // - Production on Vercel: undefined (use current domain)
         domain: process.env.NODE_ENV === 'production'
-          ? '.onekof.com'
+          ? (process.env.VERCEL_URL?.includes('vercel.app') ? undefined : '.onekof.com')
           : '.localhost',
         secure: process.env.NODE_ENV === 'production',
       },
