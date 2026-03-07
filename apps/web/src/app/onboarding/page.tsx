@@ -84,6 +84,30 @@ function OnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
+  // CRITICAL: Redirect to main domain if accessing from subdomain
+  useEffect(() => {
+    const hostname = window.location.hostname;
+
+    // Check if we're on a subdomain (not main domain)
+    const isSubdomain =
+      (hostname.includes('.onekof.com') && hostname !== 'onekof.com' && hostname !== 'www.onekof.com') ||
+      (hostname.includes('.localhost') && hostname !== 'localhost');
+
+    if (isSubdomain) {
+      // Redirect to main domain
+      const protocol = window.location.protocol;
+      const port = window.location.port ? `:${window.location.port}` : '';
+
+      if (hostname.includes('onekof.com')) {
+        window.location.href = `${protocol}//onekof.com/onboarding`;
+      } else {
+        window.location.href = `${protocol}//localhost${port}/onboarding`;
+      }
+    }
+  }, []);
+
+
+
   // Form data - COLLECTING FOR CATEGORIZATION
   const [language, setLanguage] = useState(''); // User must select
   const [organizationType, setOrganizationType] = useState('');
