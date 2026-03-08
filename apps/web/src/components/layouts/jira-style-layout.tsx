@@ -426,8 +426,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
           "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out",
+          // Desktop: Full height from top, no gap
+          "md:relative md:translate-x-0 md:z-auto md:h-[calc(100vh-3.5rem)]",
           // Mobile: Fixed position with slide-in animation, positioned below header
-          "md:relative md:translate-x-0 md:z-auto",
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
           {/* Mobile Sidebar Header with Close Button */}
