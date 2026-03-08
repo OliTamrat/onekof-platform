@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { sidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation';
+import { getSidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation-dynamic';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 interface CollapsibleSidebarProps {
   className?: string;
@@ -13,9 +14,13 @@ interface CollapsibleSidebarProps {
 
 export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
   const pathname = usePathname();
+  const { currentOrganization } = useWorkspace();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'projects', // Projects expanded by default
   ]);
+
+  // Get dynamic navigation based on organization type
+  const sidebarNavigation = getSidebarNavigation(currentOrganization?.type);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
