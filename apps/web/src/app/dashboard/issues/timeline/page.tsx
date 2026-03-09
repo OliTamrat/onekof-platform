@@ -51,60 +51,86 @@ export default function IssuesTimelinePage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [timeRange, setTimeRange] = useState<'30d' | '90d' | '6m' | '1y'>('90d');
 
-  // Fetch projects
-  const { data: projectsData, isLoading: projectsLoading } = useQuery({
-    queryKey: ['projects'],
+  // Fetch issues (includes project info) - THIS ENDPOINT WORKS without org header
+  const { data: issuesData, isLoading: projectsLoading } = useQuery({
+    queryKey: ['issues'],
     queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
+      const res = await fetch('/api/issues');
+      if (!res.ok) throw new Error('Failed to fetch issues');
       return res.json();
     },
   });
 
-  // Fetch project analytics
-  const { data: analyticsData } = useQuery({
-    queryKey: ['analytics', 'projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/analytics/projects');
-      if (!res.ok) return null;
-      return res.json();
-    },
+  // Transform issues into PROJECT timeline format
+  // Group issues by project and calculate project-level metrics
+  const issues = (issuesData?.issues || []) as any[];
+
+  // Group issues by project
+  const projectsMap = new Map<string, any>();
+
+  issues.forEach((issue: any) => {
+    if (!issue.project) return;
+
+    const projectId = issue.project.id;
+    if (!projectsMap.has(projectId)) {
+      projectsMap.set(projectId, {
+        id: issue.project.id,
+        name: issue.project.name,
+        key: issue.project.key,
+        color: issue.project.color || '#3B82F6',
+        issues: [],
+      });
+    }
+    projectsMap.get(projectId)!.issues.push(issue);
   });
 
-  // Transform API projects to Timeline format
-  const projects = ((projectsData?.projects || []) as any[]).map((apiProject) => {
-    // Calculate project status based on progress
+  // Transform to Project format with calculated metrics
+  const projects: Project[] = Array.from(projectsMap.values()).map((projectGroup) => {
+    const projectIssues = projectGroup.issues;
+    const totalIssues = projectIssues.length;
+    const completedIssues = projectIssues.filter((i: any) => i.status === 'DONE').length;
+    const progress = totalIssues > 0 ? (completedIssues / totalIssues) * 100 : 0;
+
+    // Determine project status/health based on task completion and blockers
     let status: 'ON_TRACK' | 'AT_RISK' | 'DELAYED' | 'COMPLETED';
-    if (apiProject.progress === 100) {
+    const hasBlockedTasks = projectIssues.some((i: any) => i.status === 'BLOCKED');
+    const hasOverdueTasks = projectIssues.some((i: any) =>
+      i.dueDate && new Date(i.dueDate) < new Date() && i.status !== 'DONE'
+    );
+
+    if (progress === 100) {
       status = 'COMPLETED';
-    } else if (apiProject.progress >= 75) {
-      status = 'ON_TRACK';
-    } else if (apiProject.progress >= 50) {
-      status = 'AT_RISK';
-    } else {
+    } else if (hasBlockedTasks || hasOverdueTasks) {
       status = 'DELAYED';
+    } else if (progress >= 50) {
+      status = 'ON_TRACK';
+    } else {
+      status = 'AT_RISK';
     }
 
-    // Calculate estimated dates if not present
-    const now = new Date();
-    const startDate = apiProject.createdAt || now.toISOString();
-    const targetDate = apiProject.updatedAt
-      ? new Date(new Date(apiProject.updatedAt).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString()
-      : new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString();
+    // Get earliest and latest dates
+    const dates = projectIssues
+      .map((i: any) => i.createdAt)
+      .filter(Boolean)
+      .sort();
+    const startDate = dates[0] || new Date().toISOString();
+    const targetDate = projectIssues
+      .map((i: any) => i.dueDate)
+      .filter(Boolean)
+      .sort()
+      .pop() || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
 
     return {
-      id: apiProject.id,
-      name: apiProject.name,
-      key: apiProject.key,
-      color: apiProject.color || '#3B82F6',
-      description: apiProject.description,
+      id: projectGroup.id,
+      name: projectGroup.name,
+      key: projectGroup.key,
+      color: projectGroup.color,
       startDate,
       targetDate,
       status,
-      progress: apiProject.progress || 0,
-      budget: apiProject.budget || null, // Will be null if no budget data
+      progress: Math.round(progress),
       team: {
-        memberCount: apiProject.memberCount || 0,
+        memberCount: new Set(projectIssues.map((i: any) => i.assigneeId).filter(Boolean)).size,
       },
     } as Project;
   });
