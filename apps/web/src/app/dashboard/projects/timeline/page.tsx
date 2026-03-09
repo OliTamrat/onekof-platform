@@ -3,7 +3,16 @@
 import { AppLayout } from '@/components/layouts/app-layout';
 import { useWorkspace } from '@/contexts/workspace-context';
 import Link from 'next/link';
-import { Plus, Code, BarChart3, FileText, Clock, Book, Calendar, Folder } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Calendar,
+  Clock,
+  Code,
+  FileText,
+  Folder,
+  Plus
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },

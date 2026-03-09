@@ -19,7 +19,7 @@ import {
   MessageSquare,
   Clock,
   CheckCircle2,
-  BarChart3,
+  BarChart3
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';

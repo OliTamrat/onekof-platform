@@ -1,6 +1,8 @@
 'use client';
 
-import { ShoppingCart } from 'lucide-react';
+import {
+  ShoppingCart
+} from 'lucide-react';
 
 export default function ProcurementPage() {
   return (

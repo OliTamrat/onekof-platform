@@ -4,28 +4,57 @@ import { prisma } from '@onekof/database';
 import { handleTaskStatusChange } from '@/lib/progress-aggregation';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
+import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { log } from '@/lib/logger';
 
 /**
  * GET /api/issues/[id]
  * Returns a single issue with detailed information
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has access to issue's project
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
 
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Get issue to verify project access
+    const issue = await prisma.task.findUnique({
+      where: {
+        id: params.id,
+        deletedAt: null,
+      },
+      select: {
+        projectId: true,
+      },
+    });
+
+    if (!issue) {
+      return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has access to the issue's project
+    const projectAuthResult = await requireProjectAccess(issue.projectId, user.id);
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Get issue with all details
-    const issue = await prisma.task.findUnique({
+    const issueDetailed = await prisma.task.findUnique({
       where: {
         id: params.id,
         deletedAt: null,
@@ -108,7 +137,7 @@ export async function GET(
       },
     });
 
-    if (!issue) {
+    if (!issueDetailed) {
       return NextResponse.json(
         { error: 'Issue not found' },
         { status: 404 }
@@ -144,11 +173,11 @@ export async function GET(
 
     return NextResponse.json({
       issue: {
-        ...issue,
+        ...issueDetailed,
         subtasks,
         subtaskProgress,
-        commentCount: issue.comments.length,
-        attachmentCount: issue.attachments.length,
+        commentCount: issueDetailed.comments.length,
+        attachmentCount: issueDetailed.attachments.length,
       },
     });
   } catch (error) {
@@ -163,38 +192,32 @@ export async function GET(
 /**
  * PATCH /api/issues/[id]
  * Updates an issue
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user can edit issue's project
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
     }
 
-    // Get user from database
     const currentUser = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authResult.session.user.email },
     });
 
     if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Get the current issue to check if assignee has changed
+    // Get the current issue to check project access and assignee
     const currentIssue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { assigneeId: true },
+      select: { assigneeId: true, projectId: true },
     });
 
     if (!currentIssue) {
@@ -202,6 +225,12 @@ export async function PATCH(
         { error: 'Issue not found' },
         { status: 404 }
       );
+    }
+
+    // SECURITY FIX: Verify user has MEMBER permission to edit this issue's project
+    const projectAuthResult = await requireProjectAccess(currentIssue.projectId, currentUser.id, 'MEMBER');
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Parse request body
@@ -367,20 +396,42 @@ export async function PATCH(
 /**
  * DELETE /api/issues/[id]
  * Soft deletes an issue
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has MEMBER permission
  */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
 
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Get issue to verify project access
+    const issue = await prisma.task.findUnique({
+      where: { id: params.id },
+      select: { projectId: true },
+    });
+
+    if (!issue) {
+      return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has MEMBER permission to delete this issue
+    const projectAuthResult = await requireProjectAccess(issue.projectId, user.id, 'MEMBER');
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Soft delete issue (set deletedAt)

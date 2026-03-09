@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { Users } from 'lucide-react';
+import {
+  Users
+} from 'lucide-react';
 
 export default function IssuesTeamPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);

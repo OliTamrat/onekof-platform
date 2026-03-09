@@ -2,7 +2,16 @@
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
-import { Plus, Code, BarChart3, FileText, Clock, Book, File, Folder as FolderIcon } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  File,
+  FileText,
+  Folder,
+  Plus
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },

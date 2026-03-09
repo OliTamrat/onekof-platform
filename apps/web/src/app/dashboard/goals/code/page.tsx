@@ -3,7 +3,21 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
-import { Plus, GitBranch, GitCommit, GitPullRequest, Code, BarChart3, FileText, Clock, Book, X, Github, GitlabIcon as Gitlab, Target } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  FileText,
+  GitBranch,
+  GitCommit,
+  GitPullRequest,
+  Github,
+  GitlabIcon,
+  Plus,
+  Target,
+  X
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },

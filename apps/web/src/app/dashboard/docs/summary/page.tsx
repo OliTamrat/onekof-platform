@@ -22,7 +22,7 @@ import {
   Award,
   ThumbsUp,
   MessageSquare,
-  Folder,
+  Folder
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';

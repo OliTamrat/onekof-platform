@@ -1,20 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next/server';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { requireAuth, requireBudgetAccess } from '@/lib/security/authorization';
+import { log } from '@/lib/logger';
 
 /**
  * GET /api/budgets/[id]
  * Get detailed budget information
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has access to budget
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has access to this budget
+    const budgetAuthResult = await requireBudgetAccess(params.id, user.id, 'VIEW_ONLY');
+    if (!budgetAuthResult.authorized) {
+      return budgetAuthResult.error!;
     }
 
     const budget = await prisma.budget.findUnique({
@@ -118,23 +137,32 @@ export async function GET(
 /**
  * PATCH /api/budgets/[id]
  * Update budget
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user can edit budget
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authResult.session.user.email },
     });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has EDIT permission for this budget
+    const budgetAuthResult = await requireBudgetAccess(params.id, user.id, 'EDIT');
+    if (!budgetAuthResult.authorized) {
+      return budgetAuthResult.error!;
     }
 
     const body = await request.json();
@@ -195,23 +223,32 @@ export async function PATCH(
 /**
  * DELETE /api/budgets/[id]
  * Delete budget (requires confirmation)
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has FULL_CONTROL
  */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authResult.session.user.email },
     });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has FULL_CONTROL permission for deletion
+    const budgetAuthResult = await requireBudgetAccess(params.id, user.id, 'FULL_CONTROL');
+    if (!budgetAuthResult.authorized) {
+      return budgetAuthResult.error!;
     }
 
     // Check if budget has expenses

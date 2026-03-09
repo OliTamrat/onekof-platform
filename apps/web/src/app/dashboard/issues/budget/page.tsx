@@ -3,7 +3,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { DollarSign } from 'lucide-react';
+import {
+  DollarSign
+} from 'lucide-react';
 
 export default function IssuesBudgetPage() {
   const router = useRouter();

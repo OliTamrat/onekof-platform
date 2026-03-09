@@ -19,7 +19,7 @@ import {
   Book,
   List as ListIcon,
   Power,
-  Sparkles,
+  Sparkles
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 

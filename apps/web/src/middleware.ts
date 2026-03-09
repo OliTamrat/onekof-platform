@@ -36,11 +36,89 @@ export function middleware(request: NextRequest) {
     requestHeaders.set('x-organization-slug', organizationSlug);
   }
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
+
+  // SECURITY: Add comprehensive security headers
+  addSecurityHeaders(response, pathname);
+
+  return response;
+}
+
+/**
+ * Add comprehensive security headers to response
+ * Protects against XSS, clickjacking, MIME sniffing, and other attacks
+ */
+function addSecurityHeaders(response: NextResponse, pathname: string) {
+  // Content Security Policy (CSP)
+  // Prevents XSS attacks by controlling what resources can be loaded
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://accounts.google.com https://*.upstash.io",
+    "frame-src 'self' https://accounts.google.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+  ].join('; ');
+
+  response.headers.set('Content-Security-Policy', csp);
+
+  // Strict Transport Security (HSTS) - only in production
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains; preload'
+    );
+  }
+
+  // X-Frame-Options - Prevents clickjacking
+  response.headers.set('X-Frame-Options', 'DENY');
+
+  // X-Content-Type-Options - Prevents MIME sniffing
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+
+  // X-XSS-Protection - Legacy XSS protection
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+
+  // Referrer-Policy
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+  // Permissions-Policy
+  const permissionsPolicy = [
+    'camera=()',
+    'microphone=()',
+    'geolocation=()',
+    'interest-cohort=()',
+    'payment=()',
+    'usb=()',
+  ].join(', ');
+
+  response.headers.set('Permissions-Policy', permissionsPolicy);
+
+  // Additional security headers
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('X-Download-Options', 'noopen');
+  response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+
+  // Remove X-Powered-By header
+  response.headers.delete('X-Powered-By');
+
+  // Add strict cache control for sensitive pages
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/auth')) {
+    response.headers.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
+    );
+  }
 }
 
 /**

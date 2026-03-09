@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Button } from '@/components/ui/button';
 import {
   DollarSign,
@@ -17,7 +18,7 @@ import {
   Download,
   Eye,
   User,
-  X,
+  X
 } from 'lucide-react';
 
 export default function BudgetPage() {
@@ -55,35 +56,39 @@ export default function BudgetPage() {
   // Show loading while checking session
   if (status === 'loading' && !loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Loading...</p>
+      <AppLayout>
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+          <div className="text-center">
+            <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Loading...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   // If loading timed out
   if (status === 'loading' && loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
-        <div className="text-center max-w-md p-6">
-          <div className="mb-4 text-yellow-500">
-            <AlertCircle className="h-12 w-12 mx-auto" />
+      <AppLayout>
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+          <div className="text-center max-w-md p-6">
+            <div className="mb-4 text-yellow-500">
+              <AlertCircle className="h-12 w-12 mx-auto" />
+            </div>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              The session is taking longer than expected to load. This might be a configuration issue.
+            </p>
+            <button
+              onClick={() => router.push('/auth/signin')}
+              className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
+            >
+              Go to Sign In
+            </button>
           </div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            The session is taking longer than expected to load. This might be a configuration issue.
-          </p>
-          <button
-            onClick={() => router.push('/auth/signin')}
-            className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
-          >
-            Go to Sign In
-          </button>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
@@ -209,20 +214,20 @@ export default function BudgetPage() {
 
   return (
     <AppLayout>
-      {/* Budget Page Header */}
-      <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 md:px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <DollarSign className="w-7 h-7 md:w-8 md:h-8 text-[#1C8C7D]" />
-              Budget Management
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Track and manage organization budget across all categories
-            </p>
-          </div>
-        </div>
-      </div>
+      <UnifiedPageHeader
+        title="Budget"
+        icon={<DollarSign className="h-6 w-6" />}
+        iconColor="#EF4444"
+
+        currentTab="budget"
+        baseHref="/dashboard/budget"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
 
       {/* Stats Cards - Sticky Header */}
       <div className="sticky top-0 z-10 bg-white dark:bg-[#1B1F23] border-b border-gray-200 dark:border-gray-800 shadow-sm">

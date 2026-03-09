@@ -1,6 +1,8 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
+import {
+  TrendingUp
+} from 'lucide-react';
 
 export default function ImpactMeasurementPage() {
   return (

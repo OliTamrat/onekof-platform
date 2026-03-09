@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
+import { hashToken, isTokenExpired } from '@/lib/security/tokens';
+import { log, logSecurity } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,12 +15,19 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Find verification token
+    // SECURITY FIX: Hash the provided token before database lookup
+    const tokenHash = hashToken(token);
+
+    // Find verification token by hashed value
     const verificationToken = await prisma.verificationToken.findUnique({
-      where: { token },
+      where: { token: tokenHash },  // Compare against hash, not plaintext
     });
 
     if (!verificationToken) {
+      log.warn('Invalid email verification token attempt');
+      logSecurity('invalid_verification_token_attempt', 'medium', {
+        ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+      });
       return NextResponse.json(
         { error: 'Invalid verification token' },
         { status: 400 }
@@ -26,14 +35,15 @@ export async function GET(req: NextRequest) {
     }
 
     // Check if token has expired
-    if (verificationToken.expires < new Date()) {
+    if (isTokenExpired(verificationToken.expires)) {
       // Delete expired token
       await prisma.verificationToken.delete({
-        where: { token },
+        where: { token: tokenHash },
       });
 
+      log.warn('Expired email verification token used');
       return NextResponse.json(
-        { error: 'Verification token has expired. Please sign up again.' },
+        { error: 'Verification token has expired. Please request a new verification email.' },
         { status: 400 }
       );
     }
@@ -58,8 +68,16 @@ export async function GET(req: NextRequest) {
 
     // Delete verification token
     await prisma.verificationToken.delete({
-      where: { token },
+      where: { token: tokenHash },
     });
+
+    // Log successful verification
+    logSecurity('email_verified', 'low', {
+      userId: user.id,
+      email: user.email,
+    });
+
+    log.info('Email verified successfully', { userId: user.id });
 
     return NextResponse.json(
       { message: 'Email verified successfully' },

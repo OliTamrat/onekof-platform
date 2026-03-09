@@ -29,7 +29,7 @@ import {
   Calendar,
   DollarSign,
   Archive,
-  MessageSquare,
+  MessageSquare
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';

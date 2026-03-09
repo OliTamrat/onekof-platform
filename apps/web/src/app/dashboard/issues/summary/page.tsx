@@ -24,7 +24,7 @@ import {
   Folder,
   Briefcase,
   X,
-  User,
+  User
 } from 'lucide-react';
 
 export default function IssuesSummaryPage() {

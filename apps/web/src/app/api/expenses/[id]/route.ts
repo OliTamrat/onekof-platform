@@ -2,19 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { requireAuth, requireExpenseAccess } from '@/lib/security/authorization';
+import { log } from '@/lib/logger';
 
 /**
  * GET /api/expenses/[id]
  * Get expense details
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has access to expense
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has access to read this expense
+    const expenseAuthResult = await requireExpenseAccess(params.id, user.id, 'read');
+    if (!expenseAuthResult.authorized) {
+      return expenseAuthResult.error!;
     }
 
     const expense = await prisma.expense.findUnique({
@@ -68,19 +87,22 @@ export async function GET(
 /**
  * PATCH /api/expenses/[id]
  * Update expense
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user can update expense
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authResult.session.user.email },
     });
 
     if (!user) {
@@ -98,16 +120,15 @@ export async function PATCH(
       return NextResponse.json({ error: 'Expense not found' }, { status: 404 });
     }
 
-    // Check permissions: Can only edit if:
-    // - Status is DRAFT or REJECTED
-    // - User is submitter or budget manager/admin
-    const canEdit =
-      expense.submittedBy === user.id &&
-      (expense.status === 'PENDING' || expense.status === 'REJECTED');
+    // SECURITY FIX: Verify user can update this expense
+    // requireExpenseAccess checks if user is submitter or has approval permission
+    const expenseAuthResult = await requireExpenseAccess(params.id, user.id, 'update');
+    if (!expenseAuthResult.authorized) {
+      return expenseAuthResult.error!;
+    }
 
-    // TODO: Add check for budget manager/admin role
-
-    if (!canEdit) {
+    // Additional business logic: Check expense status
+    if (expense.status === 'APPROVED' || expense.status === 'PAID') {
       return NextResponse.json(
         { error: 'Cannot edit approved or paid expenses' },
         { status: 403 }
@@ -174,19 +195,22 @@ export async function PATCH(
 /**
  * DELETE /api/expenses/[id]
  * Soft delete expense
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user can delete expense
  */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authResult.session.user.email },
     });
 
     if (!user) {
@@ -204,22 +228,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Expense not found' }, { status: 404 });
     }
 
-    // Check permissions: Can only delete if:
-    // - Expense is not PAID
-    // - User is submitter or budget manager/admin
+    // SECURITY FIX: Verify user can update/delete this expense
+    // requireExpenseAccess with 'update' action checks if user is submitter or has approval permission
+    const expenseAuthResult = await requireExpenseAccess(params.id, user.id, 'update');
+    if (!expenseAuthResult.authorized) {
+      return expenseAuthResult.error!;
+    }
+
+    // Additional business logic: Cannot delete paid expenses
     if (expense.status === 'PAID') {
       return NextResponse.json(
         { error: 'Cannot delete paid expenses' },
-        { status: 403 }
-      );
-    }
-
-    const canDelete = expense.submittedBy === user.id;
-    // TODO: Add check for budget manager/admin role
-
-    if (!canDelete) {
-      return NextResponse.json(
-        { error: 'Permission denied' },
         { status: 403 }
       );
     }

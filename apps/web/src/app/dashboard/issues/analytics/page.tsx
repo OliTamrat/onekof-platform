@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { TrendingUp } from 'lucide-react';
+import {
+  TrendingUp
+} from 'lucide-react';
 
 export default function IssuesAnalyticsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);

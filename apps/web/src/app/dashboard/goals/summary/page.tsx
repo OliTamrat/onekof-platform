@@ -20,7 +20,7 @@ import {
   ArrowRight,
   Award,
   Users,
-  Star,
+  Star
 } from 'lucide-react';
 import { useState } from 'react';
 

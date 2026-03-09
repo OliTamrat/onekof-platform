@@ -1,6 +1,8 @@
 'use client';
 
-import { GraduationCap } from 'lucide-react';
+import {
+  GraduationCap
+} from 'lucide-react';
 
 export default function CoursesPage() {
   return (

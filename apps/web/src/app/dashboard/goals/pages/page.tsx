@@ -3,7 +3,16 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
-import { BarChart3, Code, FileText, Clock, Book, Target, Plus, FileIcon } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  FileIcon,
+  FileText,
+  Plus,
+  Target
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },

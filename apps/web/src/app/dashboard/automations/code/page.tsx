@@ -2,7 +2,16 @@
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
-import { Plus, Zap, BarChart3, Code, FileText, Clock, Book, List as ListIcon } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  FileText,
+  List,
+  Plus,
+  Zap
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },

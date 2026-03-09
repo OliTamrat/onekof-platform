@@ -18,7 +18,7 @@ import {
   ArrowRight,
   Target,
   Zap,
-  Settings,
+  Settings
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { ProjectDetailModal } from '@/components/analytics/project-detail-modal';

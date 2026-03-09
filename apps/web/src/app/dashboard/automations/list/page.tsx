@@ -5,7 +5,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
-import { Plus, Search, Filter, Zap, Power, PowerOff, BarChart3, Code, FileText, Clock, Book, List as ListIcon, Sparkles } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  FileText,
+  Filter,
+  List,
+  Plus,
+  Power,
+  PowerOff,
+  Search,
+  Sparkles,
+  Zap
+} from 'lucide-react';
 
 // Tab navigation items
 const TAB_ITEMS = [

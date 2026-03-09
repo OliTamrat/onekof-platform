@@ -6,7 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar as CalendarIcon
+} from 'lucide-react';
 
 type ViewMode = 'month' | 'week' | 'day';
 

@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { FileText } from 'lucide-react';
+import {
+  FileText
+} from 'lucide-react';
 
 export default function IssuesFindingsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);

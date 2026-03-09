@@ -15,7 +15,7 @@ import {
   Sparkles,
   AlertCircle,
   CheckCircle2,
-  Info,
+  Info
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';

@@ -1,26 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
 import { prisma } from '@onekof/database';
-import crypto from 'crypto';
+import { generateTokenPair, generateTokenExpiry } from '@/lib/security/tokens';
+import { log, logSecurity } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/security/rate-limit';
+import { validateRequestBody } from '@/lib/validation/validate';
+import { signupSchema } from '@/lib/validation/schemas';
+import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    // SECURITY: Rate limit signup requests to prevent abuse
+    const rateLimitError = await checkRateLimit(req, 'signup');
+    if (rateLimitError) return rateLimitError;
 
-    // Validation
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    // SECURITY: Validate input with Zod schema
+    const validation = await validateRequestBody(req, signupSchema);
+    if (!validation.success) return validation.error;
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: 'Password must be at least 8 characters' },
-        { status: 400 }
-      );
-    }
+    const { name, email, password } = validation.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -73,35 +71,52 @@ export async function POST(req: NextRequest) {
         data: { defaultOrganizationId: organization.id },
       });
 
-      // Generate verification token (valid for 24 hours)
-      const verificationToken = crypto.randomBytes(32).toString('hex');
-      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      // SECURITY FIX: Generate secure token and hash it before storage
+      const { token, hash: tokenHash } = generateTokenPair();
+      const expires = generateTokenExpiry(24); // 24 hours
 
-      // Create verification token
+      // Store ONLY the hash in database, never the plaintext token
       await tx.verificationToken.create({
         data: {
           identifier: email,
-          token: verificationToken,
+          token: tokenHash,  // Store hash, not plaintext
           expires,
         },
       });
 
-      return { user, organization, verificationToken };
+      return { user, organization, verificationToken: token };
     });
 
     const { user, organization, verificationToken } = result;
 
-    // TODO: Send email with verification link
-    // For development, log the verification URL
-    const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify-email?token=${verificationToken}`;
-    console.log('\n========================================');
-    console.log('EMAIL VERIFICATION REQUIRED');
-    console.log('========================================');
-    console.log('Email:', email);
-    console.log('Verification URL:', verificationUrl);
-    console.log('This URL will be valid for 24 hours');
-    console.log('========================================\n');
+    // Log security event
+    logSecurity('user_signup', 'low', {
+      userId: user.id,
+      email: user.email,
+      organizationId: organization.id,
+    });
 
+    // Send email verification with secure verification link
+    // The verification URL contains the plaintext token (sent via email only)
+    const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify-email?token=${verificationToken}`;
+
+    // Send email with verification link
+    try {
+      await sendVerificationEmail(user.email, verificationUrl);
+      log.info('Verification email sent successfully', {
+        userId: user.id,
+        email: user.email,
+      });
+    } catch (emailError) {
+      // Log email error but don't fail signup
+      log.error('Failed to send verification email', {
+        error: emailError,
+        userId: user.id,
+      });
+      // Continue anyway - user account is created, they can request new verification email
+    }
+
+    // SECURITY FIX: Never return token or verificationUrl in API response
     return NextResponse.json(
       {
         user: {
@@ -115,8 +130,6 @@ export async function POST(req: NextRequest) {
           slug: organization.slug,
         },
         message: 'Account created successfully. Please check your email to verify your account.',
-        // Include verification URL in dev environment for testing
-        ...(process.env.NODE_ENV === 'development' && { verificationUrl }),
       },
       { status: 201 }
     );

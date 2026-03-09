@@ -1,7 +1,14 @@
 'use client';
 
 import { useQuery } from '@tantml:react-query';
-import { Users, Crown, Shield, User, Mail, Calendar } from 'lucide-react';
+import {
+  Users,
+  Crown,
+  Shield,
+  User,
+  Mail,
+  Calendar
+} from 'lucide-react';
 
 interface OrganizationMember {
   id: string;

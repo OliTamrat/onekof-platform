@@ -1,6 +1,8 @@
 'use client';
 
-import { FileSpreadsheet } from 'lucide-react';
+import {
+  FileSpreadsheet
+} from 'lucide-react';
 
 export default function ResearchPage() {
   return (

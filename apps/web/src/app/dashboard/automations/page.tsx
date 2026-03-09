@@ -26,7 +26,7 @@ import {
   Settings,
   Code,
   FileText,
-  Book,
+  Book
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';

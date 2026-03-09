@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { CheckCircle2 } from 'lucide-react';
+import {
+  CheckCircle2
+} from 'lucide-react';
 
 export default function IssuesInspectionsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);

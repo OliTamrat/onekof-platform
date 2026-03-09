@@ -1,6 +1,8 @@
 'use client';
 
-import { Heart } from 'lucide-react';
+import {
+  Heart
+} from 'lucide-react';
 
 export default function PatientsPage() {
   return (

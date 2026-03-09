@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { ProjectManagementDialog } from '@/components/project-management-dialog';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ import {
   BarChart3,
   FileText,
   Code,
-  Book,
+  Book
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -34,15 +35,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/projects/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages' },
-] as const;
+
 
 export default function ProjectsPage() {
   const { data: session, status } = useSession();
@@ -114,62 +107,6 @@ export default function ProjectsPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
-            {TAB_ITEMS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <Link
-                  key={tab.id}
-                  href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Search and Filter Bar */}
-          <div className="flex items-center justify-between gap-3 px-6 py-3">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
-                }`}
-              >
-                <Grid3x3 className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
-                }`}
-              >
-                <List className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Projects Content */}

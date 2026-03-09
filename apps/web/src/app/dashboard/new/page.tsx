@@ -16,7 +16,7 @@ import {
   Star,
   MoreHorizontal,
   ArrowLeft,
-  Sparkles,
+  Sparkles
 } from 'lucide-react';
 
 export default function DashboardPage() {

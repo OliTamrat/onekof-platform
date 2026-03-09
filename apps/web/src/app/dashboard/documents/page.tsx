@@ -21,7 +21,7 @@ import {
   DollarSign,
   Calendar,
   Eye,
-  Loader2,
+  Loader2
 } from 'lucide-react';
 
 export default function DocumentsPage() {

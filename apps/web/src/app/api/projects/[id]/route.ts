@@ -2,24 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { log } from '@/lib/logger';
 
 /**
  * GET /api/projects/[id]
  * Returns a single project with detailed information
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has access to project
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
 
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has access to this project
+    const projectAuthResult = await requireProjectAccess(params.id, user.id);
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Get project with all details
@@ -85,20 +99,32 @@ export async function GET(
 /**
  * PATCH /api/projects/[id]
  * Updates a project
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user can edit project
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
 
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has MEMBER permission to edit this project
+    const projectAuthResult = await requireProjectAccess(params.id, user.id, 'MEMBER');
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Parse request body
@@ -171,20 +197,32 @@ export async function PATCH(
 /**
  * DELETE /api/projects/[id]
  * Soft deletes a project
+ *
+ * SECURITY: Fixed IDOR vulnerability - now verifies user has ADMIN permission
  */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // SECURITY FIX: Verify authentication
+    const authResult = await requireAuth();
+    if (!authResult.authorized || !authResult.session?.user) {
+      return authResult.error!;
+    }
 
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const user = await prisma.user.findUnique({
+      where: { email: authResult.session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Verify user has ADMIN permission to delete this project
+    const projectAuthResult = await requireProjectAccess(params.id, user.id, 'ADMIN');
+    if (!projectAuthResult.authorized) {
+      return projectAuthResult.error!;
     }
 
     // Soft delete project (set deletedAt)

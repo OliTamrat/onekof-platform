@@ -20,7 +20,7 @@ import {
   CheckCircle2,
   AlertCircle,
   MoreHorizontal,
-  LogOut,
+  LogOut
 } from 'lucide-react';
 
 export default function DashboardPage() {

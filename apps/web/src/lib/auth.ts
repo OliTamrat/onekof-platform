@@ -4,6 +4,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
+import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
+import { logSecurity } from '@/lib/logger';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -55,19 +57,59 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Missing credentials');
         }
 
+        // SECURITY: Check if account is locked
+        const lockStatus = await isAccountLocked(credentials.email);
+        if (lockStatus.locked) {
+          logSecurity('login_attempt_while_locked', 'medium', {
+            email: credentials.email,
+            lockedUntil: lockStatus.lockedUntil?.toISOString(),
+            minutesRemaining: lockStatus.minutesRemaining,
+          });
+
+          throw new Error(
+            `Account is locked due to too many failed login attempts. Please try again in ${lockStatus.minutesRemaining} minutes.`
+          );
+        }
+
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
         if (!user || !user.password) {
+          // SECURITY: Record failed attempt (even for non-existent users to prevent enumeration timing attacks)
+          await recordFailedLogin(credentials.email);
           throw new Error('Invalid credentials');
         }
 
         const isPasswordValid = await compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
-          throw new Error('Invalid credentials');
+          // SECURITY: Record failed login attempt
+          const lockResult = await recordFailedLogin(credentials.email);
+
+          if (lockResult.locked) {
+            const lockMinutes = Math.ceil(
+              (lockResult.lockedUntil!.getTime() - Date.now()) / (60 * 1000)
+            );
+            throw new Error(
+              `Account locked due to too many failed login attempts. Try again in ${lockMinutes} minutes.`
+            );
+          }
+
+          const attemptsMsg = lockResult.attemptsRemaining
+            ? ` (${lockResult.attemptsRemaining} attempts remaining)`
+            : '';
+
+          throw new Error(`Invalid credentials${attemptsMsg}`);
         }
+
+        // SECURITY: Reset failed attempts on successful login
+        await resetFailedAttempts(credentials.email);
+
+        logSecurity('successful_login', 'low', {
+          userId: user.id,
+          email: user.email,
+        });
 
         return {
           id: user.id,

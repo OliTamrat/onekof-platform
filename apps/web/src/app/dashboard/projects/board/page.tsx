@@ -5,7 +5,18 @@ import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { useWorkspace } from '@/contexts/workspace-context';
 import Link from 'next/link';
-import { Plus, Search, BarChart3, Code, FileText, Clock, Book, Folder, Star, Users } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Clock,
+  Code,
+  FileText,
+  Folder,
+  Plus,
+  Search,
+  Star,
+  Users
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },

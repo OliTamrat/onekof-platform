@@ -10,16 +10,16 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {
   Activity,
-  Droplets,
-  Zap,
-  TrendingUp,
-  TrendingDown,
   AlertTriangle,
   CheckCircle2,
+  Droplets,
   Gauge,
-  Waves,
   ThermometerSun,
-  Wind
+  TrendingDown,
+  TrendingUp,
+  Waves,
+  Wind,
+  Zap
 } from 'lucide-react';
 
 interface MonitoringPoint {

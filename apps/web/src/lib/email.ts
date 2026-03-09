@@ -1,0 +1,632 @@
+/**
+ * Email Utility
+ *
+ * Provides email sending functionality for authentication and security notifications.
+ * Uses Resend for production email delivery.
+ *
+ * Templates included:
+ * - Password reset emails
+ * - Email verification emails
+ * - Welcome emails
+ * - Account locked security alerts
+ */
+
+import { Resend } from 'resend';
+
+// Initialize Resend client (only if API key is available)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+/**
+ * Send password reset email with secure reset link
+ *
+ * @param email - User's email address
+ * @param resetUrl - Secure password reset URL with token
+ */
+export async function sendPasswordResetEmail(email: string, resetUrl: string) {
+  try {
+    // In development, log instead of sending (if no API key configured)
+    if (!resend) {
+      console.log('\n=== PASSWORD RESET EMAIL (Development Mode) ===');
+      console.log('To:', email);
+      console.log('Reset URL:', resetUrl);
+      console.log('===============================================\n');
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: 'Password Reset Request for Your Onekof Account',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Reset your password - Onekof</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+
+                  <!-- Brand Header with Logo Space -->
+                  <tr>
+                    <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #0070f3 0%, #0053ba 100%);">
+                      <div style="width: 60px; height: 60px; margin: 0 auto 20px; background-color: rgba(255,255,255,0.2); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 32px; font-weight: 700; color: #ffffff;">O</span>
+                      </div>
+                      <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">Onekof</h1>
+                      <p style="margin: 8px 0 0; font-size: 14px; color: rgba(255,255,255,0.9);">Project & Budget Management Platform</p>
+                    </td>
+                  </tr>
+
+                  <!-- Main Content -->
+                  <tr>
+                    <td style="padding: 0;">
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <!-- Title Section -->
+                        <tr>
+                          <td style="padding: 40px 40px 20px;">
+                            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1a1a1a;">Password Reset Request</h2>
+                          </td>
+                        </tr>
+
+                        <!-- Why You Received This -->
+                        <tr>
+                          <td style="padding: 0 40px 30px;">
+                            <div style="padding: 16px; background-color: #f0f9ff; border-left: 4px solid #0070f3; border-radius: 6px;">
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #0070f3; margin-bottom: 8px;">→ Why you received this email:</p>
+                              <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4a4a4a;">
+                                A password reset was requested for the Onekof account associated with <strong>${email}</strong>
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <!-- Main Message -->
+                        <tr>
+                          <td style="padding: 0 40px 30px;">
+                            <p style="margin: 0 0 16px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                              We received a request to reset the password for your Onekof account. To proceed with the password reset, please click the button below:
+                            </p>
+
+                            <!-- CTA Button -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                              <tr>
+                                <td align="center">
+                                  <a href="${resetUrl}" style="display: inline-block; padding: 16px 40px; background-color: #0070f3; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; box-shadow: 0 2px 8px rgba(0,112,243,0.3);">
+                                    Reset My Password
+                                  </a>
+                                </td>
+                              </tr>
+                            </table>
+
+                            <p style="margin: 20px 0 0; font-size: 13px; line-height: 20px; color: #6b6b6b; text-align: center;">
+                              Or copy and paste this secure link into your browser:
+                            </p>
+                            <p style="margin: 8px 0 0; font-size: 12px; line-height: 20px; color: #0070f3; word-break: break-all; background-color: #f8fafc; padding: 12px; border-radius: 6px; text-align: center;">
+                              ${resetUrl}
+                            </p>
+                          </td>
+                        </tr>
+
+                        <!-- Security Notice - Critical -->
+                        <tr>
+                          <td style="padding: 0 40px 30px;">
+                            <div style="padding: 20px; background-color: #fff5f5; border-left: 4px solid #ef4444; border-radius: 6px;">
+                              <p style="margin: 0 0 12px; font-size: 15px; font-weight: 600; color: #dc2626;">
+                                ⬤ Important Security Information
+                              </p>
+                              <ul style="margin: 0; padding-left: 20px;">
+                                <li style="margin: 8px 0; font-size: 14px; line-height: 20px; color: #4a4a4a;">
+                                  This reset link will <strong>expire in 1 hour</strong> for your security
+                                </li>
+                                <li style="margin: 8px 0; font-size: 14px; line-height: 20px; color: #4a4a4a;">
+                                  This link can only be used once
+                                </li>
+                                <li style="margin: 8px 0; font-size: 14px; line-height: 20px; color: #4a4a4a;">
+                                  <strong>If you didn't request this:</strong> Your account may be at risk. Please change your password immediately or contact our support team
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <!-- Didn't Request This? -->
+                        <tr>
+                          <td style="padding: 0 40px 30px;">
+                            <div style="padding: 20px; background-color: #fefce8; border-left: 4px solid #eab308; border-radius: 6px;">
+                              <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #854d0e;">
+                                ! Didn't request a password reset?
+                              </p>
+                              <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4a4a4a;">
+                                If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged. However, we recommend:
+                              </p>
+                              <ul style="margin: 8px 0 0; padding-left: 20px;">
+                                <li style="margin: 6px 0; font-size: 13px; color: #4a4a4a;">Changing your password as a precaution</li>
+                                <li style="margin: 6px 0; font-size: 13px; color: #4a4a4a;">Reviewing your account's recent activity</li>
+                                <li style="margin: 6px 0; font-size: 13px; color: #4a4a4a;">Enabling two-factor authentication (coming soon)</li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <!-- Promotional Section - Why Choose Onekof -->
+                        <tr>
+                          <td style="padding: 0 40px 30px;">
+                            <div style="padding: 24px; background-color: #0070f3; border-radius: 8px;">
+                              <p style="margin: 0 0 20px; font-size: 18px; font-weight: 700; color: #ffffff; text-align: center;">
+                                Why Teams Choose Onekof
+                              </p>
+
+                              <!-- Feature Card 1 -->
+                              <div style="margin-bottom: 12px; padding: 18px; background-color: #ffffff; border-radius: 6px;">
+                                <p style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #0070f3;">Smart Budgeting</p>
+                                <p style="margin: 0; font-size: 13px; color: #6b6b6b; line-height: 20px;">Track expenses in real-time with intelligent budget allocation and forecasting</p>
+                              </div>
+
+                              <!-- Feature Card 2 -->
+                              <div style="margin-bottom: 12px; padding: 18px; background-color: #ffffff; border-radius: 6px;">
+                                <p style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #0070f3;">Team Collaboration</p>
+                                <p style="margin: 0; font-size: 13px; color: #6b6b6b; line-height: 20px;">Work together seamlessly across departments with real-time updates</p>
+                              </div>
+
+                              <!-- Feature Card 3 -->
+                              <div style="margin-bottom: 12px; padding: 18px; background-color: #ffffff; border-radius: 6px;">
+                                <p style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #0070f3;">Project Tracking</p>
+                                <p style="margin: 0; font-size: 13px; color: #6b6b6b; line-height: 20px;">Never miss a deadline with smart reminders and progress tracking</p>
+                              </div>
+
+                              <!-- Feature Card 4 -->
+                              <div style="margin-bottom: 0; padding: 18px; background-color: #ffffff; border-radius: 6px;">
+                                <p style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #0070f3;">Analytics & Reports</p>
+                                <p style="margin: 0; font-size: 13px; color: #6b6b6b; line-height: 20px;">Data-driven insights for better decisions and strategic planning</p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <!-- Need Help? -->
+                        <tr>
+                          <td style="padding: 0 40px 40px;">
+                            <div style="text-align: center; padding: 20px; background-color: #fafafa; border-radius: 8px;">
+                              <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #1a1a1a;">
+                                Need Help?
+                              </p>
+                              <p style="margin: 0; font-size: 13px; line-height: 20px; color: #6b6b6b;">
+                                Our support team is here to help you 24/7.<br>
+                                Contact us at <a href="mailto:support@onekof.com" style="color: #0070f3; text-decoration: none; font-weight: 500;">support@onekof.com</a>
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px 40px; background-color: #1a1a1a; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                      <p style="margin: 0 0 8px; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        This is an automated security email from Onekof<br>
+                        Please do not reply to this email
+                      </p>
+                      <p style="margin: 0; font-size: 11px; line-height: 16px; color: #6b6b6b; text-align: center;">
+                        © ${new Date().getFullYear()} Onekof. All rights reserved.<br>
+                        <a href="https://onekof.com/privacy" style="color: #6b6b6b; text-decoration: none;">Privacy Policy</a> ·
+                        <a href="https://onekof.com/terms" style="color: #6b6b6b; text-decoration: none;">Terms of Service</a>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Password reset email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send password reset email:', error);
+    throw error;
+  }
+}
+
+/**
+ * Send email verification email for new account signup
+ *
+ * @param email - User's email address
+ * @param verificationUrl - Secure email verification URL with token
+ */
+export async function sendVerificationEmail(email: string, verificationUrl: string) {
+  try {
+    // In development, log instead of sending (if no API key configured)
+    if (!resend) {
+      console.log('\n=== EMAIL VERIFICATION (Development Mode) ===');
+      console.log('To:', email);
+      console.log('Verification URL:', verificationUrl);
+      console.log('=============================================\n');
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: 'Verify your Onekof email address',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verify your email</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding: 40px 40px 20px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+                      <h1 style="margin: 0; font-size: 28px; font-weight: 600; color: #1a1a1a;">Welcome to Onekof!</h1>
+                    </td>
+                  </tr>
+
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                        Thank you for creating an Onekof account. To get started, please verify your email address by clicking the button below:
+                      </p>
+
+                      <!-- CTA Button -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <a href="${verificationUrl}" style="display: inline-block; padding: 14px 32px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 500; text-align: center;">
+                              Verify Email Address
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p style="margin: 20px 0 0; font-size: 14px; line-height: 20px; color: #6b6b6b;">
+                        Or copy and paste this link into your browser:
+                      </p>
+                      <p style="margin: 8px 0 0; font-size: 13px; line-height: 20px; color: #10b981; word-break: break-all;">
+                        ${verificationUrl}
+                      </p>
+
+                      <!-- Features List -->
+                      <div style="margin-top: 40px; padding: 20px; background-color: #f0fdf4; border-radius: 6px;">
+                        <p style="margin: 0 0 12px; font-size: 15px; font-weight: 600; color: #1a1a1a;">
+                          Once verified, you'll be able to:
+                        </p>
+                        <ul style="margin: 0; padding-left: 20px;">
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Create and manage projects</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Track issues and tasks</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Manage budgets and expenses</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Collaborate with your team</li>
+                        </ul>
+                      </div>
+
+                      <!-- Security Info -->
+                      <p style="margin: 30px 0 0; font-size: 12px; line-height: 18px; color: #9b9b9b;">
+                        This verification link will expire in <strong>24 hours</strong>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px 40px; background-color: #fafafa; border-top: 1px solid #e5e5e5; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                      <p style="margin: 0; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        This is an automated email from Onekof. Please do not reply to this email.<br>
+                        © ${new Date().getFullYear()} Onekof. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Verification email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send verification email:', error);
+    throw error;
+  }
+}
+
+/**
+ * Send welcome email after successful email verification
+ *
+ * @param email - User's email address
+ * @param name - User's name
+ */
+export async function sendWelcomeEmail(email: string, name: string) {
+  try {
+    // In development, log instead of sending (if no API key configured)
+    if (!resend) {
+      console.log('\n=== WELCOME EMAIL (Development Mode) ===');
+      console.log('To:', email);
+      console.log('Name:', name);
+      console.log('========================================\n');
+      return;
+    }
+
+    const dashboardUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard`;
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: 'Welcome to Onekof!',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Welcome to Onekof</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding: 40px 40px 20px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+                      <h1 style="margin: 0; font-size: 28px; font-weight: 600; color: #1a1a1a;">Welcome to Onekof, ${name}!</h1>
+                    </td>
+                  </tr>
+
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                        Your account has been successfully created and verified. You're all set to start managing your projects!
+                      </p>
+
+                      <!-- CTA Button -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <a href="${dashboardUrl}" style="display: inline-block; padding: 14px 32px; background-color: #0070f3; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 500; text-align: center;">
+                              Go to Dashboard
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Features Grid -->
+                      <div style="margin-top: 40px;">
+                        <h2 style="margin: 0 0 20px; font-size: 18px; font-weight: 600; color: #1a1a1a;">
+                          What you can do with Onekof:
+                        </h2>
+
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding: 15px; background-color: #f0f9ff; border-radius: 6px;" width="48%">
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">📋 Project Management</p>
+                              <p style="margin: 5px 0 0; font-size: 13px; color: #6b6b6b;">Create and organize projects with ease</p>
+                            </td>
+                            <td width="4%"></td>
+                            <td style="padding: 15px; background-color: #fef3f2; border-radius: 6px;" width="48%">
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">🐛 Issue Tracking</p>
+                              <p style="margin: 5px 0 0; font-size: 13px; color: #6b6b6b;">Track bugs and tasks efficiently</p>
+                            </td>
+                          </tr>
+                          <tr><td colspan="3" style="height: 12px;"></td></tr>
+                          <tr>
+                            <td style="padding: 15px; background-color: #f0fdf4; border-radius: 6px;" width="48%">
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">💰 Budget Management</p>
+                              <p style="margin: 5px 0 0; font-size: 13px; color: #6b6b6b;">Control expenses and budgets</p>
+                            </td>
+                            <td width="4%"></td>
+                            <td style="padding: 15px; background-color: #fefce8; border-radius: 6px;" width="48%">
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1a1a1a;">👥 Team Collaboration</p>
+                              <p style="margin: 5px 0 0; font-size: 13px; color: #6b6b6b;">Work together seamlessly</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <!-- Getting Started Tips -->
+                      <div style="margin-top: 40px; padding: 20px; background-color: #fafafa; border-radius: 6px;">
+                        <p style="margin: 0 0 12px; font-size: 15px; font-weight: 600; color: #1a1a1a;">
+                          Getting Started Tips:
+                        </p>
+                        <ol style="margin: 0; padding-left: 20px;">
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Complete your profile in Settings</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Create your first project</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Invite team members to collaborate</li>
+                          <li style="margin: 8px 0; font-size: 14px; color: #4a4a4a;">Set up your first budget</li>
+                        </ol>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px 40px; background-color: #fafafa; border-top: 1px solid #e5e5e5; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                      <p style="margin: 0; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        Need help? Visit our <a href="${dashboardUrl}/help" style="color: #0070f3; text-decoration: none;">Help Center</a><br>
+                        © ${new Date().getFullYear()} Onekof. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Welcome email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send welcome email:', error);
+    // Don't throw - welcome email is not critical
+  }
+}
+
+/**
+ * Send security alert when account is locked due to failed login attempts
+ *
+ * @param email - User's email address
+ * @param unlockTime - Date when account will be automatically unlocked
+ */
+export async function sendAccountLockedEmail(email: string, unlockTime: Date) {
+  const minutesRemaining = Math.ceil((unlockTime.getTime() - Date.now()) / (60 * 1000));
+
+  try {
+    // In development, log instead of sending (if no API key configured)
+    if (!resend) {
+      console.log('\n=== ACCOUNT LOCKED EMAIL (Development Mode) ===');
+      console.log('To:', email);
+      console.log('Unlock Time:', unlockTime.toISOString());
+      console.log('Minutes Remaining:', minutesRemaining);
+      console.log('===============================================\n');
+      return;
+    }
+
+    const supportUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/support`;
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof Security <noreply@onekof.com>',
+      to: email,
+      subject: 'Onekof Account Locked - Security Alert',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Account Locked</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-top: 4px solid #dc2626;">
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding: 40px 40px 20px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+                      <div style="display: inline-block; width: 64px; height: 64px; background-color: #fee2e2; border-radius: 50%; margin-bottom: 20px;">
+                        <span style="display: block; font-size: 32px; line-height: 64px;">⚠️</span>
+                      </div>
+                      <h1 style="margin: 0; font-size: 24px; font-weight: 600; color: #dc2626;">Security Alert: Account Locked</h1>
+                    </td>
+                  </tr>
+
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                        Your Onekof account has been temporarily locked due to multiple failed login attempts.
+                      </p>
+
+                      <!-- Lockout Info -->
+                      <div style="margin: 30px 0; padding: 20px; background-color: #fef2f2; border-left: 4px solid #dc2626; border-radius: 4px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding: 8px 0;">
+                              <p style="margin: 0; font-size: 14px; color: #6b6b6b;">Account Status:</p>
+                              <p style="margin: 4px 0 0; font-size: 16px; font-weight: 600; color: #dc2626;">Temporarily Locked</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px 0;">
+                              <p style="margin: 0; font-size: 14px; color: #6b6b6b;">Will unlock in:</p>
+                              <p style="margin: 4px 0 0; font-size: 20px; font-weight: 600; color: #1a1a1a;">${minutesRemaining} minutes</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px 0;">
+                              <p style="margin: 0; font-size: 14px; color: #6b6b6b;">Unlock time:</p>
+                              <p style="margin: 4px 0 0; font-size: 14px; font-weight: 500; color: #4a4a4a;">${unlockTime.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <!-- What to Do -->
+                      <div style="margin: 30px 0;">
+                        <h2 style="margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #1a1a1a;">
+                          What should you do?
+                        </h2>
+                        <ul style="margin: 0; padding-left: 20px;">
+                          <li style="margin: 10px 0; font-size: 14px; color: #4a4a4a;">
+                            <strong>If this was you:</strong> Please wait ${minutesRemaining} minutes before trying to log in again.
+                          </li>
+                          <li style="margin: 10px 0; font-size: 14px; color: #4a4a4a;">
+                            <strong>If this wasn't you:</strong> Your account may be at risk. Please change your password immediately after the lockout period ends.
+                          </li>
+                          <li style="margin: 10px 0; font-size: 14px; color: #4a4a4a;">
+                            <strong>Need immediate access?</strong> Contact our support team for assistance.
+                          </li>
+                        </ul>
+                      </div>
+
+                      <!-- Security Tips -->
+                      <div style="margin: 30px 0; padding: 20px; background-color: #f0f9ff; border-radius: 6px;">
+                        <h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #1a1a1a;">
+                          Security Tips:
+                        </h3>
+                        <ul style="margin: 0; padding-left: 20px;">
+                          <li style="margin: 8px 0; font-size: 13px; color: #4a4a4a;">Use a strong, unique password</li>
+                          <li style="margin: 8px 0; font-size: 13px; color: #4a4a4a;">Never share your password with anyone</li>
+                          <li style="margin: 8px 0; font-size: 13px; color: #4a4a4a;">Enable two-factor authentication (when available)</li>
+                          <li style="margin: 8px 0; font-size: 13px; color: #4a4a4a;">Be cautious of phishing emails</li>
+                        </ul>
+                      </div>
+
+                      <!-- Support CTA -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <a href="${supportUrl}" style="display: inline-block; padding: 14px 32px; background-color: #0070f3; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 500; text-align: center;">
+                              Contact Support
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px 40px; background-color: #fafafa; border-top: 1px solid #e5e5e5; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                      <p style="margin: 0; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        This is an automated security notification from Onekof.<br>
+                        Please do not reply to this email.<br>
+                        © ${new Date().getFullYear()} Onekof. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`✅ Account locked email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send account locked email:', error);
+    // Don't throw - security alert email failure shouldn't block the lockout
+  }
+}

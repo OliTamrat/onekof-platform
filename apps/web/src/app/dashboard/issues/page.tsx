@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Calendar, CheckSquare, Plus } from 'lucide-react';
+import {
+  Calendar,
+  CheckSquare,
+  ListChecks,
+  Plus
+} from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import type { ProjectType } from '@/lib/project-navigation';
 
 // Types
@@ -206,18 +211,24 @@ export default function IssuesPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Issues"
+        icon={<ListChecks className="h-6 w-6" />}
+        iconColor="#8B5CF6"
+
+        currentTab="list"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Project Page Header */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-          showSearch
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          showFilter
-        />
-
-        {/* Kanban Board */}
+                {/* Kanban Board */}
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">

@@ -18,7 +18,7 @@ import {
   Grid3x3,
   List,
   Settings,
-  BarChart3,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';

@@ -4,7 +4,18 @@ import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BarChart3, Code, FileText, Clock, Book, Search, Filter, Users, Calendar, TrendingUp } from 'lucide-react';
+import {
+  BarChart3,
+  Book,
+  Calendar,
+  Clock,
+  Code,
+  FileText,
+  Filter,
+  Search,
+  TrendingUp,
+  Users
+} from 'lucide-react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },

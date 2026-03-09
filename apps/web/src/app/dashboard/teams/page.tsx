@@ -3,9 +3,29 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Plus, Users, Settings, MoreHorizontal, UserPlus, Crown, Shield, Star, CheckCircle2, Mail, Copy, Briefcase, Target, BarChart3, Code, FileText, Clock, Book, Search } from 'lucide-react';
+import {
+  Plus,
+  Users,
+  Settings,
+  MoreHorizontal,
+  UserPlus,
+  Crown,
+  Shield,
+  Star,
+  CheckCircle2,
+  Mail,
+  Copy,
+  Briefcase,
+  Target,
+  BarChart3,
+  Code,
+  FileText,
+  Clock,
+  Book,
+  Search
+} from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { DashboardSectionHeader } from '@/components/navigation/dashboard-section-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,16 +51,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { IconRenderer } from '@/components/ui/icon-renderer';
-
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
-] as const;
 
 // Types
 interface TeamMember {
@@ -246,63 +256,22 @@ export default function TeamsPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Teams"
+        icon={<Users className="h-6 w-6" />}
+        iconColor="#10B981"
+
+        currentTab="team"
+        baseHref="/dashboard/teams"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
-                <Users className="h-6 w-6" />
-              </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams</h1>
-            </div>
-
-            <button
-              onClick={() => setIsCreateDialogOpen(true)}
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              Create
-            </button>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
-            {TAB_ITEMS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <Link
-                  key={tab.id}
-                  href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Search Bar */}
-          <div className="px-6 py-3">
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
-              <input
-                type="text"
-                placeholder="Search teams..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Teams Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (

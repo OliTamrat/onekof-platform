@@ -426,7 +426,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
           "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out",
-          // Desktop: Full height of flex container (no gap)
+          // Desktop: Full height of flex container (no gap) - connects directly to navbar
           "md:relative md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"

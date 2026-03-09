@@ -1,6 +1,8 @@
 'use client';
 
-import { FolderOpen } from 'lucide-react';
+import {
+  FolderOpen
+} from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 export default function DocSpaceDetailPage() {

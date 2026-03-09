@@ -1,6 +1,8 @@
 'use client';
 
-import { FileText } from 'lucide-react';
+import {
+  FileText
+} from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 export default function DocPageDetailPage() {
