@@ -240,9 +240,12 @@ export default function IssuesTimelinePage() {
             </div>
           ) : (
             <div className="max-w-7xl mx-auto space-y-6">
-              {/* Summary Stats */}
+              {/* Summary Stats - Clickable Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+                <button
+                  onClick={() => projects.length > 0 && setSelectedProject(projects[0])}
+                  className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer text-left"
+                >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                       <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -254,9 +257,15 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">Total Projects</p>
                     </div>
                   </div>
-                </div>
+                </button>
 
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+                <button
+                  onClick={() => {
+                    const onTrack = projects.find(p => p.status === 'ON_TRACK');
+                    if (onTrack) setSelectedProject(onTrack);
+                  }}
+                  className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 hover:border-green-500 dark:hover:border-green-500 hover:shadow-lg transition-all cursor-pointer text-left"
+                >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -268,9 +277,15 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">On Track</p>
                     </div>
                   </div>
-                </div>
+                </button>
 
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+                <button
+                  onClick={() => {
+                    const atRisk = projects.find(p => p.status === 'AT_RISK' || p.status === 'DELAYED');
+                    if (atRisk) setSelectedProject(atRisk);
+                  }}
+                  className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 hover:border-orange-500 dark:hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer text-left"
+                >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
                       <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -282,9 +297,15 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">At Risk/Delayed</p>
                     </div>
                   </div>
-                </div>
+                </button>
 
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+                <button
+                  onClick={() => {
+                    const completed = projects.find(p => p.status === 'COMPLETED');
+                    if (completed) setSelectedProject(completed);
+                  }}
+                  className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 hover:border-purple-500 dark:hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer text-left"
+                >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                       <CheckCircle2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -296,7 +317,7 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">Completed</p>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
 
               {/* Project Timeline Cards */}
@@ -466,43 +487,219 @@ export default function IssuesTimelinePage() {
         </div>
       </div>
 
-      {/* Project Details Slideout */}
+      {/* Project Details Slideout - Detailed Timeline View */}
       {selectedProject && (
         <SlideoutPanel
           open={!!selectedProject}
           onClose={() => setSelectedProject(null)}
           title={selectedProject.name}
-          subtitle={`Project Timeline & Details`}
-          size="lg"
+          subtitle={`${selectedProject.key} • Project Timeline Details`}
+          size="xl"
         >
           <SlideoutPanelContent>
             <div className="space-y-6">
-              {/* Project Overview */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Project Overview
-                </h3>
-                <div className="space-y-4">
+              {/* Project Status Header */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6">
+                <div className="flex items-start justify-between mb-4">
                   <div>
-                    <span className="text-sm font-medium text-gray-600 dark:text-[#9FADBC]">Description</span>
-                    <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                      {selectedProject.description || 'No description provided'}
-                    </p>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                        style={{ backgroundColor: selectedProject.color }}
+                      >
+                        {selectedProject.key}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          {selectedProject.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                          {selectedProject.description || 'No description'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium"
+                    style={{
+                      backgroundColor: `${getProjectHealth(selectedProject).color}20`,
+                      color: getProjectHealth(selectedProject).color
+                    }}
+                  >
+                    {React.createElement(getProjectHealth(selectedProject).icon, { className: "h-4 w-4" })}
+                    {getProjectHealth(selectedProject).label}
+                  </div>
+                </div>
+
+                {/* Key Metrics Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {selectedProject.progress}%
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Progress</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {calculateDaysRemaining(selectedProject.targetDate) || '--'}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Days Left</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {selectedProject.team?.memberCount || 0}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Team Members</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {selectedProject.budget ? `${formatCurrency(selectedProject.budget.spent, selectedProject.budget.currency)}` : '--'}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Budget Spent</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline Progress */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Timeline Progress
+                </h3>
+
+                <div className="space-y-4">
+                  {/* Work Progress */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Work Completion</span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">{selectedProject.progress}%</span>
+                    </div>
+                    <div className="h-3 rounded-full bg-gray-200 dark:bg-[#282E33] overflow-hidden">
+                      <div
+                        className="h-full transition-all"
+                        style={{
+                          width: `${selectedProject.progress}%`,
+                          backgroundColor: getProjectHealth(selectedProject).color,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Timeline Progress */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Time Elapsed</span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">
+                        {(() => {
+                          const start = new Date(selectedProject.startDate || Date.now());
+                          const end = new Date(selectedProject.targetDate || Date.now());
+                          const now = new Date();
+                          const total = end.getTime() - start.getTime();
+                          const elapsed = now.getTime() - start.getTime();
+                          const percentage = Math.min(100, Math.max(0, (elapsed / total) * 100));
+                          return Math.round(percentage);
+                        })()}%
+                      </span>
+                    </div>
+                    <div className="h-3 rounded-full bg-gray-200 dark:bg-[#282E33] overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 transition-all"
+                        style={{
+                          width: `${(() => {
+                            const start = new Date(selectedProject.startDate || Date.now());
+                            const end = new Date(selectedProject.targetDate || Date.now());
+                            const now = new Date();
+                            const total = end.getTime() - start.getTime();
+                            const elapsed = now.getTime() - start.getTime();
+                            const percentage = Math.min(100, Math.max(0, (elapsed / total) * 100));
+                            return Math.round(percentage);
+                          })()}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Date Range */}
+                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
                     <div>
-                      <span className="text-sm font-medium text-gray-600 dark:text-[#9FADBC]">Start Date</span>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Start Date</span>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                         {formatDate(selectedProject.startDate)}
                       </p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-600 dark:text-[#9FADBC]">Target Date</span>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Target Date</span>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                         {formatDate(selectedProject.targetDate)}
                       </p>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Budget Details */}
+              {selectedProject.budget && (
+                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <DollarSign className="h-5 w-5" />
+                    Budget Utilization
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Spent vs Allocated</span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                          {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="h-3 rounded-full bg-gray-200 dark:bg-[#282E33] overflow-hidden">
+                        <div
+                          className="h-full bg-green-500 transition-all"
+                          style={{
+                            width: `${Math.min(100, (selectedProject.budget.spent / selectedProject.budget.allocated) * 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+                      <div>
+                        <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Allocated</span>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                          {formatCurrency(selectedProject.budget.allocated, selectedProject.budget.currency)}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Spent</span>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                          {formatCurrency(selectedProject.budget.spent, selectedProject.budget.currency)}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Remaining</span>
+                        <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-1">
+                          {formatCurrency(selectedProject.budget.allocated - selectedProject.budget.spent, selectedProject.budget.currency)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Team Information */}
+              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Team Overview
+                </h3>
+                <div className="text-center py-6">
+                  <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                    {selectedProject.team?.memberCount || 0}
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                    Active team members working on this project
+                  </p>
                 </div>
               </div>
 
@@ -511,32 +708,67 @@ export default function IssuesTimelinePage() {
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="h-5 w-5 text-[#8B5CF6]" />
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    AI Insights
+                    AI Insights & Recommendations
                   </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
-                    <TrendingUp className="h-5 w-5 text-[#8B5CF6] mt-0.5" />
+                    <div className="h-2 w-2 rounded-full bg-[#8B5CF6] mt-2" />
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Project Health Analysis
+                        Project Health: {getProjectHealth(selectedProject).label}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
-                        Based on current progress ({selectedProject.progress}%) and timeline, this project is {getProjectHealth(selectedProject).label.toLowerCase()}.
-                        {selectedProject.budget && ` Budget utilization is at ${((selectedProject.budget.spent / selectedProject.budget.allocated) * 100).toFixed(1)}%.`}
+                        Current progress is at {selectedProject.progress}%.
+                        {selectedProject.progress < 50 && ' Consider reviewing task priorities and team allocation.'}
+                        {selectedProject.progress >= 50 && selectedProject.progress < 80 && ' Project is progressing well, maintain current pace.'}
+                        {selectedProject.progress >= 80 && ' Excellent progress! Focus on quality and final deliverables.'}
                       </p>
                     </div>
                   </div>
+
+                  {selectedProject.budget && (
+                    <div className="flex items-start gap-3">
+                      <div className="h-2 w-2 rounded-full bg-[#8B5CF6] mt-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                          Budget Status
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
+                          {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100).toFixed(1)}% of budget utilized.
+                          {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100) > 80 && ' Monitor spending closely.'}
+                          {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100) <= 80 && ' Budget tracking is on target.'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {calculateDaysRemaining(selectedProject.targetDate) !== null && (
+                    <div className="flex items-start gap-3">
+                      <div className="h-2 w-2 rounded-full bg-[#8B5CF6] mt-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                          Timeline Status
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
+                          {calculateDaysRemaining(selectedProject.targetDate)! > 0
+                            ? `${calculateDaysRemaining(selectedProject.targetDate)} days remaining until deadline.`
+                            : `Project is ${Math.abs(calculateDaysRemaining(selectedProject.targetDate)!)} days overdue.`
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Quick Actions */}
+              {/* Action Buttons */}
               <div className="flex gap-3">
-                <button className="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors">
-                  View Full Report
+                <button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors">
+                  View Full Project
                 </button>
-                <button className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#2C333A] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
-                  Export Timeline
+                <button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#2C333A] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                  Export Timeline Report
                 </button>
               </div>
             </div>
