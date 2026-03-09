@@ -147,7 +147,7 @@ export function UnifiedPageHeader({
       {showTabs && (
         <div className="border-b border-gray-200 dark:border-[#2C333A] overflow-x-auto scrollbar-hide">
           {/* Desktop: Show all tabs */}
-          <div className="hidden md:flex px-6 gap-2">
+          <div className="hidden md:flex px-6 gap-3">
             {NAV_TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -172,7 +172,7 @@ export function UnifiedPageHeader({
           </div>
 
           {/* Mobile: Show first 4 tabs + More dropdown */}
-          <div className="flex md:hidden px-2 gap-1">
+          <div className="flex md:hidden px-3 gap-2">
             {/* First 4 tabs: Icon + Text on mobile */}
             {NAV_TABS.slice(0, 4).map((tab) => {
               const Icon = tab.icon;
