@@ -15,7 +15,7 @@ import {
   Star,
   Filter,
   Sparkles,
-  List as ListIcon,
+  List as List,
   LayoutTemplate,
   BarChart3,
   Code,
@@ -44,7 +44,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const TAB_ITEMS = [
-  { id: 'list', label: 'All Automations', icon: ListIcon, href: '/dashboard/automations' },
+  { id: 'list', label: 'All Automations', icon: List, href: '/dashboard/automations' },
   { id: 'templates', label: 'Templates', icon: LayoutTemplate, href: '/dashboard/automations/templates' },
   { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/dashboard/automations/analytics' },
   { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
@@ -199,7 +199,7 @@ export default function TemplatesPage() {
               href="/dashboard/automations"
               className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A] transition-colors"
             >
-              <ListIcon className="h-4 w-4" />
+              <List className="h-4 w-4" />
               View My Automations
             </Link>
           </div>

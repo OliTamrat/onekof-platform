@@ -86,7 +86,7 @@ export default function ProjectsPagesPage() {
               <div className="p-4 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] text-left hover:border-[#0065FF] cursor-pointer transition-colors">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded">
-                    <FolderIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    <Folder className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Technical Spec</h3>

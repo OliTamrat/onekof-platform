@@ -15,7 +15,7 @@ import {
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
-  { id: 'list', label: 'List', icon: ListIcon, href: '/dashboard/automations/list' },
+  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations', active: true },
   { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },

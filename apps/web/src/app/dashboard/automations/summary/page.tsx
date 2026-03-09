@@ -17,7 +17,7 @@ import {
   Code,
   FileText,
   Book,
-  List as ListIcon,
+  List as List,
   Power,
   Sparkles
 } from 'lucide-react';
@@ -25,7 +25,7 @@ import { useState, useEffect } from 'react';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary', active: true },
-  { id: 'list', label: 'List', icon: ListIcon, href: '/dashboard/automations/list' },
+  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations' },
   { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
