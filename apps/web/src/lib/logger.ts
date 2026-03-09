@@ -46,8 +46,10 @@ logger.add(new winston.transports.Console({
   ),
 }));
 
-// File transports (production only)
-if (process.env.NODE_ENV === 'production') {
+// File transports (only for non-serverless environments)
+// Vercel/serverless environments have read-only filesystems
+// Use console logging instead - Vercel captures console logs automatically
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   // Error logs
   logger.add(new DailyRotateFile({
     filename: path.join(logsDir, 'error-%DATE%.log'),
