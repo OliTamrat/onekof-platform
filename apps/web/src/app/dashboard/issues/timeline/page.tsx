@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
   Clock,
   CheckSquare,
@@ -79,12 +79,21 @@ export default function IssuesTimelinePage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Timeline"
+        icon={<Clock className="h-6 w-6" />}
+        iconColor="#06B6D4"
+        currentTab="timeline"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-        />
 
         {/* Timeline View Controls */}
         <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">

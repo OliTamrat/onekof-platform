@@ -10,7 +10,7 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
   TrendingUp,
@@ -281,12 +281,21 @@ export default function IssuesSummaryPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Summary"
+        icon={<TrendingUp className="h-6 w-6" />}
+        iconColor="#10B981"
+        currentTab="summary"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-        />
 
         <div className="flex-1 overflow-auto p-6">
           {/* Stats Cards - Beautiful 2x2 grid on mobile */}

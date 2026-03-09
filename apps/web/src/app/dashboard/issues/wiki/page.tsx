@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
   BookOpen,
   Search,
@@ -257,11 +257,21 @@ export default function IssuesWikiPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Wiki"
+        icon={<BookOpen className="h-6 w-6" />}
+        iconColor="#8B5CF6"
+        currentTab="wiki"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => {}}
-        />
 
         {/* Search & Filter Bar */}
         <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">

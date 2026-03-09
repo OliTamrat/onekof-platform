@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
   ChevronLeft,
@@ -175,12 +175,21 @@ export default function IssuesCalendarPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="Calendar"
+        icon={<CalendarIcon className="h-6 w-6" />}
+        iconColor="#EC4899"
+        currentTab="calendar"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-        />
 
         <div className="flex-1 overflow-auto p-6">
           {/* Calendar Controls */}

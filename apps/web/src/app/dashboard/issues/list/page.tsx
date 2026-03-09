@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
   CheckSquare,
   Calendar
@@ -112,16 +112,21 @@ export default function IssuesListPage() {
 
   return (
     <AppLayout>
+      <UnifiedPageHeader
+        title="List"
+        icon={<CheckSquare className="h-6 w-6" />}
+        iconColor="#3B82F6"
+        currentTab="list"
+        baseHref="/dashboard/issues"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
+      />
+
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Project Page Header with Navigation */}
-        <ProjectPageHeader
-          project={currentProject}
-          onCreateClick={() => setShowCreateModal(true)}
-          showSearch
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          showFilter
-        />
 
         {/* Issues Table */}
         <div className="flex-1 overflow-auto px-6 py-4">
