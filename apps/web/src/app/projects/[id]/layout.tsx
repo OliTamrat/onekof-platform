@@ -21,6 +21,9 @@ import {
   Home,
   BarChart3,
   FolderOpen,
+  Calendar,
+  Zap,
+  BookOpen,
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 
@@ -34,14 +37,18 @@ interface Project {
 }
 
 const TAB_ITEMS = [
-  { id: 'board', label: 'Overview', icon: LayoutDashboard, href: '/projects/[id]/board' },
-  { id: 'list', label: 'Tasks & Milestones', icon: List, href: '/projects/[id]/list' },
-  { id: 'timeline', label: 'Construction Timeline', icon: HardHat, href: '/projects/[id]/timeline' },
-  { id: 'budget', label: 'Budget & Procurement', icon: DollarSign, href: '/projects/[id]/budget' },
-  { id: 'team', label: 'Team & Stakeholders', icon: Users, href: '/projects/[id]/team' },
-  { id: 'goals', label: 'Environmental & Social', icon: Leaf, href: '/projects/[id]/goals' },
-  { id: 'activity', label: 'Monitoring & Reports', icon: BarChart3, href: '/projects/[id]/activity' },
-  { id: 'settings', label: 'Project Settings', icon: Settings, href: '/projects/[id]/settings' },
+  { id: 'board', label: 'Summary', icon: LayoutDashboard, href: '/projects/[id]/board' },
+  { id: 'list', label: 'List', icon: List, href: '/projects/[id]/list' },
+  { id: 'board-view', label: 'Board', icon: Kanban, href: '/projects/[id]/board' },
+  { id: 'calendar', label: 'Calendar', icon: Calendar, href: '/projects/[id]/calendar' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/projects/[id]/timeline' },
+  { id: 'team', label: 'Team', icon: Users, href: '/projects/[id]/team' },
+  { id: 'goals', label: 'Goals', icon: Target, href: '/projects/[id]/goals' },
+  { id: 'budget', label: 'Budget', icon: DollarSign, href: '/projects/[id]/budget' },
+  { id: 'documents', label: 'Documents', icon: FileText, href: '/projects/[id]/documents' },
+  { id: 'automation', label: 'Automation', icon: Zap, href: '/projects/[id]/automation' },
+  { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/projects/[id]/wiki' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/projects/[id]/settings' },
 ] as const;
 
 export default function ProjectLayout({ children }: { children: React.Node }) {
