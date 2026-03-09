@@ -176,25 +176,34 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => a.daysLeft - b.daysLeft)
       .slice(0, 5);
 
-    // Get activity data
-    const recentActivities = await getRecentActivities(organizationId, {
-      entityType: 'PROJECT',
-      startDate,
-      endDate,
-      limit: 20,
-    });
+    // Get activity data (with error handling - activity log table may not exist yet)
+    let recentActivities = [];
+    let topContributors = [];
+    let dailyActivities = [];
 
-    const topContributors = await getTopContributors(organizationId, startDate, endDate, {
-      entityType: 'PROJECT',
-      limit: 5,
-    });
+    try {
+      recentActivities = await getRecentActivities(organizationId, {
+        entityType: 'PROJECT',
+        startDate,
+        endDate,
+        limit: 20,
+      });
 
-    const dailyActivities = await getDailyActivityAggregates(
-      organizationId,
-      startDate,
-      endDate,
-      'PROJECT'
-    );
+      topContributors = await getTopContributors(organizationId, startDate, endDate, {
+        entityType: 'PROJECT',
+        limit: 5,
+      });
+
+      dailyActivities = await getDailyActivityAggregates(
+        organizationId,
+        startDate,
+        endDate,
+        'PROJECT'
+      );
+    } catch (activityError) {
+      // Activity logging not available - continue without it
+      console.log('Activity logging not available');
+    }
 
     return NextResponse.json({
       summary: {
@@ -228,3 +237,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+

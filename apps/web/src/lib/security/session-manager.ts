@@ -57,7 +57,7 @@ export async function shouldInvalidateSession(
       where: { id: userId },
       select: {
         passwordChangedAt: true,
-        accountLockedUntil: true,
+        lockedUntil: true,
         emailVerified: true,
       },
     });
@@ -75,7 +75,7 @@ export async function shouldInvalidateSession(
     }
 
     // Invalidate if account is locked
-    if (user.accountLockedUntil && user.accountLockedUntil > new Date()) {
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
       return { shouldInvalidate: true, reason: 'account_locked' };
     }
 
