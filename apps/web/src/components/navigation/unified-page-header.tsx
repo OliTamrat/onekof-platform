@@ -238,11 +238,11 @@ export function UnifiedPageHeader({
         </div>
       )}
 
-      {/* Controls Bar - Mobile Friendly */}
-      <div className="flex items-center gap-2 px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-[#2C333A]">
-        {/* Search - Full width on mobile, limited on desktop */}
+      {/* Controls Bar - Spread on Desktop, Compact on Mobile */}
+      <div className="flex items-center gap-2 md:gap-3 px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-[#2C333A]">
+        {/* Search - Full width on mobile, expanded on desktop */}
         {showSearch && (
-          <div className="relative flex-1 md:max-w-xs">
+          <div className="relative flex-1 md:flex-[2]">
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
             <input
               type="text"
@@ -254,12 +254,15 @@ export function UnifiedPageHeader({
           </div>
         )}
 
-        {/* Filter - Icon only on mobile */}
+        {/* Desktop: Spacer to spread controls */}
+        <div className="hidden md:flex md:flex-1"></div>
+
+        {/* Filter - Icon only on mobile, full on desktop */}
         {showFilters && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                 title="Filter"
               >
                 <Filter className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -275,16 +278,16 @@ export function UnifiedPageHeader({
           </DropdownMenu>
         )}
 
-        {/* Group By - Icon only on mobile */}
+        {/* Group By - Icon only on mobile, full on desktop */}
         {showGroupBy && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                 title="Group by"
               >
                 <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="hidden lg:inline">Group</span>
+                <span className="hidden md:inline">Group</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
@@ -304,27 +307,27 @@ export function UnifiedPageHeader({
           </DropdownMenu>
         )}
 
-        {/* Insights - Icon only on mobile */}
+        {/* Insights - Icon only on mobile, full on desktop */}
         {showInsights && (
           <button
-            className="flex items-center gap-1.5 rounded-md border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors shrink-0"
+            className="flex items-center gap-1.5 md:gap-2 rounded-md border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors shrink-0"
             title="AI Insights"
           >
             <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
-            <span className="hidden lg:inline">Insights</span>
+            <span className="hidden md:inline">Insights</span>
           </button>
         )}
 
-        {/* View Settings - Icon only on mobile */}
+        {/* View Settings - Icon only on mobile, full on desktop */}
         {showViewSettings && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                 title="View settings"
               >
                 <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="hidden lg:inline">View</span>
+                <span className="hidden md:inline">View</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
