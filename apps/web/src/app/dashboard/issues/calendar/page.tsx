@@ -5,7 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
-import { CreateIssueModal } from '@/components/issues/create-issue-modal';
+import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { QuickAddEventModal } from '@/components/calendar/quick-add-event-modal';
 import { DualCalendar, type CalendarTask } from '@/components/calendar/dual-calendar';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
@@ -35,8 +36,7 @@ interface Issue {
 
 export default function IssuesCalendarPage() {
   const { data: session } = useSession();
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<CalendarTask | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);
 
   // Get current project
@@ -81,25 +81,19 @@ export default function IssuesCalendarPage() {
 
   // Handlers for calendar interactions
   const handleTaskClick = (task: CalendarTask) => {
-    setSelectedTask(task);
-    // TODO: Open task detail modal/panel
-    console.log('Task clicked:', task);
+    setSelectedTaskId(task.id);
   };
 
   const handleDateClick = (date: Date) => {
     setCreateTaskDate(date);
-    // TODO: Open create task modal with pre-filled date
-    console.log('Date clicked:', date);
   };
 
   const handleCreateTask = (date: Date) => {
     setCreateTaskDate(date);
-    setShowCreateModal(true);
   };
 
   const handleTaskUpdate = (task: CalendarTask) => {
-    // TODO: Implement task update mutation
-    console.log('Task updated:', task);
+    // Updates are handled by the slideout via mutations
   };
 
   if (!session) {
@@ -153,9 +147,21 @@ export default function IssuesCalendarPage() {
         )}
       </div>
 
-      {/* Create Issue Modal */}
-      {showCreateModal && (
-        <CreateIssueModal onClose={() => setShowCreateModal(false)} />
+      {/* Task Detail Slideout - Opens when task is clicked */}
+      {selectedTaskId && (
+        <IssueDetailSlideout
+          issueId={selectedTaskId}
+          onClose={() => setSelectedTaskId(null)}
+        />
+      )}
+
+      {/* Quick Add Event Modal - Opens when date is clicked */}
+      {createTaskDate && (
+        <QuickAddEventModal
+          date={createTaskDate}
+          onClose={() => setCreateTaskDate(null)}
+          projectId={currentProject?.id}
+        />
       )}
     </AppLayout>
   );
