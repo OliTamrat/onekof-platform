@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { hash } from 'bcryptjs';
 import { hashToken, isTokenExpired } from '@/lib/security/tokens';
 import { log, logSecurity } from '@/lib/logger';
+import { invalidateAllUserSessions } from '@/lib/security/session-manager';
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,6 +64,16 @@ export async function POST(req: NextRequest) {
         resetTokenHash: null,  // Clear hashed token
         resetTokenExpiry: null,
         passwordChangedAt: new Date(),  // Track password change
+      },
+    });
+
+    // SECURITY: Invalidate all existing sessions after password change
+    // This forces the user to log in again on all devices
+    await invalidateAllUserSessions(user.id, {
+      reason: 'password_change',
+      metadata: {
+        email: user.email,
+        resetMethod: 'password_reset_token',
       },
     });
 

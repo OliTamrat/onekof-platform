@@ -103,3 +103,11 @@ dist/
 build/
 out/
 .next/
+
+# Database Backups & Scripts
+backups/
+*.sql
+*.sql.gz
+*.dump
+*.backup
+scripts/*.log
