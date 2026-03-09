@@ -51,18 +51,20 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     },
   });
 
-  // Fetch team members
-  const { data: teamData } = useQuery({
-    queryKey: ['team-members'],
+  // Fetch organization members for assignment
+  const { data: membersData } = useQuery({
+    queryKey: ['organization-members'],
     queryFn: async () => {
-      const res = await fetch('/api/team/members');
-      if (!res.ok) throw new Error('Failed to fetch team members');
+      const res = await fetch('/api/organization-members');
+      if (!res.ok) {
+        return { members: [] };
+      }
       return res.json();
     },
   });
 
   const projects = projectsData?.projects || [];
-  const members = teamData?.members || [];
+  const members = membersData?.members || [];
   const selectedProjectId = projectId || projects[0]?.id;
 
   // Create task mutation
