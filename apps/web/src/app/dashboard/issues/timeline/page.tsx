@@ -71,7 +71,43 @@ export default function IssuesTimelinePage() {
     },
   });
 
-  const projects = (projectsData?.projects || []) as Project[];
+  // Transform API projects to Timeline format
+  const projects = ((projectsData?.projects || []) as any[]).map((apiProject) => {
+    // Calculate project status based on progress
+    let status: 'ON_TRACK' | 'AT_RISK' | 'DELAYED' | 'COMPLETED';
+    if (apiProject.progress === 100) {
+      status = 'COMPLETED';
+    } else if (apiProject.progress >= 75) {
+      status = 'ON_TRACK';
+    } else if (apiProject.progress >= 50) {
+      status = 'AT_RISK';
+    } else {
+      status = 'DELAYED';
+    }
+
+    // Calculate estimated dates if not present
+    const now = new Date();
+    const startDate = apiProject.createdAt || now.toISOString();
+    const targetDate = apiProject.updatedAt
+      ? new Date(new Date(apiProject.updatedAt).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString()
+      : new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString();
+
+    return {
+      id: apiProject.id,
+      name: apiProject.name,
+      key: apiProject.key,
+      color: apiProject.color || '#3B82F6',
+      description: apiProject.description,
+      startDate,
+      targetDate,
+      status,
+      progress: apiProject.progress || 0,
+      budget: apiProject.budget || null, // Will be null if no budget data
+      team: {
+        memberCount: apiProject.memberCount || 0,
+      },
+    } as Project;
+  });
 
   // Calculate project health
   const getProjectHealth = (project: Project): { status: string; label: string; color: string; icon: any } => {
