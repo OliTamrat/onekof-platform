@@ -305,11 +305,11 @@ export default function IssuesGoalsPage() {
         currentTab="goals"
         baseHref="/dashboard/issues"
         showTabs
-        showSearch={false}
-        showFilters={false}
-        showGroupBy={false}
-        showViewSettings={false}
-        showInsights={false}
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
