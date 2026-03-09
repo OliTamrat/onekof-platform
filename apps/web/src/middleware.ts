@@ -57,12 +57,12 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
   // Prevents XSS attacks by controlling what resources can be loaded
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    "connect-src 'self' https://accounts.google.com https://*.upstash.io",
-    "frame-src 'self' https://accounts.google.com",
+    "connect-src 'self' https://accounts.google.com https://*.upstash.io https://vercel.live",
+    "frame-src 'self' https://accounts.google.com https://vercel.live",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
