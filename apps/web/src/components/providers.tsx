@@ -5,6 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WorkspaceProvider } from '@/contexts/workspace-context';
+import { OrganizationSettingsProvider } from '@/contexts/organization-settings-context';
 import { ErrorBoundary } from '@/components/error-boundary';
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -31,7 +32,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            <WorkspaceProvider>{children}</WorkspaceProvider>
+            <WorkspaceProvider>
+              <OrganizationSettingsProvider>
+                {children}
+              </OrganizationSettingsProvider>
+            </WorkspaceProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </SessionProvider>

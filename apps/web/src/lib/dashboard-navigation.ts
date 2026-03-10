@@ -24,6 +24,7 @@ import {
   Activity,
   type LucideIcon
 } from 'lucide-react';
+import type { OrganizationSettings, DashboardSectionId } from '@/types/organization-settings';
 
 export interface DashboardNavItem {
   id: string;
@@ -36,8 +37,12 @@ export type DashboardSection = 'teams' | 'budget' | 'goals' | 'automations' | 'd
 
 /**
  * Get navigation items for a specific dashboard section
+ * Optionally filters based on organization settings and feature flags
  */
-export function getDashboardNavigation(section: DashboardSection): DashboardNavItem[] {
+export function getDashboardNavigation(
+  section: DashboardSection,
+  organizationSettings?: OrganizationSettings
+): DashboardNavItem[] {
   const navigationBySection: Record<DashboardSection, DashboardNavItem[]> = {
     // TEAMS SECTION
     teams: [
@@ -100,7 +105,136 @@ export function getDashboardNavigation(section: DashboardSection): DashboardNavI
     ],
   };
 
-  return navigationBySection[section] || [];
+  const allNavItems = navigationBySection[section] || [];
+
+  // If no organization settings provided, return all items
+  if (!organizationSettings) {
+    return allNavItems;
+  }
+
+  // Check if the section is enabled for this organization
+  if (!organizationSettings.enabledSections.includes(section as DashboardSectionId)) {
+    return [];
+  }
+
+  // Filter navigation items based on feature flags
+  return allNavItems.filter((item) => {
+    // Always show overview and settings
+    if (item.id === 'overview' || item.id === 'settings') {
+      return true;
+    }
+
+    // Budget section feature flags
+    if (section === 'budget') {
+      const budgetFeatures = organizationSettings.features.budget;
+      if (!budgetFeatures) return false; // Budget section disabled
+
+      switch (item.id) {
+        case 'expenses':
+          return budgetFeatures.expenses;
+        case 'income':
+          return budgetFeatures.income;
+        case 'reports':
+          return budgetFeatures.reports;
+        case 'forecasting':
+          return budgetFeatures.forecasting;
+        default:
+          return true;
+      }
+    }
+
+    // Teams section feature flags
+    if (section === 'teams') {
+      const teamFeatures = organizationSettings.features.teams;
+      if (!teamFeatures) return false; // Teams section disabled
+
+      switch (item.id) {
+        case 'goals':
+          return teamFeatures.goals;
+        case 'activity':
+          return teamFeatures.activity;
+        case 'members':
+        case 'board':
+        case 'timeline':
+          return true; // Always show these
+        default:
+          return true;
+      }
+    }
+
+    // Goals section feature flags
+    if (section === 'goals') {
+      const goalFeatures = organizationSettings.features.goals;
+      if (!goalFeatures) return false; // Goals section disabled
+
+      switch (item.id) {
+        case 'active':
+          return goalFeatures.activeGoals;
+        case 'completed':
+          return goalFeatures.completedGoals;
+        case 'teams':
+          return goalFeatures.teamGoals;
+        case 'timeline':
+          return goalFeatures.milestones; // Timeline shows milestones
+        default:
+          return true;
+      }
+    }
+
+    // Automations section feature flags
+    if (section === 'automations') {
+      const automationFeatures = organizationSettings.features.automations;
+      if (!automationFeatures) return false; // Automations disabled
+
+      switch (item.id) {
+        case 'workflows':
+          return automationFeatures.workflows;
+        case 'triggers':
+          return automationFeatures.triggers;
+        case 'history':
+          return automationFeatures.history;
+        default:
+          return true;
+      }
+    }
+
+    // Documents section feature flags
+    if (section === 'documents') {
+      const documentFeatures = organizationSettings.features.documents;
+      if (!documentFeatures) return false; // Documents section disabled
+
+      switch (item.id) {
+        case 'templates':
+          return documentFeatures.templates;
+        case 'all':
+        case 'recent':
+        case 'shared':
+          return true; // Always show these core document views
+        default:
+          return true;
+      }
+    }
+
+    // Docs section feature flags
+    if (section === 'docs') {
+      const docsFeatures = organizationSettings.features.docs;
+      if (!docsFeatures) return false; // Docs section disabled
+
+      switch (item.id) {
+        case 'wiki':
+          return docsFeatures.wiki;
+        case 'search':
+          return docsFeatures.search;
+        case 'pages':
+        case 'recent':
+          return true; // Always show these
+        default:
+          return true;
+      }
+    }
+
+    return true; // Default: show the item
+  });
 }
 
 /**
