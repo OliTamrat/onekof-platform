@@ -111,15 +111,19 @@ export function OrganizationSettingsProvider({
   const loadSettings = async (orgId: string) => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/organizations/${orgId}/settings`);
-      // const data = await response.json();
-      // setSettings(data);
+      const response = await fetch(`/api/organizations/${orgId}/settings`);
 
-      // For now, use default settings
-      setSettings(initialSettings || DEFAULT_SETTINGS);
+      if (!response.ok) {
+        throw new Error('Failed to load settings');
+      }
+
+      const data = await response.json();
+      setSettings(data);
+      setHasUnsavedChanges(false);
     } catch (error) {
       console.error('Failed to load organization settings:', error);
+      // Fallback to default settings on error
+      setSettings(initialSettings || DEFAULT_SETTINGS);
     } finally {
       setIsLoading(false);
     }
@@ -149,14 +153,18 @@ export function OrganizationSettingsProvider({
 
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // await fetch(`/api/organizations/${organizationId}/settings`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(settings),
-      // });
+      const response = await fetch(`/api/organizations/${organizationId}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
 
-      console.log('Settings saved:', settings);
+      if (!response.ok) {
+        throw new Error('Failed to save settings');
+      }
+
+      const updatedSettings = await response.json();
+      setSettings(updatedSettings);
       setHasUnsavedChanges(false);
     } catch (error) {
       console.error('Failed to save organization settings:', error);

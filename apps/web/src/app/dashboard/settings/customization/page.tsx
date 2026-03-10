@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import {
   Settings,
@@ -16,9 +16,11 @@ import {
   FileText,
   BookOpen,
   BarChart3,
+  Loader2,
 } from 'lucide-react';
-import { getAllPresets } from '@/lib/presets/organization-presets';
-import type { OrganizationSettings, DashboardSectionId } from '@/types/organization-settings';
+import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-presets';
+import { useOrganizationSettings } from '@/contexts/organization-settings-context';
+import type { OrganizationSettings, DashboardSectionId, OrganizationType } from '@/types/organization-settings';
 
 // Mock current organization settings (replace with real data from API/context)
 const INITIAL_SETTINGS: OrganizationSettings = {
@@ -99,9 +101,9 @@ const SECTION_INFO = {
 };
 
 export default function DashboardCustomizationPage() {
-  const [settings, setSettings] = useState<OrganizationSettings>(INITIAL_SETTINGS);
-  const [hasChanges, setHasChanges] = useState(false);
+  const { settings, updateSettings, applyPreset: applyOrgPreset, saveSettings: saveToAPI, hasUnsavedChanges, isLoading } = useOrganizationSettings();
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const presets = getAllPresets();
 
   const toggleSection = (sectionId: DashboardSectionId) => {
@@ -109,50 +111,58 @@ export default function DashboardCustomizationPage() {
       ? settings.enabledSections.filter(s => s !== sectionId)
       : [...settings.enabledSections, sectionId];
 
-    setSettings({ ...settings, enabledSections: newSections });
-    setHasChanges(true);
+    updateSettings({ ...settings, enabledSections: newSections });
   };
 
   const toggleFeature = (section: string, feature: string) => {
-    setSettings(prev => ({
-      ...prev,
+    updateSettings({
+      ...settings,
       features: {
-        ...prev.features,
-        [section]: prev.features[section as keyof typeof prev.features]
+        ...settings.features,
+        [section]: settings.features[section as keyof typeof settings.features]
           ? {
-              ...(prev.features[section as keyof typeof prev.features] as any),
-              [feature]: !(prev.features[section as keyof typeof prev.features] as any)[feature],
+              ...(settings.features[section as keyof typeof settings.features] as any),
+              [feature]: !(settings.features[section as keyof typeof settings.features] as any)[feature],
             }
           : null,
       },
-    }));
-    setHasChanges(true);
+    });
   };
 
   const applyPreset = (presetName: string) => {
     const preset = presets.find(p => p.name === presetName);
     if (preset) {
-      setSettings({
+      updateSettings({
         ...settings,
         enabledSections: preset.enabledSections,
         features: preset.features,
       });
       setSelectedPreset(presetName);
-      setHasChanges(true);
     }
   };
 
-  const saveSettings = async () => {
-    // TODO: Save to API
-    console.log('Saving settings:', settings);
-    alert('Settings saved successfully! Dashboard will reload with new configuration.');
-    setHasChanges(false);
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      await saveToAPI();
+      alert('Settings saved successfully! Dashboard will reload with new configuration.');
+      window.location.reload(); // Reload to apply new settings
+    } catch (error) {
+      alert('Failed to save settings. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const resetToDefaults = () => {
-    setSettings(INITIAL_SETTINGS);
+    // Apply business preset as default
+    const defaultPreset = getPresetForOrgType('business');
+    updateSettings({
+      ...settings,
+      enabledSections: defaultPreset.enabledSections,
+      features: defaultPreset.features,
+    });
     setSelectedPreset(null);
-    setHasChanges(true);
   };
 
   return (
@@ -173,7 +183,13 @@ export default function DashboardCustomizationPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {hasChanges && (
+              {isLoading && (
+                <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Loading...
+                </span>
+              )}
+              {hasUnsavedChanges && !isLoading && (
                 <span className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
                   <Info className="h-3 w-3" />
                   Unsaved changes
@@ -181,22 +197,23 @@ export default function DashboardCustomizationPage() {
               )}
               <button
                 onClick={resetToDefaults}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2C333A] rounded-md border border-gray-300 dark:border-[#2C333A]"
+                disabled={isLoading}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2C333A] rounded-md border border-gray-300 dark:border-[#2C333A] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RotateCcw className="h-4 w-4" />
                 Reset
               </button>
               <button
-                onClick={saveSettings}
-                disabled={!hasChanges}
+                onClick={handleSaveSettings}
+                disabled={!hasUnsavedChanges || isSaving || isLoading}
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md ${
-                  hasChanges
+                  hasUnsavedChanges && !isSaving && !isLoading
                     ? 'bg-[#0065FF] hover:bg-[#0052CC]'
                     : 'bg-gray-400 cursor-not-allowed'
                 }`}
               >
-                <Save className="h-4 w-4" />
-                Save Changes
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>

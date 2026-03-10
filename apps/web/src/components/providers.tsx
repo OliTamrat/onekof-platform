@@ -33,13 +33,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
           >
             <WorkspaceProvider>
-              <OrganizationSettingsProvider>
+              <OrganizationSettingsWrapper>
                 {children}
-              </OrganizationSettingsProvider>
+              </OrganizationSettingsWrapper>
             </WorkspaceProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </SessionProvider>
     </ErrorBoundary>
+  );
+}
+
+// Wrapper to access workspace context
+function OrganizationSettingsWrapper({ children }: { children: React.ReactNode }) {
+  const { currentOrganization } = require('@/contexts/workspace-context').useWorkspace();
+
+  return (
+    <OrganizationSettingsProvider organizationId={currentOrganization?.id}>
+      {children}
+    </OrganizationSettingsProvider>
   );
 }

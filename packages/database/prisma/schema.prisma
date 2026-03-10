@@ -61,15 +61,64 @@ model Organization {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  members         OrganizationMember[]
-  invitations     Invitation[]
-  projects        Project[]
-  teams           Team[]
-  goals           Goal[]
-  automationRules AutomationRule[]
-  activities      UserActivity[] // 🚀 NEW: All activities in this organization
+  members              OrganizationMember[]
+  invitations          Invitation[]
+  projects             Project[]
+  teams                Team[]
+  goals                Goal[]
+  automationRules      AutomationRule[]
+  activities           UserActivity[] // 🚀 NEW: All activities in this organization
+  organizationSettings OrganizationSettings? // Feature flags and customization
 
   @@map("organizations")
+  @@schema("public")
+}
+
+// Organization Settings - Feature Flags & Dashboard Customization
+model OrganizationSettings {
+  id             String @id @default(cuid())
+  organizationId String @unique @map("organization_id")
+
+  // Enabled dashboard sections
+  enabledSections String[] @default([]) @map("enabled_sections") // Array of section IDs: teams, budget, goals, etc.
+
+  // Feature flags stored as JSON for flexibility
+  // Structure matches OrganizationFeatures type from TypeScript
+  budgetFeatures     Json? @map("budget_features")
+  teamsFeatures      Json? @map("teams_features")
+  goalsFeatures      Json? @map("goals_features")
+  automationsFeatures Json? @map("automations_features")
+  documentsFeatures  Json? @map("documents_features")
+  docsFeatures       Json? @map("docs_features")
+
+  // Global features
+  aiAssistant      Boolean @default(false) @map("ai_assistant")
+  analytics        Boolean @default(true)
+  integrations     Boolean @default(false)
+  customBranding   Boolean @default(false) @map("custom_branding")
+
+  // Customization
+  primaryColor    String   @default("#0065FF") @map("primary_color")
+  logoUrl         String?  @map("logo_url")
+  budgetCurrency  String   @default("USD") @map("budget_currency")
+  fiscalYearStart Int      @default(1) @map("fiscal_year_start") // 1-12 (month)
+  dateFormat      String   @default("MM/DD/YYYY") @map("date_format")
+  language        Language @default(EN)
+
+  // Permissions
+  allowMemberInvites     Boolean @default(true) @map("allow_member_invites")
+  requireBudgetApproval  Boolean @default(true) @map("require_budget_approval")
+  publicProjectsVisible  Boolean @default(false) @map("public_projects_visible")
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("organization_settings")
   @@schema("public")
 }
 

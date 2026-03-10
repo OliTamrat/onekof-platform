@@ -3,9 +3,11 @@
  *
  * Comprehensive sidebar with 21+ pages organized into collapsible categories
  * Includes all project management tools needed for Ministry projects (water dam, irrigation, etc.)
+ * Now integrated with organization settings and feature flags
  */
 
 import { getNavigationForType } from '@/config/organization-types';
+import type { OrganizationSettings } from '@/types/organization-settings';
 import {
   Home,
   FolderKanban,
@@ -47,10 +49,14 @@ export interface SidebarSection {
 /**
  * Get comprehensive sidebar navigation with all project management tools
  * Perfect for Ministry projects like water dams, irrigation, infrastructure, etc.
+ * Filters based on organization settings and feature flags
  */
-export function getSidebarNavigation(organizationType?: string | null): SidebarSection[] {
-  // Return comprehensive 7-category structure with 21+ pages
-  return [
+export function getSidebarNavigation(
+  organizationType?: string | null,
+  organizationSettings?: OrganizationSettings
+): SidebarSection[] {
+  // Build comprehensive 7-category structure with 21+ pages
+  const allSections: SidebarSection[] = [
     // 1. HOME (No collapse - single item)
     {
       id: 'home',
@@ -146,6 +152,65 @@ export function getSidebarNavigation(organizationType?: string | null): SidebarS
       ],
     },
   ];
+
+  // If no organization settings, return all sections
+  if (!organizationSettings) {
+    return allSections;
+  }
+
+  // Filter sections and items based on organization settings
+  return allSections
+    .map((section) => {
+      // Filter sub-items based on enabled sections
+      const filteredItems = section.items.filter((item) => {
+        const itemPath = item.href;
+
+        // Check if the main section is enabled
+        if (itemPath.includes('/teams')) {
+          return organizationSettings.enabledSections.includes('teams');
+        }
+        if (itemPath.includes('/budget')) {
+          return organizationSettings.enabledSections.includes('budget');
+        }
+        if (itemPath.includes('/goals')) {
+          return organizationSettings.enabledSections.includes('goals');
+        }
+        if (itemPath.includes('/automations')) {
+          return organizationSettings.enabledSections.includes('automations');
+        }
+        if (itemPath.includes('/documents')) {
+          return organizationSettings.enabledSections.includes('documents');
+        }
+        if (itemPath.includes('/docs') || itemPath.includes('/wiki')) {
+          return organizationSettings.enabledSections.includes('docs');
+        }
+        if (itemPath.includes('/issues')) {
+          return organizationSettings.enabledSections.includes('issues');
+        }
+        if (itemPath.includes('/calendar')) {
+          return organizationSettings.enabledSections.includes('calendar');
+        }
+        if (itemPath.includes('/timeline')) {
+          return organizationSettings.enabledSections.includes('timeline');
+        }
+        if (itemPath.includes('/reports') || itemPath.includes('/analytics')) {
+          return organizationSettings.enabledSections.includes('analytics');
+        }
+
+        // For sections that don't map to feature flags, show them all
+        return true;
+      });
+
+      return {
+        ...section,
+        items: filteredItems,
+      };
+    })
+    .filter((section) => {
+      // Remove sections that have no items and no direct href
+      // Or keep sections that have either a href or at least one item
+      return section.href || section.items.length > 0;
+    });
 }
 
 /**
