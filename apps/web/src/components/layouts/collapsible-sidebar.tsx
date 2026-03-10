@@ -16,12 +16,22 @@ interface CollapsibleSidebarProps {
 export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
   const pathname = usePathname();
   const { currentOrganization } = useWorkspace();
-  const { settings } = useOrganizationSettings();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'projects', // Projects expanded by default
   ]);
 
+  // Try to get settings, but don't fail if context isn't available
+  let settings;
+  try {
+    const settingsContext = useOrganizationSettings();
+    settings = settingsContext.settings;
+  } catch (error) {
+    // Context not available, use undefined to show all sections
+    settings = undefined;
+  }
+
   // Get dynamic navigation based on organization type AND settings
+  // If settings are undefined or not loaded, getSidebarNavigation will return all sections
   const sidebarNavigation = getSidebarNavigation(currentOrganization?.type, settings);
 
   const toggleSection = (sectionId: string) => {

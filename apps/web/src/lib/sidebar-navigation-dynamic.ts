@@ -153,8 +153,9 @@ export function getSidebarNavigation(
     },
   ];
 
-  // If no organization settings, return all sections
-  if (!organizationSettings) {
+  // If no organization settings OR no enabled sections, return all sections
+  // This ensures navigation always works even if settings fail to load
+  if (!organizationSettings || !organizationSettings.enabledSections || organizationSettings.enabledSections.length === 0) {
     return allSections;
   }
 

@@ -46,10 +46,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 // Wrapper to access workspace context
 function OrganizationSettingsWrapper({ children }: { children: React.ReactNode }) {
-  const { currentOrganization } = require('@/contexts/workspace-context').useWorkspace();
-
+  // We can't use useWorkspace here directly because it would create a circular dependency
+  // Instead, we'll let the OrganizationSettingsProvider handle fetching when needed
+  // The sidebar component will pass the settings when available
   return (
-    <OrganizationSettingsProvider organizationId={currentOrganization?.id}>
+    <OrganizationSettingsProvider>
       {children}
     </OrganizationSettingsProvider>
   );
