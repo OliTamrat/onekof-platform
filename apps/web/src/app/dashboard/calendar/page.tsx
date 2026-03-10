@@ -13,15 +13,12 @@ export default function CalendarPage() {
         title="Calendar"
         icon={<CalendarIcon className="h-6 w-6" />}
         iconColor="#3B82F6"
-
-        currentTab="calendar"
-        baseHref="/dashboard/calendar"
-        showTabs
-        showSearch
-        showFilters
-        showGroupBy
-        showViewSettings
-        showInsights
+        showTabs={false}
+        showSearch={false}
+        showFilters={false}
+        showGroupBy={false}
+        showViewSettings={false}
+        showInsights={false}
       />
 
       <div className="p-8"><div className="flex items-center justify-center min-h-[60vh]">
