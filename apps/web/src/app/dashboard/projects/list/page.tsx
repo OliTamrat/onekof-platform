@@ -247,7 +247,7 @@ export default function ProjectsListPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(project.status)}`}>
+                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(project.status || 'ACTIVE')}`}>
                           {project.status?.replace('_', ' ') || 'Active'}
                         </span>
                       </td>
