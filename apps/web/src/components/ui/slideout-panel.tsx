@@ -50,6 +50,19 @@ export function SlideoutPanel({
     };
   }, [isVisible, onClose]);
 
+  const panelRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (isVisible && panelRef.current) {
+      const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+    }
+  }, [isVisible]);
+
   if (!isVisible) return null;
 
   const sizeClasses = {
@@ -60,8 +73,31 @@ export function SlideoutPanel({
     full: 'max-w-full',
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !panelRef.current) return;
+    const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusableElements.length === 0) return;
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/50 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/50 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title || 'Panel'}
+      onKeyDown={handleKeyDown}
+    >
       {/* Overlay - clicking closes panel */}
       <div
         className="absolute inset-0"
@@ -71,6 +107,7 @@ export function SlideoutPanel({
 
       {/* Panel */}
       <div
+        ref={panelRef}
         className={cn(
           'relative flex h-full w-full flex-col bg-white dark:bg-[#22272B] shadow-2xl',
           sizeClasses[size],
@@ -90,7 +127,7 @@ export function SlideoutPanel({
           <button
             onClick={onClose}
             className="rounded-md p-1 text-gray-600 dark:text-[#9FADBC] transition-colors hover:bg-gray-100 dark:hover:bg-[#2C333A] hover:text-gray-900 dark:hover:text-white"
-            title="Close (Esc)"
+            aria-label="Close panel"
           >
             <X className="h-5 w-5" />
           </button>

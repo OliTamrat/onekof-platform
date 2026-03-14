@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -8,8 +8,16 @@ import { WorkspaceProvider } from '@/contexts/workspace-context';
 import { OrganizationSettingsProvider } from '@/contexts/organization-settings-context';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { ToastProvider } from '@/components/ui/toast-provider';
+import { LiveAnnouncerProvider } from '@/components/ui/live-announcer';
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  // Register service worker for PWA
+  useEffect(() => {
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  }, []);
+
   // Create a client inside the component to avoid sharing state between requests
   const [queryClient] = useState(
     () =>
@@ -34,11 +42,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
           >
             <ToastProvider>
-              <WorkspaceProvider>
-                <OrganizationSettingsWrapper>
-                  {children}
-                </OrganizationSettingsWrapper>
-              </WorkspaceProvider>
+              <LiveAnnouncerProvider>
+                <WorkspaceProvider>
+                  <OrganizationSettingsWrapper>
+                    {children}
+                  </OrganizationSettingsWrapper>
+                </WorkspaceProvider>
+              </LiveAnnouncerProvider>
             </ToastProvider>
           </ThemeProvider>
         </QueryClientProvider>

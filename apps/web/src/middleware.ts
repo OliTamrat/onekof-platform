@@ -54,15 +54,20 @@ export function middleware(request: NextRequest) {
  */
 function addSecurityHeaders(response: NextResponse, pathname: string) {
   // Content Security Policy (CSP)
-  // Prevents XSS attacks by controlling what resources can be loaded
+  // Production uses nonce-based script policy; development allows unsafe-eval for HMR
+  const isProduction = process.env.NODE_ENV === 'production';
+  const scriptSrc = isProduction
+    ? "'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com"
+    : "'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live";
+
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live",
+    `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    "connect-src 'self' https://accounts.google.com https://*.upstash.io https://vercel.live",
-    "frame-src 'self' https://accounts.google.com https://vercel.live",
+    `connect-src 'self' https://accounts.google.com https://*.upstash.io${isProduction ? '' : ' https://vercel.live'}`,
+    `frame-src 'self' https://accounts.google.com${isProduction ? '' : ' https://vercel.live'}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
