@@ -15,6 +15,14 @@
   - `test: <description>` — adding or fixing tests
 - Keep commit messages concise (under 72 chars for the subject line). Use the body for details when needed.
 
+## Security — No Credentials in Code
+
+- **NEVER commit secrets, API keys, tokens, passwords, or credentials** to the repository.
+- Files that must never be committed: `.env`, `.env.local`, `.env.production`, `credentials.json`, `serviceAccountKey.json`, or any file containing secrets.
+- If a secret is needed, reference it via environment variable (e.g., `process.env.DATABASE_URL`) — never hardcode the value.
+- Before every commit, verify no `.env` files, API keys, or tokens are staged. If detected, remove them and warn immediately.
+- All sensitive config belongs in Vercel environment variables or a secrets manager — never in the codebase.
+
 ## Code Rules
 
 - Do not add comments like `// Added by AI`, `// Claude-generated`, or similar.
