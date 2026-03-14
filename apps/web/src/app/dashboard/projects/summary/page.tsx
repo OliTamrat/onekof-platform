@@ -18,13 +18,14 @@ import {
   ArrowRight,
   Target,
   Zap,
-  Settings
+  Settings,
+  type LucideIcon,
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { ProjectDetailModal } from '@/components/analytics/project-detail-modal';
 import { useState, useEffect } from 'react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary', active: true },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board' },
@@ -32,7 +33,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: null, href: '/dashboard/projects/forms' },
   { id: 'timeline', label: 'Timeline', icon: null, href: '/dashboard/projects/timeline' },
   { id: 'pages', label: 'Pages', icon: null, href: '/dashboard/projects/pages' },
-] as const;
+];
 
 export default function ProjectsSummaryPage() {
   const { currentOrganization, projects: workspaceProjects } = useWorkspace();

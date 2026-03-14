@@ -2,8 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+interface AutomationTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: string;
+  color: string;
+  entityType: string;
+  triggerEvent: string;
+  scope: string;
+  runMode: string;
+  conditions: Array<{ field: string; operator: string; value: unknown }>;
+  actions: Array<{ type: string; params: Record<string, unknown> }>;
+  estimatedTimeSaved: number;
+  popularity: number;
+}
+
 // Pre-built automation templates
-const AUTOMATION_TEMPLATES = [
+const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
   {
     id: 'auto-assign-new-tasks',
     name: 'Auto-assign new tasks',

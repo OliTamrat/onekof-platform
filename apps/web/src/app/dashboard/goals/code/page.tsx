@@ -13,7 +13,7 @@ import {
   GitCommit,
   GitPullRequest,
   Github,
-  GitlabIcon,
+  Gitlab as GitlabIcon,
   Plus,
   Target,
   X
@@ -27,7 +27,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
-] as const;
+];
 
 export default function GoalsCodePage() {
   const [showConnectModal, setShowConnectModal] = useState(false);
@@ -148,7 +148,7 @@ export default function GoalsCodePage() {
                         : 'border-gray-200 dark:border-[#2C333A] hover:border-gray-300 dark:hover:border-[#3C434A]'
                     }`}
                   >
-                    <Gitlab className="h-6 w-6" />
+                    <GitlabIcon className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
                       <div className="text-xs text-gray-600 dark:text-[#9FADBC]">Connect GitLab repositories</div>

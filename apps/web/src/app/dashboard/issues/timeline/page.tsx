@@ -6,7 +6,7 @@
  * NOT just another issues view - that's what the Issues tab is for
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
@@ -492,8 +492,7 @@ export default function IssuesTimelinePage() {
         <SlideoutPanel
           open={!!selectedProject}
           onClose={() => setSelectedProject(null)}
-          title={selectedProject.name}
-          subtitle={`${selectedProject.key} • Project Timeline Details`}
+          title={`${selectedProject.name} — ${selectedProject.key} • Project Timeline Details`}
           size="xl"
         >
           <SlideoutPanelContent>

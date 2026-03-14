@@ -22,17 +22,18 @@ import {
   Award,
   ThumbsUp,
   MessageSquare,
-  Folder
+  Folder,
+  type LucideIcon,
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary', active: true },
   { id: 'spaces', label: 'Spaces', icon: null, href: '/dashboard/docs' },
   { id: 'recent', label: 'Recent', icon: null, href: '/dashboard/docs/recent' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/docs/settings' },
-] as const;
+];
 
 export default function DocsSummaryPage() {
   const { currentOrganization } = useWorkspace();

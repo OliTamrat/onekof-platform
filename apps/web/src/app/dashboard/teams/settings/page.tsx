@@ -19,7 +19,7 @@ import {
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
   { id: 'teams', label: 'Teams', icon: null, href: '/dashboard/teams' },
-] as const;
+];
 
 const SETTINGS_SECTIONS = [
   { id: 'general', label: 'General', icon: Settings },

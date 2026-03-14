@@ -8,27 +8,23 @@ import { log, logSecurity } from '@/lib/logger';
 
 export interface SessionInvalidationReason {
   reason: 'password_change' | 'logout_all' | 'suspicious_activity' | 'manual_revoke';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
  * Invalidate all sessions for a user
- * Used when password is changed, account compromised, or user logs out all devices
  */
 export async function invalidateAllUserSessions(
   userId: string,
   invalidationReason: SessionInvalidationReason
 ): Promise<void> {
   try {
-    // Delete all active sessions for this user
-    // NextAuth stores sessions in the Session table
     await prisma.session.deleteMany({
       where: {
         userId,
       },
     });
 
-    // Log the invalidation for audit
     logSecurity('sessions_invalidated', 'medium', {
       userId,
       reason: invalidationReason.reason,
@@ -66,7 +62,6 @@ export async function shouldInvalidateSession(
       return { shouldInvalidate: true, reason: 'user_not_found' };
     }
 
-    // Invalidate if password was changed after session was created
     if (user.passwordChangedAt && user.passwordChangedAt > sessionCreatedAt) {
       return {
         shouldInvalidate: true,
@@ -74,7 +69,6 @@ export async function shouldInvalidateSession(
       };
     }
 
-    // Invalidate if account is locked
     if (user.lockedUntil && user.lockedUntil > new Date()) {
       return { shouldInvalidate: true, reason: 'account_locked' };
     }
@@ -82,7 +76,6 @@ export async function shouldInvalidateSession(
     return { shouldInvalidate: false };
   } catch (error) {
     log.error('Error checking session invalidation', { userId, error });
-    // Fail closed - invalidate session on error
     return { shouldInvalidate: true, reason: 'validation_error' };
   }
 }
@@ -98,26 +91,26 @@ export interface SuspiciousActivityCheck {
 
 export async function detectSuspiciousActivity(
   userId: string,
-  ipAddress: string,
+  _ipAddress: string,
   userAgent: string
 ): Promise<SuspiciousActivityCheck> {
   const reasons: string[] = [];
   let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
 
   try {
-    // Get recent sessions for this user
     const recentSessions = await prisma.session.findMany({
       where: {
         userId,
         expires: { gt: new Date() },
       },
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        id: true,
+        sessionToken: true,
+        expires: true,
       },
       take: 10,
     });
 
-    // Check 1: Multiple concurrent sessions from different IPs
     const uniqueIPs = new Set(
       recentSessions.map((s) => s.sessionToken.split('_')[0] || '')
     );
@@ -126,21 +119,6 @@ export async function detectSuspiciousActivity(
       riskLevel = 'medium';
     }
 
-    // Check 2: Session created from unusual location (requires geo-IP implementation)
-    // Placeholder for future enhancement
-
-    // Check 3: Rapid session creation (possible session fixation attack)
-    const sessionsLast5Min = recentSessions.filter((s) => {
-      const diff = Date.now() - new Date(s.createdAt).getTime();
-      return diff < 5 * 60 * 1000; // 5 minutes
-    });
-
-    if (sessionsLast5Min.length > 5) {
-      reasons.push('rapid_session_creation');
-      riskLevel = 'high';
-    }
-
-    // Check 4: Suspicious user agent patterns
     const suspiciousAgentPatterns = [
       'bot',
       'crawler',
@@ -156,7 +134,7 @@ export async function detectSuspiciousActivity(
       )
     ) {
       reasons.push('suspicious_user_agent');
-      riskLevel = riskLevel === 'high' ? 'critical' : 'high';
+      riskLevel = (riskLevel as string) === 'high' ? 'critical' : 'high';
     }
 
     const isSuspicious = reasons.length > 0;
@@ -165,8 +143,8 @@ export async function detectSuspiciousActivity(
       logSecurity('suspicious_activity_detected', riskLevel, {
         userId,
         reasons,
-        ipAddress,
-        userAgent: userAgent.substring(0, 100), // Truncate for logging
+        ipAddress: _ipAddress,
+        userAgent: userAgent.substring(0, 100),
       });
     }
 
@@ -205,7 +183,6 @@ export async function getActiveSessionCount(userId: string): Promise<number> {
 
 /**
  * List all active sessions for a user
- * Returns session metadata for "active devices" display
  */
 export async function listActiveSessions(userId: string) {
   try {
@@ -216,23 +193,15 @@ export async function listActiveSessions(userId: string) {
       },
       select: {
         id: true,
-        createdAt: true,
         expires: true,
-        // Note: sessionToken contains encrypted data, extract metadata if needed
-      },
-      orderBy: {
-        createdAt: 'desc',
       },
     });
 
     return sessions.map((session) => ({
       id: session.id,
-      createdAt: session.createdAt,
       expiresAt: session.expires,
-      // In production, you'd parse user agent and IP from session metadata
       device: 'Unknown Device',
       location: 'Unknown Location',
-      lastActive: session.createdAt,
     }));
   } catch (error) {
     log.error('Error listing active sessions', { userId, error });
@@ -251,7 +220,7 @@ export async function revokeSession(
     await prisma.session.delete({
       where: {
         id: sessionId,
-        userId, // Ensure user can only delete their own sessions
+        userId,
       },
     });
 

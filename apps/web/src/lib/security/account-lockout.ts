@@ -5,40 +5,24 @@ import { sendAccountLockedEmail } from '@/lib/email';
 /**
  * Account Lockout Management
  *
- * SECURITY: Prevents brute force attacks by locking accounts after N failed login attempts
- * Implements exponential backoff for progressive lockout durations
+ * Prevents brute force attacks by locking accounts after N failed login attempts.
+ * Uses failedLoginAttempts and lockedUntil fields from the User model.
  */
 
-// Lockout configuration
 const LOCKOUT_CONFIG = {
-  // Number of failed attempts before lockout
   maxAttempts: 5,
-
-  // Lockout durations (in minutes) based on number of lockouts
-  lockoutDurations: [
-    15,  // 1st lockout: 15 minutes
-    30,  // 2nd lockout: 30 minutes
-    60,  // 3rd lockout: 1 hour
-    240, // 4th lockout: 4 hours
-    1440 // 5th+ lockout: 24 hours
-  ],
-
-  // Time window to track failed attempts (in minutes)
+  lockoutDurations: [15, 30, 60, 240, 1440],
   attemptWindow: 30,
-
-  // Time after which to reset lockout count (in days)
   resetLockoutAfterDays: 30,
 };
 
 /**
  * Record a failed login attempt for a user
- * Returns lockout information if account should be locked
  */
 export async function recordFailedLogin(email: string): Promise<{
   locked: boolean;
   attemptsRemaining?: number;
   lockedUntil?: Date;
-  lockoutCount?: number;
 }> {
   try {
     const user = await prisma.user.findUnique({
@@ -49,16 +33,13 @@ export async function recordFailedLogin(email: string): Promise<{
         failedLoginAttempts: true,
         lastFailedLoginAt: true,
         lockedUntil: true,
-        lockoutCount: true,
       },
     });
 
     if (!user) {
-      // Don't reveal if user exists - just return success
       return { locked: false };
     }
 
-    // Check if we should reset the attempt counter
     const now = new Date();
     const windowMs = LOCKOUT_CONFIG.attemptWindow * 60 * 1000;
     const shouldResetAttempts = !user.lastFailedLoginAt ||
@@ -67,30 +48,24 @@ export async function recordFailedLogin(email: string): Promise<{
     const currentAttempts = shouldResetAttempts ? 0 : (user.failedLoginAttempts || 0);
     const newAttempts = currentAttempts + 1;
 
-    // Check if account should be locked
     if (newAttempts >= LOCKOUT_CONFIG.maxAttempts) {
-      const lockoutCount = (user.lockoutCount || 0) + 1;
-      const durationIndex = Math.min(lockoutCount - 1, LOCKOUT_CONFIG.lockoutDurations.length - 1);
+      const durationIndex = Math.min(0, LOCKOUT_CONFIG.lockoutDurations.length - 1);
       const lockoutMinutes = LOCKOUT_CONFIG.lockoutDurations[durationIndex];
       const lockedUntil = new Date(now.getTime() + lockoutMinutes * 60 * 1000);
 
-      // Lock the account
       await prisma.user.update({
         where: { id: user.id },
         data: {
           failedLoginAttempts: newAttempts,
           lastFailedLoginAt: now,
           lockedUntil: lockedUntil,
-          lockoutCount,
         },
       });
 
-      // Log security event
       logSecurity('account_locked', 'high', {
         userId: user.id,
         email: user.email,
         attempts: newAttempts,
-        lockoutCount,
         lockedUntil: lockedUntil.toISOString(),
         lockoutMinutes,
       });
@@ -101,27 +76,22 @@ export async function recordFailedLogin(email: string): Promise<{
         lockedUntil: lockedUntil.toISOString(),
       });
 
-      // Send account locked notification email
       try {
         await sendAccountLockedEmail(user.email, lockedUntil);
         log.info('Account locked notification email sent', { email: user.email });
       } catch (emailError) {
-        // Log email error but don't fail the lockout
         log.error('Failed to send account locked email', {
           error: emailError,
           userId: user.id,
         });
-        // Continue - account is still locked even if email fails
       }
 
       return {
         locked: true,
         lockedUntil,
-        lockoutCount,
       };
     }
 
-    // Update failed attempt count
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -130,7 +100,6 @@ export async function recordFailedLogin(email: string): Promise<{
       },
     });
 
-    // Log failed attempt
     logSecurity('failed_login_attempt', 'low', {
       userId: user.id,
       email: user.email,
@@ -144,7 +113,6 @@ export async function recordFailedLogin(email: string): Promise<{
     };
   } catch (error) {
     log.error('Failed to record failed login attempt', { error, email });
-    // Don't throw - fail open to avoid blocking legitimate users
     return { locked: false };
   }
 }
@@ -173,9 +141,7 @@ export async function isAccountLocked(email: string): Promise<{
 
     const now = new Date();
 
-    // Check if lockout has expired
     if (user.lockedUntil < now) {
-      // Lockout expired - unlock account
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -193,7 +159,6 @@ export async function isAccountLocked(email: string): Promise<{
       return { locked: false };
     }
 
-    // Account is still locked
     const minutesRemaining = Math.ceil(
       (user.lockedUntil.getTime() - now.getTime()) / (60 * 1000)
     );
@@ -205,7 +170,6 @@ export async function isAccountLocked(email: string): Promise<{
     };
   } catch (error) {
     log.error('Failed to check account lockout status', { error, email });
-    // Fail open - don't block if we can't check
     return { locked: false };
   }
 }
@@ -227,7 +191,6 @@ export async function resetFailedAttempts(email: string): Promise<void> {
       data: {
         failedLoginAttempts: 0,
         lastFailedLoginAt: null,
-        // Keep lockoutCount for progressive lockout
       },
     });
 
@@ -268,7 +231,6 @@ export async function unlockAccount(
         lockedUntil: null,
         failedLoginAttempts: 0,
         lastFailedLoginAt: null,
-        lockoutCount: 0, // Reset lockout count on manual unlock
       },
     });
 
@@ -300,7 +262,6 @@ export async function getAccountLockoutInfo(email: string): Promise<{
   failedAttempts: number;
   attemptsRemaining: number;
   lockedUntil?: Date;
-  lockoutCount: number;
 }> {
   try {
     const user = await prisma.user.findUnique({
@@ -308,7 +269,6 @@ export async function getAccountLockoutInfo(email: string): Promise<{
       select: {
         failedLoginAttempts: true,
         lockedUntil: true,
-        lockoutCount: true,
       },
     });
 
@@ -317,7 +277,7 @@ export async function getAccountLockoutInfo(email: string): Promise<{
         isLocked: false,
         failedAttempts: 0,
         attemptsRemaining: LOCKOUT_CONFIG.maxAttempts,
-        lockoutCount: 0,
+
       };
     }
 
@@ -329,7 +289,6 @@ export async function getAccountLockoutInfo(email: string): Promise<{
       failedAttempts: user.failedLoginAttempts || 0,
       attemptsRemaining: Math.max(0, LOCKOUT_CONFIG.maxAttempts - (user.failedLoginAttempts || 0)),
       lockedUntil: isLocked ? user.lockedUntil! : undefined,
-      lockoutCount: user.lockoutCount || 0,
     };
   } catch (error) {
     log.error('Failed to get account lockout info', { error, email });
@@ -337,7 +296,6 @@ export async function getAccountLockoutInfo(email: string): Promise<{
       isLocked: false,
       failedAttempts: 0,
       attemptsRemaining: LOCKOUT_CONFIG.maxAttempts,
-      lockoutCount: 0,
     };
   }
 }

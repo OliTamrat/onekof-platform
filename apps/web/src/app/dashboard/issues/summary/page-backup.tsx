@@ -56,6 +56,7 @@ export default function DashboardPage() {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [status]);
 
   // Fetch dashboard statistics

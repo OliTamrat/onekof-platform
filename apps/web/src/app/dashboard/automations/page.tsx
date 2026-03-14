@@ -26,7 +26,8 @@ import {
   Settings,
   Code,
   FileText,
-  Book
+  Book,
+  type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
   { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations', active: true },
@@ -52,7 +53,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-] as const;
+];
 
 interface AutomationRule {
   id: string;

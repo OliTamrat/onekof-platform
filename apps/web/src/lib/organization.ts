@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { prisma } from '@onekof/database';
-import { Organization } from '@prisma/client';
+import type { Organization } from '@onekof/database';
 
 /**
  * Get the current organization from request headers (set by middleware)

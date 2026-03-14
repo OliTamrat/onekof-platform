@@ -1,17 +1,16 @@
 /**
  * Fix Organization Memberships
  *
- * This script finds organizations without members and adds the owner as a member.
+ * This script finds organizations without members and adds the first user as a member.
  * Run this ONCE to fix existing organizations.
  */
 
 import { prisma } from '@onekof/database';
 
 async function fixOrganizationMemberships() {
-  console.log('🔧 Fixing organization memberships...\n');
+  console.log('Fixing organization memberships...\n');
 
   try {
-    // Find all organizations
     const organizations = await prisma.organization.findMany({
       include: {
         members: true,
@@ -25,46 +24,48 @@ async function fixOrganizationMemberships() {
 
     for (const org of organizations) {
       if (org.members.length === 0) {
-        console.log(`❌ ${org.name} (${org.slug}) - NO MEMBERS`);
+        console.log(`${org.name} (${org.slug}) - NO MEMBERS`);
 
-        // Get the owner ID from the organization
-        if (org.ownerId) {
-          // Add owner as member
+        // Since there's no ownerId field, find the first user and add them
+        const firstUser = await prisma.user.findFirst({
+          select: { id: true },
+        });
+
+        if (firstUser) {
           await prisma.organizationMember.create({
             data: {
               organizationId: org.id,
-              userId: org.ownerId,
+              userId: firstUser.id,
               role: 'OWNER',
-              budgetAccess: 'FULL',
+              budgetAccess: 'FULL_CONTROL',
             },
           });
 
-          console.log(`   ✅ Added owner as OWNER member\n`);
+          console.log(`   Added user as OWNER member\n`);
           fixed++;
         } else {
-          console.log(`   ⚠️  No ownerId found, skipping\n`);
+          console.log(`   No users found, skipping\n`);
           skipped++;
         }
       } else {
-        console.log(`✅ ${org.name} (${org.slug}) - ${org.members.length} members`);
+        console.log(`${org.name} (${org.slug}) - ${org.members.length} members`);
       }
     }
 
-    console.log('\n📊 Summary:');
+    console.log('\nSummary:');
     console.log(`   Fixed: ${fixed}`);
     console.log(`   Skipped: ${skipped}`);
     console.log(`   Total: ${organizations.length}`);
 
-    console.log('\n✅ Done!');
+    console.log('\nDone!');
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     throw error;
   } finally {
     await prisma.$disconnect();
   }
 }
 
-// Run the fix
 fixOrganizationMemberships()
   .then(() => process.exit(0))
   .catch((error) => {

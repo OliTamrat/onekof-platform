@@ -49,9 +49,9 @@ const TAB_ITEMS = [
   { id: 'automation', label: 'Automation', icon: Zap, href: '/projects/[id]/automation' },
   { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/projects/[id]/wiki' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/projects/[id]/settings' },
-] as const;
+];
 
-export default function ProjectLayout({ children }: { children: React.Node }) {
+export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const pathname = usePathname();
   const projectId = params.id as string;

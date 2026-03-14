@@ -1,38 +1,50 @@
 /**
  * Metrics Aggregation Utility
- * Calculates and stores aggregated metrics snapshots for fast dashboard loading
+ * Calculates and stores aggregated metrics for fast dashboard loading
  */
 
 import { prisma } from '@onekof/database';
-import type { ActivityEntityType, MetricsPeriod } from '@onekof/database';
+
+type ActivityEntityType = string;
+type MetricsPeriod = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
+
+export interface MetricsResult {
+  totalCount: number;
+  activeCount: number;
+  blockedCount: number;
+  atRiskCount: number;
+  createdCount: number;
+  completedCount: number;
+  updatedCount: number;
+  deletedCount: number;
+  topContributors: Array<{ userId: string; name: string; actionCount: number }>;
+  customMetrics: Record<string, unknown>;
+  period: MetricsPeriod;
+  periodDate: Date;
+  entityType: string;
+  organizationId: string;
+}
 
 /**
- * Calculate and store metrics snapshot for a given period
+ * Calculate metrics snapshot for a given period
  */
 export async function calculateMetricsSnapshot(
   organizationId: string,
   entityType: ActivityEntityType,
   period: MetricsPeriod,
   periodDate: Date
-) {
+): Promise<MetricsResult> {
   try {
     const { startDate, endDate } = getPeriodDates(periodDate, period);
 
-    // Get all entities of this type for the organization
     const counts = await getEntityCounts(organizationId, entityType, startDate, endDate);
-
-    // Get activity counts
     const activityCounts = await getActivityCounts(organizationId, entityType, startDate, endDate);
-
-    // Get top contributors
     const topContributors = await getTopContributorsForPeriod(
       organizationId,
       entityType,
       startDate,
       endDate
     );
-
-    // Calculate custom metrics based on entity type
     const customMetrics = await calculateCustomMetrics(
       organizationId,
       entityType,
@@ -40,35 +52,16 @@ export async function calculateMetricsSnapshot(
       endDate
     );
 
-    // Upsert the snapshot
-    const snapshot = await prisma.metricsSnapshot.upsert({
-      where: {
-        organizationId_period_periodDate_entityType: {
-          organizationId,
-          period,
-          periodDate: new Date(periodDate.toISOString().split('T')[0]), // Normalize to date only
-          entityType,
-        },
-      },
-      create: {
-        organizationId,
-        period,
-        periodDate: new Date(periodDate.toISOString().split('T')[0]),
-        entityType,
-        ...counts,
-        ...activityCounts,
-        topContributors,
-        customMetrics,
-      },
-      update: {
-        ...counts,
-        ...activityCounts,
-        topContributors,
-        customMetrics,
-      },
-    });
-
-    return snapshot;
+    return {
+      organizationId,
+      period,
+      periodDate: new Date(periodDate.toISOString().split('T')[0]),
+      entityType,
+      ...counts,
+      ...activityCounts,
+      topContributors,
+      customMetrics,
+    };
   } catch (error) {
     console.error('Failed to calculate metrics snapshot:', error);
     throw error;
@@ -88,7 +81,6 @@ function getPeriodDates(periodDate: Date, period: MetricsPeriod) {
       endDate.setHours(23, 59, 59, 999);
       break;
     case 'WEEKLY':
-      // Start from Monday of the week
       const dayOfWeek = startDate.getDay();
       const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
       startDate.setDate(startDate.getDate() + diffToMonday);
@@ -133,7 +125,7 @@ function getPeriodDates(periodDate: Date, period: MetricsPeriod) {
 async function getEntityCounts(
   organizationId: string,
   entityType: ActivityEntityType,
-  startDate: Date,
+  _startDate: Date,
   endDate: Date
 ) {
   let totalCount = 0;
@@ -216,7 +208,7 @@ async function getEntityCounts(
 }
 
 /**
- * Get activity counts from activity logs
+ * Get activity counts from user activities
  */
 async function getActivityCounts(
   organizationId: string,
@@ -224,7 +216,7 @@ async function getActivityCounts(
   startDate: Date,
   endDate: Date
 ) {
-  const activities = await prisma.activityLog.groupBy({
+  const activities = await prisma.userActivity.groupBy({
     by: ['action'],
     where: {
       organizationId,
@@ -270,7 +262,7 @@ async function getTopContributorsForPeriod(
   startDate: Date,
   endDate: Date
 ) {
-  const contributors = await prisma.activityLog.groupBy({
+  const contributors = await prisma.userActivity.groupBy({
     by: ['userId'],
     where: {
       organizationId,
@@ -291,7 +283,6 @@ async function getTopContributorsForPeriod(
     take: 10,
   });
 
-  // Get user details
   const userIds = contributors.map((c: { userId: string; _count: { id: number } }) => c.userId);
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
@@ -322,12 +313,11 @@ async function calculateCustomMetrics(
   entityType: ActivityEntityType,
   startDate: Date,
   endDate: Date
-): Promise<Record<string, any>> {
-  const metrics: Record<string, any> = {};
+): Promise<Record<string, unknown>> {
+  const metrics: Record<string, unknown> = {};
 
   switch (entityType) {
     case 'PROJECT':
-      // Calculate average completion rate
       const projects = await prisma.project.findMany({
         where: { organizationId, deletedAt: null },
         include: { tasks: { where: { deletedAt: null } } },
@@ -347,7 +337,6 @@ async function calculateCustomMetrics(
       break;
 
     case 'TASK':
-      // Calculate average time to complete
       const completedTasks = await prisma.task.findMany({
         where: {
           project: { organizationId },
@@ -365,7 +354,7 @@ async function calculateCustomMetrics(
         .map(t => {
           const created = new Date(t.createdAt);
           const completed = new Date(t.completedAt!);
-          return (completed.getTime() - created.getTime()) / (1000 * 60 * 60 * 24); // Days
+          return (completed.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
         });
 
       metrics.avgDaysToComplete = completionTimes.length > 0
@@ -374,7 +363,6 @@ async function calculateCustomMetrics(
       break;
 
     case 'GOAL':
-      // Calculate average progress
       const goals = await prisma.goal.findMany({
         where: { organizationId, deletedAt: null },
         include: { keyResults: true },
@@ -441,9 +429,8 @@ export async function aggregateMetricsForAllOrganizations(period: MetricsPeriod 
     try {
       const result = await aggregateAllMetrics(org.id, period);
       results.push({ organizationId: org.id, organizationName: org.name, ...result });
-      console.log(`✓ ${org.name}: ${result.successful}/${result.total} entity types aggregated`);
     } catch (error) {
-      console.error(`✗ ${org.name}: Failed to aggregate metrics`, error);
+      console.error(`Failed to aggregate metrics for ${org.name}`, error);
       results.push({
         organizationId: org.id,
         organizationName: org.name,

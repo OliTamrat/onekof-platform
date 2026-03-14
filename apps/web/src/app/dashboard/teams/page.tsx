@@ -129,7 +129,7 @@ export default function TeamsPage() {
 
   // Update team mutation
   const updateTeamMutation = useMutation({
-    mutationFn: async ({ teamId, ...data }: { teamId: string } & Partial<typeof formData>) => {
+    mutationFn: async ({ teamId, ...data }: { teamId: string; isFavorite?: boolean } & Partial<typeof formData>) => {
       const res = await fetch(`/api/teams/${teamId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -238,7 +238,7 @@ export default function TeamsPage() {
     updateTeamMutation.mutate({
       teamId,
       isFavorite: !currentValue,
-    });
+    } as any);
   };
 
   // Filter teams
@@ -597,7 +597,7 @@ export default function TeamsPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                              {member.role === 'LEAD' && (
+                              {member.role === 'OWNER' && (
                                 <div className="flex items-center gap-1 rounded-full bg-yellow-400/20 px-2 py-1 text-xs font-medium text-yellow-400">
                                   <Crown className="h-3 w-3" />
                                   Lead
@@ -621,7 +621,7 @@ export default function TeamsPage() {
                                   ) {
                                     removeMemberMutation.mutate({
                                       teamId: selectedTeam.id,
-                                      userId: member.userId,
+                                      userId: member.id,
                                     });
                                   }
                                 }}

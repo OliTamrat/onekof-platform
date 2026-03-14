@@ -29,7 +29,7 @@ const TAB_ITEMS = [
   { id: 'teams', label: 'Teams', icon: null, href: '/dashboard/teams' },
   { id: 'members', label: 'Members', icon: null, href: '/dashboard/teams/members' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/teams/settings' },
-] as const;
+];
 
 export default function TeamsOverviewPage() {
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('month');

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { db } from '@onekof/database';
+import { prisma as db } from '@/lib/prisma';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 import type { OrganizationSettings } from '@/types/organization-settings';
 
@@ -55,12 +55,12 @@ export async function GET(
         data: {
           organizationId,
           enabledSections: preset.enabledSections,
-          budgetFeatures: preset.features.budget,
-          teamsFeatures: preset.features.teams,
-          goalsFeatures: preset.features.goals,
-          automationsFeatures: preset.features.automations,
-          documentsFeatures: preset.features.documents,
-          docsFeatures: preset.features.docs,
+          budgetFeatures: preset.features.budget as any,
+          teamsFeatures: preset.features.teams as any,
+          goalsFeatures: preset.features.goals as any,
+          automationsFeatures: preset.features.automations as any,
+          documentsFeatures: preset.features.documents as any,
+          docsFeatures: preset.features.docs as any,
           aiAssistant: preset.features.aiAssistant,
           analytics: preset.features.analytics,
           integrations: preset.features.integrations,
@@ -150,12 +150,12 @@ export async function PUT(
       create: {
         organizationId,
         enabledSections: body.enabledSections,
-        budgetFeatures: body.features.budget,
-        teamsFeatures: body.features.teams,
-        goalsFeatures: body.features.goals,
-        automationsFeatures: body.features.automations,
-        documentsFeatures: body.features.documents,
-        docsFeatures: body.features.docs,
+        budgetFeatures: body.features.budget as any,
+        teamsFeatures: body.features.teams as any,
+        goalsFeatures: body.features.goals as any,
+        automationsFeatures: body.features.automations as any,
+        documentsFeatures: body.features.documents as any,
+        docsFeatures: body.features.docs as any,
         aiAssistant: body.features.aiAssistant,
         analytics: body.features.analytics,
         integrations: body.features.integrations,
@@ -165,19 +165,19 @@ export async function PUT(
         budgetCurrency: body.customization.budgetCurrency,
         fiscalYearStart: body.customization.fiscalYearStart,
         dateFormat: body.customization.dateFormat,
-        language: body.customization.language,
+        language: body.customization.language as any,
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
       },
       update: {
         enabledSections: body.enabledSections,
-        budgetFeatures: body.features.budget,
-        teamsFeatures: body.features.teams,
-        goalsFeatures: body.features.goals,
-        automationsFeatures: body.features.automations,
-        documentsFeatures: body.features.documents,
-        docsFeatures: body.features.docs,
+        budgetFeatures: body.features.budget as any,
+        teamsFeatures: body.features.teams as any,
+        goalsFeatures: body.features.goals as any,
+        automationsFeatures: body.features.automations as any,
+        documentsFeatures: body.features.documents as any,
+        docsFeatures: body.features.docs as any,
         aiAssistant: body.features.aiAssistant,
         analytics: body.features.analytics,
         integrations: body.features.integrations,
@@ -187,7 +187,7 @@ export async function PUT(
         budgetCurrency: body.customization.budgetCurrency,
         fiscalYearStart: body.customization.fiscalYearStart,
         dateFormat: body.customization.dateFormat,
-        language: body.customization.language,
+        language: body.customization.language as any,
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,

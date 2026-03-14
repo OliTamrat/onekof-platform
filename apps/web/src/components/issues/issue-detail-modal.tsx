@@ -181,9 +181,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
     },
   });
 
-  const handleStatusChange = (newStatus: string) => {
-    setEditedStatus(newStatus as any);
-    updateIssueMutation.mutate({ status: newStatus });
+  const handleStatusChange = (newStatus: Issue['status']) => {
+    setEditedStatus(newStatus);
+    updateIssueMutation.mutate({ status: newStatus as Issue['status'] });
   };
 
   const handleDescriptionSave = () => {

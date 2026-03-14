@@ -12,10 +12,11 @@ import {
   FileText,
   Search,
   Target,
-  Users
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/goals/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/goals/board', active: true },
@@ -23,7 +24,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
-] as const;
+];
 
 const GOALS = [
   { id: 1, title: 'Increase Product Revenue', description: 'Achieve 25% revenue growth', owner: 'Alice Johnson', team: 'Sales', progress: 68, status: 'ON_TRACK', dueDate: '2024-06-30' },

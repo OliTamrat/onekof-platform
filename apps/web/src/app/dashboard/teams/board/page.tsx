@@ -11,10 +11,11 @@ import {
   FileText,
   Search,
   TrendingUp,
-  Users
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board', active: true },
@@ -22,7 +23,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
-] as const;
+];
 
 const TEAMS = [
   { id: 1, name: 'Engineering', description: 'Core product development', members: 12, lead: 'Alice Johnson', status: 'ACTIVE', performance: 92 },

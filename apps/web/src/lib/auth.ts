@@ -13,7 +13,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  trustHost: true, // Allow NextAuth to work on any host (Vercel, custom domains, etc.)
   cookies: {
     // Configure cookies to work across subdomains
     sessionToken: {
@@ -54,7 +53,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
         totpCode: { label: '2FA Code', type: 'text' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, _req) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Missing credentials');
         }
@@ -75,6 +74,16 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            password: true,
+            avatar: true,
+            twoFactorEnabled: true,
+            twoFactorSecret: true,
+            twoFactorBackupCodes: true,
+          },
         });
 
         if (!user || !user.password) {
@@ -108,24 +117,21 @@ export const authOptions: NextAuthOptions = {
           const totpCode = credentials.totpCode;
 
           if (!totpCode) {
-            // Signal to the client that 2FA is required
             throw new Error('TWO_FACTOR_REQUIRED');
           }
 
           const secret = decryptSecret(user.twoFactorSecret);
           let isCodeValid = verifyTOTPCode(secret, totpCode);
 
-          // Try backup code if TOTP fails
           if (!isCodeValid && totpCode.includes('-')) {
             const backupIndex = verifyBackupCode(totpCode, user.twoFactorBackupCodes);
             if (backupIndex !== -1) {
               isCodeValid = true;
-              // Remove used backup code
               const updatedCodes = [...user.twoFactorBackupCodes];
               updatedCodes.splice(backupIndex, 1);
               await prisma.user.update({
                 where: { id: user.id },
-                data: { twoFactorBackupCodes: updatedCodes },
+                data: { twoFactorBackupCodes: updatedCodes } as Record<string, unknown>,
               });
             }
           }
@@ -139,7 +145,6 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        // SECURITY: Reset failed attempts on successful login
         await resetFailedAttempts(credentials.email);
 
         logSecurity('successful_login', 'low', {
@@ -151,8 +156,8 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
-          image: user.avatar,
+          name: user.name || user.email,
+          avatar: user.avatar || null,
         };
       },
     }),

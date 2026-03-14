@@ -122,18 +122,6 @@ export async function GET(
             userId: true,
           },
         },
-        goals: {
-          include: {
-            goal: {
-              select: {
-                id: true,
-                title: true,
-                status: true,
-                description: true,
-              },
-            },
-          },
-        },
       },
     });
 

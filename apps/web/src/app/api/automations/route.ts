@@ -69,9 +69,7 @@ export async function GET(request: NextRequest) {
       total: automations.length,
       enabled: automations.filter((a) => a.isEnabled).length,
       disabled: automations.filter((a) => !a.isEnabled).length,
-      aiGenerated: automations.filter((a) => a.aiGenerated).length,
       totalExecutions: automations.reduce((sum, a) => sum + a.executionCount, 0),
-      totalTimeSaved: automations.reduce((sum, a) => sum + (a.estimatedSavedHours || 0), 0),
     };
 
     return NextResponse.json({
@@ -111,9 +109,6 @@ export async function POST(request: NextRequest) {
       actions,
       isEnabled,
       isTemplate,
-      templateId,
-      aiGenerated,
-      aiConfidence,
       naturalLanguage,
     } = body;
 
@@ -156,9 +151,6 @@ export async function POST(request: NextRequest) {
         actions: actions || [],
         isEnabled: isEnabled !== undefined ? isEnabled : true,
         isTemplate: isTemplate || false,
-        templateId,
-        aiGenerated: aiGenerated || false,
-        aiConfidence,
         naturalLanguage,
         createdBy: session.user.id,
       },

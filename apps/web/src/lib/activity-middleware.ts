@@ -4,9 +4,11 @@
  */
 
 import { prisma } from '@onekof/database';
-import type { ActivityAction, ActivityEntityType } from '@onekof/database';
 import { logActivity } from './activity-logger';
 import { headers } from 'next/headers';
+
+type ActivityEntityType = string;
+type ActivityAction = string;
 
 interface EntityChange {
   organizationId: string;
@@ -15,9 +17,9 @@ interface EntityChange {
   entityId: string;
   entityName?: string;
   action: ActivityAction;
-  oldValues?: Record<string, any>;
-  newValues?: Record<string, any>;
-  metadata?: Record<string, any>;
+  oldValues?: Record<string, unknown>;
+  newValues?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -25,7 +27,6 @@ interface EntityChange {
  */
 export async function trackEntityChange(change: EntityChange) {
   try {
-    // Get IP and user agent from headers if available
     let ipAddress: string | undefined;
     let userAgent: string | undefined;
 
@@ -37,12 +38,10 @@ export async function trackEntityChange(change: EntityChange) {
       // Headers might not be available in all contexts
     }
 
-    // Build metadata with changes
-    const metadata: Record<string, any> = { ...change.metadata };
+    const metadata: Record<string, unknown> = { ...change.metadata };
 
-    // Add field changes if old and new values are provided
     if (change.oldValues && change.newValues) {
-      const changes: Array<{ field: string; oldValue: any; newValue: any }> = [];
+      const changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> = [];
 
       for (const key in change.newValues) {
         if (change.newValues[key] !== change.oldValues[key]) {
@@ -59,10 +58,8 @@ export async function trackEntityChange(change: EntityChange) {
       }
     }
 
-    // Generate human-readable description
     const description = generateActivityDescription(change);
 
-    // Log the activity
     await logActivity({
       organizationId: change.organizationId,
       userId: change.userId,
@@ -75,14 +72,8 @@ export async function trackEntityChange(change: EntityChange) {
       ipAddress,
       userAgent,
     });
-
-    // Update metrics snapshot asynchronously (don't await to not block)
-    updateMetricsSnapshot(change).catch(err =>
-      console.error('Failed to update metrics snapshot:', err)
-    );
   } catch (error) {
     console.error('Failed to track entity change:', error);
-    // Don't throw - activity tracking should not break the main flow
   }
 }
 
@@ -92,7 +83,7 @@ export async function trackEntityChange(change: EntityChange) {
 function generateActivityDescription(change: EntityChange): string {
   const { action, entityType, entityName } = change;
 
-  const entityTypeNames: Record<ActivityEntityType, string> = {
+  const entityTypeNames: Record<string, string> = {
     ORGANIZATION: 'organization',
     PROJECT: 'project',
     TASK: 'task',
@@ -158,139 +149,6 @@ function generateActivityDescription(change: EntityChange): string {
 }
 
 /**
- * Update metrics snapshot for the current period
- */
-async function updateMetricsSnapshot(change: EntityChange) {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  try {
-    // Get or create daily snapshot
-    const snapshot = await prisma.metricsSnapshot.upsert({
-      where: {
-        organizationId_period_periodDate_entityType: {
-          organizationId: change.organizationId,
-          period: 'DAILY',
-          periodDate: today,
-          entityType: change.entityType,
-        },
-      },
-      create: {
-        organizationId: change.organizationId,
-        period: 'DAILY',
-        periodDate: today,
-        entityType: change.entityType,
-        totalCount: 0,
-        createdCount: 0,
-        completedCount: 0,
-        updatedCount: 0,
-        deletedCount: 0,
-        activeCount: 0,
-        blockedCount: 0,
-        atRiskCount: 0,
-        topContributors: [],
-        customMetrics: {},
-      },
-      update: {},
-    });
-
-    // Increment appropriate counters based on action
-    const updates: any = {};
-
-    switch (change.action) {
-      case 'CREATED':
-        updates.createdCount = { increment: 1 };
-        updates.totalCount = { increment: 1 };
-        break;
-      case 'COMPLETED':
-        updates.completedCount = { increment: 1 };
-        break;
-      case 'UPDATED':
-      case 'STATUS_CHANGED':
-      case 'PRIORITY_CHANGED':
-        updates.updatedCount = { increment: 1 };
-        break;
-      case 'DELETED':
-      case 'ARCHIVED':
-        updates.deletedCount = { increment: 1 };
-        updates.totalCount = { decrement: 1 };
-        break;
-      case 'BLOCKED':
-        updates.blockedCount = { increment: 1 };
-        break;
-      case 'UNBLOCKED':
-        updates.blockedCount = { decrement: 1 };
-        break;
-    }
-
-    if (Object.keys(updates).length > 0) {
-      await prisma.metricsSnapshot.update({
-        where: {
-          id: snapshot.id,
-        },
-        data: updates,
-      });
-    }
-
-    // Update top contributors
-    await updateTopContributors(snapshot.id, change.userId);
-  } catch (error) {
-    console.error('Failed to update metrics snapshot:', error);
-  }
-}
-
-/**
- * Update top contributors list in the snapshot
- */
-async function updateTopContributors(snapshotId: string, userId: string) {
-  try {
-    const snapshot = await prisma.metricsSnapshot.findUnique({
-      where: { id: snapshotId },
-      select: { topContributors: true },
-    });
-
-    if (!snapshot) return;
-
-    let contributors = snapshot.topContributors as Array<{
-      userId: string;
-      name: string;
-      actionCount: number;
-    }>;
-
-    // Find contributor or add new one
-    const contributorIndex = contributors.findIndex(c => c.userId === userId);
-
-    if (contributorIndex >= 0) {
-      contributors[contributorIndex].actionCount++;
-    } else {
-      // Get user name
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { name: true, email: true },
-      });
-
-      contributors.push({
-        userId,
-        name: user?.name || user?.email || 'Unknown',
-        actionCount: 1,
-      });
-    }
-
-    // Sort by action count and keep top 10
-    contributors.sort((a, b) => b.actionCount - a.actionCount);
-    contributors = contributors.slice(0, 10);
-
-    // Update snapshot
-    await prisma.metricsSnapshot.update({
-      where: { id: snapshotId },
-      data: { topContributors: contributors },
-    });
-  } catch (error) {
-    console.error('Failed to update top contributors:', error);
-  }
-}
-
-/**
  * Helper to track project changes
  */
 export async function trackProjectChange(params: {
@@ -299,9 +157,9 @@ export async function trackProjectChange(params: {
   projectId: string;
   projectName: string;
   action: ActivityAction;
-  oldValues?: any;
-  newValues?: any;
-  metadata?: Record<string, any>;
+  oldValues?: Record<string, unknown>;
+  newValues?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }) {
   return trackEntityChange({
     organizationId: params.organizationId,
@@ -325,9 +183,9 @@ export async function trackTaskChange(params: {
   taskId: string;
   taskTitle: string;
   action: ActivityAction;
-  oldValues?: any;
-  newValues?: any;
-  metadata?: Record<string, any>;
+  oldValues?: Record<string, unknown>;
+  newValues?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }) {
   return trackEntityChange({
     organizationId: params.organizationId,
@@ -351,9 +209,9 @@ export async function trackTeamChange(params: {
   teamId: string;
   teamName: string;
   action: ActivityAction;
-  oldValues?: any;
-  newValues?: any;
-  metadata?: Record<string, any>;
+  oldValues?: Record<string, unknown>;
+  newValues?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }) {
   return trackEntityChange({
     organizationId: params.organizationId,
@@ -377,9 +235,9 @@ export async function trackGoalChange(params: {
   goalId: string;
   goalTitle: string;
   action: ActivityAction;
-  oldValues?: any;
-  newValues?: any;
-  metadata?: Record<string, any>;
+  oldValues?: Record<string, unknown>;
+  newValues?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }) {
   return trackEntityChange({
     organizationId: params.organizationId,

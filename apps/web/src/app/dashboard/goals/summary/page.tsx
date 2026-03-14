@@ -29,7 +29,7 @@ const TAB_ITEMS = [
   { id: 'goals', label: 'Goals', icon: null, href: '/dashboard/goals' },
   { id: 'archive', label: 'Archive', icon: null, href: '/dashboard/goals/archive' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/goals/settings' },
-] as const;
+];
 
 export default function GoalsSummaryPage() {
   const [timeRange, setTimeRange] = useState<'quarter' | 'year' | 'all'>('quarter');

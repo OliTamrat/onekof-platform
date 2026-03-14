@@ -16,12 +16,6 @@ export async function GET(
 
     const automation = await prisma.automationRule.findUnique({
       where: { id: params.id },
-      include: {
-        executions: {
-          take: 10,
-          orderBy: { createdAt: 'desc' },
-        },
-      },
     });
 
     if (!automation) {
@@ -119,7 +113,6 @@ export async function PATCH(
         ...(actions !== undefined && { actions }),
         ...(isEnabled !== undefined && { isEnabled }),
         ...(naturalLanguage !== undefined && { naturalLanguage }),
-        updatedBy: session.user.id,
       },
     });
 

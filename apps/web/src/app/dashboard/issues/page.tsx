@@ -49,7 +49,7 @@ const STATUS_COLUMNS = [
   { id: 'IN_PROGRESS', label: 'IN PROGRESS' },
   { id: 'IN_REVIEW', label: 'IN REVIEW' },
   { id: 'DONE', label: 'DONE' },
-] as const;
+];
 
 export default function IssuesPage() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);

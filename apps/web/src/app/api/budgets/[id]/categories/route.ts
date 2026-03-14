@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { checkBudgetAccess } from '@/lib/budget-access';
-import { BudgetAccess } from '@prisma/client';
+import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
 /**
@@ -65,15 +65,15 @@ export async function GET(
     });
 
     // Calculate utilization for each category
-    const categoriesWithUtilization = categories.map(cat => {
+    const categoriesWithUtilization = categories.map((cat: any) => {
       const allocated = Number(cat.allocatedAmount);
       const spent = cat.expenses
-        .filter(e => e.type === 'ACTUAL' && (e.status === 'APPROVED' || e.status === 'PAID'))
-        .reduce((sum, e) => sum + Number(e.amount), 0);
+        .filter((e: any) => e.type === 'ACTUAL' && (e.status === 'APPROVED' || e.status === 'PAID'))
+        .reduce((sum: number, e: any) => sum + Number(e.amount), 0);
 
       const committed = cat.expenses
-        .filter(e => e.type === 'COMMITTED' || (e.type === 'ACTUAL' && e.status === 'PENDING'))
-        .reduce((sum, e) => sum + Number(e.amount), 0);
+        .filter((e: any) => e.type === 'COMMITTED' || (e.type === 'ACTUAL' && e.status === 'PENDING'))
+        .reduce((sum: number, e: any) => sum + Number(e.amount), 0);
 
       const available = allocated - spent - committed;
       const percentageUsed = allocated > 0 ? (spent / allocated) * 100 : 0;

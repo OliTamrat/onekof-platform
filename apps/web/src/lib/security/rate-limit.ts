@@ -1,7 +1,16 @@
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
 import { NextRequest, NextResponse } from 'next/server';
 import { logSecurity } from '@/lib/logger';
+
+let Ratelimit: any;
+let Redis: any;
+try {
+  const ratelimitMod = require('@upstash/ratelimit');
+  const redisMod = require('@upstash/redis');
+  Ratelimit = ratelimitMod.Ratelimit;
+  Redis = redisMod.Redis;
+} catch {
+  // Packages not available
+}
 
 /**
  * Rate Limiting Configuration
@@ -52,7 +61,7 @@ class InMemoryCache {
 const memoryCache = new InMemoryCache();
 
 // Create Redis client if credentials are available
-const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+const redis = (Redis && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
   ? new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -114,17 +123,15 @@ type RateLimitConfig = keyof typeof rateLimitConfigs;
 function createRateLimiter(config: RateLimitConfig) {
   const limits = rateLimitConfigs[config];
 
-  if (redis) {
-    // Use Redis-backed rate limiter in production
+  if (Ratelimit && redis) {
     return new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(limits.requests, limits.window),
+      limiter: Ratelimit.slidingWindow(limits.requests, limits.window as any),
       analytics: true,
       prefix: `ratelimit:${config}`,
     });
   }
 
-  // Fallback to in-memory for development
   return null;
 }
 

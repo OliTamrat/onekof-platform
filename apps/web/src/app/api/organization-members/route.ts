@@ -38,19 +38,19 @@ export async function GET(request: NextRequest) {
       },
       orderBy: [
         { role: 'asc' }, // OWNER first, then ADMIN, then MEMBER
-        { createdAt: 'asc' },
+        { joinedAt: 'asc' },
       ],
     });
 
     // Format response
-    const formattedMembers = members.map((member) => ({
+    const formattedMembers = members.map((member: any) => ({
       id: member.user.id,
       name: member.user.name || 'Unknown',
       email: member.user.email,
       avatar: member.user.avatar,
       role: member.role,
       budgetAccess: member.budgetAccess,
-      joinedAt: member.createdAt.toISOString(),
+      joinedAt: member.joinedAt.toISOString(),
       userCreatedAt: member.user.createdAt.toISOString(),
     }));
 

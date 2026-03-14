@@ -59,6 +59,7 @@ export default function IssuesSummaryPage() {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [status]);
 
   // Fetch projects

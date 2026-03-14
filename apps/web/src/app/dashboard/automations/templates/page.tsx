@@ -50,7 +50,7 @@ const TAB_ITEMS = [
   { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-] as const;
+];
 
 interface AutomationTemplate {
   id: string;

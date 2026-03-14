@@ -68,11 +68,6 @@ export async function GET(request: NextRequest) {
             project: true,
           },
         },
-        tasks: {
-          include: {
-            task: true,
-          },
-        },
         team: {
           select: {
             id: true,
@@ -152,7 +147,6 @@ export async function GET(request: NextRequest) {
           totalKeyResults,
           krCompletionRate: Math.round(krCompletionRate),
           projectCount: g.projects.length,
-          taskCount: g.tasks.length,
           teamName: g.team?.name || 'Unassigned',
         };
       })

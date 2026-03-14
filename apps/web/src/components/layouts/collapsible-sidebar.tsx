@@ -32,7 +32,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
 
   // Get dynamic navigation based on organization type AND settings
   // If settings are undefined or not loaded, getSidebarNavigation will return all sections
-  const sidebarNavigation = getSidebarNavigation(currentOrganization?.type, settings);
+  const sidebarNavigation = getSidebarNavigation((currentOrganization as unknown as Record<string, unknown> | null)?.type as string | undefined, settings);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
