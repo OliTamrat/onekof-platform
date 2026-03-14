@@ -608,7 +608,7 @@ function OnboardingContent() {
 
           {/* Footer */}
           <p className="mt-8 text-center text-xs text-slate-400">
-            © 2026 Onekof. Built with ❤️ for Ethiopia
+            &copy; 2026 Onekof &middot; Built for Ethiopia
           </p>
         </div>
       </div>

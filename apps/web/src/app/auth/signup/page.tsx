@@ -254,7 +254,7 @@ export default function SignUpPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full rounded-xl border-2 border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
                   placeholder="Your full name"
                 />
               </div>
@@ -272,7 +272,7 @@ export default function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-xl border-2 border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
                   placeholder="you@company.com"
                 />
               </div>
@@ -290,7 +290,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border-2 border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
                   placeholder="At least 8 characters"
                 />
                 <button
@@ -316,7 +316,7 @@ export default function SignUpPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border-2 border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -368,7 +368,7 @@ export default function SignUpPage() {
             By signing up, you agree to our Terms of Service and Privacy Policy
           </p>
           <p className="mt-2 text-center text-xs text-gray-500">
-            © 2026 Onekof. Built with ❤️ for Ethiopia
+            &copy; 2026 Onekof. Built for Ethiopia
           </p>
         </div>
       </div>
