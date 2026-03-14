@@ -23,7 +23,7 @@ export async function GET() {
 
     // Get total counts
     const totalProjects = await prisma.project.count();
-    const totalIssues = await prisma.issue.count();
+    const totalIssues = await prisma.task.count();
     const totalUsers = await prisma.user.count();
 
     return NextResponse.json({

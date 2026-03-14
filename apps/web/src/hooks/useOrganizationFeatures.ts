@@ -11,11 +11,10 @@ import { getOrganizationConfig, isFeatureEnabled } from '@/config/organization-t
 export function useOrganizationFeatures() {
   const { currentOrganization } = useWorkspace();
 
-  const orgType = currentOrganization?.type || null;
+  const orgType = (currentOrganization as unknown as Record<string, unknown> | null)?.type as string | null;
   const config = getOrganizationConfig(orgType);
 
   return {
-    // Organization info
     organizationType: orgType,
     organizationTypeName: config.name,
 
@@ -45,7 +44,7 @@ export function useOrganizationFeatures() {
  */
 export function useFeature(feature: string): boolean {
   const { currentOrganization } = useWorkspace();
-  const orgType = currentOrganization?.type || null;
+  const orgType = (currentOrganization as unknown as Record<string, unknown> | null)?.type as string | null;
 
   return isFeatureEnabled(orgType, feature as any);
 }

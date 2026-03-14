@@ -29,7 +29,7 @@ const TAB_ITEMS = [
   { id: 'goals', label: 'Goals', icon: null, href: '/dashboard/goals' },
   { id: 'archive', label: 'Archive', icon: null, href: '/dashboard/goals/archive' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/goals/settings' },
-] as const;
+];
 
 export default function GoalsSummaryPage() {
   const [timeRange, setTimeRange] = useState<'quarter' | 'year' | 'all'>('quarter');
@@ -396,7 +396,7 @@ export default function GoalsSummaryPage() {
                   </div>
 
                   <div className="flex items-end justify-between h-64 gap-4">
-                    {quarterlyProgress.map((data) => (
+                    {quarterlyProgress.map((data: { quarter: string; planned: number; achieved: number; inProgress: number }) => (
                       <div key={data.quarter} className="flex-1 flex flex-col items-center gap-2">
                         <div className="w-full flex gap-1 items-end h-48">
                           <div className="flex-1 flex flex-col items-center">
@@ -497,7 +497,7 @@ export default function GoalsSummaryPage() {
                   </div>
 
                   <div className="space-y-3">
-                    {upcomingDeadlines.map((deadline) => (
+                    {upcomingDeadlines.map((deadline: { id: string; title: string; team: string; dueDate: string; daysLeft: number; progress: number; priority: string }) => (
                       <div
                         key={deadline.id}
                         className="p-3 rounded-lg border border-gray-200 dark:border-[#2C333A] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
@@ -547,7 +547,7 @@ export default function GoalsSummaryPage() {
                   </div>
 
                   <div className="space-y-3">
-                    {topPerformingGoals.map((goal, index) => (
+                    {topPerformingGoals.map((goal: { id: string; title: string; owner: string; progress: number; trend: number; health: string }, index: number) => (
                       <div key={goal.id} className="flex items-start gap-3">
                         <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
                           index === 0 ? 'bg-yellow-500 text-white' :

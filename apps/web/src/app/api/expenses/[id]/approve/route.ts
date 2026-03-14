@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { canApproveExpense, checkBudgetAccess } from '@/lib/budget-access';
-import { BudgetAccess } from '@prisma/client';
+import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
 /**

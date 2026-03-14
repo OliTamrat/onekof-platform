@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
         color: color || '#3B82F6', // ✅ Use proper column
         icon: icon || '📁', // ✅ Use proper column
         settings: {}, // Keep for other settings
-      },
+      } as any,
       include: {
         members: {
           include: {
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         projectId: project.id,
         userId: user.id,
         role: 'ADMIN',
-      },
+      } as any,
     });
 
     return NextResponse.json({

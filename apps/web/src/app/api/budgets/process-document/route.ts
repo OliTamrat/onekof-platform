@@ -72,24 +72,32 @@ export async function POST(request: NextRequest) {
       : 'application/pdf'; // Default
 
     // Call Claude API to extract budget information
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'document',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: base64,
-              },
-            },
-            {
-              type: 'text',
-              text: `Analyze this Ethiopian government budget document and extract budget information in JSON format.
+    const contentBlocks: Array<Record<string, unknown>> = [];
+
+    // Use image block for image types, document block for PDFs
+    if (file.type.startsWith('image/')) {
+      contentBlocks.push({
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: mediaType,
+          data: base64,
+        },
+      });
+    } else {
+      contentBlocks.push({
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: mediaType,
+          data: base64,
+        },
+      });
+    }
+
+    contentBlocks.push({
+      type: 'text',
+      text: `Analyze this Ethiopian government budget document and extract budget information in JSON format.
 
 Extract the following information:
 {
@@ -124,8 +132,15 @@ IMPORTANT GUIDELINES:
 7. Be thorough - extract every line item you can find
 
 Return ONLY valid JSON, no explanations.`,
-            },
-          ],
+    });
+
+    const message = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 4096,
+      messages: [
+        {
+          role: 'user',
+          content: contentBlocks as any,
         },
       ],
     });

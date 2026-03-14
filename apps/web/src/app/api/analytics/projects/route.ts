@@ -177,9 +177,9 @@ export async function GET(request: NextRequest) {
       .slice(0, 5);
 
     // Get activity data (with error handling - activity log table may not exist yet)
-    let recentActivities = [];
-    let topContributors = [];
-    let dailyActivities = [];
+    let recentActivities: Awaited<ReturnType<typeof getRecentActivities>> = [];
+    let topContributors: Awaited<ReturnType<typeof getTopContributors>> = [];
+    let dailyActivities: Awaited<ReturnType<typeof getDailyActivityAggregates>> = [];
 
     try {
       recentActivities = await getRecentActivities(organizationId, {

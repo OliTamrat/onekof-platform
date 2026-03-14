@@ -23,7 +23,7 @@ import {
   Waves,
   XCircle
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface TechnicalReview {
@@ -199,31 +199,21 @@ export default function IssuesCodePage() {
                   className="pl-10"
                 />
               </div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="design">Design Review</SelectItem>
-                  <SelectItem value="safety">Safety Review</SelectItem>
-                  <SelectItem value="environmental">Environmental</SelectItem>
-                  <SelectItem value="quality">Quality Assurance</SelectItem>
-                  <SelectItem value="procurement">Procurement</SelectItem>
-                </SelectContent>
+              <Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                <option value="all">All Types</option>
+                <option value="design">Design Review</option>
+                <option value="safety">Safety Review</option>
+                <option value="environmental">Environmental</option>
+                <option value="quality">Quality Assurance</option>
+                <option value="procurement">Procurement</option>
               </Select>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="in-review">In Review</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="revision-needed">Needs Revision</SelectItem>
-                </SelectContent>
+              <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="in-review">In Review</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="revision-needed">Needs Revision</option>
               </Select>
             </div>
           </CardContent>

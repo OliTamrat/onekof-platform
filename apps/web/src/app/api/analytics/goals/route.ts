@@ -68,11 +68,6 @@ export async function GET(request: NextRequest) {
             project: true,
           },
         },
-        tasks: {
-          include: {
-            task: true,
-          },
-        },
         team: {
           select: {
             id: true,
@@ -139,7 +134,7 @@ export async function GET(request: NextRequest) {
     const topGoals = goals
       .map(g => {
         const totalKeyResults = g.keyResults.length;
-        const completedKeyResults = g.keyResults.filter(kr => kr.isCompleted).length;
+        const completedKeyResults = g.keyResults.filter((kr: { isCompleted: boolean }) => kr.isCompleted).length;
         const krCompletionRate = totalKeyResults > 0 ? (completedKeyResults / totalKeyResults) * 100 : 0;
 
         return {
@@ -152,7 +147,6 @@ export async function GET(request: NextRequest) {
           totalKeyResults,
           krCompletionRate: Math.round(krCompletionRate),
           projectCount: g.projects.length,
-          taskCount: g.tasks.length,
           teamName: g.team?.name || 'Unassigned',
         };
       })

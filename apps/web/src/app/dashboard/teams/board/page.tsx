@@ -11,10 +11,11 @@ import {
   FileText,
   Search,
   TrendingUp,
-  Users
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board', active: true },
@@ -22,7 +23,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
-] as const;
+];
 
 const TEAMS = [
   { id: 1, name: 'Engineering', description: 'Core product development', members: 12, lead: 'Alice Johnson', status: 'ACTIVE', performance: 92 },
@@ -153,7 +154,7 @@ export default function TeamsBoardPage() {
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-[#2C333A]">
                         <div className="flex items-center gap-2">
                           <div className="h-6 w-6 rounded-full bg-[#0065FF] text-white flex items-center justify-center text-xs font-semibold">
-                            {team.lead.split(' ').map(n => n[0]).join('')}
+                            {team.lead.split(' ').map((n: string) => n[0]).join('')}
                           </div>
                           <span className="text-xs text-gray-600 dark:text-[#9FADBC]">
                             {team.lead}

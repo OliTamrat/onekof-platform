@@ -181,9 +181,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
     },
   });
 
-  const handleStatusChange = (newStatus: string) => {
-    setEditedStatus(newStatus as any);
-    updateIssueMutation.mutate({ status: newStatus });
+  const handleStatusChange = (newStatus: Issue['status']) => {
+    setEditedStatus(newStatus);
+    updateIssueMutation.mutate({ status: newStatus as Issue['status'] });
   };
 
   const handleDescriptionSave = () => {
@@ -415,7 +415,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               {/* Subtask List */}
               <div className="space-y-2">
                 {issue.subtasks && issue.subtasks.length > 0 ? (
-                  issue.subtasks.map((subtask) => (
+                  issue.subtasks.map((subtask: Subtask) => (
                     <div
                       key={subtask.id}
                       className="flex items-center gap-3 rounded-md border border-[#2C333A] bg-[#1B1F23] p-3 hover:bg-[#282E33] transition-colors cursor-pointer"
@@ -542,7 +542,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               {/* Comments List */}
               {issue.comments && issue.comments.length > 0 && (
                 <div className="mb-4 space-y-4">
-                  {issue.comments.map((comment) => (
+                  {issue.comments.map((comment: Comment) => (
                     <div key={comment.id} className="flex gap-3">
                       <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#0065FF] text-sm font-medium text-white">
                         {comment.author.name?.charAt(0).toUpperCase() || 'U'}
@@ -716,7 +716,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   <div className="relative">
                     <DatePicker
                       selected={issue.dueDate ? new Date(issue.dueDate) : null}
-                      onChange={(date) => {
+                      onChange={(date: Date | null) => {
                         updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
                       }}
                       customInput={
@@ -734,7 +734,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 ) : (
                   <DatePicker
                     selected={null}
-                    onChange={(date) => {
+                    onChange={(date: Date | null) => {
                       updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
                     }}
                     customInput={
@@ -753,7 +753,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 <div className="mb-1 text-xs font-medium text-[#9FADBC]">Labels</div>
                 {issue.labels && Array.isArray(issue.labels) && issue.labels.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
-                    {issue.labels.map((label, i) => (
+                    {issue.labels.map((label: string, i: number) => (
                       <span
                         key={i}
                         className="rounded-sm bg-[#2C333A] px-2 py-1 text-xs text-white"

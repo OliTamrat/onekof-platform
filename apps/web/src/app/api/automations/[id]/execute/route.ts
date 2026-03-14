@@ -108,41 +108,30 @@ export async function POST(
 
     const executionTime = Date.now() - startTime;
 
-    // Create execution record
-    const execution = await prisma.automationExecution.create({
-      data: {
-        ruleId: automation.id,
-        organizationId: automation.organizationId,
-        status,
-        entityType,
-        entityId,
-        triggeredBy: session.user.id,
-        executionTime,
-        conditionsMatched,
-        actionsExecuted,
-        actionsFailed,
-        executionLog,
-      },
-    });
-
     // Update automation statistics
     await prisma.automationRule.update({
       where: { id: automation.id },
       data: {
         executionCount: { increment: 1 },
-        ...(status === 'SUCCESS' || status === 'PARTIAL_SUCCESS'
-          ? { successCount: { increment: 1 } }
-          : {}),
-        ...(status === 'FAILED' ? { failureCount: { increment: 1 } } : {}),
         lastExecutedAt: new Date(),
-        avgExecutionMs:
-          ((automation.avgExecutionMs || 0) * automation.executionCount + executionTime) /
-          (automation.executionCount + 1),
       },
     });
 
+    // Build execution result for response
+    const executionResult = {
+      ruleId: automation.id,
+      status,
+      entityType,
+      entityId,
+      executionTime,
+      conditionsMatched,
+      actionsExecuted,
+      actionsFailed,
+      executionLog,
+    };
+
     return NextResponse.json({
-      execution,
+      execution: executionResult,
       message:
         status === 'SUCCESS'
           ? 'Automation executed successfully'
@@ -244,6 +233,7 @@ async function executeAction(
             projectId: entityId,
             userId: params.userId,
             role: 'MEMBER',
+            addedBy: userId,
           },
         });
       }

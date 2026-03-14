@@ -67,7 +67,7 @@ export async function GET(
       },
     });
 
-    const teams = projectTeams.map((pt) => ({
+    const teams = projectTeams.map((pt: { team: { id: string; name: string; description: string | null; icon: string | null; color: string | null; _count: { members: number } }; addedAt: Date; id: string }) => ({
       ...pt.team,
       memberCount: pt.team._count.members,
       addedAt: pt.addedAt.toISOString(),

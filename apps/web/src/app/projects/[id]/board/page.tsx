@@ -2,8 +2,6 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { DndContext, DragEndEvent, closestCorners } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

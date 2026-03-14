@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { generateTokenPair } from '@/lib/security/tokens';
+import { sendInvitationEmail } from '@/lib/email';
 
 // GET /api/teams/[id]/members - Get all members of a team
 export async function GET(
@@ -53,7 +55,7 @@ export async function GET(
     });
 
     // Fetch user details for each member
-    const userIds = teamMembers.map(m => m.userId);
+    const userIds = teamMembers.map((m: { userId: string }) => m.userId);
     const users = await prisma.user.findMany({
       where: {
         id: { in: userIds },
@@ -66,9 +68,9 @@ export async function GET(
       },
     });
 
-    const userMap = new Map(users.map(u => [u.id, u]));
+    const userMap = new Map(users.map((u: { id: string; email: string; name: string | null; avatar: string | null }) => [u.id, u]));
 
-    const formattedMembers = teamMembers.map((member) => {
+    const formattedMembers = teamMembers.map((member: { id: string; userId: string; role: string; joinedAt: Date }) => {
       const user = userMap.get(member.userId);
       return {
         id: member.id,
@@ -180,30 +182,48 @@ export async function POST(
         );
       }
 
-      // Create invitation token
-      const invitationToken = `inv_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+      // Create secure invitation token
+      const { token: invitationToken, hash: tokenHash } = generateTokenPair();
 
       // Create invitation (expires in 7 days)
       const invitation = await prisma.invitation.create({
         data: {
           organizationId: team.organizationId,
           email: userEmail,
-          role: 'MEMBER', // Default org role
-          token: invitationToken,
+          role: 'MEMBER',
+          tokenHash,
           invitedBy: session.user.id,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
 
-      // TODO: Send invitation email here
-      // await sendInvitationEmail(userEmail, invitationToken, team.organizationId);
+      // Send invitation email
+      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+      const invitationUrl = `${baseUrl}/auth/accept-invite?token=${invitationToken}`;
+      const inviterName = session.user.name || session.user.email || 'A team member';
+
+      // Fetch organization name for the email
+      const org = await prisma.organization.findUnique({
+        where: { id: team.organizationId },
+        select: { name: true },
+      });
+
+      try {
+        await sendInvitationEmail(
+          userEmail,
+          inviterName,
+          org?.name || 'your organization',
+          invitationUrl
+        );
+      } catch (emailError) {
+        console.error('Failed to send invitation email:', emailError);
+      }
 
       return NextResponse.json({
         invited: true,
         message: `Invitation sent to ${userEmail}`,
         invitation: {
           email: userEmail,
-          token: invitationToken,
           expiresAt: invitation.expiresAt.toISOString(),
         },
       });

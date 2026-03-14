@@ -49,7 +49,7 @@ const STATUS_COLUMNS = [
   { id: 'IN_PROGRESS', label: 'IN PROGRESS' },
   { id: 'IN_REVIEW', label: 'IN REVIEW' },
   { id: 'DONE', label: 'DONE' },
-] as const;
+];
 
 export default function IssuesPage() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -260,7 +260,7 @@ export default function IssuesPage() {
                           {...provided.droppableProps}
                           className="flex-1 space-y-2 overflow-y-auto"
                         >
-                          {issuesByStatus[column.id]?.map((issue, index) => (
+                          {issuesByStatus[column.id]?.map((issue: Issue, index: number) => (
                             <Draggable key={issue.id} draggableId={issue.id} index={index}>
                               {(provided, snapshot) => (
                                 <div

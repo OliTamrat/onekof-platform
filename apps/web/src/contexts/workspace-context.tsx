@@ -30,6 +30,9 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   taskCount?: number;
+  status?: string;
+  lead?: { name?: string; email?: string } | null;
+  _count?: { members?: number; tasks?: number };
 }
 
 interface WorkspaceContextType {

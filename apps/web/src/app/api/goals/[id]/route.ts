@@ -65,7 +65,7 @@ export async function GET(
         team: goal.team,
         startDate: goal.startDate?.toISOString(),
         dueDate: goal.dueDate?.toISOString(),
-        keyResults: goal.keyResults.map((kr) => ({
+        keyResults: goal.keyResults.map((kr: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean; createdAt: Date; updatedAt: Date }) => ({
           id: kr.id,
           description: kr.description,
           unit: kr.unit,

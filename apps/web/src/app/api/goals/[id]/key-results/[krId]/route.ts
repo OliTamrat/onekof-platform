@@ -71,7 +71,7 @@ export async function PATCH(
       where: { goalId },
     });
 
-    const totalProgress = allKeyResults.reduce((sum, kr) => {
+    const totalProgress = allKeyResults.reduce((sum: number, kr: { current: number; target: number }) => {
       return sum + (kr.current / kr.target) * 100;
     }, 0);
 
@@ -151,7 +151,7 @@ export async function DELETE(
       where: { goalId },
     });
 
-    const totalProgress = allKeyResults.reduce((sum, kr) => {
+    const totalProgress = allKeyResults.reduce((sum: number, kr: { current: number; target: number }) => {
       return sum + (kr.current / kr.target) * 100;
     }, 0);
 

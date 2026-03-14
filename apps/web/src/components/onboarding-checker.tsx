@@ -9,7 +9,7 @@ import { useWorkspace } from '@/contexts/workspace-context';
  * Client-side component that checks if user needs onboarding
  * and redirects accordingly
  */
-export function OnboardingChecker() {
+export function OnboardingChecker(): React.ReactElement | null {
   const router = useRouter();
   const pathname = usePathname();
   const { status } = useSession();

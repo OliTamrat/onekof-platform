@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { prisma } from '@onekof/database';
+import { prisma, type ExpenseType, type ExpenseStatus, type PaymentStatus, type Currency } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
 /**
@@ -287,16 +287,21 @@ export async function POST(_request: NextRequest) {
     let totalAmount = 0;
 
     for (const expenseData of sampleExpenses) {
+      const { type, currency, status, paymentStatus, ...rest } = expenseData;
       const expense = await prisma.expense.create({
         data: {
-          ...expenseData,
+          ...rest,
+          type: type as ExpenseType,
+          currency: currency as Currency,
+          status: status as ExpenseStatus,
+          ...(paymentStatus && { paymentStatus: paymentStatus as PaymentStatus }),
           budgetId: project.budget.id,
           submittedBy: user.id,
-          approvedBy: ['APPROVED', 'PAID'].includes(expenseData.status as string) ? user.id : null,
-          approvedAt: ['APPROVED', 'PAID'].includes(expenseData.status as string)
+          approvedBy: ['APPROVED', 'PAID'].includes(status) ? user.id : null,
+          approvedAt: ['APPROVED', 'PAID'].includes(status)
             ? new Date((expenseData.transactionDate as Date).getTime() + 3 * 24 * 60 * 60 * 1000)
             : null,
-        },
+        } as any,
         include: {
           category: {
             select: {

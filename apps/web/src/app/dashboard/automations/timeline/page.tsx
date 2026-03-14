@@ -21,7 +21,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline', active: true },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-] as const;
+];
 
 export default function AutomationsTimelinePage() {
   return (

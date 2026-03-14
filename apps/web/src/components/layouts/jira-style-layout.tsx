@@ -8,6 +8,9 @@ import { useTheme } from 'next-themes';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { PricingModal } from '@/components/pricing-modal';
+import { CommandPalette } from '@/components/command-palette';
+import { NotificationCenter } from '@/components/notification-center';
+import { KeyboardShortcutsModal, useKeyboardShortcuts } from '@/components/keyboard-shortcuts';
 import { CollapsibleSidebar } from './collapsible-sidebar';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,6 +70,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { currentOrganization, organizations, projects, currentProject, switchOrganization, setCurrentProject } = useWorkspace();
+  useKeyboardShortcuts();
 
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
   const [isDocsExpanded, setIsDocsExpanded] = React.useState(true);
@@ -113,6 +117,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-jira-gray-50 dark:bg-jira-dark-bg">
+      {/* Global overlays */}
+      <CommandPalette />
+      <KeyboardShortcutsModal />
       {/* TOP BAR - Jira Style with Centered Search */}
       <header className="flex h-14 items-center gap-2 border-b border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-navbar px-3">
         {/* Mobile Menu Button */}
@@ -218,31 +225,22 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* Spacer to push search slightly right on desktop */}
         <div className="hidden lg:block w-8"></div>
 
-        {/* SEARCH BAR - Beautiful responsive design */}
+        {/* SEARCH BAR - Opens Command Palette */}
         <div className="flex flex-1 max-w-md">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-jira-gray-500 dark:text-jira-gray-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-              className="w-full h-9 pl-10 pr-4 text-sm bg-jira-gray-100 dark:bg-jira-dark-surface border border-jira-gray-300 dark:border-jira-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent transition-all text-jira-gray-900 dark:text-jira-gray-200 placeholder:text-jira-gray-500 dark:placeholder:text-jira-gray-500 shadow-sm"
-            />
-            {/* Search Results Dropdown - Shows when focused and has query */}
-            {isSearchFocused && searchQuery && (
-              <div className="absolute top-full mt-2 w-full md:w-96 bg-white dark:bg-jira-dark-surface border border-jira-gray-200 dark:border-jira-dark-border rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
-                <div className="p-2">
-                  <p className="text-xs text-jira-gray-600 dark:text-jira-gray-400 px-2 py-1">Search results for "{searchQuery}"</p>
-                  <div className="mt-1 text-sm text-jira-gray-700 dark:text-jira-gray-300 px-2 py-3">
-                    Search functionality will be implemented here
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => {
+              // Trigger Cmd+K programmatically
+              const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
+              document.dispatchEvent(event);
+            }}
+            className="flex w-full h-9 items-center gap-2 rounded-lg border border-jira-gray-300 dark:border-jira-dark-border bg-jira-gray-100 dark:bg-jira-dark-surface px-3 text-sm text-jira-gray-500 dark:text-jira-gray-400 shadow-sm transition-colors hover:border-jira-gray-400 dark:hover:border-jira-gray-600 hover:bg-jira-gray-200/50 dark:hover:bg-jira-dark-surface/80"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Search or jump to...</span>
+            <kbd className="hidden rounded border border-jira-gray-300 dark:border-jira-dark-border bg-white dark:bg-jira-dark-bg px-1.5 py-0.5 text-[10px] font-medium sm:inline-block">
+              Ctrl K
+            </kbd>
+          </button>
         </div>
 
         {/* Spacer - pushes action buttons to the far right on desktop */}
@@ -288,16 +286,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </Button>
 
           {/* Desktop: Notifications */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 relative hidden md:flex"
-            onClick={() => router.push("/dashboard/notifications")}
-            title="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-          </Button>
+          <div className="hidden md:block">
+            <NotificationCenter />
+          </div>
 
           {/* Desktop: Settings */}
           <Button

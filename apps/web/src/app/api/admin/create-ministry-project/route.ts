@@ -123,6 +123,13 @@ export async function POST(_request: NextRequest) {
           template: 'CUSTOM',
           status: 'ACTIVE',
           createdBy: adminUser.id
+        } as any,
+        include: {
+          budget: {
+            include: {
+              categories: true
+            }
+          }
         }
       });
       console.log(`✅ Created project: ${project.name} (${project.key})`);

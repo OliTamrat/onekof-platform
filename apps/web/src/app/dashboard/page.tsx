@@ -56,6 +56,7 @@ export default function DashboardPage() {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [status]);
 
   // Fetch dashboard statistics
@@ -175,7 +176,7 @@ export default function DashboardPage() {
 
   // Recent activity (last 5 updated issues)
   const recentActivity = issues
-    .sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .sort((a: Record<string, any>, b: Record<string, any>) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     .slice(0, 5);
 
   // Handlers for drill-down
@@ -240,7 +241,7 @@ export default function DashboardPage() {
       const updated = new Date(i.updatedAt).getTime();
       return (now - updated) / (1000 * 60 * 60 * 24); // days
     });
-    const avgAge = ages.length > 0 ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : 0;
+    const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
     // Build AI insights subtitle
     let insights = [];
@@ -612,7 +613,7 @@ export default function DashboardPage() {
                 const updated = new Date(i.updatedAt).getTime();
                 return (now - updated) / (1000 * 60 * 60 * 24); // days
               });
-              const avgAge = ages.length > 0 ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : 0;
+              const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
               return (
                 <div className="border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-6 py-3">

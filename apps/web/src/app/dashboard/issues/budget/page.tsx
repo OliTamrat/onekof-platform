@@ -51,6 +51,7 @@ export default function BudgetPage() {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [status]);
 
   // Show loading while checking session
@@ -121,7 +122,7 @@ export default function BudgetPage() {
     { id: 7, date: '2026-02-25', category: 'Labor & Personnel', description: 'Construction workers - Week 8', amount: -680000, status: 'approved', user: 'HR Department' },
   ];
 
-  const budgetWatchers = [
+  const budgetWatchers: { id: number; name: string; role: string; avatar: string | null; watching: string[] }[] = [
     { id: 1, name: 'Minister Seleshi Bekele', role: 'Minister', avatar: null, watching: ['All Categories'] },
     { id: 2, name: 'Dr. Abebe Kebede', role: 'Project Director', avatar: null, watching: ['Construction & Infrastructure', 'Equipment & Materials'] },
     { id: 3, name: 'Finance Director', role: 'CFO', avatar: null, watching: ['All Categories'] },

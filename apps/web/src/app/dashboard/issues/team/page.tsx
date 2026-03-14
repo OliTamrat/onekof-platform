@@ -149,7 +149,7 @@ export default function IssuesTeamPage() {
 
   // Update team mutation
   const updateTeamMutation = useMutation({
-    mutationFn: async ({ teamId, ...data }: { teamId: string } & Partial<typeof formData>) => {
+    mutationFn: async ({ teamId, ...data }: { teamId: string; isFavorite?: boolean } & Partial<typeof formData>) => {
       const res = await fetch(`/api/teams/${teamId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -243,7 +243,7 @@ export default function IssuesTeamPage() {
     updateTeamMutation.mutate({
       teamId,
       isFavorite: !currentValue,
-    });
+    } as any);
   };
 
   const teams = teamsData?.teams || [];

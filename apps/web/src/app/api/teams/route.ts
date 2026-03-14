@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Format response
-    const formattedTeams = teams.map((team) => ({
+    const formattedTeams = teams.map((team: { id: string; name: string; description: string | null; icon: string | null; color: string | null; isDefault: boolean; isFavorite: boolean; _count: { members: number; projects: number }; createdAt: Date; updatedAt: Date }) => ({
       id: team.id,
       name: team.name,
       description: team.description,

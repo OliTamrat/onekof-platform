@@ -25,7 +25,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline', active: true },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
-] as const;
+];
 
 const TIMELINE_EVENTS = [
   {

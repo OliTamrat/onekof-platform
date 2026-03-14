@@ -22,6 +22,8 @@ function SignInContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [totpCode, setTotpCode] = useState('');
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [organization, setOrganization] = useState<OrganizationInfo | null>(null);
@@ -68,17 +70,20 @@ function SignInContent() {
       const result = await signIn('credentials', {
         email,
         password,
+        totpCode: totpCode || undefined,
         redirect: false,
       });
 
       if (result?.error) {
-        if (result.error === 'CredentialsSignin') {
+        if (result.error.includes('TWO_FACTOR_REQUIRED')) {
+          setRequiresTwoFactor(true);
+          setError('');
+        } else if (result.error === 'CredentialsSignin') {
           setError('Invalid email or password');
         } else {
           setError(result.error);
         }
       } else {
-        // Always redirect to organization selection page
         router.push('/select-organization');
       }
     } catch (err) {
@@ -281,19 +286,45 @@ function SignInContent() {
               </div>
             </div>
 
+            {/* Two-Factor Authentication Input */}
+            {requiresTwoFactor && (
+              <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-sm">
+                  <Shield className="h-4 w-4 shrink-0" />
+                  <span>Enter the 6-digit code from your authenticator app</span>
+                </div>
+                <label htmlFor="totpCode" className="block text-sm font-medium text-gray-700">
+                  Authentication Code
+                </label>
+                <input
+                  id="totpCode"
+                  type="text"
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
+                  className="w-full rounded-xl border border-gray-200 bg-white px-5 py-4 text-center text-lg font-mono tracking-widest text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  placeholder="000000"
+                  autoFocus
+                  autoComplete="one-time-code"
+                />
+                <p className="text-xs text-gray-500">
+                  You can also use a backup code (format: XXXX-XXXX)
+                </p>
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
               className="w-full rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/25 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/40 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Signing in...</span>
+                  <span>{requiresTwoFactor ? 'Verifying...' : 'Signing in...'}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2">
-                  <span>Continue</span>
+                  <span>{requiresTwoFactor ? 'Verify & Sign In' : 'Continue'}</span>
                   <ArrowRight className="h-4 w-4" />
                 </div>
               )}

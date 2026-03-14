@@ -120,16 +120,18 @@ interface Comment {
 }
 
 interface IssueDetailSlideoutProps {
-  issue: Issue;
+  issue?: Issue;
+  issueId?: string;
   onClose: () => void;
 }
 
 type Tab = 'details' | 'settings';
 
-export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetailSlideoutProps) {
+export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
+  const resolvedId = initialIssue?.id || issueId;
   const [activeTab, setActiveTab] = useState<Tab>('details');
   const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [editedDescription, setEditedDescription] = useState(initialIssue.description || '');
+  const [editedDescription, setEditedDescription] = useState(initialIssue?.description || '');
   const [commentContent, setCommentContent] = useState('');
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
@@ -137,33 +139,35 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
 
   // Fetch full issue details
   const { data: issueData, refetch } = useQuery({
-    queryKey: ['issue', initialIssue.id],
+    queryKey: ['issue', resolvedId],
     queryFn: async () => {
-      const res = await fetch(`/api/issues/${initialIssue.id}`);
+      const res = await fetch(`/api/issues/${resolvedId}`);
       if (!res.ok) throw new Error('Failed to fetch issue');
       const data = await res.json();
       return data.issue;
     },
+    enabled: !!resolvedId,
   });
 
   const issue = issueData || initialIssue;
 
   // Fetch watchers
   const { data: watchersData } = useQuery({
-    queryKey: ['watchers', issue.id],
+    queryKey: ['watchers', issue?.id],
     queryFn: async () => {
-      const res = await fetch(`/api/issues/${issue.id}/watchers`);
+      const res = await fetch(`/api/issues/${issue!.id}/watchers`);
       if (!res.ok) throw new Error('Failed to fetch watchers');
       return res.json();
     },
+    enabled: !!issue?.id,
   });
 
-  const watchers = watchersData?.watchers || issue.watchers || [];
+  const watchers = watchersData?.watchers || issue?.watchers || [];
 
   // Update issue mutation
   const updateIssueMutation = useMutation({
     mutationFn: async (updates: Partial<Issue>) => {
-      const res = await fetch(`/api/issues/${issue.id}`, {
+      const res = await fetch(`/api/issues/${issue!.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -195,15 +199,15 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['watchers', issue.id] });
-      queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+      queryClient.invalidateQueries({ queryKey: ['watchers', issue?.id] });
+      queryClient.invalidateQueries({ queryKey: ['issue', issue?.id] });
     },
   });
 
   // Remove watcher mutation
   const removeWatcherMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const res = await fetch(`/api/issues/${issue.id}/watchers/${userId}`, {
+      const res = await fetch(`/api/issues/${issue!.id}/watchers/${userId}`, {
         method: 'DELETE',
       });
       if (!res.ok) {
@@ -213,8 +217,8 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['watchers', issue.id] });
-      queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+      queryClient.invalidateQueries({ queryKey: ['watchers', issue?.id] });
+      queryClient.invalidateQueries({ queryKey: ['issue', issue?.id] });
     },
   });
 
@@ -254,6 +258,20 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
     { value: 'LOWEST', label: 'Lowest', color: 'text-gray-600 dark:text-gray-400' },
   ];
 
+  if (!issue) {
+    return (
+      <>
+        <div
+          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+          onClick={onClose}
+        />
+        <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex items-center justify-center">
+          <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       {/* Backdrop */}
@@ -278,7 +296,7 @@ export function IssueDetailSlideout({ issue: initialIssue, onClose }: IssueDetai
           <div className="flex items-center gap-1">
             {/* Watch Icon with Count */}
             <button
-              onClick={() => addWatcherMutation.mutateAsync().catch(() => {})}
+              onClick={() => addWatcherMutation.mutateAsync(undefined).catch(() => {})}
               className="flex items-center gap-1 rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Watch this issue"
             >

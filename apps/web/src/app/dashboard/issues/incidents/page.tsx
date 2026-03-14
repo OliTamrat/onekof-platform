@@ -24,7 +24,7 @@ import {
   XCircle,
   Zap
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Incident {
@@ -252,30 +252,20 @@ export default function IssuesIncidentsPage() {
                   className="pl-10"
                 />
               </div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="safety">Safety</SelectItem>
-                  <SelectItem value="equipment">Equipment</SelectItem>
-                  <SelectItem value="environmental">Environmental</SelectItem>
-                  <SelectItem value="operational">Operational</SelectItem>
-                  <SelectItem value="security">Security</SelectItem>
-                </SelectContent>
+              <Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                <option value="all">All Types</option>
+                <option value="safety">Safety</option>
+                <option value="equipment">Equipment</option>
+                <option value="environmental">Environmental</option>
+                <option value="operational">Operational</option>
+                <option value="security">Security</option>
               </Select>
-              <Select value={filterSeverity} onValueChange={setFilterSeverity}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by severity" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Severities</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
-                </SelectContent>
+              <Select value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)}>
+                <option value="all">All Severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
               </Select>
             </div>
           </CardContent>

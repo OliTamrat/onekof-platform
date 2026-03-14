@@ -24,7 +24,7 @@ import {
   Users,
   Wrench
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@/components/ui/select';
 
 interface BacklogItem {
   id: string;
@@ -204,30 +204,20 @@ export default function IssuesBacklogPage() {
                   className="pl-10"
                 />
               </div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="infrastructure">Infrastructure</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="irrigation">Irrigation</SelectItem>
-                  <SelectItem value="monitoring">Monitoring</SelectItem>
-                  <SelectItem value="stakeholder">Stakeholder</SelectItem>
-                </SelectContent>
+              <Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                <option value="all">All Types</option>
+                <option value="infrastructure">Infrastructure</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="irrigation">Irrigation</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="stakeholder">Stakeholder</option>
               </Select>
-              <Select value={filterPriority} onValueChange={setFilterPriority}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Priorities</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
-                </SelectContent>
+              <Select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
+                <option value="all">All Priorities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
               </Select>
             </div>
           </CardContent>
@@ -343,10 +333,11 @@ export default function IssuesBacklogPage() {
         )}
       </div>
 
-      <CreateIssueModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-      />
+      {showCreateModal && (
+        <CreateIssueModal
+          onClose={() => setShowCreateModal(false)}
+        />
+      )}
     </AppLayout>
   );
 }

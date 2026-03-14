@@ -5,6 +5,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
+import { verifyTOTPCode, decryptSecret, verifyBackupCode } from '@/lib/security/totp';
 import { logSecurity } from '@/lib/logger';
 
 export const authOptions: NextAuthOptions = {
@@ -12,7 +13,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  trustHost: true, // Allow NextAuth to work on any host (Vercel, custom domains, etc.)
   cookies: {
     // Configure cookies to work across subdomains
     sessionToken: {
@@ -51,8 +51,9 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        totpCode: { label: '2FA Code', type: 'text' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, _req) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Missing credentials');
         }
@@ -73,10 +74,19 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            password: true,
+            avatar: true,
+            twoFactorEnabled: true,
+            twoFactorSecret: true,
+            twoFactorBackupCodes: true,
+          },
         });
 
         if (!user || !user.password) {
-          // SECURITY: Record failed attempt (even for non-existent users to prevent enumeration timing attacks)
           await recordFailedLogin(credentials.email);
           throw new Error('Invalid credentials');
         }
@@ -84,7 +94,6 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
-          // SECURITY: Record failed login attempt
           const lockResult = await recordFailedLogin(credentials.email);
 
           if (lockResult.locked) {
@@ -103,19 +112,52 @@ export const authOptions: NextAuthOptions = {
           throw new Error(`Invalid credentials${attemptsMsg}`);
         }
 
-        // SECURITY: Reset failed attempts on successful login
+        // SECURITY: Two-factor authentication check
+        if (user.twoFactorEnabled && user.twoFactorSecret) {
+          const totpCode = credentials.totpCode;
+
+          if (!totpCode) {
+            throw new Error('TWO_FACTOR_REQUIRED');
+          }
+
+          const secret = decryptSecret(user.twoFactorSecret);
+          let isCodeValid = verifyTOTPCode(secret, totpCode);
+
+          if (!isCodeValid && totpCode.includes('-')) {
+            const backupIndex = verifyBackupCode(totpCode, user.twoFactorBackupCodes);
+            if (backupIndex !== -1) {
+              isCodeValid = true;
+              const updatedCodes = [...user.twoFactorBackupCodes];
+              updatedCodes.splice(backupIndex, 1);
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { twoFactorBackupCodes: updatedCodes } as Record<string, unknown>,
+              });
+            }
+          }
+
+          if (!isCodeValid) {
+            logSecurity('invalid_2fa_code', 'medium', {
+              userId: user.id,
+              email: user.email,
+            });
+            throw new Error('Invalid two-factor authentication code');
+          }
+        }
+
         await resetFailedAttempts(credentials.email);
 
         logSecurity('successful_login', 'low', {
           userId: user.id,
           email: user.email,
+          twoFactorUsed: user.twoFactorEnabled,
         });
 
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
-          image: user.avatar,
+          name: user.name || user.email,
+          avatar: user.avatar || null,
         };
       },
     }),

@@ -12,10 +12,11 @@ import {
   FileText,
   Search,
   Target,
-  Users
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/goals/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/goals/board', active: true },
@@ -23,7 +24,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
-] as const;
+];
 
 const GOALS = [
   { id: 1, title: 'Increase Product Revenue', description: 'Achieve 25% revenue growth', owner: 'Alice Johnson', team: 'Sales', progress: 68, status: 'ON_TRACK', dueDate: '2024-06-30' },
@@ -167,7 +168,7 @@ export default function GoalsBoardPage() {
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-[#2C333A]">
                         <div className="flex items-center gap-2">
                           <div className="h-6 w-6 rounded-full bg-[#0065FF] text-white flex items-center justify-center text-xs font-semibold">
-                            {goal.owner.split(' ').map(n => n[0]).join('')}
+                            {goal.owner.split(' ').map((n: string) => n[0]).join('')}
                           </div>
                           <span className="text-xs text-gray-600 dark:text-[#9FADBC]">
                             {goal.owner.split(' ')[0]}

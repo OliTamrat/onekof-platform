@@ -1,5 +1,4 @@
-import { prisma } from '@onekof/database';
-import { BudgetAccess } from '@prisma/client';
+import { prisma, BudgetAccess } from '@onekof/database';
 
 /**
  * 🔐 BUDGET ACCESS CONTROL SYSTEM

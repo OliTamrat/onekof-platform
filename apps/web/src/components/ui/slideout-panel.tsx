@@ -5,7 +5,8 @@ import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SlideoutPanelProps {
-  open: boolean;
+  open?: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
@@ -18,6 +19,7 @@ interface SlideoutPanelProps {
 
 export function SlideoutPanel({
   open,
+  isOpen,
   onClose,
   title,
   children,
@@ -27,15 +29,16 @@ export function SlideoutPanel({
   headerActions,
   className,
 }: SlideoutPanelProps) {
+  const isVisible = open ?? isOpen ?? false;
   // Handle escape key
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && open) {
+      if (e.key === 'Escape' && isVisible) {
         onClose();
       }
     };
 
-    if (open) {
+    if (isVisible) {
       document.addEventListener('keydown', handleEscape);
       // Prevent body scroll when panel is open
       document.body.style.overflow = 'hidden';
@@ -45,9 +48,9 @@ export function SlideoutPanel({
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
-  }, [open, onClose]);
+  }, [isVisible, onClose]);
 
-  if (!open) return null;
+  if (!isVisible) return null;
 
   const sizeClasses = {
     sm: 'max-w-md',

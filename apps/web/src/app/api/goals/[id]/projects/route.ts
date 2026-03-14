@@ -64,7 +64,7 @@ export async function GET(
       },
     });
 
-    const projects = goalProjects.map((gp) => ({
+    const projects = goalProjects.map((gp: { project: { id: string; name: string; key: string; description: string | null; icon: string | null; color: string | null; status: string }; contributionWeight: number; addedAt: Date; id: string }) => ({
       ...gp.project,
       contributionWeight: gp.contributionWeight,
       addedAt: gp.addedAt.toISOString(),

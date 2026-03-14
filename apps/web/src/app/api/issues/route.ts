@@ -169,7 +169,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Transform issues with counts
-    const issuesWithCounts = issues.map(issue => ({
+    const issuesWithCounts = issues.map((issue: any) => ({
       ...issue,
       commentCount: issue.comments.length,
       attachmentCount: issue.attachments.length,

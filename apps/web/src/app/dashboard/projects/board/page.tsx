@@ -15,10 +15,11 @@ import {
   Plus,
   Search,
   Star,
-  Users
+  Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
   { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list' },
   { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board', active: true },
@@ -26,14 +27,14 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages' },
-] as const;
+];
 
 const STATUS_COLUMNS = [
   { id: 'PLANNING', label: 'PLANNING', color: 'border-gray-300 dark:border-[#2C333A]' },
   { id: 'ACTIVE', label: 'ACTIVE', color: 'border-blue-300 dark:border-blue-900' },
   { id: 'ON_HOLD', label: 'ON HOLD', color: 'border-yellow-300 dark:border-yellow-900' },
   { id: 'COMPLETED', label: 'COMPLETED', color: 'border-green-300 dark:border-green-900' },
-] as const;
+];
 
 export default function ProjectsBoardPage() {
   const router = useRouter();

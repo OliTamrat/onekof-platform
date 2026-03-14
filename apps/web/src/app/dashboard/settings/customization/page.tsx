@@ -347,7 +347,7 @@ export default function DashboardCustomizationPage() {
                     <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Enable AI-powered help and suggestions</div>
                   </div>
                   <button
-                    onClick={() => setSettings({ ...settings, features: { ...settings.features, aiAssistant: !settings.features.aiAssistant } })}
+                    onClick={() => updateSettings({ ...settings, features: { ...settings.features, aiAssistant: !settings.features.aiAssistant } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.aiAssistant ? 'bg-[#0065FF]' : 'bg-gray-200 dark:bg-[#2C333A]'
                     }`}
@@ -361,7 +361,7 @@ export default function DashboardCustomizationPage() {
                     <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Detailed insights and data visualization</div>
                   </div>
                   <button
-                    onClick={() => setSettings({ ...settings, features: { ...settings.features, analytics: !settings.features.analytics } })}
+                    onClick={() => updateSettings({ ...settings, features: { ...settings.features, analytics: !settings.features.analytics } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.analytics ? 'bg-[#0065FF]' : 'bg-gray-200 dark:bg-[#2C333A]'
                     }`}
@@ -375,7 +375,7 @@ export default function DashboardCustomizationPage() {
                     <div className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">Connect with external tools and services</div>
                   </div>
                   <button
-                    onClick={() => setSettings({ ...settings, features: { ...settings.features, integrations: !settings.features.integrations } })}
+                    onClick={() => updateSettings({ ...settings, features: { ...settings.features, integrations: !settings.features.integrations } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.integrations ? 'bg-[#0065FF]' : 'bg-gray-200 dark:bg-[#2C333A]'
                     }`}

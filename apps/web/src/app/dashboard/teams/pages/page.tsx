@@ -23,7 +23,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages', active: true },
-] as const;
+];
 
 const PAGE_TEMPLATES = [
   {

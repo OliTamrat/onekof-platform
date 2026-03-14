@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { getRecentActivities, getEntityActivityTimeline } from '@/lib/activity-logger';
-import type { ActivityEntityType, ActivityAction } from '@onekof/database';
+import type { ActivityEntityType, ActivityAction } from '@/lib/activity-logger';
 import { authOptions } from '@/lib/auth';
 
 /**
@@ -73,13 +73,12 @@ export async function GET(request: NextRequest) {
       );
 
       return NextResponse.json({
-        activities: timeline.map(activity => ({
+        activities: timeline.map((activity) => ({
           id: activity.id,
           action: activity.action,
           entityType: activity.entityType,
           entityId: activity.entityId,
-          entityName: activity.entityName,
-          description: activity.description,
+          description: activity.aiSummary,
           metadata: activity.metadata,
           user: {
             id: activity.user.id,
@@ -107,7 +106,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Get activity statistics
-    const totalActivities = await prisma.activityLog.count({
+    const totalActivities = await prisma.userActivity.count({
       where: {
         organizationId,
         ...(entityTypeParam && { entityType: entityTypeParam as ActivityEntityType }),
@@ -121,7 +120,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Get action breakdown
-    const actionBreakdown = await prisma.activityLog.groupBy({
+    const actionBreakdown = await prisma.userActivity.groupBy({
       by: ['action'],
       where: {
         organizationId,
@@ -137,7 +136,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Get entity type breakdown
-    const entityBreakdown = await prisma.activityLog.groupBy({
+    const entityBreakdown = await prisma.userActivity.groupBy({
       by: ['entityType'],
       where: {
         organizationId,
@@ -154,7 +153,7 @@ export async function GET(request: NextRequest) {
 
     // Get hourly activity pattern (for activity heatmap)
     const hourlyActivity = Array.from({ length: 24 }, () => 0);
-    const allActivitiesForPattern = await prisma.activityLog.findMany({
+    const allActivitiesForPattern = await prisma.userActivity.findMany({
       where: {
         organizationId,
         createdAt: {
@@ -167,19 +166,18 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    allActivitiesForPattern.forEach(activity => {
+    allActivitiesForPattern.forEach((activity: { createdAt: Date }) => {
       const hour = activity.createdAt.getHours();
       hourlyActivity[hour]++;
     });
 
     return NextResponse.json({
-      activities: activities.map(activity => ({
+      activities: activities.map((activity) => ({
         id: activity.id,
         action: activity.action,
         entityType: activity.entityType,
         entityId: activity.entityId,
-        entityName: activity.entityName,
-        description: activity.description,
+        description: activity.aiSummary,
         metadata: activity.metadata,
         user: {
           id: activity.user.id,
@@ -193,11 +191,11 @@ export async function GET(request: NextRequest) {
       statistics: {
         total: totalActivities,
         returned: activities.length,
-        actionBreakdown: actionBreakdown.reduce((acc, item) => {
+        actionBreakdown: actionBreakdown.reduce((acc: Record<string, number>, item: { action: string; _count: { action: number } }) => {
           acc[item.action] = item._count.action;
           return acc;
         }, {} as Record<string, number>),
-        entityBreakdown: entityBreakdown.reduce((acc, item) => {
+        entityBreakdown: entityBreakdown.reduce((acc: Record<string, number>, item: { entityType: string; _count: { entityType: number } }) => {
           acc[item.entityType] = item._count.entityType;
           return acc;
         }, {} as Record<string, number>),

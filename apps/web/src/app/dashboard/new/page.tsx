@@ -41,6 +41,7 @@ export default function DashboardPage() {
       }, 3000); // 3 second timeout
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [status]);
 
   // Show loading while checking session (with timeout to prevent infinite loading)

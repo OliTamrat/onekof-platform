@@ -25,45 +25,28 @@ export async function calculateProjectProgress(projectId: string): Promise<numbe
 
 /**
  * Calculate goal progress based on:
- * 1. Linked tasks (direct task → goal links)
- * 2. Linked projects (project → goal links with contribution weights)
- * 3. Key results completion
+ * 1. Key results completion
+ * 2. Linked projects (project -> goal links with contribution weights)
  */
 export async function calculateGoalProgress(goalId: string): Promise<number> {
-  // Get all key results for this goal
   const keyResults = await prisma.keyResult.findMany({
     where: {
       goalId,
     },
   });
 
-  // If there are key results, calculate based on them
   if (keyResults.length > 0) {
     let totalProgress = 0;
 
     for (const kr of keyResults) {
       const krProgress = (kr.current / kr.target) * 100;
-      totalProgress += Math.min(krProgress, 100); // Cap at 100% per KR
+      totalProgress += Math.min(krProgress, 100);
     }
 
     return Math.round(totalProgress / keyResults.length);
   }
 
-  // Otherwise, calculate from tasks and projects
-
-  // Get directly linked tasks
-  const taskLinks = await prisma.taskGoal.findMany({
-    where: { goalId },
-    include: {
-      task: {
-        select: {
-          status: true,
-        },
-      },
-    },
-  });
-
-  // Get linked projects
+  // Calculate from linked projects
   const projectLinks = await prisma.goalProject.findMany({
     where: { goalId },
     include: {
@@ -85,17 +68,6 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
   let totalWeightedProgress = 0;
   let totalWeight = 0;
 
-  // Calculate progress from directly linked tasks
-  if (taskLinks.length > 0) {
-    const doneTasks = taskLinks.filter(tl => tl.task.status === 'DONE').length;
-    const taskProgress = (doneTasks / taskLinks.length) * 100;
-
-    // Direct tasks have equal weight to one project
-    totalWeightedProgress += taskProgress;
-    totalWeight += 100;
-  }
-
-  // Calculate progress from linked projects
   for (const pl of projectLinks) {
     const projectTasks = pl.project.tasks;
 
@@ -103,7 +75,6 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
       const doneTasks = projectTasks.filter(t => t.status === 'DONE').length;
       const projectProgress = (doneTasks / projectTasks.length) * 100;
 
-      // Weight the project progress by its contribution weight
       totalWeightedProgress += projectProgress * (pl.contributionWeight / 100);
       totalWeight += pl.contributionWeight;
     }
@@ -124,7 +95,6 @@ export async function updateGoalProgress(goalId: string): Promise<void> {
     where: { id: goalId },
     data: {
       progress: newProgress,
-      // Update status based on progress
       status: newProgress === 0
         ? 'NOT_STARTED'
         : newProgress === 100
@@ -144,22 +114,6 @@ export async function updateProjectGoalsProgress(projectId: string): Promise<voi
     select: { goalId: true },
   });
 
-  // Update each linked goal's progress
-  for (const link of goalLinks) {
-    await updateGoalProgress(link.goalId);
-  }
-}
-
-/**
- * Update all goals linked to a task
- */
-export async function updateTaskGoalsProgress(taskId: string): Promise<void> {
-  const goalLinks = await prisma.taskGoal.findMany({
-    where: { taskId },
-    select: { goalId: true },
-  });
-
-  // Update each linked goal's progress
   for (const link of goalLinks) {
     await updateGoalProgress(link.goalId);
   }
@@ -169,12 +123,6 @@ export async function updateTaskGoalsProgress(taskId: string): Promise<void> {
  * Comprehensive update triggered when a task status changes
  */
 export async function handleTaskStatusChange(taskId: string, projectId: string): Promise<void> {
-  // Update project progress (future enhancement - could store this)
-  const projectProgress = await calculateProjectProgress(projectId);
-
-  // Update all goals linked to the project
+  await calculateProjectProgress(projectId);
   await updateProjectGoalsProgress(projectId);
-
-  // Update all goals directly linked to this task
-  await updateTaskGoalsProgress(taskId);
 }

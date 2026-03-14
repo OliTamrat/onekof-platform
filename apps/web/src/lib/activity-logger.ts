@@ -4,7 +4,10 @@
  */
 
 import { prisma } from '@onekof/database';
-import type { ActivityAction, ActivityEntityType } from '@onekof/database';
+import type { ActivityType } from '@onekof/database';
+
+export type ActivityEntityType = string;
+export type ActivityAction = string;
 
 export interface LogActivityParams {
   organizationId: string;
@@ -14,7 +17,7 @@ export interface LogActivityParams {
   entityId: string;
   entityName?: string;
   description?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
 }
@@ -24,23 +27,21 @@ export interface LogActivityParams {
  */
 export async function logActivity(params: LogActivityParams) {
   try {
-    return await prisma.activityLog.create({
+    return await prisma.userActivity.create({
       data: {
         organizationId: params.organizationId,
         userId: params.userId,
-        action: params.action,
+        activityType: `${params.entityType}_${params.action}` as ActivityType,
         entityType: params.entityType,
         entityId: params.entityId,
-        entityName: params.entityName,
-        description: params.description,
-        metadata: params.metadata || {},
+        action: params.action,
+        metadata: (params.metadata || {}) as any,
         ipAddress: params.ipAddress,
         userAgent: params.userAgent,
       },
     });
   } catch (error) {
     console.error('Failed to log activity:', error);
-    // Don't throw - activity logging should not break the main flow
     return null;
   }
 }
@@ -54,7 +55,7 @@ export async function logProjectActivity(params: {
   projectId: string;
   projectName: string;
   action: ActivityAction;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }) {
   return logActivity({
     ...params,
@@ -73,7 +74,7 @@ export async function logTaskActivity(params: {
   taskId: string;
   taskTitle: string;
   action: ActivityAction;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }) {
   return logActivity({
     ...params,
@@ -92,7 +93,7 @@ export async function logTeamActivity(params: {
   teamId: string;
   teamName: string;
   action: ActivityAction;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }) {
   return logActivity({
     ...params,
@@ -111,7 +112,7 @@ export async function logGoalActivity(params: {
   goalId: string;
   goalTitle: string;
   action: ActivityAction;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }) {
   return logActivity({
     ...params,
@@ -144,7 +145,7 @@ export async function getRecentActivities(
     endDate = new Date(),
   } = options;
 
-  return await prisma.activityLog.findMany({
+  return await prisma.userActivity.findMany({
     where: {
       organizationId,
       ...(entityType && { entityType }),
@@ -182,7 +183,7 @@ export async function getEntityActivityTimeline(
   entityId: string,
   limit = 50
 ) {
-  return await prisma.activityLog.findMany({
+  return await prisma.userActivity.findMany({
     where: {
       entityType,
       entityId,
@@ -213,7 +214,7 @@ export async function getActivityCounts(
   endDate: Date,
   entityType?: ActivityEntityType
 ) {
-  const activities = await prisma.activityLog.groupBy({
+  const activities = await prisma.userActivity.groupBy({
     by: ['action'],
     where: {
       organizationId,
@@ -228,7 +229,7 @@ export async function getActivityCounts(
     },
   });
 
-  return activities.reduce((acc, item) => {
+  return activities.reduce((acc: Record<string, number>, item: { action: string; _count: { action: number } }) => {
     acc[item.action] = item._count.action;
     return acc;
   }, {} as Record<string, number>);
@@ -248,7 +249,7 @@ export async function getTopContributors(
 ) {
   const { limit = 10, entityType } = options;
 
-  const contributors = await prisma.activityLog.groupBy({
+  const contributors = await prisma.userActivity.groupBy({
     by: ['userId'],
     where: {
       organizationId,
@@ -269,8 +270,7 @@ export async function getTopContributors(
     take: limit,
   });
 
-  // Fetch user details
-  const userIds = contributors.map(c => c.userId);
+  const userIds = contributors.map((c: { userId: string; _count: { id: number } }) => c.userId);
   const users = await prisma.user.findMany({
     where: {
       id: {
@@ -290,7 +290,7 @@ export async function getTopContributors(
     return acc;
   }, {} as Record<string, typeof users[0]>);
 
-  return contributors.map(contributor => ({
+  return contributors.map((contributor: { userId: string; _count: { id: number } }) => ({
     user: userMap[contributor.userId],
     activityCount: contributor._count.id,
   }));
@@ -305,7 +305,7 @@ export async function getDailyActivityAggregates(
   endDate: Date,
   entityType?: ActivityEntityType
 ) {
-  const activities = await prisma.activityLog.findMany({
+  const activities = await prisma.userActivity.findMany({
     where: {
       organizationId,
       ...(entityType && { entityType }),
@@ -320,8 +320,7 @@ export async function getDailyActivityAggregates(
     },
   });
 
-  // Group by date
-  const dailyAggregates = activities.reduce((acc, activity) => {
+  const dailyAggregates = activities.reduce((acc: Record<string, { date: string; total: number; created: number; updated: number; completed: number; deleted: number }>, activity: { action: string; createdAt: Date }) => {
     const dateKey = activity.createdAt.toISOString().split('T')[0];
 
     if (!acc[dateKey]) {
@@ -345,5 +344,5 @@ export async function getDailyActivityAggregates(
     return acc;
   }, {} as Record<string, { date: string; total: number; created: number; updated: number; completed: number; deleted: number }>);
 
-  return Object.values(dailyAggregates).sort((a, b) => a.date.localeCompare(b.date));
+  return Object.values(dailyAggregates).sort((a: { date: string }, b: { date: string }) => a.date.localeCompare(b.date));
 }

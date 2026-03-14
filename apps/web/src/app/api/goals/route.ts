@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Format response
-    const formattedGoals = goals.map((goal) => ({
+    const formattedGoals = goals.map((goal: { id: string; organizationId: string; title: string; description: string | null; status: string; priority: string; progress: number; ownerId: string; team: { id: string; name: string; icon: string | null; color: string | null } | null; startDate: Date | null; dueDate: Date | null; keyResults: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean }[]; createdAt: Date; updatedAt: Date; completedAt: Date | null }) => ({
       id: goal.id,
       organizationId: goal.organizationId,
       title: goal.title,
@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
       } : null,
       startDate: goal.startDate?.toISOString(),
       dueDate: goal.dueDate?.toISOString(),
-      keyResults: goal.keyResults.map((kr) => ({
+      keyResults: goal.keyResults.map((kr: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean }) => ({
         id: kr.id,
         description: kr.description,
         unit: kr.unit,

@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WorkspaceProvider } from '@/contexts/workspace-context';
 import { OrganizationSettingsProvider } from '@/contexts/organization-settings-context';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { ToastProvider } from '@/components/ui/toast-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Create a client inside the component to avoid sharing state between requests
@@ -32,11 +33,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            <WorkspaceProvider>
-              <OrganizationSettingsWrapper>
-                {children}
-              </OrganizationSettingsWrapper>
-            </WorkspaceProvider>
+            <ToastProvider>
+              <WorkspaceProvider>
+                <OrganizationSettingsWrapper>
+                  {children}
+                </OrganizationSettingsWrapper>
+              </WorkspaceProvider>
+            </ToastProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </SessionProvider>

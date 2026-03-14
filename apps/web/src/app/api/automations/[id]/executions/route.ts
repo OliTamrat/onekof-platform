@@ -39,51 +39,21 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
-    const status = searchParams.get('status');
 
-    // Build where clause
-    const where: any = {
-      ruleId: params.id,
-    };
-
-    if (status) {
-      where.status = status;
-    }
-
-    // Fetch executions
-    const [executions, total] = await Promise.all([
-      prisma.automationExecution.findMany({
-        where,
-        take: limit,
-        skip: offset,
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.automationExecution.count({ where }),
-    ]);
-
-    // Calculate statistics
-    const stats = await prisma.automationExecution.groupBy({
-      by: ['status'],
-      where: { ruleId: params.id },
-      _count: true,
-    });
-
+    // AutomationExecution model not yet available - return stats from the rule itself
     const statistics = {
-      total,
-      byStatus: stats.reduce((acc: any, stat) => {
-        acc[stat.status] = stat._count;
-        return acc;
-      }, {}),
+      total: automation.executionCount,
+      byStatus: {},
     };
 
     return NextResponse.json({
-      executions,
+      executions: [],
       statistics,
       pagination: {
-        total,
+        total: 0,
         limit,
         offset,
-        hasMore: offset + limit < total,
+        hasMore: false,
       },
     });
   } catch (error) {

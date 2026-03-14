@@ -18,18 +18,19 @@ import {
   Grid3x3,
   List,
   Settings,
-  BarChart3
+  BarChart3,
+  type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 
-const TAB_ITEMS = [
+const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary' },
   { id: 'spaces', label: 'Spaces', icon: null, active: true, href: '/dashboard/docs' },
   { id: 'recent', label: 'Recent', icon: null, href: '/dashboard/docs/recent' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/docs/settings' },
-] as const;
+];
 
 export default function DocsPage() {
   const { currentOrganization } = useWorkspace();

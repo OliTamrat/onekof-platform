@@ -1,10 +1,9 @@
 'use client';
 
-import {
-  BookOpen
-} from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function WikiPage() {
   return (
@@ -23,20 +22,12 @@ export default function WikiPage() {
         showViewSettings
         showInsights
       />
-
-            <div className="p-8">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
-              <BookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            </div>
-            <h2 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">Wiki & Knowledge Base</h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-md">
-              Wiki features are coming soon. Create, organize, and share knowledge across your organization.
-            </p>
-          </div>
-        </div>
-      </div>
+      <EmptyState
+        preset="docs"
+        title="No wiki pages yet"
+        description="Build your organization's knowledge base. Create wiki pages to document processes, guides, and important information for your team."
+        actionLabel="Create Wiki Page"
+      />
     </AppLayout>
   );
 }

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
     // SECURITY: Validate input with Zod schema
     const validation = await validateRequestBody(req, signupSchema);
-    if (!validation.success) return validation.error;
+    if ('error' in validation) return validation.error;
 
     const { name, email, password } = validation.data;
 

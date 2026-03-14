@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { aggregateMetricsForAllOrganizations, aggregateAllMetrics } from '@/lib/metrics-aggregation';
-import type { MetricsPeriod } from '@onekof/database';
+import { aggregateMetricsForAllOrganizations, aggregateAllMetrics, type MetricsResult } from '@/lib/metrics-aggregation';
+
+type MetricsPeriod = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
 
 /**
  * POST /api/analytics/aggregate

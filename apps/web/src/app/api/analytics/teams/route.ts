@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
     // Get most active teams (based on recent activity)
     const teamActivityCounts = await Promise.all(
       teams.map(async team => {
-        const activityCount = await prisma.activityLog.count({
+        const activityCount = await prisma.userActivity.count({
           where: {
             organizationId,
             entityType: 'TEAM',

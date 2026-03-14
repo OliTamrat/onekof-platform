@@ -21,7 +21,7 @@ const TAB_ITEMS = [
   { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
   { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline' },
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages', active: true },
-] as const;
+];
 
 export default function ProjectsPagesPage() {
   return (

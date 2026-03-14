@@ -102,6 +102,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 interface IconRendererProps {
   iconName?: string;
   className?: string;
+  style?: React.CSSProperties;
   fallback?: React.ReactNode;
 }
 
@@ -109,7 +110,7 @@ interface IconRendererProps {
  * Renders a Lucide React icon by name
  * Used to dynamically display icons stored as strings in the database
  */
-export function IconRenderer({ iconName, className, fallback = '📁' }: IconRendererProps) {
+export function IconRenderer({ iconName, className, style, fallback = '📁' }: IconRendererProps) {
   if (!iconName) {
     return <>{fallback}</>;
   }
@@ -120,5 +121,5 @@ export function IconRenderer({ iconName, className, fallback = '📁' }: IconRen
     return <>{fallback}</>;
   }
 
-  return <IconComponent className={className} />;
+  return <IconComponent className={className} style={style} />;
 }
