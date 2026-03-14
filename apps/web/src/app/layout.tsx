@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
+import { isGeezScript, type Locale } from '@/i18n/config';
 
 export const metadata: Metadata = {
   title: {
@@ -58,34 +61,54 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale() as Locale;
+  const messages = await getMessages();
+  const useGeezFont = isGeezScript(locale);
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1C8C7D" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Onekof" />
         <style dangerouslySetInnerHTML={{
           __html: `
+            @font-face {
+              font-family: 'AbyssinicaSIL';
+              src: url('/fonts/AbyssinicaSIL-Regular.woff2') format('woff2'),
+                   url('/fonts/AbyssinicaSIL-Regular.woff') format('woff');
+              font-weight: normal;
+              font-style: normal;
+              font-display: swap;
+            }
             :root {
               --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
               --font-sf-pro-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-geez: "AbyssinicaSIL", "Nyala", "Abyssinica SIL", serif;
             }
             body {
-              font-family: var(--font-sf-pro-text);
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-sf-pro-text)'};
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
               text-rendering: optimizeLegibility;
             }
             h1, h2, h3, h4, h5, h6, button {
-              font-family: var(--font-sf-pro);
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-sf-pro)'};
             }
           `
         }} />
       </head>
       <body className={cn('min-h-screen bg-white antialiased')}>
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -51,8 +51,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
+      {/* Skip Navigation Link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-teal-600 focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
+
       {/* Sidebar */}
       <aside
+        aria-label="Main navigation"
         className={cn(
           'flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] transition-all duration-300',
           isSidebarCollapsed ? 'w-16' : 'w-64'
@@ -75,6 +84,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             size="icon"
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className="h-8 w-8"
+            aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!isSidebarCollapsed}
           >
             {isSidebarCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -92,7 +103,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto p-3 space-y-1" aria-label="Dashboard navigation">
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
@@ -105,6 +116,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                 )}
+                aria-current={isActive(item.href) ? 'page' : undefined}
                 title={isSidebarCollapsed ? item.name : undefined}
               >
                 <Icon className="h-5 w-5 shrink-0" />
@@ -136,6 +148,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 size="icon"
                 onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                 className="h-8 w-8 shrink-0"
+                aria-label="Sign out"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
@@ -146,6 +159,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               size="icon"
               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
               className="w-full"
+              aria-label="Sign out"
             >
               <LogOut className="h-4 w-4" />
             </Button>
@@ -164,10 +178,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Search">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="h-5 w-5" />
             </Button>
             <ThemeToggle />
@@ -175,7 +189,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
+        <main id="main-content" className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]" role="main">
           {children}
         </main>
       </div>
