@@ -70,7 +70,7 @@ export async function GET(
 
     const statistics = {
       total,
-      byStatus: stats.reduce((acc: any, stat) => {
+      byStatus: stats.reduce((acc: Record<string, number>, stat: { status: string; _count: number }) => {
         acc[stat.status] = stat._count;
         return acc;
       }, {}),

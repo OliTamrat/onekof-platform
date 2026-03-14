@@ -384,7 +384,7 @@ export default function ProjectsSummaryPage() {
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Project Trends</h3>
 
                   <div className="flex items-end justify-between h-64 gap-4">
-                    {monthlyTrend.map((data, index) => (
+                    {monthlyTrend.map((data: { month: string; created: number; completed: number }, index: number) => (
                       <div
                         key={data.month}
                         className="flex-1 flex flex-col items-center gap-2 cursor-pointer group"
@@ -450,7 +450,7 @@ export default function ProjectsSummaryPage() {
                   </div>
 
                   <div className="space-y-4">
-                    {topProjects.map((project, index) => (
+                    {topProjects.map((project: { id: string; name: string; key: string; color: string; icon?: string; tasksCompleted: number; totalTasks: number; progress: number; completionRate?: number }, index: number) => (
                       <div
                         key={project.id}
                         onClick={() => setDetailModal({ open: true, type: 'project', project, data: project })}
@@ -503,7 +503,7 @@ export default function ProjectsSummaryPage() {
                   </div>
 
                   <div className="space-y-3">
-                    {upcomingMilestones.map((milestone) => (
+                    {upcomingMilestones.map((milestone: { id: string; title: string; project: string; date: string; daysLeft: number; color: string }) => (
                       <div
                         key={milestone.id}
                         onClick={() => setDetailModal({ open: true, type: 'milestone', data: milestone })}
@@ -541,7 +541,7 @@ export default function ProjectsSummaryPage() {
                   </div>
 
                   <div className="space-y-4">
-                    {recentActivity.map((activity) => (
+                    {recentActivity.map((activity: { id: string; type: string; project: string; user: string; time: string; avatar: string }) => (
                       <div key={activity.id} className="flex items-start gap-3">
                         <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[#0065FF] text-xs font-semibold text-white">
                           {activity.avatar}

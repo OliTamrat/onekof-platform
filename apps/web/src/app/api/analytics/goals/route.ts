@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
     const topGoals = goals
       .map(g => {
         const totalKeyResults = g.keyResults.length;
-        const completedKeyResults = g.keyResults.filter(kr => kr.isCompleted).length;
+        const completedKeyResults = g.keyResults.filter((kr: { isCompleted: boolean }) => kr.isCompleted).length;
         const krCompletionRate = totalKeyResults > 0 ? (completedKeyResults / totalKeyResults) * 100 : 0;
 
         return {

@@ -630,3 +630,231 @@ export async function sendAccountLockedEmail(email: string, unlockTime: Date) {
     // Don't throw - security alert email failure shouldn't block the lockout
   }
 }
+
+/**
+ * Send team/organization invitation email
+ *
+ * @param email - Invitee's email address
+ * @param inviterName - Name of the person who sent the invitation
+ * @param organizationName - Name of the organization
+ * @param invitationUrl - URL to accept the invitation
+ * @param role - Role being offered
+ */
+export async function sendInvitationEmail(
+  email: string,
+  inviterName: string,
+  organizationName: string,
+  invitationUrl: string,
+  role: string = 'Member'
+) {
+  try {
+    if (!resend) {
+      console.log('\n=== INVITATION EMAIL (Development Mode) ===');
+      console.log('To:', email);
+      console.log('From:', inviterName);
+      console.log('Organization:', organizationName);
+      console.log('Role:', role);
+      console.log('Invitation URL:', invitationUrl);
+      console.log('============================================\n');
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `${inviterName} invited you to join ${organizationName} on Onekof`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>You've been invited to ${organizationName}</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding: 40px 40px 30px; text-align: center; background: linear-gradient(135deg, #1C8C7D 0%, #15695E 100%);">
+                      <div style="width: 60px; height: 60px; margin: 0 auto 20px; background-color: rgba(255,255,255,0.2); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 32px; font-weight: 700; color: #ffffff;">O</span>
+                      </div>
+                      <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">You're Invited!</h1>
+                      <p style="margin: 8px 0 0; font-size: 14px; color: rgba(255,255,255,0.9);">Join your team on Onekof</p>
+                    </td>
+                  </tr>
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                        <strong>${inviterName}</strong> has invited you to join <strong>${organizationName}</strong> as a <strong>${role}</strong> on Onekof — a project and budget management platform.
+                      </p>
+                      <!-- CTA Button -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <a href="${invitationUrl}" style="display: inline-block; padding: 16px 40px; background-color: #1C8C7D; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; box-shadow: 0 2px 8px rgba(28,140,125,0.3);">
+                              Accept Invitation
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                      <p style="margin: 20px 0 0; font-size: 13px; line-height: 20px; color: #6b6b6b; text-align: center;">
+                        Or copy and paste this link into your browser:
+                      </p>
+                      <p style="margin: 8px 0 0; font-size: 12px; line-height: 20px; color: #1C8C7D; word-break: break-all; background-color: #f8fafc; padding: 12px; border-radius: 6px; text-align: center;">
+                        ${invitationUrl}
+                      </p>
+                      <!-- Security Info -->
+                      <div style="margin-top: 30px; padding: 16px; background-color: #fefce8; border-left: 4px solid #eab308; border-radius: 6px;">
+                        <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4a4a4a;">
+                          This invitation will expire in <strong>7 days</strong>. If you didn't expect this invitation, you can safely ignore this email.
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding: 30px 40px; background-color: #1a1a1a; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                      <p style="margin: 0 0 8px; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        This is an automated email from Onekof.<br>
+                        Please do not reply to this email.
+                      </p>
+                      <p style="margin: 0; font-size: 11px; line-height: 16px; color: #6b6b6b; text-align: center;">
+                        &copy; ${new Date().getFullYear()} Onekof. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`Invitation email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send invitation email:', error);
+    throw error;
+  }
+}
+
+/**
+ * Send budget alert notification email
+ *
+ * @param email - User's email address
+ * @param projectName - Name of the project
+ * @param budgetName - Name or description of the budget
+ * @param percentUsed - Percentage of budget used
+ * @param dashboardUrl - Link to the budget dashboard
+ */
+export async function sendBudgetAlertEmail(
+  email: string,
+  projectName: string,
+  budgetName: string,
+  percentUsed: number,
+  dashboardUrl: string
+) {
+  try {
+    if (!resend) {
+      console.log('\n=== BUDGET ALERT EMAIL (Development Mode) ===');
+      console.log('To:', email);
+      console.log('Project:', projectName);
+      console.log('Budget:', budgetName);
+      console.log('Usage:', `${percentUsed}%`);
+      console.log('=============================================\n');
+      return;
+    }
+
+    const severity = percentUsed >= 100 ? 'exceeded' : percentUsed >= 90 ? 'critical' : 'warning';
+    const headerColor = severity === 'exceeded' ? '#dc2626' : severity === 'critical' ? '#ea580c' : '#eab308';
+    const headerText = severity === 'exceeded'
+      ? 'Budget Exceeded!'
+      : severity === 'critical'
+        ? 'Budget Almost Exhausted'
+        : 'Budget Alert';
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Budget Alert: ${projectName} — ${percentUsed}% used`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Budget Alert</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-top: 4px solid ${headerColor};">
+                  <tr>
+                    <td style="padding: 40px 40px 20px; text-align: center;">
+                      <h1 style="margin: 0; font-size: 24px; font-weight: 600; color: ${headerColor};">${headerText}</h1>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0 40px 40px;">
+                      <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4a4a4a;">
+                        The budget for <strong>${projectName}</strong> has reached <strong>${percentUsed}%</strong> utilization.
+                      </p>
+                      <div style="margin: 20px 0; padding: 20px; background-color: #f8fafc; border-radius: 8px;">
+                        <table width="100%">
+                          <tr>
+                            <td style="font-size: 14px; color: #6b6b6b;">Project:</td>
+                            <td style="font-size: 14px; font-weight: 600; color: #1a1a1a; text-align: right;">${projectName}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #6b6b6b; padding-top: 8px;">Budget:</td>
+                            <td style="font-size: 14px; font-weight: 600; color: #1a1a1a; text-align: right; padding-top: 8px;">${budgetName}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 14px; color: #6b6b6b; padding-top: 8px;">Usage:</td>
+                            <td style="font-size: 20px; font-weight: 700; color: ${headerColor}; text-align: right; padding-top: 8px;">${percentUsed}%</td>
+                          </tr>
+                        </table>
+                      </div>
+                      <!-- Progress bar -->
+                      <div style="width: 100%; background-color: #e5e7eb; border-radius: 4px; height: 8px; margin: 20px 0;">
+                        <div style="width: ${Math.min(percentUsed, 100)}%; background-color: ${headerColor}; border-radius: 4px; height: 8px;"></div>
+                      </div>
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <a href="${dashboardUrl}" style="display: inline-block; padding: 14px 32px; background-color: #1C8C7D; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 500;">
+                              View Budget Details
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 20px 40px; background-color: #fafafa; border-top: 1px solid #e5e5e5; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                      <p style="margin: 0; font-size: 12px; line-height: 18px; color: #9b9b9b; text-align: center;">
+                        &copy; ${new Date().getFullYear()} Onekof. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    console.log(`Budget alert email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send budget alert email:', error);
+  }
+}

@@ -87,7 +87,7 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
 
   // Calculate progress from directly linked tasks
   if (taskLinks.length > 0) {
-    const doneTasks = taskLinks.filter(tl => tl.task.status === 'DONE').length;
+    const doneTasks = taskLinks.filter((tl: { task: { status: string } }) => tl.task.status === 'DONE').length;
     const taskProgress = (doneTasks / taskLinks.length) * 100;
 
     // Direct tasks have equal weight to one project

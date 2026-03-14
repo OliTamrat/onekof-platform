@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
       );
 
       return NextResponse.json({
-        activities: timeline.map(activity => ({
+        activities: timeline.map((activity: { id: string; action: string; entityType: string; entityId: string; entityName: string | null; description: string | null; metadata: Record<string, unknown> | null; user: { id: string; name: string | null; email: string; avatar: string | null }; createdAt: Date }) => ({
           id: activity.id,
           action: activity.action,
           entityType: activity.entityType,
@@ -167,13 +167,13 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    allActivitiesForPattern.forEach(activity => {
+    allActivitiesForPattern.forEach((activity: { createdAt: Date }) => {
       const hour = activity.createdAt.getHours();
       hourlyActivity[hour]++;
     });
 
     return NextResponse.json({
-      activities: activities.map(activity => ({
+      activities: activities.map((activity: { id: string; action: string; entityType: string; entityId: string; entityName: string | null; description: string | null; metadata: Record<string, unknown> | null; user: { id: string; name: string | null; email: string; avatar: string | null }; createdAt: Date }) => ({
         id: activity.id,
         action: activity.action,
         entityType: activity.entityType,
@@ -193,11 +193,11 @@ export async function GET(request: NextRequest) {
       statistics: {
         total: totalActivities,
         returned: activities.length,
-        actionBreakdown: actionBreakdown.reduce((acc, item) => {
+        actionBreakdown: actionBreakdown.reduce((acc: Record<string, number>, item: { action: string; _count: { action: number } }) => {
           acc[item.action] = item._count.action;
           return acc;
         }, {} as Record<string, number>),
-        entityBreakdown: entityBreakdown.reduce((acc, item) => {
+        entityBreakdown: entityBreakdown.reduce((acc: Record<string, number>, item: { entityType: string; _count: { entityType: number } }) => {
           acc[item.entityType] = item._count.entityType;
           return acc;
         }, {} as Record<string, number>),

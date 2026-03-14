@@ -53,7 +53,7 @@ export async function GET(
     });
 
     // Fetch user details for each member
-    const userIds = projectMembers.map(m => m.userId);
+    const userIds = projectMembers.map((m: { userId: string }) => m.userId);
     const users = await prisma.user.findMany({
       where: {
         id: { in: userIds },
@@ -66,9 +66,9 @@ export async function GET(
       },
     });
 
-    const userMap = new Map(users.map(u => [u.id, u]));
+    const userMap = new Map(users.map((u: { id: string; email: string; name: string | null; avatar: string | null }) => [u.id, u]));
 
-    const formattedMembers = projectMembers.map((member) => {
+    const formattedMembers = projectMembers.map((member: { id: string; userId: string; role: string; addedAt: Date }) => {
       const user = userMap.get(member.userId);
       return {
         id: member.id,

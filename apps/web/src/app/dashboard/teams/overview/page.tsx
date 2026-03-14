@@ -104,7 +104,7 @@ export default function TeamsOverviewPage() {
     { day: 'Sun', tasks: 8, meetings: 1 },
   ];
 
-  const maxActivity = Math.max(...activityData.map(d => Math.max(d.tasks, d.meetings)), 1);
+  const maxActivity = Math.max(...activityData.map((d: { day: string; tasks: number; meetings: number }) => Math.max(d.tasks, d.meetings)), 1);
 
   const maxGrowth = growthTrend.length > 0
     ? Math.max(...growthTrend.map((m: any) => Math.max(m.teamsCreated * 5, m.membersAdded)))
@@ -330,7 +330,7 @@ export default function TeamsOverviewPage() {
                   </div>
 
                   <div className="flex items-end justify-between h-64 gap-3">
-                    {activityData.map((data) => (
+                    {activityData.map((data: { day: string; tasks: number; meetings: number }) => (
                       <div key={data.day} className="flex-1 flex flex-col items-center gap-2">
                         <div className="w-full flex gap-1 items-end h-48">
                           <div className="flex-1 flex flex-col items-center">
@@ -424,7 +424,7 @@ export default function TeamsOverviewPage() {
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Growth Trend</h3>
 
                   <div className="flex items-end justify-between h-64 gap-4">
-                    {growthTrend.map((data) => (
+                    {growthTrend.map((data: { month: string; teams: number; members: number; teamsCreated?: number; membersAdded?: number }) => (
                       <div key={data.month} className="flex-1 flex flex-col items-center gap-2">
                         <div className="w-full flex gap-1 items-end h-48">
                           <div className="flex-1 flex flex-col items-center">
@@ -472,7 +472,7 @@ export default function TeamsOverviewPage() {
                   </div>
 
                   <div className="space-y-4">
-                    {topContributors.map((contributor, index) => (
+                    {topContributors.map((contributor: { id: string | number; name: string; avatar: string; team: string; contributions: number; trend: string; change: number }, index: number) => (
                       <div key={contributor.id} className="flex items-center gap-3">
                         <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
                           index === 0 ? 'bg-yellow-500 text-white' :
@@ -521,7 +521,7 @@ export default function TeamsOverviewPage() {
                   </div>
 
                   <div className="space-y-4">
-                    {recentActivities.map((activity) => (
+                    {recentActivities.map((activity: { id: string; user: string; action: string; time: string; type: string }) => (
                       <div key={activity.id} className="flex items-start gap-3">
                         <div className="flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-[#282E33]">
                           {activity.type === 'milestone' && <Target className="h-4 w-4 text-purple-500" />}

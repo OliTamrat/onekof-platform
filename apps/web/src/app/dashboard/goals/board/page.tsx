@@ -167,7 +167,7 @@ export default function GoalsBoardPage() {
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-[#2C333A]">
                         <div className="flex items-center gap-2">
                           <div className="h-6 w-6 rounded-full bg-[#0065FF] text-white flex items-center justify-center text-xs font-semibold">
-                            {goal.owner.split(' ').map(n => n[0]).join('')}
+                            {goal.owner.split(' ').map((n: string) => n[0]).join('')}
                           </div>
                           <span className="text-xs text-gray-600 dark:text-[#9FADBC]">
                             {goal.owner.split(' ')[0]}

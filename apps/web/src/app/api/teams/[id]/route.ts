@@ -70,7 +70,7 @@ export async function GET(
         isFavorite: team.isFavorite,
         memberCount: team.members.length,
         projectCount: team._count.projects,
-        members: team.members.map((m) => ({
+        members: team.members.map((m: { id: string; userId: string; user: { name: string | null; email: string; avatar: string | null }; role: string; joinedAt: Date }) => ({
           id: m.id,
           userId: m.userId,
           name: m.user.name,

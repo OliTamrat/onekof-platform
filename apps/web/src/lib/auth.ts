@@ -5,6 +5,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
+import { verifyTOTPCode, decryptSecret, verifyBackupCode } from '@/lib/security/totp';
 import { logSecurity } from '@/lib/logger';
 
 export const authOptions: NextAuthOptions = {
@@ -51,6 +52,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        totpCode: { label: '2FA Code', type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -76,7 +78,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user.password) {
-          // SECURITY: Record failed attempt (even for non-existent users to prevent enumeration timing attacks)
           await recordFailedLogin(credentials.email);
           throw new Error('Invalid credentials');
         }
@@ -84,7 +85,6 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
-          // SECURITY: Record failed login attempt
           const lockResult = await recordFailedLogin(credentials.email);
 
           if (lockResult.locked) {
@@ -103,12 +103,49 @@ export const authOptions: NextAuthOptions = {
           throw new Error(`Invalid credentials${attemptsMsg}`);
         }
 
+        // SECURITY: Two-factor authentication check
+        if (user.twoFactorEnabled && user.twoFactorSecret) {
+          const totpCode = credentials.totpCode;
+
+          if (!totpCode) {
+            // Signal to the client that 2FA is required
+            throw new Error('TWO_FACTOR_REQUIRED');
+          }
+
+          const secret = decryptSecret(user.twoFactorSecret);
+          let isCodeValid = verifyTOTPCode(secret, totpCode);
+
+          // Try backup code if TOTP fails
+          if (!isCodeValid && totpCode.includes('-')) {
+            const backupIndex = verifyBackupCode(totpCode, user.twoFactorBackupCodes);
+            if (backupIndex !== -1) {
+              isCodeValid = true;
+              // Remove used backup code
+              const updatedCodes = [...user.twoFactorBackupCodes];
+              updatedCodes.splice(backupIndex, 1);
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { twoFactorBackupCodes: updatedCodes },
+              });
+            }
+          }
+
+          if (!isCodeValid) {
+            logSecurity('invalid_2fa_code', 'medium', {
+              userId: user.id,
+              email: user.email,
+            });
+            throw new Error('Invalid two-factor authentication code');
+          }
+        }
+
         // SECURITY: Reset failed attempts on successful login
         await resetFailedAttempts(credentials.email);
 
         logSecurity('successful_login', 'low', {
           userId: user.id,
           email: user.email,
+          twoFactorUsed: user.twoFactorEnabled,
         });
 
         return {

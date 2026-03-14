@@ -228,7 +228,7 @@ export async function getActivityCounts(
     },
   });
 
-  return activities.reduce((acc, item) => {
+  return activities.reduce((acc: Record<string, number>, item: { action: string; _count: { action: number } }) => {
     acc[item.action] = item._count.action;
     return acc;
   }, {} as Record<string, number>);
@@ -270,7 +270,7 @@ export async function getTopContributors(
   });
 
   // Fetch user details
-  const userIds = contributors.map(c => c.userId);
+  const userIds = contributors.map((c: { userId: string; _count: { id: number } }) => c.userId);
   const users = await prisma.user.findMany({
     where: {
       id: {
@@ -290,7 +290,7 @@ export async function getTopContributors(
     return acc;
   }, {} as Record<string, typeof users[0]>);
 
-  return contributors.map(contributor => ({
+  return contributors.map((contributor: { userId: string; _count: { id: number } }) => ({
     user: userMap[contributor.userId],
     activityCount: contributor._count.id,
   }));
@@ -321,7 +321,7 @@ export async function getDailyActivityAggregates(
   });
 
   // Group by date
-  const dailyAggregates = activities.reduce((acc, activity) => {
+  const dailyAggregates = activities.reduce((acc: Record<string, { date: string; total: number; created: number; updated: number; completed: number; deleted: number }>, activity: { action: string; createdAt: Date }) => {
     const dateKey = activity.createdAt.toISOString().split('T')[0];
 
     if (!acc[dateKey]) {

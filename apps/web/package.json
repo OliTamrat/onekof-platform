@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf .next .turbo node_modules",
     "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma"
   },

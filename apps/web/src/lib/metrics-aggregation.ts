@@ -246,7 +246,7 @@ async function getActivityCounts(
     deletedCount: 0,
   };
 
-  activities.forEach(activity => {
+  activities.forEach((activity: { action: string; _count: { action: number } }) => {
     if (activity.action === 'CREATED') {
       counts.createdCount = activity._count.action;
     } else if (activity.action === 'COMPLETED') {
@@ -292,7 +292,7 @@ async function getTopContributorsForPeriod(
   });
 
   // Get user details
-  const userIds = contributors.map(c => c.userId);
+  const userIds = contributors.map((c: { userId: string; _count: { id: number } }) => c.userId);
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
     select: {
@@ -307,7 +307,7 @@ async function getTopContributorsForPeriod(
     return acc;
   }, {} as Record<string, typeof users[0]>);
 
-  return contributors.map(c => ({
+  return contributors.map((c: { userId: string; _count: { id: number } }) => ({
     userId: c.userId,
     name: userMap[c.userId]?.name || userMap[c.userId]?.email || 'Unknown',
     actionCount: c._count.id,
