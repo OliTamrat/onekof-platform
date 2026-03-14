@@ -11,6 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "clean": "rm -rf .next .turbo node_modules",
     "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma"
   },
@@ -71,6 +73,7 @@
   },
   "devDependencies": {
     "@onekof/config": "workspace:*",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@types/bcryptjs": "^3.0.0",

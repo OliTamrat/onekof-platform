@@ -7,6 +7,8 @@ import { authOptions } from '@/lib/auth';
 import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/issues/[id]
  * Returns a single issue with detailed information

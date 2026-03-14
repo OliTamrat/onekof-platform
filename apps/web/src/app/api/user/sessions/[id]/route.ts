@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { revokeSession } from '@/lib/security/session-manager';
 import { log } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * DELETE /api/user/sessions/[id]
  * Revoke a specific session

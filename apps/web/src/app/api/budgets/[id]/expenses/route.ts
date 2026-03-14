@@ -5,6 +5,8 @@ import { checkBudgetAccess, canApproveExpense } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/budgets/[id]/expenses
  * List expenses with filters

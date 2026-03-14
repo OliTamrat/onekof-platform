@@ -5,6 +5,8 @@ import { authOptions } from '@/lib/auth';
 import { requireAuth, requireBudgetAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/budgets/[id]
  * Get detailed budget information

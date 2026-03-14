@@ -380,7 +380,7 @@ function SignInContent() {
 
           {/* Footer */}
           <p className="mt-12 text-center text-xs text-gray-400 font-light">
-            © 2026 Onekof · Built with ❤️ for Ethiopia
+            &copy; 2026 Onekof &middot; Built for Ethiopia
           </p>
         </div>
       </div>

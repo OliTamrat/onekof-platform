@@ -3,6 +3,8 @@ import { prisma } from '@onekof/database';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/health/detailed
  * Detailed health check with system metrics

@@ -5,6 +5,8 @@ import { checkBudgetAccess, getBudgetAccess, filterBudgetData } from '@/lib/budg
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * 💰 BUDGET API - Integrated into OneKOF PM
  *

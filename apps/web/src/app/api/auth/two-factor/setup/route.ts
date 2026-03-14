@@ -6,6 +6,8 @@ import { generateTOTPSecret, encryptSecret, generateBackupCodes } from '@/lib/se
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import QRCode from 'qrcode';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/auth/two-factor/setup
  * Generate TOTP secret and QR code for 2FA setup

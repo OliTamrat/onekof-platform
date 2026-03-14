@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/dashboard/activity
  * Returns recent activity for the current user's organization

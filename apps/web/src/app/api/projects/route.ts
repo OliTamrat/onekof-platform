@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { getOrganizationContext } from '@/lib/api-organization';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/projects
  * Returns all projects for the current user's organization

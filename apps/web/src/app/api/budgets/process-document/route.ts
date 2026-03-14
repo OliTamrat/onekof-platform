@@ -4,6 +4,8 @@ import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 // Initialize Claude API client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',

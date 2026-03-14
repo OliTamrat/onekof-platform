@@ -8,6 +8,8 @@ import {
   getDailyActivityAggregates,
 } from '@/lib/activity-logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/analytics/projects
  * Returns comprehensive project analytics for the organization

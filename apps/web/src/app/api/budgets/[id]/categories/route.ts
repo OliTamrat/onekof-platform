@@ -5,6 +5,8 @@ import { checkBudgetAccess } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/budgets/[id]/categories
  * List all budget categories

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // PATCH /api/goals/[id]/key-results/[krId] - Update a key result
 export async function PATCH(
   req: NextRequest,

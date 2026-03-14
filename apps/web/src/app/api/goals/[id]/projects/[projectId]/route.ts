@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // DELETE /api/goals/[id]/projects/[projectId] - Unlink a project from a goal
 export async function DELETE(
   req: NextRequest,

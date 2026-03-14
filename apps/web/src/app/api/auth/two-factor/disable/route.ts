@@ -6,6 +6,8 @@ import { compare } from 'bcryptjs';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const disableSchema = z.object({
   password: z.string().min(1, 'Password is required to disable 2FA'),
 });

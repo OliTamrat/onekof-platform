@@ -5,6 +5,8 @@ import { canApproveExpense, checkBudgetAccess } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/expenses/[id]/approve
  * Approve or reject an expense

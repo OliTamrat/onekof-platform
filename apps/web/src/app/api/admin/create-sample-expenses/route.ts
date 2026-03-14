@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { prisma, type ExpenseType, type ExpenseStatus, type PaymentStatus, type Currency } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/admin/create-sample-expenses
  * Creates sample expenses for the Jira Water Dam project
