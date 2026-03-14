@@ -5,6 +5,8 @@ import { getRecentActivities, getEntityActivityTimeline } from '@/lib/activity-l
 import type { ActivityEntityType, ActivityAction } from '@/lib/activity-logger';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/analytics/activity
  * Returns activity feed with filtering and pagination

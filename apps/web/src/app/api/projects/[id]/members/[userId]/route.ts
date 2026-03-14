@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // DELETE /api/projects/[id]/members/[userId] - Remove a member from a project
 export async function DELETE(
   req: NextRequest,

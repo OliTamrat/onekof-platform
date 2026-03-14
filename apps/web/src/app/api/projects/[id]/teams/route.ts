@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/projects/[id]/teams - Get all teams assigned to a project
 export async function GET(
   req: NextRequest,

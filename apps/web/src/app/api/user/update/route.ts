@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function PATCH(req: NextRequest) {
   try {
     // Get the current session

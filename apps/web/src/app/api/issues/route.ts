@@ -4,6 +4,8 @@ import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/issues
  * Returns all issues for a project or organization

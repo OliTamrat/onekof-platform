@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOrganizationContext } from '@/lib/api-organization';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/organization-members
  * Returns all members of the current organization

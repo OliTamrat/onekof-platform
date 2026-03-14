@@ -6,6 +6,8 @@ import { verifyTOTPCode, decryptSecret, verifyBackupCode } from '@/lib/security/
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const verifySchema = z.object({
   code: z.string().min(1, 'Code is required'),
   action: z.enum(['enable', 'login']).default('enable'),

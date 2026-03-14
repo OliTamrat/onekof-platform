@@ -8,6 +8,8 @@ import {
 } from '@/lib/security/session-manager';
 import { log } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/user/sessions
  * List all active sessions for the authenticated user

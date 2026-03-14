@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/teams/[id]/members - Get all members of a team
 export async function GET(
   req: NextRequest,

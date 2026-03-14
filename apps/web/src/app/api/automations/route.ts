@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/automations - List all automation rules
 export async function GET(request: NextRequest) {
   try {

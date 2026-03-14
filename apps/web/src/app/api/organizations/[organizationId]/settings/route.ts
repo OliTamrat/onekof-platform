@@ -5,6 +5,8 @@ import { prisma as db } from '@/lib/prisma';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 import type { OrganizationSettings } from '@/types/organization-settings';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/organizations/[organizationId]/settings
  * Get organization settings with feature flags

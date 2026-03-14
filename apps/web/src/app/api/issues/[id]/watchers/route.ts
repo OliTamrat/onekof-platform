@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/issues/[id]/watchers
  * Returns all watchers for an issue

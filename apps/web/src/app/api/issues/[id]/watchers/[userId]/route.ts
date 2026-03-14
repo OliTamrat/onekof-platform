@@ -4,6 +4,8 @@ import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * DELETE /api/issues/[id]/watchers/[userId]
  * Removes a watcher from an issue

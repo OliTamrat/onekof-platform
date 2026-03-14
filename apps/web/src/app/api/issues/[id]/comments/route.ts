@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/issues/[id]/comments
  * Creates a new comment on an issue

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/admin/create-ministry-project
  * Creates the Ministry of Water and Irrigation with Jira Water Dam project

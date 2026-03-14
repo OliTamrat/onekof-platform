@@ -8,6 +8,8 @@ import {
   getDailyActivityAggregates,
 } from '@/lib/activity-logger';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/analytics/goals
  * Returns comprehensive goal analytics for the organization

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/budgets
  * List all budgets for an organization/project
