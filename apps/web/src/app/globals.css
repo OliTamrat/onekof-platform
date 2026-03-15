@@ -67,7 +67,7 @@
   }
 }
 
-/* Shimmer animation for premium elements */
+/* Shimmer animation */
 @layer utilities {
   .shimmer {
     background: linear-gradient(
@@ -81,7 +81,119 @@
   }
 }
 
-/* Noise texture overlay for depth */
+/* Marquee for logo strip */
+.marquee-fade-left {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* Linear-style cursor-tracking glow card */
+[data-glow-card] {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid rgba(221, 224, 237, 0.6);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+[data-glow-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(99, 102, 241, 0.07),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-glow-card]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    400px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(99, 102, 241, 0.35),
+    rgba(168, 85, 247, 0.15),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+  mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-glow-card]:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+[data-glow-card]:hover::before,
+[data-glow-card]:hover::after {
+  opacity: 1;
+}
+
+[data-glow-card] > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Animated gradient mesh for hero */
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(124, 58, 237, 0.08) 0%, transparent 40%);
+}
+
+/* FAQ accordion smooth open */
+.faq-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.faq-content.open {
+  grid-template-rows: 1fr;
+}
+
+.faq-content > div {
+  overflow: hidden;
+}
+
+/* Word rotation container */
+.word-rotator {
+  display: inline-flex;
+  height: 1.15em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.word-rotator-inner {
+  display: flex;
+  flex-direction: column;
+  animation: word-rotate 12s ease-in-out infinite;
+}
+
+.word-rotator-inner span {
+  height: 1.15em;
+  display: flex;
+  align-items: center;
+}
+
+/* Noise texture overlay */
 @layer utilities {
   .noise {
     position: relative;
