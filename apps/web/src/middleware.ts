@@ -63,10 +63,10 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
   const csp = [
     "default-src 'self'",
     `script-src ${scriptSrc} https://static.cloudflareinsights.com`,
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
-    "font-src 'self' data: https://fonts.gstatic.com",
-    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://fonts.googleapis.com https://fonts.gstatic.com https://cloudflareinsights.com https://static.cloudflareinsights.com${isProduction ? '' : ' https://vercel.live'}`,
+    "font-src 'self' data:",
+    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://cloudflareinsights.com https://static.cloudflareinsights.com${isProduction ? '' : ' https://vercel.live'}`,
     `frame-src 'self' https://accounts.google.com${isProduction ? '' : ' https://vercel.live'}`,
     "object-src 'none'",
     "base-uri 'self'",

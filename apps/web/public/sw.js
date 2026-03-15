@@ -1,8 +1,5 @@
-const CACHE_NAME = 'onekof-v2';
-const STATIC_ASSETS = [
-  '/fonts/AbyssinicaSIL-Regular.woff2',
-  '/fonts/AbyssinicaSIL-Regular.woff',
-];
+const CACHE_NAME = 'onekof-v3';
+const STATIC_ASSETS = [];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
