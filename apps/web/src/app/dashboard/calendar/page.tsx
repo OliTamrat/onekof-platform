@@ -94,12 +94,12 @@ export default function CalendarPage() {
         iconColor="#EC4899"
         currentTab="calendar"
         baseHref="/dashboard/calendar"
-        showTabs={false}
-        showSearch={false}
-        showFilters={false}
-        showGroupBy={false}
-        showViewSettings={false}
-        showInsights={false}
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy
+        showViewSettings
+        showInsights
       />
 
       <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
