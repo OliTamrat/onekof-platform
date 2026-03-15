@@ -39,8 +39,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get status filter from query params
-    const { searchParams } = new URL(req.url);
-    const status = searchParams.get('status');
+    const status = req.nextUrl.searchParams.get('status');
 
     // Fetch goals with key results
     const goals = await prisma.goal.findMany({

@@ -3,10 +3,11 @@ import { prisma } from '@onekof/database';
 import { hashToken, isTokenExpired } from '@/lib/security/tokens';
 import { log, logSecurity } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const token = searchParams.get('token');
+    const token = req.nextUrl.searchParams.get('token');
 
     if (!token) {
       return NextResponse.json(
