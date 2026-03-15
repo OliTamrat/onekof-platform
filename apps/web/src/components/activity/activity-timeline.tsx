@@ -211,7 +211,7 @@ export function ActivityTimeline({
                   <div className="flex items-start justify-between gap-4 mb-2">
                     <div className="flex items-center gap-3 flex-1">
                       {/* User Avatar */}
-                      {activity.user.avatar ? (
+                      {activity.user?.avatar ? (
                         <img
                           src={activity.user.avatar}
                           alt={activity.user.name || activity.user.email}
@@ -219,7 +219,7 @@ export function ActivityTimeline({
                         />
                       ) : (
                         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center text-white text-sm font-semibold ring-2 ring-[#1C8C7D]/20">
-                          {(activity.user.name || activity.user.email).charAt(0).toUpperCase()}
+                          {(activity.user?.name || activity.user?.email || 'U').charAt(0).toUpperCase()}
                         </div>
                       )}
 
@@ -227,7 +227,7 @@ export function ActivityTimeline({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-semibold text-sm">
-                            {activity.user.name || activity.user.email}
+                            {activity.user?.name || activity.user?.email || 'Unknown'}
                           </span>
                           <span
                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${actionColor}`}
