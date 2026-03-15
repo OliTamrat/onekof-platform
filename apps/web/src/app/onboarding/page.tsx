@@ -73,10 +73,10 @@ const TEAM_SIZES = [
 ];
 
 const LANGUAGES = [
-  { value: 'english', label: 'English', native: 'English' },
-  { value: 'amharic', label: 'Amharic', native: 'አማርኛ' },
-  { value: 'oromo', label: 'Oromo', native: 'Afaan Oromo' },
-  { value: 'tigrinya', label: 'Tigrinya', native: 'ትግርኛ' },
+  { value: 'en', label: 'English', native: 'English' },
+  { value: 'am', label: 'Amharic', native: 'አማርኛ' },
+  { value: 'om', label: 'Oromo', native: 'Afaan Oromo' },
+  { value: 'ti', label: 'Tigrinya', native: 'ትግርኛ' },
 ];
 
 function OnboardingContent() {
@@ -111,7 +111,13 @@ function OnboardingContent() {
 
 
   // Form data - COLLECTING FOR CATEGORIZATION
-  const [language, setLanguage] = useState(''); // User must select
+  const [language, setLanguageState] = useState(''); // User must select
+
+  // Sync language selection with i18n cookie
+  const setLanguage = (locale: string) => {
+    setLanguageState(locale);
+    document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000;samesite=lax`;
+  };
   const [organizationType, setOrganizationType] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [organizationSlug, setOrganizationSlug] = useState('');
@@ -542,7 +548,7 @@ function OnboardingContent() {
                       <p className="font-semibold text-white mb-2">You're all set!</p>
                       <p className="text-sm text-white/60 mb-3">
                         Based on your selections, we've enabled features for{' '}
-                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'amharic' ? 'አማርኛ' : language === 'oromo' ? 'Afaan Oromo' : language === 'tigrinya' ? 'ትግርኛ' : 'English'} language support.
+                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'am' ? 'አማርኛ' : language === 'om' ? 'Afaan Oromo' : language === 'ti' ? 'ትግርኛ' : 'English'} language support.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {selectedOrgType?.features.map((feature) => (
