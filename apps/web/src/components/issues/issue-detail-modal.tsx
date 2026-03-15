@@ -219,9 +219,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
   return (
     <div className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/50">
       {/* Side Panel */}
-      <div className="flex h-full w-full max-w-4xl flex-col bg-[#22272B]">
+      <div className="flex h-full w-full max-w-full sm:max-w-4xl flex-col bg-[#22272B]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-700 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3">
             <button
               className="text-slate-400 hover:text-white transition-colors"
@@ -261,7 +261,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
         {/* Content Container */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Panel - Main Content */}
-          <div className="flex-1 overflow-y-auto px-8 py-6">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6">
             {/* Issue Header */}
             <div className="mb-6">
               <h1 className="mb-4 text-2xl font-medium text-white">
@@ -599,7 +599,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
           </div>
 
           {/* Right Sidebar - Details */}
-          <div className="w-64 border-l border-slate-700 bg-[#1B1F23] px-6 py-6 overflow-y-auto">
+          <div className="hidden md:block w-64 border-l border-slate-700 bg-[#1B1F23] px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto">
             {/* Details Header */}
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-white">Details</h3>

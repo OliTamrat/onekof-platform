@@ -66,10 +66,10 @@ export function SlideoutPanel({
   if (!isVisible) return null;
 
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
+    sm: 'max-w-full sm:max-w-md',
+    md: 'max-w-full sm:max-w-2xl',
+    lg: 'max-w-full sm:max-w-4xl',
+    xl: 'max-w-full sm:max-w-6xl',
     full: 'max-w-full',
   };
 
@@ -116,7 +116,7 @@ export function SlideoutPanel({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3">
             {headerActions}
             {title && (
@@ -140,7 +140,7 @@ export function SlideoutPanel({
 
         {/* Footer */}
         {showFooter && footer && (
-          <div className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-4">
+          <div className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-3 sm:py-4">
             {footer}
           </div>
         )}
@@ -157,7 +157,7 @@ interface SlideoutPanelContentProps {
 
 export function SlideoutPanelContent({ children, className }: SlideoutPanelContentProps) {
   return (
-    <div className={cn('flex-1 overflow-y-auto px-8 py-6', className)}>
+    <div className={cn('flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6', className)}>
       {children}
     </div>
   );
@@ -171,7 +171,7 @@ interface SlideoutPanelSidebarProps {
 
 export function SlideoutPanelSidebar({ children, className }: SlideoutPanelSidebarProps) {
   return (
-    <div className={cn('w-64 overflow-y-auto border-l border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-6', className)}>
+    <div className={cn('hidden sm:block w-64 overflow-y-auto border-l border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-4 sm:py-6', className)}>
       {children}
     </div>
   );
