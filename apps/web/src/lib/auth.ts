@@ -58,18 +58,23 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Missing credentials');
         }
 
-        // SECURITY: Check if account is locked
-        const lockStatus = await isAccountLocked(credentials.email);
-        if (lockStatus.locked) {
-          logSecurity('login_attempt_while_locked', 'medium', {
-            email: credentials.email,
-            lockedUntil: lockStatus.lockedUntil?.toISOString(),
-            minutesRemaining: lockStatus.minutesRemaining,
-          });
+        // SECURITY: Check if account is locked (gracefully skip if columns don't exist yet)
+        try {
+          const lockStatus = await isAccountLocked(credentials.email);
+          if (lockStatus.locked) {
+            logSecurity('login_attempt_while_locked', 'medium', {
+              email: credentials.email,
+              lockedUntil: lockStatus.lockedUntil?.toISOString(),
+              minutesRemaining: lockStatus.minutesRemaining,
+            });
 
-          throw new Error(
-            `Account is locked due to too many failed login attempts. Please try again in ${lockStatus.minutesRemaining} minutes.`
-          );
+            throw new Error(
+              `Account is locked due to too many failed login attempts. Please try again in ${lockStatus.minutesRemaining} minutes.`
+            );
+          }
+        } catch (lockErr: unknown) {
+          // Re-throw if it's our own lock error, otherwise skip lockout check
+          if (lockErr instanceof Error && lockErr.message.includes('Account is locked')) throw lockErr;
         }
 
         const user = await prisma.user.findUnique({
@@ -80,54 +85,73 @@ export const authOptions: NextAuthOptions = {
             name: true,
             password: true,
             avatar: true,
-            twoFactorEnabled: true,
-            twoFactorSecret: true,
-            twoFactorBackupCodes: true,
           },
         });
 
+        // Try to load 2FA fields separately (columns may not exist yet)
+        let twoFactorData: { twoFactorEnabled?: boolean; twoFactorSecret?: string | null; twoFactorBackupCodes?: string[] } = {};
+        try {
+          const tfUser = await prisma.user.findUnique({
+            where: { email: credentials.email },
+            select: {
+              twoFactorEnabled: true,
+              twoFactorSecret: true,
+              twoFactorBackupCodes: true,
+            },
+          });
+          if (tfUser) twoFactorData = tfUser;
+        } catch {
+          // 2FA columns don't exist in DB yet — skip 2FA
+        }
+
         if (!user || !user.password) {
-          await recordFailedLogin(credentials.email);
+          try { await recordFailedLogin(credentials.email); } catch { /* columns may not exist */ }
           throw new Error('Invalid credentials');
         }
 
         const isPasswordValid = await compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
-          const lockResult = await recordFailedLogin(credentials.email);
+          try {
+            const lockResult = await recordFailedLogin(credentials.email);
 
-          if (lockResult.locked) {
-            const lockMinutes = Math.ceil(
-              (lockResult.lockedUntil!.getTime() - Date.now()) / (60 * 1000)
-            );
-            throw new Error(
-              `Account locked due to too many failed login attempts. Try again in ${lockMinutes} minutes.`
-            );
+            if (lockResult.locked) {
+              const lockMinutes = Math.ceil(
+                (lockResult.lockedUntil!.getTime() - Date.now()) / (60 * 1000)
+              );
+              throw new Error(
+                `Account locked due to too many failed login attempts. Try again in ${lockMinutes} minutes.`
+              );
+            }
+
+            const attemptsMsg = lockResult.attemptsRemaining
+              ? ` (${lockResult.attemptsRemaining} attempts remaining)`
+              : '';
+
+            throw new Error(`Invalid credentials${attemptsMsg}`);
+          } catch (lockErr: unknown) {
+            if (lockErr instanceof Error && lockErr.message.includes('Account locked')) throw lockErr;
+            if (lockErr instanceof Error && lockErr.message.includes('Invalid credentials')) throw lockErr;
           }
-
-          const attemptsMsg = lockResult.attemptsRemaining
-            ? ` (${lockResult.attemptsRemaining} attempts remaining)`
-            : '';
-
-          throw new Error(`Invalid credentials${attemptsMsg}`);
+          throw new Error('Invalid credentials');
         }
 
         // SECURITY: Two-factor authentication check
-        if (user.twoFactorEnabled && user.twoFactorSecret) {
+        if (twoFactorData.twoFactorEnabled && twoFactorData.twoFactorSecret) {
           const totpCode = credentials.totpCode;
 
           if (!totpCode) {
             throw new Error('TWO_FACTOR_REQUIRED');
           }
 
-          const secret = decryptSecret(user.twoFactorSecret);
+          const secret = decryptSecret(twoFactorData.twoFactorSecret);
           let isCodeValid = verifyTOTPCode(secret, totpCode);
 
           if (!isCodeValid && totpCode.includes('-')) {
-            const backupIndex = verifyBackupCode(totpCode, user.twoFactorBackupCodes);
+            const backupIndex = verifyBackupCode(totpCode, twoFactorData.twoFactorBackupCodes || []);
             if (backupIndex !== -1) {
               isCodeValid = true;
-              const updatedCodes = [...user.twoFactorBackupCodes];
+              const updatedCodes = [...(twoFactorData.twoFactorBackupCodes || [])];
               updatedCodes.splice(backupIndex, 1);
               await prisma.user.update({
                 where: { id: user.id },
@@ -145,12 +169,12 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        await resetFailedAttempts(credentials.email);
+        try { await resetFailedAttempts(credentials.email); } catch { /* columns may not exist */ }
 
         logSecurity('successful_login', 'low', {
           userId: user.id,
           email: user.email,
-          twoFactorUsed: user.twoFactorEnabled,
+          twoFactorUsed: !!twoFactorData.twoFactorEnabled,
         });
 
         return {
