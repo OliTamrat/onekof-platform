@@ -337,8 +337,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
           "w-56 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
-          // Desktop: Full height of flex container (no gap) - connects directly to navbar
-          "md:relative md:translate-x-0 md:z-auto md:h-full",
+          // Desktop: Reset mobile fixed positioning (top-14/bottom-0/left-0 must be cleared)
+          "md:relative md:top-auto md:bottom-auto md:left-auto md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
