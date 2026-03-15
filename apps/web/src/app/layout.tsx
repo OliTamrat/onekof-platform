@@ -87,6 +87,69 @@ export default async function RootLayout({
         <style dangerouslySetInnerHTML={{
           __html: `
             @font-face {
+              font-family: 'SF Pro Display';
+              src: local('SF Pro Display'), local('SFProDisplay-Regular'), local('.SFNSDisplay');
+              font-weight: 400;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Display';
+              src: local('SF Pro Display Medium'), local('SFProDisplay-Medium');
+              font-weight: 500;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Display';
+              src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
+              font-weight: 600;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Display';
+              src: local('SF Pro Display Bold'), local('SFProDisplay-Bold');
+              font-weight: 700;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Display';
+              src: local('SF Pro Display Heavy'), local('SFProDisplay-Heavy');
+              font-weight: 800;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Text';
+              src: local('SF Pro Text'), local('SFProText-Regular'), local('.SFNSText');
+              font-weight: 400;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Text';
+              src: local('SF Pro Text Medium'), local('SFProText-Medium');
+              font-weight: 500;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Text';
+              src: local('SF Pro Text Semibold'), local('SFProText-Semibold');
+              font-weight: 600;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
+              font-family: 'SF Pro Text';
+              src: local('SF Pro Text Bold'), local('SFProText-Bold');
+              font-weight: 700;
+              font-style: normal;
+              font-display: swap;
+            }
+            @font-face {
               font-family: 'AbyssinicaSIL';
               src: url('/fonts/AbyssinicaSIL-Regular.woff2') format('woff2'),
                    url('/fonts/AbyssinicaSIL-Regular.woff') format('woff');
@@ -95,8 +158,8 @@ export default async function RootLayout({
               font-display: swap;
             }
             :root {
-              --font-primary: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-              --font-body: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-display: "SF Pro Display", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-body: "SF Pro Text", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
               --font-geez: "AbyssinicaSIL", "Nyala", "Abyssinica SIL", serif;
             }
             body {
@@ -107,11 +170,11 @@ export default async function RootLayout({
               font-feature-settings: "cv02", "cv03", "cv04", "cv11";
             }
             h1, h2, h3, h4, h5, h6 {
-              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-primary)'};
-              letter-spacing: -0.025em;
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-display)'};
+              letter-spacing: -0.03em;
             }
-            button {
-              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-primary)'};
+            button, input, select, textarea {
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-body)'};
             }
           `
         }} />
