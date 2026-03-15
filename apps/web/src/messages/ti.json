@@ -346,6 +346,29 @@
       "other": "ካልእ"
     }
   },
+  "onboarding": {
+    "welcome": "እንቋዕ ደሓን መጻእኩም ናብ ኦነኮፍ!",
+    "welcomeSubtitle": "Welcome to Onekof! \u2022 Baga nagaan dhuftan!",
+    "chooseLanguage": "ናይ መድረኽ ቋንቋ ምረጹ",
+    "orgTypeTitle": "ከመይ ዓይነት ትካል ኢኹም?",
+    "orgTypeSubtitle": "እዚ ቅኑዕ ባህርያት ንምጥጣሕ ይሕግዘና",
+    "orgDetailsTitle": "ብዛዕባ ትካልኩም ንገሩና",
+    "orgDetailsSubtitle": "ተመኩሮኹም ንምልዋጥ ነዚ ንጥቀም",
+    "finalStepTitle": "ናይ መወዳእታ ስጉምቲ: ናይ ስራሕ ቦታኹም ፍጠሩ",
+    "finalStepSubtitle": "ናይ ስራሕ ቦታኹም ብሰከንድ ይዳሎ"
+  },
+  "selectOrganization": {
+    "welcomeBack": "እንቋዕ ደሓን መጻእካ, {name}",
+    "selectWorkspace": "ንምቕጻል ናይ ስራሕ ቦታኹም ምረጹ",
+    "noOrgsTitle": "ገና ትካል የለን",
+    "noOrgsDescription": "ገና ኣብ ዝኾነ ትካል ኣይተወሰኽኩምን።",
+    "noOrgsHelp": "ክትዕደሙ ንኣመሓዳሪኹም ተወከሱ፣ ወይ ሓድሽ ትካል ፍጠሩ።",
+    "createOrganization": "ትካል ፍጠር",
+    "createProject": "ፕሮጀክት ፍጠር",
+    "startNewProject": "ሓድሽ ፕሮጀክት ጀምር",
+    "signOut": "ውጻእ",
+    "loading": "ትካላትኩም ይጽዕን ኣሎ..."
+  },
   "automations": {
     "title": "ኦቶማቲክ ስራሓት",
     "newRule": "ሓድሽ ሕጊ",

@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut } from 'lucide-react';
+import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface Organization {
   id: string;
@@ -29,6 +31,7 @@ const PLAN_CONFIG = {
 export default function SelectOrganizationPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const t = useTranslations('selectOrganization');
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredOrg, setHoveredOrg] = useState<string | null>(null);
@@ -59,50 +62,31 @@ export default function SelectOrganizationPage() {
   };
 
   const handleSelectOrganization = async (org: Organization) => {
-    // Set default organization first
-    try {
-      const response = await fetch('/api/user/default-organization', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ organizationId: org.id }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to set organization:', await response.text());
-        return;
-      }
-    } catch (error) {
+    // Set default organization (fire-and-forget — don't block navigation)
+    fetch('/api/user/default-organization', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ organizationId: org.id }),
+    }).catch((error) => {
       console.error('Failed to set default organization:', error);
-      return;
-    }
+    });
 
     // Redirect based on environment
     const protocol = window.location.protocol;
     const port = window.location.port ? `:${window.location.port}` : '';
     const hostname = window.location.hostname;
 
-    // Determine if we're in development (localhost or local network)
-    const isDevelopment =
-      hostname === 'localhost' ||
-      hostname.startsWith('192.168.') ||
-      hostname.startsWith('10.') ||
-      port === '3000';
-
-    // For Vercel deployments (*.vercel.app) - use same domain without subdomains
+    // For Vercel deployments (*.vercel.app) - use path-based routing
     if (hostname.includes('vercel.app')) {
       router.push('/dashboard');
     }
-    // For local development - use subdomain with localhost
-    else if (isDevelopment) {
-      window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
-    }
     // For custom domain production (onekof.com) - use subdomain
-    else if (hostname.includes('onekof.com')) {
+    else if (hostname.includes('onekof.com') && hostname !== 'localhost') {
       window.location.href = `${protocol}//${org.slug}.onekof.com/dashboard`;
     }
-    // Fallback to localhost for unknown environments
+    // For local development - use path-based routing (subdomain DNS often not configured)
     else {
-      window.location.href = `${protocol}//${org.slug}.localhost${port}/dashboard`;
+      router.push('/dashboard');
     }
   };
 
@@ -115,7 +99,7 @@ export default function SelectOrganizationPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#1C8C7D] mx-auto mb-4" />
-          <p className="text-slate-400 text-sm">Loading your organizations...</p>
+          <p className="text-slate-400 text-sm">{t('loading')}</p>
         </div>
       </div>
     );
@@ -158,10 +142,10 @@ export default function SelectOrganizationPage() {
             {/* Greeting */}
             <div className="mb-4">
               <h2 className="text-4xl font-bold text-white mb-3">
-                Welcome back, <span className="bg-gradient-to-r from-[#1C8C7D] to-emerald-400 bg-clip-text text-transparent">{session?.user?.name?.split(' ')[0]}</span>
+                {t('welcomeBack', { name: session?.user?.name?.split(' ')[0] || '' })}
               </h2>
               <p className="text-lg text-slate-300">
-                Select your workspace to continue
+                {t('selectWorkspace')}
               </p>
             </div>
           </div>
@@ -172,19 +156,19 @@ export default function SelectOrganizationPage() {
               <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1C8C7D]/10 mb-6">
                 <Building2 className="h-10 w-10 text-[#1C8C7D]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">No Organizations Yet</h3>
+              <h3 className="text-xl font-bold text-white mb-3">{t('noOrgsTitle')}</h3>
               <p className="text-slate-400 mb-6">
-                You haven't been added to any organizations yet.
+                {t('noOrgsDescription')}
               </p>
-              <p className="text-sm text-slate-500">
-                Contact your administrator to get invited, or create a new organization.
+              <p className="text-sm text-slate-400">
+                {t('noOrgsHelp')}
               </p>
               <button
                 onClick={() => router.push('/onboarding')}
                 className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02]"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>Create Organization</span>
+                <span>{t('createOrganization')}</span>
               </button>
             </div>
           ) : (
@@ -256,20 +240,20 @@ export default function SelectOrganizationPage() {
                 );
               })}
 
-              {/* Create New Organization Card */}
+              {/* Create New Project Card */}
               <button
-                onClick={() => router.push('/onboarding')}
+                onClick={() => router.push('/dashboard/projects?create=true')}
                 className="group relative rounded-2xl border-2 border-dashed border-slate-700/50 p-6 text-center transition-all hover:border-[#1C8C7D]/50 hover:bg-[#22272B]/40"
               >
                 <div className="flex flex-col items-center justify-center h-full min-h-[200px]">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/30 mb-4 group-hover:bg-[#1C8C7D]/20 transition-colors">
-                    <Sparkles className="h-7 w-7 text-[#1C8C7D]" />
+                    <FolderKanban className="h-7 w-7 text-[#1C8C7D]" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#1C8C7D] transition-colors">
-                    Create Organization
+                    {t('createProject')}
                   </h3>
                   <p className="text-sm text-slate-400">
-                    Start a new workspace
+                    {t('startNewProject')}
                   </p>
                 </div>
               </button>
@@ -278,14 +262,17 @@ export default function SelectOrganizationPage() {
 
           {/* Footer */}
           <div className="mt-12 text-center">
-            <button
-              onClick={handleSignOut}
-              className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign out</span>
-            </button>
-            <p className="mt-4 text-xs text-slate-500">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <LanguageSwitcher variant="dark" />
+              <button
+                onClick={handleSignOut}
+                className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>{t('signOut')}</span>
+              </button>
+            </div>
+            <p className="mt-4 text-xs text-slate-400">
               © 2026 Onekof. Built with ❤️ for Ethiopia
             </p>
           </div>

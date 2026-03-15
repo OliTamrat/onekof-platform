@@ -346,6 +346,29 @@
       "other": "Other"
     }
   },
+  "onboarding": {
+    "welcome": "Welcome to Onekof!",
+    "welcomeSubtitle": "Welcome to Onekof! \u2022 Baga nagaan dhuftan!",
+    "chooseLanguage": "Choose your preferred language for the platform",
+    "orgTypeTitle": "What type of organization are you?",
+    "orgTypeSubtitle": "This helps us set up the right features for you",
+    "orgDetailsTitle": "Tell us about your organization",
+    "orgDetailsSubtitle": "We'll use this to personalize your experience",
+    "finalStepTitle": "Final step: Create your workspace",
+    "finalStepSubtitle": "Your workspace will be ready in seconds"
+  },
+  "selectOrganization": {
+    "welcomeBack": "Welcome back, {name}",
+    "selectWorkspace": "Select your workspace to continue",
+    "noOrgsTitle": "No Organizations Yet",
+    "noOrgsDescription": "You haven't been added to any organizations yet.",
+    "noOrgsHelp": "Contact your administrator to get invited, or create a new organization.",
+    "createOrganization": "Create Organization",
+    "createProject": "Create Project",
+    "startNewProject": "Start a new project",
+    "signOut": "Sign out",
+    "loading": "Loading your organizations..."
+  },
   "automations": {
     "title": "Automations",
     "newRule": "New Rule",
