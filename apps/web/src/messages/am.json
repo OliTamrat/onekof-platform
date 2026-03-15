@@ -346,6 +346,29 @@
       "other": "ሌላ"
     }
   },
+  "onboarding": {
+    "welcome": "እንኳን ደህና መጡ ወደ ኦነኮፍ!",
+    "welcomeSubtitle": "Welcome to Onekof! \u2022 Baga nagaan dhuftan!",
+    "chooseLanguage": "ለመድረኩ የሚመርጡትን ቋንቋ ይምረጡ",
+    "orgTypeTitle": "ምን ዓይነት ድርጅት ነዎት?",
+    "orgTypeSubtitle": "ይህ ትክክለኛ ባህሪያትን ለማዘጋጀት ይረዳናል",
+    "orgDetailsTitle": "ስለ ድርጅትዎ ይንገሩን",
+    "orgDetailsSubtitle": "ልምድዎን ለማበጀት ይህን እንጠቀማለን",
+    "finalStepTitle": "የመጨረሻ ደረጃ: የስራ ቦታዎን ይፍጠሩ",
+    "finalStepSubtitle": "የስራ ቦታዎ በሰከንዶች ውስጥ ዝግጁ ይሆናል"
+  },
+  "selectOrganization": {
+    "welcomeBack": "እንኳን ደህና መጡ, {name}",
+    "selectWorkspace": "ለመቀጠል የስራ ቦታዎን ይምረጡ",
+    "noOrgsTitle": "ገና ድርጅቶች የሉም",
+    "noOrgsDescription": "ገና ወደ ማንኛውም ድርጅት አልተጨመሩም።",
+    "noOrgsHelp": "እንዲጋበዙ አስተዳዳሪዎን ያነጋግሩ፣ ወይም አዲስ ድርጅት ይፍጠሩ።",
+    "createOrganization": "ድርጅት ፍጠር",
+    "createProject": "ፕሮጀክት ፍጠር",
+    "startNewProject": "አዲስ ፕሮጀክት ጀምር",
+    "signOut": "ውጣ",
+    "loading": "ድርጅቶችዎን በመጫን ላይ..."
+  },
   "automations": {
     "title": "ራስ-ሰር ሥራዎች",
     "newRule": "አዲስ ደንብ",
