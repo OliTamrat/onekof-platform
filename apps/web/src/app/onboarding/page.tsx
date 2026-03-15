@@ -195,8 +195,8 @@ function OnboardingContent() {
 
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-800/50">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
+      <div className="flex min-h-screen items-center justify-center bg-midnight-950">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-400" />
       </div>
     );
   }
@@ -204,15 +204,15 @@ function OnboardingContent() {
   const selectedOrgType = ORG_TYPES.find(t => t.id === organizationType);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23] relative overflow-hidden">
+    <div className="min-h-screen bg-midnight-950 relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-teal-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-brand-600/[0.08] to-purple-600/[0.05] blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-brand-500/[0.06] to-purple-500/[0.04] blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Ethiopian flag accent */}
-      <div className="fixed top-0 left-0 right-0 h-1 flex z-50">
+      <div className="fixed top-0 left-0 right-0 h-0.5 flex z-50">
         <div className="flex-1 bg-[#078930]" />
         <div className="flex-1 bg-[#FCDD09]" />
         <div className="flex-1 bg-[#DA121A]" />
@@ -223,34 +223,34 @@ function OnboardingContent() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-emerald-600 shadow-lg">
-                <span className="text-xl font-bold text-white">O</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-purple-600 shadow-lg">
+                <span className="text-[16px] font-semibold text-white">O</span>
               </div>
               <div className="text-left">
-                <h1 className="text-xl font-bold text-white">Onekof</h1>
-                <p className="text-xs text-slate-300">Enterprise Project Management</p>
+                <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
+                <p className="text-xs text-white/40">Enterprise Project Management</p>
               </div>
             </div>
 
             {/* Ethiopian Greeting */}
             {currentStep === 1 && (
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">
+                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
                   እንኳን ደህና መጡ ወደ ኦነኮፍ!
                 </h2>
-                <p className="text-lg text-slate-300">
+                <p className="text-lg text-white/40">
                   Welcome to Onekof! • Baga nagaan dhuftan!
                 </p>
               </div>
             )}
             {currentStep > 1 && (
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">
+                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
                   {currentStep === 2 && 'What type of organization are you?'}
                   {currentStep === 3 && 'Tell us about your organization'}
                   {currentStep === 4 && 'Final step: Create your workspace'}
                 </h2>
-                <p className="text-slate-300">
+                <p className="text-white/40">
                   {currentStep === 2 && 'This helps us set up the right features for you'}
                   {currentStep === 3 && 'We\'ll use this to personalize your experience'}
                   {currentStep === 4 && 'Your workspace will be ready in seconds'}
@@ -262,27 +262,27 @@ function OnboardingContent() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-slate-300">Step {currentStep} of {totalSteps}</span>
-              <span className="text-sm font-semibold text-[#1C8C7D]">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
+              <span className="text-[13px] font-medium text-white/30">Step {currentStep} of {totalSteps}</span>
+              <span className="text-[13px] font-medium text-brand-400">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-slate-700/50">
+            <div className="h-2 w-full rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-emerald-600 transition-all duration-500 shadow-lg shadow-[#1C8C7D]/30"
+                className="h-full rounded-full bg-gradient-to-r from-brand-600 to-purple-600 transition-all duration-500 shadow-lg shadow-brand-500/30"
                 style={{ width: `${(currentStep / totalSteps) * 100}%` }}
               />
             </div>
           </div>
 
           {/* Main Card */}
-          <div className="rounded-2xl bg-[#22272B]/60 backdrop-blur-xl border-2 border-slate-700/50 shadow-2xl p-8 md:p-10">
+          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl backdrop-blur-xl p-8 md:p-10">
             {/* STEP 1: Language Selection */}
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-4">
-                    <Languages className="h-8 w-8 text-[#1C8C7D]" />
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/20 border border-brand-500/30 mb-4">
+                    <Languages className="h-8 w-8 text-brand-400" />
                   </div>
-                  <p className="text-slate-300">Choose your preferred language for the platform</p>
+                  <p className="text-white/40">Choose your preferred language for the platform</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -290,19 +290,19 @@ function OnboardingContent() {
                     <button
                       key={lang.value}
                       onClick={() => setLanguage(lang.value)}
-                      className={`relative rounded-lg border-2 p-4 text-left transition-all ${
+                      className={`relative rounded-xl border p-4 text-left transition-all ${
                         language === lang.value
-                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
-                          : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
+                          ? 'border-brand-500 bg-brand-500/10 shadow-lg shadow-brand-500/20'
+                          : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:shadow-md'
                       }`}
                     >
                       {language === lang.value && (
                         <div className="absolute top-3 right-3">
-                          <CheckCircle2 className="h-5 w-5 text-[#1C8C7D]" />
+                          <CheckCircle2 className="h-5 w-5 text-brand-400" />
                         </div>
                       )}
-                      <div className="text-xl font-bold text-white mb-0.5">{lang.native}</div>
-                      <div className="text-xs text-slate-400">{lang.label}</div>
+                      <div className="text-[16px] font-semibold text-white mb-0.5">{lang.native}</div>
+                      <div className="text-xs text-white/25">{lang.label}</div>
                     </button>
                   ))}
                 </div>
@@ -319,25 +319,25 @@ function OnboardingContent() {
                       <button
                         key={type.id}
                         onClick={() => setOrganizationType(type.id)}
-                        className={`relative rounded-lg border-2 p-4 text-left transition-all ${
+                        className={`relative rounded-xl border p-4 text-left transition-all ${
                           organizationType === type.id
-                            ? 'border-[#1C8C7D] bg-[#1C8C7D]/10 shadow-lg shadow-[#1C8C7D]/20'
-                            : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500 hover:shadow-md'
+                            ? 'border-brand-500 bg-brand-500/10 shadow-lg shadow-brand-500/20'
+                            : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:shadow-md'
                         }`}
                       >
                         {organizationType === type.id && (
                           <div className="absolute top-3 right-3">
-                            <CheckCircle2 className="h-5 w-5 text-[#1C8C7D]" />
+                            <CheckCircle2 className="h-5 w-5 text-brand-400" />
                           </div>
                         )}
-                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 mb-3">
-                          <Icon className="h-5 w-5 text-[#1C8C7D]" />
+                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500/20 border border-brand-500/30 mb-3">
+                          <Icon className="h-5 w-5 text-brand-400" />
                         </div>
-                        <div className="text-base font-bold text-white mb-1.5">{type.label}</div>
-                        <p className="text-xs text-slate-400 mb-2">{type.description}</p>
+                        <div className="text-[14px] font-medium text-white mb-1.5">{type.label}</div>
+                        <p className="text-xs text-white/25 mb-2">{type.description}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {type.features.slice(0, 2).map((feature) => (
-                            <span key={feature} className="text-xs bg-slate-700/50 text-slate-300 px-2 py-0.5 rounded border border-slate-600/30">
+                            <span key={feature} className="text-xs bg-white/[0.06] text-white/40 px-2 py-0.5 rounded border border-white/[0.06]">
                               {feature}
                             </span>
                           ))}
@@ -353,14 +353,14 @@ function OnboardingContent() {
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-white mb-2">
+                  <label className="block text-[13px] font-medium text-white/50 mb-2">
                     Organization Name
                   </label>
                   <input
                     type="text"
                     value={organizationName}
                     onChange={(e) => setOrganizationName(e.target.value)}
-                    className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
                     placeholder={organizationType === 'government' ? 'e.g., Ministry of Water & Irrigation' : 'Your organization name'}
                   />
                 </div>
@@ -368,14 +368,14 @@ function OnboardingContent() {
                 {/* Conditional field for government */}
                 {organizationType === 'government' && (
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-[13px] font-medium text-white/50 mb-2">
                       Department/Bureau (Optional)
                     </label>
                     <input
                       type="text"
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
                       placeholder="e.g., Planning & Budget Bureau"
                     />
                   </div>
@@ -384,13 +384,13 @@ function OnboardingContent() {
                 {/* Conditional field for private */}
                 {organizationType === 'private' && (
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-[13px] font-medium text-white/50 mb-2">
                       Industry
                     </label>
                     <select
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
-                      className="w-full rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/20"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
                     >
                       <option value="">Select industry</option>
                       <option value="technology">Technology</option>
@@ -404,7 +404,7 @@ function OnboardingContent() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-semibold text-white mb-2">
+                  <label className="block text-[13px] font-medium text-white/50 mb-2">
                     Team Size
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -412,10 +412,10 @@ function OnboardingContent() {
                       <button
                         key={size.value}
                         onClick={() => setTeamSize(size.value)}
-                        className={`rounded-lg border-2 py-2 px-3 text-sm font-semibold transition-all ${
+                        className={`rounded-xl border py-2 px-3 text-sm font-semibold transition-all ${
                           teamSize === size.value
-                            ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 text-[#1C8C7D]'
-                            : 'border-slate-600/50 text-white hover:border-slate-500'
+                            ? 'border-brand-500 bg-brand-500/[0.06] text-brand-400'
+                            : 'border-white/[0.08] text-white hover:border-white/[0.15]'
                         }`}
                       >
                         {size.label}
@@ -425,7 +425,7 @@ function OnboardingContent() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-white mb-2">
+                  <label className="block text-[13px] font-medium text-white/50 mb-2">
                     Workspace URL
                   </label>
                   <div className="flex items-center gap-2">
@@ -433,13 +433,13 @@ function OnboardingContent() {
                       type="text"
                       value={organizationSlug}
                       onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="flex-1 rounded-xl border-2 border-slate-600/50 bg-slate-800/50 py-3.5 px-4 text-white placeholder-slate-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                      className="flex-1 rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                       placeholder="my-organization"
                     />
-                    <span className="text-sm text-slate-400 whitespace-nowrap">.onekof.com</span>
+                    <span className="text-sm text-white/25 whitespace-nowrap">.onekof.com</span>
                   </div>
                   {organizationSlug && (
-                    <p className="mt-2 text-xs text-[#1C8C7D]">
+                    <p className="mt-2 text-xs text-brand-400">
                       Your workspace: <strong>{organizationSlug}.onekof.com</strong>
                     </p>
                   )}
@@ -451,100 +451,100 @@ function OnboardingContent() {
             {currentStep === 4 && (
               <div className="space-y-8">
                 <div>
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-[13px] font-medium text-white/50 mb-3">
                     Calendar Preference
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <button
                       onClick={() => setCalendarPreference('ethiopian')}
-                      className={`rounded-lg border-2 p-3 text-left transition-all ${
+                      className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'ethiopian'
-                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
-                          : 'border-slate-600/50 hover:border-slate-500'
+                          ? 'border-brand-500 bg-brand-500/[0.06] shadow-lg'
+                          : 'border-white/[0.08] hover:border-white/[0.15]'
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-1.5">
-                        <Calendar className="h-4 w-4 text-[#1C8C7D]" />
+                        <Calendar className="h-4 w-4 text-brand-400" />
                         {calendarPreference === 'ethiopian' && (
-                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-brand-400 ml-auto" />
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
-                      <div className="text-xs text-slate-300">የኢትዮጵያ ዘመን አቆጣጠር</div>
+                      <div className="text-xs text-white/40">የኢትዮጵያ ዘመን አቆጣጠር</div>
                     </button>
 
                     <button
                       onClick={() => setCalendarPreference('gregorian')}
-                      className={`rounded-lg border-2 p-3 text-left transition-all ${
+                      className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'gregorian'
-                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
-                          : 'border-slate-600/50 hover:border-slate-500'
+                          ? 'border-brand-500 bg-brand-500/[0.06] shadow-lg'
+                          : 'border-white/[0.08] hover:border-white/[0.15]'
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-1.5">
-                        <Calendar className="h-4 w-4 text-slate-300" />
+                        <Calendar className="h-4 w-4 text-white/40" />
                         {calendarPreference === 'gregorian' && (
-                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-brand-400 ml-auto" />
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
-                      <div className="text-xs text-slate-300">International</div>
+                      <div className="text-xs text-white/40">International</div>
                     </button>
 
                     <button
                       onClick={() => setCalendarPreference('both')}
-                      className={`rounded-lg border-2 p-3 text-left transition-all ${
+                      className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'both'
-                          ? 'border-[#1C8C7D] bg-[#1C8C7D]/5 shadow-lg'
-                          : 'border-slate-600/50 hover:border-slate-500'
+                          ? 'border-brand-500 bg-brand-500/[0.06] shadow-lg'
+                          : 'border-white/[0.08] hover:border-white/[0.15]'
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-1.5">
-                        <Globe className="h-4 w-4 text-purple-600" />
+                        <Globe className="h-4 w-4 text-purple-400" />
                         {calendarPreference === 'both' && (
-                          <CheckCircle2 className="h-4 w-4 text-[#1C8C7D] ml-auto" />
+                          <CheckCircle2 className="h-4 w-4 text-brand-400 ml-auto" />
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Both</div>
-                      <div className="text-xs text-slate-300">Show both calendars</div>
+                      <div className="text-xs text-white/40">Show both calendars</div>
                     </button>
                   </div>
                 </div>
 
                 {/* Mobile App Promo */}
-                <div className="rounded-xl bg-gradient-to-br from-[#1C8C7D]/10 to-emerald-100/50 border border-[#1C8C7D]/20 p-6">
+                <div className="rounded-xl bg-gradient-to-br from-brand-500/[0.06] to-purple-500/[0.04] border border-brand-500/20 p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1C8C7D]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-purple-600">
                       <Smartphone className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <div className="font-bold text-white">Download Mobile App</div>
-                      <div className="text-sm text-slate-300">Manage on the go</div>
+                      <div className="text-sm text-white/40">Manage on the go</div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm text-white hover:bg-black/80 transition-colors">
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
                       <span>📱 App Store</span>
                     </a>
-                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm text-white hover:bg-black/80 transition-colors">
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
                       <span>📱 Google Play</span>
                     </a>
                   </div>
                 </div>
 
                 {/* Summary */}
-                <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-6">
+                <div className="rounded-xl bg-brand-500/[0.06] border border-brand-500/30 p-6">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <Sparkles className="h-5 w-5 text-brand-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="font-semibold text-white mb-2">You're all set!</p>
-                      <p className="text-sm text-slate-300 mb-3">
+                      <p className="text-sm text-white/40 mb-3">
                         Based on your selections, we've enabled features for{' '}
                         <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'amharic' ? 'አማርኛ' : language === 'oromo' ? 'Afaan Oromo' : language === 'tigrinya' ? 'ትግርኛ' : 'English'} language support.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {selectedOrgType?.features.map((feature) => (
-                          <span key={feature} className="text-xs bg-slate-700/50 text-emerald-300 px-2 py-1 rounded border border-emerald-500/30">
+                          <span key={feature} className="text-xs bg-white/[0.06] text-brand-300 px-2 py-1 rounded border border-brand-500/30">
                             ✓ {feature}
                           </span>
                         ))}
@@ -561,7 +561,7 @@ function OnboardingContent() {
             {currentStep > 1 && (
               <button
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-600/50 bg-slate-800/50 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-700/30 hover:border-slate-500"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-midnight-950 px-6 py-3 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15]"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Back</span>
@@ -576,7 +576,7 @@ function OnboardingContent() {
                   (currentStep === 2 && !canProceedStep2) ||
                   (currentStep === 3 && !canProceedStep3)
                 }
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/30 disabled:opacity-50 disabled:hover:scale-100"
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <div className="flex items-center gap-2">
@@ -588,7 +588,7 @@ function OnboardingContent() {
               <button
                 onClick={handleComplete}
                 disabled={isLoading}
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-emerald-500/30 disabled:opacity-50 disabled:hover:scale-100"
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 {isLoading ? (
@@ -607,7 +607,7 @@ function OnboardingContent() {
           </div>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-xs text-slate-400">
+          <p className="mt-8 text-center text-xs text-white/25">
             &copy; 2026 Onekof &middot; Built for Ethiopia
           </p>
         </div>
@@ -619,8 +619,8 @@ function OnboardingContent() {
 export default function OnboardingPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-slate-800/50">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
+      <div className="flex min-h-screen items-center justify-center bg-midnight-950">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-400" />
       </div>
     }>
       <OnboardingContent />
