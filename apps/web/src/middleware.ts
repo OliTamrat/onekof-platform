@@ -66,7 +66,7 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data: https://fonts.gstatic.com",
-    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://cloudflareinsights.com${isProduction ? '' : ' https://vercel.live'}`,
+    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://fonts.googleapis.com https://fonts.gstatic.com https://cloudflareinsights.com https://static.cloudflareinsights.com${isProduction ? '' : ' https://vercel.live'}`,
     `frame-src 'self' https://accounts.google.com${isProduction ? '' : ' https://vercel.live'}`,
     "object-src 'none'",
     "base-uri 'self'",
