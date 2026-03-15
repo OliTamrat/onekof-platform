@@ -174,7 +174,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      activities: activities.map((activity) => ({
+      activities: activities.filter((a) => a.user).map((activity) => ({
         id: activity.id,
         action: activity.action,
         entityType: activity.entityType,

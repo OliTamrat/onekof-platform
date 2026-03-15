@@ -820,10 +820,10 @@ function WatchersSection({
 
       <div className="space-y-2">
         {watchers.length > 0 ? (
-          watchers.map((watcher) => (
+          watchers.filter((w) => w.user).map((watcher) => (
             <div key={watcher.id} className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
               <div className="flex items-center gap-3">
-                {watcher.user.avatar ? (
+                {watcher.user?.avatar ? (
                   <img
                     src={watcher.user.avatar}
                     alt={watcher.user.name}
@@ -831,11 +831,11 @@ function WatchersSection({
                   />
                 ) : (
                   <div className="h-8 w-8 rounded-full bg-primary-500 text-white flex items-center justify-center text-sm font-medium">
-                    {watcher.user.name.split(' ').map(n => n[0]).join('')}
+                    {(watcher.user?.name || 'U').split(' ').map(n => n[0]).join('')}
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{watcher.user.name}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{watcher.user?.name || 'Unknown'}</p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
                     {watcher.watchReason === 'MANUAL' && 'Watching manually'}
                     {watcher.watchReason === 'AUTO_ASSIGNED' && 'Auto-watching (assigned)'}
