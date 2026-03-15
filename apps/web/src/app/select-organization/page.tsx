@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface Organization {
   id: string;
@@ -31,7 +29,6 @@ const PLAN_CONFIG = {
 export default function SelectOrganizationPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const t = useTranslations('selectOrganization');
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredOrg, setHoveredOrg] = useState<string | null>(null);
@@ -99,7 +96,7 @@ export default function SelectOrganizationPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#1C8C7D] mx-auto mb-4" />
-          <p className="text-slate-400 text-sm">{t('loading')}</p>
+          <p className="text-slate-400 text-sm">Loading your organizations...</p>
         </div>
       </div>
     );
@@ -142,10 +139,10 @@ export default function SelectOrganizationPage() {
             {/* Greeting */}
             <div className="mb-4">
               <h2 className="text-4xl font-bold text-white mb-3">
-                {t('welcomeBack', { name: session?.user?.name?.split(' ')[0] || '' })}
+                Welcome back, {session?.user?.name?.split(' ')[0] || ''}
               </h2>
               <p className="text-lg text-slate-300">
-                {t('selectWorkspace')}
+                Select your workspace to continue
               </p>
             </div>
           </div>
@@ -156,19 +153,19 @@ export default function SelectOrganizationPage() {
               <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1C8C7D]/10 mb-6">
                 <Building2 className="h-10 w-10 text-[#1C8C7D]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">{t('noOrgsTitle')}</h3>
+              <h3 className="text-xl font-bold text-white mb-3">No Organizations Yet</h3>
               <p className="text-slate-400 mb-6">
-                {t('noOrgsDescription')}
+                You haven&apos;t been added to any organizations yet.
               </p>
               <p className="text-sm text-slate-400">
-                {t('noOrgsHelp')}
+                Contact your administrator to get invited, or create a new organization.
               </p>
               <button
                 onClick={() => router.push('/onboarding')}
                 className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02]"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>{t('createOrganization')}</span>
+                <span>Create Organization</span>
               </button>
             </div>
           ) : (
@@ -250,10 +247,10 @@ export default function SelectOrganizationPage() {
                     <FolderKanban className="h-7 w-7 text-[#1C8C7D]" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#1C8C7D] transition-colors">
-                    {t('createProject')}
+                    Create Project
                   </h3>
                   <p className="text-sm text-slate-400">
-                    {t('startNewProject')}
+                    Start a new project
                   </p>
                 </div>
               </button>
@@ -263,13 +260,12 @@ export default function SelectOrganizationPage() {
           {/* Footer */}
           <div className="mt-12 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <LanguageSwitcher variant="dark" />
               <button
                 onClick={handleSignOut}
                 className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
               >
                 <LogOut className="h-4 w-4" />
-                <span>{t('signOut')}</span>
+                <span>Sign out</span>
               </button>
             </div>
             <p className="mt-4 text-xs text-slate-400">
