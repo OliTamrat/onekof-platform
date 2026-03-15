@@ -124,26 +124,26 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl dark:bg-gray-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-xl dark:bg-[#22272B]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Create New Issue
           </h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#282E33] dark:hover:text-gray-300"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="max-h-[calc(90vh-140px)] overflow-y-auto p-6">
-          <div className="grid grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="max-h-[calc(90vh-140px)] overflow-y-auto p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Left Column */}
-            <div className="col-span-2 space-y-4">
+            <div className="sm:col-span-2 space-y-4">
               {/* Project (Required) */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -152,7 +152,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 <select
                   value={projectId}
                   onChange={(e) => setProjectId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
                   required
                 >
                   <option value="">Select a project</option>
@@ -173,7 +173,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
                   placeholder="Enter issue title"
                   required
                 />
@@ -188,7 +188,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
                   placeholder="Add a detailed description..."
                 />
               </div>
@@ -202,7 +202,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
                 <option value="TASK">✓ Task</option>
                 <option value="STORY">📖 Story</option>
@@ -218,7 +218,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
                 <option value="TODO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
@@ -234,7 +234,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
                 <option value="HIGHEST">⬆️ Highest</option>
                 <option value="HIGH">🔺 High</option>
@@ -252,7 +252,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               <select
                 value={assigneeId}
                 onChange={(e) => setAssigneeId(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
                 <option value="">Unassigned</option>
                 {membersData?.members?.map((member: any) => (
@@ -271,7 +271,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               <select
                 value={teamId}
                 onChange={(e) => setTeamId(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
                 <option value="">No team</option>
                 {teamsData?.teams?.map((team: any) => (
@@ -291,7 +291,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               />
             </div>
 
@@ -303,18 +303,18 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 type="number"
                 value={estimate}
                 onChange={(e) => setEstimate(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
                 placeholder="0"
                 min="0"
               />
             </div>
 
             {/* Goals Linking */}
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Link to Goals/OKRs
               </label>
-              <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-gray-600 dark:bg-gray-700">
+              <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-slate-700 dark:bg-[#282E33]">
                 {goalsData?.goals?.length > 0 ? (
                   goalsData.goals.map((goal: any) => (
                     <label key={goal.id} className="flex items-center gap-2 cursor-pointer">
@@ -336,11 +336,11 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             </div>
 
             {/* Watchers */}
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Watchers (will be notified of updates)
               </label>
-              <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-gray-600 dark:bg-gray-700">
+              <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-slate-700 dark:bg-[#282E33]">
                 {membersData?.members?.length > 0 ? (
                   membersData.members.map((member: any) => (
                     <label key={member.userId} className="flex items-center gap-2 cursor-pointer">
@@ -364,11 +364,11 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
         </form>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
+        <div className="flex items-center justify-end gap-3 border-t border-gray-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:text-gray-300 dark:hover:bg-[#282E33]"
           >
             Cancel
           </button>

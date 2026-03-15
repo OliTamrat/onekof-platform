@@ -12,6 +12,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ActivityTimeline as RealActivityTimeline } from '@/components/activity/activity-timeline';
 import {
   X,
   Calendar,
@@ -355,7 +356,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             onClick={() => setActiveTab('details')}
             className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
               activeTab === 'details'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                ? 'border-primary-500 text-primary-500 dark:text-primary-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400'
             }`}
           >
@@ -366,7 +367,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             onClick={() => setActiveTab('settings')}
             className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
               activeTab === 'settings'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                ? 'border-primary-500 text-primary-500 dark:text-primary-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400'
             }`}
           >
@@ -451,51 +452,44 @@ function DetailsTab({
     LOWEST: 'text-gray-600 dark:text-gray-400',
   };
 
-  return (
-    <div className="space-y-0">
+  const flashSaved = () => {
+    setShowSaved(true);
+    setTimeout(() => setShowSaved(false), 2000);
+  };
 
-      {/* Title Section - No side padding on mobile */}
+  return (
+    <div>
+      {/* Title + Status Bar */}
       <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white">
+        <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-3">
           {issue.title}
         </h1>
-      </div>
-
-      {/* Status & Priority Section */}
-      <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800 space-y-3">
-        {/* Status Dropdown */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400 w-20">Status</span>
-          <div className="relative flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Status Badge */}
+          <div className="relative">
             <button
               onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-              className={`inline-flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium ${statusColors[issue.status]} hover:opacity-80 transition-opacity`}
+              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold ${statusColors[issue.status]} hover:opacity-80 transition-opacity`}
             >
               {issue.status.replace('_', ' ')}
               <ChevronDown className="h-3 w-3" />
             </button>
-            {showSaved && (
-              <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 animate-fade-in">
-                <Check className="h-3 w-3" />
-                Saved
-              </span>
-            )}
             {isStatusDropdownOpen && (
-              <div className="absolute left-0 top-full mt-1 z-10 w-40 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
+              <div className="absolute left-0 top-full mt-1 z-10 w-44 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-lg overflow-hidden">
                 {statusOptions.map((status) => (
                   <button
                     key={status.value}
                     onClick={() => {
                       updateIssue.mutate({ status: status.value });
                       setIsStatusDropdownOpen(false);
-                      setShowSaved(true);
-                      setTimeout(() => setShowSaved(false), 2000);
+                      flashSaved();
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                      issue.status === status.value ? 'bg-gray-50 dark:bg-gray-700/50' : ''
+                    className={`w-full text-left px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] flex items-center gap-2 ${
+                      issue.status === status.value ? 'bg-gray-50 dark:bg-[#1B1F23]' : ''
                     }`}
                   >
-                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${status.color}`}>
+                    {issue.status === status.value && <Check className="h-3.5 w-3.5 text-primary-500" />}
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${status.color} ${issue.status !== status.value ? 'ml-5' : ''}`}>
                       {status.label}
                     </span>
                   </button>
@@ -503,156 +497,225 @@ function DetailsTab({
               </div>
             )}
           </div>
+          {showSaved && (
+            <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+              <Check className="h-3 w-3" />
+              Saved
+            </span>
+          )}
         </div>
+      </div>
 
-        {/* Priority */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400 w-20">Priority</span>
-          <div className="relative flex items-center gap-2">
-            <Flag className={`h-4 w-4 ${issue.priority ? priorityColors[issue.priority] : 'text-gray-400'}`} />
-            <button
-              onClick={() => setIsPriorityDropdownOpen(!isPriorityDropdownOpen)}
-              className={`${issue.priority ? priorityColors[issue.priority] : ''} hover:underline cursor-pointer flex items-center gap-1 text-sm`}
-            >
-              {issue.priority || 'No priority'}
-              <ChevronDown className="h-3 w-3" />
-            </button>
-            {isPriorityDropdownOpen && (
-              <div className="absolute left-0 top-full mt-1 z-10 w-36 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
-                {priorityOptions.map((priority) => (
+      {/* Two-Column Layout (Jira-style) */}
+      <div className="flex flex-col md:flex-row">
+        {/* LEFT COLUMN: Description, Subtasks, Activity */}
+        <div className="flex-1 min-w-0 overflow-y-auto">
+          {/* Description */}
+          <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-bold text-gray-900 dark:text-white">Description</h2>
+              <button
+                onClick={() => setIsEditingDescription(!isEditingDescription)}
+                className="text-sm text-primary-500 hover:text-primary-600 dark:text-primary-400 font-medium"
+              >
+                {isEditingDescription ? 'Cancel' : 'Edit'}
+              </button>
+            </div>
+
+            {isEditingDescription ? (
+              <div className="space-y-2">
+                <textarea
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                  className="w-full min-h-[120px] rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                  placeholder="Add a description..."
+                />
+                <div className="flex justify-end gap-2">
                   <button
-                    key={priority.value}
-                    onClick={() => {
-                      updateIssue.mutate({ priority: priority.value });
-                      setIsPriorityDropdownOpen(false);
-                      setShowSaved(true);
-                      setTimeout(() => setShowSaved(false), 2000);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                      issue.priority === priority.value ? 'bg-gray-50 dark:bg-gray-700/50' : ''
-                    }`}
+                    onClick={() => setIsEditingDescription(false)}
+                    className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md"
                   >
-                    <span className={priority.color}>{priority.label}</span>
+                    Cancel
                   </button>
-                ))}
-                <button
-                  onClick={() => {
-                    updateIssue.mutate({ priority: null });
-                    setIsPriorityDropdownOpen(false);
-                    setShowSaved(true);
-                    setTimeout(() => setShowSaved(false), 2000);
-                  }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
-                >
-                  No priority
-                </button>
+                  <button
+                    onClick={() => {
+                      updateIssue.mutate({ description: editedDescription });
+                      setIsEditingDescription(false);
+                    }}
+                    className="px-3 py-1.5 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => setIsEditingDescription(true)}
+                className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap cursor-pointer hover:bg-gray-50 dark:hover:bg-[#282E33] rounded-md p-2 -mx-2 transition-colors min-h-[40px]"
+              >
+                {issue.description || 'Add a description...'}
               </div>
             )}
           </div>
+
+          {/* Subtasks */}
+          <SubtasksSection issue={issue} />
+
+          {/* Activity */}
+          <IssueActivitySection issue={issue} />
+
+          {/* Comments */}
+          <CommentsSection issue={issue} commentContent={commentContent} setCommentContent={setCommentContent} />
         </div>
 
-        {/* Assignee */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400 w-20">Assignee</span>
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-            <span className="text-sm text-gray-900 dark:text-white">{issue.assignee?.name || 'Unassigned'}</span>
+        {/* RIGHT COLUMN: Details Panel (hidden on mobile, shown as section) */}
+        <div className="w-full md:w-72 lg:w-80 md:border-l border-t md:border-t-0 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1B1F23] overflow-y-auto">
+          {/* Details Header */}
+          <div className="flex items-center justify-between px-3 md:px-5 py-3 border-b border-gray-200 dark:border-gray-800">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">Details</h3>
+            <Settings className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           </div>
-        </div>
 
-        {/* Due Date */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400 w-20">Due Date</span>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-            {isEditingDueDate ? (
-              <input
-                type="date"
-                defaultValue={issue.dueDate ? new Date(issue.dueDate).toISOString().split('T')[0] : ''}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    updateIssue.mutate({ dueDate: e.target.value });
-                  }
-                  setIsEditingDueDate(false);
-                }}
-                onBlur={() => setIsEditingDueDate(false)}
-                autoFocus
-                className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-              />
-            ) : (
-              <button
-                onClick={() => setIsEditingDueDate(true)}
-                className="hover:underline cursor-pointer text-sm text-gray-900 dark:text-white"
-              >
-                {issue.dueDate ? format(new Date(issue.dueDate), 'MMM dd, yyyy') : 'No due date'}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+          <div className="px-3 md:px-5 py-3 space-y-4">
+            {/* Assignee */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Assignee</span>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <User className="h-4 w-4 text-gray-400 shrink-0" />
+                <span className="text-sm text-gray-900 dark:text-white truncate">{issue.assignee?.name || 'Unassigned'}</span>
+              </div>
+            </div>
 
-      {/* Description */}
-      <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Description</h2>
-          <button
-            onClick={() => setIsEditingDescription(!isEditingDescription)}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            {isEditingDescription ? 'Cancel' : 'Edit'}
-          </button>
-        </div>
+            {/* Priority */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Priority</span>
+              <div className="relative flex items-center gap-2 flex-1">
+                <Flag className={`h-4 w-4 shrink-0 ${issue.priority ? priorityColors[issue.priority] : 'text-gray-400'}`} />
+                <button
+                  onClick={() => setIsPriorityDropdownOpen(!isPriorityDropdownOpen)}
+                  className={`${issue.priority ? priorityColors[issue.priority] : 'text-gray-500'} hover:underline cursor-pointer flex items-center gap-1 text-sm font-medium`}
+                >
+                  {issue.priority || 'None'}
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {isPriorityDropdownOpen && (
+                  <div className="absolute left-0 top-full mt-1 z-10 w-40 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-lg overflow-hidden">
+                    {priorityOptions.map((priority) => (
+                      <button
+                        key={priority.value}
+                        onClick={() => {
+                          updateIssue.mutate({ priority: priority.value });
+                          setIsPriorityDropdownOpen(false);
+                          flashSaved();
+                        }}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] ${
+                          issue.priority === priority.value ? 'bg-gray-50 dark:bg-[#1B1F23]' : ''
+                        }`}
+                      >
+                        <span className={priority.color}>{priority.label}</span>
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => {
+                        updateIssue.mutate({ priority: null });
+                        setIsPriorityDropdownOpen(false);
+                        flashSaved();
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] text-gray-500"
+                    >
+                      None
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
 
-        {isEditingDescription ? (
-          <div className="space-y-2">
-            <textarea
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-              className="w-full min-h-[200px] rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none"
-              placeholder="Add a description..."
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setIsEditingDescription(false)}
-                className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  updateIssue.mutate({ description: editedDescription });
-                  setIsEditingDescription(false);
-                }}
-                className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
-              >
-                Save
-              </button>
+            {/* Due Date */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Due date</span>
+              <div className="flex items-center gap-2 flex-1">
+                <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
+                {isEditingDueDate ? (
+                  <input
+                    type="date"
+                    defaultValue={issue.dueDate ? new Date(issue.dueDate).toISOString().split('T')[0] : ''}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        updateIssue.mutate({ dueDate: e.target.value });
+                      }
+                      setIsEditingDueDate(false);
+                      flashSaved();
+                    }}
+                    onBlur={() => setIsEditingDueDate(false)}
+                    autoFocus
+                    className="border border-gray-300 dark:border-slate-700 rounded px-2 py-1 text-sm bg-white dark:bg-[#282E33] text-gray-900 dark:text-white"
+                  />
+                ) : (
+                  <button
+                    onClick={() => setIsEditingDueDate(true)}
+                    className={`text-sm cursor-pointer ${
+                      issue.dueDate && new Date(issue.dueDate) < new Date()
+                        ? 'text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded px-1.5 py-0.5'
+                        : 'text-gray-900 dark:text-white hover:underline'
+                    }`}
+                  >
+                    {issue.dueDate ? format(new Date(issue.dueDate), 'MMM dd, yyyy') : 'None'}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Labels */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Labels</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {issue.labels && Array.isArray(issue.labels) && issue.labels.length > 0
+                  ? issue.labels.join(', ')
+                  : 'None'}
+              </span>
+            </div>
+
+            {/* Reporter */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Reporter</span>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                {issue.reporter ? (
+                  <>
+                    {issue.reporter.avatar ? (
+                      <img src={issue.reporter.avatar} alt={issue.reporter.name} className="h-5 w-5 rounded-full shrink-0" />
+                    ) : (
+                      <div className="h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
+                        {issue.reporter.name?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                    )}
+                    <span className="text-sm text-gray-900 dark:text-white truncate">{issue.reporter.name}</span>
+                  </>
+                ) : (
+                  <span className="text-sm text-gray-500 dark:text-gray-400">None</span>
+                )}
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
-            {issue.description || 'No description provided.'}
+
+          {/* Watchers (collapsible in right panel) */}
+          <WatchersSection
+            issue={issue}
+            watchers={watchers}
+            addWatcher={addWatcher}
+            removeWatcher={removeWatcher}
+          />
+
+          {/* Timestamps */}
+          <div className="px-3 md:px-5 py-3 border-t border-gray-200 dark:border-gray-800 space-y-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Created {format(new Date(issue.createdAt), 'PPp')}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Updated {format(new Date(issue.updatedAt), 'PPp')}
+            </p>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Watchers Section */}
-      <WatchersSection
-        issue={issue}
-        watchers={watchers}
-        addWatcher={addWatcher}
-        removeWatcher={removeWatcher}
-      />
-
-      {/* Activity Timeline */}
-      <ActivityTimeline issue={issue} />
-
-      {/* Subtasks */}
-      <SubtasksSection issue={issue} />
-
-      {/* Comments */}
-      <CommentsSection issue={issue} commentContent={commentContent} setCommentContent={setCommentContent} />
-
     </div>
   );
 }
@@ -748,7 +811,7 @@ function WatchersSection({
         <button
           onClick={handleAddWatcher}
           disabled={addWatcher.isPending}
-          className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
+          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
           {addWatcher.isPending ? 'Adding...' : 'Watch'}
@@ -767,7 +830,7 @@ function WatchersSection({
                     className="h-8 w-8 rounded-full"
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                  <div className="h-8 w-8 rounded-full bg-primary-500 text-white flex items-center justify-center text-sm font-medium">
                     {watcher.user.name.split(' ').map(n => n[0]).join('')}
                   </div>
                 )}
@@ -804,15 +867,20 @@ function WatchersSection({
   );
 }
 
-// Activity Timeline Component
-function ActivityTimeline({ issue }: { issue: Issue }) {
+// Activity Timeline Component — uses real ActivityTimeline from activity module
+function IssueActivitySection({ issue }: { issue: Issue }) {
   return (
     <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
       <div className="flex items-center gap-2 mb-3">
         <Activity className="h-4 w-4 text-gray-600 dark:text-gray-400" />
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Activity</h2>
       </div>
-      <p className="text-sm text-gray-600 dark:text-gray-400">Activity timeline coming soon...</p>
+      <RealActivityTimeline
+        entityType="TASK"
+        entityId={issue.id}
+        limit={10}
+        showFilters={false}
+      />
     </div>
   );
 }
@@ -822,26 +890,24 @@ function SubtasksSection({ issue }: { issue: Issue }) {
   const subtasks = issue.subtasks || [];
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [subtaskTitle, setSubtaskTitle] = useState('');
+  const queryClient = useQueryClient();
 
   const handleAddSubtask = async () => {
     if (!subtaskTitle.trim()) return;
 
     try {
-      const res = await fetch('/api/issues', {
+      const res = await fetch(`/api/issues/${issue.id}/subtasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: issue.project.id,
-          title: subtaskTitle,
-          type: 'SUBTASK',
-          parentId: issue.id,
-        }),
+        body: JSON.stringify({ title: subtaskTitle }),
       });
 
       if (res.ok) {
         setSubtaskTitle('');
         setIsAddingSubtask(false);
-        // Refresh would happen here via React Query
+        // Refresh issue data to show new subtask
+        await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+        await queryClient.invalidateQueries({ queryKey: ['issues'] });
       }
     } catch (error) {
       console.error('Failed to add subtask:', error);
@@ -859,7 +925,7 @@ function SubtasksSection({ issue }: { issue: Issue }) {
         </div>
         <button
           onClick={() => setIsAddingSubtask(!isAddingSubtask)}
-          className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
         >
           <Plus className="h-4 w-4" />
           Add subtask
@@ -874,7 +940,7 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             value={subtaskTitle}
             onChange={(e) => setSubtaskTitle(e.target.value)}
             placeholder="What needs to be done?"
-            className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleAddSubtask();
@@ -898,7 +964,7 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             <button
               onClick={handleAddSubtask}
               disabled={!subtaskTitle.trim()}
-              className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Add
             </button>
@@ -972,7 +1038,7 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
           value={commentContent}
           onChange={(e) => setCommentContent(e.target.value)}
           placeholder="Add a comment..."
-          className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
           rows={3}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -984,7 +1050,7 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
           <button
             onClick={handleSendComment}
             disabled={!commentContent.trim() || isSending}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="h-4 w-4" />
             {isSending ? 'Sending...' : 'Send'}

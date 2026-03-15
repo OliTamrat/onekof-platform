@@ -4,7 +4,7 @@
   "description": "Modern project management built for Ethiopian teams",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#1B1F23",
   "theme_color": "#1C8C7D",
   "orientation": "any",
   "scope": "/",
@@ -14,16 +14,15 @@
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "categories": ["business", "productivity"],
-  "screenshots": [],
   "prefer_related_applications": false
 }

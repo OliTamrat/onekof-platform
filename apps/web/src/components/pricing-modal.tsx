@@ -75,7 +75,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-50 dark:bg-[#1B1F23] border-slate-200 dark:border-slate-700 p-0 gap-0">
         {/* Header Section */}
-        <div className="bg-white dark:bg-[#22272B] border-b border-slate-200 dark:border-slate-700 px-8 py-6">
+        <div className="bg-white dark:bg-[#22272B] border-b border-slate-200 dark:border-slate-700 px-4 sm:px-8 py-4 sm:py-6">
           <DialogHeader>
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center justify-center w-12 h-12 bg-primary-500 rounded-xl shadow-lg">
@@ -114,8 +114,8 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
         </div>
 
         {/* Pricing Cards Section */}
-        <div className="px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="px-4 sm:px-8 py-6 sm:py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {plans.map((plan) => (
               <div
                 key={plan.name}
@@ -209,7 +209,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
         </div>
 
         {/* Footer Section */}
-        <div className="bg-slate-100 dark:bg-[#22272B] border-t border-slate-200 dark:border-slate-700 px-8 py-6">
+        <div className="bg-slate-100 dark:bg-[#22272B] border-t border-slate-200 dark:border-slate-700 px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-400">
               <Users className="h-4 w-4" />
