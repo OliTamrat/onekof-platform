@@ -252,7 +252,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Desktop: Create Button */}
           <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="default" size="sm" className="gap-2 h-9 bg-jira-blue-500 hover:bg-jira-blue-600 text-white hidden md:flex">
+              <Button variant="default" size="sm" className="gap-2 h-9 bg-primary-500 hover:bg-primary-600 text-white hidden md:flex">
                 <Plus className="h-4 w-4" />
                 <span className="hidden lg:inline">Create</span>
               </Button>

@@ -72,7 +72,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   sectionActive
-                    ? 'bg-[#0065FF]/10 text-[#0065FF] dark:bg-[#0065FF]/20'
+                    ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                 )}
               >
@@ -96,7 +96,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive(section.href!)
-                    ? 'bg-[#0065FF]/10 text-[#0065FF] dark:bg-[#0065FF]/20'
+                    ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                 )}
               >
@@ -117,7 +117,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                       className={cn(
                         'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         isActive(item.href)
-                          ? 'bg-[#0065FF]/10 text-[#0065FF] font-medium dark:bg-[#0065FF]/20'
+                          ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium dark:bg-primary-500/20'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white'
                       )}
                     >

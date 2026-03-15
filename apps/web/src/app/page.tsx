@@ -185,7 +185,7 @@ function BudgetMockup() {
             <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
               <div
                 className={`h-full rounded-full transition-all duration-1000 ${
-                  item.pct > 70 ? 'bg-amber-500' : 'bg-brand-500'
+                  item.pct > 70 ? 'bg-amber-500' : 'bg-primary-500'
                 }`}
                 style={{ width: `${item.pct}%` }}
               />
@@ -193,7 +193,7 @@ function BudgetMockup() {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between rounded-lg border border-brand-500/20 bg-brand-500/[0.06] p-3">
+      <div className="flex items-center justify-between rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
         <div>
           <p className="text-[11px] text-white/60">Total Spent</p>
           <p className="text-[16px] font-semibold text-white">377,000 ETB</p>
@@ -218,14 +218,14 @@ function AIDocsMockup() {
           <p className="text-[12px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
           <p className="text-[11px] text-white/50">Uploaded 2 minutes ago • 24 pages</p>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-brand-500/10 px-2 py-1">
-          <Sparkles className="h-3 w-3 text-brand-400" />
-          <span className="text-[10px] font-medium text-brand-400">Processing</span>
+        <div className="flex items-center gap-1.5 rounded-full bg-primary-500/10 px-2 py-1">
+          <Sparkles className="h-3 w-3 text-primary-400" />
+          <span className="text-[10px] font-medium text-primary-400">Processing</span>
         </div>
       </div>
       <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
-          <Wand2 className="h-3.5 w-3.5 text-brand-400" />
+          <Wand2 className="h-3.5 w-3.5 text-primary-400" />
           <span className="text-[12px] font-medium text-white/60">AI Summary</span>
         </div>
         <p className="text-[12px] leading-relaxed text-white/60">
@@ -276,22 +276,22 @@ function CalendarMockup() {
             <div
               key={i}
               className={`relative flex h-8 items-center justify-center rounded-md text-[12px] transition-all ${
-                isToday ? 'bg-brand-600 font-semibold text-white shadow-brand-sm' :
+                isToday ? 'bg-primary-600 font-semibold text-white shadow-lg' :
                 isDeadline ? 'bg-red-500/10 font-medium text-red-400' :
                 isHoliday ? 'bg-amber-500/10 font-medium text-amber-400' :
                 'text-white/60 hover:bg-white/[0.04]'
               }`}
             >
               {i + 1}
-              {hasDot && <div className="absolute bottom-1 h-1 w-1 rounded-full bg-brand-400" />}
+              {hasDot && <div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary-400" />}
             </div>
           );
         })}
       </div>
       <div className="space-y-1.5">
-        <div className="flex items-center gap-2 rounded-md bg-brand-500/8 border border-brand-500/10 px-3 py-2">
-          <div className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-          <span className="text-[11px] text-brand-300">Sprint 14 Review — መጋ 6</span>
+        <div className="flex items-center gap-2 rounded-md bg-primary-500/8 border border-primary-500/10 px-3 py-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
+          <span className="text-[11px] text-primary-300">Sprint 14 Review — መጋ 6</span>
         </div>
         <div className="flex items-center gap-2 rounded-md bg-red-500/8 border border-red-500/10 px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
@@ -319,7 +319,7 @@ function LanguageMockup() {
           <div
             key={item.lang}
             className={`flex items-center gap-3 rounded-lg border p-3 transition-all ${
-              i === 0 ? 'border-brand-500/20 bg-brand-500/[0.06]' : 'border-white/[0.06] bg-white/[0.02]'
+              i === 0 ? 'border-primary-500/20 bg-primary-500/[0.06]' : 'border-white/[0.06] bg-white/[0.02]'
             }`}
           >
             <span className="text-lg">{item.flag}</span>
@@ -328,7 +328,7 @@ function LanguageMockup() {
               <p className="text-[11px] text-white/50">{item.sample}</p>
             </div>
             {i === 0 && (
-              <span className="rounded-full bg-brand-500/20 px-2 py-0.5 text-[10px] font-medium text-brand-400">Active</span>
+              <span className="rounded-full bg-primary-500/20 px-2 py-0.5 text-[10px] font-medium text-primary-400">Active</span>
             )}
           </div>
         ))}
@@ -340,9 +340,9 @@ function LanguageMockup() {
             <LayoutDashboard className="h-3.5 w-3.5 text-white/50" />
             <span className="text-[12px] text-white/50">ዳሽቦርድ</span>
           </div>
-          <div className="flex items-center gap-2 rounded-md bg-brand-500/10 px-3 py-2">
-            <Kanban className="h-3.5 w-3.5 text-brand-400" />
-            <span className="text-[12px] font-medium text-brand-400">ፕሮጀክቶች</span>
+          <div className="flex items-center gap-2 rounded-md bg-primary-500/10 px-3 py-2">
+            <Kanban className="h-3.5 w-3.5 text-primary-400" />
+            <span className="text-[12px] font-medium text-primary-400">ፕሮጀክቶች</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <Calendar className="h-3.5 w-3.5 text-white/50" />
@@ -404,18 +404,18 @@ export default function HomePage() {
   const showcaseMockups = [<BudgetMockup />, <AIDocsMockup />, <CalendarMockup />, <LanguageMockup />];
 
   return (
-    <div className="min-h-screen bg-midnight-950 text-white selection:bg-brand-500/20">
+    <div className="min-h-screen bg-[#1B1F23] text-white selection:bg-primary-500/20">
       {/* ═══ NAVBAR ═══ */}
       <nav
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'border-b border-white/[0.06] bg-midnight-950/70 backdrop-blur-2xl backdrop-saturate-150'
+            ? 'border-b border-white/[0.06] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150'
             : 'bg-transparent'
         }`}
       >
         <div className="mx-auto flex h-[60px] max-w-6xl items-center justify-between px-6">
           <Link href="/" className="group flex items-center gap-2.5">
-            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-sm transition-shadow group-hover:shadow-brand-md">
+            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg transition-shadow group-hover:shadow-xl">
               <span className="text-sm font-black text-white">O</span>
             </div>
             <span className="text-[15px] font-semibold tracking-[-0.01em]">Onekof</span>
@@ -443,7 +443,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/auth/signup"
-              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-brand-500 to-purple-500 px-5 py-2 text-[13px] font-semibold text-white shadow-brand-sm transition-all duration-300 hover:shadow-brand-md hover:brightness-110"
+              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-5 py-2 text-[13px] font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:brightness-110"
             >
               <span className="relative z-10 flex items-center gap-1.5">
                 Get started
@@ -459,7 +459,7 @@ export default function HomePage() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="animate-in slide-in-from-top border-t border-white/[0.06] bg-midnight-950/98 backdrop-blur-2xl md:hidden">
+          <div className="animate-in slide-in-from-top border-t border-white/[0.06] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden">
             <div className="space-y-1 px-6 py-4">
               {navLinks.map((link) => (
                 <a
@@ -473,7 +473,7 @@ export default function HomePage() {
               ))}
               <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
                 <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">Log in</Link>
-                <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-500 to-purple-500 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-brand-sm">
+                <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
                   Get started
                   <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -489,7 +489,7 @@ export default function HomePage() {
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[800px] w-[1200px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
           <div className="absolute left-1/4 top-40 h-[400px] w-[400px] rounded-full bg-purple-500/[0.04] blur-[120px]" />
-          <div className="absolute right-1/4 top-60 h-[300px] w-[300px] rounded-full bg-brand-500/[0.04] blur-[100px]" />
+          <div className="absolute right-1/4 top-60 h-[300px] w-[300px] rounded-full bg-primary-500/[0.04] blur-[100px]" />
           {/* Grid */}
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -517,10 +517,10 @@ export default function HomePage() {
               One platform to
               <br />
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-brand-400 via-purple-400 to-brand-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-200 bg-clip-text text-transparent">
                   {heroTyped}
                 </span>
-                <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-brand-400 align-middle" />
+                <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
               </span>
             </h1>
           </Reveal>
@@ -537,19 +537,19 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/auth/signup"
-                className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-7 py-3.5 text-[14px] font-medium text-white shadow-brand-lg transition-all hover:shadow-brand-xl hover:brightness-110 active:scale-[0.98]"
+                className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-7 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98]"
               >
                 <span className="relative z-10 flex items-center gap-2.5">
                   Get started — it&apos;s free
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-500 to-purple-500 opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 transition-opacity group-hover:opacity-100" />
               </Link>
               <a
                 href="#product"
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
               >
-                <Play className="h-3.5 w-3.5 text-brand-400" />
+                <Play className="h-3.5 w-3.5 text-primary-400" />
                 Watch demo
               </a>
             </div>
@@ -570,7 +570,7 @@ export default function HomePage() {
         {/* ─── Dashboard Preview ─── */}
         <Reveal delay={500}>
           <div className="relative mx-auto max-w-6xl px-6 pb-28">
-            <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-brand-500/[0.08] via-purple-500/[0.04] to-transparent blur-3xl" />
+            <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.08] via-primary-700/[0.04] to-transparent blur-3xl" />
             <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-midnight-900/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
               {/* Browser Chrome */}
               <div className="flex items-center gap-2 border-b border-white/[0.06] bg-midnight-900/80 px-4 py-3">
@@ -588,9 +588,9 @@ export default function HomePage() {
               {/* Dashboard Content */}
               <div className="flex min-h-[460px] sm:min-h-[520px]">
                 {/* Sidebar */}
-                <div className="hidden w-56 border-r border-white/[0.06] bg-midnight-950/60 p-4 lg:block">
+                <div className="hidden w-56 border-r border-white/[0.06] bg-[#1B1F23]/60 p-4 lg:block">
                   <div className="mb-6 flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 text-[10px] font-bold shadow-sm">T</div>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-[10px] font-bold shadow-sm">T</div>
                     <div>
                       <span className="text-[12px] font-medium text-white/70">TechEth</span>
                       <p className="text-[10px] text-white/50">Professional</p>
@@ -609,7 +609,7 @@ export default function HomePage() {
                       key={item.label}
                       className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-colors ${
                         item.active
-                          ? 'bg-brand-500/10 font-medium text-brand-400'
+                          ? 'bg-primary-500/10 font-medium text-primary-400'
                           : 'text-white/50 hover:bg-white/[0.03] hover:text-white/50'
                       }`}
                     >
@@ -649,7 +649,7 @@ export default function HomePage() {
                   <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
                     {[
                       { label: 'Total Tasks', value: '34', color: 'text-white/70' },
-                      { label: 'In Progress', value: '8', color: 'text-brand-400' },
+                      { label: 'In Progress', value: '8', color: 'text-primary-400' },
                       { label: 'Completed', value: '18', color: 'text-emerald-400' },
                       { label: 'Budget Used', value: '58%', color: 'text-amber-400' },
                     ].map((s) => (
@@ -667,7 +667,7 @@ export default function HomePage() {
                         { title: 'Setup CI/CD pipeline', tag: 'DevOps', priority: 'medium' },
                         { title: 'Design system tokens', tag: 'Design', priority: 'low' },
                       ]},
-                      { label: 'In Progress', count: 3, dot: 'bg-brand-500', cards: [
+                      { label: 'In Progress', count: 3, dot: 'bg-primary-500', cards: [
                         { title: 'User auth flow', tag: 'Backend', priority: 'high' },
                         { title: 'Dashboard widgets', tag: 'Frontend', priority: 'medium' },
                       ]},
@@ -730,7 +730,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-20">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-brand-400">Why Onekof</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Why Onekof</p>
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
                 Foreign tools weren&apos;t built for you.
                 <br />
@@ -749,7 +749,7 @@ export default function HomePage() {
                 icon: Calendar,
                 title: 'Ethiopian Calendar',
                 desc: 'Native 13-month calendar with holidays, Amharic month names, and sprint planning.',
-                gradient: 'from-brand-500/20 to-purple-500/20',
+                gradient: 'from-primary-500/20 to-primary-700/20',
               },
               {
                 icon: Languages,
@@ -786,8 +786,8 @@ export default function HomePage() {
                 <div className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04] sm:p-7">
                   <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
                   <div className="relative">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors group-hover:border-brand-500/20 group-hover:bg-brand-500/10">
-                      <feature.icon className="h-5 w-5 text-white/60 transition-colors group-hover:text-brand-400" />
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors group-hover:border-primary-500/20 group-hover:bg-primary-500/10">
+                      <feature.icon className="h-5 w-5 text-white/60 transition-colors group-hover:text-primary-400" />
                     </div>
                     <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
                     <p className="text-[14px] leading-relaxed text-white/50">{feature.desc}</p>
@@ -804,7 +804,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-brand-400">Product</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Product</p>
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
                 See the real Onekof experience
               </h2>
@@ -824,11 +824,11 @@ export default function HomePage() {
                     onClick={() => setActiveShowcase(i)}
                     className={`group flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium transition-all duration-300 sm:gap-2 sm:px-5 sm:py-3 sm:text-[13px] ${
                       activeShowcase === i
-                        ? 'bg-white/[0.08] text-white shadow-lg shadow-brand-500/5 ring-1 ring-white/[0.1]'
+                        ? 'bg-white/[0.08] text-white shadow-lg shadow-primary-500/5 ring-1 ring-white/[0.1]'
                         : 'text-white/50 hover:bg-white/[0.04] hover:text-white/50'
                     }`}
                   >
-                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-brand-400' : 'text-white/40'}`} />
+                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-primary-400' : 'text-white/40'}`} />
                     {tab.label}
                   </button>
                 ))}
@@ -839,7 +839,7 @@ export default function HomePage() {
                 {showcaseTabs.map((_, i) => (
                   <div key={i} className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
                     <div
-                      className={`h-full rounded-full bg-brand-500 transition-all ${
+                      className={`h-full rounded-full bg-primary-500 transition-all ${
                         i === activeShowcase ? 'animate-progress w-full' : i < activeShowcase ? 'w-full' : 'w-0'
                       }`}
                     />
@@ -850,8 +850,8 @@ export default function HomePage() {
               {/* Content */}
               <div className="grid items-start gap-6 sm:gap-8 lg:grid-cols-2">
                 <div className="order-2 lg:order-1">
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/[0.06] px-3 py-1">
-                    <span className="text-[11px] font-medium text-brand-400">{showcaseTabs[activeShowcase].tagline}</span>
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-3 py-1">
+                    <span className="text-[11px] font-medium text-primary-400">{showcaseTabs[activeShowcase].tagline}</span>
                   </div>
                   <h3 className="mb-3 text-2xl font-semibold tracking-[-0.02em] sm:text-[1.75rem]">
                     {showcaseTabs[activeShowcase].title}
@@ -862,8 +862,8 @@ export default function HomePage() {
                   <ul className="mb-8 space-y-3">
                     {showcaseTabs[activeShowcase].features.map((f) => (
                       <li key={f} className="flex items-start gap-3 text-[14px] text-white/45">
-                        <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/10">
-                          <Check className="h-3 w-3 text-brand-400" />
+                        <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
+                          <Check className="h-3 w-3 text-primary-400" />
                         </div>
                         {f}
                       </li>
@@ -871,7 +871,7 @@ export default function HomePage() {
                   </ul>
                   <Link
                     href="/auth/signup"
-                    className="group inline-flex items-center gap-2 text-[14px] font-medium text-brand-400 transition-colors hover:text-brand-300"
+                    className="group inline-flex items-center gap-2 text-[14px] font-medium text-primary-400 transition-colors hover:text-primary-300"
                   >
                     Try it free
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -894,7 +894,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-brand-400">Features</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Features</p>
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Everything your team needs.
                 <br />
@@ -916,8 +916,8 @@ export default function HomePage() {
               { icon: Shield, title: 'Enterprise Security', desc: 'RBAC, 2FA, SSO, session management, audit logs. SOC 2 ready.' },
             ].map((feature, i) => (
               <Reveal key={feature.title} delay={i * 40}>
-                <div className="group border border-white/[0.03] bg-midnight-950 p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7">
-                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-brand-400" />
+                <div className="group border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7">
+                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-primary-400" />
                   <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
                   <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
                 </div>
@@ -939,7 +939,7 @@ export default function HomePage() {
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
-                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-brand-400/50" />
+                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-primary-400/50" />
                   <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
@@ -956,7 +956,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-16">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-brand-400">Testimonials</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Testimonials</p>
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Loved by teams who&apos;ve
                 <br />
@@ -971,7 +971,7 @@ export default function HomePage() {
                 quote: "We tried Jira, Trello, and Asana. None understood Ethiopian workflows. Onekof's calendar integration alone saved us hours every week.",
                 name: 'Abebe Kebede',
                 role: 'CTO, TechEth Solutions',
-                gradient: 'from-brand-500 to-purple-600',
+                gradient: 'from-primary-500 to-primary-700',
               },
               {
                 quote: "Finally, a PM tool our entire team can use — including those most comfortable in Amharic. The language support isn't an afterthought, it's core to the product.",
@@ -1035,7 +1035,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-brand-400">Pricing</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Pricing</p>
               <h2 className="mb-4 text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Simple pricing in Ethiopian Birr
               </h2>
@@ -1071,13 +1071,13 @@ export default function HomePage() {
                 <div
                   className={`relative h-full rounded-2xl border p-5 transition-all duration-500 sm:p-7 ${
                     plan.highlighted
-                      ? 'border-brand-500/30 bg-gradient-to-b from-brand-500/[0.08] to-transparent shadow-brand-md'
+                      ? 'border-primary-500/30 bg-gradient-to-b from-primary-500/[0.08] to-transparent shadow-xl'
                       : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1] hover:bg-white/[0.04]'
                   }`}
                 >
                   {plan.highlighted && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-purple-600 px-3.5 py-1 text-[11px] font-medium shadow-brand-md">
+                      <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 px-3.5 py-1 text-[11px] font-medium shadow-xl">
                         <Crown className="h-3 w-3" />
                         Most Popular
                       </div>
@@ -1109,7 +1109,7 @@ export default function HomePage() {
                     href={plan.name === 'Enterprise' ? '#contact' : '/auth/signup'}
                     className={`mb-7 block rounded-xl py-3 text-center text-[13px] font-medium transition-all duration-300 ${
                       plan.highlighted
-                        ? 'bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-brand-md hover:shadow-brand-lg hover:brightness-110'
+                        ? 'bg-gradient-to-r from-primary-500 to-primary-700 text-white shadow-xl hover:shadow-xl hover:brightness-110'
                         : 'border border-white/[0.1] text-white/50 hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white'
                     }`}
                   >
@@ -1119,7 +1119,7 @@ export default function HomePage() {
                   <ul className="space-y-3">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/55">
-                        <Check className="h-3.5 w-3.5 flex-shrink-0 text-brand-400/50" />
+                        <Check className="h-3.5 w-3.5 flex-shrink-0 text-primary-400/50" />
                         {f}
                       </li>
                     ))}
@@ -1149,7 +1149,7 @@ export default function HomePage() {
               <Reveal key={item.from} delay={i * 80}>
                 <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
                   <p className="mb-5 text-[14px] font-medium">
-                    Switching from <span className="text-brand-400">{item.from}</span>?
+                    Switching from <span className="text-primary-400">{item.from}</span>?
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
@@ -1180,7 +1180,7 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
           <Reveal>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
-              <Sparkles className="h-3.5 w-3.5 text-brand-400" />
+              <Sparkles className="h-3.5 w-3.5 text-primary-400" />
               <span className="text-[13px] text-white/60">Join 500+ Ethiopian teams</span>
             </div>
             <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-5xl">
@@ -1195,7 +1195,7 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/auth/signup"
-                className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3.5 text-[14px] font-medium text-white shadow-brand-lg transition-all hover:shadow-brand-xl hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
+                className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-6 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
               >
                 <span className="relative z-10 flex items-center gap-2.5">
                   Get started — it&apos;s free
@@ -1220,7 +1220,7 @@ export default function HomePage() {
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg">
                   <span className="text-[12px] font-black text-white">O</span>
                 </div>
                 <span className="text-[15px] font-semibold">Onekof</span>
@@ -1238,7 +1238,7 @@ export default function HomePage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-brand-500/20 hover:bg-brand-500/10 hover:text-brand-400"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
                   >
                     {social.letter}
                   </a>
