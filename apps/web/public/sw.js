@@ -1,8 +1,5 @@
-const CACHE_NAME = 'onekof-v1';
-const STATIC_ASSETS = [
-  '/fonts/AbyssinicaSIL-Regular.woff2',
-  '/fonts/AbyssinicaSIL-Regular.woff',
-];
+const CACHE_NAME = 'onekof-v3';
+const STATIC_ASSETS = [];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -24,6 +21,12 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Only handle same-origin requests — skip external URLs entirely
+  // This prevents CSP connect-src violations for Google Fonts, Cloudflare, etc.
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
   // Skip non-GET requests and API calls
   if (request.method !== 'GET' || url.pathname.startsWith('/api/')) {
     return;
@@ -37,8 +40,10 @@ self.addEventListener('fetch', (event) => {
   ) {
     event.respondWith(
       caches.match(request).then((cached) => cached || fetch(request).then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
         return response;
       }))
     );

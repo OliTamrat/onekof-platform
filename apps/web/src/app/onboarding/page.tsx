@@ -3,13 +3,12 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import {
   CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
   Sparkles, Loader2, Calendar, Target, Zap, Shield, Smartphone,
   GraduationCap, HeartHandshake, Construction, HeartPulse, Landmark,
-  Briefcase, Languages
+  Briefcase
 } from 'lucide-react';
 
 // Organization types with icons and features
@@ -72,17 +71,10 @@ const TEAM_SIZES = [
   { value: '500+', label: '500+ people' },
 ];
 
-const LANGUAGES = [
-  { value: 'en', label: 'English', native: 'English' },
-  { value: 'am', label: 'Amharic', native: 'አማርኛ' },
-  { value: 'om', label: 'Oromo', native: 'Afaan Oromo' },
-  { value: 'ti', label: 'Tigrinya', native: 'ትግርኛ' },
-];
 
 function OnboardingContent() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const t = useTranslations('onboarding');
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -111,13 +103,6 @@ function OnboardingContent() {
 
 
   // Form data - COLLECTING FOR CATEGORIZATION
-  const [language, setLanguageState] = useState(''); // User must select
-
-  // Sync language selection with i18n cookie
-  const setLanguage = (locale: string) => {
-    setLanguageState(locale);
-    document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000;samesite=lax`;
-  };
   const [organizationType, setOrganizationType] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [organizationSlug, setOrganizationSlug] = useState('');
@@ -127,7 +112,7 @@ function OnboardingContent() {
   const [primaryUseCases, setPrimaryUseCases] = useState<string[]>([]);
   const [calendarPreference, setCalendarPreference] = useState('ethiopian');
 
-  const totalSteps = 4;
+  const totalSteps = 3;
 
   // Auto-suggest slug from organization name
   useEffect(() => {
@@ -169,7 +154,7 @@ function OnboardingContent() {
           industry,
           teamSize,
           primaryUseCases,
-          language,
+          language: 'en',
           calendarPreference,
         }),
       });
@@ -196,9 +181,8 @@ function OnboardingContent() {
     }
   };
 
-  const canProceedStep1 = language !== '';
-  const canProceedStep2 = organizationType !== '';
-  const canProceedStep3 = organizationName && organizationSlug && teamSize;
+  const canProceedStep1 = organizationType !== '';
+  const canProceedStep2 = organizationName && organizationSlug && teamSize;
   const canComplete = true;
 
   if (status === 'loading') {
@@ -241,30 +225,18 @@ function OnboardingContent() {
             </div>
 
             {/* Greeting */}
-            {currentStep === 1 && (
-              <div>
-                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                  {t('welcome')}
-                </h2>
-                <p className="text-base text-white/60 sm:text-lg">
-                  {t('welcomeSubtitle')}
-                </p>
-              </div>
-            )}
-            {currentStep > 1 && (
-              <div>
-                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                  {currentStep === 2 && t('orgTypeTitle')}
-                  {currentStep === 3 && t('orgDetailsTitle')}
-                  {currentStep === 4 && t('finalStepTitle')}
-                </h2>
-                <p className="text-white/60">
-                  {currentStep === 2 && t('orgTypeSubtitle')}
-                  {currentStep === 3 && t('orgDetailsSubtitle')}
-                  {currentStep === 4 && t('finalStepSubtitle')}
-                </p>
-              </div>
-            )}
+            <div>
+              <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
+                {currentStep === 1 && 'What type of organization are you?'}
+                {currentStep === 2 && 'Tell us about your organization'}
+                {currentStep === 3 && 'Final step: Create your workspace'}
+              </h2>
+              <p className="text-white/60">
+                {currentStep === 1 && 'This helps us set up the right features for you'}
+                {currentStep === 2 && "We'll use this to personalize your experience"}
+                {currentStep === 3 && 'Your workspace will be ready in seconds'}
+              </p>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -283,42 +255,8 @@ function OnboardingContent() {
 
           {/* Main Card */}
           <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl p-4 sm:p-8 md:p-10">
-            {/* STEP 1: Language Selection */}
+            {/* STEP 1: Organization Type - CRITICAL FOR CATEGORIZATION */}
             {currentStep === 1 && (
-              <div className="space-y-6">
-                <div className="text-center mb-8">
-                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/20 border border-primary-500/30 mb-4">
-                    <Languages className="h-8 w-8 text-primary-400" />
-                  </div>
-                  <p className="text-white/60">{t('chooseLanguage')}</p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.value}
-                      onClick={() => setLanguage(lang.value)}
-                      className={`relative rounded-xl border p-4 text-left transition-all ${
-                        language === lang.value
-                          ? 'border-primary-500 bg-primary-500/10 shadow-lg shadow-primary-500/20'
-                          : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:shadow-md'
-                      }`}
-                    >
-                      {language === lang.value && (
-                        <div className="absolute top-3 right-3">
-                          <CheckCircle2 className="h-5 w-5 text-primary-400" />
-                        </div>
-                      )}
-                      <div className="text-[16px] font-semibold text-white mb-0.5">{lang.native}</div>
-                      <div className="text-xs text-white/50">{lang.label}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* STEP 2: Organization Type - CRITICAL FOR CATEGORIZATION */}
-            {currentStep === 2 && (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {ORG_TYPES.map((type) => {
@@ -357,8 +295,8 @@ function OnboardingContent() {
               </div>
             )}
 
-            {/* STEP 3: Organization Details - CONTEXTUAL! */}
-            {currentStep === 3 && (
+            {/* STEP 2: Organization Details */}
+            {currentStep === 2 && (
               <div className="space-y-6">
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-2">
@@ -455,8 +393,8 @@ function OnboardingContent() {
               </div>
             )}
 
-            {/* STEP 4: Workspace Setup + Calendar */}
-            {currentStep === 4 && (
+            {/* STEP 3: Workspace Setup + Calendar */}
+            {currentStep === 3 && (
               <div className="space-y-8">
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-3">
@@ -548,7 +486,7 @@ function OnboardingContent() {
                       <p className="font-semibold text-white mb-2">You're all set!</p>
                       <p className="text-sm text-white/60 mb-3">
                         Based on your selections, we've enabled features for{' '}
-                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'am' ? 'አማርኛ' : language === 'om' ? 'Afaan Oromo' : language === 'ti' ? 'ትግርኛ' : 'English'} language support.
+                        <strong className="text-white">{selectedOrgType?.label}</strong> organization.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {selectedOrgType?.features.map((feature) => (
@@ -581,8 +519,7 @@ function OnboardingContent() {
                 onClick={handleNext}
                 disabled={
                   (currentStep === 1 && !canProceedStep1) ||
-                  (currentStep === 2 && !canProceedStep2) ||
-                  (currentStep === 3 && !canProceedStep3)
+                  (currentStep === 2 && !canProceedStep2)
                 }
                 className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
               >
