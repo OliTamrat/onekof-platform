@@ -223,28 +223,28 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </DropdownMenu>
 
         {/* Spacer to push search slightly right on desktop */}
-        <div className="hidden lg:block w-8"></div>
+        <div className="hidden xl:block w-8"></div>
 
         {/* SEARCH BAR - Opens Command Palette */}
-        <div className="flex flex-1 max-w-md">
+        <div className="flex flex-1 min-w-0 max-w-md">
           <button
             onClick={() => {
-              // Trigger Cmd+K programmatically
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
             className="flex w-full h-9 items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm transition-colors hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-200/50 dark:hover:bg-[#22272B]/80"
           >
             <Search className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left">Search or jump to...</span>
-            <kbd className="hidden rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium sm:inline-block">
+            <span className="flex-1 text-left truncate hidden sm:block">Search or jump to...</span>
+            <span className="flex-1 text-left truncate sm:hidden">Search...</span>
+            <kbd className="hidden rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
               Ctrl K
             </kbd>
           </button>
         </div>
 
         {/* Spacer - pushes action buttons to the far right on desktop */}
-        <div className="flex-1 hidden md:block"></div>
+        <div className="flex-1 hidden lg:block"></div>
 
         {/* Right side actions - Clean mobile design */}
         <div className="flex items-center gap-1 ml-auto shrink-0">

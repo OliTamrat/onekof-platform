@@ -6,7 +6,7 @@
  * Used across all dashboard pages for consistency
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -69,11 +69,107 @@ const NAV_TABS = [
   { id: 'team', label: 'Team', icon: Users, href: '/team' },
   { id: 'goals', label: 'Goals', icon: Target, href: '/goals' },
   { id: 'budget', label: 'Budget', icon: DollarSign, href: '/budget' },
-  { id: 'documents', label: 'Documents', icon: FileText, href: '/documents' },
+  { id: 'documents', label: 'Docs', icon: FileText, href: '/documents' },
   { id: 'automation', label: 'Automation', icon: Zap, href: '/automation' },
   { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/wiki' },
   { id: 'settings', label: 'Settings', icon: SettingsIcon, href: '/settings' },
 ];
+
+// Responsive tab navigation — fits to screen width with overflow in "More" dropdown
+function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: typeof NAV_TABS; baseHref: string; activeTab: string }) {
+  // Use ResizeObserver to determine how many tabs fit
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = React.useState(tabs.length);
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const measure = () => {
+      const containerWidth = container.offsetWidth - 100; // reserve space for "More" button
+      const tabWidth = 110; // approximate width per tab
+      const count = Math.max(3, Math.min(tabs.length, Math.floor(containerWidth / tabWidth)));
+      setVisibleCount(count);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [tabs.length]);
+
+  const visibleTabs = tabs.slice(0, visibleCount);
+  const overflowTabs = tabs.slice(visibleCount);
+  const hasOverflow = overflowTabs.length > 0;
+
+  return (
+    <div ref={containerRef} className="flex items-center px-3 md:px-6">
+      {visibleTabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        const href = `${baseHref}${tab.href}`;
+
+        return (
+          <Link
+            key={tab.id}
+            href={href}
+            prefetch={false}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 md:px-3 py-2.5 text-xs md:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap shrink-0',
+              isActive
+                ? 'border-primary-500 text-primary-500'
+                : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33]'
+            )}
+          >
+            <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
+            <span>{tab.label}</span>
+          </Link>
+        );
+      })}
+
+      {hasOverflow && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-2.5 text-xs md:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap shrink-0',
+                overflowTabs.some(tab => activeTab === tab.id)
+                  ? 'border-primary-500 text-primary-500'
+                  : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33]'
+              )}
+            >
+              <MoreHorizontal className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
+              <span>More</span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            {overflowTabs.map((tab) => {
+              const Icon = tab.icon;
+              const href = `${baseHref}${tab.href}`;
+              const isActive = activeTab === tab.id;
+
+              return (
+                <DropdownMenuItem key={tab.id} asChild>
+                  <Link
+                    href={href}
+                    prefetch={false}
+                    className={cn(
+                      'flex items-center gap-2 w-full cursor-pointer',
+                      isActive && 'bg-primary-500/10 text-primary-500 font-medium'
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{tab.label}</span>
+                  </Link>
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </div>
+  );
+}
 
 export function UnifiedPageHeader({
   title,
@@ -145,100 +241,10 @@ export function UnifiedPageHeader({
 
       {/* Navigation Tabs */}
       {showTabs && (
-        <div className="border-b border-gray-200 dark:border-slate-700 overflow-x-auto scrollbar-hide">
-          {/* Desktop: Show all tabs */}
-          <div className="hidden md:flex px-6 gap-3">
-            {NAV_TABS.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              const href = `${baseHref}${tab.href}`;
-
-              return (
-                <Link
-                  key={tab.id}
-                  href={href}
-                  prefetch={false}
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 rounded-t-md whitespace-nowrap shrink-0',
-                    isActive
-                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
-                  )}
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span>{tab.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Mobile: Show first 4 tabs + More dropdown */}
-          <div className="flex md:hidden px-3 gap-2">
-            {/* First 4 tabs: Icon + Text on mobile */}
-            {NAV_TABS.slice(0, 4).map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              const href = `${baseHref}${tab.href}`;
-
-              return (
-                <Link
-                  key={tab.id}
-                  href={href}
-                  prefetch={false}
-                  className={cn(
-                    'flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 rounded-t-md shrink-0 whitespace-nowrap',
-                    isActive
-                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
-                  )}
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  <span>{tab.label}</span>
-                </Link>
-              );
-            })}
-
-            {/* More dropdown for remaining tabs (mobile only) */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={cn(
-                    'flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 rounded-t-md shrink-0 whitespace-nowrap',
-                    NAV_TABS.slice(4).some(tab => activeTab === tab.id)
-                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
-                  )}
-                >
-                  <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
-                  <span>More</span>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                {NAV_TABS.slice(4).map((tab) => {
-                  const Icon = tab.icon;
-                  const href = `${baseHref}${tab.href}`;
-                  const isActive = activeTab === tab.id;
-
-                  return (
-                    <DropdownMenuItem key={tab.id} asChild>
-                      <Link
-                        href={href}
-                        prefetch={false}
-                        className={cn(
-                          'flex items-center gap-3 w-full cursor-pointer',
-                          isActive && 'bg-primary-500/10 text-primary-500 dark:text-primary-500 font-medium'
-                        )}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{tab.label}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="border-b border-gray-200 dark:border-slate-700">
+          <NavigationTabs tabs={NAV_TABS} baseHref={baseHref} activeTab={activeTab} />
         </div>
+
       )}
 
       {/* Controls Bar - Spread on Desktop, Compact on Mobile */}
