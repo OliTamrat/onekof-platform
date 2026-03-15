@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
+import { logTaskActivity } from '@/lib/activity-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -114,6 +115,16 @@ export async function POST(
       ).catch(err => {
         console.error('Auto-watch mentioned users in comment error:', err);
       });
+
+      // Log comment activity
+      logTaskActivity({
+        organizationId: task.project.organization.id,
+        userId: user.id,
+        taskId: params.id,
+        taskTitle: task.title || '',
+        action: 'COMMENTED',
+        metadata: { commentId: result.id, preview: content.slice(0, 100) },
+      }).catch(() => {});
     }
 
     return NextResponse.json({
