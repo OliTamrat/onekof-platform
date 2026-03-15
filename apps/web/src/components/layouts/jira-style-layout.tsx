@@ -117,12 +117,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-jira-gray-50 dark:bg-jira-dark-bg">
+    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
       {/* Global overlays */}
       <CommandPalette />
       <KeyboardShortcutsModal />
       {/* TOP BAR - Jira Style with Centered Search */}
-      <header className="flex h-14 items-center gap-2 border-b border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-navbar px-3">
+      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3">
         {/* Mobile Menu Button */}
         <Button
           variant="ghost"
@@ -234,11 +234,11 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
-            className="flex w-full h-9 items-center gap-2 rounded-lg border border-jira-gray-300 dark:border-jira-dark-border bg-jira-gray-100 dark:bg-jira-dark-surface px-3 text-sm text-jira-gray-500 dark:text-jira-gray-400 shadow-sm transition-colors hover:border-jira-gray-400 dark:hover:border-jira-gray-600 hover:bg-jira-gray-200/50 dark:hover:bg-jira-dark-surface/80"
+            className="flex w-full h-9 items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm transition-colors hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-200/50 dark:hover:bg-[#22272B]/80"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left">Search or jump to...</span>
-            <kbd className="hidden rounded border border-jira-gray-300 dark:border-jira-dark-border bg-white dark:bg-jira-dark-bg px-1.5 py-0.5 text-[10px] font-medium sm:inline-block">
+            <kbd className="hidden rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium sm:inline-block">
               Ctrl K
             </kbd>
           </button>
@@ -422,14 +422,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
-          "w-56 border-r border-jira-gray-200 dark:border-jira-dark-border bg-white dark:bg-jira-dark-sidebar overflow-y-auto transition-transform duration-300 ease-in-out",
+          "w-56 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
           // Desktop: Full height of flex container (no gap) - connects directly to navbar
           "md:relative md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
           {/* Mobile Sidebar Header with Close Button */}
-          <div className="flex items-center justify-between p-3 border-b border-jira-gray-200 dark:border-jira-dark-border md:hidden">
+          <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 md:hidden">
             <Link href="/dashboard" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm">
                 O
@@ -573,7 +573,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-jira-gray-50 dark:bg-jira-dark-bg">
+        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
           {children}
         </main>
       </div>

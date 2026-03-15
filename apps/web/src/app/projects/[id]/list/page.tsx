@@ -46,9 +46,9 @@ export default function ProjectListPage() {
   return (
     <div className="h-full overflow-auto bg-gray-50 dark:bg-[#1B1F23] p-6">
       <div className="mx-auto max-w-6xl">
-        <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] overflow-hidden">
+        <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 border-b border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#1B1F23] px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="grid grid-cols-12 gap-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
             <div className="col-span-1">Type</div>
             <div className="col-span-2">Key</div>
             <div className="col-span-4">Summary</div>
@@ -58,7 +58,7 @@ export default function ProjectListPage() {
           </div>
 
           {/* Table Body */}
-          <div className="divide-y divide-gray-200 dark:divide-[#2C333A]">
+          <div className="divide-y divide-gray-200 dark:divide-slate-700">
             {issues.length === 0 ? (
               <div className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                 No issues found. Create your first issue to get started.

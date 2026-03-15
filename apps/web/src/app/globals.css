@@ -59,7 +59,7 @@
   }
 
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-brand-400 via-brand-500 to-purple-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 via-primary-500 to-primary-300 bg-clip-text text-transparent;
   }
 
   .text-gradient-accent {
@@ -94,9 +94,9 @@
 
 /* Auth page specific styles */
 .auth-gradient {
-  background: linear-gradient(135deg, #050710 0%, #0F1225 40%, #1E1B4B 100%);
+  background: linear-gradient(135deg, #1B1F23 0%, #22272B 40%, #0B3A34 100%);
 }
 
 .auth-glow {
-  background: radial-gradient(ellipse at 30% 50%, rgba(99, 102, 241, 0.12), transparent 60%);
+  background: radial-gradient(ellipse at 30% 50%, rgba(28, 140, 125, 0.12), transparent 60%);
 }

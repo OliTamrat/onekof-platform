@@ -37,7 +37,7 @@ export default function BudgetSettingsPage() {
 
       <div className="p-6 max-w-4xl">
         {/* General Settings */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-6 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <DollarSign className="h-5 w-5 text-[#F59E0B]" />
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">General Settings</h2>
@@ -51,7 +51,7 @@ export default function BudgetSettingsPage() {
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="USD">USD - US Dollar</option>
                 <option value="EUR">EUR - Euro</option>
@@ -67,7 +67,7 @@ export default function BudgetSettingsPage() {
               <select
                 value={fiscalYearStart}
                 onChange={(e) => setFiscalYearStart(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="01">January</option>
                 <option value="02">February</option>
@@ -87,7 +87,7 @@ export default function BudgetSettingsPage() {
         </div>
 
         {/* Notifications */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-6 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Bell className="h-5 w-5 text-[#F59E0B]" />
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
@@ -104,7 +104,7 @@ export default function BudgetSettingsPage() {
               <button
                 onClick={() => setNotificationsEnabled(!notificationsEnabled)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationsEnabled ? 'bg-[#0065FF]' : 'bg-gray-200 dark:bg-[#2C333A]'
+                  notificationsEnabled ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                 }`}
               >
                 <span
@@ -125,7 +125,7 @@ export default function BudgetSettingsPage() {
                 onChange={(e) => setBudgetAlertThreshold(e.target.value)}
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Alert when budget reaches this percentage of the limit
@@ -135,7 +135,7 @@ export default function BudgetSettingsPage() {
         </div>
 
         {/* Approval Workflow */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-6 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="h-5 w-5 text-[#F59E0B]" />
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Approval Workflow</h2>
@@ -152,7 +152,7 @@ export default function BudgetSettingsPage() {
               <button
                 onClick={() => setApprovalRequired(!approvalRequired)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  approvalRequired ? 'bg-[#0065FF]' : 'bg-gray-200 dark:bg-[#2C333A]'
+                  approvalRequired ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                 }`}
               >
                 <span
@@ -174,7 +174,7 @@ export default function BudgetSettingsPage() {
                   value={approvalThreshold}
                   onChange={(e) => setApprovalThreshold(e.target.value)}
                   min="0"
-                  className="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                  className="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -186,12 +186,12 @@ export default function BudgetSettingsPage() {
 
         {/* Save Button */}
         <div className="flex items-center justify-end gap-3">
-          <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2C333A] rounded-md border border-gray-300 dark:border-[#2C333A]">
+          <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#0065FF] hover:bg-[#0052CC] rounded-md"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
           >
             <Save className="h-4 w-4" />
             Save Settings

@@ -232,7 +232,7 @@ export default function IssuesPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-[#9FADBC]">Loading issues...</div>
+              <div className="text-gray-600 dark:text-slate-400">Loading issues...</div>
             </div>
           ) : (
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -244,10 +244,10 @@ export default function IssuesPage() {
                   >
                     {/* Column Header */}
                     <div className="mb-3 flex items-center gap-2 px-1">
-                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-slate-400">
                         {column.label}
                       </h3>
-                      <span className="rounded-sm bg-gray-200 dark:bg-[#2C333A] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                      <span className="rounded-sm bg-gray-200 dark:bg-slate-700 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-slate-400">
                         {issuesByStatus[column.id]?.length || 0}
                       </span>
                     </div>
@@ -268,8 +268,8 @@ export default function IssuesPage() {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   onClick={() => setSelectedIssue(issue)}
-                                  className={`cursor-pointer rounded-md border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-3 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] ${
-                                    snapshot.isDragging ? 'shadow-lg ring-2 ring-[#0065FF]' : ''
+                                  className={`cursor-pointer rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] ${
+                                    snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : ''
                                   }`}
                                 >
                                   <IssueCard issue={issue} />
@@ -282,7 +282,7 @@ export default function IssuesPage() {
                           {/* Add Issue Button */}
                           <button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
+                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
                             Create
@@ -336,7 +336,7 @@ function IssueCard({ issue }: { issue: Issue }) {
 
       {/* Due Date */}
       {issue.dueDate && (
-        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-[#9FADBC]">
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-400">
           <Calendar className="h-3.5 w-3.5" />
           <span>{formatDate(issue.dueDate)}</span>
         </div>
@@ -346,8 +346,8 @@ function IssueCard({ issue }: { issue: Issue }) {
       <div className="flex items-center justify-between pt-1">
         {/* Issue Key */}
         <div className="flex items-center gap-2">
-          <CheckSquare className="h-3.5 w-3.5 text-[#0065FF]" />
-          <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+          <CheckSquare className="h-3.5 w-3.5 text-primary-500" />
+          <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
             {issue.key}
           </span>
         </div>
@@ -362,12 +362,12 @@ function IssueCard({ issue }: { issue: Issue }) {
                 className="h-6 w-6 rounded-full"
               />
             ) : (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                 {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
               </div>
             )
           ) : (
-            <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-[#2C333A]" />
+            <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-slate-700" />
           )}
         </div>
       </div>

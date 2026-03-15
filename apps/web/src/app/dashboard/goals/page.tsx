@@ -119,7 +119,7 @@ export default function GoalsPage() {
     teamId: '',
     parentGoalId: '',
     icon: 'Target',
-    color: '#0065FF',
+    color: '#1C8C7D',
   });
 
   // Fetch data for form
@@ -336,7 +336,7 @@ export default function GoalsPage() {
       teamId: '',
       parentGoalId: '',
       icon: 'Target',
-      color: '#0065FF',
+      color: '#1C8C7D',
     });
   };
 
@@ -397,8 +397,8 @@ export default function GoalsPage() {
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0065FF] border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading goals...</p>
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+                <p className="text-sm text-gray-600 dark:text-slate-400">Loading goals...</p>
               </div>
             </div>
           ) : filteredGoals.length > 0 ? (
@@ -417,17 +417,17 @@ export default function GoalsPage() {
               ))}
             </div>
           ) : (
-            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-[#2C333A]">
-              <Target className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+              <Target className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 No goals found
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 Create your first goal to start tracking progress
               </p>
               <button
                 onClick={() => setIsCreateDialogOpen(true)}
-                className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 Create Goal
@@ -455,14 +455,14 @@ export default function GoalsPage() {
                   resetForm();
                 }}
                 disabled={createGoalMutation.isPending}
-                className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleCreateGoal}
                 disabled={!formData.title || createGoalMutation.isPending}
-                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                className="bg-primary-500 hover:bg-primary-600 text-white"
               >
                 {createGoalMutation.isPending ? 'Creating...' : 'Create Goal'}
               </Button>
@@ -472,7 +472,7 @@ export default function GoalsPage() {
           <SlideoutPanelContent>
             <form onSubmit={(e) => { e.preventDefault(); handleCreateGoal(); }} className="space-y-6">
               {/* Basic Information Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -485,9 +485,9 @@ export default function GoalsPage() {
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       required
-                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">A clear, measurable objective you want to achieve</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">A clear, measurable objective you want to achieve</p>
                   </div>
 
                   <div className="space-y-2">
@@ -496,13 +496,13 @@ export default function GoalsPage() {
                       id="goal-type"
                       value={formData.goalType}
                       onChange={(e) => setFormData({ ...formData, goalType: e.target.value as typeof formData.goalType })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="COMPANY">Company Goal - Organization-wide objective</option>
                       <option value="TEAM">Team Goal - Shared team target</option>
                       <option value="INDIVIDUAL">Individual Goal - Personal objective</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Defines the scope and visibility of this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Defines the scope and visibility of this goal</p>
                   </div>
 
                   <div className="space-y-2">
@@ -513,15 +513,15 @@ export default function GoalsPage() {
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={4}
-                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Provide context about the goal's purpose and expected outcomes</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Provide context about the goal's purpose and expected outcomes</p>
                   </div>
                 </div>
               </div>
 
               {/* Timeline Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Goal Timeline</h3>
                 <DateRangePicker
                   startDate={formData.startDate}
@@ -534,7 +534,7 @@ export default function GoalsPage() {
               </div>
 
               {/* Ownership & Assignment Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Ownership & Assignment</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -543,7 +543,7 @@ export default function GoalsPage() {
                       id="goal-owner"
                       value={formData.ownerId}
                       onChange={(e) => setFormData({ ...formData, ownerId: e.target.value })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="">No owner assigned</option>
                       {orgMembers.map((member) => (
@@ -552,7 +552,7 @@ export default function GoalsPage() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Person accountable for achieving this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Person accountable for achieving this goal</p>
                   </div>
 
                   <div className="space-y-2">
@@ -561,7 +561,7 @@ export default function GoalsPage() {
                       id="goal-team"
                       value={formData.teamId}
                       onChange={(e) => setFormData({ ...formData, teamId: e.target.value })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="">No team assignment</option>
                       {orgTeams.map((team) => (
@@ -570,13 +570,13 @@ export default function GoalsPage() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Team responsible for collaborating on this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Team responsible for collaborating on this goal</p>
                   </div>
                 </div>
               </div>
 
               {/* Goal Hierarchy Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Goal Hierarchy</h3>
                 <div className="space-y-2">
                   <Label htmlFor="parent-goal" className="text-gray-900 dark:text-white">Parent Goal (Optional)</Label>
@@ -584,7 +584,7 @@ export default function GoalsPage() {
                     id="parent-goal"
                     value={formData.parentGoalId}
                     onChange={(e) => setFormData({ ...formData, parentGoalId: e.target.value })}
-                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                    className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                   >
                     <option value="">This is a top-level goal</option>
                     {parentGoals.map((goal) => (
@@ -593,12 +593,12 @@ export default function GoalsPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Link this goal to a broader objective to create goal hierarchies</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-400">Link this goal to a broader objective to create goal hierarchies</p>
                 </div>
               </div>
 
               {/* Priority & Appearance Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Priority & Appearance</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -607,14 +607,14 @@ export default function GoalsPage() {
                       id="goal-priority"
                       value={formData.priority}
                       onChange={(e) => setFormData({ ...formData, priority: e.target.value as Goal['priority'] })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="LOW">Low - Nice to have, flexible timeline</option>
                       <option value="MEDIUM">Medium - Important, standard timeline</option>
                       <option value="HIGH">High - Critical, needs attention</option>
                       <option value="CRITICAL">Critical - Highest priority, urgent</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Helps teams prioritize their focus and resources</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Helps teams prioritize their focus and resources</p>
                   </div>
 
                   <IconPicker
@@ -631,17 +631,17 @@ export default function GoalsPage() {
                         type="color"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A]"
+                        className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700"
                       />
                       <Input
                         type="text"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        placeholder="#0065FF"
-                        className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white focus:border-[#0065FF]"
+                        placeholder="#1C8C7D"
+                        className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white focus:border-primary-500"
                       />
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Visual identifier to quickly recognize this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Visual identifier to quickly recognize this goal</p>
                   </div>
                 </div>
               </div>
@@ -677,10 +677,10 @@ export default function GoalsPage() {
         {/* Goal Detail Dialog */}
         {selectedGoal && (
           <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-            <DialogContent className="max-w-3xl bg-[#22272B] border-[#2C333A] text-white">
+            <DialogContent className="max-w-3xl bg-[#22272B] border-slate-700 text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
-                  <Target className="h-6 w-6 text-[#0065FF]" />
+                  <Target className="h-6 w-6 text-primary-500" />
                   {selectedGoal.title}
                 </DialogTitle>
               </DialogHeader>
@@ -690,11 +690,11 @@ export default function GoalsPage() {
                 <div className="mb-6">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-medium text-white">Progress</span>
-                    <span className="text-sm text-[#9FADBC]">{selectedGoal.progress}%</span>
+                    <span className="text-sm text-slate-400">{selectedGoal.progress}%</span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-[#2C333A]">
+                  <div className="h-2 w-full rounded-full bg-slate-700">
                     <div
-                      className="h-2 rounded-full bg-[#0065FF] transition-all"
+                      className="h-2 rounded-full bg-primary-500 transition-all"
                       style={{ width: `${selectedGoal.progress}%` }}
                     />
                   </div>
@@ -704,7 +704,7 @@ export default function GoalsPage() {
                 {selectedGoal.description && (
                   <div className="mb-6">
                     <h3 className="mb-2 text-sm font-semibold text-white">Description</h3>
-                    <p className="text-sm text-[#9FADBC]">
+                    <p className="text-sm text-slate-400">
                       {selectedGoal.description}
                     </p>
                   </div>
@@ -719,7 +719,7 @@ export default function GoalsPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setIsAddingKeyResult(true)}
-                        className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                        className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                       >
                         <Plus className="h-4 w-4 mr-1" />
                         Add Key Result
@@ -729,14 +729,14 @@ export default function GoalsPage() {
 
                   {/* Add Key Result Form */}
                   {isAddingKeyResult && (
-                    <div className="mb-4 rounded-lg border border-[#2C333A] p-4 space-y-3 bg-[#1B1F23]">
+                    <div className="mb-4 rounded-lg border border-slate-700 p-4 space-y-3 bg-[#1B1F23]">
                       <div>
                         <Label className="text-xs text-white">Description</Label>
                         <Input
                           value={keyResultForm.description}
                           onChange={(e) => setKeyResultForm({ ...keyResultForm, description: e.target.value })}
                           placeholder="e.g., Increase user engagement"
-                          className="bg-[#22272B] border-[#2C333A] text-white"
+                          className="bg-[#22272B] border-slate-700 text-white"
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-2">
@@ -746,7 +746,7 @@ export default function GoalsPage() {
                             value={keyResultForm.unit}
                             onChange={(e) => setKeyResultForm({ ...keyResultForm, unit: e.target.value })}
                             placeholder="e.g., users"
-                            className="bg-[#22272B] border-[#2C333A] text-white"
+                            className="bg-[#22272B] border-slate-700 text-white"
                           />
                         </div>
                         <div>
@@ -756,7 +756,7 @@ export default function GoalsPage() {
                             value={keyResultForm.target}
                             onChange={(e) => setKeyResultForm({ ...keyResultForm, target: e.target.value })}
                             placeholder="100"
-                            className="bg-[#22272B] border-[#2C333A] text-white"
+                            className="bg-[#22272B] border-slate-700 text-white"
                           />
                         </div>
                         <div>
@@ -766,7 +766,7 @@ export default function GoalsPage() {
                             value={keyResultForm.current}
                             onChange={(e) => setKeyResultForm({ ...keyResultForm, current: e.target.value })}
                             placeholder="0"
-                            className="bg-[#22272B] border-[#2C333A] text-white"
+                            className="bg-[#22272B] border-slate-700 text-white"
                           />
                         </div>
                       </div>
@@ -775,7 +775,7 @@ export default function GoalsPage() {
                           size="sm"
                           onClick={() => createKeyResultMutation.mutate(keyResultForm)}
                           disabled={!keyResultForm.description || !keyResultForm.unit || !keyResultForm.target || createKeyResultMutation.isPending}
-                          className="bg-[#0065FF] hover:bg-[#0052CC]"
+                          className="bg-primary-500 hover:bg-primary-600"
                         >
                           {createKeyResultMutation.isPending ? 'Adding...' : 'Add'}
                         </Button>
@@ -786,7 +786,7 @@ export default function GoalsPage() {
                             setIsAddingKeyResult(false);
                             setKeyResultForm({ description: '', unit: '', target: '', current: '0' });
                           }}
-                          className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                          className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                         >
                           Cancel
                         </Button>
@@ -799,12 +799,12 @@ export default function GoalsPage() {
                       {selectedGoal.keyResults.map((kr) => (
                         <div
                           key={kr.id}
-                          className="flex items-center gap-3 rounded-lg border border-[#2C333A] p-3 bg-[#1B1F23]"
+                          className="flex items-center gap-3 rounded-lg border border-slate-700 p-3 bg-[#1B1F23]"
                         >
                           {kr.isCompleted ? (
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
                           ) : (
-                            <Circle className="h-5 w-5 text-[#9FADBC]" />
+                            <Circle className="h-5 w-5 text-slate-400" />
                           )}
                           <div className="flex-1">
                             <p className="text-sm font-medium text-white">{kr.description}</p>
@@ -816,9 +816,9 @@ export default function GoalsPage() {
                                   const newValue = parseFloat(e.target.value) || 0;
                                   updateKeyResultMutation.mutate({ krId: kr.id, current: newValue });
                                 }}
-                                className="h-7 w-20 text-xs bg-[#22272B] border-[#2C333A] text-white"
+                                className="h-7 w-20 text-xs bg-[#22272B] border-slate-700 text-white"
                               />
-                              <span className="text-xs text-[#9FADBC]">/ {kr.target} {kr.unit}</span>
+                              <span className="text-xs text-slate-400">/ {kr.target} {kr.unit}</span>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -828,7 +828,7 @@ export default function GoalsPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 hover:bg-[#2C333A]"
+                              className="h-8 w-8 hover:bg-slate-700"
                               onClick={() => deleteKeyResultMutation.mutate(kr.id)}
                               disabled={deleteKeyResultMutation.isPending}
                             >
@@ -840,8 +840,8 @@ export default function GoalsPage() {
                     </div>
                   ) : (
                     !isAddingKeyResult && (
-                      <div className="rounded-lg border border-[#2C333A] p-8 text-center text-sm text-[#9FADBC] bg-[#1B1F23]">
-                        <Target className="mx-auto mb-2 h-8 w-8 text-[#2C333A]" />
+                      <div className="rounded-lg border border-slate-700 p-8 text-center text-sm text-slate-400 bg-[#1B1F23]">
+                        <Target className="mx-auto mb-2 h-8 w-8 text-slate-700" />
                         <p>No key results defined yet</p>
                         <p className="text-xs mt-1">Add measurable outcomes to track your goal progress</p>
                       </div>
@@ -854,13 +854,13 @@ export default function GoalsPage() {
                   <h3 className="mb-3 text-sm font-semibold text-white">Linked Projects</h3>
 
                   {/* Add Project Section */}
-                  <div className="mb-4 rounded-lg border border-[#2C333A] p-4 bg-[#1B1F23]">
+                  <div className="mb-4 rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                     <Label className="mb-2 block text-sm text-white">Link Project</Label>
                     <div className="space-y-3">
                       <select
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
-                        className="flex h-10 w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                        className="flex h-10 w-full rounded-md border border-slate-700 bg-[#22272B] px-3 py-2 text-sm text-white focus:border-primary-500 focus:outline-none"
                       >
                         <option value="">Select a project...</option>
                         {allProjectsData?.projects
@@ -888,7 +888,7 @@ export default function GoalsPage() {
                             onChange={(e) => setContributionWeight(parseInt(e.target.value))}
                             className="w-full"
                           />
-                          <div className="mt-1 flex justify-between text-xs text-[#9FADBC]">
+                          <div className="mt-1 flex justify-between text-xs text-slate-400">
                             <span>0%</span>
                             <span>50%</span>
                             <span>100%</span>
@@ -907,7 +907,7 @@ export default function GoalsPage() {
                           }
                         }}
                         disabled={!selectedProjectId || linkProjectMutation.isPending}
-                        className="w-full bg-[#0065FF] hover:bg-[#0052CC]"
+                        className="w-full bg-primary-500 hover:bg-primary-600"
                       >
                         <Link2 className="mr-2 h-4 w-4" />
                         {linkProjectMutation.isPending ? 'Linking...' : 'Link Project'}
@@ -927,11 +927,11 @@ export default function GoalsPage() {
                       {goalProjectsData.projects.map((project: any) => (
                         <div
                           key={project.id}
-                          className="group flex items-start gap-3 rounded-lg border border-[#2C333A] p-4 bg-[#1B1F23] hover:border-[#0065FF] transition-colors"
+                          className="group flex items-start gap-3 rounded-lg border border-slate-700 p-4 bg-[#1B1F23] hover:border-primary-500 transition-colors"
                         >
                           <div
                             className="flex h-12 w-12 items-center justify-center rounded-lg text-2xl shrink-0"
-                            style={{ backgroundColor: project.color || '#0065FF' }}
+                            style={{ backgroundColor: project.color || '#1C8C7D' }}
                           >
                             {project.icon || '📁'}
                           </div>
@@ -941,12 +941,12 @@ export default function GoalsPage() {
                                 <p className="text-sm font-semibold text-white">
                                   {project.name}
                                 </p>
-                                <p className="text-xs text-[#9FADBC]">{project.key}</p>
+                                <p className="text-xs text-slate-400">{project.key}</p>
                               </div>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#2C333A]"
+                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700"
                                 onClick={() => {
                                   if (selectedGoal?.id) {
                                     unlinkProjectMutation.mutate({
@@ -961,19 +961,19 @@ export default function GoalsPage() {
                               </Button>
                             </div>
                             {project.description && (
-                              <p className="text-xs text-[#9FADBC] line-clamp-1 mb-2">
+                              <p className="text-xs text-slate-400 line-clamp-1 mb-2">
                                 {project.description}
                               </p>
                             )}
                             <div className="flex items-center gap-3">
                               <div className="flex-1">
                                 <div className="flex items-center justify-between text-xs mb-1">
-                                  <span className="text-[#9FADBC]">Contributes</span>
-                                  <span className="font-medium text-[#0065FF]">{project.contributionWeight}%</span>
+                                  <span className="text-slate-400">Contributes</span>
+                                  <span className="font-medium text-primary-500">{project.contributionWeight}%</span>
                                 </div>
-                                <div className="h-1.5 w-full rounded-full bg-[#2C333A]">
+                                <div className="h-1.5 w-full rounded-full bg-slate-700">
                                   <div
-                                    className="h-1.5 rounded-full bg-[#0065FF] transition-all"
+                                    className="h-1.5 rounded-full bg-primary-500 transition-all"
                                     style={{ width: `${project.contributionWeight}%` }}
                                   />
                                 </div>
@@ -984,8 +984,8 @@ export default function GoalsPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-[#2C333A] p-8 text-center text-sm text-[#9FADBC] bg-[#1B1F23]">
-                      <Folder className="mx-auto mb-2 h-8 w-8 text-[#2C333A]" />
+                    <div className="rounded-lg border border-slate-700 p-8 text-center text-sm text-slate-400 bg-[#1B1F23]">
+                      <Folder className="mx-auto mb-2 h-8 w-8 text-slate-700" />
                       <p>No projects linked to this goal yet</p>
                       <p className="text-xs mt-1">Link projects that contribute to achieving this goal</p>
                     </div>
@@ -1011,15 +1011,15 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
   const getStatusConfig = (status: Goal['status']) => {
     switch (status) {
       case 'NOT_STARTED':
-        return { icon: Circle, color: 'text-[#9FADBC]', bg: 'bg-[#2C333A]', label: 'Not Started' };
+        return { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-700', label: 'Not Started' };
       case 'IN_PROGRESS':
-        return { icon: TrendingUp, color: 'text-[#0065FF]', bg: 'bg-[#0065FF]/20', label: 'In Progress' };
+        return { icon: TrendingUp, color: 'text-primary-500', bg: 'bg-primary-500/20', label: 'In Progress' };
       case 'AT_RISK':
         return { icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-500/20', label: 'At Risk' };
       case 'COMPLETED':
         return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-500/20', label: 'Completed' };
       default:
-        return { icon: Circle, color: 'text-[#9FADBC]', bg: 'bg-[#2C333A]', label: status };
+        return { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-700', label: status };
     }
   };
 
@@ -1043,16 +1043,16 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#0065FF]"
+      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
     >
       {/* Header */}
       <div className="mb-3 flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate group-hover:text-[#0065FF] transition-colors">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate group-hover:text-primary-500 transition-colors">
             {goal.title}
           </h3>
           {goal.description && (
-            <p className="mt-1 line-clamp-1 text-xs text-gray-600 dark:text-[#9FADBC]">
+            <p className="mt-1 line-clamp-1 text-xs text-gray-600 dark:text-slate-400">
               {goal.description}
             </p>
           )}
@@ -1062,13 +1062,13 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
           <DropdownMenuTrigger asChild>
             <button
               onClick={(e) => e.stopPropagation()}
-              className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#2C333A] shrink-0 transition-colors"
+              className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 shrink-0 transition-colors"
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+              <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-slate-400" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-[#2C333A]">
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClick(); }} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]">
+          <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClick(); }} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700">
               View Details
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -1076,7 +1076,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
                 e.stopPropagation();
                 onDelete(goal.id);
               }}
-              className="text-red-600 hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+              className="text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
             >
               Delete Goal
             </DropdownMenuItem>
@@ -1087,12 +1087,12 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
       {/* Progress Bar */}
       <div className="mb-3">
         <div className="mb-1 flex items-center justify-between text-xs">
-          <span className="text-gray-600 dark:text-[#9FADBC]">Progress</span>
+          <span className="text-gray-600 dark:text-slate-400">Progress</span>
           <span className="font-medium text-gray-900 dark:text-white">{goal.progress}%</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-[#2C333A]">
+        <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-slate-700">
           <div
-            className="h-1.5 rounded-full bg-[#0065FF] transition-all"
+            className="h-1.5 rounded-full bg-primary-500 transition-all"
             style={{ width: `${goal.progress}%` }}
           />
         </div>
@@ -1114,7 +1114,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
 
         {/* Due Date */}
         {goal.dueDate && (
-          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-[#9FADBC] ml-auto">
+          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-slate-400 ml-auto">
             <Calendar className="h-3 w-3" />
             {new Date(goal.dueDate).toLocaleDateString()}
           </div>
@@ -1123,7 +1123,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
 
       {/* Team/Owner */}
       {(goal.team || goal.owner) && (
-        <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-[#9FADBC]">
+        <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
           {goal.team && (
             <>
               <Users className="h-3 w-3" />

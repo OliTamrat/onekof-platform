@@ -194,7 +194,7 @@ export default function IssuesChecklistsPage() {
         />
 
         {/* Filter Bar */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
               <ClipboardCheck className="h-4 w-4" />
@@ -203,7 +203,7 @@ export default function IssuesChecklistsPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">All Categories</option>
               <option value="daily">Daily</option>
@@ -228,18 +228,18 @@ export default function IssuesChecklistsPage() {
                   className={`p-4 bg-white dark:bg-[#22272B] rounded-lg border ${
                     checklist.status === 'overdue'
                       ? 'border-red-500'
-                      : 'border-gray-200 dark:border-[#2C333A]'
-                  } hover:border-[#0065FF] cursor-pointer transition-colors`}
+                      : 'border-gray-200 dark:border-slate-700'
+                  } hover:border-primary-500 cursor-pointer transition-colors`}
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`h-2 w-2 rounded-full ${getStatusColor(checklist.status)}`} />
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
                           {checklist.category.toUpperCase()}
                         </span>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
                           {checklist.type.replace('-', ' ').toUpperCase()}
                         </span>
                         {checklist.priority === 'critical' && (
@@ -251,7 +251,7 @@ export default function IssuesChecklistsPage() {
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
                         {checklist.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                      <p className="text-sm text-gray-600 dark:text-slate-400">
                         {checklist.description}
                       </p>
                     </div>
@@ -259,16 +259,16 @@ export default function IssuesChecklistsPage() {
 
                   {/* Progress Bar */}
                   <div className="mb-3">
-                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#9FADBC] mb-1">
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400 mb-1">
                       <span>{checklist.completedItems} of {checklist.totalItems} tasks completed</span>
                       <span>{progress}%</span>
                     </div>
-                    <div className="h-2 bg-gray-200 dark:bg-[#2C333A] rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                       <div
                         className={`h-full transition-all ${
                           progress === 100 ? 'bg-green-500' :
                           checklist.status === 'overdue' ? 'bg-red-500' :
-                          'bg-[#0065FF]'
+                          'bg-primary-500'
                         }`}
                         style={{ width: `${progress}%` }}
                       />
@@ -301,14 +301,14 @@ export default function IssuesChecklistsPage() {
                       </div>
                     ))}
                     {checklist.items.length > 5 && (
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC] pl-6">
+                      <div className="text-xs text-gray-500 dark:text-slate-400 pl-6">
                         +{checklist.items.length - 5} more tasks
                       </div>
                     )}
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC] pt-3 border-t border-gray-200 dark:border-[#2C333A]">
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400 pt-3 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
                       <span>{checklist.assignedTo}</span>
@@ -341,7 +341,7 @@ export default function IssuesChecklistsPage() {
                 <div className="text-center">
                   <ClipboardCheck className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No checklists found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                     No checklists match the selected filter.
                   </p>
                 </div>

@@ -29,8 +29,8 @@ export default function AutomationsBoardPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <Zap className="h-6 w-6" />
@@ -42,7 +42,7 @@ export default function AutomationsBoardPage() {
 
             <Link
               href="/dashboard/automations/create"
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]"
+              className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
               Create
@@ -59,8 +59,8 @@ export default function AutomationsBoardPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -75,11 +75,11 @@ export default function AutomationsBoardPage() {
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center py-20">
-              <Zap className="mx-auto h-16 w-16 text-gray-300 dark:text-[#2C333A]" />
+              <Zap className="mx-auto h-16 w-16 text-gray-300 dark:text-slate-700" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                 Automations Board View
               </h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-[#9FADBC]">
+              <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
                 Visualize your automations in a Kanban board layout - coming soon!
               </p>
             </div>

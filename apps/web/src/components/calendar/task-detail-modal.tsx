@@ -128,7 +128,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-[#22272B] rounded-lg shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
           <div className="flex items-center gap-3">
             <div
               className="h-10 w-10 rounded-lg flex items-center justify-center"
@@ -148,7 +148,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               <>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                 >
                   Edit
                 </button>
@@ -165,7 +165,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               onClick={onClose}
               className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
             >
-              <X className="h-5 w-5 text-gray-600 dark:text-[#9FADBC]" />
+              <X className="h-5 w-5 text-gray-600 dark:text-slate-400" />
             </button>
           </div>
         </div>
@@ -174,7 +174,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
               Title
             </label>
             {isEditing ? (
@@ -182,7 +182,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 required
               />
             ) : (
@@ -192,7 +192,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <AlignLeft className="h-4 w-4" />
               Description
             </label>
@@ -201,11 +201,11 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
-                className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 placeholder="Add a description..."
               />
             ) : (
-              <p className="text-gray-600 dark:text-[#9FADBC]">
+              <p className="text-gray-600 dark:text-slate-400">
                 {task.description || 'No description'}
               </p>
             )}
@@ -214,14 +214,14 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           {/* Status & Priority */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
                 Status
               </label>
               {isEditing ? (
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
                   <option value="TODO">To Do</option>
                   <option value="IN_PROGRESS">In Progress</option>
@@ -237,7 +237,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Flag className="h-4 w-4" />
                 Priority
               </label>
@@ -245,7 +245,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
                   <option value="CRITICAL">Critical</option>
                   <option value="HIGH">High</option>
@@ -268,7 +268,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           {/* Dates & Times */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Start Date
               </label>
@@ -278,13 +278,13 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   />
                   <input
                     type="time"
                     value={formData.startTime}
                     onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   />
                 </div>
               ) : (
@@ -295,7 +295,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 Due Date
               </label>
@@ -305,13 +305,13 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                     type="date"
                     value={formData.dueDate}
                     onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   />
                   <input
                     type="time"
                     value={formData.dueTime}
                     onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   />
                 </div>
               ) : (
@@ -324,7 +324,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
 
           {/* Assignee */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <User className="h-4 w-4" />
               Assignee
             </label>
@@ -332,7 +332,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               <select
                 value={formData.assigneeId}
                 onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
                 <option value="">Unassigned</option>
                 {members.map((member: any) => (
@@ -346,7 +346,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 {task.assignee.avatar ? (
                   <img src={task.assignee.avatar} alt="" className="h-8 w-8 rounded-full" />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-[#0065FF] flex items-center justify-center text-sm font-medium text-white">
+                  <div className="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center text-sm font-medium text-white">
                     {task.assignee.name.charAt(0)}
                   </div>
                 )}
@@ -359,7 +359,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <Tag className="h-4 w-4" />
               Tags
             </label>
@@ -369,14 +369,14 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 placeholder="Enter tags separated by commas"
-                className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
             ) : task.tags && task.tags.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {task.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex rounded-full px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]"
+                    className="inline-flex rounded-full px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400"
                   >
                     {tag}
                   </span>
@@ -390,14 +390,14 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           {/* Reminder */}
           {isEditing && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-[#9FADBC] mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Bell className="h-4 w-4" />
                 Reminder
               </label>
               <select
                 value={formData.reminder}
                 onChange={(e) => setFormData({ ...formData, reminder: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
                 <option value="none">No reminder</option>
                 <option value="15min">15 minutes before</option>
@@ -410,18 +410,18 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
 
           {/* Action Buttons */}
           {isEditing && (
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="flex items-center gap-2 rounded-lg bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors disabled:opacity-50"
               >
                 <Save className="h-4 w-4" />
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
