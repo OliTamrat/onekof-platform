@@ -157,6 +157,7 @@ export function UnifiedPageHeader({
                 <Link
                   key={tab.id}
                   href={href}
+                  prefetch={false}
                   className={cn(
                     'flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 rounded-t-md whitespace-nowrap shrink-0',
                     isActive
@@ -183,6 +184,7 @@ export function UnifiedPageHeader({
                 <Link
                   key={tab.id}
                   href={href}
+                  prefetch={false}
                   className={cn(
                     'flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 rounded-t-md shrink-0 whitespace-nowrap',
                     isActive
@@ -221,6 +223,7 @@ export function UnifiedPageHeader({
                     <DropdownMenuItem key={tab.id} asChild>
                       <Link
                         href={href}
+                        prefetch={false}
                         className={cn(
                           'flex items-center gap-3 w-full cursor-pointer',
                           isActive && 'bg-primary-500/10 text-primary-500 dark:text-primary-500 font-medium'
