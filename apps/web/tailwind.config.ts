@@ -11,16 +11,17 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
-          'Inter',
+          'SF Pro Text',
           'SF Pro Display',
+          'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
           'system-ui',
           'sans-serif',
         ],
         display: [
-          'Inter',
           'SF Pro Display',
+          'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
           'system-ui',
@@ -134,6 +135,11 @@ const config: Config = {
         'shimmer': 'shimmer 2s linear infinite',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'gradient-shift': 'gradient-shift 8s ease infinite',
+        'marquee': 'marquee 30s linear infinite',
+        'marquee-reverse': 'marquee 30s linear infinite reverse',
+        'word-rotate': 'word-rotate 12s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'border-rotate': 'border-rotate 4s linear infinite',
       },
       keyframes: {
         float: {
@@ -147,6 +153,25 @@ const config: Config = {
         'gradient-shift': {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'word-rotate': {
+          '0%, 20%': { transform: 'translateY(0%)' },
+          '25%, 45%': { transform: 'translateY(-25%)' },
+          '50%, 70%': { transform: 'translateY(-50%)' },
+          '75%, 95%': { transform: 'translateY(-75%)' },
+          '100%': { transform: 'translateY(0%)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+        },
+        'border-rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
         },
       },
     },
