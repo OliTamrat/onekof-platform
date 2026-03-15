@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { LanguageSwitcher } from '@/components/language-switcher';
+
 import {
   ArrowRight,
   Calendar,
@@ -434,7 +434,6 @@ export default function HomePage() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
-            <LanguageSwitcher variant="dark" />
             <Link
               href="/auth/signin"
               className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-colors hover:text-white/80"

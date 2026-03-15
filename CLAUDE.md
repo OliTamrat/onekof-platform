@@ -8,8 +8,8 @@
 - **Database**: PostgreSQL with Prisma ORM (schema at `packages/database/prisma/schema.prisma`)
 - **Auth**: NextAuth.js v4 with JWT strategy, cookie domain `.onekof.com`
 - **State**: TanStack React Query for server data, `workspace-context.tsx` for org context
-- **i18n**: next-intl v4, cookie-based locale (`NEXT_LOCALE`), 4 locales: en, am, om, ti
 - **Monorepo**: Turborepo with `apps/web` and `packages/database`
+- **Fonts**: System fonts only (SF Pro Text → system-ui). No Google Fonts. No external font dependencies.
 
 ### Multi-Tenant Routing
 - **Subdomains**: `{org-slug}.onekof.com` → middleware extracts slug → sets `x-organization-slug` header
@@ -69,7 +69,7 @@ All UI must use these semantic tokens defined in `tailwind.config.ts`:
 - Borders: `border-slate-200 dark:border-slate-700`
 
 ### Typography
-- Font stack: SF Pro Text → Inter → system-ui
+- Font stack: SF Pro Text → system-ui (no external fonts)
 - Page titles: `text-xl font-semibold`
 - Section titles: `text-lg font-semibold`
 - Body: `text-sm` (14px)
@@ -91,7 +91,6 @@ These patterns are critical to production stability:
 - **Cookie domain** (`.onekof.com`) — changing this breaks cross-subdomain sessions
 - **Middleware header injection** (`x-organization-slug`) — do not modify without subdomain testing
 - **NextAuth session strategy** (`jwt`) — changing to `database` requires migration
-- **`withNextIntl()`** in `next.config.mjs` — wraps the config for i18n, do not remove
 
 ## Before Any Audit or Refactor
 
@@ -141,7 +140,7 @@ These patterns are critical to production stability:
 
 ## Project Context
 
-- **Design**: Jira-inspired with Ethiopian-first customizations (ETB currency, Ethiopian calendar, Amharic/Oromo/Tigrinya language support)
+- **Design**: Jira-inspired with Ethiopian-first customizations (ETB currency, Ethiopian calendar)
 - **Pages**: ~164 pages across dashboard, projects, auth, settings, marketing
-- **Locales**: English (en), Amharic (am), Afaan Oromoo (om), Tigrinya (ti)
-- **Scripts**: Latin (en, om), Ge'ez/Ethiopic (am, ti) — uses AbyssinicaSIL font
+- **Language**: English only. i18n/multilingual was removed — the previous implementation (next-intl) only switched fonts without translating any content. Do NOT re-add i18n unless a full translation pipeline is in place.
+- **No external fonts**: All fonts are system fonts or local @font-face declarations. Do NOT add Google Fonts or other CDN font dependencies — they cause CSP issues and add latency.
