@@ -290,10 +290,12 @@ export async function getTopContributors(
     return acc;
   }, {} as Record<string, typeof users[0]>);
 
-  return contributors.map((contributor: { userId: string; _count: { id: number } }) => ({
-    user: userMap[contributor.userId],
-    activityCount: contributor._count.id,
-  }));
+  return contributors
+    .map((contributor: { userId: string; _count: { id: number } }) => ({
+      user: userMap[contributor.userId],
+      activityCount: contributor._count.id,
+    }))
+    .filter((c) => c.user != null);
 }
 
 /**

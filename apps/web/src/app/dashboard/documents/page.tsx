@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DocumentUpload } from '@/components/documents/document-upload';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
   FileText,
   Sparkles,
@@ -98,25 +99,21 @@ export default function DocumentsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              AI Document Processing
-            </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Upload documents for intelligent analysis powered by Claude AI
-            </p>
-          </div>
+      <UnifiedPageHeader
+        title="AI Documents"
+        icon={<Sparkles className="h-6 w-6" />}
+        iconColor="#1C8C7D"
+        currentTab="documents"
+        baseHref="/dashboard/documents"
+        showTabs
+        showSearch
+        showFilters
+        showGroupBy={false}
+        showViewSettings
+        showInsights={false}
+      />
 
-          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#1C8C7D]/20 bg-gradient-to-r from-[#1C8C7D]/5 to-[#16A085]/5">
-            <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-            <span className="text-sm font-medium text-[#1C8C7D]">
-              AI-Powered
-            </span>
-          </div>
-        </div>
+      <div className="p-6 space-y-6">
 
         {/* Upload Component */}
         <DocumentUpload onUploadComplete={handleUploadComplete} />
