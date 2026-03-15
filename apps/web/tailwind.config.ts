@@ -9,22 +9,82 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'Inter',
+          'SF Pro Display',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'sans-serif',
+        ],
+        display: [
+          'Inter',
+          'SF Pro Display',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'sans-serif',
+        ],
+      },
       colors: {
-        // Jira-inspired color palette
+        brand: {
+          50: '#EEF2FF',
+          100: '#E0E7FF',
+          200: '#C7D2FE',
+          300: '#A5B4FC',
+          400: '#818CF8',
+          500: '#6366F1',
+          600: '#4F46E5',
+          700: '#4338CA',
+          800: '#3730A3',
+          900: '#312E81',
+          950: '#1E1B4B',
+        },
+        accent: {
+          50: '#FFF7ED',
+          100: '#FFEDD5',
+          200: '#FED7AA',
+          300: '#FDBA74',
+          400: '#FB923C',
+          500: '#F97316',
+          600: '#EA580C',
+          warm: '#FF6B35',
+          coral: '#FF6154',
+          gold: '#FFAA40',
+        },
+        surface: {
+          50: '#FAFAFF',
+          100: '#F4F5FB',
+          200: '#EBEDF7',
+          300: '#DDE0ED',
+          400: '#C4C8D9',
+        },
+        midnight: {
+          50: '#E8EAF0',
+          100: '#C5C9D6',
+          200: '#9DA3B8',
+          300: '#6B7394',
+          400: '#4A5275',
+          500: '#2A3256',
+          600: '#1E2445',
+          700: '#161B35',
+          800: '#0F1225',
+          900: '#080B16',
+          950: '#050710',
+        },
         jira: {
-          // Blues (Jira Primary)
           blue: {
             50: '#DEEBFF',
             100: '#B3D4FF',
             200: '#4C9AFF',
             300: '#2684FF',
             400: '#0065FF',
-            500: '#0052CC', // Primary Jira blue
+            500: '#0052CC',
             600: '#0747A6',
             700: '#09326C',
             800: '#091E42',
           },
-          // Grays (Backgrounds & Text)
           gray: {
             50: '#FAFBFC',
             100: '#F4F5F7',
@@ -38,19 +98,55 @@ const config: Config = {
             900: '#344563',
             950: '#253858',
           },
-          // Dark mode backgrounds
           dark: {
-            bg: '#1D2125', // Main background
-            surface: '#22272B', // Cards/panels
-            border: '#363B3F', // Borders
-            sidebar: '#0D1117', // Sidebar background
-            navbar: '#0D1117', // Navbar background
+            bg: '#0F1225',
+            surface: '#161B35',
+            border: '#252B4A',
+            sidebar: '#0A0D1A',
+            navbar: '#0A0D1A',
           },
-          // Status colors
           success: '#00875A',
           warning: '#FFAB00',
           danger: '#DE350B',
-          info: '#0065FF',
+          info: '#6366F1',
+        },
+      },
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+        'gradient-brand-hover': 'linear-gradient(135deg, #4338CA, #6D28D9)',
+        'gradient-accent': 'linear-gradient(135deg, #FF6154, #FFAA40)',
+        'gradient-hero': 'linear-gradient(135deg, #080B16 0%, #0F1225 40%, #1E1B4B 100%)',
+        'gradient-dark': 'linear-gradient(135deg, #080B16, #161B35)',
+        'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+      },
+      boxShadow: {
+        'brand-sm': '0 2px 8px -2px rgba(99, 102, 241, 0.25)',
+        'brand-md': '0 4px 16px -4px rgba(99, 102, 241, 0.3)',
+        'brand-lg': '0 8px 32px -8px rgba(99, 102, 241, 0.35)',
+        'brand-xl': '0 16px 48px -12px rgba(99, 102, 241, 0.4)',
+        'accent-md': '0 4px 16px -4px rgba(255, 97, 84, 0.3)',
+        'glow': '0 0 40px rgba(99, 102, 241, 0.15)',
+        'glow-lg': '0 0 80px rgba(99, 102, 241, 0.2)',
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'gradient-shift': 'gradient-shift 8s ease infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       },
     },

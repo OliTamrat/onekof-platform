@@ -74,10 +74,16 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1C8C7D" />
+        <meta name="theme-color" content="#4F46E5" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Onekof" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+          rel="stylesheet"
+        />
         <style dangerouslySetInnerHTML={{
           __html: `
             @font-face {
@@ -89,18 +95,23 @@ export default async function RootLayout({
               font-display: swap;
             }
             :root {
-              --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-              --font-sf-pro-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-primary: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-body: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
               --font-geez: "AbyssinicaSIL", "Nyala", "Abyssinica SIL", serif;
             }
             body {
-              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-sf-pro-text)'};
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-body)'};
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
               text-rendering: optimizeLegibility;
+              font-feature-settings: "cv02", "cv03", "cv04", "cv11";
             }
-            h1, h2, h3, h4, h5, h6, button {
-              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-sf-pro)'};
+            h1, h2, h3, h4, h5, h6 {
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-primary)'};
+              letter-spacing: -0.025em;
+            }
+            button {
+              font-family: ${useGeezFont ? 'var(--font-geez)' : 'var(--font-primary)'};
             }
           `
         }} />
