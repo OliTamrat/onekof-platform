@@ -1,0 +1,1673 @@
+// Onekof Platform Database Schema
+// Multi-tenant architecture with schema-based isolation
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema", "postgresqlExtensions"]
+  binaryTargets   = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+  schemas    = ["public"]
+}
+
+// ============================================================================
+// PUBLIC SCHEMA - Shared across all tenants
+// ============================================================================
+
+// Organizations (tenants)
+model Organization {
+  id         String @id @default(cuid())
+  name       String
+  slug       String @unique
+  schemaName String @unique @map("schema_name") // e.g., "onekof_org_abc123"
+
+  // Subscription & billing
+  plan             Plan      @default(FREE)
+  status           OrgStatus @default(TRIAL)
+  billingEmail     String?   @map("billing_email")
+  subscriptionId   String?   @map("subscription_id")
+  trialEndsAt      DateTime? @map("trial_ends_at")
+  currentPeriodEnd DateTime? @map("current_period_end")
+
+  // Limits (based on plan)
+  maxMembers  Int @default(10) @map("max_members")
+  maxProjects Int @default(10) @map("max_projects")
+  maxStorage  Int @default(5) @map("max_storage") // GB
+
+  // Settings
+  settings Json @default("{}")
+  features Json @default("[]")
+
+  // Ethiopian-specific
+  preferredCalendar Calendar @default(GREGORIAN) @map("preferred_calendar")
+  primaryLanguage   Language @default(EN) @map("primary_language")
+
+  // Organization categorization (from onboarding)
+  type             String?   // government, private, ngo, education, construction, healthcare
+  department       String?   // for government orgs
+  industry         String?   // for private orgs
+  teamSize         String?   // 1-10, 11-50, 51-200, 201-500, 500+
+  primaryUseCases  String[]  @default([]) @map("primary_use_cases")
+  language         String?   // english, amharic, oromo, tigrinya
+  calendarPreference String? @map("calendar_preference") // ethiopian, gregorian, both
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  members              OrganizationMember[]
+  invitations          Invitation[]
+  projects             Project[]
+  teams                Team[]
+  goals                Goal[]
+  automationRules      AutomationRule[]
+  activities           UserActivity[] // 🚀 NEW: All activities in this organization
+  organizationSettings OrganizationSettings? // Feature flags and customization
+
+  @@map("organizations")
+  @@schema("public")
+}
+
+// Organization Settings - Feature Flags & Dashboard Customization
+model OrganizationSettings {
+  id             String @id @default(cuid())
+  organizationId String @unique @map("organization_id")
+
+  // Enabled dashboard sections
+  enabledSections String[] @default([]) @map("enabled_sections") // Array of section IDs: teams, budget, goals, etc.
+
+  // Feature flags stored as JSON for flexibility
+  // Structure matches OrganizationFeatures type from TypeScript
+  budgetFeatures     Json? @map("budget_features")
+  teamsFeatures      Json? @map("teams_features")
+  goalsFeatures      Json? @map("goals_features")
+  automationsFeatures Json? @map("automations_features")
+  documentsFeatures  Json? @map("documents_features")
+  docsFeatures       Json? @map("docs_features")
+
+  // Global features
+  aiAssistant      Boolean @default(false) @map("ai_assistant")
+  analytics        Boolean @default(true)
+  integrations     Boolean @default(false)
+  customBranding   Boolean @default(false) @map("custom_branding")
+
+  // Customization
+  primaryColor    String   @default("#0065FF") @map("primary_color")
+  logoUrl         String?  @map("logo_url")
+  budgetCurrency  String   @default("USD") @map("budget_currency")
+  fiscalYearStart Int      @default(1) @map("fiscal_year_start") // 1-12 (month)
+  dateFormat      String   @default("MM/DD/YYYY") @map("date_format")
+  language        Language @default(EN)
+
+  // Permissions
+  allowMemberInvites     Boolean @default(true) @map("allow_member_invites")
+  requireBudgetApproval  Boolean @default(true) @map("require_budget_approval")
+  publicProjectsVisible  Boolean @default(false) @map("public_projects_visible")
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("organization_settings")
+  @@schema("public")
+}
+
+// Users (global, shared across organizations)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+
+  // Profile
+  name     String?
+  avatar   String?
+  bio      String?
+  phone    String?
+  timezone String   @default("Africa/Addis_Ababa")
+  language Language @default(EN)
+
+  // Authentication
+  password         String? // Hashed with bcrypt (salt rounds >= 12)
+  resetTokenHash   String? @map("reset_token_hash") // 🔒 SECURITY: Hashed reset token
+  resetTokenExpiry DateTime? @map("reset_token_expiry")
+
+  // 🔒 SECURITY: Two-Factor Authentication (TOTP)
+  twoFactorEnabled  Boolean  @default(false) @map("two_factor_enabled")
+  twoFactorSecret   String?  @map("two_factor_secret") // Encrypted TOTP secret
+  twoFactorBackupCodes String[] @default([]) @map("two_factor_backup_codes") // Hashed backup codes
+
+  // 🔒 SECURITY: Account protection
+  failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
+  lastFailedLoginAt   DateTime? @map("last_failed_login_at")
+  lockedUntil         DateTime? @map("locked_until")
+  passwordChangedAt   DateTime? @map("password_changed_at")
+
+  // Preferences
+  preferences Json @default("{}") // UI preferences, notifications, etc.
+
+  // Default organization (for quick access)
+  defaultOrganizationId String? @map("default_organization_id")
+
+  // Metadata
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastLoginAt DateTime? @map("last_login_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  // Relations
+  accounts       Account[]
+  sessions       Session[]
+  organizations  OrganizationMember[]
+  projectMembers ProjectMember[] // Project memberships
+  teamMembers    TeamMember[]
+  assignedTasks  Task[]          @relation("TaskAssignee")
+  reportedTasks  Task[]          @relation("TaskReporter")
+  comments       Comment[]       @relation("CommentAuthor")
+  attachments    Attachment[]    @relation("AttachmentUploader")
+  taskWatchers   TaskWatcher[]   @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
+  goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
+  activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
+
+  // 🚀 PERFORMANCE: Critical indexes for authentication and queries
+  @@index([email, deletedAt]) // Soft-deleted user queries
+  @@index([lastLoginAt]) // Inactive user cleanup
+  @@index([defaultOrganizationId]) // Quick organization lookup
+  @@map("users")
+  @@schema("public")
+}
+
+// Organization membership
+model OrganizationMember {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role OrgRole @default(MEMBER)
+
+  // 🚀 NEW: Budget access level
+  budgetAccess BudgetAccess @default(NO_ACCESS) @map("budget_access")
+
+  // Metadata
+  joinedAt  DateTime @default(now()) @map("joined_at")
+  invitedBy String?  @map("invited_by")
+
+  @@unique([organizationId, userId])
+  @@map("organization_members")
+  @@schema("public")
+}
+
+// Invitations
+model Invitation {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  email      String
+  role       OrgRole
+  tokenHash  String    @unique @map("token_hash") // 🔒 SECURITY: Hashed invitation token
+  invitedBy  String    @map("invited_by")
+  expiresAt  DateTime  @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("invitations")
+  @@schema("public")
+}
+
+// OAuth accounts (Google, Microsoft, etc.)
+model Account {
+  id String @id @default(cuid())
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type              String
+  provider          String
+  providerAccountId String @map("provider_account_id")
+
+  refresh_token String?
+  access_token  String?
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?
+  session_state String?
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+  @@schema("public")
+}
+
+// Sessions (for NextAuth.js)
+model Session {
+  id String @id @default(cuid())
+
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+  @@schema("public")
+}
+
+// Verification tokens (email verification, password reset)
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+  @@schema("public")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum Plan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+
+  @@schema("public")
+}
+
+enum OrgStatus {
+  ACTIVE
+  TRIAL
+  SUSPENDED
+  CANCELLED
+
+  @@schema("public")
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  MEMBER
+  GUEST
+
+  @@schema("public")
+}
+
+enum Language {
+  EN // English
+  AM // Amharic (አማርኛ)
+  OM // Afaan Oromo
+  TI // Tigrinya (ትግርኛ)
+  SO // Somali
+
+  @@schema("public")
+}
+
+enum Calendar {
+  GREGORIAN
+  ETHIOPIAN
+
+  @@schema("public")
+}
+
+// ============================================================================
+// PROJECT MANAGEMENT MODELS
+// ============================================================================
+
+// Projects within an organization
+model Project {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Project details
+  name        String
+  key         String // Project key (e.g., "ONEKOF", "PROJ")
+  description String?
+  icon        String? // Emoji or icon identifier
+  color       String? // Hex color
+
+  // Settings
+  defaultAssignee String? @map("default_assignee")
+  leadId          String? @map("lead_id")
+
+  // Project type and status
+  type       ProjectType     @default(BUSINESS) // Type of project (Software, Marketing, etc.)
+  template   ProjectTemplate @default(KANBAN)
+  status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
+  isArchived Boolean         @default(false) @map("is_archived")
+  isFavorite Boolean         @default(false) @map("is_favorite")
+  settings   Json            @default("{}") // Color, icon, etc.
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  // Relations
+  tasks   Task[]
+  members ProjectMember[]
+  teams   ProjectTeam[]
+  goals   GoalProject[]
+  budget  Budget? // 🚀 NEW: 1:1 Budget relationship
+
+  @@unique([organizationId, key])
+  // 🚀 PERFORMANCE: Project query indexes
+  @@index([organizationId, deletedAt, isArchived]) // Active projects list
+  @@index([organizationId, isFavorite, updatedAt]) // Favorite projects
+  @@index([organizationId, type, status]) // Projects by type
+  @@index([leadId, deletedAt]) // Projects I lead
+  @@index([updatedAt, deletedAt]) // Recently updated
+  @@map("projects")
+  @@schema("public")
+}
+
+// Project members (separate from org members for project-specific roles)
+model ProjectMember {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String      @map("user_id")
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   ProjectRole @default(MEMBER)
+
+  // 🚀 NEW: Project-level budget access (can override org-level)
+  budgetAccess BudgetAccess? @map("budget_access")
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([projectId, userId])
+  @@map("project_members")
+  @@schema("public")
+}
+
+// Tasks/Issues
+model Task {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Task identification
+  key         String // Task key (e.g., "ONEKOF-123")
+  title       String
+  description String?
+
+  // Task properties
+  type     TaskType     @default(TASK)
+  status   TaskStatus   @default(TODO)
+  priority TaskPriority @default(MEDIUM)
+
+  // Assignment
+  assigneeId String? @map("assignee_id")
+  reporterId String  @map("reporter_id")
+
+  // Hierarchy
+  parentId String? @map("parent_id")
+
+  // Time tracking
+  estimate    Int?      @map("estimate") // In hours
+  timeSpent   Int?      @map("time_spent") // In hours
+  dueDate     DateTime? @map("due_date")
+  startDate   DateTime? @map("start_date")
+  completedAt DateTime? @map("completed_at")
+
+  // Labels and custom fields
+  labels       Json @default("[]")
+  customFields Json @default("{}") @map("custom_fields")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  assignee          User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporter          User          @relation("TaskReporter", fields: [reporterId], references: [id])
+  comments          Comment[]
+  attachments       Attachment[]
+  watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
+  budgetAllocations TaskBudget[] // 🚀 NEW: Budget category allocations
+
+  @@unique([projectId, key])
+  // 🚀 PERFORMANCE: Critical indexes for task queries (70% faster!)
+  @@index([projectId, status, deletedAt]) // Board view: active tasks by status
+  @@index([projectId, type, status, deletedAt]) // Filtered board views
+  @@index([assigneeId, status, deletedAt]) // My tasks view
+  @@index([assigneeId, dueDate]) // Due date reminders & "my overdue tasks"
+  @@index([projectId, createdAt, deletedAt]) // Recent tasks in project
+  @@index([reporterId, createdAt]) // Tasks I reported
+  @@index([status, dueDate]) // Global task due date queries
+  @@index([priority, status, deletedAt]) // Priority-based views
+  @@map("tasks")
+  @@schema("public")
+}
+
+// Task comments
+model Comment {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  content  String
+  authorId String @map("author_id")
+  author   User   @relation("CommentAuthor", fields: [authorId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  // 🚀 PERFORMANCE: Indexes for comment queries
+  @@index([taskId, createdAt, deletedAt]) // Task comments timeline
+  @@index([authorId, createdAt]) // User's comment history
+  @@map("comments")
+  @@schema("public")
+}
+
+// Task attachments
+model Attachment {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  filename String
+  url      String
+  mimeType String @map("mime_type")
+  size     Int // In bytes
+
+  uploadedById String   @map("uploaded_by")
+  uploadedBy   User     @relation("AttachmentUploader", fields: [uploadedById], references: [id])
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
+
+  @@map("attachments")
+  @@schema("public")
+}
+
+// ============================================================================
+// PROJECT MANAGEMENT ENUMS
+// ============================================================================
+
+enum ProjectType {
+  SOFTWARE      // Software development projects (Code, Board, Deployments, etc.)
+  BUSINESS      // General business projects (Tasks, Calendar, Reports)
+  MARKETING     // Marketing campaigns (Content, Analytics, Social Media)
+  OPERATIONS    // Operations & Infrastructure (Incidents, Monitoring, Docs)
+  RESEARCH      // Research & Analysis projects (Data, Reports, Findings)
+  CONSTRUCTION  // Construction & Engineering (Plans, Budget, Timeline)
+  CUSTOM        // Custom project type
+
+  @@schema("public")
+}
+
+enum ProjectTemplate {
+  KANBAN
+  SCRUM
+  CUSTOM
+
+  @@schema("public")
+}
+
+enum ProjectRole {
+  ADMIN
+  MEMBER
+  VIEWER
+
+  @@schema("public")
+}
+
+enum TaskType {
+  TASK
+  STORY
+  BUG
+  EPIC
+  SUBTASK
+
+  @@schema("public")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  BLOCKED
+
+  @@schema("public")
+}
+
+enum TaskPriority {
+  HIGHEST
+  HIGH
+  MEDIUM
+  LOW
+  LOWEST
+
+  @@schema("public")
+}
+
+// ============================================================================
+// TEAM MANAGEMENT MODELS
+// ============================================================================
+
+// Teams within an organization
+model Team {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Team details
+  name        String
+  description String?
+  icon        String? // Emoji or icon identifier
+  color       String? // Hex color
+
+  // Settings
+  isDefault  Boolean @default(false) @map("is_default") // Default team for new members
+  isFavorite Boolean @default(false) @map("is_favorite")
+  settings   Json    @default("{}") // Team-specific settings
+
+  // 🚀 NEW: Default hourly rate for team (for budget calculations)
+  defaultHourlyRate Decimal?  @map("default_hourly_rate") @db.Decimal(10, 2)
+  rateCurrency      Currency? @map("rate_currency")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  // Relations
+  members  TeamMember[]
+  projects ProjectTeam[]
+  goals    Goal[]
+
+  @@map("teams")
+  @@schema("public")
+}
+
+// Team membership
+model TeamMember {
+  id String @id @default(cuid())
+
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  userId String   @map("user_id")
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   TeamRole @default(MEMBER)
+
+  // 🚀 NEW: Per-member hourly rate (overrides team default)
+  hourlyRate   Decimal?  @map("hourly_rate") @db.Decimal(10, 2)
+  rateCurrency Currency? @map("rate_currency")
+
+  // Metadata
+  joinedAt DateTime @default(now()) @map("joined_at")
+  addedBy  String   @map("added_by")
+
+  @@unique([teamId, userId])
+  @@map("team_members")
+  @@schema("public")
+}
+
+// Project-Team relationship (projects can have multiple teams)
+model ProjectTeam {
+  id String @id @default(cuid())
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  teamId String @map("team_id")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([projectId, teamId])
+  @@map("project_teams")
+  @@schema("public")
+}
+
+// Project-Goal relationship (projects can contribute to multiple goals)
+model GoalProject {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Track how much this project contributes to the goal (percentage)
+  contributionWeight Int @default(100) @map("contribution_weight")
+
+  // Metadata
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String   @map("added_by")
+
+  @@unique([goalId, projectId])
+  @@index([goalId])
+  @@index([projectId])
+  @@map("goal_projects")
+  @@schema("public")
+}
+
+// ============================================================================
+// GOALS & OKR MODELS
+// ============================================================================
+
+// Goals (Objectives & Key Results)
+model Goal {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Goal details
+  title       String
+  description String?
+
+  // Goal properties
+  status   GoalStatus   @default(NOT_STARTED)
+  priority GoalPriority @default(MEDIUM)
+  progress Int          @default(0) // 0-100 percentage
+
+  // Ownership
+  ownerId String? @map("owner_id")
+  teamId  String? @map("team_id")
+  team    Team?   @relation(fields: [teamId], references: [id])
+
+  // Timeline
+  startDate DateTime? @map("start_date")
+  dueDate   DateTime? @map("due_date")
+
+  // Metadata
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+  deletedAt   DateTime? @map("deleted_at")
+  createdBy   String    @map("created_by")
+
+  // Relations
+  keyResults KeyResult[]
+  projects   GoalProject[]
+  watchers   GoalWatcher[] // 🚀 NEW: Smart watchers for goal progress tracking
+
+  // 🚀 PERFORMANCE: Goal query indexes
+  @@index([organizationId, status, deletedAt]) // Active goals by status
+  @@index([organizationId, priority, status]) // Priority goals
+  @@index([teamId, status, deletedAt]) // Team goals
+  @@index([ownerId, status, deletedAt]) // My goals
+  @@index([dueDate, status]) // Upcoming goal deadlines
+  @@map("goals")
+  @@schema("public")
+}
+
+// Key Results (measurable outcomes for goals)
+model KeyResult {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  // Key result details
+  description String
+  unit        String @default("units") // e.g., "users", "revenue", "tasks"
+  target      Float // Target value
+  current     Float  @default(0) // Current value
+
+  // Status
+  isCompleted Boolean @default(false) @map("is_completed")
+
+  // Metadata
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  completedAt DateTime? @map("completed_at")
+
+  @@map("key_results")
+  @@schema("public")
+}
+
+// ============================================================================
+// TEAM & GOAL ENUMS
+// ============================================================================
+
+enum TeamRole {
+  LEAD
+  MEMBER
+
+  @@schema("public")
+}
+
+enum GoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  AT_RISK
+  COMPLETED
+  CANCELLED
+
+  @@schema("public")
+}
+
+enum GoalPriority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+
+  @@schema("public")
+}
+
+// ============================================================================
+// AUTOMATION SYSTEM
+// ============================================================================
+
+// Automation Rules (Jira-inspired workflow automation)
+model AutomationRule {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Rule details
+  name            String
+  description     String?
+  icon            String? // Lucide icon name
+  color           String? // Hex color
+  naturalLanguage String? @map("natural_language") // Human-readable description
+
+  // Rule configuration
+  isTemplate     Boolean           @default(false) @map("is_template") // Template vs active rule
+  isEnabled      Boolean           @default(true) @map("is_enabled")
+  scope          AutomationScope   @default(PROJECT) // Where this rule applies
+  entityType     AutomationEntity  @default(TASK) // What entity it operates on
+  triggerEvent   AutomationTrigger @default(CREATED) // What triggers the rule
+  runMode        AutomationRunMode @default(AUTOMATIC) // How it runs
+  executionOrder Int               @default(1) @map("execution_order") // Order of execution
+
+  // Rule logic (stored as JSON for flexibility)
+  conditions Json // Array of conditions that must be met
+  actions    Json // Array of actions to perform
+
+  // Project/Team scope (optional - for non-org-wide rules)
+  projectId String? @map("project_id")
+  teamId    String? @map("team_id")
+
+  // Statistics
+  executionCount Int       @default(0) @map("execution_count")
+  lastExecutedAt DateTime? @map("last_executed_at")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  @@map("automation_rules")
+  @@schema("public")
+}
+
+// Automation enums
+enum AutomationScope {
+  ORGANIZATION // Applies to entire organization
+  PROJECT // Applies to specific project
+  TEAM // Applies to specific team
+
+  @@schema("public")
+}
+
+enum AutomationEntity {
+  TASK
+  PROJECT
+  COMMENT
+  MILESTONE
+  GOAL
+
+  @@schema("public")
+}
+
+enum AutomationTrigger {
+  CREATED // Entity created
+  UPDATED // Entity updated
+  DELETED // Entity deleted
+  STATUS_CHANGED // Status field changed
+  FIELD_CHANGED // Any field changed
+  ASSIGNED // Task assigned
+  COMPLETED // Task/Goal completed
+  DUE_DATE_APPROACHING // Due date is near
+  DUE_DATE_PASSED // Due date passed
+  BLOCKED // Task blocked
+  COMMENTED // Comment added
+  PROGRESS_THRESHOLD_REACHED // Progress milestone reached
+  BUDGET_THRESHOLD_REACHED // Budget limit reached
+
+  @@schema("public")
+}
+
+enum AutomationRunMode {
+  AUTOMATIC // Runs automatically when triggered
+  MANUAL // Requires manual execution
+
+  @@schema("public")
+}
+
+// ============================================================================
+// WATCHERS & ACTIVITY TRACKING SYSTEM
+// ============================================================================
+
+// 🚀 INNOVATION: Task Watchers with Smart Notifications
+// Better than Jira: Track WHY they're watching + granular notification control
+model TaskWatcher {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation("TaskWatcher", fields: [userId], references: [id], onDelete: Cascade)
+
+  // 🚀 INNOVATION: Track watch reason for smart unwatch suggestions
+  watchReason WatchReason @default(MANUAL) @map("watch_reason")
+
+  // 🚀 INNOVATION: Granular notification preferences (better than Jira's all-or-nothing)
+  notifyOnComment        Boolean @default(true) @map("notify_on_comment")
+  notifyOnStatusChange   Boolean @default(true) @map("notify_on_status_change")
+  notifyOnAssignment     Boolean @default(true) @map("notify_on_assignment")
+  notifyOnPriorityChange Boolean @default(true) @map("notify_on_priority_change")
+  notifyOnDueDate        Boolean @default(true) @map("notify_on_due_date")
+
+  // Metadata
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String?  @map("added_by") // Who added this watcher
+
+  // 🚀 PERFORMANCE: Optimized indexes for fast lookups
+  @@unique([taskId, userId])
+  @@index([userId, addedAt]) // For "tasks I'm watching" query
+  @@index([taskId]) // For "who's watching this task" query
+  @@map("task_watchers")
+  @@schema("public")
+}
+
+// Goal Watchers (same smart features as task watchers)
+model GoalWatcher {
+  id String @id @default(cuid())
+
+  goalId String @map("goal_id")
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id")
+  user   User   @relation("GoalWatcher", fields: [userId], references: [id], onDelete: Cascade)
+
+  watchReason WatchReason @default(MANUAL) @map("watch_reason")
+
+  // Notification preferences
+  notifyOnProgressUpdate Boolean @default(true) @map("notify_on_progress_update")
+  notifyOnStatusChange   Boolean @default(true) @map("notify_on_status_change")
+  notifyOnCompletion     Boolean @default(true) @map("notify_on_completion")
+
+  addedAt DateTime @default(now()) @map("added_at")
+  addedBy String?  @map("added_by")
+
+  @@unique([goalId, userId])
+  @@index([userId, addedAt])
+  @@index([goalId])
+  @@map("goal_watchers")
+  @@schema("public")
+}
+
+// 🚀 INNOVATION: Rich Activity Tracking (far superior to Jira's basic audit log)
+model UserActivity {
+  id String @id @default(cuid())
+
+  // WHO performed the action
+  userId         String       @map("user_id")
+  user           User         @relation("UserActivity", fields: [userId], references: [id])
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // WHAT action was performed
+  activityType ActivityType @map("activity_type")
+  entityType   String       @map("entity_type") // TASK, PROJECT, GOAL, etc.
+  entityId     String       @map("entity_id")
+  action       String // CREATED, UPDATED, ASSIGNED, COMPLETED, etc.
+
+  // DETAILS of the change
+  before   Json? // State before change (enables undo feature!)
+  after    Json? // State after change
+  metadata Json  @default("{}") // Flexible additional data
+
+  // WHERE action was performed
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+  location  String? // Derived from IP: "Addis Ababa, Ethiopia"
+
+  // 🚀 INNOVATION: AI-generated human-readable summary
+  // Example: "Sarah moved Task-123 from Todo to In Progress"
+  aiSummary String? @map("ai_summary")
+
+  // 🚀 INNOVATION: Impact score for analytics (1-10)
+  // High impact = completing tasks, low impact = viewing
+  impactScore Int @default(1) @map("impact_score")
+
+  // 🚀 INNOVATION: Session tracking for user journey analytics
+  sessionId String? @map("session_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // 🚀 PERFORMANCE: Comprehensive indexes for all query patterns
+  @@index([userId, createdAt]) // User activity timeline
+  @@index([organizationId, createdAt]) // Org activity feed
+  @@index([organizationId, entityType, createdAt]) // Filtered org feeds
+  @@index([entityType, entityId, createdAt]) // Entity history
+  @@index([activityType, createdAt]) // Activity type filtering
+  @@index([sessionId]) // Session analysis
+  @@index([userId, activityType, createdAt]) // User-specific activity type
+  @@index([userId, entityType, createdAt]) // User-specific filtered feeds
+  @@index([organizationId, activityType, createdAt]) // Org-specific filtered feeds
+  @@map("user_activities")
+  @@schema("public")
+}
+
+// Watch reason enum (for smart auto-watch)
+enum WatchReason {
+  MANUAL // User manually clicked "Watch"
+  AUTO_ASSIGNED // Auto-watch when assigned to task
+  AUTO_MENTIONED // Auto-watch when @mentioned in comment
+  AUTO_CREATED // Auto-watch when created the task
+  AUTO_PARTICIPATED // Auto-watch after commenting
+
+  @@schema("public")
+}
+
+// Activity type enum (comprehensive event tracking)
+enum ActivityType {
+  // Authentication
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGED
+
+  // Tasks
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_UNASSIGNED
+  TASK_PRIORITY_CHANGED
+  TASK_STATUS_CHANGED
+  TASK_COMPLETED
+  TASK_REOPENED
+  TASK_DELETED
+  TASK_COMMENTED
+  TASK_WATCHED
+  TASK_UNWATCHED
+  TASK_MOVED // Moved to different project
+  TASK_BLOCKED
+  TASK_UNBLOCKED
+
+  // Projects
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PROJECT_ARCHIVED
+  PROJECT_DELETED
+  PROJECT_MEMBER_ADDED
+  PROJECT_MEMBER_REMOVED
+
+  // Goals
+  GOAL_CREATED
+  GOAL_UPDATED
+  GOAL_COMPLETED
+  GOAL_ARCHIVED
+  GOAL_PROGRESS_UPDATED
+
+  // Teams
+  TEAM_CREATED
+  TEAM_UPDATED
+  TEAM_MEMBER_ADDED
+  TEAM_MEMBER_REMOVED
+
+  // Watchers
+  WATCHER_ADDED
+  WATCHER_REMOVED
+
+  // Automation
+  AUTOMATION_CREATED
+  AUTOMATION_EXECUTED
+  AUTOMATION_FAILED
+
+  @@schema("public")
+}
+
+// ============================================================================
+// BUDGET MANAGEMENT ENUMS
+// ============================================================================
+
+enum Currency {
+  ETB // Ethiopian Birr
+  USD // US Dollar
+  EUR // Euro
+  GBP // British Pound
+  CNY // Chinese Yuan
+
+  @@schema("public")
+}
+
+enum BudgetStatus {
+  DRAFT // Being configured
+  PENDING_APPROVAL // Awaiting approval
+  APPROVED // Approved but not active
+  ACTIVE // Currently in use
+  CLOSED // Project completed
+  CANCELLED // Budget cancelled
+
+  @@schema("public")
+}
+
+enum BudgetAccess {
+  NO_ACCESS // Cannot see any budget information
+  VIEW_ONLY // Can view budget but not edit
+  EDIT // Can view and edit budget
+  APPROVE // Can view, edit, and approve expenses
+  FULL_CONTROL // Full budget management
+
+  @@schema("public")
+}
+
+enum ExpenseType {
+  ACTUAL // Money already spent
+  COMMITTED // Contractually obligated
+  RESERVED // Planned/budgeted
+
+  @@schema("public")
+}
+
+enum ExpenseStatus {
+  PENDING // Awaiting approval
+  APPROVED // Approved, ready for payment
+  REJECTED // Rejected by approver
+  PAID // Payment completed
+
+  @@schema("public")
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+
+  @@schema("public")
+}
+
+// ============================================================================
+// BUDGET MANAGEMENT MODELS
+// ============================================================================
+
+// Project Budget (1:1 with Project)
+model Budget {
+  id String @id @default(cuid())
+
+  // Link to project (1:1 relationship)
+  projectId String  @unique @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Budget amounts
+  totalBudget Decimal  @map("total_budget") @db.Decimal(19, 2)
+  currency    Currency @default(ETB)
+
+  // Additional funding sources (for multi-currency)
+  additionalFunding Json @default("[]") @map("additional_funding")
+  // Format: [{ source: "World Bank", amount: 5000000, currency: "USD", exchangeRate: 57.8, date: "2025-01-01" }]
+
+  // Budget status
+  status   BudgetStatus @default(DRAFT)
+  isPublic Boolean      @default(false) @map("is_public") // For government transparency
+
+  // Timeline
+  fiscalYearStart DateTime? @map("fiscal_year_start")
+  fiscalYearEnd   DateTime? @map("fiscal_year_end")
+
+  // Settings
+  settings Json @default("{}") @map("settings")
+  // Format: {
+  //   alertThresholds: [50, 80, 90],
+  //   autoApproval: false,
+  //   requireReceipts: true,
+  //   approvalLevels: { "< 10000": ["PROJECT_MANAGER"], ... }
+  // }
+
+  // Visibility settings
+  visibilitySettings Json @default("{}") @map("visibility_settings")
+  // Format: { restrictedFields: ["totalBudget"], publicFields: ["progress"] }
+
+  // Metadata
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  createdBy  String    @map("created_by")
+  approvedAt DateTime? @map("approved_at")
+  approvedBy String?   @map("approved_by")
+
+  // Relations
+  categories BudgetCategory[]
+  expenses   Expense[]
+  watchers   BudgetWatcher[] // 🚀 NEW: Users watching this budget
+  revisions  BudgetRevision[] // 🚀 NEW: Audit trail
+
+  @@map("budgets")
+  @@schema("public")
+}
+
+// Budget Categories (Line Items)
+model BudgetCategory {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  // Category details
+  name        String
+  code        String? // For government accounting codes (e.g., "5210-Personnel")
+  description String?
+
+  // Budget allocation
+  allocatedAmount Decimal  @map("allocated_amount") @db.Decimal(19, 2)
+  currency        Currency @default(ETB)
+
+  // Hierarchy (for subcategories)
+  parentId String? @map("parent_id")
+
+  // Display order
+  order Int @default(0)
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  expenses    Expense[]
+  taskBudgets TaskBudget[]
+
+  @@map("budget_categories")
+  @@schema("public")
+}
+
+// Expenses (Actual Expenditures)
+model Expense {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  categoryId String?         @map("category_id")
+  category   BudgetCategory? @relation(fields: [categoryId], references: [id])
+
+  // Expense details
+  description String
+  amount      Decimal  @db.Decimal(19, 2)
+  currency    Currency @default(ETB)
+
+  // Expense type
+  type ExpenseType @default(ACTUAL)
+
+  // Transaction details
+  transactionDate DateTime @map("transaction_date")
+  invoiceNumber   String?  @map("invoice_number")
+  vendor          String?
+  receiptUrl      String?  @map("receipt_url")
+
+  // Approval workflow
+  status          ExpenseStatus @default(PENDING)
+  submittedBy     String        @map("submitted_by")
+  approvedBy      String?       @map("approved_by")
+  approvedAt      DateTime?     @map("approved_at")
+  rejectionReason String?       @map("rejection_reason")
+
+  // Payment tracking
+  paymentStatus PaymentStatus @default(UNPAID) @map("payment_status")
+  paidDate      DateTime?     @map("paid_date")
+  paymentMethod String?       @map("payment_method")
+
+  // Notes
+  notes String?
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") // 🔧 Added for soft deletes
+
+  // Relations
+  attachments ExpenseAttachment[] // 🚀 NEW: File attachments (receipts, invoices)
+
+  // 🚀 PERFORMANCE: Enhanced indexes for budget reports
+  @@index([budgetId, status, deletedAt]) // Budget expenses by status
+  @@index([budgetId, categoryId, status, transactionDate]) // Budget category reports
+  @@index([budgetId, paymentStatus, deletedAt]) // Payment tracking
+  @@index([categoryId, status]) // Category-wide expense queries
+  @@index([transactionDate, deletedAt]) // Time-based expense queries
+  @@index([submittedBy, status, createdAt]) // User expense history
+  @@index([approvedBy, approvedAt]) // Approver history
+  @@map("expenses")
+  @@schema("public")
+}
+
+// Task Budget (Link Tasks to Budget Categories)
+model TaskBudget {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  categoryId String         @map("category_id")
+  category   BudgetCategory @relation(fields: [categoryId], references: [id])
+
+  // Cost estimation
+  estimatedCost Decimal? @map("estimated_cost") @db.Decimal(19, 2)
+  currency      Currency @default(ETB)
+
+  // Actual cost (calculated from time logs)
+  actualCost Decimal? @map("actual_cost") @db.Decimal(19, 2)
+
+  // Override hourly rate for this task (if different from user/team rate)
+  overrideHourlyRate Decimal? @map("override_hourly_rate") @db.Decimal(10, 2)
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([taskId, categoryId])
+  @@map("task_budgets")
+  @@schema("public")
+}
+
+// Expense Attachments (File uploads for receipts, invoices, contracts)
+model ExpenseAttachment {
+  id String @id @default(cuid())
+
+  expenseId String  @map("expense_id")
+  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+
+  // File details
+  fileName String   @map("file_name")
+  fileType String   @map("file_type") // "receipt", "invoice", "contract", "other"
+  mimeType String   @map("mime_type") // "application/pdf", "image/jpeg", etc.
+  fileSize Int      @map("file_size") // in bytes
+  fileUrl  String   @map("file_url") // Supabase storage URL
+
+  // Metadata
+  uploadedBy String   @map("uploaded_by") // User ID
+  createdAt  DateTime @default(now()) @map("created_at")
+  deletedAt  DateTime? @map("deleted_at") // Soft delete
+
+  @@index([expenseId])
+  @@map("expense_attachments")
+  @@schema("public")
+}
+
+// Budget Watchers (Users monitoring budget activities)
+model BudgetWatcher {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id") // User watching the budget
+
+  // Watched categories (empty array = watching all categories)
+  watchedCategories String[] @map("watched_categories") // Array of category IDs
+
+  // Notification preferences
+  notifyOnExpense     Boolean @default(true) @map("notify_on_expense")
+  notifyOnThreshold   Boolean @default(true) @map("notify_on_threshold")
+  thresholdPercent    Int?    @map("threshold_percent") // e.g., 80 means notify at 80% utilization
+  notifyOnApproval    Boolean @default(false) @map("notify_on_approval")
+  notificationChannel String  @default("EMAIL") @map("notification_channel") // EMAIL, SMS, IN_APP
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([budgetId, userId])
+  @@index([budgetId])
+  @@index([userId])
+  @@map("budget_watchers")
+  @@schema("public")
+}
+
+// Budget Revisions (Audit trail for all budget changes)
+model BudgetRevision {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  // Revision details
+  revisionNumber Int    @map("revision_number") // Sequential number per budget
+  changeType     String @map("change_type") // "ALLOCATION_CHANGE", "CATEGORY_ADDED", "EXPENSE_DELETED", "BUDGET_APPROVED", etc.
+
+  // Change tracking (JSON for flexibility)
+  before Json // State before change
+  after  Json // State after change
+
+  // Context
+  reason   String? // Optional reason for the change
+  metadata Json    @default("{}") // Additional context
+
+  // Who made the change
+  changedBy String   @map("changed_by") // User ID
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([budgetId])
+  @@index([changedBy])
+  @@index([createdAt])
+  @@map("budget_revisions")
+  @@schema("public")
+}
+
+// ============================================================================
+// AI-POWERED DOCUMENT PROCESSING
+// ============================================================================
+
+// Documents uploaded for AI processing
+model Document {
+  id String @id @default(cuid())
+
+  organizationId String @map("organization_id")
+  projectId      String? @map("project_id") // Optional: link to specific project
+  budgetId       String? @map("budget_id") // Optional: link to specific budget
+
+  // File details
+  fileName     String @map("file_name")
+  fileType     String @map("file_type") // "invoice", "receipt", "contract", "proposal", "rfp", "report", "other"
+  mimeType     String @map("mime_type") // "application/pdf", "image/jpeg", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  fileSize     Int    @map("file_size") // in bytes
+  fileUrl      String @map("file_url") // Storage URL (Supabase/S3)
+  thumbnailUrl String? @map("thumbnail_url") // Optional thumbnail for images/PDFs
+
+  // Processing status
+  status          String   @default("PENDING") // "PENDING", "PROCESSING", "COMPLETED", "FAILED"
+  processingError String?  @map("processing_error") // Error message if failed
+  processedAt     DateTime? @map("processed_at")
+
+  // AI Analysis Results
+  aiSummary       String? @map("ai_summary") @db.Text // Claude-generated summary
+  aiInsights      Json    @default("{}") // Structured insights (key findings, risks, recommendations)
+  aiConfidence    Float?  @map("ai_confidence") // Confidence score 0-1
+  aiModel         String? @map("ai_model") // e.g., "claude-3-haiku-20240307"
+  aiTokensUsed    Int?    @map("ai_tokens_used") // For cost tracking
+
+  // Extracted Data
+  extractedData Json @default("{}") // Structured data (amounts, dates, line items, etc.)
+
+  // Relations
+  aiProcessingResults DocumentAIProcessing[]
+  extractedBudgetItems DocumentBudgetItem[]
+  extractedMilestones DocumentMilestone[]
+
+  // Metadata
+  uploadedBy String    @map("uploaded_by") // User ID
+  tags       String[]  @default([]) // Custom tags
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at") // Soft delete
+
+  // 🚀 PERFORMANCE: Document query indexes
+  @@index([organizationId, status, deletedAt]) // Org documents by status
+  @@index([organizationId, fileType, createdAt]) // Org documents by type
+  @@index([projectId, deletedAt]) // Project documents
+  @@index([budgetId, fileType, deletedAt]) // Budget documents
+  @@index([status, deletedAt]) // Processing status
+  @@index([uploadedBy, createdAt]) // User uploads
+  @@index([createdAt, deletedAt]) // Recent documents
+  @@map("documents")
+  @@schema("public")
+}
+
+// Detailed AI processing results and analysis
+model DocumentAIProcessing {
+  id String @id @default(cuid())
+
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // Processing details
+  processingType String   @map("processing_type") // "SUMMARY", "EXTRACTION", "CLASSIFICATION", "RISK_ANALYSIS", "COST_ANALYSIS"
+  prompt         String   @db.Text // The prompt sent to Claude
+  response       String   @db.Text // Claude's response
+  model          String // e.g., "claude-3-haiku-20240307"
+  tokensUsed     Int      @map("tokens_used")
+  cost           Float? // Estimated cost in USD
+  latency        Int? // Processing time in milliseconds
+
+  // Results
+  results    Json // Structured results
+  confidence Float? // Confidence score 0-1
+  metadata   Json    @default("{}") // Additional metadata
+
+  // Metadata
+  processedBy String   @map("processed_by") // User ID who triggered processing
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([documentId])
+  @@index([processingType])
+  @@index([createdAt])
+  @@map("document_ai_processing")
+  @@schema("public")
+}
+
+// Budget items extracted from documents (e.g., invoices, receipts)
+model DocumentBudgetItem {
+  id String @id @default(cuid())
+
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // Extracted budget/expense data
+  description String @db.Text
+  amount      Float
+  currency    String  @default("ETB")
+  category    String? // Budget category
+  vendor      String? // Vendor/supplier name
+  invoiceNumber String? @map("invoice_number")
+  invoiceDate   DateTime? @map("invoice_date")
+  dueDate       DateTime? @map("due_date")
+
+  // AI extraction metadata
+  confidence Float? // Confidence score 0-1
+  extractedFields Json @default("{}") @map("extracted_fields") // Raw extracted data
+
+  // Link to actual budget/expense
+  expenseId String? @unique @map("expense_id") // Created expense record
+  status    String  @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CREATED"
+
+  // Metadata
+  createdBy String   @map("created_by") // User ID
+  approvedBy String? @map("approved_by") // User ID who approved
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentId])
+  @@index([status])
+  @@index([category])
+  @@map("document_budget_items")
+  @@schema("public")
+}
+
+// Project milestones/timelines extracted from documents (e.g., contracts, proposals)
+model DocumentMilestone {
+  id String @id @default(cuid())
+
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // Extracted milestone data
+  title       String   @db.Text
+  description String?  @db.Text
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  deliverable String?  @db.Text
+  budget      Float? // Associated budget amount
+
+  // AI extraction metadata
+  confidence Float? // Confidence score 0-1
+  extractedFields Json @default("{}") @map("extracted_fields")
+
+  // Link to actual task/milestone
+  taskId String? @unique @map("task_id") // Created task record
+  status String  @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CREATED"
+
+  // Metadata
+  createdBy String   @map("created_by")
+  approvedBy String? @map("approved_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentId])
+  @@index([status])
+  @@map("document_milestones")
+  @@schema("public")
+}
+
+// AI Usage tracking per organization (for quota management)
+model AIUsage {
+  id String @id @default(cuid())
+
+  organizationId String @map("organization_id")
+  userId         String @map("user_id")
+
+  // Usage metrics
+  documentCount Int @default(0) @map("document_count") // Documents processed this period
+  tokensUsed    Int @default(0) @map("tokens_used") // Total tokens used
+  costUSD       Float @default(0) @map("cost_usd") // Total cost in USD
+
+  // Period tracking
+  period     String   @default("monthly") // "monthly", "daily", "yearly"
+  periodStart DateTime @map("period_start")
+  periodEnd   DateTime @map("period_end")
+
+  // Quota limits
+  documentLimit Int     @default(50) @map("document_limit") // Free tier: 50/month
+  exceeded      Boolean @default(false) // Has quota been exceeded
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([organizationId, period, periodStart])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([periodStart])
+  @@map("ai_usage")
+  @@schema("public")
+}
+
+// ============================================================================
+// RATE LIMITING & SECURITY
+// ============================================================================
+
+// 🔒 SECURITY: Rate limiting for API endpoints and authentication
+model RateLimit {
+  id String @id @default(cuid())
+
+  // Identifier: IP address, user ID, or API key
+  identifier String
+  endpoint   String // e.g., "/api/auth/signin", "/api/projects"
+
+  // Rate limiting window
+  requestCount Int      @default(0) @map("request_count")
+  windowStart  DateTime @map("window_start")
+  windowEnd    DateTime @map("window_end")
+
+  // Blocking
+  blocked     Boolean   @default(false)
+  blockedAt   DateTime? @map("blocked_at")
+  blockReason String?   @map("block_reason")
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([identifier, endpoint, windowStart])
+  @@index([identifier, windowEnd]) // Cleanup expired windows
+  @@index([endpoint, windowEnd]) // Endpoint-specific rate limits
+  @@index([blocked, windowEnd]) // Active blocks
+  @@map("rate_limits")
+  @@schema("public")
+}
+
+// 🔒 SECURITY: Budget Audit Log for compliance (SOC 2, ISO 27001)
+model BudgetAuditLog {
+  id String @id @default(cuid())
+
+  budgetId String @map("budget_id")
+
+  // Action details
+  action      String // "VIEWED", "EDITED", "APPROVED", "REJECTED", "CREATED", "DELETED"
+  userId      String @map("user_id")
+  entityType  String @map("entity_type") // "BUDGET", "EXPENSE", "CATEGORY"
+  entityId    String @map("entity_id")
+
+  // Change tracking
+  fieldChanged String? @map("field_changed") // e.g., "totalBudget", "status"
+  oldValue     Json?   @map("old_value")
+  newValue     Json?   @map("new_value")
+
+  // Context
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+  reason    String? // Optional reason for change
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([budgetId, createdAt]) // Budget audit timeline
+  @@index([userId, action, createdAt]) // User action history
+  @@index([action, createdAt]) // Action-specific queries
+  @@index([entityType, entityId, createdAt]) // Entity audit trail
+  @@map("budget_audit_logs")
+  @@schema("public")
+}
+
+// 🔒 SECURITY: Password history to prevent reuse
+model PasswordHistory {
+  id String @id @default(cuid())
+
+  userId       String   @map("user_id")
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Store last 5 passwords per user
+  @@index([userId, createdAt]) // User password history
+  @@map("password_history")
+  @@schema("public")
+}
+
+// ============================================================================
+// TENANT SCHEMAS (created dynamically per organization)
+// ============================================================================
+
+// Note: The following models will be created in each organization's schema
+// Example: onekof_org_abc123.workspaces, onekof_org_abc123.projects, etc.
+
+// These are template models - actual tables created via migrations per tenant
