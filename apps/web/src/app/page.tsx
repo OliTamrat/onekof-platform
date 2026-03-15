@@ -84,6 +84,42 @@ function Reveal({ children, className = '', delay = 0 }: { children: React.React
   );
 }
 
+/* ─── Blur-in Reveal (Linear-style entrance) ─── */
+function BlurReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, inView } = useInView(0.1);
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-1000 ease-out ${inView ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-6 opacity-0 blur-sm'} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ─── Linear-style Cursor Glow Card Grid ─── */
+function GlowGrid({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const cards = container.querySelectorAll<HTMLElement>('[data-glow-card]');
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--glow-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--glow-y', `${e.clientY - rect.top}px`);
+    });
+  }, []);
+
+  return (
+    <div ref={containerRef} onMouseMove={handleMouseMove} className={className}>
+      {children}
+    </div>
+  );
+}
+
 /* ─── FAQ Item ─── */
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -266,7 +302,7 @@ export default function HomePage() {
               </div>
             </Reveal>
 
-            <Reveal delay={100}>
+            <BlurReveal delay={100}>
               <h1 className="mx-auto max-w-5xl text-4xl font-extrabold leading-[1.06] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 One powerful platform to{' '}
                 <span className="relative inline-block">
@@ -279,14 +315,14 @@ export default function HomePage() {
                   </svg>
                 </span>
               </h1>
-            </Reveal>
+            </BlurReveal>
 
-            <Reveal delay={200}>
+            <BlurReveal delay={200}>
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-midnight-200 sm:text-xl">
                 Projects, tasks, goals, budgets, docs, and dashboards — all in one workspace.
                 Built natively for Ethiopian teams with the calendar, languages, and workflows you need.
               </p>
-            </Reveal>
+            </BlurReveal>
 
             <Reveal delay={300}>
               <div className="mx-auto mt-10 max-w-lg">
@@ -407,6 +443,29 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+        {/* Review Badges */}
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 mt-10">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            {[
+              { label: 'G2 Leader', rating: '4.8/5', reviews: '200+ reviews' },
+              { label: 'Product Hunt', rating: '#1 Product', reviews: 'of the Day' },
+              { label: 'Capterra', rating: '4.9/5', reviews: '150+ reviews' },
+            ].map((badge) => (
+              <div key={badge.label} className="flex items-center gap-3 rounded-xl border border-surface-300 bg-white px-4 py-2.5 shadow-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+                  <Star className="h-4 w-4 fill-brand-500 text-brand-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-midnight-800">{badge.label}</span>
+                    <span className="text-xs font-semibold text-brand-600">{badge.rating}</span>
+                  </div>
+                  <span className="text-[10px] text-midnight-300">{badge.reviews}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ═══ FEATURES BENTO GRID ═══ */}
@@ -424,9 +483,9 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <GlowGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Reveal delay={100} className="sm:col-span-2 lg:col-span-2">
-              <div className="gradient-border card-tilt group relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-50 via-surface-50 to-white p-8 shadow-sm hover:shadow-brand-md">
+              <div data-glow-card className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-50 via-surface-50 to-white p-8 shadow-sm hover:shadow-brand-md">
                 <div className="relative z-10">
                   <div className="mb-4 inline-flex rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 p-3 shadow-brand-sm"><Calendar className="h-6 w-6 text-white" /></div>
                   <h3 className="mb-2 text-xl font-bold text-midnight-800">Ethiopian Calendar Integration</h3>
@@ -445,7 +504,7 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="gradient-border card-tilt group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
+              <div data-glow-card className="group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
                 <div className="mb-4 inline-flex rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 p-3 shadow-sm"><Languages className="h-6 w-6 text-white" /></div>
                 <h3 className="mb-2 text-xl font-bold text-midnight-800">4 Native Languages</h3>
                 <p className="text-sm leading-relaxed text-midnight-400">Full interface in Amharic, Afaan Oromoo, Tigrinya, and English. Every label, button, and notification.</p>
@@ -456,7 +515,7 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={150}>
-              <div className="gradient-border card-tilt group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
+              <div data-glow-card className="group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
                 <div className="mb-4 inline-flex rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 p-3 shadow-sm"><Kanban className="h-6 w-6 text-white" /></div>
                 <h3 className="mb-2 text-xl font-bold text-midnight-800">Multiple Views</h3>
                 <p className="text-sm leading-relaxed text-midnight-400">Kanban boards, list view, timeline, and table view. Work the way your team thinks best.</p>
@@ -464,7 +523,7 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={250} className="sm:col-span-2">
-              <div className="gradient-border card-tilt group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50/50 via-white to-white p-8 shadow-sm hover:shadow-brand-md">
+              <div data-glow-card className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50/50 via-white to-white p-8 shadow-sm hover:shadow-brand-md">
                 <div className="mb-4 inline-flex rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 p-3 shadow-sm"><Workflow className="h-6 w-6 text-white" /></div>
                 <h3 className="mb-2 text-xl font-bold text-midnight-800">Powerful Automations</h3>
                 <p className="max-w-md text-sm leading-relaxed text-midnight-400">Build custom workflows without code. Auto-assign tasks, send notifications, update statuses, and trigger actions based on events.</p>
@@ -489,14 +548,14 @@ export default function HomePage() {
               { icon: Shield, gradient: 'from-slate-600 to-slate-800', title: 'Enterprise Security', desc: 'Role-based access control, two-factor auth, session management, and audit logs. SOC 2 ready.' },
             ].map((f, i) => (
               <Reveal key={f.title} delay={200 + i * 50}>
-                <div className="gradient-border card-tilt group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
+                <div data-glow-card className="group rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
                   <div className={`mb-4 inline-flex rounded-xl bg-gradient-to-br ${f.gradient} p-3 shadow-sm`}><f.icon className="h-6 w-6 text-white" /></div>
                   <h3 className="mb-2 text-xl font-bold text-midnight-800">{f.title}</h3>
                   <p className="text-sm leading-relaxed text-midnight-400">{f.desc}</p>
                 </div>
               </Reveal>
             ))}
-          </div>
+          </GlowGrid>
         </div>
       </section>
 
@@ -605,14 +664,14 @@ export default function HomePage() {
               <h2 className="text-3xl font-extrabold tracking-tight text-midnight-800 sm:text-4xl">Loved by teams who&apos;ve tried everything else</h2>
             </div>
           </Reveal>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <GlowGrid className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { quote: "We tried Jira, Trello, and Asana. None of them understood Ethiopian workflows. Onekof's calendar integration alone saved us hours every week.", name: 'Abebe Kebede', role: 'CTO, TechEth Solutions', initials: 'AK', gradient: 'from-brand-500 to-purple-600' },
               { quote: "Finally, a project management tool our entire team can use — including those who are most comfortable in Amharic. The language support is flawless.", name: 'Tigist Haile', role: 'PM, Addis Development', initials: 'TH', gradient: 'from-purple-500 to-pink-500' },
               { quote: "The budget tracking in ETB with approval workflows eliminated our spreadsheet chaos. We now have real-time visibility into every project's financial health.", name: 'Dawit Tesfaye', role: 'Finance Director, BuildEth', initials: 'DT', gradient: 'from-accent-coral to-accent-gold' },
             ].map((t, i) => (
               <Reveal key={t.name} delay={i * 100}>
-                <div className="gradient-border group h-full rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
+                <div data-glow-card className="group h-full rounded-2xl bg-white p-8 shadow-sm hover:shadow-brand-md">
                   <div className="mb-4 flex gap-0.5">{Array.from({ length: 5 }).map((_, j) => (<Star key={j} className="h-4 w-4 fill-amber-400 text-amber-400" />))}</div>
                   <p className="mb-6 text-sm leading-relaxed text-midnight-500">&ldquo;{t.quote}&rdquo;</p>
                   <div className="flex items-center gap-3">
@@ -622,7 +681,7 @@ export default function HomePage() {
                 </div>
               </Reveal>
             ))}
-          </div>
+          </GlowGrid>
         </div>
       </section>
 
@@ -639,7 +698,7 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
             {integrations.map((int, i) => (
               <Reveal key={int.name} delay={i * 50}>
-                <div className="gradient-border group flex flex-col items-center gap-3 rounded-2xl bg-white p-6 text-center shadow-sm hover:shadow-brand-md">
+                <div className="group flex flex-col items-center gap-3 rounded-2xl bg-white p-6 text-center shadow-sm hover:shadow-brand-md">
                   <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${int.color} shadow-sm`}><int.icon className="h-5 w-5 text-white" /></div>
                   <span className="text-sm font-semibold text-midnight-700">{int.name}</span>
                 </div>

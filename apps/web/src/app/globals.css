@@ -87,41 +87,66 @@
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-/* Gradient border card effect */
-.gradient-border {
+/* Linear-style cursor-tracking glow card */
+[data-glow-card] {
   position: relative;
   background: white;
   border-radius: 1rem;
+  border: 1px solid rgba(221, 224, 237, 0.6);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
 }
 
-.gradient-border::before {
+[data-glow-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(99, 102, 241, 0.07),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-glow-card]::after {
   content: '';
   position: absolute;
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.05));
+  background: radial-gradient(
+    400px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(99, 102, 241, 0.35),
+    rgba(168, 85, 247, 0.15),
+    transparent 60%
+  );
   -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
   mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  transition: all 0.4s ease;
   opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.gradient-border:hover::before {
+[data-glow-card]:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+[data-glow-card]:hover::before,
+[data-glow-card]:hover::after {
   opacity: 1;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.3), rgba(99, 102, 241, 0.2));
 }
 
-/* Premium card with perspective tilt */
-.card-tilt {
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-tilt:hover {
-  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+[data-glow-card] > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* Animated gradient mesh for hero */
