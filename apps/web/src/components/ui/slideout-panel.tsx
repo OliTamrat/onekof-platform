@@ -66,8 +66,8 @@ export function SlideoutPanel({
   if (!isVisible) return null;
 
   const sizeClasses = {
-    sm: 'max-w-full sm:max-w-md',
-    md: 'max-w-full sm:max-w-2xl',
+    sm: 'max-w-[calc(100%-2rem)] sm:max-w-md',
+    md: 'max-w-[calc(100%-1rem)] sm:max-w-2xl',
     lg: 'max-w-full sm:max-w-4xl',
     xl: 'max-w-full sm:max-w-6xl',
     full: 'max-w-full',

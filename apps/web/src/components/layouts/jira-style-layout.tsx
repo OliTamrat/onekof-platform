@@ -337,8 +337,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
           "w-56 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
-          // Desktop: Full height of flex container (no gap) - connects directly to navbar
-          "md:relative md:translate-x-0 md:z-auto md:h-full",
+          // Desktop: Reset mobile fixed positioning (top-14/bottom-0/left-0 must be cleared)
+          "md:relative md:top-auto md:bottom-auto md:left-auto md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
@@ -367,7 +367,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
               <button
                 onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -432,7 +432,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
               <button
                 onClick={() => setIsDocsExpanded(!isDocsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
