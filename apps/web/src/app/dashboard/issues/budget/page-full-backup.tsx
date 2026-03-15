@@ -105,7 +105,7 @@ export default function BudgetPage() {
   const pending = 5200000;
 
   const categories = [
-    { name: 'Construction & Infrastructure', budget: 50000000, spent: 35000000, color: '#0065FF' },
+    { name: 'Construction & Infrastructure', budget: 50000000, spent: 35000000, color: '#1C8C7D' },
     { name: 'Equipment & Materials', budget: 30000000, spent: 22000000, color: '#00875A' },
     { name: 'Labor & Personnel', budget: 25000000, spent: 10000000, color: '#FF5630' },
     { name: 'Environmental & Social', budget: 10000000, spent: 3000000, color: '#FFAB00' },

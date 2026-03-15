@@ -118,10 +118,10 @@ export default function DocsSummaryPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <BookOpen className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
@@ -131,7 +131,7 @@ export default function DocsSummaryPage() {
 
             <Link
               href="/dashboard/docs"
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+              className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
               New Page
@@ -148,8 +148,8 @@ export default function DocsSummaryPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -211,7 +211,7 @@ export default function DocsSummaryPage() {
               {/* Left Column - 2/3 width */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Content Activity */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Content Activity</h3>
                     <div className="flex gap-2">
@@ -221,8 +221,8 @@ export default function DocsSummaryPage() {
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
-                              ? 'bg-[#0065FF] text-white'
-                              : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-[#9FADBC] hover:bg-gray-200 dark:hover:bg-[#2C333A]'
+                              ? 'bg-primary-500 text-white'
+                              : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -257,36 +257,36 @@ export default function DocsSummaryPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
                           {data.day}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-blue-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Created</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Created</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-purple-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Edited</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Edited</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Viewed (÷10)</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Viewed (÷10)</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Popular Pages */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Most Popular Pages</h3>
                     <Link
                       href="/dashboard/docs"
-                      className="text-sm font-medium text-[#0065FF] hover:text-[#0052CC]"
+                      className="text-sm font-medium text-primary-500 hover:text-primary-600"
                     >
                       View All
                     </Link>
@@ -296,7 +296,7 @@ export default function DocsSummaryPage() {
                     {popularPages.map((page, index) => (
                       <div
                         key={page.id}
-                        className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 dark:border-[#2C333A] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                        className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
                       >
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-sm font-bold text-white">
                           #{index + 1}
@@ -305,18 +305,18 @@ export default function DocsSummaryPage() {
                           <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
                             {page.title}
                           </h4>
-                          <p className="text-xs text-gray-500 dark:text-[#9FADBC]">{page.space}</p>
+                          <p className="text-xs text-gray-500 dark:text-slate-400">{page.space}</p>
                         </div>
                         <div className="flex items-center gap-4 text-xs">
-                          <div className="flex items-center gap-1 text-gray-600 dark:text-[#9FADBC]">
+                          <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
                             <Eye className="h-3 w-3" />
                             {page.views}
                           </div>
-                          <div className="flex items-center gap-1 text-gray-600 dark:text-[#9FADBC]">
+                          <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
                             <ThumbsUp className="h-3 w-3" />
                             {page.likes}
                           </div>
-                          <div className="flex items-center gap-1 text-gray-600 dark:text-[#9FADBC]">
+                          <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
                             <MessageSquare className="h-3 w-3" />
                             {page.comments}
                           </div>
@@ -333,14 +333,14 @@ export default function DocsSummaryPage() {
                 </div>
 
                 {/* Space Statistics */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Space Overview</h3>
 
                   <div className="space-y-4">
                     {spaceStats.map((space) => (
                       <div
                         key={space.id}
-                        className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-[#2C333A] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                        className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
                       >
                         <div
                           className="flex h-12 w-12 items-center justify-center rounded-lg"
@@ -352,7 +352,7 @@ export default function DocsSummaryPage() {
                           <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                             {space.name}
                           </h4>
-                          <div className="flex items-center gap-6 text-xs text-gray-600 dark:text-[#9FADBC]">
+                          <div className="flex items-center gap-6 text-xs text-gray-600 dark:text-slate-400">
                             <div className="flex items-center gap-1">
                               <FileText className="h-3 w-3" />
                               {space.pages} pages
@@ -373,7 +373,7 @@ export default function DocsSummaryPage() {
                 </div>
 
                 {/* Growth Trend */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Documentation Growth</h3>
 
                   <div className="flex items-end justify-between h-64 gap-4">
@@ -382,7 +382,7 @@ export default function DocsSummaryPage() {
                         <div className="w-full flex gap-1 items-end h-48">
                           <div className="flex-1 flex flex-col items-center">
                             <div
-                              className="w-full bg-[#0065FF] rounded-t transition-all hover:bg-[#0052CC]"
+                              className="w-full bg-primary-500 rounded-t transition-all hover:bg-primary-600"
                               style={{ height: `${(data.pages / maxTrend) * 100}%` }}
                               title={`Pages: ${data.pages}`}
                             />
@@ -395,21 +395,21 @@ export default function DocsSummaryPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
                           {data.month}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded bg-[#0065FF]" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Total Pages</span>
+                      <div className="w-3 h-3 rounded bg-primary-500" />
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Total Pages</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Edits (÷3)</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Edits (÷3)</span>
                     </div>
                   </div>
                 </div>
@@ -418,9 +418,9 @@ export default function DocsSummaryPage() {
               {/* Right Column - 1/3 width */}
               <div className="space-y-6">
                 {/* Documentation Health */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
-                    <AlertTriangle className="h-5 w-5 text-[#0065FF]" />
+                    <AlertTriangle className="h-5 w-5 text-primary-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Content Health</h3>
                   </div>
 
@@ -429,12 +429,12 @@ export default function DocsSummaryPage() {
                       <div key={metric.label}>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">{metric.label}</span>
-                          <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                          <span className="text-sm text-gray-600 dark:text-slate-400">
                             {metric.count} pages
                           </span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="flex-1 h-2 bg-gray-200 dark:bg-[#2C333A] rounded-full">
+                          <div className="flex-1 h-2 bg-gray-200 dark:bg-slate-700 rounded-full">
                             <div
                               className={`h-2 rounded-full ${
                                 metric.status === 'good' ? 'bg-green-500' :
@@ -454,7 +454,7 @@ export default function DocsSummaryPage() {
                 </div>
 
                 {/* Top Contributors */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Award className="h-5 w-5 text-yellow-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Top Contributors</h3>
@@ -467,18 +467,18 @@ export default function DocsSummaryPage() {
                           index === 0 ? 'bg-yellow-500 text-white' :
                           index === 1 ? 'bg-gray-400 text-white' :
                           index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-200 dark:bg-[#2C333A] text-gray-600 dark:text-[#9FADBC]'
+                          'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
                         }`}>
                           {index + 1}
                         </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                           {contributor.avatar}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">
                             {contributor.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                          <div className="text-xs text-gray-500 dark:text-slate-400">
                             {contributor.edits} edits • {contributor.pagesCreated} pages
                           </div>
                         </div>
@@ -498,23 +498,23 @@ export default function DocsSummaryPage() {
                 </div>
 
                 {/* Top Search Queries */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
-                    <Search className="h-5 w-5 text-[#0065FF]" />
+                    <Search className="h-5 w-5 text-primary-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Top Searches</h3>
                   </div>
 
                   <div className="space-y-3">
                     {searchQueries.map((query, index) => (
                       <div key={query.query} className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-6 h-6 rounded bg-gray-100 dark:bg-[#282E33] text-xs font-semibold text-gray-600 dark:text-[#9FADBC]">
+                        <div className="flex items-center justify-center w-6 h-6 rounded bg-gray-100 dark:bg-[#282E33] text-xs font-semibold text-gray-600 dark:text-slate-400">
                           {index + 1}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
                             "{query.query}"
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                          <div className="text-xs text-gray-500 dark:text-slate-400">
                             {query.count} searches
                           </div>
                         </div>
@@ -530,7 +530,7 @@ export default function DocsSummaryPage() {
                 </div>
 
                 {/* Recent Activity */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Zap className="h-5 w-5 text-purple-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Recent Updates</h3>
@@ -547,10 +547,10 @@ export default function DocsSummaryPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-gray-900 dark:text-white">
                             <span className="font-medium">{activity.user}</span>{' '}
-                            <span className="text-gray-600 dark:text-[#9FADBC]">{activity.action}</span>{' '}
+                            <span className="text-gray-600 dark:text-slate-400">{activity.action}</span>{' '}
                             <span className="font-medium">{activity.page}</span>
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-[#9FADBC] mt-1 flex items-center gap-1">
+                          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {activity.time}
                           </p>
@@ -570,7 +570,7 @@ export default function DocsSummaryPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         Documentation Quality
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-[#9FADBC] leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
                         Your documentation is <span className="font-semibold text-purple-600 dark:text-purple-400">80% up-to-date</span>! Great job maintaining quality content. Consider reviewing the 15 outdated pages.
                       </p>
                     </div>
@@ -600,7 +600,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   const isPositive = trend === 'up' ? change >= 0 : change <= 0;
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${iconColor}`}>
           <Icon className="h-6 w-6 text-white" />
@@ -618,7 +618,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
       </div>
       <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value.toLocaleString()}</div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-slate-400">{changeLabel}</div>
     </div>
   );
 }

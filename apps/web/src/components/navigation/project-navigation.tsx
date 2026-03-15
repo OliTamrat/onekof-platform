@@ -60,8 +60,8 @@ export function ProjectNavigation({
               href={tab.href}
               className={`flex items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium transition-colors whitespace-nowrap flex-1 justify-center ${
                 active
-                  ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                  : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  ? 'border-primary-500 text-gray-900 dark:text-white'
+                  : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {Icon && <Icon className="h-4 w-4" />}
@@ -74,7 +74,7 @@ export function ProjectNavigation({
         {moreTabs.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 border-b-2 border-transparent px-3 py-3 text-sm font-medium text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white transition-colors">
+              <button className="flex items-center gap-1 border-b-2 border-transparent px-3 py-3 text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="text-xs">More</span>
               </button>
@@ -82,7 +82,7 @@ export function ProjectNavigation({
             <DropdownMenuContent align="end" className="w-56 max-h-[400px] overflow-y-auto">
               {categories.map((category, categoryIndex) => (
                 <div key={category.label}>
-                  <DropdownMenuLabel className="text-xs font-semibold text-gray-600 dark:text-[#9FADBC]">
+                  <DropdownMenuLabel className="text-xs font-semibold text-gray-600 dark:text-slate-400">
                     {category.label}
                   </DropdownMenuLabel>
                   {category.items.map((tab) => {
@@ -119,8 +119,8 @@ export function ProjectNavigation({
               href={tab.href}
               className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                 active
-                  ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                  : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                  ? 'border-primary-500 text-gray-900 dark:text-white'
+                  : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {Icon && <Icon className="h-4 w-4" />}

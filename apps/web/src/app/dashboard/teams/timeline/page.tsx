@@ -138,11 +138,11 @@ export default function TeamsTimelinePage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Title */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Clock className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams Timeline</h1>
@@ -159,8 +159,8 @@ export default function TeamsTimelinePage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -172,14 +172,14 @@ export default function TeamsTimelinePage() {
         </div>
 
         {/* Filters */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSelectedFilter('all')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'all'
-                  ? 'bg-[#0065FF] text-white'
-                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
               All Events
@@ -188,8 +188,8 @@ export default function TeamsTimelinePage() {
               onClick={() => setSelectedFilter('team_created')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'team_created'
-                  ? 'bg-[#0065FF] text-white'
-                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
               Team Created
@@ -198,8 +198,8 @@ export default function TeamsTimelinePage() {
               onClick={() => setSelectedFilter('member_added')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'member_added'
-                  ? 'bg-[#0065FF] text-white'
-                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
               Members Added
@@ -208,8 +208,8 @@ export default function TeamsTimelinePage() {
               onClick={() => setSelectedFilter('milestone')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'milestone'
-                  ? 'bg-[#0065FF] text-white'
-                  : 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
               Milestones
@@ -223,11 +223,11 @@ export default function TeamsTimelinePage() {
             {Object.entries(groupedEvents).map(([month, events]) => (
               <div key={month} className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
-                  <Calendar className="h-5 w-5 text-[#0065FF]" />
+                  <Calendar className="h-5 w-5 text-primary-500" />
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{month}</h2>
                 </div>
 
-                <div className="space-y-4 ml-8 border-l-2 border-gray-200 dark:border-[#2C333A] pl-6">
+                <div className="space-y-4 ml-8 border-l-2 border-gray-200 dark:border-slate-700 pl-6">
                   {events.map((event) => {
                     const Icon = event.icon;
                     return (
@@ -236,13 +236,13 @@ export default function TeamsTimelinePage() {
                           <Icon className="h-3.5 w-3.5 text-white" />
                         </div>
 
-                        <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] p-4">
+                        <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 p-4">
                           <div className="flex items-start justify-between mb-2">
                             <div>
                               <h3 className="font-semibold text-gray-900 dark:text-white">
                                 {event.team}
                               </h3>
-                              <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
+                              <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
                                 {event.description}
                               </p>
                             </div>
@@ -264,7 +264,7 @@ export default function TeamsTimelinePage() {
             {filteredEvents.length === 0 && (
               <div className="text-center py-16">
                 <Clock className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-[#9FADBC]">No events found for the selected filter</p>
+                <p className="text-gray-500 dark:text-slate-400">No events found for the selected filter</p>
               </div>
             )}
           </div>

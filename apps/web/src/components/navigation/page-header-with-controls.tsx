@@ -42,7 +42,7 @@ export function PageHeaderWithControls({
   description,
   breadcrumbs = [],
   icon,
-  iconColor = '#0065FF',
+  iconColor = '#1C8C7D',
   showSearch = true,
   showFilters = true,
   showGroupBy = true,
@@ -73,17 +73,17 @@ export function PageHeaderWithControls({
   };
 
   return (
-    <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+    <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
-        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-[#2C333A]">
+        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-slate-700">
           {breadcrumbs.map((crumb, index) => (
             <div key={index} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-[#9FADBC]" />}
+              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-slate-400" />}
               {crumb.href ? (
                 <Link
                   href={crumb.href}
-                  className="text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   {crumb.label}
                 </Link>
@@ -96,7 +96,7 @@ export function PageHeaderWithControls({
       )}
 
       {/* Title and Icon */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-[#2C333A]">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center gap-3">
           {icon && (
             <div
@@ -109,7 +109,7 @@ export function PageHeaderWithControls({
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
             {description && (
-              <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">{description}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{description}</p>
             )}
           </div>
         </div>
@@ -121,13 +121,13 @@ export function PageHeaderWithControls({
           {/* Search */}
           {showSearch && (
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchValue}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none focus:ring-1 focus:ring-[#0065FF]"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
             </div>
           )}
@@ -136,7 +136,7 @@ export function PageHeaderWithControls({
           {showFilters && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
                   <Filter className="h-4 w-4" />
                   <span>Filter</span>
                   <ChevronDown className="h-3 w-3" />
@@ -155,7 +155,7 @@ export function PageHeaderWithControls({
           {showGroupBy && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
                   <LayoutGrid className="h-4 w-4" />
                   <span>Group by: {selectedGroupBy}</span>
                   <ChevronDown className="h-3 w-3" />
@@ -192,7 +192,7 @@ export function PageHeaderWithControls({
           {showViewSettings && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
                   <Settings className="h-4 w-4" />
                   <span className="hidden md:inline">View</span>
                   <ChevronDown className="h-3 w-3" />

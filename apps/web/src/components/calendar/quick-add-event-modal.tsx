@@ -110,16 +110,16 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-lg bg-white dark:bg-[#22272B] rounded-lg shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] p-4">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Plus className="h-5 w-5 text-[#0065FF]" />
+            <Plus className="h-5 w-5 text-primary-500" />
             Create Event
           </h2>
           <button
             onClick={onClose}
             className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
           >
-            <X className="h-5 w-5 text-gray-600 dark:text-[#9FADBC]" />
+            <X className="h-5 w-5 text-gray-600 dark:text-slate-400" />
           </button>
         </div>
 
@@ -132,7 +132,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Event title"
-              className="w-full rounded-lg border-0 bg-gray-50 dark:bg-[#282E33] px-4 py-3 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full rounded-lg border-0 bg-gray-50 dark:bg-[#282E33] px-4 py-3 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
               autoFocus
             />
@@ -143,7 +143,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <select
               value={formData.priority}
               onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-              className="rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+              className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               <option value="LOW">Low Priority</option>
               <option value="MEDIUM">Medium Priority</option>
@@ -154,7 +154,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <select
               value={formData.assigneeId}
               onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
-              className="rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+              className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               <option value="">Assign to...</option>
               {members.map((member: any) => (
@@ -168,7 +168,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-[#9FADBC] mb-1">
+              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
                 Start
               </label>
               <div className="space-y-2">
@@ -176,19 +176,19 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
                 <input
                   type="time"
                   value={formData.startTime}
                   onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-[#9FADBC] mb-1">
+              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
                 Due
               </label>
               <div className="space-y-2">
@@ -196,13 +196,13 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
                   type="date"
                   value={formData.dueDate}
                   onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
                 <input
                   type="time"
                   value={formData.dueTime}
                   onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="Optional"
                 />
               </div>
@@ -211,7 +211,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-[#9FADBC] mb-1 flex items-center gap-1">
+            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
               <AlignLeft className="h-3 w-3" />
               Description
             </label>
@@ -220,13 +220,13 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
               placeholder="Add details about this event..."
-              className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-[#9FADBC] mb-1 flex items-center gap-1">
+            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
               <Tag className="h-3 w-3" />
               Tags
             </label>
@@ -235,20 +235,20 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
               placeholder="meeting, urgent, planning (comma-separated)"
-              className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
           </div>
 
           {/* Reminder */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-[#9FADBC] mb-1 flex items-center gap-1">
+            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
               <Bell className="h-3 w-3" />
               Reminder
             </label>
             <select
               value={formData.reminder}
               onChange={(e) => setFormData({ ...formData, reminder: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
               <option value="none">No reminder</option>
               <option value="15min">15 minutes before</option>
@@ -263,14 +263,14 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors shadow-sm disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50"
             >
               <Plus className="h-4 w-4" />
               {createMutation.isPending ? 'Creating...' : 'Create Event'}

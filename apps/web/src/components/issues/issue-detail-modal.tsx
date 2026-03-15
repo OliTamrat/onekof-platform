@@ -221,17 +221,17 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
       {/* Side Panel */}
       <div className="flex h-full w-full max-w-4xl flex-col bg-[#22272B]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#2C333A] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-slate-700 px-6 py-4">
           <div className="flex items-center gap-3">
             <button
-              className="text-[#9FADBC] hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors"
               title="Settings"
               onClick={() => showAlert('Settings', 'Settings functionality coming soon!', 'info')}
             >
               <Settings className="h-5 w-5" />
             </button>
             <button
-              className="text-[#9FADBC] hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors"
               title="Copy link"
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
@@ -241,7 +241,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               <Link2 className="h-5 w-5" />
             </button>
             <button
-              className="text-[#9FADBC] hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors"
               title="More actions"
               onClick={() => showAlert('More Actions', 'Available actions: Delete, Archive, Move, Clone, Export', 'info')}
             >
@@ -251,7 +251,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
           <button
             onClick={onClose}
-            className="text-[#9FADBC] hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors"
             title="Close"
           >
             <X className="h-5 w-5" />
@@ -272,7 +272,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 {/* Status Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="flex items-center gap-2 rounded-md bg-[#0065FF] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] cursor-pointer focus:outline-none transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 rounded-md bg-primary-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-600 cursor-pointer focus:outline-none transition-colors disabled:opacity-50"
                     disabled={updateIssueMutation.isPending}
                   >
                     {editedStatus === 'TODO' && 'To Do'}
@@ -287,7 +287,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => handleStatusChange('TODO')}
                       className={`text-sm cursor-pointer ${
                         editedStatus === 'TODO'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -298,7 +298,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => handleStatusChange('IN_PROGRESS')}
                       className={`text-sm cursor-pointer ${
                         editedStatus === 'IN_PROGRESS'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -309,7 +309,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => handleStatusChange('IN_REVIEW')}
                       className={`text-sm cursor-pointer ${
                         editedStatus === 'IN_REVIEW'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -320,7 +320,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => handleStatusChange('DONE')}
                       className={`text-sm cursor-pointer ${
                         editedStatus === 'DONE'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -331,7 +331,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => handleStatusChange('BLOCKED')}
                       className={`text-sm cursor-pointer ${
                         editedStatus === 'BLOCKED'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -342,7 +342,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 </DropdownMenu>
 
                 {/* Type Badge */}
-                <div className="flex items-center gap-2 rounded-md border border-[#2C333A] bg-[#282E33] px-3 py-1.5 text-sm font-medium text-white">
+                <div className="flex items-center gap-2 rounded-md border border-slate-700 bg-[#282E33] px-3 py-1.5 text-sm font-medium text-white">
                   {getTypeIcon(issue.type)}
                   {getTypeLabel(issue.type)}
                 </div>
@@ -362,14 +362,14 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     value={editedDescription}
                     onChange={(e) => setEditedDescription(e.target.value)}
                     rows={6}
-                    className="w-full rounded-md border border-[#2C333A] bg-[#1B1F23] px-3 py-2 text-sm text-white placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none"
+                    className="w-full rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none"
                     placeholder="Add a description..."
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={handleDescriptionSave}
                       disabled={updateIssueMutation.isPending}
-                      className="rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] disabled:opacity-50 transition-colors"
+                      className="rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
                     >
                       {updateIssueMutation.isPending ? 'Saving...' : 'Save'}
                     </button>
@@ -378,7 +378,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                         setIsEditingDescription(false);
                         setEditedDescription(issue.description || '');
                       }}
-                      className="rounded-md border border-[#2C333A] bg-[#282E33] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#2C333A] transition-colors"
+                      className="rounded-md border border-slate-700 bg-[#282E33] px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-700 transition-colors"
                     >
                       Cancel
                     </button>
@@ -387,7 +387,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               ) : (
                 <div
                   onClick={() => setIsEditingDescription(true)}
-                  className="cursor-pointer rounded-md border border-transparent px-3 py-2 text-sm text-[#9FADBC] hover:border-[#2C333A] hover:bg-[#282E33] transition-colors min-h-[80px]"
+                  className="cursor-pointer rounded-md border border-transparent px-3 py-2 text-sm text-slate-400 hover:border-slate-700 hover:bg-[#282E33] transition-colors min-h-[80px]"
                 >
                   {issue.description || 'Click to add a description...'}
                 </div>
@@ -399,15 +399,15 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               <button className="mb-2 flex w-full items-center justify-between text-sm font-semibold text-white">
                 <div className="flex items-center gap-2">
                   Subtasks
-                  <span className="text-[#9FADBC]">{issue.subtaskProgress || 0}% Done</span>
+                  <span className="text-slate-400">{issue.subtaskProgress || 0}% Done</span>
                 </div>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
               {/* Progress Bar */}
-              <div className="mb-3 h-2 w-full rounded-full bg-[#2C333A]">
+              <div className="mb-3 h-2 w-full rounded-full bg-slate-700">
                 <div
-                  className="h-2 rounded-full bg-[#0065FF] transition-all duration-300"
+                  className="h-2 rounded-full bg-primary-500 transition-all duration-300"
                   style={{ width: `${issue.subtaskProgress || 0}%` }}
                 />
               </div>
@@ -418,20 +418,20 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   issue.subtasks.map((subtask: Subtask) => (
                     <div
                       key={subtask.id}
-                      className="flex items-center gap-3 rounded-md border border-[#2C333A] bg-[#1B1F23] p-3 hover:bg-[#282E33] transition-colors cursor-pointer"
+                      className="flex items-center gap-3 rounded-md border border-slate-700 bg-[#1B1F23] p-3 hover:bg-[#282E33] transition-colors cursor-pointer"
                       onClick={() => showAlert('Open Subtask', `Opening subtask ${subtask.key}: ${subtask.title}`, 'info')}
                     >
                       <CheckCircle2
                         className={`h-4 w-4 transition-colors ${
-                          subtask.status === 'DONE' ? 'text-[#0065FF]' : 'text-[#9FADBC]'
+                          subtask.status === 'DONE' ? 'text-primary-500' : 'text-slate-400'
                         }`}
                       />
                       <div className="flex-1">
                         <div className="text-sm text-white">{subtask.title}</div>
-                        <div className="text-xs text-[#9FADBC]">{subtask.key}</div>
+                        <div className="text-xs text-slate-400">{subtask.key}</div>
                       </div>
                       {subtask.assignee && (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                           {subtask.assignee.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -439,7 +439,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   ))
                 ) : (
                   !isCreatingSubtask && (
-                    <div className="text-center py-4 text-sm text-[#9FADBC]">
+                    <div className="text-center py-4 text-sm text-slate-400">
                       No subtasks yet
                     </div>
                   )
@@ -447,7 +447,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
                 {/* Create Subtask Form */}
                 {isCreatingSubtask ? (
-                  <div className="flex gap-2 rounded-md border border-[#0065FF] bg-[#1B1F23] p-3">
+                  <div className="flex gap-2 rounded-md border border-primary-500 bg-[#1B1F23] p-3">
                     <input
                       type="text"
                       value={newSubtaskTitle}
@@ -462,14 +462,14 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                         }
                       }}
                       placeholder="Subtask title..."
-                      className="flex-1 bg-transparent text-sm text-white placeholder-[#9FADBC] focus:outline-none"
+                      className="flex-1 bg-transparent text-sm text-white placeholder-slate-400 focus:outline-none"
                       autoFocus
                       disabled={createSubtaskMutation.isPending}
                     />
                     <button
                       onClick={handleCreateSubtask}
                       disabled={createSubtaskMutation.isPending || !newSubtaskTitle.trim()}
-                      className="text-[#0065FF] hover:text-white disabled:opacity-50 transition-colors"
+                      className="text-primary-500 hover:text-white disabled:opacity-50 transition-colors"
                       title="Add subtask"
                     >
                       <Send className="h-4 w-4" />
@@ -478,7 +478,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 ) : (
                   <button
                     onClick={() => setIsCreatingSubtask(true)}
-                    className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-[#9FADBC] hover:bg-[#282E33] hover:text-white transition-colors"
+                    className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                     Add subtask
@@ -499,11 +499,11 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   {issue.goals.map((goalLink: any) => (
                     <div
                       key={goalLink.goal.id}
-                      className="rounded-md border border-[#2C333A] bg-[#1B1F23] p-3 hover:bg-[#282E33] transition-colors cursor-pointer"
+                      className="rounded-md border border-slate-700 bg-[#1B1F23] p-3 hover:bg-[#282E33] transition-colors cursor-pointer"
                       onClick={() => showAlert('Open Goal', `Opening goal: ${goalLink.goal.title}`, 'info')}
                     >
                       <div className="flex items-center gap-2">
-                        <Link2 className="h-4 w-4 text-[#0065FF]" />
+                        <Link2 className="h-4 w-4 text-primary-500" />
                         <span className="text-sm font-medium text-white">{goalLink.goal.title}</span>
                       </div>
                     </div>
@@ -523,7 +523,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               <button
                 onClick={() => showAlert('Link Documentation', 'Connect this issue to wiki pages, docs, or knowledge base articles', 'info')}
-                className="flex w-full items-center gap-2 rounded-md border border-[#2C333A] bg-[#1B1F23] p-3 text-sm text-[#9FADBC] hover:bg-[#282E33] hover:text-white transition-colors"
+                className="flex w-full items-center gap-2 rounded-md border border-slate-700 bg-[#1B1F23] p-3 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white transition-colors"
               >
                 <FileText className="h-4 w-4" />
                 Link documentation
@@ -532,11 +532,11 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
             {/* Activity - Comments */}
             <div className="mb-6">
-              <div className="mb-4 flex items-center gap-2 border-b border-[#2C333A] pb-2">
-                <button className="border-b-2 border-[#0065FF] px-1 pb-2 text-sm font-medium text-white">
+              <div className="mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <button className="border-b-2 border-primary-500 px-1 pb-2 text-sm font-medium text-white">
                   Comments
                 </button>
-                <span className="text-sm text-[#9FADBC]">({issue.comments?.length || 0})</span>
+                <span className="text-sm text-slate-400">({issue.comments?.length || 0})</span>
               </div>
 
               {/* Comments List */}
@@ -544,17 +544,17 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 <div className="mb-4 space-y-4">
                   {issue.comments.map((comment: Comment) => (
                     <div key={comment.id} className="flex gap-3">
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#0065FF] text-sm font-medium text-white">
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-500 text-sm font-medium text-white">
                         {comment.author.name?.charAt(0).toUpperCase() || 'U'}
                       </div>
                       <div className="flex-1">
                         <div className="mb-1 flex items-center gap-2">
                           <span className="text-sm font-medium text-white">{comment.author.name}</span>
-                          <span className="text-xs text-[#9FADBC]">
+                          <span className="text-xs text-slate-400">
                             {format(new Date(comment.createdAt), 'PPp')}
                           </span>
                         </div>
-                        <div className="rounded-md border border-[#2C333A] bg-[#1B1F23] px-3 py-2 text-sm text-white">
+                        <div className="rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white">
                           {comment.content}
                         </div>
                       </div>
@@ -565,7 +565,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Comment Input */}
               <div className="flex gap-3">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#0065FF] text-sm font-medium text-white">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-500 text-sm font-medium text-white">
                   {issue.assignee?.name?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div className="flex-1">
@@ -574,37 +574,37 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     onChange={(e) => setCommentContent(e.target.value)}
                     placeholder="Add a comment..."
                     rows={3}
-                    className="w-full rounded-md border border-[#2C333A] bg-[#1B1F23] px-3 py-2 text-sm text-white placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
+                    className="w-full rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
                     disabled={createCommentMutation.isPending}
                   />
                   <button
                     onClick={handlePostComment}
                     disabled={createCommentMutation.isPending || !commentContent.trim()}
-                    className="mt-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] disabled:opacity-50 transition-colors"
+                    className="mt-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
                   >
                     {createCommentMutation.isPending ? 'Posting...' : 'Comment'}
                   </button>
-                  <div className="mt-2 text-xs text-[#9FADBC]">
-                    Pro tip: press <kbd className="rounded bg-[#2C333A] px-1.5 py-0.5">Ctrl</kbd> + <kbd className="rounded bg-[#2C333A] px-1.5 py-0.5">Enter</kbd> to comment
+                  <div className="mt-2 text-xs text-slate-400">
+                    Pro tip: press <kbd className="rounded bg-slate-700 px-1.5 py-0.5">Ctrl</kbd> + <kbd className="rounded bg-slate-700 px-1.5 py-0.5">Enter</kbd> to comment
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Timestamps */}
-            <div className="space-y-1 text-xs text-[#9FADBC]">
+            <div className="space-y-1 text-xs text-slate-400">
               <div>Created {format(new Date(issue.createdAt), 'PPp')}</div>
               <div>Updated {format(new Date(issue.updatedAt), 'PPp')}</div>
             </div>
           </div>
 
           {/* Right Sidebar - Details */}
-          <div className="w-64 border-l border-[#2C333A] bg-[#1B1F23] px-6 py-6 overflow-y-auto">
+          <div className="w-64 border-l border-slate-700 bg-[#1B1F23] px-6 py-6 overflow-y-auto">
             {/* Details Header */}
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-white">Details</h3>
               <button
-                className="text-[#9FADBC] hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-colors"
                 onClick={() => showAlert('Configure Details', 'Customize which fields to show in the Details panel', 'info')}
                 title="Configure details"
               >
@@ -615,7 +615,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
             <div className="space-y-4">
               {/* Assignee */}
               <div>
-                <div className="mb-1 text-xs font-medium text-[#9FADBC]">Assignee</div>
+                <div className="mb-1 text-xs font-medium text-slate-400">Assignee</div>
                 {issue.assignee ? (
                   <div className="flex items-center gap-2">
                     {issue.assignee.avatar ? (
@@ -625,7 +625,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                         className="h-6 w-6 rounded-full"
                       />
                     ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                         {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
                       </div>
                     )}
@@ -633,7 +633,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   </div>
                 ) : (
                   <button
-                    className="text-sm text-[#0065FF] hover:underline"
+                    className="text-sm text-primary-500 hover:underline"
                     onClick={() => showAlert('Assign to Me', 'This feature will assign this issue to you automatically', 'info')}
                   >
                     Assign to me
@@ -643,9 +643,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Priority */}
               <div>
-                <div className="mb-1 text-xs font-medium text-[#9FADBC]">Priority</div>
+                <div className="mb-1 text-xs font-medium text-slate-400">Priority</div>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center justify-between w-full rounded-md border border-[#2C333A] bg-[#282E33] px-3 py-1.5 text-sm text-white hover:bg-[#2C333A] cursor-pointer focus:outline-none transition-colors">
+                  <DropdownMenuTrigger className="flex items-center justify-between w-full rounded-md border border-slate-700 bg-[#282E33] px-3 py-1.5 text-sm text-white hover:bg-slate-700 cursor-pointer focus:outline-none transition-colors">
                     <span>{issue.priority || 'None'}</span>
                     <ChevronDown className="h-3.5 w-3.5 ml-2" />
                   </DropdownMenuTrigger>
@@ -654,7 +654,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => updateIssueMutation.mutate({ priority: 'HIGHEST' })}
                       className={`text-sm cursor-pointer ${
                         issue.priority === 'HIGHEST'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -665,7 +665,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => updateIssueMutation.mutate({ priority: 'HIGH' })}
                       className={`text-sm cursor-pointer ${
                         issue.priority === 'HIGH'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -676,7 +676,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => updateIssueMutation.mutate({ priority: 'MEDIUM' })}
                       className={`text-sm cursor-pointer ${
                         issue.priority === 'MEDIUM'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -687,7 +687,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => updateIssueMutation.mutate({ priority: 'LOW' })}
                       className={`text-sm cursor-pointer ${
                         issue.priority === 'LOW'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -698,7 +698,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       onClick={() => updateIssueMutation.mutate({ priority: 'LOWEST' })}
                       className={`text-sm cursor-pointer ${
                         issue.priority === 'LOWEST'
-                          ? 'bg-[#0065FF] text-white hover:bg-[#0052CC]'
+                          ? 'bg-primary-500 text-white hover:bg-primary-600'
                           : 'text-gray-900 hover:bg-[#F4F5F7]'
                       }`}
                     >
@@ -711,7 +711,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Due Date */}
               <div>
-                <div className="mb-1 text-xs font-medium text-[#9FADBC]">Due date</div>
+                <div className="mb-1 text-xs font-medium text-slate-400">Due date</div>
                 {issue.dueDate ? (
                   <div className="relative">
                     <DatePicker
@@ -720,7 +720,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                         updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
                       }}
                       customInput={
-                        <div className="flex items-center gap-1.5 text-sm text-white cursor-pointer hover:text-[#0065FF] transition-colors">
+                        <div className="flex items-center gap-1.5 text-sm text-white cursor-pointer hover:text-primary-500 transition-colors">
                           <Calendar className="h-3.5 w-3.5" />
                           <span>{format(new Date(issue.dueDate), 'MMM dd, yyyy')}</span>
                         </div>
@@ -738,7 +738,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
                     }}
                     customInput={
-                      <button className="text-sm text-[#0065FF] hover:underline">
+                      <button className="text-sm text-primary-500 hover:underline">
                         Set due date
                       </button>
                     }
@@ -750,13 +750,13 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Labels */}
               <div>
-                <div className="mb-1 text-xs font-medium text-[#9FADBC]">Labels</div>
+                <div className="mb-1 text-xs font-medium text-slate-400">Labels</div>
                 {issue.labels && Array.isArray(issue.labels) && issue.labels.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
                     {issue.labels.map((label: string, i: number) => (
                       <span
                         key={i}
-                        className="rounded-sm bg-[#2C333A] px-2 py-1 text-xs text-white"
+                        className="rounded-sm bg-slate-700 px-2 py-1 text-xs text-white"
                       >
                         {label}
                       </span>
@@ -764,7 +764,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   </div>
                 ) : (
                   <button
-                    className="text-sm text-[#0065FF] hover:underline"
+                    className="text-sm text-primary-500 hover:underline"
                     onClick={() => showAlert('Add Labels', 'Add tags and labels to categorize this issue', 'info')}
                   >
                     Add labels
@@ -774,7 +774,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Reporter */}
               <div>
-                <div className="mb-1 text-xs font-medium text-[#9FADBC]">Reporter</div>
+                <div className="mb-1 text-xs font-medium text-slate-400">Reporter</div>
                 {issue.reporter ? (
                   <div className="flex items-center gap-2">
                     {issue.reporter.avatar ? (
@@ -784,7 +784,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                         className="h-6 w-6 rounded-full"
                       />
                     ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                         {issue.reporter.name?.charAt(0).toUpperCase() || '?'}
                       </div>
                     )}
@@ -796,10 +796,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               </div>
 
               {/* Development */}
-              <div className="border-t border-[#2C333A] pt-4">
+              <div className="border-t border-slate-700 pt-4">
                 <button
                   onClick={() => setShowDevelopment(!showDevelopment)}
-                  className="flex w-full items-center justify-between text-xs font-medium text-[#9FADBC] hover:text-white transition-colors"
+                  className="flex w-full items-center justify-between text-xs font-medium text-slate-400 hover:text-white transition-colors"
                 >
                   <span>Development</span>
                   {showDevelopment ? (
@@ -812,13 +812,13 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   <div className="mt-2 space-y-2 text-xs text-white">
                     <button
                       onClick={() => showAlert('Create Branch', 'Create a new Git branch for this issue', 'info')}
-                      className="block w-full text-left text-[#0065FF] hover:underline"
+                      className="block w-full text-left text-primary-500 hover:underline"
                     >
                       + Create branch
                     </button>
                     <button
                       onClick={() => showAlert('Link Pull Request', 'Link an existing pull request to this issue', 'info')}
-                      className="block w-full text-left text-[#0065FF] hover:underline"
+                      className="block w-full text-left text-primary-500 hover:underline"
                     >
                       + Link PR
                     </button>
@@ -827,10 +827,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               </div>
 
               {/* Automation */}
-              <div className="border-t border-[#2C333A] pt-4">
+              <div className="border-t border-slate-700 pt-4">
                 <button
                   onClick={() => setShowAutomation(!showAutomation)}
-                  className="flex w-full items-center justify-between text-xs font-medium text-[#9FADBC] hover:text-white transition-colors"
+                  className="flex w-full items-center justify-between text-xs font-medium text-slate-400 hover:text-white transition-colors"
                 >
                   <div className="flex items-center gap-1">
                     <Zap className="h-3.5 w-3.5" />
@@ -844,10 +844,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 </button>
                 {showAutomation && (
                   <div className="mt-2 space-y-2 text-xs text-white">
-                    <div className="text-[#9FADBC]">No automation rules</div>
+                    <div className="text-slate-400">No automation rules</div>
                     <button
                       onClick={() => showAlert('Add Automation Rule', 'Create rules for auto-assign, status transitions, and notifications', 'info')}
-                      className="block w-full text-left text-[#0065FF] hover:underline"
+                      className="block w-full text-left text-primary-500 hover:underline"
                     >
                       + Add rule
                     </button>
@@ -859,7 +859,7 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
             {/* Configure Button */}
             <button
               onClick={() => showAlert('Configure Issue', 'Customize fields, workflows, and automation settings for this issue', 'info')}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-[#2C333A] bg-[#282E33] px-3 py-2 text-sm font-medium text-white hover:bg-[#2C333A] transition-colors"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-slate-700 bg-[#282E33] px-3 py-2 text-sm font-medium text-white hover:bg-slate-700 transition-colors"
             >
               <Settings className="h-4 w-4" />
               Configure

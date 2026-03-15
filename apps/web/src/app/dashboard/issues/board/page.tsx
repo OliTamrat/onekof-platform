@@ -212,8 +212,8 @@ export default function IssuesBoardPage() {
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#0065FF] dark:border-gray-700"></div>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading board...</p>
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary-500 dark:border-gray-700"></div>
+                <p className="text-sm text-gray-600 dark:text-slate-400">Loading board...</p>
               </div>
             </div>
           ) : (
@@ -226,16 +226,16 @@ export default function IssuesBoardPage() {
                   return (
                     <div
                       key={column.id}
-                      className="flex w-80 shrink-0 flex-col rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] shadow-sm"
+                      className="flex w-80 shrink-0 flex-col rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
                     >
                       {/* Column Header */}
-                      <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] p-4">
+                      <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+                          <Icon className="h-4 w-4 text-gray-600 dark:text-slate-400" />
                           <h3 className="font-semibold text-gray-900 dark:text-white">
                             {column.title}
                           </h3>
-                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-gray-100 dark:bg-[#282E33] px-2 text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-gray-100 dark:bg-[#282E33] px-2 text-xs font-medium text-gray-600 dark:text-slate-400">
                             {columnTasks.length}
                           </span>
                         </div>
@@ -243,7 +243,7 @@ export default function IssuesBoardPage() {
                           className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                           title="Add task"
                         >
-                          <Plus className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+                          <Plus className="h-4 w-4 text-gray-600 dark:text-slate-400" />
                         </button>
                       </div>
 
@@ -279,13 +279,13 @@ export default function IssuesBoardPage() {
                                       <div className="flex items-start justify-between gap-2 mb-2">
                                         <div className="flex items-center gap-2">
                                           <div className={`h-2 w-2 rounded-full ${getPriorityColor(task.priority)}`} />
-                                          <span className="text-xs font-semibold text-[#0065FF]">{task.key}</span>
+                                          <span className="text-xs font-semibold text-primary-500">{task.key}</span>
                                         </div>
                                         {dueDate && (
                                           <div className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
                                             dueDate.isOverdue
                                               ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
-                                              : 'bg-gray-100 text-gray-600 dark:bg-[#282E33] dark:text-[#9FADBC]'
+                                              : 'bg-gray-100 text-gray-600 dark:bg-[#282E33] dark:text-slate-400'
                                           }`}>
                                             <Clock className="h-3 w-3" />
                                             {dueDate.formatted}
@@ -300,7 +300,7 @@ export default function IssuesBoardPage() {
 
                                       {/* Task Description */}
                                       {task.description && (
-                                        <p className="text-xs text-gray-600 dark:text-[#9FADBC] mb-3 line-clamp-2">
+                                        <p className="text-xs text-gray-600 dark:text-slate-400 mb-3 line-clamp-2">
                                           {task.description}
                                         </p>
                                       )}
@@ -326,7 +326,7 @@ export default function IssuesBoardPage() {
                                                 className="h-5 w-5 rounded-full"
                                               />
                                             ) : (
-                                              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0065FF] text-[9px] font-medium text-white">
+                                              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-[9px] font-medium text-white">
                                                 {task.assignee.name.charAt(0).toUpperCase()}
                                               </div>
                                             )}
@@ -340,7 +340,7 @@ export default function IssuesBoardPage() {
                                           {task.tags.slice(0, 2).map((tag, idx) => (
                                             <span
                                               key={idx}
-                                              className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-[#9FADBC]"
+                                              className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400"
                                             >
                                               {tag}
                                             </span>

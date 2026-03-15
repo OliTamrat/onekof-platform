@@ -274,7 +274,7 @@ export default function IssuesWikiPage() {
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
 
         {/* Search & Filter Bar */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
@@ -282,19 +282,19 @@ export default function IssuesWikiPage() {
             </h2>
             <div className="flex items-center gap-2 flex-1 max-w-2xl">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-600 dark:text-[#9FADBC]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-600 dark:text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search articles, tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                  className="w-full pl-9 pr-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="all">All Categories</option>
                 <option value="operations">Operations</option>
@@ -314,12 +314,12 @@ export default function IssuesWikiPage() {
             {filteredArticles.map((article) => (
               <div
                 key={article.id}
-                className="p-3 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] hover:border-[#0065FF] cursor-pointer transition-colors"
+                className="p-3 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 cursor-pointer transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
                         {categoryLabels[article.category].toUpperCase()}
                       </span>
                       {article.featured && (
@@ -334,7 +334,7 @@ export default function IssuesWikiPage() {
                         </span>
                       )}
                       {article.status === 'draft' && (
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
                           DRAFT
                         </span>
                       )}
@@ -342,10 +342,10 @@ export default function IssuesWikiPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                       {article.title}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC] mb-2 line-clamp-1">
+                    <p className="text-xs text-gray-600 dark:text-slate-400 mb-2 line-clamp-1">
                       {article.description}
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                       <span className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
                         {article.views} views
@@ -364,13 +364,13 @@ export default function IssuesWikiPage() {
                         {article.tags.slice(0, 4).map((tag, idx) => (
                           <span
                             key={idx}
-                            className="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-[#9FADBC]"
+                            className="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400"
                           >
                             #{tag}
                           </span>
                         ))}
                         {article.tags.length > 4 && (
-                          <span className="text-xs px-1.5 py-0.5 text-gray-600 dark:text-[#9FADBC]">
+                          <span className="text-xs px-1.5 py-0.5 text-gray-600 dark:text-slate-400">
                             +{article.tags.length - 4} more
                           </span>
                         )}
@@ -386,7 +386,7 @@ export default function IssuesWikiPage() {
                 <div className="text-center">
                   <BookOpen className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No articles found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                     {searchQuery ? 'Try a different search term' : 'No articles match the selected filters'}
                   </p>
                 </div>

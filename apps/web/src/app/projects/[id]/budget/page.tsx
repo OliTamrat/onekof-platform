@@ -110,7 +110,7 @@ export default function ProjectBudgetPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg hover:shadow-md transition-shadow">
+            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
               <Eye className="h-4 w-4 inline mr-2" />
               Export Report
             </button>
@@ -158,7 +158,7 @@ export default function ProjectBudgetPage() {
           {/* Left Column: Budget Categories & Recent Activity */}
           <div className="lg:col-span-2 space-y-6">
             {/* Budget Categories Breakdown */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -184,7 +184,7 @@ export default function ProjectBudgetPage() {
                   return (
                     <div
                       key={category.id}
-                      className="rounded-lg border border-gray-200 dark:border-[#2C333A] p-4 hover:shadow-md transition-shadow cursor-pointer"
+                      className="rounded-lg border border-gray-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
@@ -251,7 +251,7 @@ export default function ProjectBudgetPage() {
             </div>
 
             {/* Recent Budget Activities */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -316,7 +316,7 @@ export default function ProjectBudgetPage() {
           {/* Right Column: AI Budget Watchers */}
           <div className="space-y-6">
             {/* AI-Powered Budget Watchers */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <div className="flex items-center gap-2 mb-6">
                 <Sparkles className="h-5 w-5 text-[#1C8C7D]" />
                 <div>
@@ -335,7 +335,7 @@ export default function ProjectBudgetPage() {
                   return (
                     <div
                       key={watcher.id}
-                      className="p-4 rounded-lg border border-gray-200 dark:border-[#2C333A] hover:shadow-md transition-shadow cursor-pointer"
+                      className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer"
                     >
                       <div className="flex items-start gap-3">
                         <Icon className={`h-5 w-5 ${watcher.color} flex-shrink-0 mt-0.5`} />
@@ -369,7 +369,7 @@ export default function ProjectBudgetPage() {
             </div>
 
             {/* Budget Status Overview */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Status Overview
               </h3>
@@ -432,7 +432,7 @@ function StatCard({
   return (
     <button
       onClick={onClick}
-      className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left w-full"
+      className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left w-full"
     >
       <div className="mb-4 flex items-center justify-between">
         <div className={color}>{icon}</div>

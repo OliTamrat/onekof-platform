@@ -64,9 +64,9 @@ export default function TeamsActivityPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#10B981] text-white font-semibold">
                 <Activity className="h-5 w-5" />
@@ -83,7 +83,7 @@ export default function TeamsActivityPage() {
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white`}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
@@ -94,7 +94,7 @@ export default function TeamsActivityPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -103,7 +103,7 @@ export default function TeamsActivityPage() {
                 placeholder="Search activity..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -118,16 +118,16 @@ export default function TeamsActivityPage() {
                 <div
                   key={activity.id}
                   onClick={() => handleActivityClick(activity)}
-                  className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                  className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-[#2C333A] ${activity.color}`}>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700 ${activity.color}`}>
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-semibold text-gray-900 dark:text-white">{activity.user}</span>
-                        <span className="text-sm text-gray-600 dark:text-[#9FADBC]">{activity.description}</span>
+                        <span className="text-sm text-gray-600 dark:text-slate-400">{activity.description}</span>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">

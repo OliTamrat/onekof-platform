@@ -70,16 +70,16 @@ export default function GoalsBoardPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Target className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goals Board</h1>
             </div>
-            <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]">
+            <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Target className="h-4 w-4" />
               Create Goal
             </button>
@@ -95,8 +95,8 @@ export default function GoalsBoardPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -108,7 +108,7 @@ export default function GoalsBoardPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -116,7 +116,7 @@ export default function GoalsBoardPage() {
               placeholder="Search goals..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function GoalsBoardPage() {
                   <h3 className="font-semibold text-gray-900 dark:text-white">
                     {column.label}
                   </h3>
-                  <span className="text-sm text-gray-500 dark:text-[#9FADBC] bg-gray-100 dark:bg-[#282E33] px-2 py-0.5 rounded-full">
+                  <span className="text-sm text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-[#282E33] px-2 py-0.5 rounded-full">
                     {goalsByStatus[column.id]?.length || 0}
                   </span>
                 </div>
@@ -139,25 +139,25 @@ export default function GoalsBoardPage() {
                   {goalsByStatus[column.id]?.map((goal) => (
                     <div
                       key={goal.id}
-                      className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] p-4 hover:shadow-md transition-shadow cursor-pointer"
+                      className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <h4 className="font-semibold text-gray-900 dark:text-white flex-1">
                           {goal.title}
                         </h4>
-                        <Target className="h-4 w-4 text-[#0065FF] flex-shrink-0 ml-2" />
+                        <Target className="h-4 w-4 text-primary-500 flex-shrink-0 ml-2" />
                       </div>
 
-                      <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-3">
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">
                         {goal.description}
                       </p>
 
                       <div className="mb-3">
-                        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#9FADBC] mb-1">
+                        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400 mb-1">
                           <span>Progress</span>
                           <span className="font-medium">{goal.progress}%</span>
                         </div>
-                        <div className="bg-gray-200 dark:bg-[#2C333A] rounded-full h-2">
+                        <div className="bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                           <div
                             className={`h-2 rounded-full ${getProgressColor(goal.progress)}`}
                             style={{ width: `${goal.progress}%` }}
@@ -165,23 +165,23 @@ export default function GoalsBoardPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-[#2C333A]">
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
                         <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-[#0065FF] text-white flex items-center justify-center text-xs font-semibold">
+                          <div className="h-6 w-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-semibold">
                             {goal.owner.split(' ').map((n: string) => n[0]).join('')}
                           </div>
-                          <span className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                          <span className="text-xs text-gray-600 dark:text-slate-400">
                             {goal.owner.split(' ')[0]}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-[#9FADBC]">
+                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
                           <Calendar className="h-3 w-3" />
                           {new Date(goal.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-slate-400">
                         <Users className="h-3 w-3" />
                         {goal.team}
                       </div>

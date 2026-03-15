@@ -80,7 +80,7 @@ export function UnifiedPageHeader({
   description,
   breadcrumbs = [],
   icon,
-  iconColor = '#0065FF',
+  iconColor = '#1C8C7D',
   currentTab,
   baseHref = '/dashboard',
   showTabs = true,
@@ -101,17 +101,17 @@ export function UnifiedPageHeader({
   )?.id || 'summary';
 
   return (
-    <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+    <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
-        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-[#2C333A]">
+        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-slate-700">
           {breadcrumbs.map((crumb, index) => (
             <div key={index} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-[#9FADBC]" />}
+              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-slate-400" />}
               {crumb.href ? (
                 <Link
                   href={crumb.href}
-                  className="text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   {crumb.label}
                 </Link>
@@ -124,7 +124,7 @@ export function UnifiedPageHeader({
       )}
 
       {/* Title and Icon */}
-      <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-[#2C333A]">
+      <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center gap-2 md:gap-3">
           {icon && (
             <div
@@ -137,7 +137,7 @@ export function UnifiedPageHeader({
           <div className="flex-1 min-w-0">
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 dark:text-white truncate">{title}</h1>
             {description && (
-              <p className="text-xs md:text-sm text-gray-600 dark:text-[#9FADBC] mt-1 line-clamp-1">{description}</p>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-slate-400 mt-1 line-clamp-1">{description}</p>
             )}
           </div>
         </div>
@@ -145,7 +145,7 @@ export function UnifiedPageHeader({
 
       {/* Navigation Tabs */}
       {showTabs && (
-        <div className="border-b border-gray-200 dark:border-[#2C333A] overflow-x-auto scrollbar-hide">
+        <div className="border-b border-gray-200 dark:border-slate-700 overflow-x-auto scrollbar-hide">
           {/* Desktop: Show all tabs */}
           <div className="hidden md:flex px-6 gap-3">
             {NAV_TABS.map((tab) => {
@@ -160,8 +160,8 @@ export function UnifiedPageHeader({
                   className={cn(
                     'flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 rounded-t-md whitespace-nowrap shrink-0',
                     isActive
-                      ? 'border-[#0065FF] text-[#0065FF] dark:text-[#0065FF] bg-[#0065FF]/5 dark:bg-[#0065FF]/10'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-[#2C333A]'
+                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -186,8 +186,8 @@ export function UnifiedPageHeader({
                   className={cn(
                     'flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 rounded-t-md shrink-0 whitespace-nowrap',
                     isActive
-                      ? 'border-[#0065FF] text-[#0065FF] dark:text-[#0065FF] bg-[#0065FF]/5 dark:bg-[#0065FF]/10'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-[#2C333A]'
+                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
                   )}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -203,8 +203,8 @@ export function UnifiedPageHeader({
                   className={cn(
                     'flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 rounded-t-md shrink-0 whitespace-nowrap',
                     NAV_TABS.slice(4).some(tab => activeTab === tab.id)
-                      ? 'border-[#0065FF] text-[#0065FF] dark:text-[#0065FF] bg-[#0065FF]/5 dark:bg-[#0065FF]/10'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-[#2C333A]'
+                      ? 'border-primary-500 text-primary-500 dark:text-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] hover:border-gray-200 dark:hover:border-slate-700'
                   )}
                 >
                   <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
@@ -223,7 +223,7 @@ export function UnifiedPageHeader({
                         href={href}
                         className={cn(
                           'flex items-center gap-3 w-full cursor-pointer',
-                          isActive && 'bg-[#0065FF]/10 text-[#0065FF] dark:text-[#0065FF] font-medium'
+                          isActive && 'bg-primary-500/10 text-primary-500 dark:text-primary-500 font-medium'
                         )}
                       >
                         <Icon className="h-4 w-4" />
@@ -239,18 +239,18 @@ export function UnifiedPageHeader({
       )}
 
       {/* Controls Bar - Spread on Desktop, Compact on Mobile */}
-      <div className="px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-[#2C333A]">
+      <div className="px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between gap-2 md:gap-3">
           {/* Search - Full width on mobile, constrained on desktop */}
           {showSearch && (
             <div className="relative flex-1 md:max-w-md">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-3 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none focus:ring-1 focus:ring-[#0065FF]"
+                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-3 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
             </div>
           )}
@@ -262,7 +262,7 @@ export function UnifiedPageHeader({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                     title="Filter"
                   >
                     <Filter className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -283,7 +283,7 @@ export function UnifiedPageHeader({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                     title="Group by"
                   >
                     <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -323,7 +323,7 @@ export function UnifiedPageHeader({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-[#9FADBC] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                     title="View settings"
                   >
                     <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />

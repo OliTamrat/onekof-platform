@@ -180,16 +180,16 @@ export default function TemplatesPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <LayoutTemplate className="h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automation Templates</h1>
-                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                <p className="text-xs text-gray-600 dark:text-slate-400">
                   Pre-built automations ready to activate
                 </p>
               </div>
@@ -197,7 +197,7 @@ export default function TemplatesPage() {
 
             <Link
               href="/dashboard/automations"
-              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A] transition-colors"
+              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
             >
               <List className="h-4 w-4" />
               View My Automations
@@ -214,8 +214,8 @@ export default function TemplatesPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.id === 'templates'
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -228,18 +228,18 @@ export default function TemplatesPage() {
           {/* Search and Filter Bar */}
           <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search templates..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+              <Filter className="h-4 w-4 text-gray-600 dark:text-slate-400" />
               {categories.map((category) => (
                 <button
                   key={category}
@@ -247,8 +247,8 @@ export default function TemplatesPage() {
                   className={cn(
                     'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
                     selectedCategory === category
-                      ? 'bg-[#0065FF] text-white'
-                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                      ? 'bg-primary-500 text-white'
+                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
                   )}
                 >
                   {category}
@@ -263,8 +263,8 @@ export default function TemplatesPage() {
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
-                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0065FF] border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading templates...</p>
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+                <p className="text-sm text-gray-600 dark:text-slate-400">Loading templates...</p>
               </div>
             </div>
           ) : filteredTemplates.length > 0 ? (
@@ -285,12 +285,12 @@ export default function TemplatesPage() {
               ))}
             </div>
           ) : (
-            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-[#2C333A]">
-              <LayoutTemplate className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+              <LayoutTemplate className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 No templates found
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 Try adjusting your search or filters
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function TemplatesPage() {
         {/* Template Detail Dialog */}
         {selectedTemplate && (
           <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-            <DialogContent className="max-w-2xl bg-[#22272B] border-[#2C333A] text-white">
+            <DialogContent className="max-w-2xl bg-[#22272B] border-slate-700 text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
                   <div
@@ -317,10 +317,10 @@ export default function TemplatesPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">{selectedTemplate.name}</h2>
-                    <p className="text-xs text-[#9FADBC]">{selectedTemplate.category}</p>
+                    <p className="text-xs text-slate-400">{selectedTemplate.category}</p>
                   </div>
                 </DialogTitle>
-                <DialogDescription className="text-sm text-[#9FADBC]">
+                <DialogDescription className="text-sm text-slate-400">
                   {selectedTemplate.description}
                 </DialogDescription>
               </DialogHeader>
@@ -328,21 +328,21 @@ export default function TemplatesPage() {
               <div className="py-4 space-y-4">
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="rounded-lg border border-[#2C333A] p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Star className="h-4 w-4 text-amber-500" />
                       <h3 className="text-xs font-semibold text-white">Popularity</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.popularity}%</p>
                   </div>
-                  <div className="rounded-lg border border-[#2C333A] p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Clock className="h-4 w-4 text-green-500" />
                       <h3 className="text-xs font-semibold text-white">Time Saved</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.estimatedTimeSaved}h/week</p>
                   </div>
-                  <div className="rounded-lg border border-[#2C333A] p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Zap className="h-4 w-4 text-purple-500" />
                       <h3 className="text-xs font-semibold text-white">Run Mode</h3>
@@ -352,7 +352,7 @@ export default function TemplatesPage() {
                 </div>
 
                 {/* Trigger */}
-                <div className="rounded-lg border border-[#2C333A] p-4 bg-[#1B1F23]">
+                <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                   <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold">
                       1
@@ -360,7 +360,7 @@ export default function TemplatesPage() {
                     When: Trigger Event
                   </h3>
                   <div className="ml-8">
-                    <p className="text-sm text-[#9FADBC]">
+                    <p className="text-sm text-slate-400">
                       <span className="font-medium text-white">{selectedTemplate.entityType}</span>
                       {' → '}
                       <span className="font-medium text-white">{selectedTemplate.triggerEvent}</span>
@@ -370,7 +370,7 @@ export default function TemplatesPage() {
 
                 {/* Conditions */}
                 {selectedTemplate.conditions && selectedTemplate.conditions.length > 0 && (
-                  <div className="rounded-lg border border-[#2C333A] p-4 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
                         2
@@ -379,7 +379,7 @@ export default function TemplatesPage() {
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.conditions.map((condition: any, index: number) => (
-                        <p key={index} className="text-sm text-[#9FADBC]">
+                        <p key={index} className="text-sm text-slate-400">
                           {condition.field}{' '}
                           <span className="font-medium text-white">{condition.operator}</span>{' '}
                           {condition.value !== null && <span className="font-medium text-white">{condition.value}</span>}
@@ -391,7 +391,7 @@ export default function TemplatesPage() {
 
                 {/* Actions */}
                 {selectedTemplate.actions && selectedTemplate.actions.length > 0 && (
-                  <div className="rounded-lg border border-[#2C333A] p-4 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400 text-xs font-bold">
                         3
@@ -400,7 +400,7 @@ export default function TemplatesPage() {
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.actions.map((action: any, index: number) => (
-                        <p key={index} className="text-sm text-[#9FADBC]">
+                        <p key={index} className="text-sm text-slate-400">
                           <span className="font-medium text-white capitalize">{action.type.replace(/_/g, ' ')}</span>
                           {action.params && Object.keys(action.params).length > 0 && (
                             <span className="text-xs ml-2">
@@ -418,7 +418,7 @@ export default function TemplatesPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsDetailDialogOpen(false)}
-                  className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                  className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                 >
                   Cancel
                 </Button>
@@ -428,7 +428,7 @@ export default function TemplatesPage() {
                     setIsConfirmDialogOpen(true);
                   }}
                   disabled={activateTemplateMutation.isPending}
-                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white"
                 >
                   <Zap className="mr-2 h-4 w-4" />
                   Activate Template
@@ -441,7 +441,7 @@ export default function TemplatesPage() {
         {/* Confirmation Dialog */}
         {templateToActivate && (
           <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-            <DialogContent className="max-w-md bg-[#22272B] border-[#2C333A] text-white">
+            <DialogContent className="max-w-md bg-[#22272B] border-slate-700 text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
@@ -449,13 +449,13 @@ export default function TemplatesPage() {
                   </div>
                   Activate Automation?
                 </DialogTitle>
-                <DialogDescription className="text-sm text-[#9FADBC]">
+                <DialogDescription className="text-sm text-slate-400">
                   Are you sure you want to activate "{templateToActivate.name}"? This automation will start running immediately.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="py-4">
-                <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-4">
+                <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-4">
                   <div className="flex items-start gap-3">
                     <div
                       className="flex h-10 w-10 items-center justify-center rounded-lg shrink-0"
@@ -471,8 +471,8 @@ export default function TemplatesPage() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-white mb-1">{templateToActivate.name}</h4>
-                      <p className="text-xs text-[#9FADBC] mb-2">{templateToActivate.description}</p>
-                      <div className="flex items-center gap-3 text-xs text-[#9FADBC]">
+                      <p className="text-xs text-slate-400 mb-2">{templateToActivate.description}</p>
+                      <div className="flex items-center gap-3 text-xs text-slate-400">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-green-500" />
                           {templateToActivate.estimatedTimeSaved}h saved/week
@@ -495,7 +495,7 @@ export default function TemplatesPage() {
                     setTemplateToActivate(null);
                   }}
                   disabled={activateTemplateMutation.isPending}
-                  className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                  className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                 >
                   Cancel
                 </Button>
@@ -506,7 +506,7 @@ export default function TemplatesPage() {
                     }
                   }}
                   disabled={activateTemplateMutation.isPending}
-                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white"
                 >
                   {activateTemplateMutation.isPending ? (
                     <>
@@ -541,7 +541,7 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
 
   return (
     <div
-      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] transition-all hover:border-[#0065FF] hover:shadow-lg"
+      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] transition-all hover:border-primary-500 hover:shadow-lg"
     >
       <div className="p-3" onClick={onClick}>
         {/* Header */}
@@ -553,20 +553,20 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
             <IconComponent className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors line-clamp-1">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors line-clamp-1">
               {template.name}
             </h3>
-            <p className="text-xs text-gray-600 dark:text-[#9FADBC]">{template.category}</p>
+            <p className="text-xs text-gray-600 dark:text-slate-400">{template.category}</p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-gray-600 dark:text-[#9FADBC] line-clamp-2 mb-3">
+        <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-2 mb-3">
           {template.description}
         </p>
 
         {/* Stats */}
-        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-[#9FADBC]">
+        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-slate-400">
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 text-amber-500" />
             <span>{template.popularity}%</span>
@@ -579,13 +579,13 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
       </div>
 
       {/* Action Button */}
-      <div className="border-t border-gray-200 dark:border-[#2C333A] px-3 py-2 bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="border-t border-gray-200 dark:border-slate-700 px-3 py-2 bg-gray-50 dark:bg-[#1B1F23]">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onActivate(template);
           }}
-          className="w-full flex items-center justify-center gap-1.5 rounded-md bg-[#0065FF] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0052CC] transition-colors"
+          className="w-full flex items-center justify-center gap-1.5 rounded-md bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 transition-colors"
         >
           <Zap className="h-3.5 w-3.5" />
           Activate

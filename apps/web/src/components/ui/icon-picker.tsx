@@ -143,15 +143,15 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-full items-center gap-3 rounded-md border border-[#2C333A] bg-[#1B1F23] px-3 py-2 text-sm text-white hover:bg-[#22272B] focus:border-[#0065FF] focus:outline-none transition-colors"
+          className="flex h-10 w-full items-center gap-3 rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white hover:bg-[#22272B] focus:border-primary-500 focus:outline-none transition-colors"
         >
           {SelectedIconComponent ? (
             <>
-              <SelectedIconComponent className="h-5 w-5 text-[#0065FF]" />
+              <SelectedIconComponent className="h-5 w-5 text-primary-500" />
               <span>{selectedIcon.name}</span>
             </>
           ) : (
-            <span className="text-[#9FADBC]">Choose an icon...</span>
+            <span className="text-slate-400">Choose an icon...</span>
           )}
         </button>
 
@@ -165,16 +165,16 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
             />
 
             {/* Dropdown Panel */}
-            <div className="absolute z-50 mt-2 w-[400px] rounded-lg border border-[#2C333A] bg-[#22272B] p-4 shadow-2xl">
+            <div className="absolute z-50 mt-2 w-[400px] rounded-lg border border-slate-700 bg-[#22272B] p-4 shadow-2xl">
               {/* Search */}
               <div className="mb-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9FADBC]" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <Input
                     placeholder="Search icons..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-[#1B1F23] border-[#2C333A] text-white placeholder-[#9FADBC]"
+                    className="pl-10 bg-[#1B1F23] border-slate-700 text-white placeholder-slate-400"
                   />
                 </div>
               </div>
@@ -190,8 +190,8 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
                       className={cn(
                         'rounded-md px-3 py-1 text-xs font-medium transition-colors',
                         selectedCategory === category
-                          ? 'bg-[#0065FF] text-white'
-                          : 'bg-[#1B1F23] text-[#9FADBC] hover:bg-[#282E33]'
+                          ? 'bg-primary-500 text-white'
+                          : 'bg-[#1B1F23] text-slate-400 hover:bg-[#282E33]'
                       )}
                     >
                       {category}
@@ -215,14 +215,14 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
                       className={cn(
                         'flex h-12 w-12 items-center justify-center rounded-md border transition-all hover:scale-110',
                         value === name
-                          ? 'border-[#0065FF] bg-[#0065FF]/20'
-                          : 'border-[#2C333A] bg-[#1B1F23] hover:border-[#0065FF] hover:bg-[#282E33]'
+                          ? 'border-primary-500 bg-primary-500/20'
+                          : 'border-slate-700 bg-[#1B1F23] hover:border-primary-500 hover:bg-[#282E33]'
                       )}
                       title={name}
                     >
                       <Icon className={cn(
                         'h-5 w-5',
-                        value === name ? 'text-[#0065FF]' : 'text-[#9FADBC]'
+                        value === name ? 'text-primary-500' : 'text-slate-400'
                       )} />
                     </button>
                   ))}
@@ -230,7 +230,7 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
 
                 {filteredIcons.length === 0 && (
                   <div className="py-8 text-center">
-                    <p className="text-sm text-[#9FADBC]">No icons found</p>
+                    <p className="text-sm text-slate-400">No icons found</p>
                   </div>
                 )}
               </div>
@@ -245,7 +245,7 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+                  className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                 >
                   Close
                 </Button>
@@ -256,7 +256,7 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
       </div>
 
       {value && (
-        <p className="text-xs text-[#9FADBC]">
+        <p className="text-xs text-slate-400">
           Selected: {value}
         </p>
       )}
