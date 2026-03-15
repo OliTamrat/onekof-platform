@@ -1,0 +1,20 @@
+
+> web@0.1.0 build
+> next build
+
+   ▲ Next.js 14.1.0
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/115) ...
+   Generating static pages (28/115) 
+   Generating static pages (57/115) 
+   Generating static pages (86/115) 
+
+
+
+ ✓ Generating static pages (115/115) 
