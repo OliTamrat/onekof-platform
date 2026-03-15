@@ -66,7 +66,7 @@ export function getSidebarNavigation(
       items: [],
     },
 
-    // 2. CORE PROJECT MANAGEMENT (8 sub-pages)
+    // 2. CORE PROJECT MANAGEMENT (6 sub-pages)
     {
       id: 'projects',
       name: 'Projects',
@@ -77,14 +77,30 @@ export function getSidebarNavigation(
         { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
         { name: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
         { name: 'Timeline', href: '/dashboard/timeline', icon: Calendar },
-        { name: 'Team', href: '/dashboard/teams', icon: Users },
         { name: 'Goals', href: '/dashboard/goals', icon: Target },
-        { name: 'Budget', href: '/dashboard/budget', icon: DollarSign },
         { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
       ],
     },
 
-    // 3. DEVELOPMENT (3 sub-pages) - For software/technical projects
+    // 3. TEAMS (Top-level)
+    {
+      id: 'teams',
+      name: 'Teams',
+      icon: Users,
+      href: '/dashboard/teams',
+      items: [],
+    },
+
+    // 4. BUDGET (Top-level)
+    {
+      id: 'budget',
+      name: 'Budget',
+      icon: DollarSign,
+      href: '/dashboard/budget',
+      items: [],
+    },
+
+    // 5. DEVELOPMENT (3 sub-pages) - For software/technical projects
     {
       id: 'development',
       name: 'Development',
@@ -97,7 +113,7 @@ export function getSidebarNavigation(
       ],
     },
 
-    // 4. MARKETING (3 sub-pages) - For public relations & stakeholder engagement
+    // 6. MARKETING (3 sub-pages) - For public relations & stakeholder engagement
     {
       id: 'marketing',
       name: 'Marketing',
@@ -110,7 +126,7 @@ export function getSidebarNavigation(
       ],
     },
 
-    // 5. OPERATIONS (3 sub-pages) - Critical for infrastructure projects
+    // 7. OPERATIONS (3 sub-pages) - Critical for infrastructure projects
     {
       id: 'operations',
       name: 'Operations',
@@ -123,7 +139,7 @@ export function getSidebarNavigation(
       ],
     },
 
-    // 6. RESEARCH & DATA (5 sub-pages) - For feasibility studies, surveys, inspections
+    // 8. RESEARCH & DATA (5 sub-pages) - For feasibility studies, surveys, inspections
     {
       id: 'research',
       name: 'Research',
@@ -138,7 +154,7 @@ export function getSidebarNavigation(
       ],
     },
 
-    // 7. KNOWLEDGE & AUTOMATION (4 sub-pages)
+    // 9. KNOWLEDGE & AUTOMATION (4 sub-pages)
     {
       id: 'knowledge',
       name: 'Knowledge',
@@ -208,6 +224,14 @@ export function getSidebarNavigation(
       };
     })
     .filter((section) => {
+      // Filter top-level sections based on enabled feature flags
+      if (section.id === 'teams') {
+        return organizationSettings.enabledSections.includes('teams');
+      }
+      if (section.id === 'budget') {
+        return organizationSettings.enabledSections.includes('budget');
+      }
+
       // Remove sections that have no items and no direct href
       // Or keep sections that have either a href or at least one item
       return section.href || section.items.length > 0;

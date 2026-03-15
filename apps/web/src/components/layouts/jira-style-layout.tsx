@@ -28,7 +28,6 @@ import {
   Home,
   ListChecks,
   Star,
-  LayoutDashboard,
   FolderKanban,
   List,
   Calendar,
@@ -41,7 +40,6 @@ import {
   ChevronRight,
   LogOut,
   Building2,
-  Layers,
   BookOpen,
   FileText,
   Folders,
@@ -172,59 +170,6 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Project Selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 h-9 hidden sm:flex">
-              <Layers className="h-4 w-4" />
-              <span className="hidden md:inline max-w-[120px] truncate">
-                {currentProject?.name || 'Projects'}
-              </span>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-80">
-            <DropdownMenuLabel>Recent Projects</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <div className="max-h-96 overflow-y-auto">
-              {projects.slice(0, 10).map((project) => (
-                <DropdownMenuItem
-                  key={project.id}
-                  onClick={() => {
-                    setCurrentProject(project);
-                    router.push(`/dashboard/projects?projectId=${project.id}`);
-                  }}
-                  className="cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 w-full">
-                    <div
-                      className="flex h-8 w-8 items-center justify-center rounded shrink-0"
-                      style={{ backgroundColor: project.color || '#3B82F6' }}
-                    >
-                      <IconRenderer iconName={project.icon} className="h-4 w-4 text-white" fallback="📁" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{project.name}</p>
-                      <p className="text-xs text-slate-500">{project.key}</p>
-                    </div>
-                    {project.isFavorite && <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />}
-                  </div>
-                </DropdownMenuItem>
-              ))}
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => router.push('/dashboard/all-projects')}
-              className="cursor-pointer font-medium"
-            >
-              View all projects →
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Spacer to push search slightly right on desktop */}
-        <div className="hidden xl:block w-8"></div>
-
         {/* SEARCH BAR - Opens Command Palette */}
         <div className="flex flex-1 min-w-0 max-w-md">
           <button
@@ -274,43 +219,10 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Desktop: See Plans Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 h-9 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold hidden md:flex"
-            onClick={() => setIsPricingModalOpen(true)}
-          >
-            <Zap className="h-4 w-4 fill-purple-500" />
-            <span>See plans</span>
-          </Button>
-
           {/* Desktop: Notifications */}
           <div className="hidden md:block">
             <NotificationCenter />
           </div>
-
-          {/* Desktop: Settings */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 hidden md:flex"
-            onClick={() => router.push("/settings")}
-            title="Settings"
-          >
-            <SettingsIcon className="h-4 w-4" />
-          </Button>
-
-          {/* Desktop: Help */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 hidden lg:flex"
-            onClick={() => router.push("/help")}
-            title="Help"
-          >
-            <HelpCircle className="h-4 w-4" />
-          </Button>
 
           {/* Desktop: Theme Toggle */}
           <div className="hidden md:block">
@@ -394,6 +306,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               <DropdownMenuItem onClick={() => router.push('/settings')}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
                 Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push('/help')}>
+                <HelpCircle className="mr-2 h-4 w-4" />
+                Help
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsPricingModalOpen(true)}>
+                <Zap className="mr-2 h-4 w-4 fill-purple-500 text-purple-500" />
+                <span className="text-purple-600 dark:text-purple-400 font-medium">See plans</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
