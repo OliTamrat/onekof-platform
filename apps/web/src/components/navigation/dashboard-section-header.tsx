@@ -94,6 +94,7 @@ export function DashboardSectionHeader({
               <Link
                 key={tab.id}
                 href={tab.href}
+                prefetch={false}
                 className={`flex items-center gap-2 border-b-2 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
                   isActive(tab.href)
                     ? 'border-primary-500 text-gray-900 dark:text-white'
@@ -122,6 +123,7 @@ export function DashboardSectionHeader({
                     <DropdownMenuItem key={tab.id} asChild>
                       <Link
                         href={tab.href}
+                prefetch={false}
                         className="flex items-center gap-2 cursor-pointer"
                       >
                         {Icon && <Icon className="h-4 w-4" />}
@@ -143,6 +145,7 @@ export function DashboardSectionHeader({
               <Link
                 key={tab.id}
                 href={tab.href}
+                prefetch={false}
                 className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive(tab.href)
                     ? 'border-primary-500 text-gray-900 dark:text-white'
