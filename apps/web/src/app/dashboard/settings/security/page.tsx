@@ -260,7 +260,7 @@ export default function SecuritySettingsPage() {
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     placeholder="000000"
-                    className="w-40 px-4 py-2.5 text-center text-lg font-mono tracking-widest border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#2C333A] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent"
+                    className="w-40 px-4 py-2.5 text-center text-lg font-mono tracking-widest border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent"
                     maxLength={6}
                   />
                   <button
@@ -347,7 +347,7 @@ export default function SecuritySettingsPage() {
                   type="password"
                   value={disablePassword}
                   onChange={(e) => setDisablePassword(e.target.value)}
-                  className="w-full max-w-sm px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#2C333A] text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full max-w-sm px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   placeholder="Enter your password"
                 />
               </div>

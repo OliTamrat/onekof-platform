@@ -58,9 +58,9 @@ export function DashboardSectionHeader({
   };
 
   return (
-    <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+    <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
       {/* Section Title and Actions */}
-      <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-3 md:px-6 py-3">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-3 md:px-6 py-3">
         <div className="flex items-center gap-2 md:gap-3 min-w-0">
           <div
             className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-md text-white font-semibold text-sm md:text-base shrink-0"
@@ -76,7 +76,7 @@ export function DashboardSectionHeader({
         {onCreateClick && (
           <button
             onClick={onCreateClick}
-            className="flex items-center gap-1.5 md:gap-2 rounded-md bg-[#0065FF] px-3 md:px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] shrink-0"
+            className="flex items-center gap-1.5 md:gap-2 rounded-md bg-primary-500 px-3 md:px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 shrink-0"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{createButtonLabel}</span>
@@ -94,10 +94,11 @@ export function DashboardSectionHeader({
               <Link
                 key={tab.id}
                 href={tab.href}
+                prefetch={false}
                 className={`flex items-center gap-2 border-b-2 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
                   isActive(tab.href)
-                    ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                    : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                    ? 'border-primary-500 text-gray-900 dark:text-white'
+                    : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {Icon && <Icon className="h-4 w-4" />}
@@ -110,7 +111,7 @@ export function DashboardSectionHeader({
           {moreTabs.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex flex-col items-center gap-1 border-b-2 border-transparent px-3 py-2 text-xs text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white">
+                <button className="flex flex-col items-center gap-1 border-b-2 border-transparent px-3 py-2 text-xs text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white">
                   <MoreVertical className="h-4 w-4" />
                   <span className="text-xs">More</span>
                 </button>
@@ -122,6 +123,7 @@ export function DashboardSectionHeader({
                     <DropdownMenuItem key={tab.id} asChild>
                       <Link
                         href={tab.href}
+                prefetch={false}
                         className="flex items-center gap-2 cursor-pointer"
                       >
                         {Icon && <Icon className="h-4 w-4" />}
@@ -143,10 +145,11 @@ export function DashboardSectionHeader({
               <Link
                 key={tab.id}
                 href={tab.href}
+                prefetch={false}
                 className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive(tab.href)
-                    ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                    : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                    ? 'border-primary-500 text-gray-900 dark:text-white'
+                    : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {Icon && <Icon className="h-4 w-4" />}
@@ -162,13 +165,13 @@ export function DashboardSectionHeader({
         <div className="flex items-center gap-2 md:gap-3 px-3 md:px-6 py-3">
           {showSearch && (
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchValue}
                 onChange={(e) => onSearchChange?.(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
               />
             </div>
           )}
@@ -176,7 +179,7 @@ export function DashboardSectionHeader({
           {showFilter && (
             <button
               onClick={onFilterClick}
-              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-[#2C333A]"
+              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700"
             >
               <Filter className="h-4 w-4" />
               <span className="hidden sm:inline">Filter</span>

@@ -76,24 +76,24 @@ export default function GoalsActivePage() {
       <div className="p-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Active Goals</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Active Goals</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredGoals.length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">On Track</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">On Track</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
               {filteredGoals.filter(g => g.status === 'ON_TRACK').length}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">At Risk</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">At Risk</div>
             <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
               {filteredGoals.filter(g => g.status === 'AT_RISK').length}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Behind</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Behind</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
               {filteredGoals.filter(g => g.status === 'BEHIND').length}
             </div>
@@ -101,7 +101,7 @@ export default function GoalsActivePage() {
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -109,7 +109,7 @@ export default function GoalsActivePage() {
               placeholder="Search active goals..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function GoalsActivePage() {
             <div
               key={goal.id}
               onClick={() => handleGoalClick(goal)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between mb-3">
                 <Target className="h-5 w-5 text-[#8B5CF6]" />
@@ -137,11 +137,11 @@ export default function GoalsActivePage() {
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">{goal.title}</h3>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#9FADBC]">
+                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400">
                   <span>Progress</span>
                   <span className="font-medium">{goal.progress}%</span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-[#2C333A] rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                   <div
                     className="bg-[#8B5CF6] h-2 rounded-full"
                     style={{ width: `${goal.progress}%` }}
@@ -149,16 +149,16 @@ export default function GoalsActivePage() {
                 </div>
 
                 <div className="flex items-center justify-between text-xs pt-2">
-                  <div className="flex items-center gap-1 text-gray-600 dark:text-[#9FADBC]">
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
                     <Users className="h-3 w-3" />
                     <span>{goal.team}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-gray-600 dark:text-[#9FADBC]">
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
                     <Clock className="h-3 w-3" />
                     <span>{goal.dueDate}</span>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                <div className="text-xs text-gray-600 dark:text-slate-400">
                   <Flag className="h-3 w-3 inline mr-1" />
                   {goal.completedResults}/{goal.keyResults} Key Results
                 </div>
@@ -196,11 +196,11 @@ export default function GoalsActivePage() {
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</label>
                 <div className="mt-2">
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#9FADBC] mb-1">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400 mb-1">
                     <span>Overall Progress</span>
                     <span className="font-medium">{selectedGoal?.progress}%</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-[#2C333A] rounded-full h-2">
+                  <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                     <div
                       className="bg-[#8B5CF6] h-2 rounded-full"
                       style={{ width: `${selectedGoal?.progress}%` }}

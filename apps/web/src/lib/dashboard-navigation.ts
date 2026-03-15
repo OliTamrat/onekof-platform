@@ -260,5 +260,5 @@ export function getSectionInfo(section: DashboardSection): { title: string; icon
     docs: { title: 'Docs & Wiki', icon: BookOpen, color: '#06B6D4' },
   };
 
-  return sectionInfo[section] || { title: 'Dashboard', icon: BarChart3, color: '#0065FF' };
+  return sectionInfo[section] || { title: 'Dashboard', icon: BarChart3, color: '#1C8C7D' };
 }

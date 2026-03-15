@@ -65,24 +65,24 @@ export default function AutomationsWorkflowsPage() {
       <div className="p-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Total Workflows</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Total Workflows</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredWorkflows.length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Active</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Active</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
               {filteredWorkflows.filter(w => w.status === 'ACTIVE').length}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Paused</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Paused</div>
             <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
               {filteredWorkflows.filter(w => w.status === 'PAUSED').length}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Total Executions</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Total Executions</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               {filteredWorkflows.reduce((sum, w) => sum + w.executions, 0)}
             </div>
@@ -98,10 +98,10 @@ export default function AutomationsWorkflowsPage() {
               placeholder="Search workflows..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC]">
+          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <Zap className="h-4 w-4" />
             Create Workflow
           </button>
@@ -113,7 +113,7 @@ export default function AutomationsWorkflowsPage() {
             <div
               key={workflow.id}
               onClick={() => handleWorkflowClick(workflow)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -124,8 +124,8 @@ export default function AutomationsWorkflowsPage() {
                       {workflow.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-3">{workflow.description}</p>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">{workflow.description}</p>
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                     <span className="flex items-center gap-1">
                       <GitBranch className="h-3 w-3" />
                       {workflow.triggers} Triggers
@@ -141,7 +141,7 @@ export default function AutomationsWorkflowsPage() {
                     <span>{workflow.executions} executions</span>
                   </div>
                 </div>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2C333A]">
+                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
                   {workflow.status === 'ACTIVE' ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                   {workflow.status === 'ACTIVE' ? 'Pause' : 'Resume'}
                 </button>

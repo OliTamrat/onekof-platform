@@ -77,10 +77,10 @@ export default function BudgetReportsPage() {
               placeholder="Search reports..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC]">
+          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <FileSpreadsheet className="h-4 w-4" />
             Generate Report
           </button>
@@ -92,7 +92,7 @@ export default function BudgetReportsPage() {
             <div
               key={report.id}
               onClick={() => handleReportClick(report)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
             >
               <div className="flex items-start gap-3 mb-3">
                 {getTypeIcon(report.type)}
@@ -104,7 +104,7 @@ export default function BudgetReportsPage() {
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-gray-600 dark:text-[#9FADBC]">
+              <div className="space-y-2 text-xs text-gray-600 dark:text-slate-400">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
                   <span>Period: {report.period}</span>
@@ -115,7 +115,7 @@ export default function BudgetReportsPage() {
                 </div>
               </div>
 
-              <button className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2C333A] transition-colors">
+              <button className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
                 <Download className="h-4 w-4" />
                 Download
               </button>
@@ -154,7 +154,7 @@ export default function BudgetReportsPage() {
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedReport?.size}</p>
               </div>
               <div className="pt-4">
-                <button className="w-full flex items-center justify-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC]">
+                <button className="w-full flex items-center justify-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
                   <Download className="h-4 w-4" />
                   Download Report
                 </button>

@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
         name,
         description,
         icon: icon || 'Zap',
-        color: color || '#0065FF',
+        color: color || '#1C8C7D',
         scope: scope || 'ORGANIZATION',
         entityType,
         triggerEvent,

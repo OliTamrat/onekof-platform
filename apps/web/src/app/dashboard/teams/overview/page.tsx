@@ -114,10 +114,10 @@ export default function TeamsOverviewPage() {
     return (
       <AppLayout>
         <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-          <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                   <Users className="h-6 w-6" />
                 </div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams Overview</h1>
@@ -132,8 +132,8 @@ export default function TeamsOverviewPage() {
                     href={tab.href}
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
-                        ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                        ? 'border-primary-500 text-gray-900 dark:text-white'
+                        : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -147,14 +147,14 @@ export default function TeamsOverviewPage() {
             <div className="max-w-7xl mx-auto space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6 animate-pulse">
-                    <div className="h-4 bg-gray-200 dark:bg-[#2C333A] rounded w-24 mb-3"></div>
-                    <div className="h-8 bg-gray-200 dark:bg-[#2C333A] rounded w-16 mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-[#2C333A] rounded w-20"></div>
+                  <div key={i} className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24 mb-3"></div>
+                    <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-16 mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-[#9FADBC]">
+              <div className="text-center py-12 text-gray-500 dark:text-slate-400">
                 Loading teams analytics...
               </div>
             </div>
@@ -168,10 +168,10 @@ export default function TeamsOverviewPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Users className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams Overview</h1>
@@ -181,7 +181,7 @@ export default function TeamsOverviewPage() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value as 'week' | 'month' | 'quarter')}
-                className="rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="week">Last 7 Days</option>
                 <option value="month">Last 30 Days</option>
@@ -189,7 +189,7 @@ export default function TeamsOverviewPage() {
               </select>
               <Link
                 href="/dashboard/teams"
-                className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 New Team
@@ -207,8 +207,8 @@ export default function TeamsOverviewPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -271,7 +271,7 @@ export default function TeamsOverviewPage() {
               {/* Left Column - 2/3 width */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Team Distribution */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Team Distribution by Type</h3>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -309,7 +309,7 @@ export default function TeamsOverviewPage() {
                 </div>
 
                 {/* Weekly Activity */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Team Activity This Week</h3>
                     <div className="flex gap-2">
@@ -319,8 +319,8 @@ export default function TeamsOverviewPage() {
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
-                              ? 'bg-[#0065FF] text-white'
-                              : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-[#9FADBC] hover:bg-gray-200 dark:hover:bg-[#2C333A]'
+                              ? 'bg-primary-500 text-white'
+                              : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -335,7 +335,7 @@ export default function TeamsOverviewPage() {
                         <div className="w-full flex gap-1 items-end h-48">
                           <div className="flex-1 flex flex-col items-center">
                             <div
-                              className="w-full bg-[#0065FF] rounded-t transition-all hover:bg-[#0052CC]"
+                              className="w-full bg-primary-500 rounded-t transition-all hover:bg-primary-600"
                               style={{ height: `${(data.tasks / maxActivity) * 100}%` }}
                               title={`Tasks: ${data.tasks}`}
                             />
@@ -348,41 +348,41 @@ export default function TeamsOverviewPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
                           {data.day}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded bg-[#0065FF]" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Tasks Completed</span>
+                      <div className="w-3 h-3 rounded bg-primary-500" />
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Tasks Completed</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-purple-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Meetings Held</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Meetings Held</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Team Performance */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Team Performance</h3>
 
                   <div className="space-y-4">
                     {teamPerformance.map((team: any, index: number) => (
                       <div
                         key={team.id}
-                        className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-[#2C333A] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                        className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
                       >
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-sm font-bold text-white">
                           #{index + 1}
                         </div>
                         <div
                           className="flex h-10 w-10 items-center justify-center rounded"
-                          style={{ backgroundColor: team.color || '#0065FF' }}
+                          style={{ backgroundColor: team.color || '#1C8C7D' }}
                         >
                           <IconRenderer iconName={team.icon} className="h-5 w-5 text-white" fallback="👥" />
                         </div>
@@ -391,13 +391,13 @@ export default function TeamsOverviewPage() {
                             <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
                               {team.name}
                             </h4>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-[#9FADBC]">
+                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
                               <Users className="h-3 w-3" />
                               {team.activeMembersCount} active
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
-                            <div className="flex-1 bg-gray-200 dark:bg-[#2C333A] rounded-full h-2">
+                            <div className="flex-1 bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                               <div
                                 className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all"
                                 style={{ width: `${team.score}%` }}
@@ -412,7 +412,7 @@ export default function TeamsOverviewPage() {
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {team.tasksCompleted}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-[#9FADBC]">tasks done</div>
+                          <div className="text-xs text-gray-500 dark:text-slate-400">tasks done</div>
                         </div>
                       </div>
                     ))}
@@ -420,7 +420,7 @@ export default function TeamsOverviewPage() {
                 </div>
 
                 {/* Growth Trend */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Growth Trend</h3>
 
                   <div className="flex items-end justify-between h-64 gap-4">
@@ -436,27 +436,27 @@ export default function TeamsOverviewPage() {
                           </div>
                           <div className="flex-1 flex flex-col items-center">
                             <div
-                              className="w-full bg-[#0065FF] rounded-t transition-all hover:bg-[#0052CC]"
+                              className="w-full bg-primary-500 rounded-t transition-all hover:bg-primary-600"
                               style={{ height: `${(data.members / maxGrowth) * 100}%` }}
                               title={`Members: ${data.members}`}
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">
+                        <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
                           {data.month}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-[#2C333A]">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Teams</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Teams</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded bg-[#0065FF]" />
-                      <span className="text-xs text-gray-600 dark:text-[#9FADBC]">Members</span>
+                      <div className="w-3 h-3 rounded bg-primary-500" />
+                      <span className="text-xs text-gray-600 dark:text-slate-400">Members</span>
                     </div>
                   </div>
                 </div>
@@ -465,7 +465,7 @@ export default function TeamsOverviewPage() {
               {/* Right Column - 1/3 width */}
               <div className="space-y-6">
                 {/* Top Contributors */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Crown className="h-5 w-5 text-yellow-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Top Contributors</h3>
@@ -478,18 +478,18 @@ export default function TeamsOverviewPage() {
                           index === 0 ? 'bg-yellow-500 text-white' :
                           index === 1 ? 'bg-gray-400 text-white' :
                           index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-200 dark:bg-[#2C333A] text-gray-600 dark:text-[#9FADBC]'
+                          'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
                         }`}>
                           {index + 1}
                         </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                           {contributor.avatar}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">
                             {contributor.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                          <div className="text-xs text-gray-500 dark:text-slate-400">
                             {contributor.team}
                           </div>
                         </div>
@@ -514,9 +514,9 @@ export default function TeamsOverviewPage() {
                 </div>
 
                 {/* Recent Activities */}
-                <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
-                    <Zap className="h-5 w-5 text-[#0065FF]" />
+                    <Zap className="h-5 w-5 text-primary-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Recent Activities</h3>
                   </div>
 
@@ -532,9 +532,9 @@ export default function TeamsOverviewPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-gray-900 dark:text-white">
                             <span className="font-medium">{activity.user}</span>{' '}
-                            <span className="text-gray-600 dark:text-[#9FADBC]">{activity.action}</span>
+                            <span className="text-gray-600 dark:text-slate-400">{activity.action}</span>
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-[#9FADBC] mt-1 flex items-center gap-1">
+                          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {activity.time}
                           </p>
@@ -554,7 +554,7 @@ export default function TeamsOverviewPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         Collaboration Boost
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-[#9FADBC] leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
                         Cross-team collaboration increased by <span className="font-semibold text-green-600 dark:text-green-400">32%</span> this month! Engineering and Design teams are working together on 8 active projects.
                       </p>
                     </div>
@@ -585,7 +585,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   const isPositive = trend === 'up' ? change >= 0 : change <= 0;
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${iconColor}`}>
           <Icon className="h-6 w-6 text-white" />
@@ -605,7 +605,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
         {value}{suffix}
       </div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-slate-400">{changeLabel}</div>
     </div>
   );
 }
@@ -620,7 +620,7 @@ interface TeamTypeCardProps {
 
 function TeamTypeCard({ label, count, icon, color }: TeamTypeCardProps) {
   return (
-    <div className="p-4 rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] hover:shadow-md transition-shadow">
+    <div className="p-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] hover:shadow-md transition-shadow">
       <div
         className="flex h-10 w-10 items-center justify-center rounded-lg mb-3"
         style={{ backgroundColor: color + '20' }}
@@ -628,7 +628,7 @@ function TeamTypeCard({ label, count, icon, color }: TeamTypeCardProps) {
         <IconRenderer iconName={icon} className="h-5 w-5" style={{ color }} />
       </div>
       <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{count}</div>
-      <div className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">{label}</div>
+      <div className="text-xs font-medium text-gray-600 dark:text-slate-400">{label}</div>
     </div>
   );
 }

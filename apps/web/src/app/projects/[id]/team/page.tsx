@@ -68,7 +68,7 @@ export default function ProjectTeamPage() {
             members.map(member => (
               <div
                 key={member.id}
-                className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow"
+                className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-[#1C8C7D] flex items-center justify-center text-lg text-white font-semibold">

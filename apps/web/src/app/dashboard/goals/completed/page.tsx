@@ -61,33 +61,33 @@ export default function GoalsCompletedPage() {
       <div className="p-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Completed Goals</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Completed Goals</div>
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{filteredGoals.length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Exceeded Target</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Exceeded Target</div>
             </div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {filteredGoals.filter(g => g.achievement > 100).length}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-5 w-5 text-[#3B82F6]" />
-              <div className="text-sm text-gray-600 dark:text-[#9FADBC]">This Quarter</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">This Quarter</div>
             </div>
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{filteredGoals.length}</div>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -95,7 +95,7 @@ export default function GoalsCompletedPage() {
               placeholder="Search completed goals..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function GoalsCompletedPage() {
             <div
               key={goal.id}
               onClick={() => handleGoalClick(goal)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -117,7 +117,7 @@ export default function GoalsCompletedPage() {
                       <Trophy className="h-4 w-4 text-[#F59E0B]" />
                     )}
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                     <span className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
                       {goal.team}
@@ -134,7 +134,7 @@ export default function GoalsCompletedPage() {
                   <div className={`text-2xl font-bold ${getAchievementColor(goal.achievement)}`}>
                     {goal.achievement}%
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-[#9FADBC]">Achievement</div>
+                  <div className="text-xs text-gray-600 dark:text-slate-400">Achievement</div>
                 </div>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function GoalsCompletedPage() {
                   <div className={`text-4xl font-bold ${getAchievementColor(selectedGoal?.achievement)}`}>
                     {selectedGoal?.achievement}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">Goal Achievement</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Goal Achievement</div>
                 </div>
               </div>
 

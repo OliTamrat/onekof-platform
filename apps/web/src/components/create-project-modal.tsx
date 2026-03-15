@@ -31,7 +31,7 @@ export function CreateProjectModal({
     key: '',
     description: '',
     icon: 'Briefcase',
-    color: '#0065FF',
+    color: '#1C8C7D',
     template: 'KANBAN' as 'KANBAN' | 'SCRUM' | 'CUSTOM',
     projectType: 'SOFTWARE' as 'SOFTWARE' | 'BUSINESS' | 'MARKETING' | 'OPERATIONS' | 'OTHER',
     startDate: '',
@@ -126,7 +126,7 @@ export function CreateProjectModal({
         key: '',
         description: '',
         icon: 'Briefcase',
-        color: '#0065FF',
+        color: '#1C8C7D',
         template: 'KANBAN',
         projectType: 'SOFTWARE',
         startDate: '',
@@ -161,14 +161,14 @@ export function CreateProjectModal({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
-            className="bg-[#282E33] border-[#2C333A] text-white hover:bg-[#2C333A]"
+            className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !formData.name || !formData.key}
-            className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+            className="bg-primary-500 hover:bg-primary-600 text-white"
           >
             {isSubmitting ? 'Creating...' : 'Create Project'}
           </Button>
@@ -178,7 +178,7 @@ export function CreateProjectModal({
       <SlideoutPanelContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information Card */}
-          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+          <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-6">
             <h3 className="mb-4 text-sm font-semibold text-white">Basic Information</h3>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -191,9 +191,9 @@ export function CreateProjectModal({
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   required
-                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
+                  className="bg-[#22272B] border-slate-700 text-white placeholder-slate-400 focus:border-primary-500"
                 />
-                <p className="text-xs text-[#9FADBC]">A clear, descriptive name for your project</p>
+                <p className="text-xs text-slate-400">A clear, descriptive name for your project</p>
               </div>
 
               <div className="space-y-2">
@@ -212,9 +212,9 @@ export function CreateProjectModal({
                   }
                   maxLength={10}
                   required
-                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
+                  className="bg-[#22272B] border-slate-700 text-white placeholder-slate-400 focus:border-primary-500"
                 />
-                <p className="text-xs text-[#9FADBC]">
+                <p className="text-xs text-slate-400">
                   Short identifier (auto-generated from name, e.g., MAP)
                 </p>
               </div>
@@ -225,7 +225,7 @@ export function CreateProjectModal({
                   id="project-type"
                   value={formData.projectType}
                   onChange={(e) => setFormData({ ...formData, projectType: e.target.value as typeof formData.projectType })}
-                  className="flex h-10 w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 w-full rounded-md border border-slate-700 bg-[#22272B] px-3 py-2 text-sm text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="SOFTWARE">Software Development</option>
                   <option value="BUSINESS">Business Project</option>
@@ -233,7 +233,7 @@ export function CreateProjectModal({
                   <option value="OPERATIONS">Operations</option>
                   <option value="OTHER">Other</option>
                 </select>
-                <p className="text-xs text-[#9FADBC]">What kind of project is this?</p>
+                <p className="text-xs text-slate-400">What kind of project is this?</p>
               </div>
 
               <div className="space-y-2">
@@ -249,15 +249,15 @@ export function CreateProjectModal({
                     }))
                   }
                   rows={4}
-                  className="bg-[#22272B] border-[#2C333A] text-white placeholder-[#9FADBC] focus:border-[#0065FF]"
+                  className="bg-[#22272B] border-slate-700 text-white placeholder-slate-400 focus:border-primary-500"
                 />
-                <p className="text-xs text-[#9FADBC]">Help team members understand the project scope</p>
+                <p className="text-xs text-slate-400">Help team members understand the project scope</p>
               </div>
             </div>
           </div>
 
           {/* Timeline Card */}
-          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+          <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-6">
             <h3 className="mb-4 text-sm font-semibold text-white">Project Timeline</h3>
             <DateRangePicker
               startDate={formData.startDate}
@@ -270,7 +270,7 @@ export function CreateProjectModal({
           </div>
 
           {/* Team & Leadership Card */}
-          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+          <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-6">
             <h3 className="mb-4 text-sm font-semibold text-white">Team & Leadership</h3>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -279,7 +279,7 @@ export function CreateProjectModal({
                   id="lead"
                   value={formData.leadId}
                   onChange={(e) => setFormData({ ...formData, leadId: e.target.value })}
-                  className="flex h-10 w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 w-full rounded-md border border-slate-700 bg-[#22272B] px-3 py-2 text-sm text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="">No lead assigned</option>
                   {orgMembers.map((member) => (
@@ -288,7 +288,7 @@ export function CreateProjectModal({
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-[#9FADBC]">Person responsible for this project's success</p>
+                <p className="text-xs text-slate-400">Person responsible for this project's success</p>
               </div>
 
               <div className="space-y-2">
@@ -301,7 +301,7 @@ export function CreateProjectModal({
                     const selected = Array.from(e.target.selectedOptions, option => option.value);
                     setFormData({ ...formData, teamIds: selected });
                   }}
-                  className="flex min-h-[120px] w-full rounded-md border border-[#2C333A] bg-[#22272B] px-3 py-2 text-sm text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex min-h-[120px] w-full rounded-md border border-slate-700 bg-[#22272B] px-3 py-2 text-sm text-white focus:border-primary-500 focus:outline-none"
                 >
                   {orgTeams.map((team) => (
                     <option key={team.id} value={team.id}>
@@ -309,13 +309,13 @@ export function CreateProjectModal({
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-[#9FADBC]">Hold Ctrl/Cmd to select multiple teams</p>
+                <p className="text-xs text-slate-400">Hold Ctrl/Cmd to select multiple teams</p>
               </div>
             </div>
           </div>
 
           {/* Appearance Card */}
-          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+          <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-6">
             <h3 className="mb-4 text-sm font-semibold text-white">Appearance</h3>
             <div className="space-y-4">
               <IconPicker
@@ -337,7 +337,7 @@ export function CreateProjectModal({
                         color: e.target.value,
                       }))
                     }
-                    className="w-16 h-10 p-1 cursor-pointer bg-[#22272B] border-[#2C333A]"
+                    className="w-16 h-10 p-1 cursor-pointer bg-[#22272B] border-slate-700"
                   />
                   <Input
                     type="text"
@@ -348,17 +348,17 @@ export function CreateProjectModal({
                         color: e.target.value,
                       }))
                     }
-                    placeholder="#0065FF"
-                    className="flex-1 bg-[#22272B] border-[#2C333A] text-white focus:border-[#0065FF]"
+                    placeholder="#1C8C7D"
+                    className="flex-1 bg-[#22272B] border-slate-700 text-white focus:border-primary-500"
                   />
                 </div>
-                <p className="text-xs text-[#9FADBC]">Choose a color to identify this project</p>
+                <p className="text-xs text-slate-400">Choose a color to identify this project</p>
               </div>
             </div>
           </div>
 
           {/* Workflow Template Card */}
-          <div className="rounded-lg border border-[#2C333A] bg-[#1B1F23] p-6">
+          <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-6">
             <h3 className="mb-4 text-sm font-semibold text-white">Workflow Template</h3>
             <div className="space-y-3">
               {[
@@ -370,8 +370,8 @@ export function CreateProjectModal({
                   key={template.value}
                   className={`flex items-start gap-3 rounded-md border p-4 cursor-pointer transition-colors ${
                     formData.template === template.value
-                      ? 'border-[#0065FF] bg-[#0065FF]/10'
-                      : 'border-[#2C333A] bg-[#22272B] hover:border-[#0065FF]/50'
+                      ? 'border-primary-500 bg-primary-500/10'
+                      : 'border-slate-700 bg-[#22272B] hover:border-primary-500/50'
                   }`}
                 >
                   <input
@@ -385,11 +385,11 @@ export function CreateProjectModal({
                         template: e.target.value as typeof formData.template,
                       }))
                     }
-                    className="mt-1 h-4 w-4 text-[#0065FF] focus:ring-[#0065FF] focus:ring-offset-0"
+                    className="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 focus:ring-offset-0"
                   />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-white">{template.name}</p>
-                    <p className="mt-1 text-xs text-[#9FADBC]">{template.desc}</p>
+                    <p className="mt-1 text-xs text-slate-400">{template.desc}</p>
                   </div>
                 </label>
               ))}

@@ -74,7 +74,7 @@ export default function IssuesListPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'TODO':
-        return 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]';
+        return 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400';
       case 'IN_PROGRESS':
         return 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
       case 'IN_REVIEW':
@@ -84,7 +84,7 @@ export default function IssuesListPage() {
       case 'BLOCKED':
         return 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400';
       default:
-        return 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]';
+        return 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400';
     }
   };
 
@@ -132,47 +132,47 @@ export default function IssuesListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-[#9FADBC]">Loading issues...</div>
+              <div className="text-gray-600 dark:text-slate-400">Loading issues...</div>
             </div>
           ) : filteredIssues.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <CheckSquare className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No issues</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
+                <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                   {searchQuery ? 'No issues match your search.' : 'Get started by creating a new issue.'}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-[#2C333A]">
+            <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead className="bg-gray-50 dark:bg-[#282E33]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Key
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Title
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Priority
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Assignee
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Due Date
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-[#22272B] divide-y divide-gray-200 dark:divide-[#2C333A]">
+                <tbody className="bg-white dark:bg-[#22272B] divide-y divide-gray-200 dark:divide-slate-700">
                   {filteredIssues.map((issue: Issue) => (
                     <tr
                       key={issue.id}
@@ -180,7 +180,7 @@ export default function IssuesListPage() {
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <CheckSquare className="h-4 w-4 text-[#0065FF]" />
+                          <CheckSquare className="h-4 w-4 text-primary-500" />
                           <span className="text-sm font-medium text-gray-900 dark:text-white">
                             {issue.key}
                           </span>
@@ -192,7 +192,7 @@ export default function IssuesListPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                        <span className="text-sm text-gray-600 dark:text-slate-400">
                           {issue.type}
                         </span>
                       </td>
@@ -216,7 +216,7 @@ export default function IssuesListPage() {
                                 className="h-6 w-6 rounded-full"
                               />
                             ) : (
-                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0065FF] text-xs font-medium text-white">
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                                 {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
                               </div>
                             )}
@@ -230,7 +230,7 @@ export default function IssuesListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {issue.dueDate ? (
-                          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-[#9FADBC]">
+                          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-slate-400">
                             <Calendar className="h-3.5 w-3.5" />
                             <span>{formatDate(issue.dueDate)}</span>
                           </div>

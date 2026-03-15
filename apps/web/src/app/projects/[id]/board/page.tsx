@@ -54,10 +54,10 @@ export default function ProjectBoardPage() {
         {STATUSES.map(status => (
           <div
             key={status.id}
-            className="flex w-80 flex-shrink-0 flex-col rounded-lg bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A]"
+            className="flex w-80 flex-shrink-0 flex-col rounded-lg bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700"
           >
             {/* Column Header */}
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-4 py-3">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-4 py-3">
               <div className="flex items-center gap-2">
                 <div className={`h-3 w-3 rounded-full ${status.color}`} />
                 <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -77,7 +77,7 @@ export default function ProjectBoardPage() {
               {getIssuesByStatus(status.id).map(issue => (
                 <div
                   key={issue.id}
-                  className="cursor-pointer rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-3 hover:shadow-md transition-shadow"
+                  className="cursor-pointer rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

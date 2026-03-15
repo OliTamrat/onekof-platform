@@ -105,7 +105,7 @@ export function RoleSelection({ onSelect, onSkip }: RoleSelectionProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117]">
+    <div className="min-h-screen bg-white dark:bg-[#1B1F23]">
       {/* Header with Theme Toggle */}
       <OnboardingHeader />
 

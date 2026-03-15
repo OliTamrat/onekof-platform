@@ -191,22 +191,22 @@ export default function AutomationsPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <Zap className="h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automation Hub</h1>
-                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Automate workflows and boost productivity</p>
+                <p className="text-xs text-gray-600 dark:text-slate-400">Automate workflows and boost productivity</p>
               </div>
             </div>
 
             <Link
               href="/dashboard/automations/create"
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+              className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create Automation
@@ -223,8 +223,8 @@ export default function AutomationsPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -237,13 +237,13 @@ export default function AutomationsPage() {
           {/* Search and Filter Bar */}
           <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search automations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
               />
             </div>
 
@@ -255,8 +255,8 @@ export default function AutomationsPage() {
                   className={cn(
                     'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                     selectedFilter === filter.value
-                      ? 'bg-[#0065FF] text-white'
-                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                      ? 'bg-primary-500 text-white'
+                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
                   )}
                 >
                   {filter.label} ({filter.count})
@@ -303,8 +303,8 @@ export default function AutomationsPage() {
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
-                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0065FF] border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading automations...</p>
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+                <p className="text-sm text-gray-600 dark:text-slate-400">Loading automations...</p>
               </div>
             </div>
           ) : filteredAutomations.length > 0 ? (
@@ -329,17 +329,17 @@ export default function AutomationsPage() {
               ))}
             </div>
           ) : (
-            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-[#2C333A]">
-              <Zap className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+              <Zap className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 No automations found
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 Create your first automation to streamline your workflows
               </p>
               <Link
                 href="/dashboard/automations/create"
-                className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 Create Automation
@@ -351,7 +351,7 @@ export default function AutomationsPage() {
         {/* Detail Dialog */}
         {selectedAutomation && (
           <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-            <DialogContent className="max-w-2xl bg-[#22272B] border-[#2C333A] text-white">
+            <DialogContent className="max-w-2xl bg-[#22272B] border-slate-700 text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
                   <div
@@ -367,7 +367,7 @@ export default function AutomationsPage() {
               <div className="py-4 space-y-4">
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-2">Description</h3>
-                  <p className="text-sm text-[#9FADBC]">
+                  <p className="text-sm text-slate-400">
                     {selectedAutomation.description || 'No description provided'}
                   </p>
                 </div>
@@ -375,11 +375,11 @@ export default function AutomationsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-sm font-semibold text-white mb-2">Trigger</h3>
-                    <p className="text-sm text-[#9FADBC]">{selectedAutomation.triggerEvent}</p>
+                    <p className="text-sm text-slate-400">{selectedAutomation.triggerEvent}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-white mb-2">Entity Type</h3>
-                    <p className="text-sm text-[#9FADBC]">{selectedAutomation.entityType}</p>
+                    <p className="text-sm text-slate-400">{selectedAutomation.entityType}</p>
                   </div>
                 </div>
 
@@ -423,13 +423,13 @@ interface StatsCardProps {
 
 function StatsCard({ icon: Icon, label, value, iconColor, iconBg }: StatsCardProps) {
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
       <div className="flex items-center gap-3">
         <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg', iconBg)}>
           <Icon className={cn('h-5 w-5', iconColor)} />
         </div>
         <div>
-          <p className="text-xs text-gray-600 dark:text-[#9FADBC]">{label}</p>
+          <p className="text-xs text-gray-600 dark:text-slate-400">{label}</p>
           <p className="text-xl font-bold text-gray-900 dark:text-white">{value}</p>
         </div>
       </div>
@@ -452,7 +452,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
 
   return (
     <div
-      className="group cursor-pointer rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4 transition-all hover:border-[#0065FF] hover:bg-gray-50 dark:hover:bg-[#282E33]"
+      className="group cursor-pointer rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 transition-all hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-[#282E33]"
     >
       <div className="flex items-start gap-4">
         {/* Icon */}
@@ -467,14 +467,14 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
         <div className="flex-1 min-w-0" onClick={onClick}>
           <div className="flex items-start justify-between gap-2 mb-1">
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
                 {automation.name}
                 {automation.aiGenerated && (
                   <Sparkles className="inline-block ml-2 h-3 w-3 text-amber-500" />
                 )}
               </h3>
               {automation.description && (
-                <p className="text-xs text-gray-600 dark:text-[#9FADBC] line-clamp-1">
+                <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-1">
                   {automation.description}
                 </p>
               )}
@@ -482,7 +482,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
           </div>
 
           {/* Metadata */}
-          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC] mt-2">
+          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400 mt-2">
             <span className="flex items-center gap-1">
               <Activity className="h-3 w-3" />
               {automation.executionCount} runs
@@ -497,7 +497,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 {new Date(automation.lastExecutedAt).toLocaleDateString()}
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-full bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]">
+            <span className="px-2 py-0.5 rounded-full bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
               {automation.entityType}
             </span>
           </div>
@@ -514,7 +514,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
               'flex items-center gap-1 px-3 py-1 rounded-md text-xs font-medium transition-colors',
               automation.isEnabled
                 ? 'bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20'
-                : 'bg-gray-200 dark:bg-[#282E33] text-gray-600 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                : 'bg-gray-200 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
             )}
             title={automation.isEnabled ? 'Disable automation' : 'Enable automation'}
           >
@@ -535,18 +535,18 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
             <DropdownMenuTrigger asChild>
               <button
                 onClick={(e) => e.stopPropagation()}
-                className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#2C333A] transition-colors"
+                className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               >
-                <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+                <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-slate-400" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-[#2C333A]">
+            <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick();
                 }}
-                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <Settings className="mr-2 h-4 w-4" />
                 View Details
@@ -556,7 +556,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                   e.stopPropagation();
                   // TODO: Navigate to execution history
                 }}
-                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <History className="mr-2 h-4 w-4" />
                 View History
@@ -566,7 +566,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                   e.stopPropagation();
                   onDelete(automation.id);
                 }}
-                className="text-red-600 hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+                className="text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <XCircle className="mr-2 h-4 w-4" />
                 Delete

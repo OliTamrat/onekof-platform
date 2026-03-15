@@ -571,9 +571,9 @@ export default function HomePage() {
         <Reveal delay={500}>
           <div className="relative mx-auto max-w-6xl px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.08] via-primary-700/[0.04] to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-midnight-900/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#22272B]/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
               {/* Browser Chrome */}
-              <div className="flex items-center gap-2 border-b border-white/[0.06] bg-midnight-900/80 px-4 py-3">
+              <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#22272B]/80 px-4 py-3">
                 <div className="flex gap-1.5">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
@@ -879,7 +879,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="order-1 lg:order-2">
-                  <div className="rounded-2xl border border-white/[0.08] bg-midnight-900/50 p-5 ring-1 ring-white/[0.04] transition-all">
+                  <div className="rounded-2xl border border-white/[0.08] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
                     {showcaseMockups[activeShowcase]}
                   </div>
                 </div>
@@ -1047,7 +1047,7 @@ export default function HomePage() {
                 <button
                   onClick={() => setBilling('monthly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'monthly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/55 hover:text-white/60'
+                    billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
                   Monthly
@@ -1055,7 +1055,7 @@ export default function HomePage() {
                 <button
                   onClick={() => setBilling('yearly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'yearly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/55 hover:text-white/60'
+                    billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
                   Yearly

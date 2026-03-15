@@ -19,20 +19,20 @@ export default function DocumentsRecentPage() {
       <div className="p-6">
         <div className="space-y-3">
           {RECENT_DOCS.map((doc) => (
-            <div key={doc.id} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
+            <div key={doc.id} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <FileText className="h-5 w-5 text-[#3B82F6]" />
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{doc.title}</h3>
-                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400 mt-1">
                       <span>{doc.type}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1"><User className="h-3 w-3" />{doc.user}</span>
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-[#9FADBC]">{doc.lastAccessed}</div>
+                <div className="text-xs text-gray-600 dark:text-slate-400">{doc.lastAccessed}</div>
               </div>
             </div>
           ))}
