@@ -106,16 +106,16 @@ export default function SignUpPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-midnight-950">
+    <div className="flex min-h-screen bg-[#1B1F23]">
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
-        <div className="absolute inset-0 bg-gradient-to-br from-midnight-950 via-midnight-900 to-brand-950" />
-        <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-brand-600/[0.08] blur-[150px]" />
-        <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-purple-600/[0.06] blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#0B3A34]" />
+        <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
+        <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-primary-700/[0.06] blur-[120px]" />
 
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-sm">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg">
               <span className="text-sm font-black text-white">O</span>
             </div>
             <span className="text-[16px] font-semibold text-white">Onekof</span>
@@ -143,8 +143,8 @@ export default function SignUpPage() {
                 'Free forever for teams up to 10',
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2.5">
-                  <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/10">
-                    <Check className="h-3 w-3 text-brand-400" />
+                  <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
+                    <Check className="h-3 w-3 text-primary-400" />
                   </div>
                   <span className="text-[13px] text-white/35">{item}</span>
                 </div>
@@ -171,7 +171,7 @@ export default function SignUpPage() {
       <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
         <div className="w-full max-w-[420px]">
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
               <span className="text-sm font-black text-white">O</span>
             </div>
             <span className="text-[15px] font-semibold text-white">Onekof</span>
@@ -181,7 +181,7 @@ export default function SignUpPage() {
             <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">Create your account</h3>
             <p className="mt-2 text-[14px] text-white/30">
               Already have an account?{' '}
-              <Link href="/auth/signin" className="font-medium text-brand-400 transition-colors hover:text-brand-300">
+              <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                 Sign in
               </Link>
             </p>
@@ -205,7 +205,7 @@ export default function SignUpPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 placeholder="Your full name"
               />
             </div>
@@ -220,7 +220,7 @@ export default function SignUpPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 placeholder="you@company.com"
               />
             </div>
@@ -236,7 +236,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="At least 8 characters"
                 />
                 <button
@@ -270,7 +270,7 @@ export default function SignUpPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -287,7 +287,7 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 py-3.5 text-[14px] font-medium text-white shadow-brand-md transition-all hover:shadow-brand-lg hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group w-full rounded-xl bg-primary-500 py-3.5 text-[14px] font-medium text-white shadow-lg transition-all hover:bg-primary-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -305,7 +305,7 @@ export default function SignUpPage() {
 
           <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-400" />
+              <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary-400" />
               <div>
                 <p className="text-[13px] font-medium text-white/50">Quick 2-minute setup</p>
                 <p className="text-[12px] text-white/25">

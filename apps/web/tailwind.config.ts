@@ -29,6 +29,36 @@ const config: Config = {
         ],
       },
       colors: {
+        // Semantic tokens — use these in all components
+        primary: {
+          50: '#E6F5F3',
+          100: '#CCEBe7',
+          200: '#99D7CF',
+          300: '#66C3B7',
+          400: '#33AF9F',
+          500: '#1C8C7D', // Main teal accent
+          600: '#197A6D',
+          700: '#14655A',
+          800: '#104F47',
+          900: '#0B3A34',
+          950: '#072521',
+        },
+        // Dark mode surface system
+        surface: {
+          DEFAULT: '#FFFFFF',
+          secondary: '#F8FAFC', // slate-50
+          dark: '#1B1F23',
+          'dark-secondary': '#22272B',
+        },
+        card: {
+          DEFAULT: '#FFFFFF',
+          dark: '#22272B',
+        },
+        elevated: {
+          DEFAULT: '#FFFFFF',
+          dark: '#282E33',
+        },
+        // Legacy palettes — kept for backward compatibility
         brand: {
           50: '#EEF2FF',
           100: '#E0E7FF',
@@ -53,13 +83,6 @@ const config: Config = {
           warm: '#FF6B35',
           coral: '#FF6154',
           gold: '#FFAA40',
-        },
-        surface: {
-          50: '#FAFAFF',
-          100: '#F4F5FB',
-          200: '#EBEDF7',
-          300: '#DDE0ED',
-          400: '#C4C8D9',
         },
         midnight: {
           50: '#E8EAF0',
@@ -100,16 +123,16 @@ const config: Config = {
             950: '#253858',
           },
           dark: {
-            bg: '#0F1225',
-            surface: '#161B35',
-            border: '#252B4A',
-            sidebar: '#0A0D1A',
-            navbar: '#0A0D1A',
+            bg: '#1B1F23',
+            surface: '#22272B',
+            border: '#383F47',
+            sidebar: '#1B1F23',
+            navbar: '#1B1F23',
           },
           success: '#00875A',
           warning: '#FFAB00',
           danger: '#DE350B',
-          info: '#6366F1',
+          info: '#0065FF',
         },
       },
       backgroundImage: {

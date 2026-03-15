@@ -100,18 +100,18 @@ function SignInContent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-midnight-950">
+    <div className="flex min-h-screen bg-[#1B1F23]">
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         {/* Ambient glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-midnight-950 via-midnight-900 to-brand-950" />
-        <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] rounded-full bg-brand-600/[0.08] blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/3 h-[400px] w-[400px] rounded-full bg-purple-600/[0.06] blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#0B3A34]" />
+        <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
+        <div className="absolute bottom-1/4 right-1/3 h-[400px] w-[400px] rounded-full bg-primary-700/[0.06] blur-[120px]" />
 
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-sm">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
               <span className="text-sm font-black text-white">O</span>
             </div>
             <span className="text-[16px] font-semibold text-white">Onekof</span>
@@ -138,7 +138,7 @@ function SignInContent() {
                 { icon: Brain, label: 'AI Documents' },
               ].map((f) => (
                 <div key={f.label} className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
-                  <f.icon className="h-3.5 w-3.5 text-brand-400" />
+                  <f.icon className="h-3.5 w-3.5 text-primary-400" />
                   <span className="text-[12px] text-white/40">{f.label}</span>
                 </div>
               ))}
@@ -166,7 +166,7 @@ function SignInContent() {
         <div className="w-full max-w-[420px]">
           {/* Mobile logo */}
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
               <span className="text-sm font-black text-white">O</span>
             </div>
             <span className="text-[15px] font-semibold text-white">Onekof</span>
@@ -176,7 +176,7 @@ function SignInContent() {
             <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">Sign in</h3>
             <p className="mt-2 text-[14px] text-white/30">
               Don&apos;t have an account?{' '}
-              <Link href="/auth/signup" className="font-medium text-brand-400 transition-colors hover:text-brand-300">
+              <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                 Sign up
               </Link>
             </p>
@@ -200,7 +200,7 @@ function SignInContent() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 placeholder="you@company.com"
               />
             </div>
@@ -210,7 +210,7 @@ function SignInContent() {
                 <label htmlFor="password" className="text-[13px] font-medium text-white/50">
                   Password
                 </label>
-                <Link href="/auth/forgot-password" className="text-[12px] text-brand-400 transition-colors hover:text-brand-300">
+                <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
                   Forgot?
                 </Link>
               </div>
@@ -221,7 +221,7 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="Enter your password"
                 />
                 <button
@@ -237,16 +237,16 @@ function SignInContent() {
 
             {requiresTwoFactor && (
               <div className="space-y-3">
-                <div className="flex items-center gap-2 rounded-lg border border-brand-500/20 bg-brand-500/[0.06] p-3">
-                  <Shield className="h-4 w-4 text-brand-400" />
-                  <span className="text-[12px] text-brand-300">Enter the 6-digit code from your authenticator</span>
+                <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
+                  <Shield className="h-4 w-4 text-primary-400" />
+                  <span className="text-[12px] text-primary-300">Enter the 6-digit code from your authenticator</span>
                 </div>
                 <input
                   id="totpCode"
                   type="text"
                   value={totpCode}
                   onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="000000"
                   autoFocus
                   autoComplete="one-time-code"
@@ -258,7 +258,7 @@ function SignInContent() {
             <button
               type="submit"
               disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
-              className="group w-full rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 py-3.5 text-[14px] font-medium text-white shadow-brand-md transition-all hover:shadow-brand-lg hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group w-full rounded-xl bg-primary-500 py-3.5 text-[14px] font-medium text-white shadow-lg transition-all hover:bg-primary-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -312,7 +312,7 @@ function SignInContent() {
             <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
               <p className="text-[13px] text-white/30">
                 <span className="font-medium text-white/50">Direct access:</span>{' '}
-                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-brand-400">
+                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
                   your-org.onekof.com
                 </code>
               </p>
@@ -331,8 +331,8 @@ function SignInContent() {
 export default function SignInPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-midnight-950">
-        <Loader2 className="h-6 w-6 animate-spin text-brand-400" />
+      <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
+        <Loader2 className="h-6 w-6 animate-spin text-primary-400" />
       </div>
     }>
       <SignInContent />
