@@ -441,9 +441,12 @@ export default function HomePage() {
             </Link>
             <Link
               href="/auth/signup"
-              className="group relative overflow-hidden rounded-lg bg-white px-4.5 py-2 text-[13px] font-medium text-midnight-950 transition-all hover:shadow-lg hover:shadow-white/10"
+              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-brand-500 to-purple-500 px-5 py-2 text-[13px] font-semibold text-white shadow-brand-sm transition-all duration-300 hover:shadow-brand-md hover:brightness-110"
             >
-              <span className="relative z-10">Get started</span>
+              <span className="relative z-10 flex items-center gap-1.5">
+                Get started
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
             </Link>
           </div>
 
@@ -468,8 +471,9 @@ export default function HomePage() {
               ))}
               <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
                 <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">Log in</Link>
-                <Link href="/auth/signup" className="rounded-lg bg-white px-4 py-2.5 text-center text-[15px] font-medium text-midnight-950">
+                <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-500 to-purple-500 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-brand-sm">
                   Get started
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
