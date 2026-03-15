@@ -28,7 +28,7 @@ export default function IssuesSettingsPage() {
             <div className="text-center">
               <Settings className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Settings</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-[#9FADBC]">
+              <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
                 This page is under construction and will be available soon.
               </p>
             </div>

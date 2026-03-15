@@ -40,7 +40,7 @@ export function DatePicker({
       )}
 
       <div className="relative">
-        <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9FADBC] pointer-events-none z-10" />
+        <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
         <input
           type="date"
           value={value}
@@ -51,9 +51,9 @@ export function DatePicker({
           placeholder={placeholder}
           className={cn(
             'flex h-10 w-full rounded-md border px-3 py-2 text-sm transition-colors',
-            'bg-[#1B1F23] border-[#2C333A] text-white placeholder-[#9FADBC]',
+            'bg-[#1B1F23] border-slate-700 text-white placeholder-slate-400',
             'pl-10', // Space for calendar icon
-            'focus:border-[#0065FF] focus:outline-none focus:ring-1 focus:ring-[#0065FF]',
+            'focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500',
             'hover:bg-[#22272B]',
             '[color-scheme:dark]', // Makes the date picker use dark theme
             'file:border-0 file:bg-transparent file:text-sm file:font-medium',
@@ -65,7 +65,7 @@ export function DatePicker({
       </div>
 
       {helpText && !error && (
-        <p className="text-xs text-[#9FADBC]">{helpText}</p>
+        <p className="text-xs text-slate-400">{helpText}</p>
       )}
 
       {error && (

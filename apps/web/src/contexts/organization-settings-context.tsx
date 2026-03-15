@@ -58,7 +58,7 @@ const DEFAULT_SETTINGS: OrganizationSettings = {
     customBranding: true,
   },
   customization: {
-    primaryColor: '#0065FF',
+    primaryColor: '#1C8C7D',
     budgetCurrency: 'USD',
     fiscalYearStart: 1,
     dateFormat: 'MM/DD/YYYY',

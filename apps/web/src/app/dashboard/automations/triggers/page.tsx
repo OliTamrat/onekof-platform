@@ -37,15 +37,15 @@ export default function AutomationsTriggersPage() {
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" placeholder="Search triggers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]" />
+            <input type="text" placeholder="Search triggers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC]">
+          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <Activity className="h-4 w-4" />Create Trigger
           </button>
         </div>
         <div className="space-y-3">
           {filteredTriggers.map((trigger) => (
-            <div key={trigger.id} onClick={() => { setSelectedTrigger(trigger); setIsSlideoutOpen(true); }} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
+            <div key={trigger.id} onClick={() => { setSelectedTrigger(trigger); setIsSlideoutOpen(true); }} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -54,8 +54,8 @@ export default function AutomationsTriggersPage() {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(trigger.status)}`}>{trigger.status}</span>
                     <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{trigger.type}</span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-2">{trigger.condition}</p>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">{trigger.condition}</p>
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                     <span>{trigger.workflows} workflows</span>
                     <span className="flex items-center gap-1"><Clock className="h-3 w-3" />Last triggered: {trigger.lastTriggered}</span>
                   </div>

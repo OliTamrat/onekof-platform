@@ -55,7 +55,7 @@ export function ThreeTierLayout({ children }: ThreeTierLayoutProps) {
       {/* LEFT SIDEBAR - Fixed with all navigation */}
       <aside
         className={cn(
-          'flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] transition-all duration-300',
+          'flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1B1F23] transition-all duration-300',
           isSidebarCollapsed ? 'w-16' : 'w-64'
         )}
       >
@@ -164,7 +164,7 @@ export function ThreeTierLayout({ children }: ThreeTierLayoutProps) {
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* TOP BAR - Contextual header */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1117] px-6">
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1B1F23] px-6">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
               {currentOrganization?.name || 'Dashboard'}

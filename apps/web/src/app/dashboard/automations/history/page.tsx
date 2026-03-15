@@ -48,28 +48,28 @@ export default function AutomationsHistoryPage() {
       <UnifiedPageHeader title="Execution History" icon={<Clock className="h-6 w-6" />} iconColor="#EC4899" currentTab="history" baseHref="/dashboard/automations" />
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Total Executions</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Total Executions</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredHistory.length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Successful</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Successful</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{filteredHistory.filter(h => h.status === 'SUCCESS').length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Failed</div>
+          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-slate-400">Failed</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{filteredHistory.filter(h => h.status === 'FAILED').length}</div>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 mb-6">
+        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" placeholder="Search execution history..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-[#2C333A] rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0065FF]" />
+            <input type="text" placeholder="Search execution history..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
         </div>
         <div className="space-y-3">
           {filteredHistory.map((item) => (
-            <div key={item.id} onClick={() => { setSelectedExecution(item); setIsSlideoutOpen(true); }} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
+            <div key={item.id} onClick={() => { setSelectedExecution(item); setIsSlideoutOpen(true); }} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 flex-1">
                   {getStatusIcon(item.status)}
@@ -78,7 +78,7 @@ export default function AutomationsHistoryPage() {
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{item.workflow}</h3>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>{item.status}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                       <span>Triggered by: {item.triggeredBy}</span>
                       <span>{item.executedAt}</span>
                       <span>Duration: {item.duration}</span>

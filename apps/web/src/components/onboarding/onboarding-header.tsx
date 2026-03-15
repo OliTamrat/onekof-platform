@@ -5,7 +5,7 @@ import { Building2 } from 'lucide-react';
 
 export function OnboardingHeader() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0D1117]/80 backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#1B1F23]/80 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">

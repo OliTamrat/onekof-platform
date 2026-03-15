@@ -34,28 +34,28 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Metric Overview */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Overview</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{data?.current || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Current</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400">Current</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {data?.change >= 0 ? '+' : ''}{data?.change || 0}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Change</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400">Change</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{data?.previous || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC]">Previous</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400">Previous</div>
                 </div>
               </div>
             </div>
 
             {/* Daily Breakdown */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daily Breakdown</h3>
               <div className="space-y-3">
                 {Array.from({ length: 7 }, (_, i) => {
@@ -67,7 +67,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     change: Math.floor(Math.random() * 20) - 10,
                   };
                 }).map((day, index) => (
-                  <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-[#2C333A] last:border-0">
+                  <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-slate-700 last:border-0">
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       <span className="text-sm font-medium text-gray-900 dark:text-white">{day.date}</span>
@@ -87,17 +87,17 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
             </div>
 
             {/* Top Contributors */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Contributors</h3>
               <div className="space-y-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar'].map((name, index) => (
                   <div key={name} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                       {name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white">{name}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         {Math.floor(Math.random() * 20) + 10} contributions
                       </div>
                     </div>
@@ -121,42 +121,42 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
           <div className="space-y-6">
             {/* Project Stats */}
             <div className="grid grid-cols-4 gap-4">
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">Completed</span>
+                  <span className="text-xs font-medium text-gray-600 dark:text-slate-400">Completed</span>
                 </div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">
                   {project?.tasksCompleted || 45}
                 </div>
               </div>
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="h-4 w-4 text-blue-500" />
-                  <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">In Progress</span>
+                  <span className="text-xs font-medium text-gray-600 dark:text-slate-400">In Progress</span>
                 </div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">12</div>
               </div>
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="h-4 w-4 text-purple-500" />
-                  <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">Team Members</span>
+                  <span className="text-xs font-medium text-gray-600 dark:text-slate-400">Team Members</span>
                 </div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">
                   {project?.memberCount || 8}
                 </div>
               </div>
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-4">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertCircle className="h-4 w-4 text-orange-500" />
-                  <span className="text-xs font-medium text-gray-600 dark:text-[#9FADBC]">Blocked</span>
+                  <span className="text-xs font-medium text-gray-600 dark:text-slate-400">Blocked</span>
                 </div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">3</div>
               </div>
             </div>
 
             {/* Recent Activity Timeline */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Activity Timeline</h3>
               <div className="space-y-6">
                 {[
@@ -180,15 +180,15 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                         {activity.type === 'updated' && <GitCommit className="h-4 w-4 text-orange-500" />}
                         {activity.type === 'assigned' && <Users className="h-4 w-4 text-blue-500" />}
                       </div>
-                      {index < 4 && <div className="w-0.5 flex-1 bg-gray-200 dark:bg-[#2C333A] mt-2" />}
+                      {index < 4 && <div className="w-0.5 flex-1 bg-gray-200 dark:bg-slate-700 mt-2" />}
                     </div>
                     <div className="flex-1 pb-6">
                       <p className="text-sm text-gray-900 dark:text-white">
                         <span className="font-semibold">{activity.user}</span>{' '}
-                        <span className="text-gray-600 dark:text-[#9FADBC]">{activity.action}</span>{' '}
+                        <span className="text-gray-600 dark:text-slate-400">{activity.action}</span>{' '}
                         <span className="font-semibold">{activity.task}</span>
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-[#9FADBC] mt-1">{activity.time}</p>
+                      <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">{activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -196,17 +196,17 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
             </div>
 
             {/* Team Members */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team Members</h3>
               <div className="grid grid-cols-2 gap-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar', 'Emma Davis', 'John Smith', 'Lisa Anderson'].map((name) => (
                   <div key={name} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#1B1F23]">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                       {name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">{name}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         {Math.floor(Math.random() * 15) + 5} tasks
                       </div>
                     </div>
@@ -226,26 +226,26 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Month Overview */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Overview</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-4 rounded-lg bg-blue-500/10">
                   <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{data?.created || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">Projects Created</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Projects Created</div>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-green-500/10">
                   <div className="text-3xl font-bold text-green-600 dark:text-green-400">{data?.completed || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">Projects Completed</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Projects Completed</div>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-purple-500/10">
                   <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{data?.total || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">Total Activity</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Total Activity</div>
                 </div>
               </div>
             </div>
 
             {/* Projects Created This Month */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Projects Created</h3>
               <div className="space-y-3">
                 {Array.from({ length: data?.created || 0 }, (_, i) => {
@@ -269,18 +269,18 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white">{proj.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         Created by {proj.creator} • {proj.daysAgo}
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-[#9FADBC]">{proj.date}</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">{proj.date}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Projects Completed This Month */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Projects Completed</h3>
               <div className="space-y-3">
                 {Array.from({ length: data?.completed || 0 }, (_, i) => {
@@ -304,18 +304,18 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white">{proj.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         Completed by {proj.completer} • Duration: {proj.duration}
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-[#9FADBC]">{proj.date}</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">{proj.date}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Top Contributors */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Contributors This Month</h3>
               <div className="space-y-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar'].map((name, index) => (
@@ -327,12 +327,12 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     }`}>
                       #{index + 1}
                     </div>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                       {name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white">{name}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         {Math.floor(Math.random() * 5) + 3} projects • {Math.floor(Math.random() * 20) + 10} tasks
                       </div>
                     </div>
@@ -351,7 +351,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Great Progress!
                   </h4>
-                  <p className="text-xs text-gray-600 dark:text-[#9FADBC] leading-relaxed">
+                  <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
                     {data?.month} showed a <span className="font-semibold text-green-600 dark:text-green-400">
                     {Math.round((data?.completed / (data?.created || 1)) * 100)}% completion rate
                     </span>. Your team is consistently delivering projects on time!
@@ -371,24 +371,24 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Milestone Info */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-[#9FADBC] mb-2">Project</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Project</div>
                   <div className="text-lg font-semibold text-gray-900 dark:text-white">{data?.project}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-[#9FADBC] mb-2">Due Date</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Due Date</div>
                   <div className="text-lg font-semibold text-gray-900 dark:text-white">{data?.date}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-[#9FADBC] mb-2">Days Remaining</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Days Remaining</div>
                   <div className="text-lg font-semibold text-orange-500">{data?.daysLeft} days</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-[#9FADBC] mb-2">Progress</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Progress</div>
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2 bg-gray-200 dark:bg-[#2C333A] rounded-full">
+                    <div className="flex-1 h-2 bg-gray-200 dark:bg-slate-700 rounded-full">
                       <div className="h-2 bg-blue-500 rounded-full" style={{ width: '65%' }} />
                     </div>
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">65%</span>
@@ -398,7 +398,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
             </div>
 
             {/* Tasks for this Milestone */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Related Tasks</h3>
               <div className="space-y-2">
                 {[
@@ -412,14 +412,14 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     <div className={`flex h-6 w-6 items-center justify-center rounded ${
                       task.status === 'completed' ? 'bg-green-500' :
                       task.status === 'in_progress' ? 'bg-blue-500' :
-                      'bg-gray-300 dark:bg-[#2C333A]'
+                      'bg-gray-300 dark:bg-slate-700'
                     }`}>
                       {task.status === 'completed' && <CheckCircle2 className="h-4 w-4 text-white" />}
                       {task.status === 'in_progress' && <Activity className="h-4 w-4 text-white" />}
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">{task.title}</div>
-                      <div className="text-xs text-gray-500 dark:text-[#9FADBC]">{task.assignee}</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">{task.assignee}</div>
                     </div>
                   </div>
                 ))}
@@ -432,7 +432,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                 <AlertCircle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Potential Risks</h4>
-                  <ul className="text-xs text-gray-600 dark:text-[#9FADBC] space-y-1 list-disc list-inside">
+                  <ul className="text-xs text-gray-600 dark:text-slate-400 space-y-1 list-disc list-inside">
                     <li>API dependencies not yet finalized</li>
                     <li>Waiting for design approval on 2 components</li>
                   </ul>

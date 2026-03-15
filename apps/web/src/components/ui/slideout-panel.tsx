@@ -116,7 +116,7 @@ export function SlideoutPanel({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-4">
           <div className="flex items-center gap-3">
             {headerActions}
             {title && (
@@ -126,7 +126,7 @@ export function SlideoutPanel({
 
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-gray-600 dark:text-[#9FADBC] transition-colors hover:bg-gray-100 dark:hover:bg-[#2C333A] hover:text-gray-900 dark:hover:text-white"
+            className="rounded-md p-1 text-gray-600 dark:text-slate-400 transition-colors hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
             aria-label="Close panel"
           >
             <X className="h-5 w-5" />
@@ -140,7 +140,7 @@ export function SlideoutPanel({
 
         {/* Footer */}
         {showFooter && footer && (
-          <div className="border-t border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#1B1F23] px-6 py-4">
+          <div className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-4">
             {footer}
           </div>
         )}
@@ -171,7 +171,7 @@ interface SlideoutPanelSidebarProps {
 
 export function SlideoutPanelSidebar({ children, className }: SlideoutPanelSidebarProps) {
   return (
-    <div className={cn('w-64 overflow-y-auto border-l border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#1B1F23] px-6 py-6', className)}>
+    <div className={cn('w-64 overflow-y-auto border-l border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-6', className)}>
       {children}
     </div>
   );

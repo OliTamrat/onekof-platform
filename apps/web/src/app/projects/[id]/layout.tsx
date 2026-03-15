@@ -93,9 +93,9 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Project Header */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Project Title */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-lg"
@@ -111,7 +111,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">
                   {project?.name || 'Project'}
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-[#9FADBC]">
+                <p className="text-sm text-gray-500 dark:text-slate-400">
                   {project?.key || ''}
                 </p>
               </div>
@@ -132,7 +132,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                     isActive
                       ? 'border-[#1C8C7D] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <Icon className="h-4 w-4" />

@@ -17,12 +17,12 @@ export default function DocumentsSharedPage() {
       <div className="p-6">
         <div className="space-y-3">
           {SHARED_DOCS.map((doc) => (
-            <div key={doc.id} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-[#2C333A] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
+            <div key={doc.id} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
               <div className="flex items-start gap-3">
                 <FileText className="h-5 w-5 text-[#3B82F6]" />
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{doc.title}</h3>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                     <span className="flex items-center gap-1"><Users className="h-3 w-3" />Shared with {doc.sharedWith} people</span>
                     <span className="flex items-center gap-1"><User className="h-3 w-3" />By {doc.sharedBy}</span>
                     <span>{doc.sharedDate}</span>

@@ -100,7 +100,7 @@ export default function AutomationsListPage() {
   const getStatusColor = (isEnabled: boolean) => {
     return isEnabled
       ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-      : 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC]';
+      : 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400';
   };
 
   const getScopeColor = (scope: string) => {
@@ -125,9 +125,9 @@ export default function AutomationsListPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <Zap className="h-6 w-6" />
@@ -139,7 +139,7 @@ export default function AutomationsListPage() {
 
             <Link
               href="/dashboard/automations/create"
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC]"
+              className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
               Create
@@ -156,8 +156,8 @@ export default function AutomationsListPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -170,17 +170,17 @@ export default function AutomationsListPage() {
           {/* Search Bar */}
           <div className="flex items-center gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search automations"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
               />
             </div>
 
-            <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-[#2C333A]">
+            <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700">
               <Filter className="h-4 w-4" />
               Filter
             </button>
@@ -191,50 +191,50 @@ export default function AutomationsListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-[#9FADBC]">Loading automations...</div>
+              <div className="text-gray-600 dark:text-slate-400">Loading automations...</div>
             </div>
           ) : filteredAutomations.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <Zap className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No automations</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
+                <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                   {searchQuery ? 'No automations match your search.' : 'Get started by creating a new automation.'}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-[#2C333A]">
+            <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead className="bg-gray-50 dark:bg-[#282E33]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Entity Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Trigger
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Scope
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Executions
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Success Rate
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-[#9FADBC] uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-[#22272B] divide-y divide-gray-200 dark:divide-[#2C333A]">
+                <tbody className="bg-white dark:bg-[#22272B] divide-y divide-gray-200 dark:divide-slate-700">
                   {filteredAutomations.map((automation: Automation) => {
                     const successRate = automation.executionCount > 0
                       ? Math.round((automation.successCount / automation.executionCount) * 100)
@@ -256,7 +256,7 @@ export default function AutomationsListPage() {
                                 {automation.aiGenerated && <Sparkles className="h-3 w-3 text-amber-500" />}
                               </div>
                               {automation.description && (
-                                <div className="text-xs text-gray-500 dark:text-[#9FADBC] line-clamp-1">
+                                <div className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1">
                                   {automation.description}
                                 </div>
                               )}
@@ -264,12 +264,12 @@ export default function AutomationsListPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                          <span className="text-sm text-gray-600 dark:text-slate-400">
                             {automation.entityType}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                          <span className="text-sm text-gray-600 dark:text-slate-400">
                             {automation.triggerEvent}
                           </span>
                         </td>
@@ -302,7 +302,7 @@ export default function AutomationsListPage() {
                             onClick={() => toggleMutation.mutate({ id: automation.id, isEnabled: automation.isEnabled })}
                             className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
                               automation.isEnabled
-                                ? 'text-gray-600 dark:text-[#9FADBC] hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                                ? 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                                 : 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/10'
                             }`}
                             title={automation.isEnabled ? 'Disable' : 'Enable'}
