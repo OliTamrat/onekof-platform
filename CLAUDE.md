@@ -1,42 +1,135 @@
 # CLAUDE.md — Onekof Platform Development Rules
 
+## Architecture Overview
+
+### Stack
+- **Framework**: Next.js 14 (App Router), TypeScript
+- **Styling**: Tailwind CSS + Radix UI primitives
+- **Database**: PostgreSQL with Prisma ORM (schema at `packages/database/prisma/schema.prisma`)
+- **Auth**: NextAuth.js v4 with JWT strategy, cookie domain `.onekof.com`
+- **State**: TanStack React Query for server data, `workspace-context.tsx` for org context
+- **i18n**: next-intl v4, cookie-based locale (`NEXT_LOCALE`), 4 locales: en, am, om, ti
+- **Monorepo**: Turborepo with `apps/web` and `packages/database`
+
+### Multi-Tenant Routing
+- **Subdomains**: `{org-slug}.onekof.com` → middleware extracts slug → sets `x-organization-slug` header
+- **API route org resolution**: All API routes use `user.organizations[0]` — this is the working pattern. Do NOT change to slug-based matching without a full test plan across all routes.
+- **Workspace context** (`src/contexts/workspace-context.tsx`): Client-side org detection by matching `window.location.hostname` subdomain against the user's org slugs
+- **Sidebar data** comes from workspace context (client-side), **dashboard data** comes from API routes (server-side)
+
+### Auth Flow
+- **Config**: `src/lib/auth.ts` — `trustHost: true` is REQUIRED for subdomain auth
+- **Cookie domain**: `.onekof.com` in production for cross-subdomain sessions
+- **Session strategy**: JWT (not database sessions)
+- **Login flow**: `/auth/signin` → NextAuth credentials/Google → `/select-organization` → `{slug}.onekof.com/dashboard`
+
+### Active Layout
+- `src/components/layouts/app-layout.tsx` switches layout based on `LAYOUT_CONFIG`
+- **Jira-style layout** is the primary layout (`jira-style-layout.tsx`)
+- Uses `collapsible-sidebar.tsx` for section navigation
+- `three-tier-layout.tsx` exists as an alternative but is not the default
+
+## Database & Schema Rules
+
+- **NEVER add Prisma schema columns without running the migration on production**
+- If a migration cannot be run immediately, do NOT regenerate the Prisma client with the new columns. The generated client includes ALL model fields in SELECT queries — missing columns cause 500 errors on every query.
+- Schema change workflow: `schema edit` → `prisma migrate` on production → `prisma generate` → commit
+- Test schema changes locally with `prisma db push` before deploying
+- The lockout fields (`failedLoginAttempts`, `lastFailedLoginAt`, `lockedUntil`, `passwordChangedAt`) exist in production and work correctly
+
+## Design System
+
+### Color Tokens (Tailwind)
+All UI must use these semantic tokens defined in `tailwind.config.ts`:
+
+| Token | Light | Dark | Usage |
+|-------|-------|------|-------|
+| `primary-*` | Teal scale | Teal scale | Buttons, links, active states, focus rings |
+| `surface-*` | White/slate-50 | `#1B1F23` | Page backgrounds |
+| `card-*` | White | `#22272B` | Card/panel backgrounds |
+| `elevated-*` | White | `#282E33` | Dropdowns, modals, popovers |
+| `border-*` | `slate-200` | `slate-700` | All borders |
+| `muted-*` | `slate-100` | `slate-800` | Secondary backgrounds |
+
+**Primary accent**: `#1C8C7D` (teal) — ALL primary buttons, active states, focus rings, links
+**Do NOT use**: `slate-900` for primary buttons, `jira-blue` for active states, `brand-*` (indigo) for actions
+
+### Border Radius
+- `rounded-md` (6px): Buttons, inputs, badges, dropdown items
+- `rounded-lg` (8px): Cards, dialogs, panels, tabs
+- `rounded-xl` (12px): Modals, slideouts, marketing sections
+- `rounded-full`: Avatars, status indicators only
+
+### Dark Mode Backgrounds (ONE system, not four)
+- Page background: `bg-white dark:bg-[#1B1F23]`
+- Card/surface: `bg-white dark:bg-[#22272B]`
+- Elevated (dropdown/modal): `bg-white dark:bg-[#282E33]`
+- Sidebar: `bg-slate-50 dark:bg-[#1B1F23]`
+- Navbar: `bg-white dark:bg-[#1B1F23]`
+- Borders: `border-slate-200 dark:border-slate-700`
+
+### Typography
+- Font stack: SF Pro Text → Inter → system-ui
+- Page titles: `text-xl font-semibold`
+- Section titles: `text-lg font-semibold`
+- Body: `text-sm` (14px)
+- Muted text: `text-slate-600 dark:text-slate-400`
+
+### Component Rules
+- ALL buttons must use `<Button>` from `@/components/ui/button`
+- ALL cards must use `<Card>` from `@/components/ui/card`
+- ALL inputs must use `<Input>` from `@/components/ui/input`
+- NEVER create new button/card/input patterns inline — add variants to the base components instead
+- NEVER hardcode colors — use Tailwind tokens
+
+## Stability Rules — Do NOT Modify Without Testing
+
+These patterns are critical to production stability:
+
+- **API route org resolution** (`user.organizations[0]`) — changing this breaks the entire dashboard
+- **`trustHost: true`** in auth config — removing this breaks subdomain auth
+- **Cookie domain** (`.onekof.com`) — changing this breaks cross-subdomain sessions
+- **Middleware header injection** (`x-organization-slug`) — do not modify without subdomain testing
+- **NextAuth session strategy** (`jwt`) — changing to `database` requires migration
+- **`withNextIntl()`** in `next.config.mjs` — wraps the config for i18n, do not remove
+
+## Before Any Audit or Refactor
+
+1. Read this entire document first
+2. Do NOT modify API routes, middleware, or auth without testing the full login → org select → dashboard flow
+3. Do NOT add Prisma schema columns without confirming the migration can run on production
+4. Do NOT remove `trustHost`, cookie domain config, or session strategy
+5. Test on subdomain (`{org}.onekof.com`) not just localhost
+6. Any infrastructure change must be tested against the existing data flow before pushing
+
 ## Git Commit Rules
 
 - **NO attribution links** in commit messages. Never append `https://claude.ai/code/...` or any AI tool URLs.
-- **NO author identification** in commits, code comments, or deployment metadata. Do not add "Generated by Claude", "AI-assisted", or similar markers anywhere.
-- **Git author MUST be**: `OliTamrat <oli.oli@udc.edu>` — always set `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, and `GIT_COMMITTER_EMAIL` before committing. Never commit as "Claude" or any AI identity.
-- **Commit messages** must be clean, human-style, and follow conventional commits format:
-  - `feat: <description>` — new feature
-  - `fix: <description>` — bug fix
-  - `refactor: <description>` — code restructuring
-  - `chore: <description>` — maintenance tasks
-  - `docs: <description>` — documentation changes
-  - `style: <description>` — formatting, no logic change
-  - `perf: <description>` — performance improvement
-  - `test: <description>` — adding or fixing tests
-- Keep commit messages concise (under 72 chars for the subject line). Use the body for details when needed.
+- **NO author identification** in commits, code comments, or deployment metadata.
+- **Git author MUST be**: `OliTamrat <oli.oli@udc.edu>` — always set `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, and `GIT_COMMITTER_EMAIL` before committing.
+- **Commit messages** follow conventional commits: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `style:`, `perf:`, `test:`
+- Keep commit messages concise (under 72 chars for the subject line).
 
 ## Security — No Credentials in Code
 
 - **NEVER commit secrets, API keys, tokens, passwords, or credentials** to the repository.
-- Files that must never be committed: `.env`, `.env.local`, `.env.production`, `credentials.json`, `serviceAccountKey.json`, or any file containing secrets.
-- If a secret is needed, reference it via environment variable (e.g., `process.env.DATABASE_URL`) — never hardcode the value.
-- Before every commit, verify no `.env` files, API keys, or tokens are staged. If detected, remove them and warn immediately.
-- All sensitive config belongs in Vercel environment variables or a secrets manager — never in the codebase.
+- Files that must never be committed: `.env`, `.env.local`, `.env.production`, `credentials.json`, `serviceAccountKey.json`
+- Reference secrets via `process.env.VARIABLE_NAME` — never hardcode values.
+- All sensitive config belongs in Vercel environment variables or a secrets manager.
 
 ## Code Rules
 
-- Do not add comments like `// Added by AI`, `// Claude-generated`, or similar.
-- Do not add attribution metadata to package.json, deployment configs, or any file.
-- Write code as a senior developer would — no unnecessary comments explaining obvious logic.
+- No AI attribution comments or metadata anywhere.
+- Write code as a senior developer would — no unnecessary comments.
 - Prefer editing existing files over creating new ones.
-- Follow existing code patterns and conventions in the codebase.
+- Follow existing code patterns and conventions.
+- Use TypeScript strict patterns — avoid `any` types.
+- Support dark mode in all UI components.
 
 ## Deployment
 
-- No AI attribution in Vercel deployment metadata, environment variables, or build outputs.
-- Keep deployment configs clean — no tool-specific markers.
-- **Minimize deployments**: Batch all changes into a single commit and push ONCE at the end of a work session. Do NOT push after every small change — Vercel triggers a preview build on every push, which costs money.
+- No AI attribution in deployment metadata.
+- **Minimize deployments**: Batch changes into a single commit and push ONCE. Vercel triggers a preview build on every push.
 - Only push when a complete, tested batch of work is ready.
 
 ## Development Workflow
@@ -44,15 +137,11 @@
 - Always work on the designated feature branch.
 - Read files before modifying them.
 - Run existing tests after making changes when possible.
-- Use TypeScript strict patterns — avoid `any` types.
-- Follow the existing Tailwind + Radix UI design system.
-- Use the teal accent (#1C8C7D) for primary actions per the design system.
-- Support dark mode in all UI components.
+- Follow the design system tokens defined above — not ad-hoc color values.
 
 ## Project Context
 
-- **Stack**: Next.js 14 (App Router), TypeScript, Tailwind CSS, Prisma, Radix UI, TanStack Query
-- **Monorepo**: Turborepo with `apps/web` and `packages/database`
-- **Auth**: NextAuth.js v4
-- **Database**: PostgreSQL with Prisma ORM
 - **Design**: Jira-inspired with Ethiopian-first customizations (ETB currency, Ethiopian calendar, Amharic/Oromo/Tigrinya language support)
+- **Pages**: ~164 pages across dashboard, projects, auth, settings, marketing
+- **Locales**: English (en), Amharic (am), Afaan Oromoo (om), Tigrinya (ti)
+- **Scripts**: Latin (en, om), Ge'ez/Ethiopic (am, ti) — uses AbyssinicaSIL font
