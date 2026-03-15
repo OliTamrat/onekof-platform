@@ -346,6 +346,29 @@
       "other": "Kan biroo"
     }
   },
+  "onboarding": {
+    "welcome": "Baga nagaan dhuftan gara Onekof!",
+    "welcomeSubtitle": "Welcome to Onekof! \u2022 እንኳን ደህና መጡ!",
+    "chooseLanguage": "Afaan platformii filattu filadhaa",
+    "orgTypeTitle": "Dhaabbatni keessan gosa kamii?",
+    "orgTypeSubtitle": "Kun amaloota sirrii qopheessuuf nu gargaara",
+    "orgDetailsTitle": "Waa'ee dhaabbata keessanii nutti himaa",
+    "orgDetailsSubtitle": "Muuxannoo keessan dhuunfaachuuf kana fayyadamna",
+    "finalStepTitle": "Tarkaanfii xumuraa: Bakka hojii keessan uumaa",
+    "finalStepSubtitle": "Bakki hojii keessan sekoondii keessatti qophaa'a"
+  },
+  "selectOrganization": {
+    "welcomeBack": "Baga nagaan dhufte, {name}",
+    "selectWorkspace": "Itti fuufuuf bakka hojii keessan filadhaa",
+    "noOrgsTitle": "Dhaabbatni Hin Jiru",
+    "noOrgsDescription": "Dhaabbata kamiinuu hin dabalamne.",
+    "noOrgsHelp": "Affeeramuuf bulchaa keessan quunnamaa, yookiin dhaabbata haaraa uumaa.",
+    "createOrganization": "Dhaabbata Uumi",
+    "createProject": "Pirojektii Uumi",
+    "startNewProject": "Pirojektii haaraa jalqabi",
+    "signOut": "Ba'i",
+    "loading": "Dhaabbata keessan fe'aa jira..."
+  },
   "automations": {
     "title": "Ofumaan Hojii",
     "newRule": "Seeraa Haaraa",

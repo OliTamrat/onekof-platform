@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import {
   ArrowRight,
   Calendar,
@@ -177,7 +178,7 @@ function BudgetMockup() {
           <div key={item.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[12px] font-medium text-white/60">{item.label}</span>
-              <span className="text-[11px] text-white/30">
+              <span className="text-[11px] text-white/50">
                 {item.spent.toLocaleString()} / {item.budget.toLocaleString()} ETB
               </span>
             </div>
@@ -194,11 +195,11 @@ function BudgetMockup() {
       </div>
       <div className="flex items-center justify-between rounded-lg border border-brand-500/20 bg-brand-500/[0.06] p-3">
         <div>
-          <p className="text-[11px] text-white/40">Total Spent</p>
+          <p className="text-[11px] text-white/60">Total Spent</p>
           <p className="text-[16px] font-semibold text-white">377,000 ETB</p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] text-white/40">Remaining</p>
+          <p className="text-[11px] text-white/60">Remaining</p>
           <p className="text-[16px] font-semibold text-emerald-400">273,000 ETB</p>
         </div>
       </div>
@@ -215,7 +216,7 @@ function AIDocsMockup() {
         </div>
         <div className="flex-1">
           <p className="text-[12px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
-          <p className="text-[11px] text-white/30">Uploaded 2 minutes ago • 24 pages</p>
+          <p className="text-[11px] text-white/50">Uploaded 2 minutes ago • 24 pages</p>
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-brand-500/10 px-2 py-1">
           <Sparkles className="h-3 w-3 text-brand-400" />
@@ -227,7 +228,7 @@ function AIDocsMockup() {
           <Wand2 className="h-3.5 w-3.5 text-brand-400" />
           <span className="text-[12px] font-medium text-white/60">AI Summary</span>
         </div>
-        <p className="text-[12px] leading-relaxed text-white/40">
+        <p className="text-[12px] leading-relaxed text-white/60">
           Service agreement for cloud infrastructure (Deadline: Sene 15, 2017). Key: 24-month term, auto-renewal, 2.4M ETB annual value. 3 risk flags identified.
         </p>
       </div>
@@ -238,9 +239,9 @@ function AIDocsMockup() {
           { label: 'Tasks Linked', value: '7', icon: ListChecks },
         ].map((item) => (
           <div key={item.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2 text-center sm:p-2.5">
-            <item.icon className="mx-auto mb-1 h-3.5 w-3.5 text-white/25" />
+            <item.icon className="mx-auto mb-1 h-3.5 w-3.5 text-white/50" />
             <p className="text-[14px] font-semibold text-white/70">{item.value}</p>
-            <p className="text-[10px] text-white/25">{item.label}</p>
+            <p className="text-[10px] text-white/50">{item.label}</p>
           </div>
         ))}
       </div>
@@ -254,17 +255,17 @@ function CalendarMockup() {
       <div className="flex items-center justify-between">
         <span className="text-[14px] font-medium text-white/70">መጋቢት 2017</span>
         <div className="flex gap-1">
-          <button className="rounded-md p-1.5 text-white/20 transition-colors hover:bg-white/[0.05]">
+          <button className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
-          <button className="rounded-md p-1.5 text-white/20 transition-colors hover:bg-white/[0.05]">
+          <button className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
       <div className="grid grid-cols-7 gap-0.5">
         {['ሰ', 'ማ', 'ረ', 'ሐ', 'አ', 'ቅ', 'እ'].map((d) => (
-          <div key={d} className="py-2 text-center text-[11px] font-medium text-white/20">{d}</div>
+          <div key={d} className="py-2 text-center text-[11px] font-medium text-white/40">{d}</div>
         ))}
         {Array.from({ length: 30 }, (_, i) => {
           const isToday = i === 5;
@@ -278,7 +279,7 @@ function CalendarMockup() {
                 isToday ? 'bg-brand-600 font-semibold text-white shadow-brand-sm' :
                 isDeadline ? 'bg-red-500/10 font-medium text-red-400' :
                 isHoliday ? 'bg-amber-500/10 font-medium text-amber-400' :
-                'text-white/40 hover:bg-white/[0.04]'
+                'text-white/60 hover:bg-white/[0.04]'
               }`}
             >
               {i + 1}
@@ -324,7 +325,7 @@ function LanguageMockup() {
             <span className="text-lg">{item.flag}</span>
             <div className="flex-1">
               <p className="text-[12px] font-medium text-white/70">{item.lang}</p>
-              <p className="text-[11px] text-white/30">{item.sample}</p>
+              <p className="text-[11px] text-white/50">{item.sample}</p>
             </div>
             {i === 0 && (
               <span className="rounded-full bg-brand-500/20 px-2 py-0.5 text-[10px] font-medium text-brand-400">Active</span>
@@ -333,10 +334,10 @@ function LanguageMockup() {
         ))}
       </div>
       <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-        <p className="mb-2 text-[11px] font-medium text-white/40">UI Preview — አማርኛ</p>
+        <p className="mb-2 text-[11px] font-medium text-white/60">UI Preview — አማርኛ</p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
-            <LayoutDashboard className="h-3.5 w-3.5 text-white/30" />
+            <LayoutDashboard className="h-3.5 w-3.5 text-white/50" />
             <span className="text-[12px] text-white/50">ዳሽቦርድ</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-brand-500/10 px-3 py-2">
@@ -344,7 +345,7 @@ function LanguageMockup() {
             <span className="text-[12px] font-medium text-brand-400">ፕሮጀክቶች</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
-            <Calendar className="h-3.5 w-3.5 text-white/30" />
+            <Calendar className="h-3.5 w-3.5 text-white/50" />
             <span className="text-[12px] text-white/50">የኢትዮጵያ ቀን መቁጠሪያ</span>
           </div>
         </div>
@@ -425,7 +426,7 @@ export default function HomePage() {
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-3.5 py-2 text-[13px] text-white/40 transition-all hover:bg-white/[0.04] hover:text-white/80"
+                className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-all hover:bg-white/[0.04] hover:text-white/80"
               >
                 {link.label}
               </a>
@@ -433,9 +434,10 @@ export default function HomePage() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
+            <LanguageSwitcher variant="dark" />
             <Link
               href="/auth/signin"
-              className="rounded-lg px-3.5 py-2 text-[13px] text-white/40 transition-colors hover:text-white/80"
+              className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-colors hover:text-white/80"
             >
               Log in
             </Link>
@@ -506,7 +508,7 @@ export default function HomePage() {
                 <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
               </div>
               <span className="text-[13px] text-white/50">The #1 project management platform built for Ethiopia</span>
-              <ArrowRight className="h-3 w-3 text-white/30" />
+              <ArrowRight className="h-3 w-3 text-white/50" />
             </div>
           </Reveal>
 
@@ -524,7 +526,7 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal delay={200}>
-            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/35 sm:text-[18px]">
+            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/55 sm:text-[18px]">
               Projects, tasks, budgets, documents, and dashboards in one workspace.
               Native Ethiopian calendar, local languages, ETB currency, and workflows
               built for how Ethiopian teams actually work.
@@ -556,8 +558,8 @@ export default function HomePage() {
           <Reveal delay={400}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
               {['Free forever for small teams', 'No credit card required', 'Setup in 2 minutes'].map((text) => (
-                <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/25">
-                  <Check className="h-3.5 w-3.5 text-white/15" />
+                <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/50">
+                  <Check className="h-3.5 w-3.5 text-white/40" />
                   {text}
                 </span>
               ))}
@@ -577,7 +579,7 @@ export default function HomePage() {
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/80" />
                 </div>
-                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/20 sm:w-72">
+                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/40 sm:w-72">
                   <Shield className="mr-1.5 h-3 w-3" />
                   app.onekof.com/projects/sprint-14
                 </div>
@@ -591,7 +593,7 @@ export default function HomePage() {
                     <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 text-[10px] font-bold shadow-sm">T</div>
                     <div>
                       <span className="text-[12px] font-medium text-white/70">TechEth</span>
-                      <p className="text-[10px] text-white/25">Professional</p>
+                      <p className="text-[10px] text-white/50">Professional</p>
                     </div>
                   </div>
                   {[
@@ -608,7 +610,7 @@ export default function HomePage() {
                       className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-colors ${
                         item.active
                           ? 'bg-brand-500/10 font-medium text-brand-400'
-                          : 'text-white/30 hover:bg-white/[0.03] hover:text-white/50'
+                          : 'text-white/50 hover:bg-white/[0.03] hover:text-white/50'
                       }`}
                     >
                       <item.icon className="h-3.5 w-3.5" />
@@ -622,7 +624,7 @@ export default function HomePage() {
                   <div className="mb-5 flex items-center justify-between">
                     <div>
                       <h3 className="text-[14px] font-medium text-white/80">Sprint 14 — Website Redesign</h3>
-                      <p className="mt-0.5 text-[11px] text-white/25">መጋቢት 1 – 15, 2017 E.C.</p>
+                      <p className="mt-0.5 text-[11px] text-white/50">መጋቢት 1 – 15, 2017 E.C.</p>
                     </div>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5">
                       {[
@@ -634,7 +636,7 @@ export default function HomePage() {
                         <div
                           key={v.label}
                           className={`rounded-lg px-2 py-1 text-[10px] transition-colors sm:px-3 sm:py-1.5 sm:text-[11px] ${
-                            v.active ? 'bg-white/[0.08] font-medium text-white/70' : 'text-white/20 hover:bg-white/[0.04]'
+                            v.active ? 'bg-white/[0.08] font-medium text-white/70' : 'text-white/40 hover:bg-white/[0.04]'
                           }`}
                         >
                           {v.label}
@@ -652,7 +654,7 @@ export default function HomePage() {
                       { label: 'Budget Used', value: '58%', color: 'text-amber-400' },
                     ].map((s) => (
                       <div key={s.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                        <p className="text-[10px] text-white/25">{s.label}</p>
+                        <p className="text-[10px] text-white/50">{s.label}</p>
                         <p className={`text-[16px] font-semibold ${s.color}`}>{s.value}</p>
                       </div>
                     ))}
@@ -680,15 +682,15 @@ export default function HomePage() {
                       <div key={col.label}>
                         <div className="mb-2.5 flex items-center gap-2">
                           <div className={`h-2 w-2 rounded-full ${col.dot}`} />
-                          <span className="text-[11px] font-medium text-white/40">{col.label}</span>
-                          <span className="ml-auto text-[10px] text-white/15">{col.count}</span>
+                          <span className="text-[11px] font-medium text-white/60">{col.label}</span>
+                          <span className="ml-auto text-[10px] text-white/40">{col.count}</span>
                         </div>
                         <div className="space-y-2">
                           {col.cards.map((card) => (
                             <div key={card.title} className="rounded-lg border border-white/[0.06] bg-white/[0.025] p-3 transition-all hover:border-white/[0.1] hover:bg-white/[0.04]">
                               <p className="text-[11px] leading-snug text-white/60">{card.title}</p>
                               <div className="mt-2.5 flex items-center justify-between">
-                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/30">{card.tag}</span>
+                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/50">{card.tag}</span>
                                 <div className={`h-1.5 w-1.5 rounded-full ${
                                   card.priority === 'high' ? 'bg-red-400' : card.priority === 'medium' ? 'bg-amber-400' : 'bg-white/20'
                                 }`} />
@@ -709,7 +711,7 @@ export default function HomePage() {
       {/* ═══ TRUSTED BY ═══ */}
       <section className="border-y border-white/[0.06] py-14">
         <div className="mx-auto max-w-6xl px-6">
-          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/20">Trusted by teams across Ethiopia</p>
+          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/40">Trusted by teams across Ethiopia</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-14">
             {[
               'TechEth Solutions', 'Addis Development', 'BuildEth Construction',
@@ -732,9 +734,9 @@ export default function HomePage() {
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
                 Foreign tools weren&apos;t built for you.
                 <br />
-                <span className="text-white/35">We are.</span>
+                <span className="text-white/55">We are.</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/30">
+              <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/50">
                 Jira doesn&apos;t know about Pagume. Asana doesn&apos;t speak Amharic.
                 Trello can&apos;t track ETB. Onekof does all of this — and more.
               </p>
@@ -785,10 +787,10 @@ export default function HomePage() {
                   <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
                   <div className="relative">
                     <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors group-hover:border-brand-500/20 group-hover:bg-brand-500/10">
-                      <feature.icon className="h-5 w-5 text-white/40 transition-colors group-hover:text-brand-400" />
+                      <feature.icon className="h-5 w-5 text-white/60 transition-colors group-hover:text-brand-400" />
                     </div>
                     <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                    <p className="text-[14px] leading-relaxed text-white/30">{feature.desc}</p>
+                    <p className="text-[14px] leading-relaxed text-white/50">{feature.desc}</p>
                   </div>
                 </div>
               </Reveal>
@@ -806,7 +808,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
                 See the real Onekof experience
               </h2>
-              <p className="mt-4 text-[16px] text-white/30">
+              <p className="mt-4 text-[16px] text-white/50">
                 Not mockups — these are real features powering Ethiopian teams today.
               </p>
             </div>
@@ -823,10 +825,10 @@ export default function HomePage() {
                     className={`group flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium transition-all duration-300 sm:gap-2 sm:px-5 sm:py-3 sm:text-[13px] ${
                       activeShowcase === i
                         ? 'bg-white/[0.08] text-white shadow-lg shadow-brand-500/5 ring-1 ring-white/[0.1]'
-                        : 'text-white/30 hover:bg-white/[0.04] hover:text-white/50'
+                        : 'text-white/50 hover:bg-white/[0.04] hover:text-white/50'
                     }`}
                   >
-                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-brand-400' : 'text-white/20'}`} />
+                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-brand-400' : 'text-white/40'}`} />
                     {tab.label}
                   </button>
                 ))}
@@ -854,7 +856,7 @@ export default function HomePage() {
                   <h3 className="mb-3 text-2xl font-semibold tracking-[-0.02em] sm:text-[1.75rem]">
                     {showcaseTabs[activeShowcase].title}
                   </h3>
-                  <p className="mb-6 text-[15px] leading-relaxed text-white/35">
+                  <p className="mb-6 text-[15px] leading-relaxed text-white/55">
                     {showcaseTabs[activeShowcase].desc}
                   </p>
                   <ul className="mb-8 space-y-3">
@@ -896,7 +898,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Everything your team needs.
                 <br />
-                <span className="text-white/35">Nothing it doesn&apos;t.</span>
+                <span className="text-white/55">Nothing it doesn&apos;t.</span>
               </h2>
             </div>
           </Reveal>
@@ -915,9 +917,9 @@ export default function HomePage() {
             ].map((feature, i) => (
               <Reveal key={feature.title} delay={i * 40}>
                 <div className="group border border-white/[0.03] bg-midnight-950 p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7">
-                  <feature.icon className="mb-4 h-5 w-5 text-white/25 transition-colors duration-300 group-hover:text-brand-400" />
+                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-brand-400" />
                   <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-white/30">{feature.desc}</p>
+                  <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -937,11 +939,11 @@ export default function HomePage() {
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
-                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/15 transition-colors group-hover:text-brand-400/50" />
+                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-brand-400/50" />
                   <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="mt-2 text-[13px] text-white/25">{stat.label}</p>
+                  <p className="mt-2 text-[13px] text-white/50">{stat.label}</p>
                 </div>
               </Reveal>
             ))}
@@ -958,7 +960,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Loved by teams who&apos;ve
                 <br />
-                <span className="text-white/35">tried everything else</span>
+                <span className="text-white/55">tried everything else</span>
               </h2>
             </div>
           </Reveal>
@@ -1009,7 +1011,7 @@ export default function HomePage() {
                       <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
                     ))}
                   </div>
-                  <p className="mb-6 text-[14px] leading-relaxed text-white/40">
+                  <p className="mb-6 text-[14px] leading-relaxed text-white/60">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
@@ -1018,7 +1020,7 @@ export default function HomePage() {
                     </div>
                     <div>
                       <p className="text-[13px] font-medium text-white/70">{t.name}</p>
-                      <p className="text-[12px] text-white/25">{t.role}</p>
+                      <p className="text-[12px] text-white/50">{t.role}</p>
                     </div>
                   </div>
                 </div>
@@ -1037,7 +1039,7 @@ export default function HomePage() {
               <h2 className="mb-4 text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
                 Simple pricing in Ethiopian Birr
               </h2>
-              <p className="text-[16px] text-white/30">
+              <p className="text-[16px] text-white/50">
                 Start free. Upgrade when you&apos;re ready. Pay in ETB — no forex hassle.
               </p>
 
@@ -1045,7 +1047,7 @@ export default function HomePage() {
                 <button
                   onClick={() => setBilling('monthly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'monthly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/35 hover:text-white/60'
+                    billing === 'monthly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
                   Monthly
@@ -1053,7 +1055,7 @@ export default function HomePage() {
                 <button
                   onClick={() => setBilling('yearly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'yearly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/35 hover:text-white/60'
+                    billing === 'yearly' ? 'bg-white text-midnight-950 shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
                   Yearly
@@ -1084,7 +1086,7 @@ export default function HomePage() {
 
                   <div className="mb-5">
                     <h3 className="text-[16px] font-medium">{plan.name}</h3>
-                    <p className="mt-1 text-[13px] text-white/25">{plan.desc}</p>
+                    <p className="mt-1 text-[13px] text-white/50">{plan.desc}</p>
                   </div>
 
                   <div className="mb-6">
@@ -1093,13 +1095,13 @@ export default function HomePage() {
                         <span className="text-4xl font-semibold tracking-tight">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
-                        <span className="text-[13px] text-white/25">ETB/user/mo</span>
+                        <span className="text-[13px] text-white/50">ETB/user/mo</span>
                       </div>
                     ) : (
                       <div className="text-4xl font-semibold tracking-tight">Custom</div>
                     )}
                     {plan.price === 0 && (
-                      <p className="mt-1.5 text-[12px] text-white/20">Free forever, no card needed</p>
+                      <p className="mt-1.5 text-[12px] text-white/40">Free forever, no card needed</p>
                     )}
                   </div>
 
@@ -1116,7 +1118,7 @@ export default function HomePage() {
 
                   <ul className="space-y-3">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/35">
+                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/55">
                         <Check className="h-3.5 w-3.5 flex-shrink-0 text-brand-400/50" />
                         {f}
                       </li>
@@ -1151,7 +1153,7 @@ export default function HomePage() {
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
-                      <li key={r} className="flex items-center gap-2.5 text-[13px] text-white/30">
+                      <li key={r} className="flex items-center gap-2.5 text-[13px] text-white/50">
                         <X className="h-3.5 w-3.5 flex-shrink-0 text-red-400/40" />
                         {r}
                       </li>
@@ -1179,14 +1181,14 @@ export default function HomePage() {
           <Reveal>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
               <Sparkles className="h-3.5 w-3.5 text-brand-400" />
-              <span className="text-[13px] text-white/40">Join 500+ Ethiopian teams</span>
+              <span className="text-[13px] text-white/60">Join 500+ Ethiopian teams</span>
             </div>
             <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-5xl">
               Ready to transform how
               <br />
               your team works?
             </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-white/30">
+            <p className="mt-5 text-[17px] leading-relaxed text-white/50">
               Start for free today. No credit card. No foreign currency.
               Just the tools your team actually needs.
             </p>
@@ -1202,7 +1204,7 @@ export default function HomePage() {
               </Link>
               <a
                 href="mailto:hello@onekof.com"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/40 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/60 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
               >
                 Talk to sales
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -1223,7 +1225,7 @@ export default function HomePage() {
                 </div>
                 <span className="text-[15px] font-semibold">Onekof</span>
               </div>
-              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/25">
+              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/50">
                 Modern project management built for Ethiopian teams. Native calendar,
                 local languages, ETB budgets, and workflows designed for how you actually work.
               </p>
@@ -1236,7 +1238,7 @@ export default function HomePage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-[11px] font-bold text-white/25 transition-all hover:border-brand-500/20 hover:bg-brand-500/10 hover:text-brand-400"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-brand-500/20 hover:bg-brand-500/10 hover:text-brand-400"
                   >
                     {social.letter}
                   </a>
@@ -1250,11 +1252,11 @@ export default function HomePage() {
               { title: 'Resources', links: ['Documentation', 'Help Center', 'API Reference', 'Community', 'Status'] },
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/20">{col.title}</h4>
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a href="#" className="text-[13px] text-white/25 transition-colors hover:text-white/50">{link}</a>
+                      <a href="#" className="text-[13px] text-white/50 transition-colors hover:text-white/50">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -1263,12 +1265,12 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-            <p className="text-[12px] text-white/15">
+            <p className="text-[12px] text-white/40">
               &copy; {new Date().getFullYear()} Onekof. All rights reserved.
             </p>
             <div className="flex gap-6">
               {['Privacy', 'Terms', 'Cookies'].map((link) => (
-                <a key={link} href="#" className="text-[12px] text-white/15 transition-colors hover:text-white/30">{link}</a>
+                <a key={link} href="#" className="text-[12px] text-white/40 transition-colors hover:text-white/50">{link}</a>
               ))}
             </div>
           </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import {
   CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
@@ -72,15 +73,16 @@ const TEAM_SIZES = [
 ];
 
 const LANGUAGES = [
-  { value: 'english', label: 'English', native: 'English' },
-  { value: 'amharic', label: 'Amharic', native: 'አማርኛ' },
-  { value: 'oromo', label: 'Oromo', native: 'Afaan Oromo' },
-  { value: 'tigrinya', label: 'Tigrinya', native: 'ትግርኛ' },
+  { value: 'en', label: 'English', native: 'English' },
+  { value: 'am', label: 'Amharic', native: 'አማርኛ' },
+  { value: 'om', label: 'Oromo', native: 'Afaan Oromo' },
+  { value: 'ti', label: 'Tigrinya', native: 'ትግርኛ' },
 ];
 
 function OnboardingContent() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const t = useTranslations('onboarding');
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -109,7 +111,13 @@ function OnboardingContent() {
 
 
   // Form data - COLLECTING FOR CATEGORIZATION
-  const [language, setLanguage] = useState(''); // User must select
+  const [language, setLanguageState] = useState(''); // User must select
+
+  // Sync language selection with i18n cookie
+  const setLanguage = (locale: string) => {
+    setLanguageState(locale);
+    document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000;samesite=lax`;
+  };
   const [organizationType, setOrganizationType] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [organizationSlug, setOrganizationSlug] = useState('');
@@ -228,32 +236,32 @@ function OnboardingContent() {
               </div>
               <div className="text-left">
                 <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
-                <p className="text-xs text-white/40">Enterprise Project Management</p>
+                <p className="text-xs text-white/60">Enterprise Project Management</p>
               </div>
             </div>
 
-            {/* Ethiopian Greeting */}
+            {/* Greeting */}
             {currentStep === 1 && (
               <div>
                 <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                  እንኳን ደህና መጡ ወደ ኦነኮፍ!
+                  {t('welcome')}
                 </h2>
-                <p className="text-base text-white/40 sm:text-lg">
-                  Welcome to Onekof! • Baga nagaan dhuftan!
+                <p className="text-base text-white/60 sm:text-lg">
+                  {t('welcomeSubtitle')}
                 </p>
               </div>
             )}
             {currentStep > 1 && (
               <div>
                 <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                  {currentStep === 2 && 'What type of organization are you?'}
-                  {currentStep === 3 && 'Tell us about your organization'}
-                  {currentStep === 4 && 'Final step: Create your workspace'}
+                  {currentStep === 2 && t('orgTypeTitle')}
+                  {currentStep === 3 && t('orgDetailsTitle')}
+                  {currentStep === 4 && t('finalStepTitle')}
                 </h2>
-                <p className="text-white/40">
-                  {currentStep === 2 && 'This helps us set up the right features for you'}
-                  {currentStep === 3 && 'We\'ll use this to personalize your experience'}
-                  {currentStep === 4 && 'Your workspace will be ready in seconds'}
+                <p className="text-white/60">
+                  {currentStep === 2 && t('orgTypeSubtitle')}
+                  {currentStep === 3 && t('orgDetailsSubtitle')}
+                  {currentStep === 4 && t('finalStepSubtitle')}
                 </p>
               </div>
             )}
@@ -262,7 +270,7 @@ function OnboardingContent() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-medium text-white/30">Step {currentStep} of {totalSteps}</span>
+              <span className="text-[13px] font-medium text-white/50">Step {currentStep} of {totalSteps}</span>
               <span className="text-[13px] font-medium text-brand-400">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
             </div>
             <div className="h-2 w-full rounded-full bg-white/[0.06]">
@@ -282,7 +290,7 @@ function OnboardingContent() {
                   <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/20 border border-brand-500/30 mb-4">
                     <Languages className="h-8 w-8 text-brand-400" />
                   </div>
-                  <p className="text-white/40">Choose your preferred language for the platform</p>
+                  <p className="text-white/60">{t('chooseLanguage')}</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -302,7 +310,7 @@ function OnboardingContent() {
                         </div>
                       )}
                       <div className="text-[16px] font-semibold text-white mb-0.5">{lang.native}</div>
-                      <div className="text-xs text-white/25">{lang.label}</div>
+                      <div className="text-xs text-white/50">{lang.label}</div>
                     </button>
                   ))}
                 </div>
@@ -334,10 +342,10 @@ function OnboardingContent() {
                           <Icon className="h-5 w-5 text-brand-400" />
                         </div>
                         <div className="text-[14px] font-medium text-white mb-1.5">{type.label}</div>
-                        <p className="text-xs text-white/25 mb-2">{type.description}</p>
+                        <p className="text-xs text-white/50 mb-2">{type.description}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {type.features.slice(0, 2).map((feature) => (
-                            <span key={feature} className="text-xs bg-white/[0.06] text-white/40 px-2 py-0.5 rounded border border-white/[0.06]">
+                            <span key={feature} className="text-xs bg-white/[0.06] text-white/60 px-2 py-0.5 rounded border border-white/[0.06]">
                               {feature}
                             </span>
                           ))}
@@ -360,7 +368,7 @@ function OnboardingContent() {
                     type="text"
                     value={organizationName}
                     onChange={(e) => setOrganizationName(e.target.value)}
-                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
                     placeholder={organizationType === 'government' ? 'e.g., Ministry of Water & Irrigation' : 'Your organization name'}
                   />
                 </div>
@@ -375,7 +383,7 @@ function OnboardingContent() {
                       type="text"
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/20"
                       placeholder="e.g., Planning & Budget Bureau"
                     />
                   </div>
@@ -433,10 +441,10 @@ function OnboardingContent() {
                       type="text"
                       value={organizationSlug}
                       onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/10 sm:flex-1"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/10 sm:flex-1"
                       placeholder="my-organization"
                     />
-                    <span className="text-sm text-white/25 whitespace-nowrap">.onekof.com</span>
+                    <span className="text-sm text-white/50 whitespace-nowrap">.onekof.com</span>
                   </div>
                   {organizationSlug && (
                     <p className="mt-2 text-xs text-brand-400">
@@ -470,7 +478,7 @@ function OnboardingContent() {
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
-                      <div className="text-xs text-white/40">የኢትዮጵያ ዘመን አቆጣጠር</div>
+                      <div className="text-xs text-white/60">የኢትዮጵያ ዘመን አቆጣጠር</div>
                     </button>
 
                     <button
@@ -482,13 +490,13 @@ function OnboardingContent() {
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-1.5">
-                        <Calendar className="h-4 w-4 text-white/40" />
+                        <Calendar className="h-4 w-4 text-white/60" />
                         {calendarPreference === 'gregorian' && (
                           <CheckCircle2 className="h-4 w-4 text-brand-400 ml-auto" />
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
-                      <div className="text-xs text-white/40">International</div>
+                      <div className="text-xs text-white/60">International</div>
                     </button>
 
                     <button
@@ -506,7 +514,7 @@ function OnboardingContent() {
                         )}
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Both</div>
-                      <div className="text-xs text-white/40">Show both calendars</div>
+                      <div className="text-xs text-white/60">Show both calendars</div>
                     </button>
                   </div>
                 </div>
@@ -519,7 +527,7 @@ function OnboardingContent() {
                     </div>
                     <div>
                       <div className="font-bold text-white">Download Mobile App</div>
-                      <div className="text-sm text-white/40">Manage on the go</div>
+                      <div className="text-sm text-white/60">Manage on the go</div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -538,9 +546,9 @@ function OnboardingContent() {
                     <Sparkles className="h-5 w-5 text-brand-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="font-semibold text-white mb-2">You're all set!</p>
-                      <p className="text-sm text-white/40 mb-3">
+                      <p className="text-sm text-white/60 mb-3">
                         Based on your selections, we've enabled features for{' '}
-                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'amharic' ? 'አማርኛ' : language === 'oromo' ? 'Afaan Oromo' : language === 'tigrinya' ? 'ትግርኛ' : 'English'} language support.
+                        <strong className="text-white">{selectedOrgType?.label}</strong> with {language === 'am' ? 'አማርኛ' : language === 'om' ? 'Afaan Oromo' : language === 'ti' ? 'ትግርኛ' : 'English'} language support.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {selectedOrgType?.features.map((feature) => (
@@ -607,7 +615,7 @@ function OnboardingContent() {
           </div>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-xs text-white/25">
+          <p className="mt-8 text-center text-xs text-white/50">
             &copy; 2026 Onekof &middot; Built for Ethiopia
           </p>
         </div>

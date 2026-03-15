@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { PricingModal } from '@/components/pricing-modal';
 import { CommandPalette } from '@/components/command-palette';
 import { NotificationCenter } from '@/components/notification-center';
@@ -284,6 +285,11 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             <Zap className="h-4 w-4 fill-purple-500" />
             <span>See plans</span>
           </Button>
+
+          {/* Desktop: Language Switcher */}
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
 
           {/* Desktop: Notifications */}
           <div className="hidden md:block">
