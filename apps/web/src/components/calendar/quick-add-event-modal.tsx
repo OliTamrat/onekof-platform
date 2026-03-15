@@ -1,23 +1,18 @@
 'use client';
 
-/**
- * Quick Add Event Modal - Google Calendar Style
- * Fast event creation from calendar clicks
- */
-
 import { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
-  X,
   Calendar,
   Clock,
-  User,
   AlignLeft,
   Flag,
   Plus,
   Bell,
   Tag,
+  User,
 } from 'lucide-react';
+import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
 
 interface QuickAddEventModalProps {
   date: Date;
@@ -41,7 +36,6 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     reminder: '1hour',
   });
 
-  // Fetch projects
   const { data: projectsData } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
@@ -51,14 +45,11 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     },
   });
 
-  // Fetch organization members for assignment
   const { data: membersData } = useQuery({
     queryKey: ['organization-members'],
     queryFn: async () => {
       const res = await fetch('/api/organization-members');
-      if (!res.ok) {
-        return { members: [] };
-      }
+      if (!res.ok) return { members: [] };
       return res.json();
     },
   });
@@ -67,9 +58,8 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
   const members = membersData?.members || [];
   const selectedProjectId = projectId || projects[0]?.id;
 
-  // Create task mutation
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       const res = await fetch('/api/issues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -106,103 +96,135 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     });
   };
 
+  const update = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const inputClass = 'w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#282E33] px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-colors';
+  const labelClass = 'flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5';
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-lg bg-white dark:bg-[#22272B] rounded-lg shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Plus className="h-5 w-5 text-primary-500" />
-            Create Event
-          </h2>
+    <SlideoutPanel
+      open
+      onClose={onClose}
+      title="Create Event"
+      size="sm"
+      headerActions={<Plus className="h-5 w-5 text-primary-500" />}
+      showFooter
+      footer={
+        <div className="flex items-center justify-end gap-3">
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+            className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
           >
-            <X className="h-5 w-5 text-gray-600 dark:text-slate-400" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="quick-add-form"
+            disabled={createMutation.isPending || !formData.title.trim()}
+            className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" />
+            {createMutation.isPending ? 'Creating...' : 'Create Event'}
           </button>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+      }
+    >
+      <SlideoutPanelContent>
+        <form id="quick-add-form" onSubmit={handleSubmit} className="space-y-5">
           {/* Title */}
           <div>
             <input
               type="text"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) => update('title', e.target.value)}
               placeholder="Event title"
-              className="w-full rounded-lg border-0 bg-gray-50 dark:bg-[#282E33] px-4 py-3 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full border-0 bg-transparent px-0 py-1 text-lg font-semibold text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-0"
               required
               autoFocus
             />
+            <div className="h-px bg-slate-200 dark:bg-slate-700 mt-1" />
           </div>
 
-          {/* Quick Actions Row */}
-          <div className="grid grid-cols-2 gap-3">
-            <select
-              value={formData.priority}
-              onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-              className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-            >
-              <option value="LOW">Low Priority</option>
-              <option value="MEDIUM">Medium Priority</option>
-              <option value="HIGH">High Priority</option>
-              <option value="CRITICAL">Critical</option>
-            </select>
-
-            <select
-              value={formData.assigneeId}
-              onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
-              className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-            >
-              <option value="">Assign to...</option>
-              {members.map((member: any) => (
-                <option key={member.id} value={member.id}>
-                  {member.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date & Time */}
+          {/* Priority & Assignee */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
+              <label className={labelClass}>
+                <Flag className="h-3 w-3" />
+                Priority
+              </label>
+              <select
+                value={formData.priority}
+                onChange={(e) => update('priority', e.target.value)}
+                className={inputClass}
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={labelClass}>
+                <User className="h-3 w-3" />
+                Assignee
+              </label>
+              <select
+                value={formData.assigneeId}
+                onChange={(e) => update('assigneeId', e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Unassigned</option>
+                {members.map((member: { id: string; name: string }) => (
+                  <option key={member.id} value={member.id}>{member.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Dates */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>
+                <Calendar className="h-3 w-3" />
                 Start
               </label>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <input
                   type="date"
                   value={formData.startDate}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  onChange={(e) => update('startDate', e.target.value)}
+                  className={inputClass}
                 />
                 <input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  onChange={(e) => update('startTime', e.target.value)}
+                  className={inputClass}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
+              <label className={labelClass}>
+                <Clock className="h-3 w-3" />
                 Due
               </label>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <input
                   type="date"
                   value={formData.dueDate}
-                  onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  onChange={(e) => update('dueDate', e.target.value)}
+                  className={inputClass}
                 />
                 <input
                   type="time"
                   value={formData.dueTime}
-                  onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  onChange={(e) => update('dueTime', e.target.value)}
+                  className={inputClass}
                   placeholder="Optional"
                 />
               </div>
@@ -211,44 +233,44 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+            <label className={labelClass}>
               <AlignLeft className="h-3 w-3" />
               Description
             </label>
             <textarea
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) => update('description', e.target.value)}
               rows={3}
               placeholder="Add details about this event..."
-              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className={inputClass}
             />
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+            <label className={labelClass}>
               <Tag className="h-3 w-3" />
               Tags
             </label>
             <input
               type="text"
               value={formData.tags}
-              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              onChange={(e) => update('tags', e.target.value)}
               placeholder="meeting, urgent, planning (comma-separated)"
-              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className={inputClass}
             />
           </div>
 
           {/* Reminder */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+            <label className={labelClass}>
               <Bell className="h-3 w-3" />
               Reminder
             </label>
             <select
               value={formData.reminder}
-              onChange={(e) => setFormData({ ...formData, reminder: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              onChange={(e) => update('reminder', e.target.value)}
+              className={inputClass}
             >
               <option value="none">No reminder</option>
               <option value="15min">15 minutes before</option>
@@ -257,27 +279,8 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
               <option value="daily">Daily at 9 AM</option>
             </select>
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={createMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50"
-            >
-              <Plus className="h-4 w-4" />
-              {createMutation.isPending ? 'Creating...' : 'Create Event'}
-            </button>
-          </div>
         </form>
-      </div>
-    </div>
+      </SlideoutPanelContent>
+    </SlideoutPanel>
   );
 }
