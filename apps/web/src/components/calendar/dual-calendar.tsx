@@ -1,20 +1,6 @@
 'use client';
 
-/**
- * Dual Calendar Component - World-Class Implementation
- *
- * Features:
- * - Ethiopian & Gregorian calendar toggle
- * - Multiple views (Month, Week, Day, Timeline, Gantt)
- * - Drag & drop task scheduling
- * - Color-coded priorities & projects
- * - Real-time collaboration
- * - Smart filtering
- * - Milestone tracking
- * - Task dependencies visualization
- */
-
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -25,10 +11,8 @@ import {
   GitBranch,
   Filter,
   Plus,
-  Download,
-  Upload,
-  Settings,
-  Globe
+  Globe,
+  X,
 } from 'lucide-react';
 import {
   gregorianToEthiopian,
@@ -38,9 +22,10 @@ import {
   getCurrentEthiopianDate,
   type EthiopianDate
 } from '@/lib/ethiopian-calendar';
+import { cn } from '@/lib/utils';
 
 export type CalendarSystem = 'gregorian' | 'ethiopian';
-export type ViewMode = 'month' | 'week' | 'day' | 'timeline' | 'gantt';
+export type ViewMode = 'month' | 'week' | 'day' | 'timeline';
 
 export interface CalendarTask {
   id: string;
@@ -63,7 +48,7 @@ export interface CalendarTask {
     color: string;
   };
   tags?: string[];
-  dependencies?: string[]; // IDs of tasks this depends on
+  dependencies?: string[];
 }
 
 interface DualCalendarProps {
@@ -78,6 +63,40 @@ interface DualCalendarProps {
   showControls?: boolean;
   projectFilter?: string[];
   statusFilter?: string[];
+}
+
+const PRIORITY_COLORS: Record<string, string> = {
+  CRITICAL: 'bg-red-500',
+  HIGH: 'bg-orange-500',
+  MEDIUM: 'bg-amber-400',
+  LOW: 'bg-blue-400',
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  TODO: 'border-l-slate-300 dark:border-l-slate-600',
+  IN_PROGRESS: 'border-l-blue-500',
+  IN_REVIEW: 'border-l-purple-500',
+  DONE: 'border-l-emerald-500',
+  BLOCKED: 'border-l-red-500',
+};
+
+const STATUS_BG: Record<string, string> = {
+  TODO: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  IN_PROGRESS: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  IN_REVIEW: 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+  DONE: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+  BLOCKED: 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+};
+
+function formatHour(hour: number): string {
+  if (hour === 0) return '12 AM';
+  if (hour < 12) return `${hour} AM`;
+  if (hour === 12) return '12 PM';
+  return `${hour - 12} PM`;
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
 }
 
 export function DualCalendar({
@@ -99,894 +118,1033 @@ export function DualCalendar({
   const [selectedProjects, setSelectedProjects] = useState<string[]>(projectFilter);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(statusFilter);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const today = useMemo(() => new Date(), []);
 
-  // Get Ethiopian date equivalent
   const ethiopianDate = useMemo(() => gregorianToEthiopian(currentDate), [currentDate]);
 
-  // Filter tasks
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
-      if (selectedProjects.length > 0 && !selectedProjects.includes(task.project.id)) {
-        return false;
-      }
-      if (selectedStatuses.length > 0 && !selectedStatuses.includes(task.status)) {
-        return false;
-      }
+      if (selectedProjects.length > 0 && !selectedProjects.includes(task.project.id)) return false;
+      if (selectedStatuses.length > 0 && !selectedStatuses.includes(task.status)) return false;
       return true;
     });
   }, [tasks, selectedProjects, selectedStatuses]);
 
-  // Navigation functions
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const uniqueProjects = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; color: string }>();
+    tasks.forEach(t => map.set(t.project.id, { id: t.project.id, name: t.project.name, color: t.project.color }));
+    return Array.from(map.values());
+  }, [tasks]);
+
+  const navigate = useCallback((direction: 'prev' | 'next') => {
     setCurrentDate(prev => {
-      const newDate = new Date(prev);
-      if (calendarSystem === 'gregorian') {
-        newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+      const d = new Date(prev);
+      const offset = direction === 'prev' ? -1 : 1;
+      if (viewMode === 'day') {
+        d.setDate(d.getDate() + offset);
+      } else if (viewMode === 'week') {
+        d.setDate(d.getDate() + offset * 7);
       } else {
-        // Ethiopian calendar navigation
-        const ethiopianDate = gregorianToEthiopian(prev);
-        let newMonth = ethiopianDate.month + (direction === 'prev' ? -1 : 1);
-        let newYear = ethiopianDate.year;
-
-        if (newMonth < 1) {
-          newMonth = 13;
-          newYear--;
-        } else if (newMonth > 13) {
-          newMonth = 1;
-          newYear++;
+        if (calendarSystem === 'ethiopian') {
+          const eth = gregorianToEthiopian(prev);
+          let newMonth = eth.month + offset;
+          let newYear = eth.year;
+          if (newMonth < 1) { newMonth = 13; newYear--; }
+          else if (newMonth > 13) { newMonth = 1; newYear++; }
+          return ethiopianToGregorian({ ...eth, month: newMonth, year: newYear });
         }
-
-        return ethiopianToGregorian({ ...ethiopianDate, month: newMonth, year: newYear });
+        d.setMonth(d.getMonth() + offset);
       }
-      return newDate;
+      return d;
     });
-  };
+  }, [viewMode, calendarSystem]);
 
-  const goToToday = () => {
-    setCurrentDate(new Date());
-  };
+  const goToToday = useCallback(() => setCurrentDate(new Date()), []);
 
-  const toggleCalendarSystem = () => {
-    setCalendarSystem(prev => prev === 'gregorian' ? 'ethiopian' : 'gregorian');
-  };
+  const formatCurrentDate = useCallback(() => {
+    if (viewMode === 'day') {
+      return currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    if (calendarSystem === 'ethiopian') {
+      return `${ethiopianDate.monthName} ${ethiopianDate.year}`;
+    }
+    return currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }, [currentDate, viewMode, calendarSystem, ethiopianDate]);
 
-  // Get calendar days for month view
-  const getCalendarDays = () => {
+  const getCalendarDays = useCallback(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
-
     const days: (Date | null)[] = [];
 
-    // Add empty days for padding
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
+    // Previous month padding
+    const prevMonthLast = new Date(year, month, 0);
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      const d = new Date(year, month, -i);
+      days.push(d);
     }
 
-    // Add actual days
-    for (let day = 1; day <= daysInMonth; day++) {
+    // Current month days
+    for (let day = 1; day <= lastDay.getDate(); day++) {
       days.push(new Date(year, month, day));
     }
 
+    // Next month padding to fill last row
+    const remaining = 42 - days.length;
+    for (let i = 1; i <= remaining; i++) {
+      days.push(new Date(year, month + 1, i));
+    }
+
     return days;
-  };
+  }, [currentDate]);
 
-  // Get tasks for a specific date
-  const getTasksForDate = (date: Date | null) => {
-    if (!date) return [];
-
+  const getTasksForDate = useCallback((date: Date) => {
     return filteredTasks.filter(task => {
       if (!task.dueDate) return false;
-      const taskDate = new Date(task.dueDate);
-      return (
-        taskDate.getDate() === date.getDate() &&
-        taskDate.getMonth() === date.getMonth() &&
-        taskDate.getFullYear() === date.getFullYear()
-      );
+      return isSameDay(new Date(task.dueDate), date);
     });
-  };
+  }, [filteredTasks]);
 
-  // Format current date display
-  const formatCurrentDate = () => {
-    if (calendarSystem === 'gregorian') {
-      return currentDate.toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric'
-      });
-    } else {
-      return `${ethiopianDate.monthName} ${ethiopianDate.year}`;
-    }
-  };
+  const getWeekDays = useCallback(() => {
+    const start = new Date(currentDate);
+    start.setDate(currentDate.getDate() - currentDate.getDay());
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      return d;
+    });
+  }, [currentDate]);
 
-  // Check if date is today
-  const isToday = (date: Date | null) => {
-    if (!date) return false;
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
+  const activeFilterCount = selectedProjects.length + selectedStatuses.length;
 
-  // Get priority color
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'CRITICAL':
-        return 'bg-red-500';
-      case 'HIGH':
-        return 'bg-orange-500';
-      case 'MEDIUM':
-        return 'bg-yellow-500';
-      case 'LOW':
-        return 'bg-blue-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  // Get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'TODO':
-        return 'border-gray-300 dark:border-gray-600';
-      case 'IN_PROGRESS':
-        return 'border-blue-500';
-      case 'IN_REVIEW':
-        return 'border-purple-500';
-      case 'DONE':
-        return 'border-green-500';
-      case 'BLOCKED':
-        return 'border-red-500';
-      default:
-        return 'border-gray-300';
-    }
-  };
+  // --- VIEW MODES ---
+  const viewModes: { id: ViewMode; icon: typeof CalendarIcon; label: string }[] = [
+    { id: 'month', icon: LayoutGrid, label: 'Month' },
+    { id: 'week', icon: List, label: 'Week' },
+    { id: 'day', icon: Clock, label: 'Day' },
+    { id: 'timeline', icon: GitBranch, label: 'Timeline' },
+  ];
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Calendar Header & Controls */}
-      <div className="flex flex-col gap-4 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
-        {/* Top Row: Date Navigation & Calendar System Toggle */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {formatCurrentDate()}
-            </h2>
-            <div className="flex items-center gap-2">
+    <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
+      {/* ===== HEADER ===== */}
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        {/* Top row: Navigation + Calendar toggle */}
+        <div className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3">
+          {/* Left: Date nav */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="flex items-center gap-1">
               <button
-                onClick={() => navigateMonth('prev')}
-                className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] p-2 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
-                aria-label="Previous month"
+                onClick={() => navigate('prev')}
+                className="rounded-md p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                aria-label="Previous"
               >
-                <ChevronLeft className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+                <ChevronLeft className="h-4 w-4 text-slate-600 dark:text-slate-400" />
               </button>
               <button
                 onClick={goToToday}
-                className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                className="rounded-md border border-slate-300 dark:border-slate-600 px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors"
               >
                 Today
               </button>
               <button
-                onClick={() => navigateMonth('next')}
-                className="rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] p-2 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
-                aria-label="Next month"
+                onClick={() => navigate('next')}
+                className="rounded-md p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                aria-label="Next"
               >
-                <ChevronRight className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-slate-600 dark:text-slate-400" />
               </button>
             </div>
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white truncate">
+              {formatCurrentDate()}
+            </h2>
+            {calendarSystem === 'ethiopian' && viewMode !== 'day' && (
+              <span className="hidden sm:inline text-xs text-slate-500 dark:text-slate-400">
+                ({currentDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})
+              </span>
+            )}
           </div>
 
-          {/* Calendar System Toggle */}
+          {/* Right: Calendar toggle */}
           <button
-            onClick={toggleCalendarSystem}
-            className="flex items-center gap-2 rounded-lg border-2 border-primary-500 bg-gradient-to-r from-primary-500/10 to-purple-500/10 px-4 py-2 font-medium text-primary-500 dark:text-primary-500 hover:from-primary-500/20 hover:to-purple-500/20 transition-all shadow-sm"
+            onClick={() => setCalendarSystem(prev => prev === 'gregorian' ? 'ethiopian' : 'gregorian')}
+            className="flex items-center gap-1.5 rounded-md border border-slate-300 dark:border-slate-600 px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
           >
-            <Globe className="h-4 w-4" />
-            <span className="text-sm">
-              {calendarSystem === 'gregorian' ? 'Gregorian' : 'Ethiopian'} Calendar
-            </span>
-            <span className="rounded-full bg-primary-500/20 px-2 py-0.5 text-xs">
-              Switch
-            </span>
+            <Globe className="h-3.5 w-3.5 text-primary-500" />
+            <span className="hidden sm:inline">{calendarSystem === 'gregorian' ? 'Gregorian' : 'Ethiopian'}</span>
+            <span className="sm:hidden">{calendarSystem === 'gregorian' ? 'GC' : 'EC'}</span>
           </button>
         </div>
 
-        {/* Bottom Row: View Mode Selector & Actions */}
+        {/* Bottom row: View mode + actions */}
         {showControls && (
-          <div className="flex items-center justify-between">
-            {/* View Mode Selector */}
-            <div className="flex items-center gap-1 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] p-1">
-              <button
-                onClick={() => setViewMode('month')}
-                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-colors ${
-                  viewMode === 'month'
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
-                }`}
-              >
-                <LayoutGrid className="h-4 w-4" />
-                Month
-              </button>
-              <button
-                onClick={() => setViewMode('week')}
-                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-colors ${
-                  viewMode === 'week'
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
-                }`}
-              >
-                <List className="h-4 w-4" />
-                Week
-              </button>
-              <button
-                onClick={() => setViewMode('day')}
-                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-colors ${
-                  viewMode === 'day'
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
-                }`}
-              >
-                <Clock className="h-4 w-4" />
-                Day
-              </button>
-              <button
-                onClick={() => setViewMode('timeline')}
-                className={`flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-colors ${
-                  viewMode === 'timeline'
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
-                }`}
-              >
-                <GitBranch className="h-4 w-4" />
-                Timeline
-              </button>
+          <div className="flex items-center justify-between px-3 pb-2.5 sm:px-4 sm:pb-3 gap-2">
+            {/* View mode tabs */}
+            <div className="flex items-center rounded-lg bg-slate-100 dark:bg-[#1B1F23] p-0.5 sm:p-1">
+              {viewModes.map(({ id, icon: Icon, label }) => (
+                <button
+                  key={id}
+                  onClick={() => setViewMode(id)}
+                  className={cn(
+                    'flex items-center gap-1.5 rounded-md px-2 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-all',
+                    viewMode === id
+                      ? 'bg-white dark:bg-[#22272B] text-slate-900 dark:text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              ))}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2">
+            {/* Actions */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {showFilters && (
                 <button
                   onClick={() => setShowFilterPanel(!showFilterPanel)}
-                  className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-                    showFilterPanel
-                      ? 'border-primary-500 bg-primary-500/10 text-primary-500'
-                      : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33]'
-                  }`}
+                  className={cn(
+                    'flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors',
+                    showFilterPanel || activeFilterCount > 0
+                      ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                      : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]'
+                  )}
                 >
-                  <Filter className="h-4 w-4" />
-                  Filters
-                  {(selectedProjects.length > 0 || selectedStatuses.length > 0) && (
-                    <span className="rounded-full bg-primary-500 px-2 py-0.5 text-xs text-white">
-                      {selectedProjects.length + selectedStatuses.length}
+                  <Filter className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Filters</span>
+                  {activeFilterCount > 0 && (
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary-500 text-[10px] font-bold text-white">
+                      {activeFilterCount}
                     </span>
                   )}
                 </button>
               )}
               <button
                 onClick={() => onCreateTask?.(currentDate)}
-                className="flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm"
+                className="flex items-center gap-1.5 rounded-md bg-primary-500 px-2.5 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm"
               >
-                <Plus className="h-4 w-4" />
-                Create Task
+                <Plus className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Create Task</span>
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Filter panel */}
+        {showFilterPanel && (
+          <div className="border-t border-slate-200 dark:border-slate-700 px-3 py-3 sm:px-4">
+            <div className="flex flex-wrap gap-4">
+              {/* Project filters */}
+              <div className="min-w-0">
+                <p className="mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">Projects</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {uniqueProjects.map(p => {
+                    const active = selectedProjects.includes(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setSelectedProjects(prev =>
+                          active ? prev.filter(id => id !== p.id) : [...prev, p.id]
+                        )}
+                        className={cn(
+                          'flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          active
+                            ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/30'
+                            : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        )}
+                      >
+                        <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
+                        {p.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Status filters */}
+              <div className="min-w-0">
+                <p className="mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">Status</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'] as const).map(s => {
+                    const active = selectedStatuses.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => setSelectedStatuses(prev =>
+                          active ? prev.filter(x => x !== s) : [...prev, s]
+                        )}
+                        className={cn(
+                          'rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          active
+                            ? STATUS_BG[s]
+                            : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        )}
+                      >
+                        {s.replace('_', ' ')}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={() => { setSelectedProjects([]); setSelectedStatuses([]); }}
+                  className="self-end text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors"
+                >
+                  Clear all
+                </button>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* Calendar Body */}
+      {/* ===== CALENDAR BODY ===== */}
       <div className="flex-1 overflow-auto">
-        {viewMode === 'month' && (
-          <div className="p-6">
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden shadow-sm">
-              {/* Weekday Headers */}
-              <div className="grid grid-cols-7 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33]">
-                {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
+        {viewMode === 'month' && <MonthView
+          days={getCalendarDays()}
+          currentDate={currentDate}
+          today={today}
+          calendarSystem={calendarSystem}
+          getTasksForDate={getTasksForDate}
+          onDateClick={onDateClick}
+          onTaskClick={onTaskClick}
+        />}
+        {viewMode === 'week' && <WeekView
+          days={getWeekDays()}
+          currentDate={currentDate}
+          today={today}
+          calendarSystem={calendarSystem}
+          filteredTasks={filteredTasks}
+          onDateClick={onDateClick}
+          onTaskClick={onTaskClick}
+        />}
+        {viewMode === 'day' && <DayView
+          currentDate={currentDate}
+          today={today}
+          calendarSystem={calendarSystem}
+          ethiopianDate={ethiopianDate}
+          filteredTasks={filteredTasks}
+          getTasksForDate={getTasksForDate}
+          onDateClick={onDateClick}
+          onTaskClick={onTaskClick}
+        />}
+        {viewMode === 'timeline' && <TimelineView
+          currentDate={currentDate}
+          today={today}
+          calendarSystem={calendarSystem}
+          filteredTasks={filteredTasks}
+          onTaskClick={onTaskClick}
+        />}
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────
+// TASK CHIP — Reusable compact task display
+// ──────────────────────────────────────────────
+function TaskChip({
+  task,
+  compact = false,
+  onClick,
+}: {
+  task: CalendarTask;
+  compact?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={(e) => { e.stopPropagation(); onClick?.(); }}
+      className={cn(
+        'w-full text-left rounded-md border-l-[3px] transition-all cursor-pointer group',
+        'hover:shadow-md hover:scale-[1.01]',
+        'bg-white dark:bg-[#22272B]',
+        STATUS_COLORS[task.status] || 'border-l-slate-300',
+        compact ? 'px-1.5 py-0.5' : 'px-2 py-1.5'
+      )}
+      style={!STATUS_COLORS[task.status] ? { borderLeftColor: task.project.color } : undefined}
+    >
+      <div className="flex items-center gap-1 min-w-0">
+        <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', PRIORITY_COLORS[task.priority])} />
+        {!compact && (
+          <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+            {task.key}
+          </span>
+        )}
+        <span className={cn(
+          'truncate text-slate-800 dark:text-slate-200',
+          compact ? 'text-[10px]' : 'text-xs'
+        )}>
+          {task.title}
+        </span>
+      </div>
+    </button>
+  );
+}
+
+// ──────────────────────────────────────────────
+// MONTH VIEW
+// ──────────────────────────────────────────────
+function MonthView({
+  days,
+  currentDate,
+  today,
+  calendarSystem,
+  getTasksForDate,
+  onDateClick,
+  onTaskClick,
+}: {
+  days: (Date | null)[];
+  currentDate: Date;
+  today: Date;
+  calendarSystem: CalendarSystem;
+  getTasksForDate: (date: Date) => CalendarTask[];
+  onDateClick?: (date: Date) => void;
+  onTaskClick?: (task: CalendarTask) => void;
+}) {
+  const dayNames = {
+    short: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    medium: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  };
+
+  const weeks = useMemo(() => {
+    const result: (Date | null)[][] = [];
+    for (let i = 0; i < days.length; i += 7) {
+      result.push(days.slice(i, i + 7));
+    }
+    return result;
+  }, [days]);
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Day name headers */}
+      <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B]">
+        {dayNames.short.map((short, i) => (
+          <div
+            key={i}
+            className="py-2 sm:py-2.5 text-center text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+          >
+            <span className="sm:hidden">{short}</span>
+            <span className="hidden sm:inline lg:hidden">{dayNames.medium[i]}</span>
+            <span className="hidden lg:inline">{dayNames.long[i]}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Calendar grid */}
+      <div className="flex-1 grid grid-rows-6">
+        {weeks.map((week, weekIdx) => (
+          <div key={weekIdx} className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700 last:border-b-0 min-h-0">
+            {week.map((date, dayIdx) => {
+              if (!date) return <div key={dayIdx} className="border-r border-slate-200 dark:border-slate-700 last:border-r-0 bg-slate-50/50 dark:bg-[#1B1F23]/50" />;
+
+              const isCurrentMonth = date.getMonth() === currentDate.getMonth();
+              const isToday = isSameDay(date, today);
+              const dayTasks = getTasksForDate(date);
+              const ethDay = calendarSystem === 'ethiopian' ? gregorianToEthiopian(date) : null;
+
+              return (
+                <div
+                  key={dayIdx}
+                  onClick={() => onDateClick?.(date)}
+                  className={cn(
+                    'border-r border-slate-200 dark:border-slate-700 last:border-r-0 p-1 sm:p-1.5 lg:p-2 cursor-pointer transition-colors overflow-hidden flex flex-col',
+                    'hover:bg-slate-50 dark:hover:bg-[#282E33]',
+                    !isCurrentMonth && 'bg-slate-50/60 dark:bg-[#1B1F23]/40'
+                  )}
+                >
+                  {/* Date number */}
+                  <div className="flex items-start justify-between mb-0.5 sm:mb-1">
+                    <div className="flex flex-col items-center">
+                      <span
+                        className={cn(
+                          'flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full text-xs sm:text-sm font-medium',
+                          isToday
+                            ? 'bg-primary-500 text-white font-semibold'
+                            : isCurrentMonth
+                              ? 'text-slate-900 dark:text-white'
+                              : 'text-slate-400 dark:text-slate-600'
+                        )}
+                      >
+                        {date.getDate()}
+                      </span>
+                      {ethDay && (
+                        <span className="text-[8px] sm:text-[9px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">
+                          {ethDay.day}
+                        </span>
+                      )}
+                    </div>
+                    {dayTasks.length > 0 && (
+                      <span className="hidden sm:flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary-500/10 px-1 text-[9px] font-semibold text-primary-600 dark:text-primary-400">
+                        {dayTasks.length}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Task list */}
+                  <div className="flex-1 space-y-0.5 overflow-hidden min-h-0">
+                    {/* Mobile: show dots only */}
+                    <div className="sm:hidden flex flex-wrap gap-0.5">
+                      {dayTasks.slice(0, 4).map(task => (
+                        <span
+                          key={task.id}
+                          className={cn('h-1.5 w-1.5 rounded-full', PRIORITY_COLORS[task.priority])}
+                          onClick={(e) => { e.stopPropagation(); onTaskClick?.(task); }}
+                        />
+                      ))}
+                      {dayTasks.length > 4 && (
+                        <span className="text-[8px] text-slate-400">+{dayTasks.length - 4}</span>
+                      )}
+                    </div>
+
+                    {/* Tablet+: show task chips */}
+                    <div className="hidden sm:block space-y-0.5">
+                      {dayTasks.slice(0, 2).map(task => (
+                        <TaskChip
+                          key={task.id}
+                          task={task}
+                          compact
+                          onClick={() => onTaskClick?.(task)}
+                        />
+                      ))}
+                      {dayTasks.length > 2 && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); }}
+                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                        >
+                          +{dayTasks.length - 2} more
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Desktop: show more task chips */}
+                    <div className="hidden lg:block space-y-0.5">
+                      {dayTasks.slice(2, 3).map(task => (
+                        <TaskChip
+                          key={task.id}
+                          task={task}
+                          compact
+                          onClick={() => onTaskClick?.(task)}
+                        />
+                      ))}
+                      {dayTasks.length > 3 && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); }}
+                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                        >
+                          +{dayTasks.length - 3} more
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────
+// WEEK VIEW
+// ──────────────────────────────────────────────
+function WeekView({
+  days,
+  currentDate,
+  today,
+  calendarSystem,
+  filteredTasks,
+  onDateClick,
+  onTaskClick,
+}: {
+  days: Date[];
+  currentDate: Date;
+  today: Date;
+  calendarSystem: CalendarSystem;
+  filteredTasks: CalendarTask[];
+  onDateClick?: (date: Date) => void;
+  onTaskClick?: (task: CalendarTask) => void;
+}) {
+  const HOURS = Array.from({ length: 24 }, (_, i) => i);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const getHourTasks = useCallback((day: Date, hour: number) => {
+    return filteredTasks.filter(task => {
+      const d = task.startDate ? new Date(task.startDate) : task.dueDate ? new Date(task.dueDate) : null;
+      if (!d) return false;
+      return isSameDay(d, day) && d.getHours() === hour;
+    });
+  }, [filteredTasks]);
+
+  const getAllDayTasks = useCallback((day: Date) => {
+    return filteredTasks.filter(task => {
+      if (!task.dueDate) return false;
+      if (task.startDate) return false;
+      return isSameDay(new Date(task.dueDate), day);
+    });
+  }, [filteredTasks]);
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Day headers — sticky */}
+      <div className="sticky top-0 z-10 bg-white dark:bg-[#22272B] border-b border-slate-200 dark:border-slate-700">
+        <div className="grid grid-cols-[48px_1fr] sm:grid-cols-[56px_repeat(7,1fr)]">
+          <div className="border-r border-slate-200 dark:border-slate-700" />
+          {/* Mobile: show all 7 days in scrollable row */}
+          <div className="grid grid-cols-7 sm:contents">
+            {days.map((day, i) => {
+              const isToday = isSameDay(day, today);
+              const ethDay = calendarSystem === 'ethiopian' ? gregorianToEthiopian(day) : null;
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    'py-2 sm:py-3 text-center border-r border-slate-200 dark:border-slate-700 last:border-r-0',
+                    isToday && 'bg-primary-500/5'
+                  )}
+                >
+                  <div className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">
+                    <span className="sm:hidden">{day.toLocaleDateString('en-US', { weekday: 'narrow' })}</span>
+                    <span className="hidden sm:inline">{day.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                  </div>
+                  <div className={cn(
+                    'mt-0.5 inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-sm sm:text-base font-semibold',
+                    isToday
+                      ? 'bg-primary-500 text-white'
+                      : 'text-slate-900 dark:text-white'
+                  )}>
+                    {day.getDate()}
+                  </div>
+                  {ethDay && (
+                    <div className="hidden sm:block text-[9px] text-slate-400 dark:text-slate-500 mt-0.5">
+                      {ethDay.day} {ethDay.monthName.slice(0, 3)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* All-day tasks row */}
+        {days.some(d => getAllDayTasks(d).length > 0) && (
+          <div className="grid grid-cols-[48px_1fr] sm:grid-cols-[56px_repeat(7,1fr)] border-t border-slate-200 dark:border-slate-700">
+            <div className="border-r border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center">
+              <span className="text-[9px] sm:text-[10px] font-medium text-slate-400">ALL DAY</span>
+            </div>
+            <div className="grid grid-cols-7 sm:contents">
+              {days.map((day, i) => {
+                const allDay = getAllDayTasks(day);
+                return (
+                  <div key={i} className="border-r border-slate-200 dark:border-slate-700 last:border-r-0 p-1 min-h-[28px]">
+                    {allDay.slice(0, 2).map(task => (
+                      <TaskChip key={task.id} task={task} compact onClick={() => onTaskClick?.(task)} />
+                    ))}
+                    {allDay.length > 2 && (
+                      <span className="text-[9px] text-slate-400">+{allDay.length - 2}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Time grid */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        {HOURS.map(hour => (
+          <div key={hour} className="grid grid-cols-[48px_1fr] sm:grid-cols-[56px_repeat(7,1fr)] border-b border-slate-100 dark:border-slate-800 min-h-[48px] sm:min-h-[56px]">
+            {/* Hour label */}
+            <div className="border-r border-slate-200 dark:border-slate-700 px-1 py-1 text-right">
+              <span className="text-[10px] sm:text-xs font-medium text-slate-400 dark:text-slate-500">
+                {formatHour(hour)}
+              </span>
+            </div>
+
+            {/* Day columns */}
+            <div className="grid grid-cols-7 sm:contents">
+              {days.map((day, i) => {
+                const hourTasks = getHourTasks(day, hour);
+                const hourDate = new Date(day);
+                hourDate.setHours(hour, 0, 0, 0);
+
+                return (
                   <div
-                    key={day}
-                    className="border-r border-gray-200 dark:border-slate-700 p-3 text-center text-sm font-semibold text-gray-700 dark:text-slate-400 last:border-r-0"
+                    key={i}
+                    onClick={() => onDateClick?.(hourDate)}
+                    className={cn(
+                      'border-r border-slate-100 dark:border-slate-800 last:border-r-0 p-0.5 sm:p-1 cursor-pointer',
+                      'hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
+                      isSameDay(day, today) && 'bg-primary-500/[0.02]'
+                    )}
                   >
-                    {day}
+                    {hourTasks.map(task => (
+                      <TaskChip key={task.id} task={task} compact onClick={() => onTaskClick?.(task)} />
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────
+// DAY VIEW
+// ──────────────────────────────────────────────
+function DayView({
+  currentDate,
+  today,
+  calendarSystem,
+  ethiopianDate,
+  filteredTasks,
+  getTasksForDate,
+  onDateClick,
+  onTaskClick,
+}: {
+  currentDate: Date;
+  today: Date;
+  calendarSystem: CalendarSystem;
+  ethiopianDate: EthiopianDate;
+  filteredTasks: CalendarTask[];
+  getTasksForDate: (date: Date) => CalendarTask[];
+  onDateClick?: (date: Date) => void;
+  onTaskClick?: (task: CalendarTask) => void;
+}) {
+  const HOURS = Array.from({ length: 24 }, (_, i) => i);
+  const allDayTasks = getTasksForDate(currentDate).filter(t => !t.startDate);
+
+  const getHourTasks = (hour: number) => {
+    return filteredTasks.filter(task => {
+      const d = task.startDate ? new Date(task.startDate) : null;
+      if (!d) return false;
+      return isSameDay(d, currentDate) && d.getHours() === hour;
+    });
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Day header with Ethiopian date */}
+      {calendarSystem === 'ethiopian' && (
+        <div className="px-3 sm:px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B]">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {formatEthiopianDate(ethiopianDate, 'full')}
+          </p>
+        </div>
+      )}
+
+      {/* All-day tasks section */}
+      {allDayTasks.length > 0 && (
+        <div className="px-3 sm:px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-[#1B1F23]/50">
+          <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">All Day</p>
+          <div className="space-y-1">
+            {allDayTasks.map(task => (
+              <div
+                key={task.id}
+                onClick={() => onTaskClick?.(task)}
+                className={cn(
+                  'rounded-lg border-l-[3px] p-2.5 sm:p-3 cursor-pointer transition-all hover:shadow-md',
+                  'bg-white dark:bg-[#22272B]',
+                  STATUS_COLORS[task.status]
+                )}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={cn('h-2 w-2 rounded-full', PRIORITY_COLORS[task.priority])} />
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{task.key}</span>
+                  <span className={cn('text-[10px] px-1.5 py-0.5 rounded-md font-medium', STATUS_BG[task.status])}>
+                    {task.status.replace('_', ' ')}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-900 dark:text-white">{task.title}</p>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: task.project.color }} />
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{task.project.name}</span>
+                  {task.assignee && (
+                    <div className="flex items-center gap-1 ml-auto">
+                      <div className="h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-[9px] text-white font-medium">
+                        {task.assignee.name.charAt(0)}
+                      </div>
+                      <span className="hidden sm:inline text-xs text-slate-500 dark:text-slate-400">{task.assignee.name}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Hourly grid */}
+      <div className="flex-1 overflow-y-auto">
+        {HOURS.map(hour => {
+          const hourTasks = getHourTasks(hour);
+          const hourDate = new Date(currentDate);
+          hourDate.setHours(hour, 0, 0, 0);
+          const isNow = isSameDay(currentDate, today) && today.getHours() === hour;
+
+          return (
+            <div
+              key={hour}
+              onClick={() => onDateClick?.(hourDate)}
+              className={cn(
+                'grid grid-cols-[48px_1fr] sm:grid-cols-[64px_1fr] border-b border-slate-100 dark:border-slate-800 min-h-[56px] sm:min-h-[64px] cursor-pointer',
+                'hover:bg-slate-50/50 dark:hover:bg-[#282E33]/50 transition-colors',
+                isNow && 'bg-primary-500/5'
+              )}
+            >
+              {/* Time label */}
+              <div className="px-2 py-2 text-right border-r border-slate-200 dark:border-slate-700">
+                <span className={cn(
+                  'text-[10px] sm:text-xs font-medium',
+                  isNow ? 'text-primary-500 font-semibold' : 'text-slate-400 dark:text-slate-500'
+                )}>
+                  {formatHour(hour)}
+                </span>
+              </div>
+
+              {/* Tasks area */}
+              <div className="p-1.5 sm:p-2 space-y-1">
+                {hourTasks.map(task => (
+                  <div
+                    key={task.id}
+                    onClick={(e) => { e.stopPropagation(); onTaskClick?.(task); }}
+                    className={cn(
+                      'rounded-lg border-l-[3px] p-2 sm:p-2.5 cursor-pointer transition-all hover:shadow-md',
+                      'bg-white dark:bg-[#22272B]',
+                      STATUS_COLORS[task.status]
+                    )}
+                  >
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className={cn('h-2 w-2 rounded-full', PRIORITY_COLORS[task.priority])} />
+                      <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">{task.key}</span>
+                      {task.startDate && (
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 ml-auto">
+                          {new Date(task.startDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-900 dark:text-white">{task.title}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: task.project.color }} />
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">{task.project.name}</span>
+                      {task.assignee && (
+                        <div className="h-4 w-4 rounded-full bg-primary-500 flex items-center justify-center text-[8px] text-white font-medium ml-auto">
+                          {task.assignee.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-              {/* Calendar Days Grid */}
-              <div className="grid grid-cols-7">
-                {getCalendarDays().map((date, index) => {
-                  const dayTasks = getTasksForDate(date);
-                  const today = isToday(date);
-                  const ethiopianDateForDay = date ? gregorianToEthiopian(date) : null;
+// ──────────────────────────────────────────────
+// TIMELINE VIEW
+// ──────────────────────────────────────────────
+function TimelineView({
+  currentDate,
+  today,
+  calendarSystem,
+  filteredTasks,
+  onTaskClick,
+}: {
+  currentDate: Date;
+  today: Date;
+  calendarSystem: CalendarSystem;
+  filteredTasks: CalendarTask[];
+  onTaskClick?: (task: CalendarTask) => void;
+}) {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const timelineTasks = useMemo(() =>
+    filteredTasks.filter(t => t.startDate && t.dueDate),
+    [filteredTasks]
+  );
+
+  const dayWidth = 36;
+
+  return (
+    <div className="h-full flex flex-col">
+      {timelineTasks.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="text-center">
+            <GitBranch className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600 mb-3" />
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">No scheduled tasks</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Add start and due dates to see tasks in timeline view</p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-auto">
+          <div className="inline-flex flex-col min-w-full">
+            {/* Date header row */}
+            <div className="sticky top-0 z-10 flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B]">
+              {/* Task name column */}
+              <div className="sticky left-0 z-20 w-40 sm:w-56 shrink-0 border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B] px-3 py-2">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Task</span>
+              </div>
+
+              {/* Day columns */}
+              <div className="flex">
+                {Array.from({ length: daysInMonth }, (_, i) => {
+                  const date = new Date(year, month, i + 1);
+                  const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                  const isTodayCol = isSameDay(date, today);
+                  const ethDay = calendarSystem === 'ethiopian' ? gregorianToEthiopian(date) : null;
 
                   return (
                     <div
-                      key={index}
-                      onClick={() => date && onDateClick?.(date)}
-                      className={`min-h-[140px] border-b border-r border-gray-200 dark:border-slate-700 p-3 last:border-r-0 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-[#282E33] ${
-                        !date ? 'bg-gray-50/50 dark:bg-[#1B1F23]' : ''
-                      }`}
+                      key={i}
+                      className={cn(
+                        'flex flex-col items-center justify-center py-2 border-r border-slate-100 dark:border-slate-800',
+                        isWeekend && 'bg-slate-100/50 dark:bg-[#1B1F23]/30',
+                        isTodayCol && 'bg-primary-500/10'
+                      )}
+                      style={{ width: dayWidth, minWidth: dayWidth }}
                     >
-                      {date && (
-                        <>
-                          {/* Date Header */}
-                          <div className="mb-2 flex items-center justify-between">
-                            <div className="flex flex-col gap-1">
-                              <span
-                                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
-                                  today
-                                    ? 'bg-primary-500 text-white shadow-sm'
-                                    : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
-                                }`}
-                              >
-                                {date.getDate()}
-                              </span>
-                              {calendarSystem === 'ethiopian' && ethiopianDateForDay && (
-                                <span className="text-[10px] text-gray-500 dark:text-[#6B7684]">
-                                  {ethiopianDateForDay.day} {ethiopianDateForDay.monthName.slice(0, 3)}
-                                </span>
-                              )}
-                            </div>
-                            {dayTasks.length > 0 && (
-                              <span className="rounded-full bg-primary-500/10 dark:bg-primary-500/20 px-2 py-1 text-xs font-medium text-primary-500">
-                                {dayTasks.length}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Tasks for this day */}
-                          <div className="space-y-1.5">
-                            {dayTasks.slice(0, 3).map((task) => (
-                              <div
-                                key={task.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onTaskClick?.(task);
-                                }}
-                                className={`group relative cursor-pointer rounded-md border-l-3 p-2 text-xs transition-all hover:shadow-md ${getStatusColor(
-                                  task.status
-                                )} bg-white dark:bg-[#22272B]`}
-                                style={{ borderLeftColor: task.project.color }}
-                              >
-                                <div className="flex items-center gap-1.5 mb-1">
-                                  <div
-                                    className={`h-2 w-2 flex-shrink-0 rounded-full ${getPriorityColor(
-                                      task.priority
-                                    )}`}
-                                  />
-                                  <span className="font-semibold text-gray-900 dark:text-white truncate">
-                                    {task.key}
-                                  </span>
-                                </div>
-                                <div className="truncate text-gray-600 dark:text-slate-400">
-                                  {task.title}
-                                </div>
-                              </div>
-                            ))}
-                            {dayTasks.length > 3 && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  // Show all tasks for this day
-                                }}
-                                className="w-full rounded-md bg-gray-100 dark:bg-[#282E33] px-2 py-1.5 text-xs font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-                              >
-                                +{dayTasks.length - 3} more
-                              </button>
-                            )}
-                          </div>
-                        </>
+                      <span className={cn(
+                        'text-[9px] font-medium',
+                        isTodayCol ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-500'
+                      )}>
+                        {date.toLocaleDateString('en-US', { weekday: 'narrow' })}
+                      </span>
+                      <span className={cn(
+                        'text-[11px] font-semibold mt-0.5',
+                        isTodayCol
+                          ? 'bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center'
+                          : 'text-slate-600 dark:text-slate-300'
+                      )}>
+                        {date.getDate()}
+                      </span>
+                      {ethDay && (
+                        <span className="text-[7px] text-slate-400 dark:text-slate-500 mt-0.5">{ethDay.day}</span>
                       )}
                     </div>
                   );
                 })}
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Week View */}
-        {viewMode === 'week' && (
-          <div className="p-6">
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden shadow-sm">
-              {/* Week Days Header */}
-              <div className="grid grid-cols-8 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33]">
-                <div className="border-r border-gray-200 dark:border-slate-700 p-3 text-center text-xs font-medium text-gray-500 dark:text-[#6B7684]">
-                  Time
-                </div>
-                {(() => {
-                  const weekDays = [];
-                  const startOfWeek = new Date(currentDate);
-                  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            {/* Task rows */}
+            <div>
+              {timelineTasks.map(task => {
+                const start = new Date(task.startDate!);
+                const end = new Date(task.dueDate!);
+                const monthStart = new Date(year, month, 1);
+                const monthEnd = new Date(year, month + 1, 0);
 
-                  for (let i = 0; i < 7; i++) {
-                    const day = new Date(startOfWeek);
-                    day.setDate(startOfWeek.getDate() + i);
-                    const ethiopianDay = gregorianToEthiopian(day);
-                    const today = isToday(day);
+                // Clamp bars to visible month
+                const barStart = start < monthStart ? monthStart : start;
+                const barEnd = end > monthEnd ? monthEnd : end;
+                const startDay = barStart.getDate() - 1;
+                const duration = Math.max(1, Math.ceil((barEnd.getTime() - barStart.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+                const isVisible = start <= monthEnd && end >= monthStart;
 
-                    weekDays.push(
-                      <div
-                        key={i}
-                        className={`border-r border-gray-200 dark:border-slate-700 p-3 text-center last:border-r-0 ${
-                          today ? 'bg-primary-500/5' : ''
-                        }`}
-                      >
-                        <div className="text-xs font-medium text-gray-500 dark:text-[#6B7684]">
-                          {day.toLocaleDateString('en-US', { weekday: 'short' })}
-                        </div>
-                        <div className={`mt-1 flex items-center justify-center ${
-                          today ? 'rounded-full bg-primary-500 text-white p-1' : 'text-gray-900 dark:text-white'
-                        }`}>
-                          <span className="text-sm font-semibold">{day.getDate()}</span>
-                        </div>
-                        {calendarSystem === 'ethiopian' && (
-                          <div className="text-[10px] text-gray-500 dark:text-[#6B7684] mt-1">
-                            {ethiopianDay.day} {ethiopianDay.monthName.slice(0, 3)}
+                if (!isVisible) return null;
+
+                return (
+                  <div
+                    key={task.id}
+                    className="flex border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-[#282E33]/30 transition-colors"
+                  >
+                    {/* Task info — pinned left */}
+                    <div
+                      onClick={() => onTaskClick?.(task)}
+                      className="sticky left-0 z-10 w-40 sm:w-56 shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 sm:px-3 py-2 cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', PRIORITY_COLORS[task.priority])} />
+                        <span className="text-[10px] sm:text-xs font-semibold text-slate-900 dark:text-white group-hover:text-primary-500 truncate">
+                          {task.key}
+                        </span>
+                      </div>
+                      <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">{task.title}</p>
+                      <div className="hidden sm:flex items-center gap-1.5 mt-1">
+                        <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: task.project.color }} />
+                        <span className="text-[9px] text-slate-400">{task.project.key}</span>
+                        {task.assignee && (
+                          <div className="h-4 w-4 rounded-full bg-primary-500 flex items-center justify-center text-[7px] text-white font-medium ml-auto">
+                            {task.assignee.name.charAt(0)}
                           </div>
                         )}
                       </div>
-                    );
-                  }
-                  return weekDays;
-                })()}
-              </div>
+                    </div>
 
-              {/* Week Grid with Hours */}
-              <div className="overflow-y-auto max-h-[600px]">
-                {Array.from({ length: 24 }, (_, hour) => {
-                  const startOfWeek = new Date(currentDate);
-                  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-
-                  return (
-                    <div key={hour} className="grid grid-cols-8 border-b border-gray-200 dark:border-slate-700 min-h-[60px]">
-                      {/* Hour Label */}
-                      <div className="border-r border-gray-200 dark:border-slate-700 p-2 text-center">
-                        <span className="text-xs font-medium text-gray-500 dark:text-[#6B7684]">
-                          {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
-                        </span>
-                      </div>
-
-                      {/* Day Columns */}
-                      {Array.from({ length: 7 }, (_, day) => {
-                        const currentDay = new Date(startOfWeek);
-                        currentDay.setDate(startOfWeek.getDate() + day);
-                        currentDay.setHours(hour, 0, 0, 0);
-
-                        const hourTasks = filteredTasks.filter(task => {
-                          if (!task.startDate) return false;
-                          const taskStart = new Date(task.startDate);
-                          return (
-                            taskStart.getDate() === currentDay.getDate() &&
-                            taskStart.getMonth() === currentDay.getMonth() &&
-                            taskStart.getFullYear() === currentDay.getFullYear() &&
-                            taskStart.getHours() === hour
-                          );
-                        });
-
+                    {/* Timeline bar area */}
+                    <div className="relative flex items-center" style={{ width: daysInMonth * dayWidth }}>
+                      {/* Weekend shading */}
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const d = new Date(year, month, i + 1);
+                        if (d.getDay() !== 0 && d.getDay() !== 6) return null;
                         return (
                           <div
-                            key={day}
-                            onClick={() => onDateClick?.(currentDay)}
-                            className="border-r border-gray-200 dark:border-slate-700 p-1 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors cursor-pointer last:border-r-0"
-                          >
-                            {hourTasks.map((task) => (
-                              <div
-                                key={task.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onTaskClick?.(task);
-                                }}
-                                className="mb-1 rounded border-l-2 p-1.5 text-xs bg-white dark:bg-[#22272B] shadow-sm hover:shadow-md transition-all cursor-pointer"
-                                style={{ borderLeftColor: task.project.color }}
-                              >
-                                <div className="flex items-center gap-1 mb-0.5">
-                                  <div className={`h-1.5 w-1.5 rounded-full ${getPriorityColor(task.priority)}`} />
-                                  <span className="font-semibold text-gray-900 dark:text-white truncate">
-                                    {task.key}
-                                  </span>
-                                </div>
-                                <div className="truncate text-gray-600 dark:text-slate-400">
-                                  {task.title}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                            key={i}
+                            className="absolute top-0 bottom-0 bg-slate-50/50 dark:bg-[#1B1F23]/20"
+                            style={{ left: i * dayWidth, width: dayWidth }}
+                          />
                         );
                       })}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Day View */}
-        {viewMode === 'day' && (
-          <div className="p-6">
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden shadow-sm">
-              {/* Day Header */}
-              <div className="border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33] p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-                    </h3>
-                    {calendarSystem === 'ethiopian' && (
-                      <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                        {formatEthiopianDate(ethiopianDate, 'full')}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
-                      {getTasksForDate(currentDate).length} tasks scheduled
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Hourly Timeline */}
-              <div className="overflow-y-auto max-h-[700px]">
-                <div className="grid grid-cols-[80px_1fr]">
-                  {Array.from({ length: 24 }, (_, hour) => {
-                    const hourStart = new Date(currentDate);
-                    hourStart.setHours(hour, 0, 0, 0);
-
-                    const hourTasks = filteredTasks.filter(task => {
-                      if (!task.startDate) return false;
-                      const taskStart = new Date(task.startDate);
-                      return (
-                        taskStart.getDate() === currentDate.getDate() &&
-                        taskStart.getMonth() === currentDate.getMonth() &&
-                        taskStart.getFullYear() === currentDate.getFullYear() &&
-                        taskStart.getHours() === hour
-                      );
-                    });
-
-                    const allDayTasks = hour === 8 ? getTasksForDate(currentDate).filter(t => !t.startDate) : [];
-
-                    return (
-                      <div key={hour} className="contents">
-                        {/* Time Column */}
-                        <div className="border-r border-b border-gray-200 dark:border-slate-700 p-3 text-right bg-gray-50/50 dark:bg-[#1B1F23]">
-                          <span className="text-sm font-medium text-gray-600 dark:text-slate-400">
-                            {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
-                          </span>
-                        </div>
-
-                        {/* Tasks Column */}
+                      {/* Today line */}
+                      {today.getMonth() === month && today.getFullYear() === year && (
                         <div
-                          onClick={() => onDateClick?.(hourStart)}
-                          className="border-b border-gray-200 dark:border-slate-700 p-3 min-h-[80px] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors cursor-pointer"
-                        >
-                          {/* All-day tasks shown at 8 AM */}
-                          {allDayTasks.length > 0 && (
-                            <div className="mb-3">
-                              <div className="text-xs font-medium text-gray-500 dark:text-[#6B7684] mb-2">All Day</div>
-                              <div className="space-y-2">
-                                {allDayTasks.map((task) => (
-                                  <div
-                                    key={task.id}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onTaskClick?.(task);
-                                    }}
-                                    className="rounded-lg border-l-4 p-3 bg-gradient-to-r from-white to-gray-50 dark:from-[#22272B] dark:to-[#282E33] shadow-sm hover:shadow-md transition-all cursor-pointer"
-                                    style={{ borderLeftColor: task.project.color }}
-                                  >
-                                    <div className="flex items-center justify-between mb-2">
-                                      <div className="flex items-center gap-2">
-                                        <div className={`h-2.5 w-2.5 rounded-full ${getPriorityColor(task.priority)}`} />
-                                        <span className="font-semibold text-sm text-gray-900 dark:text-white">
-                                          {task.key}
-                                        </span>
-                                        <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(task.status)} bg-opacity-20`}>
-                                          {task.status.replace('_', ' ')}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="text-sm text-gray-800 dark:text-[#B6C2CF] mb-1">
-                                      {task.title}
-                                    </div>
-                                    <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-slate-400">
-                                      <span className="flex items-center gap-1">
-                                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: task.project.color }} />
-                                        {task.project.name}
-                                      </span>
-                                      {task.assignee && (
-                                        <span className="flex items-center gap-1">
-                                          {task.assignee.avatar ? (
-                                            <img src={task.assignee.avatar} alt="" className="h-4 w-4 rounded-full" />
-                                          ) : (
-                                            <div className="h-4 w-4 rounded-full bg-primary-500 flex items-center justify-center text-[8px] text-white font-medium">
-                                              {task.assignee.name.charAt(0)}
-                                            </div>
-                                          )}
-                                          {task.assignee.name}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                          className="absolute top-0 bottom-0 w-px bg-primary-500 z-[5]"
+                          style={{ left: (today.getDate() - 1) * dayWidth + dayWidth / 2 }}
+                        />
+                      )}
 
-                          {/* Hourly tasks */}
-                          {hourTasks.length > 0 && (
-                            <div className="space-y-2">
-                              {hourTasks.map((task) => (
-                                <div
-                                  key={task.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onTaskClick?.(task);
-                                  }}
-                                  className="rounded-lg border-l-4 p-3 bg-white dark:bg-[#22272B] shadow-sm hover:shadow-md transition-all cursor-pointer"
-                                  style={{ borderLeftColor: task.project.color }}
-                                >
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <div className={`h-2.5 w-2.5 rounded-full ${getPriorityColor(task.priority)}`} />
-                                      <span className="font-semibold text-sm text-gray-900 dark:text-white">
-                                        {task.key}
-                                      </span>
-                                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(task.status)} bg-opacity-20`}>
-                                        {task.status.replace('_', ' ')}
-                                      </span>
-                                    </div>
-                                    {task.startDate && (
-                                      <span className="text-xs text-gray-500 dark:text-[#6B7684]">
-                                        {new Date(task.startDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div className="text-sm text-gray-800 dark:text-[#B6C2CF] mb-1">
-                                    {task.title}
-                                  </div>
-                                  <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-slate-400">
-                                    <span className="flex items-center gap-1">
-                                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: task.project.color }} />
-                                      {task.project.name}
-                                    </span>
-                                    {task.assignee && (
-                                      <span className="flex items-center gap-1">
-                                        {task.assignee.avatar ? (
-                                          <img src={task.assignee.avatar} alt="" className="h-4 w-4 rounded-full" />
-                                        ) : (
-                                          <div className="h-4 w-4 rounded-full bg-primary-500 flex items-center justify-center text-[8px] text-white font-medium">
-                                            {task.assignee.name.charAt(0)}
-                                          </div>
-                                        )}
-                                        {task.assignee.name}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Timeline View */}
-        {viewMode === 'timeline' && (
-          <div className="p-6">
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden shadow-sm">
-              {/* Timeline Header */}
-              <div className="border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33] p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                      <GitBranch className="h-5 w-5" />
-                      Project Timeline
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                      Gantt chart view with task dependencies
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-600 dark:text-slate-400">
-                      {filteredTasks.filter(t => t.startDate && t.dueDate).length} scheduled tasks
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Timeline Grid */}
-              <div className="overflow-auto max-h-[700px]">
-                {/* Date Headers - Show current month's weeks */}
-                <div className="grid grid-cols-[250px_1fr] border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33] sticky top-0 z-10">
-                  <div className="border-r border-gray-200 dark:border-slate-700 p-3">
-                    <span className="text-sm font-semibold text-gray-700 dark:text-slate-400">Task</span>
-                  </div>
-                  <div className="grid grid-cols-30 gap-px">
-                    {Array.from({ length: 30 }, (_, day) => {
-                      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day + 1);
-                      const today = isToday(date);
-                      const ethiopianDay = gregorianToEthiopian(date);
-
-                      return (
-                        <div
-                          key={day}
-                          className={`p-2 text-center min-w-[40px] ${today ? 'bg-primary-500/10' : ''}`}
-                        >
-                          <div className={`text-xs font-medium ${
-                            today ? 'text-primary-500' : 'text-gray-600 dark:text-slate-400'
-                          }`}>
-                            {date.getDate()}
-                          </div>
-                          {calendarSystem === 'ethiopian' && (
-                            <div className="text-[9px] text-gray-500 dark:text-[#6B7684]">
-                              {ethiopianDay.day}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Task Rows */}
-                <div className="divide-y divide-gray-200 dark:divide-slate-700">
-                  {filteredTasks.filter(task => task.startDate && task.dueDate).length === 0 ? (
-                    <div className="flex items-center justify-center py-12">
-                      <div className="text-center">
-                        <GitBranch className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-3" />
-                        <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                          No tasks with dates
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-slate-400">
-                          Add start and due dates to tasks to see them in timeline view
-                        </p>
+                      {/* Task bar */}
+                      <div
+                        onClick={() => onTaskClick?.(task)}
+                        className="absolute top-1/2 -translate-y-1/2 h-6 sm:h-7 rounded-full cursor-pointer shadow-sm hover:shadow-md hover:brightness-110 transition-all z-[4] flex items-center px-2"
+                        style={{
+                          left: startDay * dayWidth + 2,
+                          width: Math.max(duration * dayWidth - 4, 20),
+                          backgroundColor: task.project.color,
+                        }}
+                      >
+                        <span className="text-[9px] sm:text-[10px] font-semibold text-white truncate">
+                          {task.key}
+                        </span>
                       </div>
                     </div>
-                  ) : (
-                    filteredTasks
-                      .filter(task => task.startDate && task.dueDate)
-                      .map((task) => {
-                        const startDate = new Date(task.startDate!);
-                        const endDate = new Date(task.dueDate!);
-                        const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-                        const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-                        // Calculate position and width
-                        const dayInMonth = startDate.getDate();
-                        const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-                        const gridColumn = `${dayInMonth} / span ${Math.min(duration, 30 - dayInMonth + 1)}`;
-
-                        // Only show if task is in current month view
-                        if (startDate < monthStart || startDate > monthEnd) return null;
-
-                        return (
-                          <div key={task.id} className="grid grid-cols-[250px_1fr] hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
-                            {/* Task Info */}
-                            <div className="border-r border-gray-200 dark:border-slate-700 p-3">
-                              <div
-                                onClick={() => onTaskClick?.(task)}
-                                className="cursor-pointer group"
-                              >
-                                <div className="flex items-center gap-2 mb-1">
-                                  <div className={`h-2 w-2 rounded-full ${getPriorityColor(task.priority)}`} />
-                                  <span className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
-                                    {task.key}
-                                  </span>
-                                </div>
-                                <div className="text-xs text-gray-600 dark:text-slate-400 line-clamp-2">
-                                  {task.title}
-                                </div>
-                                <div className="flex items-center gap-2 mt-2">
-                                  <span
-                                    className="h-2 w-2 rounded-full"
-                                    style={{ backgroundColor: task.project.color }}
-                                  />
-                                  <span className="text-xs text-gray-500 dark:text-[#6B7684]">
-                                    {task.project.key}
-                                  </span>
-                                  {task.assignee && (
-                                    <div className="flex items-center gap-1 ml-auto">
-                                      {task.assignee.avatar ? (
-                                        <img src={task.assignee.avatar} alt="" className="h-4 w-4 rounded-full" />
-                                      ) : (
-                                        <div className="h-4 w-4 rounded-full bg-primary-500 flex items-center justify-center text-[8px] text-white font-medium">
-                                          {task.assignee.name.charAt(0)}
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Timeline Bar */}
-                            <div className="relative p-3">
-                              <div className="grid grid-cols-30 gap-px h-full">
-                                <div
-                                  onClick={() => onTaskClick?.(task)}
-                                  className="rounded-full cursor-pointer shadow-sm hover:shadow-md transition-all group relative"
-                                  style={{
-                                    gridColumn,
-                                    backgroundColor: task.project.color,
-                                    opacity: 0.85
-                                  }}
-                                >
-                                  <div className="h-full flex items-center px-3">
-                                    <span className="text-xs font-medium text-white truncate">
-                                      {task.key}
-                                    </span>
-                                  </div>
-                                  {/* Hover tooltip */}
-                                  <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block z-20 whitespace-nowrap">
-                                    <div className="bg-gray-900 dark:bg-[#1B1F23] text-white text-xs rounded-lg px-3 py-2 shadow-lg">
-                                      <div className="font-semibold mb-1">{task.title}</div>
-                                      <div className="text-gray-300 dark:text-slate-400">
-                                        {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-                                      </div>
-                                      <div className="text-gray-300 dark:text-slate-400 mt-1">
-                                        {duration} days
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Dependency indicators */}
-                                  {task.dependencies && task.dependencies.length > 0 && (
-                                    <div className="absolute -left-3 top-1/2 -translate-y-1/2">
-                                      <div className="flex items-center gap-1">
-                                        <GitBranch className="h-3 w-3 text-gray-600 dark:text-slate-400" />
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                  )}
-                </div>
-              </div>
-
-              {/* Timeline Legend */}
-              <div className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#282E33] p-4">
-                <div className="flex items-center gap-6 text-xs">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-red-500" />
-                    <span className="text-gray-700 dark:text-slate-400">Critical</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-orange-500" />
-                    <span className="text-gray-700 dark:text-slate-400">High</span>
+                );
+              })}
+            </div>
+
+            {/* Legend */}
+            <div className="sticky left-0 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B] px-3 py-2">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[10px] sm:text-xs">
+                {Object.entries(PRIORITY_COLORS).map(([label, cls]) => (
+                  <div key={label} className="flex items-center gap-1">
+                    <span className={cn('h-2 w-2 rounded-full', cls)} />
+                    <span className="text-slate-500 dark:text-slate-400 capitalize">{label.toLowerCase()}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <span className="text-gray-700 dark:text-slate-400">Medium</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-blue-500" />
-                    <span className="text-gray-700 dark:text-slate-400">Low</span>
-                  </div>
-                  <div className="ml-auto text-gray-600 dark:text-slate-400">
-                    Hover over tasks for details
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
