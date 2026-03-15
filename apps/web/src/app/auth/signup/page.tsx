@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle, Loader2, Mail, Lock, User, ArrowRight, Building2, CheckCircle2, Smartphone, Eye, EyeOff, TrendingUp, Users, Zap, Calendar, Languages, Bot, Shield } from 'lucide-react';
+import {
+  AlertCircle, Loader2, ArrowRight, Eye, EyeOff, CheckCircle2,
+  Calendar, Languages, Wallet, Brain, Kanban, Shield, Check,
+} from 'lucide-react';
 
 interface OrganizationInfo {
   id: string;
@@ -27,7 +30,6 @@ export default function SignUpPage() {
   const [organization, setOrganization] = useState<OrganizationInfo | null>(null);
   const [isMainDomain, setIsMainDomain] = useState(true);
 
-  // Detect organization from subdomain
   useEffect(() => {
     const detectOrganization = async () => {
       const hostname = window.location.hostname;
@@ -39,7 +41,6 @@ export default function SignUpPage() {
       if (isSubdomain) {
         setIsMainDomain(false);
         let subdomain = '';
-
         if (hostname.endsWith('.onekof.com')) {
           subdomain = hostname.replace('.onekof.com', '');
         } else if (hostname.endsWith('.localhost')) {
@@ -65,7 +66,6 @@ export default function SignUpPage() {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -91,7 +91,6 @@ export default function SignUpPage() {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      // Redirect to onboarding
       router.push('/onboarding?email=' + encodeURIComponent(email));
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
@@ -100,232 +99,187 @@ export default function SignUpPage() {
     }
   };
 
+  const passwordChecks = [
+    { label: 'At least 8 characters', met: password.length >= 8 },
+    { label: 'Contains a number', met: /\d/.test(password) },
+    { label: 'Contains uppercase', met: /[A-Z]/.test(password) },
+  ];
+
   return (
-    <div className="flex min-h-screen">
-      {/* LEFT SIDE - DARK - Success Stories + Mobile App */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23] relative overflow-hidden">
-        {/* Subtle animated accents */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-teal-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        </div>
+    <div className="flex min-h-screen bg-midnight-950">
+      {/* LEFT — Brand panel */}
+      <div className="relative hidden w-1/2 overflow-hidden lg:block">
+        <div className="absolute inset-0 bg-gradient-to-br from-midnight-950 via-midnight-900 to-brand-950" />
+        <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-brand-600/[0.08] blur-[150px]" />
+        <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-purple-600/[0.06] blur-[120px]" />
 
-        {/* Ethiopian flag accent line */}
-        <div className="absolute top-0 left-0 right-0 h-1 flex">
-          <div className="flex-1 bg-[#078930]" />
-          <div className="flex-1 bg-[#FCDD09]" />
-          <div className="flex-1 bg-[#DA121A]" />
-        </div>
-
-        <div className="relative z-10 flex flex-col justify-between p-16 w-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-12">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-emerald-600 shadow-lg">
-              <span className="text-xl font-bold text-white">O</span>
+        <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-sm">
+              <span className="text-sm font-black text-white">O</span>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">Onekof</h1>
-              <p className="text-sm text-slate-300">Enterprise Project Management</p>
-            </div>
-          </div>
+            <span className="text-[16px] font-semibold text-white">Onekof</span>
+          </Link>
 
-          {/* Main Content */}
-          <div className="space-y-10">
-            {/* Heading */}
-            <div>
-              <h2 className="text-5xl font-bold text-white leading-tight mb-6">
-                Join Ethiopia's<br />
-                <span className="bg-gradient-to-r from-[#1C8C7D] to-emerald-400 bg-clip-text text-transparent">Project Platform</span>
-              </h2>
-              <p className="text-lg text-slate-300 leading-relaxed max-w-md">
-                The complete project management platform with Ethiopian calendar, native languages, and smart AI automation.
-              </p>
-            </div>
+          <div className="max-w-md">
+            <h2 className="text-4xl font-semibold leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
+              Start building
+              <br />
+              <span className="text-white/30">with your team</span>
+            </h2>
+            <p className="mt-5 text-[16px] leading-relaxed text-white/30">
+              Join hundreds of Ethiopian organizations using Onekof to
+              manage projects, track budgets in ETB, and collaborate in
+              their preferred language.
+            </p>
 
-            {/* Feature Grid - Same as Sign In */}
-            <div className="grid grid-cols-2 gap-6 max-w-lg">
-              <div className="space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30">
-                  <Calendar className="h-5 w-5 text-[#1C8C7D]" />
+            {/* What you get */}
+            <div className="mt-8 space-y-3">
+              {[
+                'Ethiopian calendar & Gregorian toggle',
+                'Amharic, Oromoo, Tigrinya, English UI',
+                'Budget tracking in Ethiopian Birr',
+                'AI-powered document processing',
+                'Free forever for teams up to 10',
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2.5">
+                  <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-500/10">
+                    <Check className="h-3 w-3 text-brand-400" />
+                  </div>
+                  <span className="text-[13px] text-white/35">{item}</span>
                 </div>
-                <div>
-                  <div className="text-white font-semibold text-sm">Ethiopian Calendar</div>
-                  <div className="text-xs text-slate-400">የኢትዮጵያ ዘመን አቆጣጠር</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30">
-                  <Languages className="h-5 w-5 text-[#1C8C7D]" />
-                </div>
-                <div>
-                  <div className="text-white font-semibold text-sm">4 Languages</div>
-                  <div className="text-xs text-slate-400">አማርኛ, ትግርኛ, Afaan Oromo</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30">
-                  <Zap className="h-5 w-5 text-[#1C8C7D]" />
-                </div>
-                <div>
-                  <div className="text-white font-semibold text-sm">AI-Powered</div>
-                  <div className="text-xs text-slate-400">Smart automation</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1C8C7D]/20 border border-[#1C8C7D]/30">
-                  <Shield className="h-5 w-5 text-[#1C8C7D]" />
-                </div>
-                <div>
-                  <div className="text-white font-semibold text-sm">Secure</div>
-                  <div className="text-xs text-slate-400">Multi-tenant isolation</div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Footer Stats */}
-          <div className="flex items-center gap-8 pt-8 border-t border-slate-700/50">
-            <div>
-              <div className="text-2xl font-bold text-white mb-1">500+</div>
-              <div className="text-xs text-slate-400">Organizations</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white mb-1">10K+</div>
-              <div className="text-xs text-slate-400">Active Projects</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white mb-1">99.9%</div>
-              <div className="text-xs text-slate-400">Uptime</div>
-            </div>
+          <div className="flex gap-10 border-t border-white/[0.06] pt-6">
+            {[
+              { value: '500+', label: 'Teams' },
+              { value: '2 min', label: 'Setup time' },
+              { value: 'Free', label: 'To start' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p className="text-xl font-semibold text-white">{stat.value}</p>
+                <p className="text-[12px] text-white/20">{stat.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* RIGHT SIDE - WHITE - Sign Up Form */}
-      <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-emerald-600">
-              <span className="text-xl font-bold text-white">O</span>
+      {/* RIGHT — Sign up form */}
+      <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
+        <div className="w-full max-w-[420px]">
+          <div className="mb-10 flex items-center gap-2.5 lg:hidden">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-purple-600">
+              <span className="text-sm font-black text-white">O</span>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Onekof</h1>
-              <p className="text-xs text-gray-600">Enterprise Project Management</p>
-            </div>
+            <span className="text-[15px] font-semibold text-white">Onekof</span>
           </div>
 
-          <div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">Create your account</h3>
-            <p className="text-gray-600 mb-8">
+          <div className="mb-8">
+            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">Create your account</h3>
+            <p className="mt-2 text-[14px] text-white/30">
               Already have an account?{' '}
-              <Link href="/auth/signin" className="font-semibold text-[#1C8C7D] hover:text-emerald-600 transition-colors">
+              <Link href="/auth/signin" className="font-medium text-brand-400 transition-colors hover:text-brand-300">
                 Sign in
               </Link>
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-6 rounded-xl bg-red-50 border border-red-200 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
-                  <AlertCircle className="h-4 w-4 text-red-600" />
-                </div>
-                <p className="text-sm font-medium text-red-800">{error}</p>
-              </div>
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">
+              <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
+              <p className="text-[13px] text-red-300">{error}</p>
             </div>
           )}
 
-          {/* Sign Up Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="name" className="mb-2 block text-[13px] font-medium text-white/50">
                 Full name
               </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
-                  placeholder="Your full name"
-                />
-              </div>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                placeholder="Your full name"
+              />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/50">
                 Email address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
-                  placeholder="you@company.com"
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                placeholder="you@company.com"
+              />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="password" className="mb-2 block text-[13px] font-medium text-white/50">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   placeholder="At least 8 characters"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/20 transition-colors hover:text-white/40"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {password.length > 0 && (
+                <div className="mt-2 flex gap-3">
+                  {passwordChecks.map((check) => (
+                    <span key={check.label} className={`text-[11px] ${check.met ? 'text-emerald-400' : 'text-white/15'}`}>
+                      {check.met ? '✓' : '○'} {check.label}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-medium text-white/50">
                 Confirm password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 transition-all focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   placeholder="Confirm your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/20 transition-colors hover:text-white/40"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -333,42 +287,39 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/30 disabled:opacity-50 disabled:hover:scale-100"
+              className="group w-full rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 py-3.5 text-[14px] font-medium text-white shadow-brand-md transition-all hover:shadow-brand-lg hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               {isLoading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Creating account...</span>
-                </div>
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Creating account...
+                </span>
               ) : (
-                <div className="flex items-center justify-center gap-2">
-                  <span>Create account</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </div>
+                <span className="flex items-center justify-center gap-2">
+                  Create account
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
               )}
             </button>
           </form>
 
-          {/* Next Steps Info */}
-          <div className="mt-8 rounded-xl bg-gray-50 border border-gray-200 p-4">
+          <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#1C8C7D] flex-shrink-0 mt-0.5" />
-              <div className="text-sm flex-1">
-                <p className="font-semibold text-gray-900 mb-1">Quick 2-minute setup</p>
-                <p className="text-gray-600">
-                  After signup, we'll help you create your workspace and invite your team
+              <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-400" />
+              <div>
+                <p className="text-[13px] font-medium text-white/50">Quick 2-minute setup</p>
+                <p className="text-[12px] text-white/25">
+                  After signup, we&apos;ll help you create your workspace and invite your team
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <p className="mt-8 text-center text-xs text-gray-500">
+          <p className="mt-6 text-center text-[12px] text-white/15">
             By signing up, you agree to our Terms of Service and Privacy Policy
           </p>
-          <p className="mt-2 text-center text-xs text-gray-500">
-            &copy; 2026 Onekof. Built for Ethiopia
+          <p className="mt-2 text-center text-[12px] text-white/15">
+            &copy; 2026 Onekof &middot; Built for Ethiopia
           </p>
         </div>
       </div>
