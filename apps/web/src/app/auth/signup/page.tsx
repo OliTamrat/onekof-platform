@@ -152,7 +152,7 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          <div className="flex gap-10 border-t border-white/[0.06] pt-6">
+          <div className="flex gap-6 border-t border-white/[0.06] pt-6 xl:gap-10">
             {[
               { value: '500+', label: 'Teams' },
               { value: '2 min', label: 'Setup time' },
@@ -249,7 +249,7 @@ export default function SignUpPage() {
                 </button>
               </div>
               {password.length > 0 && (
-                <div className="mt-2 flex gap-3">
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
                   {passwordChecks.map((check) => (
                     <span key={check.label} className={`text-[11px] ${check.met ? 'text-emerald-400' : 'text-white/15'}`}>
                       {check.met ? '✓' : '○'} {check.label}

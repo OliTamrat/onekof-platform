@@ -146,7 +146,7 @@ function SignInContent() {
           </div>
 
           {/* Stats */}
-          <div className="flex gap-10 border-t border-white/[0.06] pt-6">
+          <div className="flex gap-6 border-t border-white/[0.06] pt-6 xl:gap-10">
             {[
               { value: '500+', label: 'Teams' },
               { value: '10K+', label: 'Projects' },

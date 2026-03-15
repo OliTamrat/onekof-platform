@@ -207,8 +207,8 @@ function OnboardingContent() {
     <div className="min-h-screen bg-midnight-950 relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-brand-600/[0.08] to-purple-600/[0.05] blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-brand-500/[0.06] to-purple-500/[0.04] blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gradient-to-br from-brand-600/[0.08] to-purple-600/[0.05] blur-3xl animate-pulse sm:-top-40 sm:-right-40 sm:h-96 sm:w-96" />
+        <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-gradient-to-tr from-brand-500/[0.06] to-purple-500/[0.04] blur-3xl animate-pulse sm:-bottom-40 sm:-left-40 sm:h-96 sm:w-96" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Ethiopian flag accent */}
@@ -238,7 +238,7 @@ function OnboardingContent() {
                 <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
                   እንኳን ደህና መጡ ወደ ኦነኮፍ!
                 </h2>
-                <p className="text-lg text-white/40">
+                <p className="text-base text-white/40 sm:text-lg">
                   Welcome to Onekof! • Baga nagaan dhuftan!
                 </p>
               </div>
@@ -274,7 +274,7 @@ function OnboardingContent() {
           </div>
 
           {/* Main Card */}
-          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl backdrop-blur-xl p-8 md:p-10">
+          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl p-4 sm:p-8 md:p-10">
             {/* STEP 1: Language Selection */}
             {currentStep === 1 && (
               <div className="space-y-6">
@@ -312,7 +312,7 @@ function OnboardingContent() {
             {/* STEP 2: Organization Type - CRITICAL FOR CATEGORIZATION */}
             {currentStep === 2 && (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {ORG_TYPES.map((type) => {
                     const Icon = type.icon;
                     return (
@@ -428,12 +428,12 @@ function OnboardingContent() {
                   <label className="block text-[13px] font-medium text-white/50 mb-2">
                     Workspace URL
                   </label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
                     <input
                       type="text"
                       value={organizationSlug}
                       onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="flex-1 rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-brand-500/50 focus:outline-none focus:ring-4 focus:ring-brand-500/10 sm:flex-1"
                       placeholder="my-organization"
                     />
                     <span className="text-sm text-white/25 whitespace-nowrap">.onekof.com</span>
@@ -454,7 +454,7 @@ function OnboardingContent() {
                   <label className="block text-[13px] font-medium text-white/50 mb-3">
                     Calendar Preference
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <button
                       onClick={() => setCalendarPreference('ethiopian')}
                       className={`rounded-xl border p-3 text-left transition-all ${
@@ -512,10 +512,10 @@ function OnboardingContent() {
                 </div>
 
                 {/* Mobile App Promo */}
-                <div className="rounded-xl bg-gradient-to-br from-brand-500/[0.06] to-purple-500/[0.04] border border-brand-500/20 p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-purple-600">
-                      <Smartphone className="h-6 w-6 text-white" />
+                <div className="rounded-xl bg-gradient-to-br from-brand-500/[0.06] to-purple-500/[0.04] border border-brand-500/20 p-4 sm:p-6">
+                  <div className="flex items-center gap-2.5 mb-4 sm:gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 sm:h-12 sm:w-12">
+                      <Smartphone className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                     </div>
                     <div>
                       <div className="font-bold text-white">Download Mobile App</div>
@@ -533,8 +533,8 @@ function OnboardingContent() {
                 </div>
 
                 {/* Summary */}
-                <div className="rounded-xl bg-brand-500/[0.06] border border-brand-500/30 p-6">
-                  <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-brand-500/[0.06] border border-brand-500/30 p-4 sm:p-6">
+                  <div className="flex items-start gap-2.5 sm:gap-3">
                     <Sparkles className="h-5 w-5 text-brand-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="font-semibold text-white mb-2">You're all set!</p>
@@ -561,7 +561,7 @@ function OnboardingContent() {
             {currentStep > 1 && (
               <button
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-midnight-950 px-6 py-3 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15]"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-midnight-950 px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Back</span>
@@ -576,7 +576,7 @@ function OnboardingContent() {
                   (currentStep === 2 && !canProceedStep2) ||
                   (currentStep === 3 && !canProceedStep3)
                 }
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100"
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <div className="flex items-center gap-2">
@@ -588,7 +588,7 @@ function OnboardingContent() {
               <button
                 onClick={handleComplete}
                 disabled={isLoading}
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100"
+                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-brand-500/20 transition-all hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-brand-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 {isLoading ? (
