@@ -19,17 +19,8 @@ interface Issue {
   priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   dueDate: string | null;
   startDate?: string | null;
-  assignee?: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  project: {
-    id: string;
-    name: string;
-    key: string;
-    color: string;
-  };
+  assignee?: { id: string; name: string; avatar?: string };
+  project: { id: string; name: string; key: string; color: string };
   tags?: string[];
   dependencies?: string[];
 }
@@ -39,7 +30,6 @@ export default function IssuesCalendarPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);
 
-  // Get current project
   const { data: projectsData } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
@@ -52,7 +42,6 @@ export default function IssuesCalendarPage() {
 
   const currentProject = projectsData?.projects?.[0];
 
-  // Fetch issues/tasks
   const { data: issuesData, isLoading } = useQuery<{ issues?: Issue[] }>({
     queryKey: ['issues', 'calendar'],
     queryFn: async () => {
@@ -63,7 +52,6 @@ export default function IssuesCalendarPage() {
     enabled: !!session,
   });
 
-  // Transform issues to CalendarTask format
   const calendarTasks: CalendarTask[] = (issuesData?.issues || []).map((issue: Issue) => ({
     id: issue.id,
     title: issue.title,
@@ -79,28 +67,11 @@ export default function IssuesCalendarPage() {
     dependencies: issue.dependencies,
   }));
 
-  // Handlers for calendar interactions
-  const handleTaskClick = (task: CalendarTask) => {
-    setSelectedTaskId(task.id);
-  };
-
-  const handleDateClick = (date: Date) => {
-    setCreateTaskDate(date);
-  };
-
-  const handleCreateTask = (date: Date) => {
-    setCreateTaskDate(date);
-  };
-
-  const handleTaskUpdate = (task: CalendarTask) => {
-    // Updates are handled by the slideout via mutations
-  };
-
   if (!session) {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Please sign in to view the calendar.</p>
+          <p className="text-slate-500">Please sign in to view the calendar.</p>
         </div>
       </AppLayout>
     );
@@ -122,32 +93,28 @@ export default function IssuesCalendarPage() {
         showInsights
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary-500 dark:border-gray-700"></div>
-              <p className="text-sm text-gray-600 dark:text-slate-400">
-                Loading calendar...
-              </p>
+              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Loading calendar...</p>
             </div>
           </div>
         ) : (
           <DualCalendar
             tasks={calendarTasks}
-            onTaskClick={handleTaskClick}
-            onTaskUpdate={handleTaskUpdate}
-            onDateClick={handleDateClick}
-            onCreateTask={handleCreateTask}
+            onTaskClick={(task) => setSelectedTaskId(task.id)}
+            onDateClick={(date) => setCreateTaskDate(date)}
+            onCreateTask={(date) => setCreateTaskDate(date)}
             defaultView="month"
             defaultCalendarSystem="gregorian"
-            showFilters={true}
-            showControls={true}
+            showFilters
+            showControls
           />
         )}
       </div>
 
-      {/* Task Detail Slideout - Opens when task is clicked */}
       {selectedTaskId && (
         <IssueDetailSlideout
           issueId={selectedTaskId}
@@ -155,7 +122,6 @@ export default function IssuesCalendarPage() {
         />
       )}
 
-      {/* Quick Add Event Modal - Opens when date is clicked */}
       {createTaskDate && (
         <QuickAddEventModal
           date={createTaskDate}
