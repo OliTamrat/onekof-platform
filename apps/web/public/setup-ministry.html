@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ministry Setup</title>
+    <style>
+        body { font-family: system-ui; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #1C8C7D; color: white; border: none; border-radius: 8px; margin: 10px; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result { margin-top: 20px; padding: 20px; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .loading { background: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+    </style>
+</head>
+<body>
+    <h1>🏛️ Ministry of Water & Irrigation Setup</h1>
+    <p>Click the button below to create the Ministry organization, Jira Water Dam project, and sample budget data.</p>
+
+    <button id="setupBtn" onclick="setup()">Create Ministry Project</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function setup() {
+            const btn = document.getElementById('setupBtn');
+            const result = document.getElementById('result');
+
+            btn.disabled = true;
+            result.className = 'result loading';
+            result.innerHTML = 'Creating Ministry project... Please wait...';
+
+            try {
+                // Step 1: Create project
+                result.innerHTML = 'Step 1/2: Creating Ministry organization and project...';
+                const projectRes = await fetch('/api/admin/create-ministry-project', { method: 'POST' });
+                const projectData = await projectRes.json();
+
+                if (!projectRes.ok) {
+                    throw new Error(projectData.error || 'Failed to create project');
+                }
+
+                // Step 2: Create expenses
+                result.innerHTML = 'Step 2/2: Creating sample expenses...';
+                const expensesRes = await fetch('/api/admin/create-sample-expenses', { method: 'POST' });
+                const expensesData = await expensesRes.json();
+
+                if (!expensesRes.ok) {
+                    throw new Error(expensesData.error || 'Failed to create expenses');
+                }
+
+                // Success!
+                result.className = 'result success';
+                result.innerHTML = `
+                    <h2>✅ Setup Complete!</h2>
+                    <p><strong>Organization:</strong> ${projectData.data.organization.name}</p>
+                    <p><strong>Project:</strong> ${projectData.data.project.name} (${projectData.data.project.key})</p>
+                    <p><strong>Budget:</strong> ${projectData.data.budget.totalBudget.toLocaleString()} ${projectData.data.budget.currency}</p>
+                    <p><strong>Expenses:</strong> ${expensesData.data.expenses.count} created (${expensesData.data.expenses.utilization})</p>
+                    <br>
+                    <a href="/projects/${projectData.data.project.id}/budget" style="display: inline-block; padding: 15px 30px; background: #1C8C7D; color: white; text-decoration: none; border-radius: 8px;">
+                        View Budget Dashboard →
+                    </a>
+                `;
+
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `
+                    <h2>❌ Error</h2>
+                    <p>${error.message}</p>
+                    <pre>${error.stack}</pre>
+                `;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

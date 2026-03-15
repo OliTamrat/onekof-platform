@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgba(99, 102, 241, 0.25);
+    color: #E0E7FF;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/20;
+  }
+}
+
+/* Ethiopian font support */
+.font-ethiopic {
+  font-family: var(--font-abyssinica), 'Noto Sans Ethiopic', 'Nyala', sans-serif;
+}
+
+/* Glass effects */
+@layer utilities {
+  .glass {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.08];
+  }
+
+  .glass-light {
+    @apply bg-white/80 backdrop-blur-xl border border-white/60;
+  }
+
+  .transition-smooth {
+    @apply transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)];
+  }
+
+  .text-gradient-brand {
+    @apply bg-gradient-to-r from-brand-400 via-brand-500 to-purple-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-accent {
+    @apply bg-gradient-to-r from-accent-coral to-accent-gold bg-clip-text text-transparent;
+  }
+}
+
+/* Progress bar animation for showcase tabs */
+@keyframes progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-progress {
+  animation: progress 8s linear;
+}
+
+/* Noise texture overlay */
+@layer utilities {
+  .noise {
+    position: relative;
+  }
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.02;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Auth page specific styles */
+.auth-gradient {
+  background: linear-gradient(135deg, #050710 0%, #0F1225 40%, #1E1B4B 100%);
+}
+
+.auth-glow {
+  background: radial-gradient(ellipse at 30% 50%, rgba(99, 102, 241, 0.12), transparent 60%);
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "@onekof/config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": ["."],
+  "exclude": ["dist", "node_modules", "prisma/migrations"]
+}
