@@ -367,7 +367,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
               <button
                 onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -432,7 +432,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
               <button
                 onClick={() => setIsDocsExpanded(!isDocsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"

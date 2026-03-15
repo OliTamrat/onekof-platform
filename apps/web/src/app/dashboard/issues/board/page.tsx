@@ -18,6 +18,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
   LayoutDashboard,
   Plus,
@@ -72,6 +74,8 @@ const COLUMNS: Column[] = [
 export default function IssuesBoardPage() {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [optimisticTasks, setOptimisticTasks] = useState<Record<TaskStatus, Task[]>>({
     TODO: [],
     IN_PROGRESS: [],
@@ -240,6 +244,7 @@ export default function IssuesBoardPage() {
                           </span>
                         </div>
                         <button
+                          onClick={() => setShowCreateModal(true)}
                           className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                           title="Add task"
                         >
@@ -267,6 +272,7 @@ export default function IssuesBoardPage() {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
+                                      onClick={() => setSelectedTaskId(task.id)}
                                       className={`group cursor-grab rounded-lg border-l-4 bg-white dark:bg-[#22272B] p-3 shadow-sm transition-shadow hover:shadow-md ${
                                         snapshot.isDragging ? 'shadow-lg' : ''
                                       }`}
@@ -377,6 +383,21 @@ export default function IssuesBoardPage() {
           )}
         </div>
       </div>
+
+      {/* Issue Detail Slideout - drill-down on card click */}
+      {selectedTaskId && (
+        <IssueDetailSlideout
+          issueId={selectedTaskId}
+          onClose={() => setSelectedTaskId(null)}
+        />
+      )}
+
+      {/* Create Issue Modal */}
+      {showCreateModal && (
+        <CreateIssueModal
+          onClose={() => setShowCreateModal(false)}
+        />
+      )}
     </AppLayout>
   );
 }
