@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/dashboard/stats
  * Returns dashboard statistics for the current user's organization
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Get the current user's session
     const session = await getServerSession(authOptions);
@@ -20,9 +20,6 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
-    // Get organization slug from subdomain (set by middleware)
-    const orgSlug = request.headers.get('x-organization-slug');
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -43,10 +40,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Match organization by subdomain slug, or fall back to first org
-    const orgMembership = (orgSlug
-      ? user.organizations.find(o => o.organization.slug === orgSlug)
-      : null) || user.organizations[0];
+    // Get the user's default organization or first organization
+    const orgMembership = user.organizations[0];
     const organizationId = orgMembership.organizationId;
 
     // Calculate date ranges
