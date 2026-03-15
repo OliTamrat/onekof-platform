@@ -40,13 +40,6 @@ import {
 
 /* ─── Hooks ─── */
 function useInView(threshold = 0.12) {
-  Plus,
-  Minus,
-  MessageSquare,
-} from 'lucide-react';
-
-/* ─── Hooks & Utilities ─── */
-function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -168,8 +161,6 @@ const plans = [
 
 /* ─── Sub-components for product showcases ─── */
 function BudgetMockup() {
-function Reveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const { ref, inView } = useInView(0.1);
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -362,63 +353,6 @@ function LanguageMockup() {
   );
 }
 
-/* ─── Blur-in Reveal (Linear-style entrance) ─── */
-function BlurReveal({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const { ref, inView } = useInView(0.1);
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-1000 ease-out ${inView ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-6 opacity-0 blur-sm'} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* ─── Linear-style Cursor Glow Card Grid ─── */
-function GlowGrid({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const cards = container.querySelectorAll<HTMLElement>('[data-glow-card]');
-    cards.forEach((card) => {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty('--glow-x', `${e.clientX - rect.left}px`);
-      card.style.setProperty('--glow-y', `${e.clientY - rect.top}px`);
-    });
-  }, []);
-
-  return (
-    <div ref={containerRef} onMouseMove={handleMouseMove} className={className}>
-      {children}
-    </div>
-  );
-}
-
-/* ─── FAQ Item ─── */
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-surface-200 last:border-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-5 text-left"
-      >
-        <span className="text-base font-semibold text-midnight-800 pr-4">{q}</span>
-        {open ? <Minus className="h-5 w-5 flex-shrink-0 text-brand-500" /> : <Plus className="h-5 w-5 flex-shrink-0 text-midnight-300" />}
-      </button>
-      <div className={`faq-content ${open ? 'open' : ''}`}>
-        <div>
-          <p className="pb-5 text-sm leading-relaxed text-midnight-400">{a}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ─── MAIN PAGE ─── */
 export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -429,21 +363,6 @@ export default function HomePage() {
 
   const heroWords = ['ship faster', 'track budgets', 'plan sprints', 'collaborate'];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
-  const [activePricing, setActivePricing] = useState<'monthly' | 'yearly'>('yearly');
-  const [heroWord, setHeroWord] = useState(0);
-
-  const heroWords = ['ship faster', 'collaborate better', 'deliver on time', 'scale effortlessly'];
-  const languageMap: Record<string, string> = { en: 'English', am: 'አማርኛ', om: 'Afaan Oromoo', ti: 'ትግርኛ' };
-
-  const getCurrentLocale = useCallback(() => {
-    if (typeof document !== 'undefined') {
-      const m = document.cookie.match(/NEXT_LOCALE=(\w+)/);
-      return m ? m[1] : 'en';
-    }
-    return 'en';
-  }, []);
-  const [selectedLang, setSelectedLang] = useState(() => languageMap[getCurrentLocale()] || 'English');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -473,11 +392,6 @@ export default function HomePage() {
     const timer = setInterval(() => setActiveShowcase((t) => (t + 1) % showcaseTabs.length), 8000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => setHeroWord((w) => (w + 1) % heroWords.length), 3000);
-    return () => clearInterval(timer);
-  }, [heroWords.length]);
 
   const navLinks = [
     { label: 'Features', href: '#features' },
@@ -531,75 +445,6 @@ export default function HomePage() {
             >
               <span className="relative z-10">Get started</span>
             </Link>
-  const productTabs = [
-    { label: 'Board View', icon: Kanban, content: { title: 'Visualize work with Kanban boards', desc: 'Drag and drop tasks through custom workflows. See progress at a glance with cards that show assignees, priorities, labels, and due dates.' } },
-    { label: 'Ethiopian Calendar', icon: Calendar, content: { title: 'Plan in the calendar you actually use', desc: 'Full Ethiopian calendar integration with Amharic month names, holiday markers, and deadline tracking. Toggle between Ethiopian and Gregorian seamlessly.' } },
-    { label: 'Automation', icon: Workflow, content: { title: 'Automate repetitive work', desc: 'Create powerful automations with a visual builder. When a task moves to "In Review", assign reviewers automatically. When a sprint ends, generate reports instantly.' } },
-    { label: 'Analytics', icon: BarChart3, content: { title: 'Real-time project insights', desc: 'Track velocity, burndown charts, team performance, and budget utilization with live dashboards. Export reports in PDF or share with stakeholders directly.' } },
-  ];
-
-  const integrations = [
-    { name: 'Slack', icon: MessageSquare, color: 'from-[#4A154B] to-[#611f69]' },
-    { name: 'GitHub', icon: Layers, color: 'from-[#24292e] to-[#40464d]' },
-    { name: 'Google Workspace', icon: Globe, color: 'from-[#4285F4] to-[#34A853]' },
-    { name: 'Telegram', icon: MessageSquare, color: 'from-[#0088cc] to-[#29b6f6]' },
-    { name: 'Microsoft Teams', icon: Users, color: 'from-[#464EB8] to-[#6264A7]' },
-    { name: 'Figma', icon: PieChart, color: 'from-[#F24E1E] to-[#A259FF]' },
-    { name: 'VS Code', icon: Layers, color: 'from-[#007ACC] to-[#1f9cf0]' },
-    { name: 'Jira Import', icon: ArrowRight, color: 'from-[#0052CC] to-[#2684FF]' },
-  ];
-
-  const faqs = [
-    { q: 'What is Onekof?', a: 'Onekof is a modern project management platform purpose-built for Ethiopian teams. It combines task management, Kanban boards, budget tracking in ETB, Ethiopian calendar integration, and multi-language support (Amharic, Oromo, Tigrinya, English) in one powerful workspace.' },
-    { q: 'Is there a free plan?', a: 'Yes! Onekof is free forever for small teams. You get up to 10 users, 3 projects, Kanban & list views, Ethiopian calendar, all 4 language options, and basic reports — no credit card required.' },
-    { q: 'Does Onekof support the Ethiopian calendar?', a: 'Absolutely. Onekof is the only project management tool with native Ethiopian calendar support. Plan sprints around Pagume, set deadlines in Meskerem, view holidays, and toggle between Ethiopian and Gregorian calendars seamlessly.' },
-    { q: 'What languages are supported?', a: 'The entire interface is available in English, Amharic (አማርኛ), Afaan Oromoo, and Tigrinya (ትግርኛ). Every label, button, notification, and report can be used in your preferred language.' },
-    { q: 'Can I import data from Jira or Trello?', a: 'Yes. Onekof provides one-click import tools for Jira, Trello, Asana, and CSV files. Your projects, tasks, labels, and team assignments transfer automatically.' },
-    { q: 'Is my data secure?', a: 'Security is a top priority. Onekof includes role-based access control, two-factor authentication, session management, encrypted data at rest and in transit, and full audit logs. Enterprise plans include SSO/SAML and SOC 2 compliance.' },
-  ];
-
-  return (
-    <div className="min-h-screen bg-white">
-      {/* ═══ NAVBAR ═══ */}
-      <nav className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? 'border-b border-brand-100/60 bg-white/90 backdrop-blur-2xl shadow-sm' : 'bg-transparent'}`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-10">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-purple-600 shadow-brand-sm">
-                <span className="text-sm font-black text-white tracking-tight">O</span>
-              </div>
-              <span className={`text-lg font-bold ${scrolled ? 'text-midnight-800' : 'text-white'}`}>Onekof</span>
-            </Link>
-            <div className="hidden items-center gap-1 lg:flex">
-              {navLinks.map((item) => (
-                <a key={item.label} href={item.href} className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-all ${scrolled ? 'text-midnight-400 hover:bg-brand-50 hover:text-brand-600' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}>
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative hidden sm:block">
-              <button onClick={() => setLangOpen(!langOpen)} className={`flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all ${scrolled ? 'text-midnight-400 hover:bg-brand-50' : 'text-white/60 hover:bg-white/10 hover:text-white'}`}>
-                <Globe className="h-4 w-4" /><span className="hidden md:inline">{selectedLang}</span><ChevronDown className={`h-3 w-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {langOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
-                  <div className="absolute right-0 top-full z-20 mt-1.5 w-44 rounded-xl border border-brand-100 bg-white py-1 shadow-xl shadow-brand-900/10">
-                    {Object.entries(languageMap).map(([code, name]) => (
-                      <button key={code} onClick={() => { setSelectedLang(name); setLangOpen(false); document.cookie = `NEXT_LOCALE=${code};path=/;max-age=31536000;samesite=lax`; window.location.reload(); }}
-                        className={`flex w-full items-center px-4 py-2.5 text-sm transition-colors ${selectedLang === name ? 'bg-brand-50 font-semibold text-brand-600' : 'text-midnight-600 hover:bg-surface-100'}`}>{name}</button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-            <Link href="/auth/signin" className={`hidden rounded-lg px-4 py-2 text-sm font-medium transition-all sm:inline-flex ${scrolled ? 'text-midnight-500 hover:bg-brand-50 hover:text-brand-600' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>Log in</Link>
-            <Link href="/auth/signup" className="rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-brand-sm transition-all hover:shadow-brand-md hover:brightness-110 active:scale-[0.98]">Get started free</Link>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className={`ml-1 rounded-lg p-2 lg:hidden ${scrolled ? 'text-midnight-600 hover:bg-brand-50' : 'text-white/80 hover:bg-white/10'}`} aria-label="Toggle menu">
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
 
           <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" aria-label="Toggle menu">
@@ -626,23 +471,6 @@ export default function HomePage() {
                 <Link href="/auth/signup" className="rounded-lg bg-white px-4 py-2.5 text-center text-[15px] font-medium text-midnight-950">
                   Get started
                 </Link>
-              </div>
-        {mobileOpen && (
-          <div className="border-t border-brand-100 bg-white lg:hidden">
-            <div className="mx-auto max-w-7xl space-y-1 px-5 py-4">
-              {navLinks.map((item) => (<a key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className="block rounded-lg px-4 py-3 text-sm font-medium text-midnight-600 hover:bg-brand-50">{item.label}</a>))}
-              <div className="border-t border-brand-100 pt-3">
-                <Link href="/auth/signin" className="block rounded-lg px-4 py-3 text-sm font-medium text-midnight-600 hover:bg-brand-50">Log in</Link>
-                <Link href="/auth/signup" className="mt-1 block rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-4 py-3 text-center text-sm font-semibold text-white">Get started free</Link>
-              </div>
-              <div className="border-t border-brand-100 pt-3">
-                <p className="px-4 pb-1 text-xs font-semibold uppercase tracking-wider text-midnight-300">Language</p>
-                <div className="grid grid-cols-2 gap-1">
-                  {Object.entries(languageMap).map(([code, name]) => (
-                    <button key={code} onClick={() => { setSelectedLang(name); document.cookie = `NEXT_LOCALE=${code};path=/;max-age=31536000;samesite=lax`; window.location.reload(); }}
-                      className={`rounded-lg px-3 py-2 text-sm ${selectedLang === name ? 'bg-brand-50 font-semibold text-brand-600' : 'text-midnight-500 hover:bg-surface-100'}`}>{name}</button>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -672,27 +500,6 @@ export default function HomePage() {
               <div className="relative h-2 w-2">
                 <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
                 <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
-
-      {/* ═══ HERO SECTION ═══ */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-midnight-900 via-midnight-800 to-brand-950" />
-        <div className="pointer-events-none absolute inset-0 mesh-gradient" />
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-40 top-20 h-[500px] w-[500px] rounded-full bg-brand-600/20 blur-[120px] animate-pulse-slow" />
-          <div className="absolute -right-40 top-40 h-[400px] w-[400px] rounded-full bg-purple-600/15 blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
-          <div className="absolute left-1/3 top-2/3 h-[300px] w-[300px] rounded-full bg-accent-coral/10 blur-[100px] animate-pulse-slow" style={{ animationDelay: '4s' }} />
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '64px 64px' }} />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <div className="pb-16 pt-28 text-center sm:pt-36 lg:pt-44">
-            <Reveal>
-              <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 backdrop-blur-sm">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-accent-coral to-accent-gold">
-                  <Sparkles className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-sm font-medium text-brand-200">The #1 project management tool built for Ethiopia</span>
-                <ArrowRight className="h-3.5 w-3.5 text-brand-400" />
               </div>
               <span className="text-[13px] text-white/50">The #1 project management platform built for Ethiopia</span>
               <ArrowRight className="h-3 w-3 text-white/30" />
@@ -769,47 +576,6 @@ export default function HomePage() {
                 <div className="mx-auto flex h-7 w-72 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/20">
                   <Shield className="mr-1.5 h-3 w-3" />
                   app.onekof.com/projects/sprint-14
-            <BlurReveal delay={100}>
-              <h1 className="mx-auto max-w-5xl text-4xl font-extrabold leading-[1.06] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                One powerful platform to{' '}
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-brand-400 via-purple-400 to-brand-300 bg-clip-text text-transparent transition-all duration-500">
-                    {heroWords[heroWord]}
-                  </span>
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 286 8" fill="none">
-                    <path d="M2 6C70 2 216 2 284 6" stroke="url(#ug)" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
-                    <defs><linearGradient id="ug" x1="0" y1="0" x2="286" y2="0"><stop offset="0%" stopColor="#818CF8" /><stop offset="100%" stopColor="#A78BFA" /></linearGradient></defs>
-                  </svg>
-                </span>
-              </h1>
-            </BlurReveal>
-
-            <BlurReveal delay={200}>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-midnight-200 sm:text-xl">
-                Projects, tasks, goals, budgets, docs, and dashboards — all in one workspace.
-                Built natively for Ethiopian teams with the calendar, languages, and workflows you need.
-              </p>
-            </BlurReveal>
-
-            <Reveal delay={300}>
-              <div className="mx-auto mt-10 max-w-lg">
-                <div className="flex rounded-2xl border border-white/10 bg-white/[0.06] p-1.5 backdrop-blur-sm shadow-glow">
-                  <input
-                    type="email"
-                    placeholder="Enter your work email"
-                    className="flex-1 rounded-xl border-0 bg-white px-5 py-3.5 text-sm font-medium text-midnight-800 placeholder-midnight-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  />
-                  <button className="ml-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 px-6 py-3.5 text-sm font-semibold text-white shadow-brand-md transition-all hover:shadow-brand-lg hover:brightness-110 active:scale-[0.98]">
-                    Get started free
-                  </button>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                  {['Free forever', 'No credit card', 'Setup in 2 min'].map((text) => (
-                    <span key={text} className="flex items-center gap-1.5 text-xs text-midnight-300">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-brand-400/60" />
-                      {text}
-                    </span>
-                  ))}
                 </div>
               </div>
 
@@ -923,61 +689,6 @@ export default function HomePage() {
                                   card.priority === 'high' ? 'bg-red-400' : card.priority === 'medium' ? 'bg-amber-400' : 'bg-white/20'
                                 }`} />
                               </div>
-          {/* Product Screenshot */}
-          <Reveal delay={500}>
-            <div className="relative mx-auto max-w-6xl pb-20">
-              <div className="absolute -inset-6 rounded-3xl bg-gradient-to-b from-brand-500/15 via-purple-500/10 to-transparent blur-3xl" />
-              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-midnight-800/50 shadow-2xl shadow-black/40 ring-1 ring-white/5 backdrop-blur-sm">
-                <div className="flex items-center gap-2 border-b border-white/5 bg-midnight-800/80 px-4 py-3">
-                  <div className="flex gap-1.5"><div className="h-3 w-3 rounded-full bg-[#FF5F57]" /><div className="h-3 w-3 rounded-full bg-[#FFBD2E]" /><div className="h-3 w-3 rounded-full bg-[#27CA40]" /></div>
-                  <div className="ml-3 flex-1 rounded-lg bg-midnight-700/60 px-4 py-1.5 text-xs text-midnight-300 border border-white/5"><span className="text-midnight-500">https://</span>app.onekof.com/dashboard</div>
-                </div>
-                <div className="bg-midnight-900 p-0.5">
-                  <div className="flex min-h-[420px] sm:min-h-[480px]">
-                    <div className="hidden w-52 flex-shrink-0 border-r border-white/5 bg-midnight-800/60 p-4 lg:block">
-                      <div className="mb-6 flex items-center gap-2.5">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-purple-600 shadow-brand-sm"><span className="text-xs font-black text-white">O</span></div>
-                        <div><span className="text-sm font-semibold text-white">Onekof</span><p className="text-[10px] text-brand-400">Professional</p></div>
-                      </div>
-                      <div className="space-y-0.5">
-                        {[{ name: 'Dashboard', active: true, e: '📊' },{ name: 'Projects', active: false, e: '📁' },{ name: 'Issues', active: false, e: '🎯' },{ name: 'Teams', active: false, e: '👥' },{ name: 'Goals', active: false, e: '🏆' },{ name: 'Calendar', active: false, e: '📅' },{ name: 'Budgets', active: false, e: '💰' },{ name: 'Reports', active: false, e: '📈' }].map((item) => (
-                          <div key={item.name} className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium ${item.active ? 'bg-brand-600/15 text-brand-400' : 'text-midnight-300 hover:bg-white/5'}`}><span className="text-sm">{item.e}</span>{item.name}</div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex-1 p-4 sm:p-5">
-                      <div className="mb-5 flex items-center justify-between">
-                        <div><h3 className="text-base font-semibold text-white">Sprint Dashboard</h3><p className="mt-0.5 text-xs text-midnight-300">መጋቢት 2017 E.C. &middot; Sprint 12</p></div>
-                        <div className="flex items-center gap-2">
-                          <div className="hidden items-center gap-1 rounded-lg bg-white/5 px-2 py-1 sm:flex">
-                            {['Board', 'List', 'Timeline'].map((v, i) => (<button key={v} className={`rounded-md px-2.5 py-1 text-[10px] font-medium ${i === 0 ? 'bg-brand-600 text-white' : 'text-midnight-400'}`}>{v}</button>))}
-                          </div>
-                          <button className="rounded-lg bg-gradient-to-r from-brand-600 to-purple-600 px-3 py-1.5 text-xs font-semibold text-white shadow-brand-sm">+ New Issue</button>
-                        </div>
-                      </div>
-                      <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                        {[{ label: 'Total Tasks', value: '47', change: '+5', color: 'text-white', bg: 'bg-white/5' },{ label: 'Completed', value: '24', change: '51%', color: 'text-emerald-400', bg: 'bg-emerald-500/5' },{ label: 'In Progress', value: '11', change: '', color: 'text-brand-400', bg: 'bg-brand-500/5' },{ label: 'Due Today', value: '3', change: '', color: 'text-amber-400', bg: 'bg-amber-500/5' }].map((stat) => (
-                          <div key={stat.label} className={`rounded-xl ${stat.bg} border border-white/5 p-3`}>
-                            <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
-                            <div className="mt-0.5 flex items-center gap-1.5"><span className="text-[10px] text-midnight-400">{stat.label}</span>{stat.change && <span className="text-[10px] font-medium text-emerald-400">{stat.change}</span>}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                        {[{ title: 'Backlog', color: 'bg-midnight-400', count: 6, tasks: [{ name: 'Payment gateway integration', tag: 'Backend', tagBg: 'bg-purple-500/15 text-purple-400' },{ name: 'የተጠቃሚ ፕሮፋይል ገጽ', tag: 'Frontend', tagBg: 'bg-brand-500/15 text-brand-400' }] },
-                          { title: 'To Do', color: 'bg-amber-500', count: 4, tasks: [{ name: 'Multi-language support', tag: 'i18n', tagBg: 'bg-cyan-500/15 text-cyan-400' }] },
-                          { title: 'In Progress', color: 'bg-brand-500', count: 3, tasks: [{ name: 'Calendar component', tag: '67%', tagBg: 'bg-brand-500/15 text-brand-400' }] },
-                          { title: 'Done', color: 'bg-emerald-500', count: 8, tasks: [{ name: 'Database schema', tag: 'Complete', tagBg: 'bg-emerald-500/15 text-emerald-400' }] }
-                        ].map((col) => (
-                          <div key={col.title} className="rounded-xl bg-white/[0.03] border border-white/5 p-2.5">
-                            <div className="mb-2 flex items-center gap-2"><div className={`h-2 w-2 rounded-full ${col.color}`} /><span className="text-[11px] font-semibold text-midnight-100">{col.title}</span><span className="ml-auto rounded-full bg-white/5 px-1.5 py-0.5 text-[9px] text-midnight-400">{col.count}</span></div>
-                            <div className="space-y-1.5">
-                              {col.tasks.map((task) => (
-                                <div key={task.name} className="rounded-lg border border-white/5 bg-midnight-800/60 p-2.5 hover:bg-midnight-700/60">
-                                  <span className="mb-1.5 block text-[11px] font-medium leading-snug text-midnight-100">{task.name}</span>
-                                  <span className={`inline-block rounded-md px-1.5 py-0.5 text-[9px] font-medium ${task.tagBg}`}>{task.tag}</span>
-                                </div>
-                              ))}
                             </div>
                           ))}
                         </div>
@@ -985,15 +696,6 @@ export default function HomePage() {
                     ))}
                   </div>
                 </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -left-4 bottom-32 hidden animate-float rounded-xl border border-brand-200/30 bg-white p-3 shadow-brand-md lg:block">
-                <div className="flex items-center gap-2"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100"><Check className="h-4 w-4 text-emerald-600" /></div><div><p className="text-xs font-semibold text-midnight-800">Task completed</p><p className="text-[10px] text-midnight-400">Payment integration done</p></div></div>
-              </div>
-              <div className="absolute -right-4 top-40 hidden animate-float-delayed rounded-xl border border-brand-200/30 bg-white p-3 shadow-brand-md lg:block">
-                <div className="flex items-center gap-2"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50"><Users className="h-4 w-4 text-brand-600" /></div><div><p className="text-xs font-semibold text-midnight-800">3 members online</p><p className="text-[10px] text-midnight-400">Collaborating in real-time</p></div></div>
               </div>
             </div>
           </div>
@@ -1012,47 +714,6 @@ export default function HomePage() {
               <span key={name} className="text-[14px] font-medium tracking-wide text-white/[0.1] transition-colors hover:text-white/[0.2]">
                 {name}
               </span>
-      {/* ═══ MARQUEE LOGO STRIP ═══ */}
-      <section className="border-b border-surface-200 bg-surface-50 py-14 overflow-hidden">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.2em] text-midnight-300">Trusted by teams across Ethiopia</p>
-        </div>
-        <div className="marquee-fade-left">
-          <div className="flex animate-marquee gap-12 sm:gap-16">
-            {[...Array(2)].map((_, dupeIdx) => (
-              <div key={dupeIdx} className="flex shrink-0 gap-12 sm:gap-16">
-                {[{ name: 'Ethio Telecom', abbr: 'ET' },{ name: 'Commercial Bank of Ethiopia', abbr: 'CBE' },{ name: 'Ethiopian Airlines', abbr: 'EA' },{ name: 'Safaricom Ethiopia', abbr: 'SE' },{ name: 'Awash Bank', abbr: 'AB' },{ name: 'BGI Ethiopia', abbr: 'BGI' }].map((co) => (
-                  <div key={`${dupeIdx}-${co.abbr}`} className="flex shrink-0 items-center gap-3 text-midnight-200">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-200/80 border border-surface-300/50">
-                      <span className="text-sm font-bold text-midnight-300">{co.abbr}</span>
-                    </div>
-                    <span className="text-sm font-medium text-midnight-300 whitespace-nowrap">{co.name}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Review Badges */}
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 mt-10">
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            {[
-              { label: 'G2 Leader', rating: '4.8/5', reviews: '200+ reviews' },
-              { label: 'Product Hunt', rating: '#1 Product', reviews: 'of the Day' },
-              { label: 'Capterra', rating: '4.9/5', reviews: '150+ reviews' },
-            ].map((badge) => (
-              <div key={badge.label} className="flex items-center gap-3 rounded-xl border border-surface-300 bg-white px-4 py-2.5 shadow-sm">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
-                  <Star className="h-4 w-4 fill-brand-500 text-brand-500" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-midnight-800">{badge.label}</span>
-                    <span className="text-xs font-semibold text-brand-600">{badge.rating}</span>
-                  </div>
-                  <span className="text-[10px] text-midnight-300">{badge.reviews}</span>
-                </div>
-              </div>
             ))}
           </div>
         </div>
@@ -1146,6 +807,7 @@ export default function HomePage() {
               </p>
             </div>
           </Reveal>
+
           <Reveal delay={100}>
             <div className="mx-auto max-w-5xl">
               {/* Tab buttons */}
@@ -1355,29 +1017,6 @@ export default function HomePage() {
                       <p className="text-[12px] text-white/25">{t.role}</p>
                     </div>
                   </div>
-                </div>
-              </Reveal>
-            ))}
-          </GlowGrid>
-        </div>
-      </section>
-
-      {/* ═══ INTEGRATIONS ═══ */}
-      <section className="border-y border-surface-200 bg-surface-50 py-24 sm:py-28">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <Reveal>
-            <div className="mx-auto mb-12 max-w-2xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1.5 border border-brand-100"><Zap className="h-3.5 w-3.5 text-brand-500" /><span className="text-xs font-semibold uppercase tracking-wider text-brand-600">Integrations</span></div>
-              <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-midnight-800 sm:text-4xl">Connects to tools you already use</h2>
-              <p className="text-lg text-midnight-400">Bring your favorite apps into one unified workspace. Import, sync, and automate across your entire toolchain.</p>
-            </div>
-          </Reveal>
-          <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
-            {integrations.map((int, i) => (
-              <Reveal key={int.name} delay={i * 50}>
-                <div className="group flex flex-col items-center gap-3 rounded-2xl bg-white p-6 text-center shadow-sm hover:shadow-brand-md">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${int.color} shadow-sm`}><int.icon className="h-5 w-5 text-white" /></div>
-                  <span className="text-sm font-semibold text-midnight-700">{int.name}</span>
                 </div>
               </Reveal>
             ))}
