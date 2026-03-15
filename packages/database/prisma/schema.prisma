@@ -141,11 +141,6 @@ model User {
   resetTokenHash   String? @map("reset_token_hash") // 🔒 SECURITY: Hashed reset token
   resetTokenExpiry DateTime? @map("reset_token_expiry")
 
-  // 🔒 SECURITY: Two-Factor Authentication (TOTP)
-  twoFactorEnabled  Boolean  @default(false) @map("two_factor_enabled")
-  twoFactorSecret   String?  @map("two_factor_secret") // Encrypted TOTP secret
-  twoFactorBackupCodes String[] @default([]) @map("two_factor_backup_codes") // Hashed backup codes
-
   // 🔒 SECURITY: Account protection
   failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
   lastFailedLoginAt   DateTime? @map("last_failed_login_at")
