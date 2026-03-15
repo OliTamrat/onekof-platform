@@ -58,8 +58,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get the user's default organization or first organization
-    const orgMembership = user.organizations[0];
+    // Get the user's organization by subdomain slug or fall back to first
+    const orgSlug = request.headers.get('x-organization-slug');
+    const orgMembership = (orgSlug
+      ? user.organizations.find(o => o.organization.slug === orgSlug)
+      : null) || user.organizations[0];
     const organizationId = orgMembership.organizationId;
 
     // Calculate date ranges
