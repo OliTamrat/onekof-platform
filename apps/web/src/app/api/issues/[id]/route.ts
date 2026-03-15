@@ -6,6 +6,7 @@ import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
 import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
+import { logTaskActivity } from '@/lib/activity-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -204,10 +205,10 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Get the current issue to check project access and assignee
+    // Get the current issue to check project access and track changes
     const currentIssue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { assigneeId: true, projectId: true },
+      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true },
     });
 
     if (!currentIssue) {
@@ -363,6 +364,49 @@ export async function PATCH(
       handleTaskStatusChange(params.id, issue.projectId).catch(err => {
         console.error('Progress aggregation error:', err);
       });
+    }
+
+    // Log activity for significant changes (non-blocking)
+    const projectWithOrg2 = await prisma.project.findUnique({
+      where: { id: issue.projectId },
+      select: { organization: { select: { id: true } } },
+    });
+
+    if (projectWithOrg2?.organization) {
+      const orgId = projectWithOrg2.organization.id;
+
+      if (status !== undefined && status !== currentIssue.status) {
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: issue.project?.key ? `${issue.project.key}-${currentIssue.title}` : currentIssue.title || '',
+          action: 'UPDATED',
+          metadata: { field: 'status', from: currentIssue.status, to: status },
+        }).catch(() => {});
+      }
+
+      if (priority !== undefined && priority !== currentIssue.priority) {
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: currentIssue.title || '',
+          action: 'UPDATED',
+          metadata: { field: 'priority', from: currentIssue.priority, to: priority },
+        }).catch(() => {});
+      }
+
+      if (assigneeId !== undefined && assigneeId !== currentIssue.assigneeId) {
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: currentIssue.title || '',
+          action: 'ASSIGNED',
+          metadata: { assigneeId },
+        }).catch(() => {});
+      }
     }
 
     return NextResponse.json({
