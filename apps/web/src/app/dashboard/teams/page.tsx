@@ -93,7 +93,7 @@ export default function TeamsPage() {
     name: '',
     description: '',
     icon: 'Users',
-    color: '#0065FF',
+    color: '#1C8C7D',
     teamType: 'GENERAL' as 'GENERAL' | 'DEVELOPMENT' | 'DESIGN' | 'MARKETING' | 'SALES' | 'SUPPORT' | 'HR' | 'OPERATIONS',
     defaultRole: 'MEMBER' as 'LEAD' | 'ADMIN' | 'MEMBER',
     isPrivate: false,
@@ -218,7 +218,7 @@ export default function TeamsPage() {
       name: '',
       description: '',
       icon: 'Users',
-      color: '#0065FF',
+      color: '#1C8C7D',
       teamType: 'GENERAL',
       defaultRole: 'MEMBER',
       isPrivate: false,
@@ -277,8 +277,8 @@ export default function TeamsPage() {
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0065FF] border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">Loading teams...</p>
+                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+                <p className="text-sm text-gray-600 dark:text-slate-400">Loading teams...</p>
               </div>
             </div>
           ) : (
@@ -286,7 +286,7 @@ export default function TeamsPage() {
               {/* Favorite Teams */}
               {favoriteTeams.length > 0 && (
                 <div>
-                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     STARRED TEAMS
                   </h2>
@@ -310,7 +310,7 @@ export default function TeamsPage() {
 
               {/* All Teams */}
               <div>
-                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
                   {favoriteTeams.length > 0 ? 'ALL TEAMS' : `YOUR TEAMS (${filteredTeams.length})`}
                 </h2>
                 {otherTeams.length > 0 ? (
@@ -330,17 +330,17 @@ export default function TeamsPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-[#2C333A]">
-                    <Users className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700">
+                    <Users className="h-12 w-12 text-gray-300 dark:text-slate-700" />
                     <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                       No teams found
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+                    <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                       Create your first team to get started
                     </p>
                     <button
                       onClick={() => setIsCreateDialogOpen(true)}
-                      className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                      className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       Create Team
@@ -371,14 +371,14 @@ export default function TeamsPage() {
                   resetForm();
                 }}
                 disabled={createTeamMutation.isPending}
-                className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2C333A]"
+                className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-700"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleCreateTeam}
                 disabled={!formData.name || createTeamMutation.isPending}
-                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                className="bg-primary-500 hover:bg-primary-600 text-white"
               >
                 {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
               </Button>
@@ -388,7 +388,7 @@ export default function TeamsPage() {
           <SlideoutPanelContent>
             <form onSubmit={(e) => { e.preventDefault(); handleCreateTeam(); }} className="space-y-6">
               {/* Basic Information Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -401,9 +401,9 @@ export default function TeamsPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">A clear, descriptive name for your team</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">A clear, descriptive name for your team</p>
                   </div>
 
                   <div className="space-y-2">
@@ -412,7 +412,7 @@ export default function TeamsPage() {
                       id="team-type"
                       value={formData.teamType}
                       onChange={(e) => setFormData({ ...formData, teamType: e.target.value as typeof formData.teamType })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="GENERAL">General Team</option>
                       <option value="DEVELOPMENT">Development</option>
@@ -423,7 +423,7 @@ export default function TeamsPage() {
                       <option value="HR">Human Resources</option>
                       <option value="OPERATIONS">Operations</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Helps organize teams by their primary function</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Helps organize teams by their primary function</p>
                   </div>
 
                   <div className="space-y-2">
@@ -434,15 +434,15 @@ export default function TeamsPage() {
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={4}
-                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF]"
+                      className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Help members understand the team's mission</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Help members understand the team's mission</p>
                   </div>
                 </div>
               </div>
 
               {/* Appearance Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Appearance</h3>
                 <div className="space-y-4">
                   <IconPicker
@@ -459,23 +459,23 @@ export default function TeamsPage() {
                         type="color"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A]"
+                        className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700"
                       />
                       <Input
                         type="text"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        placeholder="#0065FF"
-                        className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white focus:border-[#0065FF]"
+                        placeholder="#1C8C7D"
+                        className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white focus:border-primary-500"
                       />
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Choose a color to identify this team</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Choose a color to identify this team</p>
                   </div>
                 </div>
               </div>
 
               {/* Team Settings Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Team Settings</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -484,28 +484,28 @@ export default function TeamsPage() {
                       id="default-role"
                       value={formData.defaultRole}
                       onChange={(e) => setFormData({ ...formData, defaultRole: e.target.value as typeof formData.defaultRole })}
-                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                      className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                     >
                       <option value="LEAD">Lead - Full control over team</option>
                       <option value="ADMIN">Admin - Can manage members and settings</option>
                       <option value="MEMBER">Member - Standard access</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">Role automatically assigned to new team members</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400">Role automatically assigned to new team members</p>
                   </div>
 
-                  <div className="flex items-center gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4">
+                  <div className="flex items-center gap-3 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] p-4">
                     <input
                       type="checkbox"
                       id="is-private"
                       checked={formData.isPrivate}
                       onChange={(e) => setFormData({ ...formData, isPrivate: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] text-[#0065FF] focus:ring-[#0065FF] focus:ring-offset-0"
+                      className="h-4 w-4 rounded border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-primary-500 focus:ring-primary-500 focus:ring-offset-0"
                     />
                     <div className="flex-1">
                       <Label htmlFor="is-private" className="text-gray-900 dark:text-white font-medium cursor-pointer">
                         Private Team
                       </Label>
-                      <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                      <p className="text-xs text-gray-600 dark:text-slate-400 mt-1">
                         Only invited members can see and access this team
                       </p>
                     </div>
@@ -566,7 +566,7 @@ export default function TeamsPage() {
                     </h3>
                     <Button
                       size="sm"
-                      className="gap-2 bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                      className="gap-2 bg-primary-500 hover:bg-primary-600 text-white"
                       onClick={() => setIsAddMemberDialogOpen(true)}
                     >
                       <UserPlus className="h-4 w-4" />
@@ -574,23 +574,23 @@ export default function TeamsPage() {
                     </Button>
                   </div>
 
-                  <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23]">
+                  <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23]">
                     {membersData?.members && membersData.members.length > 0 ? (
-                      <div className="divide-y divide-gray-200 dark:divide-[#2C333A]">
+                      <div className="divide-y divide-gray-200 dark:divide-slate-700">
                         {membersData.members.map((member: TeamMember) => (
                           <div
                             key={member.id}
                             className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-sm font-semibold text-white">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
                                 {member.name.charAt(0).toUpperCase()}
                               </div>
                               <div>
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                                   {member.name}
                                 </p>
-                                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                                <p className="text-xs text-gray-600 dark:text-slate-400">
                                   {member.email}
                                 </p>
                               </div>
@@ -604,7 +604,7 @@ export default function TeamsPage() {
                                 </div>
                               )}
                               {member.role === 'MEMBER' && (
-                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-[#2C333A] px-2 py-1 text-xs font-medium text-gray-700 dark:text-[#9FADBC]">
+                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-slate-700 px-2 py-1 text-xs font-medium text-gray-700 dark:text-slate-400">
                                   <Users className="h-3 w-3" />
                                   Member
                                 </div>
@@ -625,7 +625,7 @@ export default function TeamsPage() {
                                     });
                                   }
                                 }}
-                                className="text-red-500 hover:text-red-600 hover:bg-gray-100 dark:hover:bg-[#2C333A]"
+                                className="text-red-500 hover:text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
                               >
                                 Remove
                               </Button>
@@ -634,7 +634,7 @@ export default function TeamsPage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="p-8 text-center text-sm text-gray-600 dark:text-[#9FADBC]">
+                      <div className="p-8 text-center text-sm text-gray-600 dark:text-slate-400">
                         No members yet. Add your first team member!
                       </div>
                     )}
@@ -648,10 +648,10 @@ export default function TeamsPage() {
         {/* Add Member Dialog */}
         {selectedTeam && (
           <Dialog open={isAddMemberDialogOpen} onOpenChange={setIsAddMemberDialogOpen}>
-            <DialogContent className="bg-white dark:bg-[#22272B] border-gray-200 dark:border-[#2C333A]">
+            <DialogContent className="bg-white dark:bg-[#22272B] border-gray-200 dark:border-slate-700">
               <DialogHeader>
                 <DialogTitle className="text-gray-900 dark:text-white">Add Member to {selectedTeam.name}</DialogTitle>
-                <DialogDescription className="text-gray-600 dark:text-[#9FADBC]">
+                <DialogDescription className="text-gray-600 dark:text-slate-400">
                   Enter the email address of the user you want to add to this team.
                 </DialogDescription>
               </DialogHeader>
@@ -664,7 +664,7 @@ export default function TeamsPage() {
                   placeholder="user@example.com"
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  className="mt-2 bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                  className="mt-2 bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white"
                 />
                 {addMemberMutation.isError && (
                   <p className="mt-2 text-sm text-red-500">
@@ -680,7 +680,7 @@ export default function TeamsPage() {
                     setIsAddMemberDialogOpen(false);
                     setNewMemberEmail('');
                   }}
-                  className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2C333A]"
+                  className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-700"
                 >
                   Cancel
                 </Button>
@@ -694,7 +694,7 @@ export default function TeamsPage() {
                     }
                   }}
                   disabled={!newMemberEmail.trim() || addMemberMutation.isPending}
-                  className="bg-[#0065FF] hover:bg-[#0052CC]"
+                  className="bg-primary-500 hover:bg-primary-600"
                 >
                   {addMemberMutation.isPending ? 'Adding...' : 'Add Member'}
                 </Button>
@@ -705,7 +705,7 @@ export default function TeamsPage() {
 
         {/* Success Modal */}
         <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
-          <DialogContent className="sm:max-w-md bg-white dark:bg-[#22272B] border-gray-200 dark:border-[#2C333A]">
+          <DialogContent className="sm:max-w-md bg-white dark:bg-[#22272B] border-gray-200 dark:border-slate-700">
             <div className="flex flex-col items-center gap-4 py-6">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20">
                 <CheckCircle2 className="h-8 w-8 text-green-500" />
@@ -715,7 +715,7 @@ export default function TeamsPage() {
                 {invitationData?.invited ? 'Invitation Sent!' : 'Member Added!'}
               </DialogTitle>
 
-              <DialogDescription className="text-center text-gray-600 dark:text-[#9FADBC]">
+              <DialogDescription className="text-center text-gray-600 dark:text-slate-400">
                 {invitationData?.invited ? (
                   <>
                     <p className="mb-4">
@@ -735,12 +735,12 @@ export default function TeamsPage() {
 
                     {invitationData.token && (
                       <div className="mt-4">
-                        <Label className="text-xs text-gray-600 dark:text-[#9FADBC]">Invitation Link</Label>
+                        <Label className="text-xs text-gray-600 dark:text-slate-400">Invitation Link</Label>
                         <div className="mt-2 flex items-center gap-2">
                           <Input
                             readOnly
                             value={`${window.location.origin}/invite/${invitationData.token}`}
-                            className="text-xs bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                            className="text-xs bg-gray-50 dark:bg-[#1B1F23] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white"
                           />
                           <Button
                             size="sm"
@@ -748,12 +748,12 @@ export default function TeamsPage() {
                             onClick={() => {
                               navigator.clipboard.writeText(`${window.location.origin}/invite/${invitationData.token}`);
                             }}
-                            className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-[#2C333A] hover:bg-gray-300 dark:hover:bg-[#2C333A]"
+                            className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-slate-700 hover:bg-gray-300 dark:hover:bg-slate-700"
                           >
                             <Copy className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="mt-2 text-xs text-gray-600 dark:text-[#9FADBC]">
+                        <p className="mt-2 text-xs text-gray-600 dark:text-slate-400">
                           You can also share this link directly with the user.
                         </p>
                       </div>
@@ -768,7 +768,7 @@ export default function TeamsPage() {
 
               <Button
                 onClick={() => setIsSuccessModalOpen(false)}
-                className="mt-4 w-full bg-[#0065FF] hover:bg-[#0052CC]"
+                className="mt-4 w-full bg-primary-500 hover:bg-primary-600"
               >
                 Done
               </Button>
@@ -790,7 +790,7 @@ interface TeamCardProps {
 
 function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#0065FF]">
+    <div className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500">
       <div className="mb-4 flex items-start justify-between">
         <div
           className="flex h-12 w-12 items-center justify-center rounded-lg"
@@ -802,29 +802,29 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onToggleFavorite(team.id, team.isFavorite)}
-            className="rounded p-1 hover:bg-gray-200 dark:hover:bg-[#2C333A]"
+            className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700"
           >
             <Star
               className={`h-4 w-4 ${
                 team.isFavorite
                   ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-400 dark:text-[#9FADBC]'
+                  : 'text-gray-400 dark:text-slate-400'
               }`}
             />
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded p-1 hover:bg-gray-200 dark:hover:bg-[#2C333A]">
-                <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-[#9FADBC]" />
+              <button className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700">
+                <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-slate-400" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-[#2C333A]">
-              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]">
+            <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
+              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700">
                 <Settings className="mr-2 h-4 w-4" />
                 Manage Team
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#2C333A]">
+              <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700">
                 <UserPlus className="mr-2 h-4 w-4" />
                 Add Members
               </DropdownMenuItem>
@@ -842,17 +842,17 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
       </div>
 
       <div className="mb-4 cursor-pointer" onClick={() => onManage(team)}>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
           {team.name}
         </h3>
         {team.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-[#9FADBC]">
+          <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-slate-400">
             {team.description}
           </p>
         )}
       </div>
 
-      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-[#9FADBC]">
+      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-slate-400">
         <div className="flex items-center gap-1.5">
           <Users className="h-4 w-4" />
           <span>{team.memberCount} members</span>

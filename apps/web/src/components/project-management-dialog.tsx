@@ -72,7 +72,7 @@ export function ProjectManagementDialog({
     key: '',
     description: '',
     icon: 'FileText',
-    color: '#0065FF',
+    color: '#1C8C7D',
     leadId: '',
     defaultAssignee: 'UNASSIGNED',
   });
@@ -85,7 +85,7 @@ export function ProjectManagementDialog({
         key: project.key || '',
         description: project.description || '',
         icon: project.icon || 'FileText',
-        color: project.color || '#0065FF',
+        color: project.color || '#1C8C7D',
         leadId: project.leadId || '',
         defaultAssignee: project.defaultAssignee || 'UNASSIGNED',
       });
@@ -257,31 +257,31 @@ export function ProjectManagementDialog({
     >
       <SlideoutPanelContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-[#1B1F23] border border-gray-200 dark:border-[#2C333A]">
+          <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-[#1B1F23] border border-gray-200 dark:border-slate-700">
             <TabsTrigger
               value="details"
-              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+              className="data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-600 dark:text-slate-400"
             >
               <Info className="mr-2 h-4 w-4" />
               Details
             </TabsTrigger>
             <TabsTrigger
               value="members"
-              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+              className="data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-600 dark:text-slate-400"
             >
               <Users className="mr-2 h-4 w-4" />
               Members ({members.length})
             </TabsTrigger>
             <TabsTrigger
               value="teams"
-              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+              className="data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-600 dark:text-slate-400"
             >
               <UsersRound className="mr-2 h-4 w-4" />
               Teams ({teams.length})
             </TabsTrigger>
             <TabsTrigger
               value="settings"
-              className="data-[state=active]:bg-[#0065FF] data-[state=active]:text-white text-gray-600 dark:text-[#9FADBC]"
+              className="data-[state=active]:bg-primary-500 data-[state=active]:text-white text-gray-600 dark:text-slate-400"
             >
               <Settings2 className="mr-2 h-4 w-4" />
               Settings
@@ -291,7 +291,7 @@ export function ProjectManagementDialog({
           {/* Details Tab */}
           <TabsContent value="details" className="space-y-6 mt-4">
             {/* Basic Information */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
               <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -302,7 +302,7 @@ export function ProjectManagementDialog({
                     id="project-name"
                     value={projectForm.name}
                     onChange={(e) => setProjectForm({ ...projectForm, name: e.target.value })}
-                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white"
                   />
                 </div>
 
@@ -316,9 +316,9 @@ export function ProjectManagementDialog({
                     onChange={(e) => setProjectForm({ ...projectForm, key: e.target.value.toUpperCase() })}
                     placeholder="PROJ"
                     maxLength={10}
-                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white"
                   />
-                  <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <p className="text-xs text-gray-600 dark:text-slate-400">
                     A short identifier for your project (used in issue keys)
                   </p>
                 </div>
@@ -331,14 +331,14 @@ export function ProjectManagementDialog({
                     onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
                     rows={4}
                     placeholder="Describe your project's purpose and goals..."
-                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC]"
+                    className="bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"
                   />
                 </div>
               </div>
             </div>
 
             {/* Appearance */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
               <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Appearance</h3>
               <div className="space-y-4">
                 <IconPicker
@@ -355,17 +355,17 @@ export function ProjectManagementDialog({
                       type="color"
                       value={projectForm.color}
                       onChange={(e) => setProjectForm({ ...projectForm, color: e.target.value })}
-                      className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A]"
+                      className="w-16 h-10 p-1 cursor-pointer bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700"
                     />
                     <Input
                       type="text"
                       value={projectForm.color}
                       onChange={(e) => setProjectForm({ ...projectForm, color: e.target.value })}
-                      placeholder="#0065FF"
-                      className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-[#2C333A] text-gray-900 dark:text-white"
+                      placeholder="#1C8C7D"
+                      className="flex-1 bg-gray-50 dark:bg-[#22272B] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white"
                     />
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                  <p className="text-xs text-gray-600 dark:text-slate-400">
                     Choose a color to identify this project
                   </p>
                 </div>
@@ -377,7 +377,7 @@ export function ProjectManagementDialog({
               <Button
                 onClick={() => updateProjectMutation.mutate(projectForm)}
                 disabled={updateProjectMutation.isPending || !projectForm.name || !projectForm.key}
-                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                className="bg-primary-500 hover:bg-primary-600 text-white"
               >
                 {updateProjectMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
@@ -394,13 +394,13 @@ export function ProjectManagementDialog({
 
           <TabsContent value="members" className="space-y-4 mt-4">
             {/* Add Member Section */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-4">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4">
               <Label className="mb-2 block text-gray-900 dark:text-white">Add Member</Label>
               <div className="flex gap-2">
                 <select
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="">Select a member...</option>
                   {availableMembers.map((member: any) => (
@@ -416,7 +416,7 @@ export function ProjectManagementDialog({
                     }
                   }}
                   disabled={!newMemberEmail || addMemberMutation.isPending}
-                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Add
@@ -435,17 +435,17 @@ export function ProjectManagementDialog({
                 members.map((member: any) => (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0065FF] text-white font-medium">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-white font-medium">
                         {member.name?.[0]?.toUpperCase() || member.email[0]?.toUpperCase()}
                       </div>
                       <div>
                         <p className="font-medium text-gray-900 dark:text-white">
                           {member.name || member.email}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                        <p className="text-sm text-gray-600 dark:text-slate-400">
                           {member.email}
                         </p>
                       </div>
@@ -455,14 +455,14 @@ export function ProjectManagementDialog({
                       size="icon"
                       onClick={() => removeMemberMutation.mutate(member.userId)}
                       disabled={removeMemberMutation.isPending}
-                      className="hover:bg-gray-200 dark:hover:bg-[#2C333A]"
+                      className="hover:bg-gray-200 dark:hover:bg-slate-700"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 ))
               ) : (
-                <p className="text-center text-sm text-gray-600 dark:text-[#9FADBC] py-8">
+                <p className="text-center text-sm text-gray-600 dark:text-slate-400 py-8">
                   No members assigned to this project yet
                 </p>
               )}
@@ -471,13 +471,13 @@ export function ProjectManagementDialog({
 
           <TabsContent value="teams" className="space-y-4 mt-4">
             {/* Add Team Section */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-4">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4">
               <Label className="mb-2 block text-gray-900 dark:text-white">Assign Team</Label>
               <div className="flex gap-2">
                 <select
                   value={selectedTeamId}
                   onChange={(e) => setSelectedTeamId(e.target.value)}
-                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 flex-1 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="">Select a team...</option>
                   {availableTeams.map((team: any) => (
@@ -493,7 +493,7 @@ export function ProjectManagementDialog({
                     }
                   }}
                   disabled={!selectedTeamId || addTeamMutation.isPending}
-                  className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Assign
@@ -512,12 +512,12 @@ export function ProjectManagementDialog({
                 teams.map((team: any) => (
                   <div
                     key={team.id}
-                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                    className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] p-3 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="flex h-10 w-10 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: team.color || '#0065FF' }}
+                        style={{ backgroundColor: team.color || '#1C8C7D' }}
                       >
                         <IconRenderer iconName={team.icon} className="h-5 w-5 text-white" fallback="👥" />
                       </div>
@@ -525,7 +525,7 @@ export function ProjectManagementDialog({
                         <p className="font-medium text-gray-900 dark:text-white">
                           {team.name}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                        <p className="text-sm text-gray-600 dark:text-slate-400">
                           {team.memberCount} members
                         </p>
                       </div>
@@ -535,14 +535,14 @@ export function ProjectManagementDialog({
                       size="icon"
                       onClick={() => removeTeamMutation.mutate(team.id)}
                       disabled={removeTeamMutation.isPending}
-                      className="hover:bg-gray-200 dark:hover:bg-[#2C333A]"
+                      className="hover:bg-gray-200 dark:hover:bg-slate-700"
                     >
                       <X className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 ))
               ) : (
-                <p className="text-center text-sm text-gray-600 dark:text-[#9FADBC] py-8">
+                <p className="text-center text-sm text-gray-600 dark:text-slate-400 py-8">
                   No teams assigned to this project yet
                 </p>
               )}
@@ -552,7 +552,7 @@ export function ProjectManagementDialog({
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6 mt-4">
             {/* Project Lead */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
               <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Project Lead</h3>
               <div className="space-y-2">
                 <Label htmlFor="project-lead" className="text-gray-900 dark:text-white">Assign Project Lead</Label>
@@ -560,7 +560,7 @@ export function ProjectManagementDialog({
                   id="project-lead"
                   value={projectForm.leadId}
                   onChange={(e) => setProjectForm({ ...projectForm, leadId: e.target.value })}
-                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="">No lead assigned</option>
                   {members.map((member: any) => (
@@ -569,14 +569,14 @@ export function ProjectManagementDialog({
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                <p className="text-xs text-gray-600 dark:text-slate-400">
                   The project lead has full permissions to manage the project
                 </p>
               </div>
             </div>
 
             {/* Default Assignee */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
               <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Default Assignee</h3>
               <div className="space-y-2">
                 <Label htmlFor="default-assignee" className="text-gray-900 dark:text-white">Default Assignee for New Issues</Label>
@@ -584,41 +584,41 @@ export function ProjectManagementDialog({
                   id="default-assignee"
                   value={projectForm.defaultAssignee}
                   onChange={(e) => setProjectForm({ ...projectForm, defaultAssignee: e.target.value })}
-                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none"
+                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                 >
                   <option value="UNASSIGNED">Unassigned</option>
                   <option value="PROJECT_LEAD">Project Lead</option>
                   <option value="COMPONENT_LEAD">Component Lead</option>
                 </select>
-                <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                <p className="text-xs text-gray-600 dark:text-slate-400">
                   Who should new issues be assigned to by default?
                 </p>
               </div>
             </div>
 
             {/* Access Settings */}
-            <div className="rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
               <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Access & Visibility</h3>
               <div className="space-y-4">
-                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4">
+                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20 flex-shrink-0">
                     <Globe className="h-5 w-5 text-blue-500" />
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">Public Project</h4>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                    <p className="text-xs text-gray-600 dark:text-slate-400 mt-1">
                       All organization members can view and access this project
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-[#2C333A] bg-gray-50 dark:bg-[#22272B] p-4 opacity-50">
+                <div className="flex items-start gap-3 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] p-4 opacity-50">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500/20 flex-shrink-0">
                     <Lock className="h-5 w-5 text-gray-500" />
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">Private Project</h4>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC] mt-1">
+                    <p className="text-xs text-gray-600 dark:text-slate-400 mt-1">
                       Only assigned members and teams can access (Premium feature)
                     </p>
                   </div>
@@ -631,7 +631,7 @@ export function ProjectManagementDialog({
               <Button
                 onClick={() => updateProjectMutation.mutate(projectForm)}
                 disabled={updateProjectMutation.isPending}
-                className="bg-[#0065FF] hover:bg-[#0052CC] text-white"
+                className="bg-primary-500 hover:bg-primary-600 text-white"
               >
                 {updateProjectMutation.isPending ? 'Saving...' : 'Save Settings'}
               </Button>

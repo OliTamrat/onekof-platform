@@ -139,10 +139,10 @@ export default function ProjectsFormsPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <FileText className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
@@ -161,8 +161,8 @@ export default function ProjectsFormsPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -180,7 +180,7 @@ export default function ProjectsFormsPage() {
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                 Choose a template
               </h2>
-              <p className="text-gray-600 dark:text-[#9FADBC]">
+              <p className="text-gray-600 dark:text-slate-400">
                 Select a template to quickly create standardized project items
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function ProjectsFormsPage() {
                   <div
                     key={template.id}
                     onClick={() => setSelectedTemplate(template)}
-                    className={`p-6 bg-white dark:bg-[#22272B] rounded-lg border-2 ${colors.border} hover:border-[#0065FF] cursor-pointer transition-all group`}
+                    className={`p-6 bg-white dark:bg-[#22272B] rounded-lg border-2 ${colors.border} hover:border-primary-500 cursor-pointer transition-all group`}
                   >
                     <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                       <Icon className={`h-6 w-6 ${colors.text}`} />
@@ -201,7 +201,7 @@ export default function ProjectsFormsPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {template.name}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-4">
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
                       {template.description}
                     </p>
                     <div className="text-xs text-gray-500 dark:text-[#6B7684]">
@@ -219,7 +219,7 @@ export default function ProjectsFormsPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-2xl max-h-[90vh] bg-white dark:bg-[#22272B] rounded-lg shadow-xl flex flex-col">
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#2C333A]">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 ${getColorClasses(selectedTemplate.color).bg} rounded-lg flex items-center justify-center`}>
                     <selectedTemplate.icon className={`h-5 w-5 ${getColorClasses(selectedTemplate.color).text}`} />
@@ -228,7 +228,7 @@ export default function ProjectsFormsPage() {
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                       {selectedTemplate.name}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                    <p className="text-sm text-gray-600 dark:text-slate-400">
                       {selectedTemplate.description}
                     </p>
                   </div>
@@ -256,7 +256,7 @@ export default function ProjectsFormsPage() {
                           type="text"
                           placeholder={field.placeholder}
                           required={field.required}
-                          className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                          className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                           onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                         />
                       )}
@@ -266,7 +266,7 @@ export default function ProjectsFormsPage() {
                           placeholder={field.placeholder}
                           required={field.required}
                           rows={4}
-                          className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                          className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6B7684] focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                           onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                         />
                       )}
@@ -274,7 +274,7 @@ export default function ProjectsFormsPage() {
                       {field.type === 'select' && (
                         <select
                           required={field.required}
-                          className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                          className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                           onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                         >
                           <option value="">Select...</option>
@@ -290,7 +290,7 @@ export default function ProjectsFormsPage() {
                         <input
                           type="date"
                           required={field.required}
-                          className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                          className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                           onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                         />
                       )}
@@ -299,7 +299,7 @@ export default function ProjectsFormsPage() {
                         <input
                           type="file"
                           required={field.required}
-                          className="w-full text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#0065FF] file:text-white hover:file:bg-[#0052CC]"
+                          className="w-full text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-500 file:text-white hover:file:bg-primary-600"
                           onChange={(e) => setFormData({ ...formData, [field.name]: e.target.files })}
                         />
                       )}
@@ -309,7 +309,7 @@ export default function ProjectsFormsPage() {
               </form>
 
               {/* Modal Footer */}
-              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-[#2C333A]">
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => setSelectedTemplate(null)}
@@ -319,7 +319,7 @@ export default function ProjectsFormsPage() {
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0065FF] hover:bg-[#0052CC] rounded-md"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
                   Create {selectedTemplate.name}
                 </button>

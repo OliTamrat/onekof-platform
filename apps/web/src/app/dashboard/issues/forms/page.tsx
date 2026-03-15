@@ -34,7 +34,7 @@ export default function IssuesFormsPage() {
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">Forms</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-[#9FADBC]">
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 This page is under construction and will be available soon.
               </p>
             </div>

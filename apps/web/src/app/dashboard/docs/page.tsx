@@ -105,18 +105,18 @@ export default function DocsPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <BookOpen className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Docs</h1>
             </div>
 
             <button
-              className="flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+              className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create
@@ -133,8 +133,8 @@ export default function DocsPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -147,13 +147,13 @@ export default function DocsPage() {
           {/* Search and Filter Bar */}
           <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#9FADBC]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search spaces and pages..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#9FADBC] focus:border-[#0065FF] focus:outline-none transition-colors"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
               />
             </div>
 
@@ -162,8 +162,8 @@ export default function DocsPage() {
                 onClick={() => setViewMode('grid')}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'grid'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                    ? 'bg-primary-500 text-white'
+                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
                 }`}
               >
                 <Grid3x3 className="h-4 w-4" />
@@ -172,8 +172,8 @@ export default function DocsPage() {
                 onClick={() => setViewMode('list')}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'list'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-[#9FADBC] hover:bg-gray-300 dark:hover:bg-[#2C333A]'
+                    ? 'bg-primary-500 text-white'
+                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
                 }`}
               >
                 <List className="h-4 w-4" />
@@ -187,34 +187,34 @@ export default function DocsPage() {
           {/* Recent Pages Section */}
           <div className="mb-8">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
                 <Clock className="h-4 w-4" />
                 RECENT PAGES
               </h2>
               <Link
                 href="/dashboard/docs/recent"
-                className="text-sm font-medium text-[#0065FF] hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="text-sm font-medium text-primary-500 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 View all →
               </Link>
             </div>
 
-            <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+            <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
               {recentPages.map((page, index) => (
                 <Link
                   key={page.id}
                   href={`/dashboard/docs/pages/${page.id}`}
                   className={cn(
                     'flex items-center gap-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
-                    index !== recentPages.length - 1 && 'border-b border-gray-200 dark:border-[#2C333A]'
+                    index !== recentPages.length - 1 && 'border-b border-gray-200 dark:border-slate-700'
                   )}
                 >
-                  <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-[#9FADBC]" />
+                  <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-slate-400" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium text-gray-900 dark:text-white">
                       {page.title}
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-[#9FADBC]">
+                    <p className="text-xs text-gray-600 dark:text-slate-400">
                       {page.space} • Updated {page.updated}
                     </p>
                   </div>
@@ -226,7 +226,7 @@ export default function DocsPage() {
           {/* Starred Spaces */}
           {favoriteSpaces.length > 0 && (
             <div className="mb-8">
-              <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+              <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 STARRED SPACES
               </h2>
@@ -238,7 +238,7 @@ export default function DocsPage() {
                   ))}
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
                   {favoriteSpaces.map((space, index) => (
                     <SpaceListItem
                       key={space.id}
@@ -253,7 +253,7 @@ export default function DocsPage() {
 
           {/* All Spaces */}
           <div>
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-[#9FADBC]">
+            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
               {favoriteSpaces.length > 0 ? 'ALL SPACES' : `YOUR SPACES (${filteredSpaces.length})`}
             </h2>
 
@@ -265,7 +265,7 @@ export default function DocsPage() {
                   ))}
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
                   {otherSpaces.map((space, index) => (
                     <SpaceListItem
                       key={space.id}
@@ -276,19 +276,19 @@ export default function DocsPage() {
                 </div>
               )
             ) : (
-              <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-[#2C333A]">
-                <Folders className="h-12 w-12 text-gray-300 dark:text-[#2C333A]" />
+              <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+                <Folders className="h-12 w-12 text-gray-300 dark:text-slate-700" />
                 <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                   {searchQuery ? 'No spaces found' : 'No spaces yet'}
                 </p>
-                <p className="mt-1 text-sm text-gray-600 dark:text-[#9FADBC]">
+                <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                   {searchQuery
                     ? 'Try adjusting your search or create a new space'
                     : 'Create your first space to start building your knowledge base'}
                 </p>
                 {!searchQuery && (
                   <button
-                    className="mt-4 flex items-center gap-2 rounded-md bg-[#0065FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#0052CC] transition-colors"
+                    className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                     Create Space
@@ -322,7 +322,7 @@ function SpaceCard({ space }: SpaceCardProps) {
   return (
     <Link
       href={`/dashboard/docs/spaces/${space.id}`}
-      className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#0065FF]"
+      className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
     >
       {space.isFavorite && (
         <Star className="absolute right-3 top-3 h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -335,14 +335,14 @@ function SpaceCard({ space }: SpaceCardProps) {
         <IconRenderer iconName={space.icon} className="h-6 w-6" />
       </div>
 
-      <h3 className="mb-1 font-semibold text-gray-900 dark:text-white group-hover:text-[#0065FF] transition-colors">
+      <h3 className="mb-1 font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
         {space.name}
       </h3>
-      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-[#9FADBC]">
+      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-slate-400">
         {space.description}
       </p>
 
-      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-[#9FADBC]">
+      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
         <div className="flex items-center gap-1">
           <FileText className="h-3 w-3" />
           {space.pageCount}
@@ -382,7 +382,7 @@ function SpaceListItem({ space, showBorder }: SpaceListItemProps) {
       href={`/dashboard/docs/spaces/${space.id}`}
       className={cn(
         'flex items-center gap-4 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
-        showBorder && 'border-b border-gray-200 dark:border-[#2C333A]'
+        showBorder && 'border-b border-gray-200 dark:border-slate-700'
       )}
     >
       <div
@@ -401,12 +401,12 @@ function SpaceListItem({ space, showBorder }: SpaceListItemProps) {
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
           )}
         </div>
-        <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+        <p className="text-sm text-gray-600 dark:text-slate-400">
           {space.description}
         </p>
       </div>
 
-      <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-[#9FADBC]">
+      <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-slate-400">
         <div className="flex items-center gap-1">
           <FileText className="h-4 w-4" />
           <span>{space.pageCount} pages</span>
@@ -421,8 +421,8 @@ function SpaceListItem({ space, showBorder }: SpaceListItemProps) {
         </div>
       </div>
 
-      <Button variant="ghost" size="icon" className="shrink-0 hover:bg-gray-100 dark:hover:bg-[#2C333A]">
-        <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-[#9FADBC]" />
+      <Button variant="ghost" size="icon" className="shrink-0 hover:bg-gray-100 dark:hover:bg-slate-700">
+        <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-slate-400" />
       </Button>
     </Link>
   );

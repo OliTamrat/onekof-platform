@@ -116,11 +116,11 @@ export default function GoalsFormsPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Title */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2C333A] px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white font-semibold">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <FileText className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goal Forms</h1>
@@ -137,8 +137,8 @@ export default function GoalsFormsPage() {
                   href={tab.href}
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
-                      ? 'border-[#0065FF] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-[#9FADBC] hover:text-gray-900 dark:hover:text-white'
+                      ? 'border-primary-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -154,7 +154,7 @@ export default function GoalsFormsPage() {
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Goal & OKR Form Templates</h2>
-              <p className="text-gray-600 dark:text-[#9FADBC]">
+              <p className="text-gray-600 dark:text-slate-400">
                 Create objectives, key results, and track goal progress with these templates
               </p>
             </div>
@@ -164,16 +164,16 @@ export default function GoalsFormsPage() {
                 <button
                   key={template.id}
                   onClick={() => setSelectedTemplate(template)}
-                  className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-[#2C333A] hover:border-[#0065FF] hover:shadow-md transition-all"
+                  className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                 >
                   <div className="text-4xl mb-4">{template.icon}</div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {template.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-[#9FADBC] mb-4">
+                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
                     {template.description}
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-[#0065FF]">
+                  <div className="flex items-center gap-2 text-sm text-primary-500">
                     <Plus className="h-4 w-4" />
                     Create {template.name}
                   </div>
@@ -187,12 +187,12 @@ export default function GoalsFormsPage() {
         {selectedTemplate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
             <div className="w-full max-w-2xl bg-white dark:bg-[#22272B] rounded-lg shadow-xl my-8">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#2C333A]">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {selectedTemplate.name}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
+                  <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
                     {selectedTemplate.description}
                   </p>
                 </div>
@@ -218,14 +218,14 @@ export default function GoalsFormsPage() {
                         value={formData[field.name] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
                         rows={4}
-                        className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       />
                     ) : field.type === 'select' ? (
                       <select
                         required={field.required}
                         value={formData[field.name] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       >
                         <option value="">Select {field.name}</option>
                         {field.options?.map((option) => (
@@ -241,14 +241,14 @@ export default function GoalsFormsPage() {
                         placeholder={field.placeholder}
                         value={formData[field.name] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 dark:border-[#2C333A] bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-[#0065FF] focus:outline-none focus:ring-2 focus:ring-[#0065FF]/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       />
                     )}
                   </div>
                 ))}
               </form>
 
-              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-[#2C333A]">
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => setSelectedTemplate(null)}
@@ -258,7 +258,7 @@ export default function GoalsFormsPage() {
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0065FF] hover:bg-[#0052CC] rounded-md"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
                   Submit {selectedTemplate.name}
                 </button>

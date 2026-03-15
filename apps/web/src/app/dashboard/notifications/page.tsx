@@ -102,10 +102,10 @@ export default function NotificationsPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-[#2C333A] bg-white dark:bg-[#22272B] px-6 py-4">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#0065FF] text-white relative">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white relative">
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h1>
-                <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+                <p className="text-sm text-gray-600 dark:text-slate-400">
                   {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
                 </p>
               </div>
@@ -127,8 +127,8 @@ export default function NotificationsPage() {
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   filter === 'all'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2C333A]'
+                    ? 'bg-primary-500 text-white'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
               >
                 All
@@ -137,8 +137,8 @@ export default function NotificationsPage() {
                 onClick={() => setFilter('unread')}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   filter === 'unread'
-                    ? 'bg-[#0065FF] text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2C333A]'
+                    ? 'bg-primary-500 text-white'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
               >
                 Unread ({unreadCount})
@@ -161,7 +161,7 @@ export default function NotificationsPage() {
                   key={notification.id}
                   className={`flex items-start gap-4 p-4 rounded-lg border transition-colors ${
                     notification.read
-                      ? 'bg-white dark:bg-[#22272B] border-gray-200 dark:border-[#2C333A]'
+                      ? 'bg-white dark:bg-[#22272B] border-gray-200 dark:border-slate-700'
                       : 'bg-blue-50 dark:bg-[#1B2838] border-blue-200 dark:border-[#2C4A6A]'
                   }`}
                 >
@@ -177,13 +177,13 @@ export default function NotificationsPage() {
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                           {notification.title}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-[#9FADBC] mt-1">
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
                           {notification.message}
                         </p>
                       </div>
                       {!notification.read && (
                         <div className="flex-shrink-0">
-                          <div className="h-2 w-2 rounded-full bg-[#0065FF]"></div>
+                          <div className="h-2 w-2 rounded-full bg-primary-500"></div>
                         </div>
                       )}
                     </div>

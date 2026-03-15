@@ -126,8 +126,8 @@ export default function IssuesCalendarPage() {
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#0065FF] dark:border-gray-700"></div>
-              <p className="text-sm text-gray-600 dark:text-[#9FADBC]">
+              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary-500 dark:border-gray-700"></div>
+              <p className="text-sm text-gray-600 dark:text-slate-400">
                 Loading calendar...
               </p>
             </div>

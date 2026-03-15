@@ -20,7 +20,7 @@ export default function SettingsPage() {
   return (
     <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
       <div className="text-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#0065FF] border-r-transparent"></div>
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-500 border-r-transparent"></div>
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Redirecting to settings...</p>
       </div>
     </div>
