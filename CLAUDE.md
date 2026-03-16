@@ -144,3 +144,69 @@ These patterns are critical to production stability:
 - **Pages**: ~164 pages across dashboard, projects, auth, settings, marketing
 - **Language**: English only. i18n/multilingual was removed — the previous implementation (next-intl) only switched fonts without translating any content. Do NOT re-add i18n unless a full translation pipeline is in place.
 - **No external fonts**: All fonts are system fonts or local @font-face declarations. Do NOT add Google Fonts or other CDN font dependencies — they cause CSP issues and add latency.
+
+---
+
+## Strategic Roadmap — Next To Do
+
+### Phase 1: Admin Dashboard (Current Priority)
+Build a superadmin dashboard at `/admin` for managing the entire platform:
+- **Organizations management**: list, create, edit, suspend orgs; view usage stats per org
+- **User management**: list all users across orgs, reset passwords, disable accounts, view activity
+- **Permissions & roles**: manage system-wide roles (superadmin, org admin, member); assign superadmin access
+- **System health**: active users, total orgs, API response times, error rates, storage usage
+- **Feature flags**: toggle features per org or globally (useful for enterprise rollouts)
+- **Audit log**: track admin actions (who did what, when)
+- **Access control**: protected by `role === 'SUPERADMIN'` check — not visible to regular users
+- **Implementation**: built as protected routes within the existing Next.js app (`/admin/*`), no separate infrastructure
+
+### Phase 2: White-Label Infrastructure
+Enable enterprise customers to have their own branded environments:
+
+**Tier 1 — Cosmetic White-Label:**
+- Add branding fields to Organization model: `brandLogo`, `brandFavicon`, `brandPrimaryColor`, `brandAppName`, `customDomain`
+- Layout reads branding values and applies via CSS custom properties
+- Custom login page branding per org
+- Organization-level settings UI for admins to upload logo, pick colors
+
+**Tier 2 — Custom Domain White-Label:**
+- Client points DNS (CNAME) to Onekof infrastructure
+- Middleware resolves `hostname` → looks up Organization by `customDomain` field
+- SSL handled automatically by Vercel
+- Flow: `tasks.mowi.gov.et` → middleware → org lookup → same app, branded experience
+
+**Tier 3 — Isolated Enterprise (future, only if needed):**
+- Separate database per client (data sovereignty)
+- Separate deployment/infrastructure
+- Only needed for government contracts requiring data isolation
+
+### Phase 3: Scalability Improvements
+Current capacity: ~200-500 concurrent users. Steps to scale:
+
+**3a — Connection Pooling (do before first enterprise client):**
+- Add Prisma Accelerate or PgBouncer for database connection pooling
+- This is the #1 bottleneck for Next.js + Prisma on serverless
+
+**3b — Caching Layer (500-2,000 users):**
+- Add Redis (Upstash) for query caching, rate limiting
+- Cache read-heavy endpoints: project lists, team members, org settings
+- API response caching headers for static-ish data
+
+**3c — Read Replicas & Compute (2,000-10,000 users):**
+- Database read replicas for read-heavy queries
+- Move to Vercel Pro/Enterprise for higher serverless concurrency
+- Consider dedicated compute for critical API paths
+
+**3d — Sharding & Isolation (10,000+ users):**
+- Per-tenant database routing
+- CDN for API responses where appropriate
+- Horizontal scaling strategy
+
+### Completed Work
+- [x] Marketing site redesign (hero, features, pricing, testimonials, footer)
+- [x] AI Insights panel with expandable drill-down details per insight
+- [x] Board view responsive grid with larger, more readable cards
+- [x] Dark mode consistency across all components
+- [x] Jira-style layout as primary layout
+- [x] Multi-tenant subdomain routing
+- [x] JWT auth with cross-subdomain cookies
