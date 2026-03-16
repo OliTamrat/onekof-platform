@@ -60,25 +60,33 @@ export default function DashboardPage() {
   }, [status]);
 
   // Fetch dashboard statistics
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
       const res = await fetch('/api/dashboard/stats');
-      if (!res.ok) throw new Error('Failed to fetch stats');
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`Stats API ${res.status}: ${text}`);
+      }
       return res.json();
     },
     enabled: !!session,
+    retry: 1,
   });
 
   // Fetch recent issues
-  const { data: issuesData } = useQuery({
+  const { data: issuesData, error: issuesError } = useQuery({
     queryKey: ['issues'],
     queryFn: async () => {
       const res = await fetch('/api/issues');
-      if (!res.ok) throw new Error('Failed to fetch issues');
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`Issues API ${res.status}: ${text}`);
+      }
       return res.json();
     },
     enabled: !!session,
+    retry: 1,
   });
 
   // Show loading while checking session
@@ -264,9 +272,28 @@ export default function DashboardPage() {
     setIsFilterModalOpen(true);
   };
 
+  const apiError = statsError || issuesError;
+
   return (
     <AppLayout>
       <div className="p-6">
+        {/* API Error Banner */}
+        {apiError && (
+          <div className="mb-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                  Failed to load dashboard data
+                </p>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                  {apiError.message}. Try refreshing the page or signing in again.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Stats Cards - Beautiful 2x2 grid on mobile */}
         <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
