@@ -20,6 +20,13 @@ export async function GET(req: NextRequest) {
     const action = req.nextUrl.searchParams.get('action');
 
     if (action === 'oauth_url') {
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        return NextResponse.json(
+          { error: 'Google integration is not configured. GOOGLE_CLIENT_ID environment variable is missing.' },
+          { status: 503 }
+        );
+      }
+
       const state = Buffer.from(JSON.stringify({
         organizationId: org.id,
         userId: session.user.id,
