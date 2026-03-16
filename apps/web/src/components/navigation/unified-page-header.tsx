@@ -1,11 +1,5 @@
 'use client';
 
-/**
- * Unified Page Header Component
- * Combines Navigation Tabs + Control Bar (Jira-style)
- * Used across all dashboard pages for consistency
- */
-
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -16,7 +10,6 @@ import {
   LayoutGrid,
   Settings as SettingsIcon,
   Sparkles,
-  ChevronDown,
   BarChart3,
   List,
   LayoutDashboard,
@@ -29,11 +22,16 @@ import {
   Zap,
   BookOpen,
   MoreHorizontal,
+  X,
+  Check,
+  type LucideIcon,
 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
@@ -43,6 +41,17 @@ interface Breadcrumb {
   href?: string;
 }
 
+export interface TabDefinition {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  href: string;
+}
+
+export type FilterField = 'status' | 'priority' | 'assignee' | 'project';
+export type GroupByField = 'none' | 'status' | 'priority' | 'assignee' | 'project';
+export type ViewMode = 'list' | 'board' | 'compact';
+
 interface UnifiedPageHeaderProps {
   title: string;
   description?: string;
@@ -50,17 +59,29 @@ interface UnifiedPageHeaderProps {
   icon?: React.ReactNode;
   iconColor?: string;
   currentTab?: string;
-  baseHref?: string; // Base URL for tabs (e.g., '/dashboard/projects')
+  baseHref?: string;
+  customTabs?: TabDefinition[];
   showTabs?: boolean;
   showSearch?: boolean;
   showFilters?: boolean;
   showGroupBy?: boolean;
   showViewSettings?: boolean;
   showInsights?: boolean;
+  // Functional callbacks
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  activeFilters?: Record<string, string[]>;
+  onFilterChange?: (field: FilterField, values: string[]) => void;
+  groupBy?: GroupByField;
+  onGroupByChange?: (field: GroupByField) => void;
+  viewMode?: ViewMode;
+  onViewChange?: (mode: ViewMode) => void;
+  onInsightsToggle?: () => void;
+  insightsOpen?: boolean;
+  taskCounts?: { total: number; filtered: number };
 }
 
-// Navigation tabs configuration
-const NAV_TABS = [
+const DEFAULT_NAV_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
   { id: 'list', label: 'List', icon: List, href: '/list' },
   { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
@@ -75,19 +96,35 @@ const NAV_TABS = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon, href: '/settings' },
 ];
 
-// Responsive tab navigation — fits to screen width with overflow in "More" dropdown
-function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: typeof NAV_TABS; baseHref: string; activeTab: string }) {
-  // Use ResizeObserver to determine how many tabs fit
+const STATUS_OPTIONS = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'];
+const PRIORITY_OPTIONS = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
+
+const STATUS_COLORS: Record<string, string> = {
+  TODO: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+  IN_REVIEW: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
+  DONE: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+  BLOCKED: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+};
+
+const PRIORITY_COLORS: Record<string, string> = {
+  CRITICAL: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+  HIGH: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
+  MEDIUM: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  LOW: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+};
+
+function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; baseHref: string; activeTab: string }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = React.useState(tabs.length);
 
   React.useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) return undefined;
 
     const measure = () => {
-      const containerWidth = container.offsetWidth - 100; // reserve space for "More" button
-      const tabWidth = 110; // approximate width per tab
+      const containerWidth = container.offsetWidth - 100;
+      const tabWidth = 110;
       const count = Math.max(3, Math.min(tabs.length, Math.floor(containerWidth / tabWidth)));
       setVisibleCount(count);
     };
@@ -179,22 +216,50 @@ export function UnifiedPageHeader({
   iconColor = '#1C8C7D',
   currentTab,
   baseHref = '/dashboard',
+  customTabs,
   showTabs = true,
   showSearch = true,
   showFilters = true,
   showGroupBy = true,
   showViewSettings = true,
   showInsights = true,
+  searchValue: externalSearch,
+  onSearchChange,
+  activeFilters = {},
+  onFilterChange,
+  groupBy = 'none',
+  onGroupByChange,
+  viewMode = 'list',
+  onViewChange,
+  onInsightsToggle,
+  insightsOpen = false,
+  taskCounts,
 }: UnifiedPageHeaderProps) {
   const pathname = usePathname();
-  const [searchValue, setSearchValue] = useState('');
-  const [selectedGroupBy, setSelectedGroupBy] = useState('status');
-  const [selectedView, setSelectedView] = useState('board');
+  const [internalSearch, setInternalSearch] = useState('');
 
-  // Auto-detect current tab from pathname if not provided
-  const activeTab = currentTab || NAV_TABS.find(tab =>
+  const searchVal = externalSearch ?? internalSearch;
+  const handleSearchChange = (v: string) => {
+    if (onSearchChange) onSearchChange(v);
+    else setInternalSearch(v);
+  };
+
+  const tabs = customTabs || DEFAULT_NAV_TABS;
+
+  const activeTab = currentTab || tabs.find(tab =>
     pathname?.endsWith(tab.href) || (tab.href === '' && pathname === baseHref)
-  )?.id || 'summary';
+  )?.id || tabs[0]?.id || 'summary';
+
+  const totalActiveFilters = Object.values(activeFilters).reduce((sum, arr) => sum + arr.length, 0);
+
+  const toggleFilter = (field: FilterField, value: string) => {
+    if (!onFilterChange) return;
+    const current = activeFilters[field] || [];
+    const next = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value];
+    onFilterChange(field, next);
+  };
 
   return (
     <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
@@ -236,90 +301,175 @@ export function UnifiedPageHeader({
               <p className="text-xs md:text-sm text-gray-600 dark:text-slate-400 mt-1 line-clamp-1">{description}</p>
             )}
           </div>
+          {taskCounts && (
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <span className="font-medium">{taskCounts.filtered}</span>
+              {taskCounts.filtered !== taskCounts.total && (
+                <span>of {taskCounts.total}</span>
+              )}
+              <span>items</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Navigation Tabs */}
       {showTabs && (
         <div className="border-b border-gray-200 dark:border-slate-700">
-          <NavigationTabs tabs={NAV_TABS} baseHref={baseHref} activeTab={activeTab} />
+          <NavigationTabs tabs={tabs} baseHref={baseHref} activeTab={activeTab} />
         </div>
-
       )}
 
-      {/* Controls Bar - Spread on Desktop, Compact on Mobile */}
+      {/* Controls Bar */}
       <div className="px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-slate-700">
         <div className="flex items-center justify-between gap-2 md:gap-3">
-          {/* Search - Full width on mobile, constrained on desktop */}
+          {/* Search */}
           {showSearch && (
             <div className="relative flex-1 md:max-w-md">
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
                 placeholder="Search..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-3 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                value={searchVal}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
+              {searchVal && (
+                <button
+                  onClick={() => handleSearchChange('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           )}
 
-          {/* Right side controls group */}
-          <div className="flex items-center gap-2 md:gap-3">
-            {/* Filter - Icon only on mobile, full on desktop */}
+          {/* Right side controls */}
+          <div className="flex items-center gap-1.5 md:gap-2">
+            {/* Filter */}
             {showFilters && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className={cn(
+                      'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                      totalActiveFilters > 0
+                        ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                        : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33]'
+                    )}
                     title="Filter"
                   >
                     <Filter className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">Filter</span>
+                    {totalActiveFilters > 0 && (
+                      <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary-500 px-1 text-[10px] font-bold text-white">
+                        {totalActiveFilters}
+                      </span>
+                    )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuItem>By Status</DropdownMenuItem>
-                  <DropdownMenuItem>By Priority</DropdownMenuItem>
-                  <DropdownMenuItem>By Assignee</DropdownMenuItem>
-                  <DropdownMenuItem>By Project</DropdownMenuItem>
+                <DropdownMenuContent align="start" className="w-64">
+                  <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+                  {STATUS_OPTIONS.map(status => {
+                    const isSelected = (activeFilters.status || []).includes(status);
+                    return (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={(e) => { e.preventDefault(); toggleFilter('status', status); }}
+                        className="flex items-center justify-between cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-medium', STATUS_COLORS[status])}>
+                            {status.replace('_', ' ')}
+                          </span>
+                        </div>
+                        {isSelected && <Check className="h-4 w-4 text-primary-500" />}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Filter by Priority</DropdownMenuLabel>
+                  {PRIORITY_OPTIONS.map(priority => {
+                    const isSelected = (activeFilters.priority || []).includes(priority);
+                    return (
+                      <DropdownMenuItem
+                        key={priority}
+                        onClick={(e) => { e.preventDefault(); toggleFilter('priority', priority); }}
+                        className="flex items-center justify-between cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-medium', PRIORITY_COLORS[priority])}>
+                            {priority}
+                          </span>
+                        </div>
+                        {isSelected && <Check className="h-4 w-4 text-primary-500" />}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                  {totalActiveFilters > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          onFilterChange?.('status', []);
+                          onFilterChange?.('priority', []);
+                        }}
+                        className="text-red-600 dark:text-red-400 cursor-pointer"
+                      >
+                        <X className="h-3.5 w-3.5 mr-2" />
+                        Clear all filters
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
 
-            {/* Group By - Icon only on mobile, full on desktop */}
+            {/* Group By */}
             {showGroupBy && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className={cn(
+                      'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                      groupBy !== 'none'
+                        ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                        : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33]'
+                    )}
                     title="Group by"
                   >
                     <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    <span className="hidden md:inline">Group</span>
+                    <span className="hidden md:inline">
+                      {groupBy !== 'none' ? `By ${groupBy}` : 'Group'}
+                    </span>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem onClick={() => setSelectedGroupBy('status')}>
-                    Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedGroupBy('priority')}>
-                    Priority
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedGroupBy('assignee')}>
-                    Assignee
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedGroupBy('project')}>
-                    Project
-                  </DropdownMenuItem>
+                  {(['none', 'status', 'priority'] as GroupByField[]).map(field => (
+                    <DropdownMenuItem
+                      key={field}
+                      onClick={() => onGroupByChange?.(field)}
+                      className="flex items-center justify-between cursor-pointer"
+                    >
+                      <span>{field === 'none' ? 'No grouping' : field.charAt(0).toUpperCase() + field.slice(1)}</span>
+                      {groupBy === field && <Check className="h-4 w-4 text-primary-500" />}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
 
-            {/* Insights - Icon only on mobile, full on desktop */}
+            {/* Insights */}
             {showInsights && (
               <button
-                className="flex items-center gap-1.5 md:gap-2 rounded-md border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors shrink-0"
+                onClick={onInsightsToggle}
+                className={cn(
+                  'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                  insightsOpen
+                    ? 'border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                    : 'border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50'
+                )}
                 title="AI Insights"
               >
                 <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -327,33 +477,70 @@ export function UnifiedPageHeader({
               </button>
             )}
 
-            {/* View Settings - Icon only on mobile, full on desktop */}
+            {/* View Settings */}
             {showViewSettings && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
                     title="View settings"
                   >
                     <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    <span className="hidden md:inline">View</span>
+                    <span className="hidden md:inline">
+                      {viewMode === 'list' ? 'List' : viewMode === 'board' ? 'Board' : 'Compact'}
+                    </span>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onClick={() => setSelectedView('board')}>
-                    Board View
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedView('list')}>
-                    List View
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSelectedView('calendar')}>
-                    Calendar View
-                  </DropdownMenuItem>
+                <DropdownMenuContent align="end" className="w-44">
+                  {([
+                    { id: 'list' as ViewMode, label: 'List View', icon: List },
+                    { id: 'board' as ViewMode, label: 'Board View', icon: LayoutDashboard },
+                    { id: 'compact' as ViewMode, label: 'Compact View', icon: BarChart3 },
+                  ]).map(v => (
+                    <DropdownMenuItem
+                      key={v.id}
+                      onClick={() => onViewChange?.(v.id)}
+                      className="flex items-center justify-between cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <v.icon className="h-4 w-4" />
+                        <span>{v.label}</span>
+                      </div>
+                      {viewMode === v.id && <Check className="h-4 w-4 text-primary-500" />}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
           </div>
         </div>
+
+        {/* Active filter chips */}
+        {totalActiveFilters > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+            {Object.entries(activeFilters).map(([field, values]) =>
+              values.map(value => (
+                <button
+                  key={`${field}-${value}`}
+                  onClick={() => toggleFilter(field as FilterField, value)}
+                  className="inline-flex items-center gap-1 rounded-full border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-950/30 px-2 py-0.5 text-[11px] font-medium text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
+                >
+                  <span className="capitalize">{field}:</span> {value.replace('_', ' ')}
+                  <X className="h-3 w-3 ml-0.5" />
+                </button>
+              ))
+            )}
+            <button
+              onClick={() => {
+                onFilterChange?.('status', []);
+                onFilterChange?.('priority', []);
+              }}
+              className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 ml-1"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

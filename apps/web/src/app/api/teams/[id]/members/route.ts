@@ -242,10 +242,61 @@ export async function POST(
     });
 
     if (!userOrgMembership) {
-      return NextResponse.json(
-        { error: 'User is not a member of this organization. Please add them to the organization first.' },
-        { status: 400 }
-      );
+      // User exists but is not in the org — auto-invite them
+      const existingInvitation = await prisma.invitation.findFirst({
+        where: {
+          organizationId: team.organizationId,
+          email: userEmail,
+          acceptedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+      });
+
+      if (existingInvitation) {
+        return NextResponse.json({
+          invited: true,
+          message: `An invitation was already sent to ${userEmail}. They will be able to join the team once they accept.`,
+        });
+      }
+
+      // Create invitation for existing user who's not in the org
+      const { token: invToken, hash: invHash } = generateTokenPair();
+      const org = await prisma.organization.findUnique({
+        where: { id: team.organizationId },
+        select: { name: true },
+      });
+
+      await prisma.invitation.create({
+        data: {
+          organizationId: team.organizationId,
+          email: userEmail,
+          role: 'MEMBER',
+          tokenHash: invHash,
+          invitedBy: session.user.id,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        },
+      });
+
+      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+      const invUrl = `${baseUrl}/auth/accept-invite?token=${invToken}`;
+      const inviterName = session.user.name || session.user.email || 'A team member';
+
+      try {
+        await sendInvitationEmail(
+          userEmail,
+          inviterName,
+          org?.name || 'your organization',
+          invUrl,
+          'Member'
+        );
+      } catch (emailError) {
+        console.error('Failed to send invitation email:', emailError);
+      }
+
+      return NextResponse.json({
+        invited: true,
+        message: `Invitation sent to ${userEmail}. They need to join the organization first, then can be added to the team.`,
+      });
     }
 
     // Check if user is already a member of the team

@@ -3,6 +3,7 @@
 import { FileText } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DepartmentTaskList } from '@/components/department/department-task-list';
+import { DEVELOPMENT_TABS } from '@/config/department-tabs';
 
 export default function CodeReviewPage() {
   return (
@@ -14,6 +15,10 @@ export default function CodeReviewPage() {
         iconColor="#6366F1"
         emptyMessage="No code reviews yet. Create one to track review requests."
         defaultLabels={['development', 'code-review']}
+        baseHref="/dashboard/development"
+        currentTab="code"
+        tabs={DEVELOPMENT_TABS}
+        category="development"
       />
     </AppLayout>
   );
