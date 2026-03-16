@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAdmin } from '@/hooks/use-admin';
 import {
   Users,
   Search,
@@ -62,6 +63,7 @@ const ROLE_BADGE: Record<string, string> = {
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
+  const { canWrite } = useAdmin();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
@@ -209,6 +211,9 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right">
+                      {!canWrite ? (
+                        <span className="text-[10px] text-slate-400">View only</span>
+                      ) : (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -232,6 +237,7 @@ export default function AdminUsersPage() {
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>
+                      )}
                     </td>
                   </tr>
                 ))}
