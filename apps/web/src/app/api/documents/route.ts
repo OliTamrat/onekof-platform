@@ -45,7 +45,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    const organizationId = user.organizations[0].organization.id;
+    // Resolve organization from subdomain header (set by middleware), fallback to first org
+    const slug = request.headers.get('x-organization-slug');
+    const matchedOrg = slug
+      ? user.organizations.find(m => m.organization.slug === slug)
+      : null;
+    const organizationId = (matchedOrg || user.organizations[0]).organization.id;
 
     // Build where clause
     const where: any = {
