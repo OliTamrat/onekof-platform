@@ -16,11 +16,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: { organization: true },
+        },
+      },
+    });
+
+    if (!user || !user.organizations.length) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const organizationId = user.organizations[0].organizationId;
+
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
-    const organizationId = searchParams.get('organizationId');
 
-    const where: any = {};
+    const where: any = {
+      project: { organizationId },
+    };
     if (projectId) where.projectId = projectId;
 
     const budgets = await prisma.budget.findMany({
@@ -104,11 +120,18 @@ export async function POST(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: { organization: true },
+        },
+      },
     });
 
-    if (!user) {
+    if (!user || !user.organizations.length) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+
+    const orgId = user.organizations[0].organizationId;
 
     const body = await request.json();
     const {
@@ -120,7 +143,6 @@ export async function POST(request: NextRequest) {
       categories = [],
     } = body;
 
-    // Validate required fields
     if (!projectId || !totalBudget) {
       return NextResponse.json(
         { error: 'Missing required fields: projectId, totalBudget' },
@@ -128,7 +150,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create budget with categories
+    // Validate project belongs to user's organization
+    const project = await prisma.project.findFirst({
+      where: { id: projectId, organizationId: orgId },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
     const budget = await prisma.budget.create({
       data: {
         projectId,
