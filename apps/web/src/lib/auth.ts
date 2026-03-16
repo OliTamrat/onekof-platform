@@ -24,11 +24,12 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         // Domain handling:
+        // - Production: .onekof.com for cross-subdomain sessions
+        // - Preview (vercel.app): undefined (exact domain match)
         // - Development: .localhost for subdomain support
-        // - Production on custom domain: .onekof.com for subdomain support
-        // - Production on Vercel: undefined (use current domain)
+        // Note: VERCEL_ENV distinguishes production vs preview on Vercel
         domain: process.env.NODE_ENV === 'production'
-          ? (process.env.VERCEL_URL?.includes('vercel.app') ? undefined : '.onekof.com')
+          ? (process.env.VERCEL_ENV === 'preview' ? undefined : '.onekof.com')
           : '.localhost',
         secure: process.env.NODE_ENV === 'production',
       },
