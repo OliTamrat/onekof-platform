@@ -1,4 +1,4 @@
-export type IntegrationProvider = 'slack' | 'github' | 'google';
+export type IntegrationProvider = 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar' | 'jira';
 
 export type IntegrationStatus = 'connected' | 'disconnected' | 'error' | 'pending';
 
@@ -80,7 +80,111 @@ export interface GoogleCalendar {
   projectId?: string;
 }
 
-export type IntegrationConfig = SlackConfig | GitHubConfig | GoogleConfig;
+// Microsoft Teams
+export interface TeamsConfig {
+  tenantId: string;
+  teamId: string;
+  teamName: string;
+  defaultChannelId: string | null;
+  defaultChannelName: string | null;
+  channels: TeamsChannel[];
+  notifications: TeamsNotificationConfig;
+}
+
+export interface TeamsChannel {
+  id: string;
+  displayName: string;
+  projectId?: string;
+}
+
+export interface TeamsNotificationConfig {
+  taskCreated: boolean;
+  taskCompleted: boolean;
+  taskAssigned: boolean;
+  commentAdded: boolean;
+  projectUpdated: boolean;
+}
+
+// Webhooks
+export interface WebhooksConfig {
+  endpoints: WebhookEndpoint[];
+}
+
+export interface WebhookEndpoint {
+  id: string;
+  name: string;
+  url: string;
+  secret: string;
+  events: string[];
+  active: boolean;
+  createdAt: string;
+  lastDeliveryAt: string | null;
+  lastDeliveryStatus: 'success' | 'failed' | null;
+}
+
+// Email Notifications
+export interface EmailConfig {
+  digestFrequency: 'realtime' | 'daily' | 'weekly';
+  digestTime: string; // HH:mm
+  digestDay: string; // for weekly: 'monday' | 'tuesday' etc.
+  notifications: EmailNotificationConfig;
+  recipients: EmailRecipient[];
+}
+
+export interface EmailNotificationConfig {
+  taskAssigned: boolean;
+  taskCompleted: boolean;
+  commentAdded: boolean;
+  mentioned: boolean;
+  projectUpdated: boolean;
+  dueDateReminder: boolean;
+  weeklyDigest: boolean;
+}
+
+export interface EmailRecipient {
+  email: string;
+  name: string;
+  userId?: string;
+}
+
+// Google Calendar (standalone, piggybacks on Google OAuth)
+export interface GoogleCalendarConfig {
+  email: string;
+  selectedCalendars: GoogleCalendar[];
+  syncDirection: 'one_way' | 'two_way';
+  syncDeadlines: boolean;
+  syncMilestones: boolean;
+  defaultReminder: number; // minutes before
+}
+
+// Jira Import
+export interface JiraConfig {
+  siteUrl: string;
+  email: string;
+  projects: JiraProject[];
+  importStatus: 'idle' | 'in_progress' | 'completed' | 'failed';
+  lastImportAt: string | null;
+  statusMapping: Record<string, string>;
+  userMapping: Record<string, string>;
+}
+
+export interface JiraProject {
+  id: string;
+  key: string;
+  name: string;
+  imported: boolean;
+  issueCount?: number;
+}
+
+export type IntegrationConfig =
+  | SlackConfig
+  | GitHubConfig
+  | GoogleConfig
+  | TeamsConfig
+  | WebhooksConfig
+  | EmailConfig
+  | GoogleCalendarConfig
+  | JiraConfig;
 
 export interface IntegrationEvent {
   id: string;
