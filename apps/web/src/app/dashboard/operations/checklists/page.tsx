@@ -18,6 +18,7 @@ export default function ChecklistsPage() {
         baseHref="/dashboard/operations"
         currentTab="checklists"
         tabs={OPERATIONS_TABS}
+        category="operations"
       />
     </AppLayout>
   );

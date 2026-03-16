@@ -18,6 +18,7 @@ export default function DevelopmentPage() {
         baseHref="/dashboard/development"
         currentTab="backlog"
         tabs={DEVELOPMENT_TABS}
+        category="development"
       />
     </AppLayout>
   );

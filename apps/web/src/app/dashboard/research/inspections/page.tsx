@@ -18,6 +18,7 @@ export default function InspectionsPage() {
         baseHref="/dashboard/research"
         currentTab="inspections"
         tabs={RESEARCH_TABS}
+        category="research"
       />
     </AppLayout>
   );

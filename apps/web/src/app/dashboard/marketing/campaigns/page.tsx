@@ -18,6 +18,7 @@ export default function CampaignsPage() {
         baseHref="/dashboard/marketing"
         currentTab="campaigns"
         tabs={MARKETING_TABS}
+        category="marketing"
       />
     </AppLayout>
   );

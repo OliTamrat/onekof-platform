@@ -18,6 +18,7 @@ export default function CodeReviewPage() {
         baseHref="/dashboard/development"
         currentTab="code"
         tabs={DEVELOPMENT_TABS}
+        category="development"
       />
     </AppLayout>
   );

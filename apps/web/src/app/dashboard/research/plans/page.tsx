@@ -18,6 +18,7 @@ export default function PlansPage() {
         baseHref="/dashboard/research"
         currentTab="plans"
         tabs={RESEARCH_TABS}
+        category="research"
       />
     </AppLayout>
   );
