@@ -2,11 +2,11 @@ import { createHmac } from 'crypto';
 import { upsertConnection, getConnection, logEvent, deleteConnection } from './store';
 import type { GitHubConfig, GitHubRepo } from './types';
 
-const GITHUB_CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || '';
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_APP_CLIENT_SECRET || '';
-const GITHUB_APP_ID = process.env.GITHUB_APP_ID || '';
-const GITHUB_REDIRECT_URI = process.env.GITHUB_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/integrations/github/callback`;
-const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || '';
+const GITHUB_CLIENT_ID = (process.env.GITHUB_APP_CLIENT_ID || '').trim();
+const GITHUB_CLIENT_SECRET = (process.env.GITHUB_APP_CLIENT_SECRET || '').trim();
+const GITHUB_APP_ID = (process.env.GITHUB_APP_ID || '').trim();
+const GITHUB_REDIRECT_URI = (process.env.GITHUB_REDIRECT_URI || `${(process.env.NEXTAUTH_URL || '').trim()}/api/integrations/github/callback`).trim();
+const GITHUB_WEBHOOK_SECRET = (process.env.GITHUB_WEBHOOK_SECRET || '').trim();
 
 const GITHUB_SCOPES = 'repo,read:org,read:user';
 
