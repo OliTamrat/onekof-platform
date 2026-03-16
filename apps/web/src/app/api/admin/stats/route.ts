@@ -13,16 +13,18 @@ export async function GET() {
       totalUsers,
       totalOrgs,
       totalProjects,
-      totalIssues,
+      totalTasks,
       activeOrgs,
       recentUsers,
       orgsByPlan,
       orgsByStatus,
+      recentOrgs,
+      totalMembers,
     ] = await Promise.all([
       prisma.user.count({ where: { deletedAt: null } }),
       prisma.organization.count({ where: { deletedAt: null } }),
       prisma.project.count(),
-      prisma.issue.count(),
+      prisma.task.count(),
       prisma.organization.count({ where: { deletedAt: null, status: 'ACTIVE' } }),
       prisma.user.count({
         where: {
@@ -40,6 +42,13 @@ export async function GET() {
         where: { deletedAt: null },
         _count: true,
       }),
+      prisma.organization.count({
+        where: {
+          deletedAt: null,
+          createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+        },
+      }),
+      prisma.organizationMember.count(),
     ]);
 
     const planBreakdown = Object.fromEntries(
@@ -55,15 +64,20 @@ export async function GET() {
         totalUsers,
         totalOrgs,
         totalProjects,
-        totalIssues,
+        totalTasks,
         activeOrgs,
         recentUsers,
+        recentOrgs,
+        totalMembers,
         planBreakdown,
         statusBreakdown,
       },
     });
   } catch (error) {
     console.error('Admin stats error:', error);
-    return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch stats', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
