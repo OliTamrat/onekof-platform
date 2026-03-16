@@ -59,26 +59,36 @@ export default function DashboardPage() {
     return undefined;
   }, [status]);
 
-  // Fetch dashboard statistics
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  // Fetch dashboard statistics (server-side computed — primary source)
+  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
       const res = await fetch('/api/dashboard/stats');
-      if (!res.ok) throw new Error('Failed to fetch stats');
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error || `Stats fetch failed: ${res.status}`);
+      }
       return res.json();
     },
     enabled: !!session,
+    retry: 2,
+    staleTime: 30000,
   });
 
-  // Fetch recent issues
-  const { data: issuesData } = useQuery({
+  // Fetch recent issues (for drill-down lists)
+  const { data: issuesData, error: issuesError } = useQuery({
     queryKey: ['issues'],
     queryFn: async () => {
       const res = await fetch('/api/issues');
-      if (!res.ok) throw new Error('Failed to fetch issues');
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error || `Issues fetch failed: ${res.status}`);
+      }
       return res.json();
     },
     enabled: !!session,
+    retry: 2,
+    staleTime: 30000,
   });
 
   // Show loading while checking session
@@ -123,52 +133,55 @@ export default function DashboardPage() {
 
   const issues = issuesData?.issues || [];
 
-  // Calculate statistics from real data
-  const tasksCompleted = issues.filter(
+  // Use server-side stats as primary source (more reliable), fallback to client-side computation
+  const tasksCompleted = stats?.stats?.completed ?? issues.filter(
     (i: any) => i.status === 'DONE' &&
     new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   ).length;
 
-  const tasksUpdated = issues.filter(
+  const tasksUpdated = stats?.stats?.updated ?? issues.filter(
     (i: any) => new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   ).length;
 
-  const tasksCreated = issues.filter(
+  const tasksCreated = stats?.stats?.created ?? issues.filter(
     (i: any) => new Date(i.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   ).length;
 
-  const tasksDueSoon = issues.filter(
+  const tasksDueSoon = stats?.stats?.dueSoon ?? issues.filter(
     (i: any) => i.dueDate &&
     new Date(i.dueDate) > new Date() &&
     new Date(i.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   ).length;
 
-  // Get status counts
+  // Use server-side status breakdown as primary source
+  const serverStatus = stats?.statusBreakdown || {};
   const statusCounts = {
-    TODO: issues.filter((i: any) => i.status === 'TODO').length,
-    IN_PROGRESS: issues.filter((i: any) => i.status === 'IN_PROGRESS').length,
-    IN_REVIEW: issues.filter((i: any) => i.status === 'IN_REVIEW').length,
-    DONE: issues.filter((i: any) => i.status === 'DONE').length,
+    TODO: serverStatus.TODO ?? issues.filter((i: any) => i.status === 'TODO').length,
+    IN_PROGRESS: serverStatus.IN_PROGRESS ?? issues.filter((i: any) => i.status === 'IN_PROGRESS').length,
+    IN_REVIEW: serverStatus.IN_REVIEW ?? issues.filter((i: any) => i.status === 'IN_REVIEW').length,
+    DONE: serverStatus.DONE ?? issues.filter((i: any) => i.status === 'DONE').length,
   };
 
-  // Priority counts
+  // Use server-side priority breakdown as primary source
+  const serverPriority = stats?.priorityBreakdown || {};
   const priorityCounts = {
-    HIGHEST: issues.filter((i: any) => i.priority === 'HIGHEST').length,
-    HIGH: issues.filter((i: any) => i.priority === 'HIGH').length,
-    MEDIUM: issues.filter((i: any) => i.priority === 'MEDIUM').length,
-    LOW: issues.filter((i: any) => i.priority === 'LOW').length,
-    LOWEST: issues.filter((i: any) => i.priority === 'LOWEST').length,
+    HIGHEST: serverPriority.HIGHEST ?? issues.filter((i: any) => i.priority === 'HIGHEST').length,
+    HIGH: serverPriority.HIGH ?? issues.filter((i: any) => i.priority === 'HIGH').length,
+    MEDIUM: serverPriority.MEDIUM ?? issues.filter((i: any) => i.priority === 'MEDIUM').length,
+    LOW: serverPriority.LOW ?? issues.filter((i: any) => i.priority === 'LOW').length,
+    LOWEST: serverPriority.LOWEST ?? issues.filter((i: any) => i.priority === 'LOWEST').length,
   };
 
-  // Type counts
+  // Use server-side type breakdown as primary source
+  const serverType = stats?.typeBreakdown || {};
   const typeCounts = {
-    TASK: issues.filter((i: any) => i.type === 'TASK').length,
-    STORY: issues.filter((i: any) => i.type === 'STORY').length,
-    BUG: issues.filter((i: any) => i.type === 'BUG').length,
-    EPIC: issues.filter((i: any) => i.type === 'EPIC').length,
+    TASK: serverType.TASK ?? issues.filter((i: any) => i.type === 'TASK').length,
+    STORY: serverType.STORY ?? issues.filter((i: any) => i.type === 'STORY').length,
+    BUG: serverType.BUG ?? issues.filter((i: any) => i.type === 'BUG').length,
+    EPIC: serverType.EPIC ?? issues.filter((i: any) => i.type === 'EPIC').length,
   };
 
-  const totalIssues = issues.length;
+  const totalIssues = stats?.totalTasks ?? issues.length;
   const maxPriority = Math.max(...Object.values(priorityCounts), 1);
 
   // Get favorite projects
@@ -267,6 +280,28 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="p-6">
+        {/* Error banner — visible when API calls fail */}
+        {(statsError || issuesError) && (
+          <div className="mb-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
+            <div className="flex items-center gap-2 mb-1">
+              <AlertCircle className="h-4 w-4 text-red-500" />
+              <span className="text-sm font-medium text-red-700 dark:text-red-300">Dashboard data issue</span>
+            </div>
+            <p className="text-xs text-red-600 dark:text-red-400">
+              {statsError instanceof Error ? statsError.message : ''}
+              {issuesError instanceof Error ? ` ${issuesError.message}` : ''}
+            </p>
+          </div>
+        )}
+
+        {/* Loading indicator for stats */}
+        {statsLoading && (
+          <div className="mb-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+            Loading dashboard data...
+          </div>
+        )}
+
         {/* Stats Cards - Beautiful 2x2 grid on mobile */}
         <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
