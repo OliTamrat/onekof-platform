@@ -105,6 +105,9 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
+    // Note: label filtering is done client-side after fetching since
+    // Prisma Json field filtering varies by database provider
+
     // Get all issues
     const issues = await prisma.task.findMany({
       where,
