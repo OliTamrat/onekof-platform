@@ -10,6 +10,8 @@ import {
   Copy,
   CheckCircle2,
   Info,
+  Settings,
+  ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -27,24 +29,27 @@ const ROLE_CONFIG = {
     description: 'Full access — manage admins, orgs, users, and system settings',
     icon: Crown,
     color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-100 dark:bg-amber-900/30',
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
     border: 'border-amber-200 dark:border-amber-800',
+    gradient: 'from-amber-500 to-orange-500',
   },
   ADMIN: {
     label: 'Admin',
     description: 'Can manage organizations and users, but cannot manage admin team',
     icon: ShieldCheck,
     color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-100 dark:bg-purple-900/30',
+    bg: 'bg-purple-50 dark:bg-purple-900/20',
     border: 'border-purple-200 dark:border-purple-800',
+    gradient: 'from-purple-500 to-indigo-500',
   },
   VIEWER: {
     label: 'Viewer',
     description: 'Read-only access to dashboard, organizations, and user data',
     icon: Eye,
     color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-100 dark:bg-blue-900/30',
+    bg: 'bg-blue-50 dark:bg-blue-900/20',
     border: 'border-blue-200 dark:border-blue-800',
+    gradient: 'from-blue-500 to-cyan-500',
   },
 };
 
@@ -62,40 +67,50 @@ export default function AdminTeamPage() {
 
   const team = data?.team || [];
 
-  const exampleEnv = `ADMIN_USERS=${JSON.stringify([
+  const exampleJson = JSON.stringify([
     { username: 'oli', password: 'YourSecurePassword', role: 'OWNER', name: 'Oli Tamrat' },
     { username: 'admin2', password: 'AnotherPassword', role: 'ADMIN', name: 'Team Member' },
     { username: 'viewer1', password: 'ViewerPassword', role: 'VIEWER', name: 'Read Only User' },
-  ])}`;
+  ], null, 2);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(exampleEnv);
+    navigator.clipboard.writeText(exampleJson);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const ownerCount = team.filter(m => m.role === 'OWNER').length;
+  const adminCount = team.filter(m => m.role === 'ADMIN').length;
+  const viewerCount = team.filter(m => m.role === 'VIEWER').length;
+
   return (
-    <div className="p-6 sm:p-8 max-w-5xl mx-auto">
+    <div className="p-6 sm:p-8 max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <UsersRound className="h-5 w-5 text-amber-500" />
-          Admin Team
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Manage who has access to the platform admin dashboard
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm">
+          <UsersRound className="h-5 w-5 text-white" />
+        </div>
+        <div>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Admin Team</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Manage who has access to the admin dashboard &middot; {team.length} member{team.length !== 1 ? 's' : ''}
+          </p>
+        </div>
       </div>
 
-      {/* Role legend */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+      {/* Role summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {(Object.entries(ROLE_CONFIG) as [keyof typeof ROLE_CONFIG, typeof ROLE_CONFIG[keyof typeof ROLE_CONFIG]][]).map(([role, config]) => {
           const RoleIcon = config.icon;
+          const count = role === 'OWNER' ? ownerCount : role === 'ADMIN' ? adminCount : viewerCount;
           return (
             <div key={role} className={cn('rounded-xl border p-4', config.border, config.bg)}>
-              <div className="flex items-center gap-2 mb-2">
-                <RoleIcon className={cn('h-4 w-4', config.color)} />
-                <span className={cn('text-sm font-bold', config.color)}>{config.label}</span>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <RoleIcon className={cn('h-4 w-4', config.color)} />
+                  <span className={cn('text-sm font-bold', config.color)}>{config.label}</span>
+                </div>
+                <span className={cn('text-lg font-bold', config.color)}>{count}</span>
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{config.description}</p>
             </div>
@@ -104,25 +119,29 @@ export default function AdminTeamPage() {
       </div>
 
       {/* Current team */}
-      <div className="mb-8">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Current Team Members</h3>
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Current Team Members</h3>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-6 w-6 animate-spin text-primary-500" />
+            <div className="text-center">
+              <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary-500" />
+              <p className="mt-2 text-xs text-slate-400">Loading team...</p>
+            </div>
           </div>
         ) : team.length === 0 ? (
           <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
             <UsersRound className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">No admin users configured</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">No admin users configured</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Add admin users via the ADMIN_USERS environment variable</p>
           </div>
         ) : (
           <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
-            {team.map(member => {
+            {team.map((member, index) => {
               const config = ROLE_CONFIG[member.role];
               const RoleIcon = config.icon;
               return (
-                <div key={member.username} className="flex items-center gap-4 px-5 py-4">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-sm font-bold text-white shadow-sm shrink-0">
+                <div key={member.username} className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-[#1B1F23] transition-colors">
+                  <div className={cn('h-10 w-10 rounded-full bg-gradient-to-br flex items-center justify-center text-sm font-bold text-white shadow-sm shrink-0', config.gradient)}>
                     {member.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -140,40 +159,38 @@ export default function AdminTeamPage() {
         )}
       </div>
 
-      {/* How to add/remove admins */}
+      {/* How to manage admins */}
       <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 p-5">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300 mb-2">
+          <div className="rounded-lg bg-blue-100 dark:bg-blue-900/30 p-2 shrink-0">
+            <Settings className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
               How to add or remove admin users
             </h4>
             <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed mb-4">
               Admin users are managed via the <code className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_USERS</code> environment variable in Vercel.
-              Update the JSON array to add, remove, or change roles for admin users, then redeploy.
+              Update the JSON array to add, remove, or change roles, then redeploy.
             </p>
 
             <div className="rounded-lg bg-white dark:bg-[#1B1F23] border border-blue-200 dark:border-blue-800 overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-[#22272B] border-b border-blue-200 dark:border-blue-800">
                 <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Example ADMIN_USERS value</span>
-                <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 px-2 text-xs">
-                  {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mr-1" /> : <Copy className="h-3.5 w-3.5 mr-1" />}
+                <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 px-2 text-xs gap-1.5">
+                  {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                   {copied ? 'Copied' : 'Copy'}
                 </Button>
               </div>
               <pre className="p-3 text-[11px] text-slate-700 dark:text-slate-300 overflow-x-auto font-mono leading-relaxed">
-{JSON.stringify([
-  { username: 'oli', password: 'YourSecurePassword', role: 'OWNER', name: 'Oli Tamrat' },
-  { username: 'admin2', password: 'AnotherPassword', role: 'ADMIN', name: 'Team Member' },
-  { username: 'viewer1', password: 'ViewerPassword', role: 'VIEWER', name: 'Read Only User' },
-], null, 2)}
+                {exampleJson}
               </pre>
             </div>
 
             <div className="mt-4 space-y-1.5">
-              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Steps:</p>
+              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">Steps:</p>
               <ol className="text-[11px] text-blue-700 dark:text-blue-400 space-y-1 list-decimal pl-4">
-                <li>Go to Vercel → Project Settings → Environment Variables</li>
+                <li>Go to <strong>Vercel &rarr; Project Settings &rarr; Environment Variables</strong></li>
                 <li>Edit the <code className="font-mono bg-blue-100 dark:bg-blue-900/40 px-1 rounded">ADMIN_USERS</code> variable</li>
                 <li>Update the JSON array (add/remove users, change roles)</li>
                 <li>Use strong, unique passwords for each admin</li>
