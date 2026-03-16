@@ -10,38 +10,33 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get user's current organization
+    // Get user with organizations
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { defaultOrganizationId: true },
-    });
-
-    if (!user?.defaultOrganizationId) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    // Verify user is a member of the organization
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: user.defaultOrganizationId,
-          userId: session.user.id,
+      where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: {
+            organization: true,
+          },
         },
       },
     });
 
-    if (!membership) {
-      return NextResponse.json({ error: 'Not a member of this organization' }, { status: 403 });
+    if (!user || user.organizations.length === 0) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
     }
+
+    const orgMembership = user.organizations[0];
+    const organizationId = orgMembership.organizationId;
 
     // Fetch teams with member count and project count
     const teams = await prisma.team.findMany({
       where: {
-        organizationId: user.defaultOrganizationId,
+        organizationId,
         deletedAt: null,
       },
       include: {
@@ -89,7 +84,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -100,27 +95,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Team name is required' }, { status: 400 });
     }
 
-    // Get user's current organization
+    // Get user with organizations
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { defaultOrganizationId: true },
-    });
-
-    if (!user?.defaultOrganizationId) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    // Verify user is an admin or owner
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: user.defaultOrganizationId,
-          userId: session.user.id,
+      where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: {
+            organization: true,
+          },
         },
       },
     });
 
-    if (!membership || (membership.role !== 'ADMIN' && membership.role !== 'OWNER')) {
+    if (!user || user.organizations.length === 0) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
+    }
+
+    const orgMembership = user.organizations[0];
+    const organizationId = orgMembership.organizationId;
+
+    if (orgMembership.role !== 'ADMIN' && orgMembership.role !== 'OWNER') {
       return NextResponse.json(
         { error: 'Only admins and owners can create teams' },
         { status: 403 }
@@ -130,12 +124,12 @@ export async function POST(req: NextRequest) {
     // Create team
     const team = await prisma.team.create({
       data: {
-        organizationId: user.defaultOrganizationId,
+        organizationId,
         name,
         description,
         icon: icon || '👥',
         color: color || '#3B82F6',
-        createdBy: session.user.id,
+        createdBy: user.id,
       },
       include: {
         _count: {
@@ -151,9 +145,9 @@ export async function POST(req: NextRequest) {
     await prisma.teamMember.create({
       data: {
         teamId: team.id,
-        userId: session.user.id,
+        userId: user.id,
         role: 'LEAD',
-        addedBy: session.user.id,
+        addedBy: user.id,
       },
     });
 
