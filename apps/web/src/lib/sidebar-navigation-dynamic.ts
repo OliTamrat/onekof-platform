@@ -30,6 +30,7 @@ import {
   Map,
   MessageSquare,
   GitBranch,
+  Puzzle,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -168,6 +169,7 @@ export function getSidebarNavigation(
         { name: 'Automation', href: '/dashboard/automations', icon: Zap },
         { name: 'Wiki', href: '/dashboard/wiki', icon: BookOpen },
         { name: 'Docs', href: '/dashboard/docs', icon: BookOpen },
+        { name: 'Integrations', href: '/dashboard/settings/integrations', icon: Puzzle },
       ],
     },
   ];
