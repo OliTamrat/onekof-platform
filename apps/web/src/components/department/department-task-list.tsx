@@ -294,36 +294,48 @@ export function DepartmentTaskList({
           </div>
         ) : viewMode === 'board' ? (
           /* Board view - kanban columns by status */
-          <div className="flex gap-4 p-4 sm:p-6 overflow-x-auto h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 sm:p-6 h-full auto-rows-min">
             {STATUS_ORDER.filter(s => filteredTasks.some(t => t.status === s)).map(status => {
               const statusTasks = filteredTasks.filter(t => t.status === status);
               return (
-                <div key={status} className="w-72 shrink-0 flex flex-col rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B]">
-                  <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700">
-                    <div className="flex items-center gap-2">
-                      <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-bold', STATUS_BADGE[status])}>
+                <div key={status} className="flex flex-col rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-[#22272B] min-w-0">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className={cn('rounded-md px-2 py-1 text-[11px] font-bold tracking-wide', STATUS_BADGE[status])}>
                         {status.replace('_', ' ')}
                       </span>
-                      <span className="text-xs text-slate-400">{statusTasks.length}</span>
+                      <span className="text-xs font-semibold text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-full px-2 py-0.5">{statusTasks.length}</span>
                     </div>
                   </div>
-                  <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                  <div className="flex-1 overflow-y-auto p-3 space-y-3">
                     {statusTasks.map(task => (
                       <button
                         key={task.id}
                         onClick={() => setSelectedTaskId(task.id)}
-                        className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors shadow-sm"
+                        className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all shadow-sm group"
                       >
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className={cn('h-1.5 w-1.5 rounded-full', PRIORITY_DOT[task.priority])} />
-                          <span className="text-[10px] font-semibold text-primary-500">{task.key}</span>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={cn('h-2 w-2 rounded-full', PRIORITY_DOT[task.priority])} />
+                          <span className="text-[11px] font-semibold text-primary-600 dark:text-primary-400">{task.key}</span>
                         </div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white line-clamp-2 mb-2">{task.title}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400" style={{ color: task.project.color }}>{task.project.key}</span>
-                          {task.assignee && (
-                            <div className="h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-[9px] text-white font-medium">
+                        <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{task.title}</p>
+                        {task.dueDate && (
+                          <div className="flex items-center gap-1.5 mb-3">
+                            <Clock className="h-3 w-3 text-slate-400" />
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                              {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+                          <span className="text-[11px] font-medium text-slate-400" style={{ color: task.project.color }}>{task.project.key}</span>
+                          {task.assignee ? (
+                            <div className="h-6 w-6 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-[10px] text-white font-semibold shadow-sm" title={task.assignee.name}>
                               {task.assignee.name.charAt(0)}
+                            </div>
+                          ) : (
+                            <div className="h-6 w-6 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center" title="Unassigned">
+                              <span className="text-[10px] text-slate-400">?</span>
                             </div>
                           )}
                         </div>
