@@ -14,6 +14,7 @@ import {
   ListChecks,
   Calendar,
   Users,
+  UserPlus,
   Target,
   BarChart3,
   Sparkles,
@@ -82,13 +83,15 @@ export function getSidebarNavigation(
       ],
     },
 
-    // 3. TEAMS (Top-level)
+    // 3. TEAMS & MEMBERS
     {
       id: 'teams',
       name: 'Teams',
       icon: Users,
       href: '/dashboard/teams',
-      items: [],
+      items: [
+        { name: 'Members', href: '/dashboard/members', icon: UserPlus },
+      ],
     },
 
     // 4. BUDGET (Top-level)
