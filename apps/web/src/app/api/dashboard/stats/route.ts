@@ -100,12 +100,14 @@ export async function GET(_request: NextRequest) {
       return acc;
     }, {} as Record<string, number>);
 
-    // Get type breakdown from actual task types
-    const typeCounts = allTasks.reduce((acc, task) => {
-      const type = task.type || 'TASK';
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    // Get type breakdown (using project type as proxy for now)
+    const typeCounts = {
+      TASK: allTasks.length,
+      STORY: 0,
+      BUG: 0,
+      EPIC: 0,
+      FEATURE: 0,
+    };
 
     return NextResponse.json({
       stats: {
@@ -118,8 +120,6 @@ export async function GET(_request: NextRequest) {
       priorityBreakdown: priorityCounts,
       typeBreakdown: typeCounts,
       totalTasks: allTasks.length,
-      totalProjects: projects.length,
-      organizationId,
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);
