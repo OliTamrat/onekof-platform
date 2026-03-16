@@ -9,13 +9,23 @@ export function middleware(request: NextRequest) {
   // Format: {org-slug}.onekof.com or {org-slug}.localhost:3000
   const organizationSlug = getOrganizationSlug(hostname);
 
-  // Define protected routes
+  // Admin routes — separate auth system
+  const isAdminRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login') && !pathname.startsWith('/admin/setup');
+  const isAdminApiRoute = pathname.startsWith('/api/admin') && !pathname.startsWith('/api/admin/login');
+
+  if (isAdminRoute) {
+    const adminToken = request.cookies.get('onekof-admin-token');
+    if (!adminToken) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
+  // Define protected routes (regular user routes)
   const isProtectedRoute =
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/projects') ||
     pathname.startsWith('/docs') ||
-    pathname.startsWith('/settings') ||
-    (pathname.startsWith('/admin') && !pathname.startsWith('/admin/setup'));
+    pathname.startsWith('/settings');
 
   // Check if user is authenticated for protected routes
   if (isProtectedRoute) {
