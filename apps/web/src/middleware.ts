@@ -14,7 +14,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/projects') ||
     pathname.startsWith('/docs') ||
-    pathname.startsWith('/settings');
+    pathname.startsWith('/settings') ||
+    (pathname.startsWith('/admin') && !pathname.startsWith('/admin/setup'));
 
   // Check if user is authenticated for protected routes
   if (isProtectedRoute) {
@@ -118,7 +119,7 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
   response.headers.delete('X-Powered-By');
 
   // Add strict cache control for sensitive pages
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/auth')) {
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/auth') || pathname.startsWith('/admin')) {
     response.headers.set(
       'Cache-Control',
       'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
