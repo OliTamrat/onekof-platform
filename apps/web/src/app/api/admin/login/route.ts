@@ -1,36 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createHash, randomBytes } from 'crypto';
+import { createHmac } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || '';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'onekof-admin-default-secret-change-me';
-
-function generateToken(username: string): string {
-  const timestamp = Date.now().toString();
-  const raw = `${username}:${timestamp}:${ADMIN_SECRET}`;
-  return createHash('sha256').update(raw).digest('hex') + '.' + timestamp;
+interface AdminUser {
+  username: string;
+  password: string;
+  role: 'OWNER' | 'ADMIN' | 'VIEWER';
+  name: string;
 }
 
-export function validateToken(token: string): boolean {
+const ADMIN_SECRET = process.env.ADMIN_SECRET || 'onekof-admin-default-secret-change-me';
+
+function getAdminUsers(): AdminUser[] {
+  const raw = process.env.ADMIN_USERS || '';
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+function generateToken(user: AdminUser): string {
+  const timestamp = Date.now().toString();
+  const payload = JSON.stringify({ username: user.username, role: user.role, name: user.name });
+  const payloadB64 = Buffer.from(payload).toString('base64url');
+  const signature = createHmac('sha256', ADMIN_SECRET)
+    .update(`${payloadB64}.${timestamp}`)
+    .digest('base64url');
+  return `${payloadB64}.${timestamp}.${signature}`;
+}
+
+export function verifyToken(token: string): { username: string; role: string; name: string } | null {
   const parts = token.split('.');
-  if (parts.length !== 2) return false;
+  if (parts.length !== 3) return null;
 
-  const [hash, timestamp] = parts;
+  const [payloadB64, timestamp, signature] = parts;
+
+  // Check expiry (24 hours)
   const age = Date.now() - parseInt(timestamp, 10);
+  if (isNaN(age) || age > 24 * 60 * 60 * 1000) return null;
 
-  // Token expires after 24 hours
-  if (age > 24 * 60 * 60 * 1000) return false;
+  // Verify signature
+  const expected = createHmac('sha256', ADMIN_SECRET)
+    .update(`${payloadB64}.${timestamp}`)
+    .digest('base64url');
+  if (signature !== expected) return null;
 
-  const expected = createHash('sha256').update(`${ADMIN_USERNAME}:${timestamp}:${ADMIN_SECRET}`).digest('hex');
-  return hash === expected;
+  try {
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
+    return { username: payload.username, role: payload.role, name: payload.name };
+  } catch {
+    return null;
+  }
 }
 
 export async function POST(request: NextRequest) {
-  if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+  const adminUsers = getAdminUsers();
+
+  if (adminUsers.length === 0) {
     return NextResponse.json(
-      { error: 'Admin credentials not configured. Set ADMIN_USERNAME and ADMIN_PASSWORD in environment variables.' },
+      { error: 'Admin users not configured. Set ADMIN_USERS in environment variables.' },
       { status: 503 }
     );
   }
@@ -43,20 +74,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Username and password required' }, { status: 400 });
     }
 
-    if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+    const user = adminUsers.find(u => u.username === username && u.password === password);
+    if (!user) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const token = generateToken(username);
+    const token = generateToken(user);
 
-    const response = NextResponse.json({ success: true });
+    const response = NextResponse.json({
+      success: true,
+      admin: { username: user.username, name: user.name, role: user.role },
+    });
 
     response.cookies.set('onekof-admin-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 24 * 60 * 60, // 24 hours
+      maxAge: 24 * 60 * 60,
     });
 
     return response;
