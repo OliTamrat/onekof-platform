@@ -71,12 +71,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resolve organization from subdomain header (set by middleware), fallback to first org
-    const slug = request.headers.get('x-organization-slug');
-    const matchedOrg = slug
-      ? user.organizations.find(m => m.organization.slug === slug)
-      : null;
-    const organization = (matchedOrg || user.organizations[0]).organization;
+    const organization = user.organizations[0].organization;
 
     // Check AI quota
     const quotaCheck = await checkAIQuota(organization.id, user.id);

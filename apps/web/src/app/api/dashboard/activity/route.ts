@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/dashboard/activity
  * Returns recent activity for the current user's organization
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Get the current user's session
     const session = await getServerSession(authOptions);
@@ -40,11 +40,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Resolve organization from subdomain header (set by middleware), fallback to first org
-    const slug = request.headers.get('x-organization-slug');
-    const orgMembership = (slug
-      ? user.organizations.find(m => m.organization.slug === slug)
-      : null) || user.organizations[0];
+    // Get the user's default organization or first organization
+    const orgMembership = user.organizations[0];
     const organizationId = orgMembership.organizationId;
 
     // Get recent tasks (last 20 updated)
