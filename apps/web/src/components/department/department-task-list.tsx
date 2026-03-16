@@ -91,13 +91,13 @@ export function DepartmentTaskList({
     enabled: !!session,
   });
 
-  const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
-    queryKey: ['issues', 'department', title, scopedProjectId, defaultLabels],
+  const { data: issuesData, isLoading } = useQuery<{ issues?: (Task & { labels?: string[] })[] }>({
+    queryKey: ['issues', 'department', title, scopedProjectId],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      if (scopedProjectId) params.set('projectId', scopedProjectId);
-      if (defaultLabels.length > 0) params.set('labels', defaultLabels.join(','));
-      const res = await fetch(`/api/issues?${params}`);
+      const url = scopedProjectId
+        ? `/api/issues?projectId=${scopedProjectId}`
+        : '/api/issues';
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Failed');
       return res.json();
     },
@@ -129,7 +129,15 @@ export function DepartmentTaskList({
     },
   });
 
-  const allTasks = issuesData?.issues || [];
+  // Filter by department labels client-side
+  const allTasks = useMemo(() => {
+    const raw = issuesData?.issues || [];
+    if (defaultLabels.length === 0) return raw;
+    return raw.filter(task => {
+      const taskLabels: string[] = Array.isArray(task.labels) ? task.labels.map((l: string) => l.toLowerCase()) : [];
+      return defaultLabels.every(dl => taskLabels.includes(dl.toLowerCase()));
+    });
+  }, [issuesData?.issues, defaultLabels]);
 
   // Apply search + filters
   const filteredTasks = useMemo(() => {
