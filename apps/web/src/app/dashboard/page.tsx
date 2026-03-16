@@ -79,7 +79,7 @@ export default function DashboardPage() {
   const { data: issuesData, error: issuesError } = useQuery({
     queryKey: ['issues'],
     queryFn: async () => {
-      const res = await fetch('/api/issues?limit=100');
+      const res = await fetch('/api/issues');
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
         throw new Error(errBody.error || `Issues fetch failed: ${res.status}`);
