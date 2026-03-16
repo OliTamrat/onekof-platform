@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Search,
   CheckCircle2,
@@ -15,6 +15,20 @@ import {
   Shield,
   FileText,
   Puzzle,
+  Loader2,
+  AlertCircle,
+  RefreshCw,
+  Bell,
+  BellOff,
+  Unplug,
+  GitBranch,
+  GitPullRequest,
+  Calendar,
+  HardDrive,
+  Hash,
+  ToggleLeft,
+  ToggleRight,
+  Activity,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { cn } from '@/lib/utils';
@@ -141,9 +155,9 @@ function NotionLogo({ className }: { className?: string }) {
   );
 }
 
-// ─── Types & Data ──────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type IntegrationStatus = 'available' | 'connected' | 'coming_soon';
+type IntegrationStatusType = 'available' | 'connected' | 'coming_soon';
 type IntegrationCategory = 'communication' | 'development' | 'productivity' | 'analytics';
 
 interface Integration {
@@ -152,12 +166,34 @@ interface Integration {
   description: string;
   logo: React.FC<{ className?: string }>;
   category: IntegrationCategory;
-  status: IntegrationStatus;
+  status: IntegrationStatusType;
   popular?: boolean;
   features: string[];
   setupSteps: string[];
   docsUrl: string;
+  provider?: 'slack' | 'github' | 'google';
 }
+
+interface ConnectionData {
+  id: string;
+  status: string;
+  externalAccountName: string | null;
+  configuration: any;
+  metadata: any;
+  connectedAt: string;
+}
+
+interface IntegrationEvent {
+  id: string;
+  connectionId: string;
+  type: string;
+  direction: string;
+  status: string;
+  payload: any;
+  createdAt: string;
+}
+
+// ─── Integration Definitions ──────────────────────────────────────────────────
 
 const INTEGRATIONS: Integration[] = [
   {
@@ -168,8 +204,9 @@ const INTEGRATIONS: Integration[] = [
     category: 'communication',
     status: 'available',
     popular: true,
+    provider: 'slack',
     features: ['Task notifications in channels', 'Channel mapping per project', 'Slash commands (/onekof)', 'Daily standup digests'],
-    setupSteps: ['Connect your Slack workspace', 'Map channels to projects', 'Configure notification rules', 'Enable slash commands'],
+    setupSteps: ['Click "Connect Slack" to authorize', 'Select a default notification channel', 'Configure which events trigger notifications', 'Optionally map channels to specific projects'],
     docsUrl: '#',
   },
   {
@@ -180,8 +217,9 @@ const INTEGRATIONS: Integration[] = [
     category: 'development',
     status: 'available',
     popular: true,
+    provider: 'github',
     features: ['PR ↔ task linking', 'Auto status on merge', 'Branch tracking per task', 'Code review sync'],
-    setupSteps: ['Install the Onekof GitHub App', 'Select repositories', 'Map branches to projects', 'Configure auto-linking'],
+    setupSteps: ['Click "Connect GitHub" to authorize', 'Select repositories to sync', 'Configure auto-linking rules', 'Set up webhook for real-time updates'],
     docsUrl: '#',
   },
   {
@@ -192,8 +230,9 @@ const INTEGRATIONS: Integration[] = [
     category: 'productivity',
     status: 'available',
     popular: true,
+    provider: 'google',
     features: ['Calendar ↔ deadline sync', 'Drive file attachments', 'Gmail notifications', 'Google Meet links on tasks'],
-    setupSteps: ['Sign in with Google', 'Grant workspace permissions', 'Choose sync preferences', 'Map calendars to projects'],
+    setupSteps: ['Click "Connect Google" to sign in', 'Grant calendar and drive permissions', 'Select calendars to sync', 'Choose sync direction (one-way or two-way)'],
     docsUrl: '#',
   },
   {
@@ -213,7 +252,7 @@ const INTEGRATIONS: Integration[] = [
     description: 'Import existing projects, issues, and workflows from Jira into Onekof.',
     logo: JiraLogo,
     category: 'productivity',
-    status: 'available',
+    status: 'coming_soon',
     features: ['Full project import', 'Issue & subtask migration', 'Status & workflow mapping', 'User matching'],
     setupSteps: ['Connect to Jira Cloud', 'Select projects to import', 'Map statuses & fields', 'Review and confirm import'],
     docsUrl: '#',
@@ -224,7 +263,7 @@ const INTEGRATIONS: Integration[] = [
     description: 'Send real-time event data to any external service via HTTP webhooks.',
     logo: WebhookLogo,
     category: 'development',
-    status: 'available',
+    status: 'coming_soon',
     features: ['Custom event triggers', 'Retry with backoff', 'Payload templates', 'Delivery logs & debugging'],
     setupSteps: ['Add a webhook endpoint URL', 'Select events to subscribe', 'Configure payload format', 'Test and activate'],
     docsUrl: '#',
@@ -235,7 +274,7 @@ const INTEGRATIONS: Integration[] = [
     description: 'Sync task deadlines and milestones with Google Calendar for scheduling.',
     logo: GoogleCalendarLogo,
     category: 'productivity',
-    status: 'available',
+    status: 'coming_soon',
     features: ['Due date → calendar event', 'Milestone sync', 'Two-way updates', 'Team calendar view'],
     setupSteps: ['Sign in with Google', 'Select calendars', 'Choose sync direction', 'Set default reminders'],
     docsUrl: '#',
@@ -246,7 +285,7 @@ const INTEGRATIONS: Integration[] = [
     description: 'Configure email digests, assignment alerts, and comment notifications.',
     logo: EmailLogo,
     category: 'communication',
-    status: 'available',
+    status: 'coming_soon',
     features: ['Daily/weekly digest', 'Assignment alerts', 'Comment reply notifications', 'Custom filter rules'],
     setupSteps: ['Choose notification types', 'Set digest frequency', 'Configure filter rules', 'Add recipient overrides'],
     docsUrl: '#',
@@ -288,8 +327,99 @@ export default function IntegrationsPage() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<IntegrationCategory | 'all'>('all');
   const [selected, setSelected] = useState<Integration | null>(null);
+  const [connections, setConnections] = useState<Record<string, ConnectionData>>({});
+  const [events, setEvents] = useState<IntegrationEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState<string | null>(null);
+  const [disconnecting, setDisconnecting] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const filtered = INTEGRATIONS.filter(i => {
+  const fetchConnections = useCallback(async () => {
+    try {
+      const res = await fetch('/api/integrations');
+      if (res.ok) {
+        const data = await res.json();
+        const connMap: Record<string, ConnectionData> = {};
+        for (const conn of data.connections || []) {
+          connMap[conn.provider] = conn;
+        }
+        setConnections(connMap);
+        setEvents(data.recentEvents || []);
+      }
+    } catch {
+      // Silent fail on fetch
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchConnections();
+
+    // Check for callback params
+    const params = new URLSearchParams(window.location.search);
+    const connected = params.get('connected');
+    const error = params.get('error');
+
+    if (connected) {
+      setToast({ message: `${connected.charAt(0).toUpperCase() + connected.slice(1)} connected successfully!`, type: 'success' });
+      window.history.replaceState({}, '', window.location.pathname);
+      fetchConnections();
+    } else if (error) {
+      setToast({ message: `Connection error: ${error}`, type: 'error' });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [fetchConnections]);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 5000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [toast]);
+
+  const handleConnect = async (integration: Integration) => {
+    if (!integration.provider) return;
+    setConnecting(integration.provider);
+
+    try {
+      const res = await fetch(`/api/integrations/${integration.provider}?action=oauth_url`);
+      if (!res.ok) throw new Error('Failed to get OAuth URL');
+      const data = await res.json();
+      window.location.href = data.url;
+    } catch (err) {
+      setToast({ message: `Failed to connect ${integration.name}`, type: 'error' });
+      setConnecting(null);
+    }
+  };
+
+  const handleDisconnect = async (integration: Integration) => {
+    if (!integration.provider) return;
+    setDisconnecting(integration.provider);
+
+    try {
+      const res = await fetch(`/api/integrations/${integration.provider}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to disconnect');
+      setToast({ message: `${integration.name} disconnected`, type: 'success' });
+      await fetchConnections();
+      if (selected?.id === integration.id) setSelected(null);
+    } catch {
+      setToast({ message: `Failed to disconnect ${integration.name}`, type: 'error' });
+    } finally {
+      setDisconnecting(null);
+    }
+  };
+
+  // Merge live connection status into integration list
+  const integrationsWithStatus = INTEGRATIONS.map(i => {
+    if (i.provider && connections[i.provider]) {
+      return { ...i, status: 'connected' as IntegrationStatusType };
+    }
+    return i;
+  });
+
+  const filtered = integrationsWithStatus.filter(i => {
     const matchesSearch = !search ||
       i.name.toLowerCase().includes(search.toLowerCase()) ||
       i.description.toLowerCase().includes(search.toLowerCase());
@@ -297,13 +427,32 @@ export default function IntegrationsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const popular = filtered.filter(i => i.popular);
+  const connectedList = filtered.filter(i => i.status === 'connected');
+  const popular = filtered.filter(i => i.popular && i.status !== 'connected');
   const available = filtered.filter(i => i.status === 'available' && !i.popular);
   const comingSoon = filtered.filter(i => i.status === 'coming_soon');
+
+  const connectedCount = Object.keys(connections).length;
 
   return (
     <AppLayout>
       <div className="flex h-full bg-white dark:bg-[#1B1F23]">
+        {/* Toast */}
+        {toast && (
+          <div className={cn(
+            'fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 animate-in slide-in-from-top-2 duration-200',
+            toast.type === 'success'
+              ? 'bg-emerald-500 text-white'
+              : 'bg-red-500 text-white'
+          )}>
+            {toast.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+            {toast.message}
+            <button onClick={() => setToast(null)} className="ml-2 hover:opacity-80">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+
         {/* Main list */}
         <div className={cn(
           'flex flex-col flex-1 min-w-0 transition-all duration-300',
@@ -319,10 +468,18 @@ export default function IntegrationsPage() {
                 <div>
                   <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Integrations</h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Connect your favorite tools &middot; {INTEGRATIONS.filter(i => i.status !== 'coming_soon').length} available
+                    {connectedCount > 0 && <span className="text-primary-500 font-medium">{connectedCount} connected</span>}
+                    {connectedCount > 0 && ' · '}
+                    {INTEGRATIONS.filter(i => i.provider).length} available · {INTEGRATIONS.filter(i => i.status === 'coming_soon').length} coming soon
                   </p>
                 </div>
               </div>
+              {connectedCount > 0 && (
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => fetchConnections()}>
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  Refresh
+                </Button>
+              )}
             </div>
 
             {/* Search + filters */}
@@ -358,70 +515,93 @@ export default function IntegrationsPage() {
 
           {/* Grid */}
           <div className="flex-1 overflow-y-auto p-6 space-y-8">
-            {popular.length > 0 && (
-              <IntegrationSection
-                title="Popular"
-                icon={<Star className="h-4 w-4 text-amber-500" />}
-                integrations={popular}
-                selected={selected}
-                onSelect={setSelected}
-              />
-            )}
-
-            {available.length > 0 && (
-              <IntegrationSection
-                title="Available"
-                icon={<Zap className="h-4 w-4 text-primary-500" />}
-                integrations={available}
-                selected={selected}
-                onSelect={setSelected}
-              />
-            )}
-
-            {comingSoon.length > 0 && (
-              <IntegrationSection
-                title="Coming Soon"
-                icon={<Clock className="h-4 w-4 text-slate-400" />}
-                integrations={comingSoon}
-                selected={selected}
-                onSelect={setSelected}
-              />
-            )}
-
-            {filtered.length === 0 && (
-              <div className="text-center py-16">
-                <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-                <p className="text-sm text-slate-500 dark:text-slate-400">No integrations match &quot;{search}&quot;</p>
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="h-6 w-6 animate-spin text-primary-500" />
+                <span className="ml-2 text-sm text-slate-500">Loading integrations...</span>
               </div>
-            )}
+            ) : (
+              <>
+                {connectedList.length > 0 && (
+                  <IntegrationSection
+                    title="Connected"
+                    icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+                    integrations={connectedList}
+                    selected={selected}
+                    onSelect={setSelected}
+                    connections={connections}
+                  />
+                )}
 
-            {/* API section */}
-            <section>
-              <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-slate-50 to-white dark:from-[#22272B] dark:to-[#1B1F23] p-6">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3">
-                    <Shield className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                {popular.length > 0 && (
+                  <IntegrationSection
+                    title="Popular"
+                    icon={<Star className="h-4 w-4 text-amber-500" />}
+                    integrations={popular}
+                    selected={selected}
+                    onSelect={setSelected}
+                    connections={connections}
+                  />
+                )}
+
+                {available.length > 0 && (
+                  <IntegrationSection
+                    title="Available"
+                    icon={<Zap className="h-4 w-4 text-primary-500" />}
+                    integrations={available}
+                    selected={selected}
+                    onSelect={setSelected}
+                    connections={connections}
+                  />
+                )}
+
+                {comingSoon.length > 0 && (
+                  <IntegrationSection
+                    title="Coming Soon"
+                    icon={<Clock className="h-4 w-4 text-slate-400" />}
+                    integrations={comingSoon}
+                    selected={selected}
+                    onSelect={setSelected}
+                    connections={connections}
+                  />
+                )}
+
+                {filtered.length === 0 && (
+                  <div className="text-center py-16">
+                    <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400">No integrations match &quot;{search}&quot;</p>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Build Custom Integrations</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
-                      Use the Onekof API to build custom integrations with your internal tools.
-                      Full REST API with webhooks, event subscriptions, and OAuth 2.0 authentication.
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-                        <FileText className="h-3.5 w-3.5" />
-                        API Documentation
-                      </Button>
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-                        <Zap className="h-3.5 w-3.5" />
-                        Webhook Guide
-                      </Button>
+                )}
+
+                {/* API section */}
+                <section>
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-slate-50 to-white dark:from-[#22272B] dark:to-[#1B1F23] p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3">
+                        <Shield className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Build Custom Integrations</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                          Use the Onekof API to build custom integrations with your internal tools.
+                          Full REST API with webhooks, event subscriptions, and OAuth 2.0 authentication.
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                            <FileText className="h-3.5 w-3.5" />
+                            API Documentation
+                          </Button>
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                            <Zap className="h-3.5 w-3.5" />
+                            Webhook Guide
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </section>
+                </section>
+              </>
+            )}
           </div>
         </div>
 
@@ -429,7 +609,18 @@ export default function IntegrationsPage() {
         {selected && (
           <IntegrationDetailPanel
             integration={selected}
+            connection={selected.provider ? connections[selected.provider] : undefined}
+            events={events.filter(e => {
+              if (!selected.provider) return false;
+              const conn = connections[selected.provider];
+              return conn && e.connectionId === conn.id;
+            })}
             onClose={() => setSelected(null)}
+            onConnect={() => handleConnect(selected)}
+            onDisconnect={() => handleDisconnect(selected)}
+            connecting={connecting === selected.provider}
+            disconnecting={disconnecting === selected.provider}
+            onConfigUpdate={fetchConnections}
           />
         )}
       </div>
@@ -445,18 +636,21 @@ function IntegrationSection({
   integrations,
   selected,
   onSelect,
+  connections,
 }: {
   title: string;
   icon: React.ReactNode;
   integrations: Integration[];
   selected: Integration | null;
   onSelect: (i: Integration) => void;
+  connections: Record<string, ConnectionData>;
 }) {
   return (
     <section>
       <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white mb-4">
         {icon}
         {title}
+        <span className="text-xs font-normal text-slate-400">({integrations.length})</span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {integrations.map(integration => (
@@ -465,6 +659,7 @@ function IntegrationSection({
             integration={integration}
             isSelected={selected?.id === integration.id}
             onSelect={() => onSelect(integration)}
+            connection={integration.provider ? connections[integration.provider] : undefined}
           />
         ))}
       </div>
@@ -478,18 +673,20 @@ function IntegrationCard({
   integration,
   isSelected,
   onSelect,
+  connection,
 }: {
   integration: Integration;
   isSelected: boolean;
   onSelect: () => void;
+  connection?: ConnectionData;
 }) {
   const isComingSoon = integration.status === 'coming_soon';
+  const isConnected = !!connection;
   const Logo = integration.logo;
 
   return (
     <button
       onClick={onSelect}
-      disabled={false}
       className={cn(
         'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full',
         'bg-white dark:bg-[#22272B]',
@@ -497,30 +694,48 @@ function IntegrationCard({
           ? 'border-primary-500 dark:border-primary-500 ring-2 ring-primary-500/20 shadow-md'
           : isComingSoon
             ? 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-90'
-            : 'border-slate-200 dark:border-slate-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md',
+            : isConnected
+              ? 'border-emerald-300 dark:border-emerald-700 hover:shadow-md'
+              : 'border-slate-200 dark:border-slate-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md',
       )}
     >
+      {/* Connected indicator line */}
+      {isConnected && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-primary-500 rounded-t-xl" />
+      )}
+
       <div className="flex items-start gap-3.5 mb-3">
-        {/* Brand logo */}
         <div className="h-11 w-11 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 p-2">
           <Logo className="h-full w-full text-slate-900 dark:text-white" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{integration.name}</h3>
-            {integration.popular && (
+            {integration.popular && !isConnected && (
               <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400 shrink-0" />
             )}
           </div>
-          {isComingSoon ? (
+          {isConnected ? (
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                <CheckCircle2 className="h-3 w-3" />
+                Connected
+              </span>
+              {connection.externalAccountName && (
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[120px]">
+                  {connection.externalAccountName}
+                </span>
+              )}
+            </div>
+          ) : isComingSoon ? (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">
               <Clock className="h-3 w-3" />
               Coming Soon
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
-              <CheckCircle2 className="h-3 w-3" />
-              Available
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
+              <Zap className="h-3 w-3" />
+              Ready to connect
             </span>
           )}
         </div>
@@ -552,14 +767,36 @@ function IntegrationCard({
 
 function IntegrationDetailPanel({
   integration,
+  connection,
+  events,
   onClose,
+  onConnect,
+  onDisconnect,
+  connecting,
+  disconnecting,
+  onConfigUpdate,
 }: {
   integration: Integration;
+  connection?: ConnectionData;
+  events: IntegrationEvent[];
   onClose: () => void;
+  onConnect: () => void;
+  onDisconnect: () => void;
+  connecting: boolean;
+  disconnecting: boolean;
+  onConfigUpdate: () => void;
 }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'setup'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'config' | 'activity'>('overview');
   const isComingSoon = integration.status === 'coming_soon';
+  const isConnected = !!connection;
   const Logo = integration.logo;
+
+  // Reset tab if not connected
+  useEffect(() => {
+    if (!isConnected && activeTab !== 'overview') {
+      setActiveTab('overview');
+    }
+  }, [isConnected, activeTab]);
 
   return (
     <div className="fixed right-0 top-0 bottom-0 w-full max-w-[420px] z-40 border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
@@ -572,7 +809,18 @@ function IntegrationDetailPanel({
             </div>
             <div>
               <h2 className="text-base font-semibold text-slate-900 dark:text-white">{integration.name}</h2>
-              <span className="text-xs text-slate-500 dark:text-slate-400 capitalize">{integration.category}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500 dark:text-slate-400 capitalize">{integration.category}</span>
+                {isConnected && (
+                  <>
+                    <span className="text-slate-300">·</span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Live
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           <button
@@ -596,88 +844,60 @@ function IntegrationDetailPanel({
           >
             Overview
           </button>
-          <button
-            onClick={() => setActiveTab('setup')}
-            className={cn(
-              'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
-              activeTab === 'setup'
-                ? 'bg-white dark:bg-[#282E33] text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
-            )}
-          >
-            Setup Guide
-          </button>
+          {isConnected && (
+            <>
+              <button
+                onClick={() => setActiveTab('config')}
+                className={cn(
+                  'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+                  activeTab === 'config'
+                    ? 'bg-white dark:bg-[#282E33] text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                )}
+              >
+                Configure
+              </button>
+              <button
+                onClick={() => setActiveTab('activity')}
+                className={cn(
+                  'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+                  activeTab === 'activity'
+                    ? 'bg-white dark:bg-[#282E33] text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                )}
+              >
+                Activity
+              </button>
+            </>
+          )}
+          {!isConnected && (
+            <button
+              onClick={() => setActiveTab('config')}
+              className={cn(
+                'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+                activeTab === 'config'
+                  ? 'bg-white dark:bg-[#282E33] text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+              )}
+            >
+              Setup Guide
+            </button>
+          )}
         </div>
       </div>
 
       {/* Panel content */}
       <div className="flex-1 overflow-y-auto p-6">
         {activeTab === 'overview' ? (
-          <div className="space-y-6">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                {integration.description}
-              </p>
-            </div>
-
-            {/* Features */}
-            <div>
-              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Features</h3>
-              <div className="space-y-2">
-                {integration.features.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2.5 py-2 px-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
-                    <CheckCircle2 className="h-4 w-4 text-primary-500 shrink-0" />
-                    <span className="text-sm text-slate-700 dark:text-slate-300">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Status */}
-            <div>
-              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Status</h3>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
-                {isComingSoon ? (
-                  <>
-                    <div className="h-2.5 w-2.5 rounded-full bg-slate-400 animate-pulse" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">In development — available soon</span>
-                  </>
-                ) : (
-                  <>
-                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Ready to connect</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
+          <OverviewTab integration={integration} connection={connection} />
+        ) : activeTab === 'config' ? (
+          isConnected ? (
+            <ConfigTab integration={integration} connection={connection} onUpdate={onConfigUpdate} />
+          ) : (
+            <SetupGuideTab integration={integration} isComingSoon={isComingSoon} />
+          )
         ) : (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Setup Steps</h3>
-              <div className="space-y-3">
-                {integration.setupSteps.map((step, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="h-6 w-6 rounded-full bg-primary-500/10 dark:bg-primary-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-primary-600 dark:text-primary-400">{i + 1}</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-slate-700 dark:text-slate-300">{step}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {!isComingSoon && (
-              <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
-                <Settings2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Configuration UI will appear here once connected
-                </p>
-              </div>
-            )}
-          </div>
+          <ActivityTab events={events} />
         )}
       </div>
 
@@ -688,11 +908,35 @@ function IntegrationDetailPanel({
             <Clock className="h-4 w-4" />
             Coming Soon
           </Button>
+        ) : isConnected ? (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 gap-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800"
+              onClick={onDisconnect}
+              disabled={disconnecting}
+            >
+              {disconnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unplug className="h-4 w-4" />}
+              Disconnect
+            </Button>
+            <Button variant="outline" className="flex-1 gap-2 text-sm">
+              <ExternalLink className="h-4 w-4" />
+              Documentation
+            </Button>
+          </div>
         ) : (
           <>
-            <Button className="w-full gap-2 text-sm">
-              <ArrowRight className="h-4 w-4" />
-              Connect {integration.name}
+            <Button
+              className="w-full gap-2 text-sm"
+              onClick={onConnect}
+              disabled={connecting}
+            >
+              {connecting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowRight className="h-4 w-4" />
+              )}
+              {connecting ? 'Connecting...' : `Connect ${integration.name}`}
             </Button>
             <Button variant="outline" className="w-full gap-2 text-sm">
               <ExternalLink className="h-4 w-4" />
@@ -702,5 +946,471 @@ function IntegrationDetailPanel({
         )}
       </div>
     </div>
+  );
+}
+
+// ─── Overview Tab ──────────────────────────────────────────────────────────────
+
+function OverviewTab({ integration, connection }: { integration: Integration; connection?: ConnectionData }) {
+  return (
+    <div className="space-y-6">
+      {/* Connection info */}
+      {connection && (
+        <div className="rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Connected</span>
+          </div>
+          <div className="space-y-1.5 text-xs text-emerald-600 dark:text-emerald-400">
+            {connection.externalAccountName && (
+              <div className="flex justify-between">
+                <span>Account</span>
+                <span className="font-medium">{connection.externalAccountName}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span>Connected</span>
+              <span className="font-medium">{new Date(connection.connectedAt).toLocaleDateString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Status</span>
+              <span className="font-medium capitalize">{connection.status}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          {integration.description}
+        </p>
+      </div>
+
+      {/* Features */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Features</h3>
+        <div className="space-y-2">
+          {integration.features.map((feature, i) => (
+            <div key={i} className="flex items-center gap-2.5 py-2 px-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
+              <CheckCircle2 className="h-4 w-4 text-primary-500 shrink-0" />
+              <span className="text-sm text-slate-700 dark:text-slate-300">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Status */}
+      {!connection && (
+        <div>
+          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Status</h3>
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
+            {integration.status === 'coming_soon' ? (
+              <>
+                <div className="h-2.5 w-2.5 rounded-full bg-slate-400 animate-pulse" />
+                <span className="text-sm text-slate-600 dark:text-slate-400">In development — available soon</span>
+              </>
+            ) : (
+              <>
+                <div className="h-2.5 w-2.5 rounded-full bg-primary-500" />
+                <span className="text-sm text-slate-600 dark:text-slate-400">Ready to connect</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Setup Guide Tab ───────────────────────────────────────────────────────────
+
+function SetupGuideTab({ integration, isComingSoon }: { integration: Integration; isComingSoon: boolean }) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Setup Steps</h3>
+        <div className="space-y-3">
+          {integration.setupSteps.map((step, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <div className="h-6 w-6 rounded-full bg-primary-500/10 dark:bg-primary-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-bold text-primary-600 dark:text-primary-400">{i + 1}</span>
+              </div>
+              <p className="text-sm text-slate-700 dark:text-slate-300">{step}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Environment variables needed */}
+      {integration.provider && (
+        <div>
+          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Required Configuration</h3>
+          <div className="rounded-lg bg-slate-900 dark:bg-[#1B1F23] p-4 text-xs font-mono space-y-1">
+            {integration.provider === 'slack' && (
+              <>
+                <div className="text-slate-400"># Slack App credentials</div>
+                <div><span className="text-emerald-400">SLACK_CLIENT_ID</span>=<span className="text-slate-500">your-slack-client-id</span></div>
+                <div><span className="text-emerald-400">SLACK_CLIENT_SECRET</span>=<span className="text-slate-500">your-slack-client-secret</span></div>
+                <div><span className="text-emerald-400">SLACK_SIGNING_SECRET</span>=<span className="text-slate-500">your-signing-secret</span></div>
+              </>
+            )}
+            {integration.provider === 'github' && (
+              <>
+                <div className="text-slate-400"># GitHub App credentials</div>
+                <div><span className="text-emerald-400">GITHUB_APP_CLIENT_ID</span>=<span className="text-slate-500">your-github-app-id</span></div>
+                <div><span className="text-emerald-400">GITHUB_APP_CLIENT_SECRET</span>=<span className="text-slate-500">your-github-secret</span></div>
+                <div><span className="text-emerald-400">GITHUB_WEBHOOK_SECRET</span>=<span className="text-slate-500">your-webhook-secret</span></div>
+              </>
+            )}
+            {integration.provider === 'google' && (
+              <>
+                <div className="text-slate-400"># Google OAuth (uses existing config)</div>
+                <div><span className="text-emerald-400">GOOGLE_CLIENT_ID</span>=<span className="text-slate-500">your-google-client-id</span></div>
+                <div><span className="text-emerald-400">GOOGLE_CLIENT_SECRET</span>=<span className="text-slate-500">your-google-secret</span></div>
+                <div><span className="text-emerald-400">GOOGLE_INTEGRATION_REDIRECT_URI</span>=<span className="text-slate-500">callback-url</span></div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isComingSoon && (
+        <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
+          <Settings2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            This integration is under development
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Config Tab ────────────────────────────────────────────────────────────────
+
+function ConfigTab({
+  integration,
+  connection,
+  onUpdate,
+}: {
+  integration: Integration;
+  connection?: ConnectionData;
+  onUpdate: () => void;
+}) {
+  const [saving, setSaving] = useState(false);
+
+  if (!connection || !integration.provider) return null;
+
+  const config = connection.configuration;
+
+  const handleToggle = async (key: string, value: boolean) => {
+    setSaving(true);
+    try {
+      if (integration.provider === 'slack' && key.startsWith('notifications.')) {
+        const notifKey = key.replace('notifications.', '');
+        await fetch(`/api/integrations/slack`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notifications: { [notifKey]: value } }),
+        });
+      } else {
+        await fetch(`/api/integrations/${integration.provider}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [key]: value }),
+        });
+      }
+      onUpdate();
+    } catch {
+      // Silent fail
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Slack Config */}
+      {integration.provider === 'slack' && config && (
+        <>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+              Workspace
+            </h3>
+            <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Team</span>
+                <span className="font-medium text-slate-900 dark:text-white">{config.teamName}</span>
+              </div>
+              {config.defaultChannelName && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">Default channel</span>
+                  <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1">
+                    <Hash className="h-3 w-3" />{config.defaultChannelName}
+                  </span>
+                </div>
+              )}
+              {config.channels?.length > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">Available channels</span>
+                  <span className="font-medium text-slate-900 dark:text-white">{config.channels.length}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Bell className="h-3.5 w-3.5" />
+              Notification Rules
+            </h3>
+            <div className="space-y-1">
+              {[
+                { key: 'taskCreated', label: 'Task created', icon: '✨' },
+                { key: 'taskCompleted', label: 'Task completed', icon: '✅' },
+                { key: 'taskAssigned', label: 'Task assigned', icon: '👤' },
+                { key: 'commentAdded', label: 'Comment added', icon: '💬' },
+                { key: 'projectUpdated', label: 'Project updated', icon: '🚀' },
+                { key: 'dailyDigest', label: 'Daily digest', icon: '📋' },
+              ].map(item => (
+                <ToggleRow
+                  key={item.key}
+                  label={`${item.icon} ${item.label}`}
+                  enabled={config.notifications?.[item.key] ?? false}
+                  onChange={v => handleToggle(`notifications.${item.key}`, v)}
+                  disabled={saving}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* GitHub Config */}
+      {integration.provider === 'github' && config && (
+        <>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+              Account
+            </h3>
+            <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Account</span>
+                <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <GitBranch className="h-3 w-3" />
+                  {config.accountLogin}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Type</span>
+                <span className="font-medium text-slate-900 dark:text-white">{config.accountType}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Repositories</span>
+                <span className="font-medium text-slate-900 dark:text-white">{config.repositories?.length || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+              <GitPullRequest className="h-3.5 w-3.5" />
+              Automation
+            </h3>
+            <div className="space-y-1">
+              <ToggleRow
+                label="Auto-link PRs to tasks"
+                description="Match task keys (e.g., PROJ-123) in PR titles and descriptions"
+                enabled={config.autoLinkPRs ?? true}
+                onChange={v => handleToggle('autoLinkPRs', v)}
+                disabled={saving}
+              />
+              <ToggleRow
+                label="Auto-close on merge"
+                description="Mark linked tasks as done when PR is merged"
+                enabled={config.autoCloseOnMerge ?? true}
+                onChange={v => handleToggle('autoCloseOnMerge', v)}
+                disabled={saving}
+              />
+            </div>
+          </div>
+
+          {config.repositories?.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Repositories ({config.repositories.length})
+              </h3>
+              <div className="space-y-1 max-h-48 overflow-y-auto">
+                {config.repositories.slice(0, 20).map((repo: any) => (
+                  <div key={repo.id} className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-slate-50 dark:bg-[#1B1F23] text-sm">
+                    <GitBranch className="h-3 w-3 text-slate-400 shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 truncate">{repo.fullName}</span>
+                    {repo.private && (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">private</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Google Config */}
+      {integration.provider === 'google' && config && (
+        <>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+              Account
+            </h3>
+            <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Email</span>
+                <span className="font-medium text-slate-900 dark:text-white">{config.email}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Sync direction</span>
+                <span className="font-medium text-slate-900 dark:text-white capitalize">{config.syncDirection?.replace('_', '-')}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Settings2 className="h-3.5 w-3.5" />
+              Sync Settings
+            </h3>
+            <div className="space-y-1">
+              <ToggleRow
+                label="Calendar sync"
+                description="Sync task deadlines to Google Calendar"
+                enabled={config.calendarSync ?? true}
+                onChange={v => handleToggle('calendarSync', v)}
+                disabled={saving}
+                icon={<Calendar className="h-3.5 w-3.5 text-blue-500" />}
+              />
+              <ToggleRow
+                label="Drive sync"
+                description="Attach Google Drive files to tasks"
+                enabled={config.driveSync ?? true}
+                onChange={v => handleToggle('driveSync', v)}
+                disabled={saving}
+                icon={<HardDrive className="h-3.5 w-3.5 text-green-500" />}
+              />
+            </div>
+          </div>
+
+          {config.selectedCalendars?.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Calendars ({config.selectedCalendars.length})
+              </h3>
+              <div className="space-y-1">
+                {config.selectedCalendars.map((cal: any) => (
+                  <div key={cal.id} className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-slate-50 dark:bg-[#1B1F23] text-sm">
+                    <Calendar className="h-3 w-3 text-blue-500 shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 truncate">{cal.summary}</span>
+                    {cal.primary && (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shrink-0">primary</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Activity Tab ──────────────────────────────────────────────────────────────
+
+function ActivityTab({ events }: { events: IntegrationEvent[] }) {
+  if (events.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Activity className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
+        <p className="text-sm text-slate-500 dark:text-slate-400">No activity yet</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Events will appear here as the integration is used</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+        Recent Events
+      </h3>
+      {events.map(event => (
+        <div key={event.id} className="flex items-start gap-3 py-2 px-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
+          <div className={cn(
+            'mt-1 h-2 w-2 rounded-full shrink-0',
+            event.status === 'success' ? 'bg-emerald-500' : event.status === 'failed' ? 'bg-red-500' : 'bg-amber-500'
+          )} />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
+              {event.type}
+            </p>
+            <p className="text-[10px] text-slate-400">
+              {event.direction === 'inbound' ? '← Received' : '→ Sent'} · {new Date(event.createdAt).toLocaleString()}
+            </p>
+          </div>
+          <span className={cn(
+            'text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0',
+            event.status === 'success'
+              ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+              : event.status === 'failed'
+                ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                : 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+          )}>
+            {event.status}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Toggle Row ────────────────────────────────────────────────────────────────
+
+function ToggleRow({
+  label,
+  description,
+  enabled,
+  onChange,
+  disabled,
+  icon,
+}: {
+  label: string;
+  description?: string;
+  enabled: boolean;
+  onChange: (value: boolean) => void;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={() => onChange(!enabled)}
+      disabled={disabled}
+      className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-[#1B1F23] transition-colors text-left disabled:opacity-50"
+    >
+      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+        {icon}
+        <div className="min-w-0">
+          <span className="text-sm text-slate-700 dark:text-slate-300 block truncate">{label}</span>
+          {description && (
+            <span className="text-[10px] text-slate-400 block truncate">{description}</span>
+          )}
+        </div>
+      </div>
+      <div className="shrink-0 ml-3">
+        {enabled ? (
+          <ToggleRight className="h-5 w-5 text-primary-500" />
+        ) : (
+          <ToggleLeft className="h-5 w-5 text-slate-300 dark:text-slate-600" />
+        )}
+      </div>
+    </button>
   );
 }
