@@ -30,6 +30,8 @@ export async function GET(request: NextRequest) {
     const teamId = searchParams.get('teamId');
     const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
+    const limitParam = searchParams.get('limit');
+    const limit = limitParam ? Math.min(parseInt(limitParam), 500) : undefined;
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -50,8 +52,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get the user's default organization or first organization
-    const orgMembership = user.organizations[0];
+    // Resolve organization from subdomain header (set by middleware), fallback to first org
+    const slug = request.headers.get('x-organization-slug');
+    const orgMembership = (slug
+      ? user.organizations.find(m => m.organization.slug === slug)
+      : null) || user.organizations[0];
     const organizationId = orgMembership.organizationId;
 
     // Build query filters
@@ -171,6 +176,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
+      ...(limit ? { take: limit } : {}),
     });
 
     // Transform issues with counts
