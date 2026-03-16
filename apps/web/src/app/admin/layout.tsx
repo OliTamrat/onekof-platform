@@ -1,6 +1,5 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -25,33 +24,39 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [authorized, setAuthorized] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    if (status === 'loading') return;
+  // Skip auth check for login page
+  const isLoginPage = pathname === '/admin/login';
 
-    if (!session?.user?.email) {
-      router.push('/auth/signin');
+  useEffect(() => {
+    if (isLoginPage) {
+      setChecking(false);
+      setAuthorized(true);
       return;
     }
 
     fetch('/api/admin/stats')
       .then(res => {
         if (res.status === 403 || res.status === 401) {
-          router.push('/dashboard');
+          router.push('/admin/login');
           return;
         }
         setAuthorized(true);
       })
-      .catch(() => router.push('/dashboard'))
+      .catch(() => router.push('/admin/login'))
       .finally(() => setChecking(false));
-  }, [session, status, router]);
+  }, [isLoginPage, router]);
 
-  if (status === 'loading' || checking || !authorized) {
+  // Login page renders without the admin chrome
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  if (checking || !authorized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
         <div className="text-center">
@@ -61,6 +66,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     );
   }
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/login', { method: 'DELETE' });
+    router.push('/admin/login');
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-[#1B1F23]">
@@ -100,16 +110,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Footer */}
-        <div className="p-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+        <div className="p-3 border-t border-slate-200 dark:border-slate-700 space-y-1">
           <Link
-            href="/dashboard"
+            href="/"
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#22272B] hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
-            Back to Dashboard
+            Back to Site
           </Link>
-          <div className="flex items-center justify-between px-3 py-1">
-            <span className="text-[11px] text-slate-400 truncate">{session?.user?.email}</span>
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </button>
+          <div className="flex items-center justify-end px-3 py-1">
             <ThemeToggle />
           </div>
         </div>

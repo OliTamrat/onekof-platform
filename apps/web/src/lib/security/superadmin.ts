@@ -1,33 +1,33 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
 import { NextResponse } from 'next/server';
 
-const SUPERADMIN_EMAILS = (process.env.SUPERADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || '';
+const ADMIN_SECRET = process.env.ADMIN_SECRET || 'onekof-admin-default-secret-change-me';
 
-export async function requireSuperAdmin() {
-  const session = await getServerSession(authOptions);
+function validateAdminToken(token: string): boolean {
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
 
-  if (!session?.user?.email) {
-    return {
-      authorized: false,
-      session: null,
-      error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
-    };
-  }
+  const [hash, timestamp] = parts;
+  const age = Date.now() - parseInt(timestamp, 10);
 
-  const email = session.user.email.toLowerCase();
-  if (!SUPERADMIN_EMAILS.includes(email)) {
-    return {
-      authorized: false,
-      session,
-      error: NextResponse.json({ error: 'Forbidden — superadmin access required' }, { status: 403 }),
-    };
-  }
+  if (age > 24 * 60 * 60 * 1000) return false;
 
-  return { authorized: true, session, error: null };
+  const expected = createHash('sha256').update(`${ADMIN_USERNAME}:${timestamp}:${ADMIN_SECRET}`).digest('hex');
+  return hash === expected;
 }
 
-export function isSuperAdminEmail(email: string | null | undefined): boolean {
-  if (!email) return false;
-  return SUPERADMIN_EMAILS.includes(email.toLowerCase());
+export async function requireSuperAdmin() {
+  const cookieStore = cookies();
+  const token = cookieStore.get('onekof-admin-token')?.value;
+
+  if (!token || !validateAdminToken(token)) {
+    return {
+      authorized: false,
+      error: NextResponse.json({ error: 'Unauthorized — admin access required' }, { status: 403 }),
+    };
+  }
+
+  return { authorized: true, error: null };
 }
