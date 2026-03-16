@@ -18,6 +18,7 @@ export default function OperationsPage() {
         baseHref="/dashboard/operations"
         currentTab="incidents"
         tabs={OPERATIONS_TABS}
+        category="operations"
       />
     </AppLayout>
   );

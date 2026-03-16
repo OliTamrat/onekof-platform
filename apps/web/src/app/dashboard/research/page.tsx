@@ -18,6 +18,7 @@ export default function ResearchPage() {
         baseHref="/dashboard/research"
         currentTab="data"
         tabs={RESEARCH_TABS}
+        category="research"
       />
     </AppLayout>
   );

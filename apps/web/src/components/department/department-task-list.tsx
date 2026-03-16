@@ -3,8 +3,9 @@
 import { useState, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Clock, BarChart3, TrendingUp, CheckCircle2, AlertCircle, type LucideIcon } from 'lucide-react';
+import { Plus, Clock, type LucideIcon } from 'lucide-react';
 import { UnifiedPageHeader, type TabDefinition, type FilterField, type GroupByField, type ViewMode } from '@/components/navigation/unified-page-header';
+import { AIInsightsPanel } from '@/components/department/ai-insights-panel';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +21,8 @@ interface Task {
   project: { id: string; name: string; key: string; color: string };
 }
 
+type DepartmentCategory = 'development' | 'marketing' | 'operations' | 'research' | 'knowledge' | 'general';
+
 interface DepartmentTaskListProps {
   title: string;
   description: string;
@@ -30,6 +33,7 @@ interface DepartmentTaskListProps {
   baseHref?: string;
   currentTab?: string;
   tabs?: TabDefinition[];
+  category?: DepartmentCategory;
 }
 
 const PRIORITY_DOT: Record<string, string> = {
@@ -60,6 +64,7 @@ export function DepartmentTaskList({
   baseHref,
   currentTab,
   tabs,
+  category = 'general',
 }: DepartmentTaskListProps) {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -183,16 +188,6 @@ export function DepartmentTaskList({
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  // Insights calculations
-  const insights = useMemo(() => {
-    const total = allTasks.length;
-    const done = allTasks.filter(t => t.status === 'DONE').length;
-    const blocked = allTasks.filter(t => t.status === 'BLOCKED').length;
-    const overdue = allTasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE').length;
-    const critical = allTasks.filter(t => t.priority === 'CRITICAL' && t.status !== 'DONE').length;
-    return { total, done, blocked, overdue, critical, completionRate: total > 0 ? Math.round((done / total) * 100) : 0 };
-  }, [allTasks]);
-
   return (
     <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
       {/* Unified Header with Navigation + Controls */}
@@ -223,50 +218,9 @@ export function DepartmentTaskList({
         taskCounts={{ total: allTasks.length, filtered: filteredTasks.length }}
       />
 
-      {/* Insights Panel */}
+      {/* AI Insights Panel */}
       {insightsOpen && (
-        <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 px-4 py-4 sm:px-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <BarChart3 className="h-3.5 w-3.5 text-slate-500" />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Completion</span>
-              </div>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">{insights.completionRate}%</p>
-              <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700">
-                <div className="h-full rounded-full bg-emerald-500" style={{ width: `${insights.completionRate}%` }} />
-              </div>
-            </div>
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Total</span>
-              </div>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">{insights.total}</p>
-            </div>
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Done</span>
-              </div>
-              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{insights.done}</p>
-            </div>
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <Clock className="h-3.5 w-3.5 text-amber-500" />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Overdue</span>
-              </div>
-              <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{insights.overdue}</p>
-            </div>
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Critical</span>
-              </div>
-              <p className="text-lg font-bold text-red-600 dark:text-red-400">{insights.critical}</p>
-            </div>
-          </div>
-        </div>
+        <AIInsightsPanel tasks={allTasks} category={category} title={title} />
       )}
 
       {/* Quick create bar */}

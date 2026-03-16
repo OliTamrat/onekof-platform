@@ -18,6 +18,7 @@ export default function MaterialsPage() {
         baseHref="/dashboard/research"
         currentTab="materials"
         tabs={RESEARCH_TABS}
+        category="research"
       />
     </AppLayout>
   );

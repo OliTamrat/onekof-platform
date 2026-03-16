@@ -18,6 +18,7 @@ export default function ReleasesPage() {
         baseHref="/dashboard/development"
         currentTab="releases"
         tabs={DEVELOPMENT_TABS}
+        category="development"
       />
     </AppLayout>
   );

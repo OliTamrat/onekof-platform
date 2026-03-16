@@ -18,6 +18,7 @@ export default function SocialMediaPage() {
         baseHref="/dashboard/marketing"
         currentTab="social"
         tabs={MARKETING_TABS}
+        category="marketing"
       />
     </AppLayout>
   );

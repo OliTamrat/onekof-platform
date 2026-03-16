@@ -18,6 +18,7 @@ export default function AnalyticsPage() {
         baseHref="/dashboard/marketing"
         currentTab="analytics"
         tabs={MARKETING_TABS}
+        category="marketing"
       />
     </AppLayout>
   );

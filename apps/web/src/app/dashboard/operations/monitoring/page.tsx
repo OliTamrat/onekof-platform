@@ -18,6 +18,7 @@ export default function MonitoringPage() {
         baseHref="/dashboard/operations"
         currentTab="monitoring"
         tabs={OPERATIONS_TABS}
+        category="operations"
       />
     </AppLayout>
   );
