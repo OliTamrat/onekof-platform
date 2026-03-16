@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const members = await prisma.organizationMember.findMany({
