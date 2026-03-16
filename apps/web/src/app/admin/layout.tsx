@@ -12,51 +12,60 @@ import {
   ChevronLeft,
   Loader2,
   LogOut,
+  UsersRound,
+  Crown,
+  ShieldCheck,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 
-const NAV_ITEMS = [
-  { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { href: '/admin/organizations', label: 'Organizations', icon: Building2 },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/system', label: 'System Health', icon: Activity },
-];
+interface AdminInfo {
+  username: string;
+  name: string;
+  role: 'OWNER' | 'ADMIN' | 'VIEWER';
+}
+
+const ROLE_CONFIG = {
+  OWNER: { label: 'Owner', icon: Crown, color: 'text-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/30' },
+  ADMIN: { label: 'Admin', icon: ShieldCheck, color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/30' },
+  VIEWER: { label: 'Viewer', icon: Eye, color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30' },
+};
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [authorized, setAuthorized] = useState(false);
+  const [admin, setAdmin] = useState<AdminInfo | null>(null);
   const [checking, setChecking] = useState(true);
 
-  // Skip auth check for login page
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
     if (isLoginPage) {
       setChecking(false);
-      setAuthorized(true);
       return;
     }
 
-    fetch('/api/admin/stats')
+    fetch('/api/admin/me')
       .then(res => {
-        if (res.status === 403 || res.status === 401) {
+        if (!res.ok) {
           router.push('/admin/login');
-          return;
+          return null;
         }
-        setAuthorized(true);
+        return res.json();
+      })
+      .then(data => {
+        if (data?.admin) setAdmin(data.admin);
       })
       .catch(() => router.push('/admin/login'))
       .finally(() => setChecking(false));
   }, [isLoginPage, router]);
 
-  // Login page renders without the admin chrome
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  if (checking || !authorized) {
+  if (checking || !admin) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
         <div className="text-center">
@@ -67,6 +76,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  const navItems = [
+    { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard, minRole: 'VIEWER' as const },
+    { href: '/admin/organizations', label: 'Organizations', icon: Building2, minRole: 'VIEWER' as const },
+    { href: '/admin/users', label: 'Users', icon: Users, minRole: 'VIEWER' as const },
+    { href: '/admin/system', label: 'System Health', icon: Activity, minRole: 'VIEWER' as const },
+    { href: '/admin/team', label: 'Admin Team', icon: UsersRound, minRole: 'OWNER' as const },
+  ];
+
+  const ROLE_LEVEL = { OWNER: 3, ADMIN: 2, VIEWER: 1 };
+  const visibleNavItems = navItems.filter(item => ROLE_LEVEL[admin.role] >= ROLE_LEVEL[item.minRole]);
+  const roleConfig = ROLE_CONFIG[admin.role];
+  const RoleIcon = roleConfig.icon;
+
   const handleLogout = async () => {
     await fetch('/api/admin/login', { method: 'DELETE' });
     router.push('/admin/login');
@@ -76,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-slate-50 dark:bg-[#1B1F23]">
       {/* Sidebar */}
       <aside className="w-64 shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] flex flex-col">
-        {/* Logo / Header */}
+        {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm">
             <Shield className="h-4 w-4 text-white" />
@@ -87,9 +109,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
 
+        {/* Logged-in admin */}
+        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">
+              {admin.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{admin.name}</p>
+              <div className="flex items-center gap-1">
+                <RoleIcon className={cn('h-3 w-3', roleConfig.color)} />
+                <span className={cn('text-[10px] font-bold', roleConfig.color)}>{roleConfig.label}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">
-          {NAV_ITEMS.map(item => {
+          {visibleNavItems.map(item => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
               <Link
@@ -102,7 +140,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#22272B] hover:text-slate-900 dark:hover:text-white'
                 )}
               >
-                <item.icon className={cn('h-4.5 w-4.5', isActive ? 'text-primary-500' : '')} />
+                <item.icon className={cn('h-4 w-4', isActive ? 'text-primary-500' : '')} />
                 {item.label}
               </Link>
             );
