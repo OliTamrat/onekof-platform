@@ -171,7 +171,7 @@ interface Integration {
   features: string[];
   setupSteps: string[];
   docsUrl: string;
-  provider?: 'slack' | 'github' | 'google';
+  provider?: 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar' | 'jira';
 }
 
 interface ConnectionData {
@@ -241,9 +241,10 @@ const INTEGRATIONS: Integration[] = [
     description: 'Collaborate through Teams notifications, tab integration, and meeting scheduling.',
     logo: TeamsLogo,
     category: 'communication',
-    status: 'coming_soon',
+    status: 'available',
+    provider: 'microsoft-teams',
     features: ['Chat notifications', 'Meeting scheduling', 'Teams tab integration', 'Bot commands'],
-    setupSteps: ['Install the Onekof Teams app', 'Configure notifications', 'Add Onekof tab to channels', 'Set up bot commands'],
+    setupSteps: ['Click "Connect Teams" to sign in with Microsoft', 'Select a team and channel', 'Configure which events trigger notifications', 'Optionally map channels to specific projects'],
     docsUrl: '#',
   },
   {
@@ -252,9 +253,10 @@ const INTEGRATIONS: Integration[] = [
     description: 'Import existing projects, issues, and workflows from Jira into Onekof.',
     logo: JiraLogo,
     category: 'productivity',
-    status: 'coming_soon',
+    status: 'available',
+    provider: 'jira',
     features: ['Full project import', 'Issue & subtask migration', 'Status & workflow mapping', 'User matching'],
-    setupSteps: ['Connect to Jira Cloud', 'Select projects to import', 'Map statuses & fields', 'Review and confirm import'],
+    setupSteps: ['Click "Connect Jira" to authorize with Atlassian', 'Select projects to import', 'Map statuses & fields', 'Review and confirm import'],
     docsUrl: '#',
   },
   {
@@ -263,9 +265,10 @@ const INTEGRATIONS: Integration[] = [
     description: 'Send real-time event data to any external service via HTTP webhooks.',
     logo: WebhookLogo,
     category: 'development',
-    status: 'coming_soon',
+    status: 'available',
+    provider: 'webhooks',
     features: ['Custom event triggers', 'Retry with backoff', 'Payload templates', 'Delivery logs & debugging'],
-    setupSteps: ['Add a webhook endpoint URL', 'Select events to subscribe', 'Configure payload format', 'Test and activate'],
+    setupSteps: ['Click "Enable Webhooks" to activate', 'Add a webhook endpoint URL', 'Select events to subscribe', 'Test and activate'],
     docsUrl: '#',
   },
   {
@@ -274,9 +277,10 @@ const INTEGRATIONS: Integration[] = [
     description: 'Sync task deadlines and milestones with Google Calendar for scheduling.',
     logo: GoogleCalendarLogo,
     category: 'productivity',
-    status: 'coming_soon',
+    status: 'available',
+    provider: 'google-calendar',
     features: ['Due date → calendar event', 'Milestone sync', 'Two-way updates', 'Team calendar view'],
-    setupSteps: ['Sign in with Google', 'Select calendars', 'Choose sync direction', 'Set default reminders'],
+    setupSteps: ['Click "Connect Google Calendar" to sign in', 'Select calendars to sync', 'Choose sync direction', 'Set default reminders'],
     docsUrl: '#',
   },
   {
@@ -285,9 +289,10 @@ const INTEGRATIONS: Integration[] = [
     description: 'Configure email digests, assignment alerts, and comment notifications.',
     logo: EmailLogo,
     category: 'communication',
-    status: 'coming_soon',
+    status: 'available',
+    provider: 'email',
     features: ['Daily/weekly digest', 'Assignment alerts', 'Comment reply notifications', 'Custom filter rules'],
-    setupSteps: ['Choose notification types', 'Set digest frequency', 'Configure filter rules', 'Add recipient overrides'],
+    setupSteps: ['Click "Enable Email Notifications" to activate', 'Choose notification types', 'Set digest frequency', 'Add recipient overrides'],
     docsUrl: '#',
   },
   {
@@ -387,7 +392,15 @@ export default function IntegrationsPage() {
       const res = await fetch(`/api/integrations/${integration.provider}?action=oauth_url`);
       if (!res.ok) throw new Error('Failed to get OAuth URL');
       const data = await res.json();
-      window.location.href = data.url;
+      const url = data.url;
+      // Direct activation integrations (webhooks, email) return relative URLs
+      if (url.startsWith('/')) {
+        setToast({ message: `${integration.name} enabled successfully!`, type: 'success' });
+        setConnecting(null);
+        await fetchConnections();
+      } else {
+        window.location.href = url;
+      }
     } catch (err) {
       setToast({ message: `Failed to connect ${integration.name}`, type: 'error' });
       setConnecting(null);
