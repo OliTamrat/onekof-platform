@@ -1,0 +1,208 @@
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
+  darkMode: ['class'],
+  content: [
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          'SF Pro Text',
+          'SF Pro Display',
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'sans-serif',
+        ],
+        display: [
+          'SF Pro Display',
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'sans-serif',
+        ],
+      },
+      colors: {
+        // Semantic tokens — use these in all components
+        primary: {
+          50: '#E6F5F3',
+          100: '#CCEBe7',
+          200: '#99D7CF',
+          300: '#66C3B7',
+          400: '#33AF9F',
+          500: '#1C8C7D', // Main teal accent
+          600: '#197A6D',
+          700: '#14655A',
+          800: '#104F47',
+          900: '#0B3A34',
+          950: '#072521',
+        },
+        // Dark mode surface system
+        surface: {
+          DEFAULT: '#FFFFFF',
+          secondary: '#F8FAFC', // slate-50
+          dark: '#1B1F23',
+          'dark-secondary': '#22272B',
+        },
+        card: {
+          DEFAULT: '#FFFFFF',
+          dark: '#22272B',
+        },
+        elevated: {
+          DEFAULT: '#FFFFFF',
+          dark: '#282E33',
+        },
+        // Legacy palettes — kept for backward compatibility
+        brand: {
+          50: '#EEF2FF',
+          100: '#E0E7FF',
+          200: '#C7D2FE',
+          300: '#A5B4FC',
+          400: '#818CF8',
+          500: '#6366F1',
+          600: '#4F46E5',
+          700: '#4338CA',
+          800: '#3730A3',
+          900: '#312E81',
+          950: '#1E1B4B',
+        },
+        accent: {
+          50: '#FFF7ED',
+          100: '#FFEDD5',
+          200: '#FED7AA',
+          300: '#FDBA74',
+          400: '#FB923C',
+          500: '#F97316',
+          600: '#EA580C',
+          warm: '#FF6B35',
+          coral: '#FF6154',
+          gold: '#FFAA40',
+        },
+        midnight: {
+          50: '#E8EAF0',
+          100: '#C5C9D6',
+          200: '#9DA3B8',
+          300: '#6B7394',
+          400: '#4A5275',
+          500: '#2A3256',
+          600: '#1E2445',
+          700: '#161B35',
+          800: '#0F1225',
+          900: '#080B16',
+          950: '#050710',
+        },
+        jira: {
+          blue: {
+            50: '#DEEBFF',
+            100: '#B3D4FF',
+            200: '#4C9AFF',
+            300: '#2684FF',
+            400: '#0065FF',
+            500: '#0052CC',
+            600: '#0747A6',
+            700: '#09326C',
+            800: '#091E42',
+          },
+          gray: {
+            50: '#FAFBFC',
+            100: '#F4F5F7',
+            200: '#EBECF0',
+            300: '#DFE1E6',
+            400: '#B3BAC5',
+            500: '#A5ADBA',
+            600: '#7A869A',
+            700: '#6B778C',
+            800: '#505F79',
+            900: '#344563',
+            950: '#253858',
+          },
+          dark: {
+            bg: '#1B1F23',
+            surface: '#22272B',
+            border: '#383F47',
+            sidebar: '#1B1F23',
+            navbar: '#1B1F23',
+          },
+          success: '#00875A',
+          warning: '#FFAB00',
+          danger: '#DE350B',
+          info: '#0065FF',
+        },
+      },
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+        'gradient-brand-hover': 'linear-gradient(135deg, #4338CA, #6D28D9)',
+        'gradient-accent': 'linear-gradient(135deg, #FF6154, #FFAA40)',
+        'gradient-hero': 'linear-gradient(135deg, #080B16 0%, #0F1225 40%, #1E1B4B 100%)',
+        'gradient-dark': 'linear-gradient(135deg, #080B16, #161B35)',
+        'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+      },
+      boxShadow: {
+        'brand-sm': '0 2px 8px -2px rgba(99, 102, 241, 0.25)',
+        'brand-md': '0 4px 16px -4px rgba(99, 102, 241, 0.3)',
+        'brand-lg': '0 8px 32px -8px rgba(99, 102, 241, 0.35)',
+        'brand-xl': '0 16px 48px -12px rgba(99, 102, 241, 0.4)',
+        'accent-md': '0 4px 16px -4px rgba(255, 97, 84, 0.3)',
+        'glow': '0 0 40px rgba(99, 102, 241, 0.15)',
+        'glow-lg': '0 0 80px rgba(99, 102, 241, 0.2)',
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'gradient-shift': 'gradient-shift 8s ease infinite',
+        'marquee': 'marquee 30s linear infinite',
+        'marquee-reverse': 'marquee 30s linear infinite reverse',
+        'word-rotate': 'word-rotate 12s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'border-rotate': 'border-rotate 4s linear infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'word-rotate': {
+          '0%, 20%': { transform: 'translateY(0%)' },
+          '25%, 45%': { transform: 'translateY(-25%)' },
+          '50%, 70%': { transform: 'translateY(-50%)' },
+          '75%, 95%': { transform: 'translateY(-75%)' },
+          '100%': { transform: 'translateY(0%)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+        },
+        'border-rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+};
+
+export default config;
