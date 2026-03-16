@@ -1,9 +1,9 @@
 import { upsertConnection, getConnection, logEvent, deleteConnection } from './store';
 import type { SlackConfig, SlackNotificationConfig } from './types';
 
-const SLACK_CLIENT_ID = process.env.SLACK_CLIENT_ID || '';
-const SLACK_CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET || '';
-const SLACK_REDIRECT_URI = process.env.SLACK_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/integrations/slack/callback`;
+const SLACK_CLIENT_ID = (process.env.SLACK_CLIENT_ID || '').trim();
+const SLACK_CLIENT_SECRET = (process.env.SLACK_CLIENT_SECRET || '').trim();
+const SLACK_REDIRECT_URI = (process.env.SLACK_REDIRECT_URI || `${(process.env.NEXTAUTH_URL || '').trim()}/api/integrations/slack/callback`).trim();
 
 const SLACK_SCOPES = [
   'channels:read',
