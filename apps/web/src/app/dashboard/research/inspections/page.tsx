@@ -3,6 +3,7 @@
 import { CheckCircle2 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DepartmentTaskList } from '@/components/department/department-task-list';
+import { RESEARCH_TABS } from '@/config/department-tabs';
 
 export default function InspectionsPage() {
   return (
@@ -14,6 +15,9 @@ export default function InspectionsPage() {
         iconColor="#EF4444"
         emptyMessage="No inspections scheduled. Create one to start tracking."
         defaultLabels={['research', 'inspection']}
+        baseHref="/dashboard/research"
+        currentTab="inspections"
+        tabs={RESEARCH_TABS}
       />
     </AppLayout>
   );
