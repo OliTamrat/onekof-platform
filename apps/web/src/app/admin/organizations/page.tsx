@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAdmin } from '@/hooks/use-admin';
 import {
   Building2,
   Search,
@@ -68,6 +69,7 @@ const STATUS_DOT: Record<string, string> = {
 
 export default function AdminOrganizationsPage() {
   const queryClient = useQueryClient();
+  const { canWrite } = useAdmin();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [planFilter, setPlanFilter] = useState('');
@@ -227,6 +229,9 @@ export default function AdminOrganizationsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3.5 text-right">
+                        {!canWrite ? (
+                          <span className="text-[10px] text-slate-400">View only</span>
+                        ) : (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -256,6 +261,7 @@ export default function AdminOrganizationsPage() {
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
+                        )}
                       </td>
                     </tr>
                   );
