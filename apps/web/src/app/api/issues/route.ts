@@ -30,7 +30,6 @@ export async function GET(request: NextRequest) {
     const teamId = searchParams.get('teamId');
     const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
-    const labels = searchParams.get('labels'); // comma-separated labels to filter by
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -106,15 +105,8 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
-    // Filter by labels (tasks whose labels JSON array contains ALL specified labels)
-    if (labels) {
-      const labelList = labels.split(',').map(l => l.trim().toLowerCase()).filter(Boolean);
-      if (labelList.length > 0) {
-        where.labels = {
-          array_contains: labelList,
-        };
-      }
-    }
+    // Note: label filtering is done client-side after fetching since
+    // Prisma Json field filtering varies by database provider
 
     // Get all issues
     const issues = await prisma.task.findMany({
