@@ -91,7 +91,7 @@ export function DepartmentTaskList({
     enabled: !!session,
   });
 
-  const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
+  const { data: issuesData, isLoading } = useQuery<{ issues?: (Task & { labels?: string[] })[] }>({
     queryKey: ['issues', 'department', title, scopedProjectId],
     queryFn: async () => {
       const url = scopedProjectId
@@ -129,7 +129,15 @@ export function DepartmentTaskList({
     },
   });
 
-  const allTasks = issuesData?.issues || [];
+  // Filter by department labels client-side
+  const allTasks = useMemo(() => {
+    const raw = issuesData?.issues || [];
+    if (defaultLabels.length === 0) return raw;
+    return raw.filter(task => {
+      const taskLabels: string[] = Array.isArray(task.labels) ? task.labels.map((l: string) => l.toLowerCase()) : [];
+      return defaultLabels.every(dl => taskLabels.includes(dl.toLowerCase()));
+    });
+  }, [issuesData?.issues, defaultLabels]);
 
   // Apply search + filters
   const filteredTasks = useMemo(() => {
