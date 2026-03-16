@@ -10,33 +10,28 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get user's current organization
+    // Get user with organizations
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { defaultOrganizationId: true },
-    });
-
-    if (!user?.defaultOrganizationId) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    // Verify user is a member of the organization
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: user.defaultOrganizationId,
-          userId: session.user.id,
+      where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: {
+            organization: true,
+          },
         },
       },
     });
 
-    if (!membership) {
-      return NextResponse.json({ error: 'Not a member of this organization' }, { status: 403 });
+    if (!user || user.organizations.length === 0) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
     }
+
+    const orgMembership = user.organizations[0];
+    const organizationId = orgMembership.organizationId;
 
     // Get status filter from query params
     const status = req.nextUrl.searchParams.get('status');
@@ -44,7 +39,7 @@ export async function GET(req: NextRequest) {
     // Fetch goals with key results
     const goals = await prisma.goal.findMany({
       where: {
-        organizationId: user.defaultOrganizationId,
+        organizationId,
         deletedAt: null,
         ...(status && status !== 'all' && { status: status as any }),
       },
@@ -113,7 +108,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -124,39 +119,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Goal title is required' }, { status: 400 });
     }
 
-    // Get user's current organization
+    // Get user with organizations
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { defaultOrganizationId: true },
-    });
-
-    if (!user?.defaultOrganizationId) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    // Verify user is a member of the organization
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: user.defaultOrganizationId,
-          userId: session.user.id,
+      where: { email: session.user.email },
+      include: {
+        organizations: {
+          include: {
+            organization: true,
+          },
         },
       },
     });
 
-    if (!membership) {
-      return NextResponse.json({ error: 'Not a member of this organization' }, { status: 403 });
+    if (!user || user.organizations.length === 0) {
+      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
     }
+
+    const orgMembership = user.organizations[0];
+    const organizationId = orgMembership.organizationId;
 
     // Create goal
     const goal = await prisma.goal.create({
       data: {
-        organizationId: user.defaultOrganizationId,
+        organizationId,
         title,
         description,
         priority: priority || 'MEDIUM',
-        ownerId: session.user.id,
-        createdBy: session.user.id,
+        ownerId: user.id,
+        createdBy: user.id,
         ...(teamId && { teamId }),
         ...(dueDate && { dueDate: new Date(dueDate) }),
       },
