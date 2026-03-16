@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { generateTokenPair } from '@/lib/security/tokens';
+import { sendInvitationEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -107,19 +109,12 @@ export async function POST(
 
     const projectId = params.id;
     const body = await req.json();
-    const { userId, role = 'MEMBER' } = body;
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      );
-    }
+    const { userId, email: inviteEmail, role = 'MEMBER' } = body;
 
     // Verify project exists and get organization
     const project = await prisma.project.findUnique({
       where: { id: projectId },
-      select: { organizationId: true },
+      select: { organizationId: true, name: true },
     });
 
     if (!project) {
@@ -153,6 +148,133 @@ export async function POST(
       );
     }
 
+    // Email-based invite flow (external contributor support)
+    if (inviteEmail && !userId) {
+      const normalizedEmail = inviteEmail.trim().toLowerCase();
+
+      // Check if user exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+        select: { id: true, email: true, name: true, avatar: true },
+      });
+
+      if (existingUser) {
+        // Check if already an org member
+        const userOrgMembership = await prisma.organizationMember.findUnique({
+          where: {
+            organizationId_userId: {
+              organizationId: project.organizationId,
+              userId: existingUser.id,
+            },
+          },
+        });
+
+        if (userOrgMembership) {
+          // Already in org - add directly to project
+          const existingProjectMember = await prisma.projectMember.findFirst({
+            where: { projectId, userId: existingUser.id },
+          });
+
+          if (existingProjectMember) {
+            return NextResponse.json(
+              { error: 'User is already a member of this project' },
+              { status: 400 }
+            );
+          }
+
+          const newMember = await prisma.projectMember.create({
+            data: {
+              projectId,
+              userId: existingUser.id,
+              role,
+              addedBy: session.user.id,
+            },
+          });
+
+          return NextResponse.json({
+            member: {
+              id: newMember.id,
+              userId: existingUser.id,
+              name: existingUser.name || existingUser.email,
+              email: existingUser.email,
+              avatar: existingUser.avatar,
+              role: newMember.role,
+              addedAt: newMember.addedAt.toISOString(),
+            },
+          });
+        }
+
+        // User exists but not in org - invite them to org
+      }
+
+      // Send org invitation (user either doesn't exist or not in org)
+      const existingInvitation = await prisma.invitation.findFirst({
+        where: {
+          organizationId: project.organizationId,
+          email: normalizedEmail,
+          acceptedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+      });
+
+      if (existingInvitation) {
+        return NextResponse.json({
+          invited: true,
+          message: `An invitation was already sent to ${normalizedEmail}. They will be able to join the project once they accept.`,
+        });
+      }
+
+      // Get organization info
+      const org = await prisma.organization.findUnique({
+        where: { id: project.organizationId },
+        select: { name: true },
+      });
+
+      // Create invitation
+      const { token: invitationToken, hash: tokenHash } = generateTokenPair();
+
+      await prisma.invitation.create({
+        data: {
+          organizationId: project.organizationId,
+          email: normalizedEmail,
+          role: 'MEMBER',
+          tokenHash,
+          invitedBy: session.user.id,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        },
+      });
+
+      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+      const invitationUrl = `${baseUrl}/auth/accept-invite?token=${invitationToken}`;
+      const inviterName = session.user.name || session.user.email || 'A team member';
+
+      try {
+        await sendInvitationEmail(
+          normalizedEmail,
+          inviterName,
+          org?.name || 'your organization',
+          invitationUrl,
+          'Member'
+        );
+      } catch (emailError) {
+        console.error('Failed to send invitation email:', emailError);
+      }
+
+      return NextResponse.json({
+        invited: true,
+        message: `Invitation sent to ${normalizedEmail}. They will join the organization and can then be added to the project.`,
+        invitationUrl: process.env.NODE_ENV === 'development' ? invitationUrl : undefined,
+      });
+    }
+
+    // userId-based flow (existing org members)
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID or email is required' },
+        { status: 400 }
+      );
+    }
+
     // Verify user to add exists and is in organization
     const userToAdd = await prisma.user.findUnique({
       where: { id: userId },
@@ -182,7 +304,7 @@ export async function POST(
 
     if (!userOrgMembership) {
       return NextResponse.json(
-        { error: 'User is not a member of this organization' },
+        { error: 'User is not a member of this organization. Use the email invite to add external contributors.' },
         { status: 400 }
       );
     }
