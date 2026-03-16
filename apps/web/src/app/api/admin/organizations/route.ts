@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireSuperAdmin('ADMIN');
   if (!auth.authorized) return auth.error;
 
   try {
