@@ -67,9 +67,11 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
   // Content Security Policy (CSP)
   // Production uses nonce-based script policy; development allows unsafe-eval for HMR
   const isProduction = process.env.NODE_ENV === 'production';
-  const scriptSrc = isProduction
+  const isVercelPreview = process.env.VERCEL_ENV === 'preview';
+  const allowVercelLive = !isProduction || isVercelPreview;
+  const scriptSrc = isProduction && !isVercelPreview
     ? "'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com"
-    : "'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live";
+    : "'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live https://*.vercel.live";
 
   const csp = [
     "default-src 'self'",
@@ -77,8 +79,8 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://cloudflareinsights.com https://static.cloudflareinsights.com${isProduction ? '' : ' https://vercel.live'}`,
-    `frame-src 'self' https://accounts.google.com${isProduction ? '' : ' https://vercel.live'}`,
+    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://cloudflareinsights.com https://static.cloudflareinsights.com${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
+    `frame-src 'self' https://accounts.google.com${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
