@@ -49,11 +49,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Resolve organization from subdomain header (set by middleware), fallback to first org
-    const slug = request.headers.get('x-organization-slug');
-    const orgMembership = (slug
-      ? user.organizations.find(m => m.organization.slug === slug)
-      : null) || user.organizations[0];
+    // Get the user's default organization or first organization
+    const orgMembership = user.organizations[0];
     const organizationId = orgMembership.organizationId;
 
     // Calculate date ranges
