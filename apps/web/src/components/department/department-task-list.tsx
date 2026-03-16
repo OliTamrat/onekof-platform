@@ -92,12 +92,12 @@ export function DepartmentTaskList({
   });
 
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
-    queryKey: ['issues', 'department', title, scopedProjectId],
+    queryKey: ['issues', 'department', title, scopedProjectId, defaultLabels],
     queryFn: async () => {
-      const url = scopedProjectId
-        ? `/api/issues?projectId=${scopedProjectId}`
-        : '/api/issues';
-      const res = await fetch(url);
+      const params = new URLSearchParams();
+      if (scopedProjectId) params.set('projectId', scopedProjectId);
+      if (defaultLabels.length > 0) params.set('labels', defaultLabels.join(','));
+      const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed');
       return res.json();
     },
