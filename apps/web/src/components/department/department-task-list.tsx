@@ -34,6 +34,7 @@ interface DepartmentTaskListProps {
   currentTab?: string;
   tabs?: TabDefinition[];
   category?: DepartmentCategory;
+  projectId?: string;
 }
 
 const PRIORITY_DOT: Record<string, string> = {
@@ -65,6 +66,7 @@ export function DepartmentTaskList({
   currentTab,
   tabs,
   category = 'general',
+  projectId: scopedProjectId,
 }: DepartmentTaskListProps) {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -90,9 +92,12 @@ export function DepartmentTaskList({
   });
 
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
-    queryKey: ['issues', 'department', title],
+    queryKey: ['issues', 'department', title, scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/issues');
+      const url = scopedProjectId
+        ? `/api/issues?projectId=${scopedProjectId}`
+        : '/api/issues';
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Failed');
       return res.json();
     },
@@ -101,7 +106,7 @@ export function DepartmentTaskList({
 
   const createMutation = useMutation({
     mutationFn: async (taskTitle: string) => {
-      const projectId = projectsData?.projects?.[0]?.id;
+      const projectId = scopedProjectId || projectsData?.projects?.[0]?.id;
       if (!projectId) throw new Error('No project available');
       const res = await fetch('/api/issues', {
         method: 'POST',
