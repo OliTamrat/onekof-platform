@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ interface InvitationDetails {
   isExpired: boolean;
 }
 
-export default function AcceptInvitePage() {
+function AcceptInviteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status: sessionStatus } = useSession();
@@ -86,7 +86,6 @@ export default function AcceptInvitePage() {
 
       if (!res.ok) {
         if (res.status === 401) {
-          // Need to sign in first
           router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`);
           return;
         }
@@ -104,7 +103,6 @@ export default function AcceptInvitePage() {
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
@@ -116,7 +114,6 @@ export default function AcceptInvitePage() {
     );
   }
 
-  // Error state (invalid token)
   if (error && !invitation) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
@@ -136,7 +133,6 @@ export default function AcceptInvitePage() {
     );
   }
 
-  // Success state
   if (success && resultOrg) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
@@ -158,11 +154,9 @@ export default function AcceptInvitePage() {
     );
   }
 
-  // Invitation details & accept view
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
       <div className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-br from-primary-500 to-primary-700 px-8 py-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
             <Users className="h-7 w-7 text-white" />
@@ -171,7 +165,6 @@ export default function AcceptInvitePage() {
           <p className="mt-1 text-sm text-white/80">Join your team on Onekof</p>
         </div>
 
-        {/* Details */}
         <div className="p-8">
           {invitation?.isExpired ? (
             <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 p-4 text-center">
@@ -263,5 +256,22 @@ export default function AcceptInvitePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AcceptInvitePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
+          <div className="text-center">
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
+            <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <AcceptInviteContent />
+    </Suspense>
   );
 }
