@@ -1,9 +1,9 @@
 import { upsertConnection, getConnection, logEvent, deleteConnection } from './store';
 import type { GoogleConfig, GoogleCalendar } from './types';
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_INTEGRATION_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/integrations/google/callback`;
+const GOOGLE_CLIENT_ID = (process.env.GOOGLE_CLIENT_ID || '').trim();
+const GOOGLE_CLIENT_SECRET = (process.env.GOOGLE_CLIENT_SECRET || '').trim();
+const GOOGLE_REDIRECT_URI = (process.env.GOOGLE_INTEGRATION_REDIRECT_URI || `${(process.env.NEXTAUTH_URL || '').trim()}/api/integrations/google/callback`).trim();
 
 const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/calendar',
