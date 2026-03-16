@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
@@ -233,9 +233,9 @@ export default function ProjectsPage() {
 // Project Card Component - Grid View
 function ProjectCard({ project, onClick }: { project: any; onClick: () => void }) {
   return (
-    <div
-      onClick={onClick}
-      className="group relative cursor-pointer rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
+    <Link
+      href={`/dashboard/projects/${project.id}/overview`}
+      className="group relative block cursor-pointer rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
     >
       <div className="absolute right-4 top-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {project.isFavorite && (
@@ -254,6 +254,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 onClick();
               }}
               className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -295,15 +296,15 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
           <span>{project.memberCount || 0}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 // Project List Item Component - List View
 function ProjectListItem({ project, onClick }: { project: any; onClick: () => void }) {
   return (
-    <div
-      onClick={onClick}
+    <Link
+      href={`/dashboard/projects/${project.id}/overview`}
       className="group flex cursor-pointer items-center gap-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
     >
       <div
@@ -352,6 +353,7 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 onClick();
               }}
               className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -362,6 +364,6 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
+    </Link>
   );
 }
