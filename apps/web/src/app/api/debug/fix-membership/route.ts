@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST() {
   try {
     // Find the incorrect membership
