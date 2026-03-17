@@ -253,86 +253,74 @@ export default function BudgetPage() {
     });
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
-  // ── Demo Data (250M ETB Government Agency showcase) ──────────────
-  // Shown when no real budgets exist from the API. Once real data is
-  // created via the UI or API, real data takes precedence.
+  // ── Demo Data: Jira Water Dam & Irrigation Project ──────────────
+  // Single project — 250M ETB funded by GoE + World Bank + AfDB
+  // All expenses are tied to this project. Phases map to the project timeline.
+
+  const PROJECT_NAME = 'Jira Water Dam & Irrigation Project';
+  const PROJECT_FUNDED_BY = 'Government of Ethiopia, World Bank (IDA), African Development Bank';
+  const PROJECT_FISCAL_YEAR = '2025/2026 (Ethiopian FY 2018)';
+
+  // Project timeline phases (tied to budget categories)
+  const PROJECT_PHASES = [
+    { name: 'Phase 1: Site Preparation & Foundation', start: '2025-07-08', end: '2025-12-31', status: 'COMPLETED', progress: 100 },
+    { name: 'Phase 2: Dam Core Construction', start: '2026-01-01', end: '2026-06-30', status: 'IN_PROGRESS', progress: 62 },
+    { name: 'Phase 3: Spillway & Outlet Works', start: '2026-04-01', end: '2026-09-30', status: 'IN_PROGRESS', progress: 28 },
+    { name: 'Phase 4: Irrigation Canal Network', start: '2026-07-01', end: '2027-01-07', status: 'PLANNED', progress: 0 },
+    { name: 'Phase 5: Electromechanical & Commissioning', start: '2027-01-08', end: '2027-06-30', status: 'PLANNED', progress: 0 },
+  ];
 
   const DEMO_CATEGORIES = [
-    { name: 'Construction & Infrastructure', budget: 85000000, spent: 62300000, color: '#1C8C7D' },
-    { name: 'Equipment & Machinery', budget: 42000000, spent: 31500000, color: '#00875A' },
-    { name: 'Labor & Personnel', budget: 38000000, spent: 29800000, color: '#FF5630' },
-    { name: 'Environmental & Social Impact', budget: 22000000, spent: 11200000, color: '#FFAB00' },
-    { name: 'IT Systems & Digital Infrastructure', budget: 18000000, spent: 14900000, color: '#6554C0' },
-    { name: 'Training & Capacity Building', budget: 15000000, spent: 8700000, color: '#0065FF' },
-    { name: 'Consulting & Professional Services', budget: 12000000, spent: 9600000, color: '#00B8D9' },
-    { name: 'Contingency & Risk Reserve', budget: 18000000, spent: 3200000, color: '#FF8B00' },
+    { name: 'Dam Construction & Civil Works', budget: 82000000, spent: 58700000, color: '#1C8C7D' },
+    { name: 'Irrigation Canal & Distribution', budget: 38000000, spent: 12400000, color: '#00875A' },
+    { name: 'Heavy Equipment & Machinery', budget: 32000000, spent: 26800000, color: '#FF5630' },
+    { name: 'Engineering & Labor', budget: 35000000, spent: 28200000, color: '#FFAB00' },
+    { name: 'Environmental & Social Safeguards', budget: 18000000, spent: 11500000, color: '#6554C0' },
+    { name: 'Consulting & Project Management', budget: 15000000, spent: 12100000, color: '#0065FF' },
+    { name: 'Land Acquisition & Resettlement', budget: 12000000, spent: 10800000, color: '#00B8D9' },
+    { name: 'Contingency & Risk Reserve', budget: 18000000, spent: 3500000, color: '#FF8B00' },
   ];
 
   const DEMO_BUDGETS: BudgetWithStats[] = [
     {
-      id: 'demo-1', projectId: 'demo-p1', totalBudget: 120000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-07-08T00:00:00Z',
-      project: { id: 'demo-p1', name: 'Jira Water Dam & Irrigation Project', organizationId: 'demo-org' },
+      id: 'jira-dam-budget', projectId: 'jira-dam-project', totalBudget: 250000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-07-08T00:00:00Z',
+      project: { id: 'jira-dam-project', name: PROJECT_NAME, organizationId: 'mowi-org' },
       categories: [
-        { id: 'c1', name: 'Construction & Infrastructure', code: 'CON-001', allocatedAmount: 52000000, expenses: [{ amount: 38200000 }] },
-        { id: 'c2', name: 'Equipment & Machinery', code: 'EQP-002', allocatedAmount: 28000000, expenses: [{ amount: 21000000 }] },
-        { id: 'c3', name: 'Labor & Personnel', code: 'LAB-003', allocatedAmount: 22000000, expenses: [{ amount: 18500000 }] },
-        { id: 'c4', name: 'Environmental & Social Impact', code: 'ENV-004', allocatedAmount: 18000000, expenses: [{ amount: 8800000 }] },
+        { id: 'c1', name: 'Dam Construction & Civil Works', code: 'DAM-001', allocatedAmount: 82000000, expenses: [{ amount: 58700000 }] },
+        { id: 'c2', name: 'Irrigation Canal & Distribution', code: 'IRR-002', allocatedAmount: 38000000, expenses: [{ amount: 12400000 }] },
+        { id: 'c3', name: 'Heavy Equipment & Machinery', code: 'EQP-003', allocatedAmount: 32000000, expenses: [{ amount: 26800000 }] },
+        { id: 'c4', name: 'Engineering & Labor', code: 'ENG-004', allocatedAmount: 35000000, expenses: [{ amount: 28200000 }] },
+        { id: 'c5', name: 'Environmental & Social Safeguards', code: 'ENV-005', allocatedAmount: 18000000, expenses: [{ amount: 11500000 }] },
+        { id: 'c6', name: 'Consulting & Project Management', code: 'CON-006', allocatedAmount: 15000000, expenses: [{ amount: 12100000 }] },
+        { id: 'c7', name: 'Land Acquisition & Resettlement', code: 'LAR-007', allocatedAmount: 12000000, expenses: [{ amount: 10800000 }] },
+        { id: 'c8', name: 'Contingency & Risk Reserve', code: 'CTG-008', allocatedAmount: 18000000, expenses: [{ amount: 3500000 }] },
       ],
-      totalSpent: 86500000, totalAllocated: 120000000, utilization: 72.1,
-      _count: { expenses: 142, watchers: 8 },
-    },
-    {
-      id: 'demo-2', projectId: 'demo-p2', totalBudget: 65000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-09-01T00:00:00Z',
-      project: { id: 'demo-p2', name: 'Addis Ababa Digital Government Platform', organizationId: 'demo-org' },
-      categories: [
-        { id: 'c5', name: 'IT Systems & Digital Infrastructure', code: 'IT-001', allocatedAmount: 18000000, expenses: [{ amount: 14900000 }] },
-        { id: 'c6', name: 'Consulting & Professional Services', code: 'CON-005', allocatedAmount: 12000000, expenses: [{ amount: 9600000 }] },
-        { id: 'c7', name: 'Training & Capacity Building', code: 'TRN-006', allocatedAmount: 15000000, expenses: [{ amount: 8700000 }] },
-        { id: 'c8', name: 'Labor & Personnel', code: 'LAB-007', allocatedAmount: 10000000, expenses: [{ amount: 7200000 }] },
-        { id: 'c9', name: 'Contingency & Risk Reserve', code: 'CTG-008', allocatedAmount: 10000000, expenses: [{ amount: 1200000 }] },
-      ],
-      totalSpent: 41600000, totalAllocated: 65000000, utilization: 64.0,
-      _count: { expenses: 89, watchers: 5 },
-    },
-    {
-      id: 'demo-3', projectId: 'demo-p3', totalBudget: 45000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-11-15T00:00:00Z',
-      project: { id: 'demo-p3', name: 'Rural Health Facility Expansion', organizationId: 'demo-org' },
-      categories: [
-        { id: 'c10', name: 'Construction & Infrastructure', code: 'CON-009', allocatedAmount: 33000000, expenses: [{ amount: 24100000 }] },
-        { id: 'c11', name: 'Equipment & Machinery', code: 'EQP-010', allocatedAmount: 14000000, expenses: [{ amount: 10500000 }] },
-        { id: 'c12', name: 'Environmental & Social Impact', code: 'ENV-011', allocatedAmount: 4000000, expenses: [{ amount: 2400000 }] },
-        { id: 'c13', name: 'Contingency & Risk Reserve', code: 'CTG-012', allocatedAmount: 8000000, expenses: [{ amount: 2000000 }] },
-      ],
-      totalSpent: 39000000, totalAllocated: 45000000, utilization: 86.7,
-      _count: { expenses: 67, watchers: 4 },
-    },
-    {
-      id: 'demo-4', projectId: 'demo-p4', totalBudget: 20000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2026-01-10T00:00:00Z',
-      project: { id: 'demo-p4', name: 'National Education Assessment Reform', organizationId: 'demo-org' },
-      categories: [
-        { id: 'c14', name: 'Training & Capacity Building', code: 'TRN-013', allocatedAmount: 6300000, expenses: [{ amount: 4100000 }] },
-        { id: 'c15', name: 'IT Systems & Digital Infrastructure', code: 'IT-014', allocatedAmount: 5500000, expenses: [{ amount: 3800000 }] },
-        { id: 'c16', name: 'Consulting & Professional Services', code: 'CON-015', allocatedAmount: 4200000, expenses: [{ amount: 2900000 }] },
-        { id: 'c17', name: 'Labor & Personnel', code: 'LAB-016', allocatedAmount: 4000000, expenses: [{ amount: 4100000 }] },
-      ],
-      totalSpent: 14900000, totalAllocated: 20000000, utilization: 74.5,
-      _count: { expenses: 34, watchers: 3 },
+      totalSpent: 164000000, totalAllocated: 250000000, utilization: 65.6,
+      _count: { expenses: 247, watchers: 12 },
     },
   ];
 
   const DEMO_EXPENSES = [
-    { id: 'de-1', description: 'Dam foundation concrete supply — Phase 3', amount: 4800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-14', vendor: 'Ethio-Cement PLC', invoiceNumber: 'EC-2026-0847', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c1', name: 'Construction & Infrastructure' } },
-    { id: 'de-2', description: 'CAT 320 Excavator rental (Q1 2026)', amount: 2100000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-12', vendor: 'Mesfin Industrial Engineering', invoiceNumber: 'MIE-4521', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
-    { id: 'de-3', description: 'Cloud hosting & Azure Gov subscription (Mar)', amount: 890000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-10', vendor: 'Microsoft Ethiopia', invoiceNumber: 'MS-ETH-9932', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
-    { id: 'de-4', description: 'Community environmental impact assessment — Woreda 7', amount: 1250000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-09', vendor: 'Green Impact Consulting', invoiceNumber: 'GIC-0312', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c4', name: 'Environmental & Social Impact' } },
-    { id: 'de-5', description: 'Health facility medical equipment — Batch 2', amount: 3600000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-08', vendor: 'EPHARM', invoiceNumber: 'EPH-2026-1123', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c11', name: 'Equipment & Machinery' } },
-    { id: 'de-6', description: 'Engineering team salaries — February 2026', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-05', vendor: 'Internal Payroll', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c3', name: 'Labor & Personnel' } },
-    { id: 'de-7', description: 'Teacher training workshop — Hawassa region', amount: 980000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-04', vendor: 'National Institute of Education', invoiceNumber: 'NIE-0156', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c14', name: 'Training & Capacity Building' } },
-    { id: 'de-8', description: 'GIS & survey system licenses', amount: 1450000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-03', vendor: 'Esri East Africa', invoiceNumber: 'ESRI-EA-7744', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
-    { id: 'de-9', description: 'Structural steel reinforcement bars — 42 tons', amount: 6200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-01', vendor: 'Zuquala Steel', invoiceNumber: 'ZS-2026-0389', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c10', name: 'Construction & Infrastructure' } },
-    { id: 'de-10', description: 'McKinsey advisory — Digital transformation roadmap', amount: 3800000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-28', vendor: 'McKinsey & Company', invoiceNumber: 'MCK-ETH-0023', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c6', name: 'Consulting & Professional Services' } },
-    { id: 'de-11', description: 'Solar panel installation — Site B irrigation pumps', amount: 2750000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-26', vendor: 'SolarTech Ethiopia', invoiceNumber: 'STE-1102', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
-    { id: 'de-12', description: 'National curriculum assessment software dev', amount: 2200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-24', vendor: 'iCog Labs', invoiceNumber: 'ICG-2026-0078', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c15', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-1', description: 'RCC dam body concrete — Batch 14 (4,200 m³)', amount: 8400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-15', vendor: 'Ethio-Cement PLC', invoiceNumber: 'EC-2026-0847', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
+    { id: 'de-2', description: 'CAT 390F Excavator & CAT D8T Dozer rental (Q1)', amount: 4200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-13', vendor: 'Mesfin Industrial Engineering', invoiceNumber: 'MIE-4521', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
+    { id: 'de-3', description: 'Spillway gate fabrication — steel plates & hinges', amount: 6800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-11', vendor: 'Zuquala Steel', invoiceNumber: 'ZS-2026-0389', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
+    { id: 'de-4', description: 'Community resettlement — Woreda 7 (42 households)', amount: 3200000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-10', vendor: 'Amhara Regional Authority', invoiceNumber: 'ARA-RST-0312', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c7', name: 'Land Acquisition & Resettlement' } },
+    { id: 'de-5', description: 'Engineering team salaries — February 2026 (68 staff)', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-05', vendor: 'Internal Payroll', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c4', name: 'Engineering & Labor' } },
+    { id: 'de-6', description: 'Environmental monitoring — downstream water quality Q1', amount: 1800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-04', vendor: 'Green Impact Consulting', invoiceNumber: 'GIC-0312', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
+    { id: 'de-7', description: 'SolarTech irrigation pump station — Phase 3 solar array', amount: 5500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-03', vendor: 'SolarTech Ethiopia', invoiceNumber: 'STE-1102', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
+    { id: 'de-8', description: 'Construction workers wages — Week 36 (320 laborers)', amount: 2800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-01', vendor: 'Internal Payroll', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c4', name: 'Engineering & Labor' } },
+    { id: 'de-9', description: 'SMEC International — dam safety review & design audit', amount: 4500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-28', vendor: 'SMEC International', invoiceNumber: 'SMEC-ETH-0156', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c6', name: 'Consulting & Project Management' } },
+    { id: 'de-10', description: 'GIS topographic survey — irrigation canal alignment', amount: 2100000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-26', vendor: 'Esri East Africa', invoiceNumber: 'ESRI-EA-7744', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
+    { id: 'de-11', description: 'Reinforcement steel bars — 85 tons (dam abutment)', amount: 7200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-24', vendor: 'Habesha Steel', invoiceNumber: 'HS-2026-0456', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
+    { id: 'de-12', description: 'Downstream community livelihood restoration program', amount: 2400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-22', vendor: 'World Bank Social Team', invoiceNumber: 'WB-SOC-0089', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
+    { id: 'de-13', description: 'Pump station concrete works & pipe laying (2.4 km)', amount: 4800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-20', vendor: 'METEC', invoiceNumber: 'METEC-2026-0078', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
+    { id: 'de-14', description: 'Land compensation — 180 hectares agricultural land', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-18', vendor: 'Amhara Land Administration', invoiceNumber: 'ALA-COMP-0034', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c7', name: 'Land Acquisition & Resettlement' } },
+    { id: 'de-15', description: 'Crane rental — Liebherr LTM 1300 (dam crest work)', amount: 3800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-15', vendor: 'Sur Construction', invoiceNumber: 'SUR-CR-229', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
+    { id: 'de-16', description: 'Hydrological monitoring station equipment', amount: 1950000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-12', vendor: 'Hach Company', invoiceNumber: 'HACH-ETH-330', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
+    { id: 'de-17', description: 'EIA compliance audit — Q1 2026 (World Bank requirement)', amount: 2200000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-10', vendor: 'ERM Consulting', invoiceNumber: 'ERM-ETH-0023', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
+    { id: 'de-18', description: 'Project management office — February operational costs', amount: 1800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-08', vendor: 'Ministry of Water & Irrigation', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c6', name: 'Consulting & Project Management' } },
+    { id: 'de-19', description: 'Geotechnical testing — dam foundation core samples', amount: 1400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-05', vendor: 'Ethiopian Geological Survey', invoiceNumber: 'EGS-2026-0012', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
+    { id: 'de-20', description: 'Contingency draw — unexpected rock formation removal', amount: 3500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-01', vendor: 'Sur Construction', invoiceNumber: 'SUR-CTG-001', budget: { id: 'jira-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c8', name: 'Contingency & Risk Reserve' } },
   ];
 
   // Compute aggregates — merge real API data with demo fallback
@@ -343,9 +331,7 @@ export default function BudgetPage() {
   const budgets = hasRealData ? apiBudgets : DEMO_BUDGETS;
   const expenses = hasRealData ? apiExpenses : DEMO_EXPENSES;
 
-  const totalBudget = hasRealData
-    ? budgets.reduce((sum, b) => sum + Number(b.totalBudget), 0)
-    : 250000000; // 250M ETB
+  const totalBudget = 250000000; // Always 250M ETB for this project
   const totalSpent = budgets.reduce((sum, b) => sum + b.totalSpent, 0);
   const totalAllocated = budgets.reduce((sum, b) => sum + b.totalAllocated, 0);
   const overallUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
@@ -452,6 +438,21 @@ export default function BudgetPage() {
         showSearch
       />
 
+      {/* Project Header Banner */}
+      <div className="bg-gradient-to-r from-[#1C8C7D] to-[#16A085] px-4 md:px-6 py-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-white">{PROJECT_NAME}</h2>
+            <p className="text-sm text-white/80 mt-0.5">Ministry of Water & Irrigation — Funded by {PROJECT_FUNDED_BY}</p>
+            <p className="text-xs text-white/60 mt-0.5">Fiscal Year: {PROJECT_FISCAL_YEAR} | Total Funding: ETB 250,000,000</p>
+          </div>
+          <div className="text-right">
+            <div className="text-3xl font-bold text-white">{overallUtilization.toFixed(1)}%</div>
+            <div className="text-xs text-white/70">budget utilized</div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Cards */}
       <div className="sticky top-0 z-10 bg-white dark:bg-[#1B1F23] border-b border-slate-200 dark:border-slate-700 shadow-sm">
         <div className="p-4 md:p-6 grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -459,15 +460,15 @@ export default function BudgetPage() {
             icon={<DollarSign className="h-5 w-5" />}
             value={isLoading ? '...' : `ETB ${formatCompact(totalSpent)}`}
             label="spent"
-            sublabel={hasBudgets ? `of ETB ${formatCompact(totalBudget)} total budget` : 'No budgets yet'}
+            sublabel={`of ETB ${formatCompact(totalBudget)} allocated`}
             color="text-blue-500 dark:text-blue-400"
-            onClick={() => openSlideout('All Expenses', expenses)}
+            onClick={() => openSlideout('All Project Expenses', expenses)}
           />
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={isLoading ? '...' : approvedExpenses.length.toString()}
             label="approved"
-            sublabel="expenses approved"
+            sublabel="expenses cleared by finance"
             color="text-green-500 dark:text-green-400"
             onClick={() => openSlideout('Approved Expenses', approvedExpenses)}
           />
@@ -475,15 +476,15 @@ export default function BudgetPage() {
             icon={<Clock className="h-5 w-5" />}
             value={isLoading ? '...' : pendingExpenses.length.toString()}
             label="pending"
-            sublabel="awaiting approval"
+            sublabel="awaiting director approval"
             color="text-orange-500 dark:text-orange-400"
-            onClick={() => openSlideout('Pending Expenses', pendingExpenses)}
+            onClick={() => openSlideout('Pending Approval', pendingExpenses)}
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
-            value={isLoading ? '...' : `${budgets.length}`}
-            label="budgets"
-            sublabel={`${categoriesAtRisk} ${categoriesAtRisk === 1 ? 'category' : 'categories'} at risk`}
+            value={isLoading ? '...' : `ETB ${formatCompact(totalBudget - totalSpent)}`}
+            label="remaining"
+            sublabel={`${categoriesAtRisk} ${categoriesAtRisk === 1 ? 'category' : 'categories'} at risk (>80%)`}
             color="text-teal-500 dark:text-teal-400"
           />
         </div>
@@ -647,96 +648,186 @@ export default function BudgetPage() {
                       </div>
                     </div>
 
-                    {/* AI Analysis Section */}
+                    {/* AI Analysis Section — Project-Specific */}
                     <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
                       <div className="flex items-center gap-2 mb-4">
                         <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-                        <h3 className="font-semibold text-slate-900 dark:text-white">AI Budget Analysis</h3>
+                        <h3 className="font-semibold text-slate-900 dark:text-white">AI Project & Budget Analysis</h3>
                         <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[#1C8C7D]/10 text-[#1C8C7D] border border-[#1C8C7D]/20">
                           AI-Generated
                         </span>
                       </div>
 
+                      {/* Executive Summary */}
                       <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-slate-700 mb-4">
-                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                          Your organization has utilized <span className="font-semibold text-[#1C8C7D]">ETB {formatCompact(totalSpent)} ({overallUtilization.toFixed(1)}%)</span> of
-                          the total <span className="font-semibold">ETB {formatCompact(totalBudget)}</span> budget across {budgets.length} {budgets.length === 1 ? 'project' : 'projects'}.
-                          {categoriesAtRisk > 0 && (
-                            <span className="text-orange-600 dark:text-orange-400 font-semibold">
-                              {' '}{categoriesAtRisk} {categoriesAtRisk === 1 ? 'category needs' : 'categories need'} attention (80%+ utilization).
-                            </span>
-                          )}
-                          {totalBudget > 0 && totalSpent > 0 && (
-                            <span>
-                              {' '}At current spending rate, remaining budget covers approximately{' '}
-                              <span className="font-semibold">{Math.ceil((totalBudget - totalSpent) / (totalSpent / 30))} days</span>.
-                            </span>
-                          )}
-                        </p>
-                      </div>
-
-                      {categoriesAtRisk > 0 && (
-                        <div className="p-3 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20 mb-3">
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-slate-700 dark:text-slate-300">
-                              <span className="font-medium">Action Required:</span>{' '}
-                              {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')}{' '}
-                              {categoriesAtRisk === 1 ? 'is' : 'are'} approaching budget limits.
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 mt-1 h-8 w-8 rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center">
+                            <Sparkles className="h-4 w-4 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Executive Summary</h4>
+                            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                              The <span className="font-semibold">{PROJECT_NAME}</span> has utilized{' '}
+                              <span className="font-semibold text-[#1C8C7D]">ETB {formatCompact(totalSpent)} ({overallUtilization.toFixed(1)}%)</span> of the{' '}
+                              <span className="font-semibold">ETB 250M</span> total funding.
+                              Phase 1 (Site Preparation) is complete. Phase 2 (Dam Core Construction) is 62% complete and on track.
+                              Phase 3 (Spillway & Outlet Works) has begun at 28% — early mobilization is ahead of schedule.
+                              {categoriesAtRisk > 0 && (
+                                <span className="text-orange-600 dark:text-orange-400 font-semibold">
+                                  {' '}However, {categoriesAtRisk} budget {categoriesAtRisk === 1 ? 'category has' : 'categories have'} exceeded 80% utilization and require immediate review before Phase 4 begins.
+                                </span>
+                              )}
+                              {' '}At the current burn rate (ETB {formatCompact(totalSpent / 8.5)}/month), the remaining{' '}
+                              <span className="font-semibold">ETB {formatCompact(totalBudget - totalSpent)}</span> covers approximately{' '}
+                              <span className="font-semibold">{Math.ceil((totalBudget - totalSpent) / (totalSpent / 8.5))} months</span> — aligned with the July 2027 completion target.
                             </p>
                           </div>
                         </div>
-                      )}
+                      </div>
+
+                      {/* Key Insights Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-2 mb-3">
+                            <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Budget vs Timeline</h5>
+                          </div>
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span>Project is <span className="font-medium text-green-600 dark:text-green-400">on schedule</span> — 65.6% budget spent at 55% timeline completion</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span>Dam core construction spending aligns with 62% physical progress</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                              <span>Heavy Equipment at <span className="font-medium text-orange-600 dark:text-orange-400">83.8%</span> — may need reallocation for Phase 4</span>
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-2 mb-3">
+                            <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Funding Source Utilization</h5>
+                          </div>
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">GoE Treasury:</span> ETB 100M allocated, 68.2M disbursed</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">World Bank (IDA):</span> ETB 100M allocated, 62.8M disbursed</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">AfDB Grant:</span> ETB 50M allocated, 33M disbursed</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* AI Recommendations */}
+                      <div className="p-4 rounded-lg border border-[#1C8C7D]/20 bg-gradient-to-br from-[#1C8C7D]/5 to-[#16A085]/5 mb-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="h-6 w-6 rounded-md bg-[#1C8C7D] flex items-center justify-center">
+                            <Sparkles className="h-3.5 w-3.5 text-white" />
+                          </div>
+                          <h5 className="text-sm font-semibold text-slate-900 dark:text-white">AI Recommendations</h5>
+                        </div>
+                        <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                          {categoriesAtRisk > 0 && (
+                            <li className="flex items-start gap-2">
+                              <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">Reallocation Needed:</span> {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')} — consider transferring ETB 3-5M from Contingency Reserve before Phase 4 procurement.</span>
+                            </li>
+                          )}
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span><span className="font-medium">Procurement Window:</span> Phase 4 (Irrigation Canal Network) starts July 2026. Initiate tender for canal lining materials by April 2026 to avoid rainy-season delays.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <Clock className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                            <span><span className="font-medium">World Bank Disbursement:</span> Next IDA tranche (ETB 18.6M) expected May 2026. Current cash flow supports operations through June without interruption.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <Eye className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                            <span><span className="font-medium">Audit Readiness:</span> Q1 2026 expenditures are fully documented. 4 pending expenses (ETB {formatCompact(pendingExpenses.reduce((s: number, e: any) => s + Number(e.amount), 0))}) need approval before the April donor reporting deadline.</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Report Footer */}
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
+                        <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <span>Ministry of Water & Irrigation — Ethiopia</span>
+                      </div>
                     </div>
                   </>
                 )}
               </CardContent>
             </Card>
 
-            {/* Project Budgets List */}
+            {/* Project Timeline vs Budget */}
             {hasBudgets && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Project Budgets</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-[#1C8C7D]" />
+                    Project Timeline vs Budget Spend
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {budgets.map((budget) => {
-                      const util = budget.totalBudget > 0 ? (budget.totalSpent / Number(budget.totalBudget)) * 100 : 0;
+                  <div className="space-y-4">
+                    {PROJECT_PHASES.map((phase) => {
+                      const phaseStart = new Date(phase.start);
+                      const phaseEnd = new Date(phase.end);
+                      const now = new Date();
+                      const totalDays = Math.ceil((phaseEnd.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
+                      const elapsed = Math.max(0, Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24)));
+                      const timeProgress = Math.min(100, (elapsed / totalDays) * 100);
+
                       return (
-                        <button
-                          key={budget.id}
-                          onClick={() => router.push(`/projects/${budget.projectId}/budget`)}
-                          className="w-full text-left p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D] hover:shadow-md transition-all"
-                        >
+                        <div key={phase.name} className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D] transition-all">
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{budget.project.name}</h4>
-                            <div className="flex items-center gap-2">
-                              <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
-                                util > 90 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
-                                util > 70 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
-                                'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                              }`}>
-                                {util.toFixed(0)}% used
-                              </span>
-                              <ChevronRight className="h-4 w-4 text-slate-400" />
-                            </div>
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{phase.name}</h4>
+                            <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
+                              phase.status === 'COMPLETED' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                              phase.status === 'IN_PROGRESS' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                            }`}>
+                              {phase.status === 'COMPLETED' ? 'Completed' : phase.status === 'IN_PROGRESS' ? `${phase.progress}% Complete` : 'Planned'}
+                            </span>
                           </div>
-                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                            <span>ETB {formatCompact(budget.totalSpent)} of {formatCompact(Number(budget.totalBudget))}</span>
-                            <span>{budget.categories.length} categories</span>
-                            <span>{budget._count.expenses} expenses</span>
+                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
+                            <span>{phaseStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} — {phaseEnd.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                            {phase.status === 'IN_PROGRESS' && (
+                              <span>Time elapsed: {timeProgress.toFixed(0)}%</span>
+                            )}
                           </div>
-                          <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                          {/* Progress bar — physical progress */}
+                          <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full transition-all"
                               style={{
-                                width: `${Math.min(util, 100)}%`,
-                                backgroundColor: util > 90 ? '#FF5630' : util > 70 ? '#FFAB00' : '#1C8C7D',
+                                width: `${phase.progress}%`,
+                                backgroundColor: phase.status === 'COMPLETED' ? '#00875A' : phase.status === 'IN_PROGRESS' ? '#1C8C7D' : '#94a3b8',
                               }}
                             />
                           </div>
-                        </button>
+                          {phase.status === 'IN_PROGRESS' && phase.progress > 0 && timeProgress > 0 && (
+                            <div className="mt-2 flex items-center gap-1.5 text-xs">
+                              <Sparkles className="h-3 w-3 text-[#1C8C7D]" />
+                              <span className={`font-medium ${
+                                phase.progress >= timeProgress ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'
+                              }`}>
+                                {phase.progress >= timeProgress ? 'Ahead of schedule' : 'Behind schedule'} — {phase.progress}% done at {timeProgress.toFixed(0)}% timeline
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -857,51 +948,65 @@ export default function BudgetPage() {
               </CardContent>
             </Card>
 
-            {/* Budget Insights */}
+            {/* Project Financial Summary */}
             {hasBudgets && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-[#1C8C7D]" />
-                    Budget Insights
+                    Financial Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Remaining Budget</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Remaining Funds</p>
                       <p className="text-lg font-bold text-slate-900 dark:text-white">ETB {formatCompact(totalBudget - totalSpent)}</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                       <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
                     </div>
                   </div>
-                  {totalSpent > 0 && (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                      <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Avg Daily Spending</p>
-                        <p className="text-lg font-bold text-slate-900 dark:text-white">
-                          ETB {formatCompact(totalSpent / 30)}
-                        </p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Monthly Burn Rate</p>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                        ETB {formatCompact(totalSpent / 8.5)}
+                      </p>
                     </div>
-                  )}
-                  {totalSpent > 0 && (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                      <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Days Remaining</p>
-                        <p className="text-lg font-bold text-slate-900 dark:text-white">
-                          {Math.ceil((totalBudget - totalSpent) / (totalSpent / 30))}
-                        </p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                        <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      </div>
+                    <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                  )}
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Months to Completion</p>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                        ~{Math.ceil((totalBudget - totalSpent) / (totalSpent / 8.5))} months
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                      <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Target Completion</p>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">June 2027</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                      <CheckCircle2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Total Expenses Filed</p>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">247</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                      <Receipt className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             )}
