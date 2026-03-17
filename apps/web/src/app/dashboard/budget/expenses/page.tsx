@@ -159,8 +159,39 @@ export default function BudgetExpensesPage() {
     });
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
-  const expenses: Expense[] = expensesData?.expenses || [];
-  const budgets = budgetsData?.budgets || [];
+  // Demo expenses for showcase (250M ETB government agency demo)
+  const DEMO_EXPENSES: Expense[] = [
+    { id: 'de-1', description: 'Dam foundation concrete supply — Phase 3', amount: 4800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-14', vendor: 'Ethio-Cement PLC', invoiceNumber: 'EC-2026-0847', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c1', name: 'Construction & Infrastructure' } },
+    { id: 'de-2', description: 'CAT 320 Excavator rental (Q1 2026)', amount: 2100000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-12', vendor: 'Mesfin Industrial Engineering', invoiceNumber: 'MIE-4521', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
+    { id: 'de-3', description: 'Cloud hosting & Azure Gov subscription (Mar)', amount: 890000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-10', vendor: 'Microsoft Ethiopia', invoiceNumber: 'MS-ETH-9932', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-4', description: 'Community environmental impact assessment — Woreda 7', amount: 1250000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-09', vendor: 'Green Impact Consulting', invoiceNumber: 'GIC-0312', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c4', name: 'Environmental & Social Impact' } },
+    { id: 'de-5', description: 'Health facility medical equipment — Batch 2', amount: 3600000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-08', vendor: 'EPHARM', invoiceNumber: 'EPH-2026-1123', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c11', name: 'Equipment & Machinery' } },
+    { id: 'de-6', description: 'Engineering team salaries — February 2026', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-05', vendor: 'Internal Payroll', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c3', name: 'Labor & Personnel' } },
+    { id: 'de-7', description: 'Teacher training workshop — Hawassa region', amount: 980000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-04', vendor: 'National Institute of Education', invoiceNumber: 'NIE-0156', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c14', name: 'Training & Capacity Building' } },
+    { id: 'de-8', description: 'GIS & survey system licenses', amount: 1450000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-03', vendor: 'Esri East Africa', invoiceNumber: 'ESRI-EA-7744', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-9', description: 'Structural steel reinforcement bars — 42 tons', amount: 6200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-01', vendor: 'Zuquala Steel', invoiceNumber: 'ZS-2026-0389', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c10', name: 'Construction & Infrastructure' } },
+    { id: 'de-10', description: 'McKinsey advisory — Digital transformation roadmap', amount: 3800000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-28', vendor: 'McKinsey & Company', invoiceNumber: 'MCK-ETH-0023', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c6', name: 'Consulting & Professional Services' } },
+    { id: 'de-11', description: 'Solar panel installation — Site B irrigation pumps', amount: 2750000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-26', vendor: 'SolarTech Ethiopia', invoiceNumber: 'STE-1102', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
+    { id: 'de-12', description: 'National curriculum assessment software dev', amount: 2200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-24', vendor: 'iCog Labs', invoiceNumber: 'ICG-2026-0078', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c15', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-13', description: 'Irrigation channel lining materials', amount: 3100000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-22', vendor: 'Habesha Construction Materials', invoiceNumber: 'HCM-0456', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c1', name: 'Construction & Infrastructure' } },
+    { id: 'de-14', description: 'Laboratory equipment for health facility — Jimma', amount: 4200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-20', vendor: 'EPHARM', invoiceNumber: 'EPH-2026-1098', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c11', name: 'Equipment & Machinery' } },
+    { id: 'de-15', description: 'Cybersecurity audit & penetration testing', amount: 1650000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-18', vendor: 'SecureTech Solutions', invoiceNumber: 'STS-2026-0034', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-16', description: 'Water quality testing equipment', amount: 1800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-15', vendor: 'Hach Company', invoiceNumber: 'HACH-ETH-229', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
+    { id: 'de-17', description: 'Construction workers wages — Week 10', amount: 1200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-14', vendor: 'Internal Payroll', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c10', name: 'Construction & Infrastructure' } },
+    { id: 'de-18', description: 'Digital literacy training for civil servants — Batch 4', amount: 720000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-12', vendor: 'Ethiopian Civil Service University', invoiceNumber: 'ECSU-TR-0089', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c7', name: 'Training & Capacity Building' } },
+  ];
+
+  const apiExpenses: Expense[] = expensesData?.expenses || [];
+  const apiBudgets = budgetsData?.budgets || [];
+  const hasRealExpenses = apiExpenses.length > 0;
+
+  const expenses = hasRealExpenses ? apiExpenses : DEMO_EXPENSES;
+  const budgets = hasRealExpenses ? apiBudgets : [
+    { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } },
+    { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } },
+    { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } },
+    { id: 'demo-4', project: { name: 'National Education Assessment Reform' } },
+  ];
 
   const filteredExpenses = expenses.filter((expense) => {
     const matchesSearch = searchQuery === '' ||
