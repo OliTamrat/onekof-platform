@@ -30,39 +30,45 @@ export default function BudgetForecastingPage() {
         baseHref="/dashboard/budget"
       />
 
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+        <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-3 md:gap-4 mb-6 scrollbar-hide">
+          <div className="flex-shrink-0 w-[200px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="h-5 w-5 text-green-500" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">Projected Revenue (Q2)</div>
+              <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">Projected Revenue (Q2)</div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">$295,000</div>
-            <div className="text-xs text-green-600 dark:text-green-400 mt-1">+15% vs Q1</div>
+            <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">$295,000</div>
+            <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">+15% vs Q1</div>
           </div>
 
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="flex-shrink-0 w-[200px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingDown className="h-5 w-5 text-red-500" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">Projected Expenses (Q2)</div>
+              <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">Projected Expenses (Q2)</div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">$218,000</div>
-            <div className="text-xs text-green-600 dark:text-green-400 mt-1">-3% vs Q1</div>
+            <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">$218,000</div>
+            <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">-3% vs Q1</div>
           </div>
 
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="flex-shrink-0 w-[200px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="h-5 w-5 text-blue-500" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">Net Projection (Q2)</div>
+              <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">Net Projection (Q2)</div>
             </div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">$77,000</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">80% confidence</div>
+            <div className="text-xl md:text-2xl font-bold text-emerald-600 dark:text-emerald-400">$77,000</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">80% confidence</div>
           </div>
         </div>
 
         {/* Forecasting Table */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden">
+        <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Detailed Forecast</h2>
           </div>
