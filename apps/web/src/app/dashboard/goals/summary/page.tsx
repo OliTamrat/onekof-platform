@@ -284,7 +284,7 @@ export default function GoalsSummaryPage() {
                   style={{ width: '72%' }}
                 />
               </div>
-              <div className="grid grid-cols-4 gap-4 mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="text-center p-3 rounded-lg bg-green-500/10">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">{goalsByStatus.onTrack}</div>
                   <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">On Track</div>
