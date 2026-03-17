@@ -439,120 +439,116 @@ export default function BudgetPage() {
       />
 
       {/* Project Header Banner */}
-      <div className="bg-gradient-to-r from-[#1C8C7D] to-[#16A085] px-4 md:px-6 py-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-white">{PROJECT_NAME}</h2>
-            <p className="text-sm text-white/80 mt-0.5">Ministry of Water & Irrigation — Funded by {PROJECT_FUNDED_BY}</p>
-            <p className="text-xs text-white/60 mt-0.5">Fiscal Year: {PROJECT_FISCAL_YEAR} | Total Funding: ETB 250,000,000</p>
-          </div>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-white">{overallUtilization.toFixed(1)}%</div>
-            <div className="text-xs text-white/70">budget utilized</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-[#1B1F23] border-b border-slate-200 dark:border-slate-700 shadow-sm">
-        <div className="p-4 md:p-6 grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            icon={<DollarSign className="h-5 w-5" />}
-            value={isLoading ? '...' : `ETB ${formatCompact(totalSpent)}`}
-            label="spent"
-            sublabel={`of ETB ${formatCompact(totalBudget)} allocated`}
-            color="text-blue-500 dark:text-blue-400"
-            onClick={() => openSlideout('All Project Expenses', expenses)}
-          />
-          <StatCard
-            icon={<CheckCircle2 className="h-5 w-5" />}
-            value={isLoading ? '...' : approvedExpenses.length.toString()}
-            label="approved"
-            sublabel="expenses cleared by finance"
-            color="text-green-500 dark:text-green-400"
-            onClick={() => openSlideout('Approved Expenses', approvedExpenses)}
-          />
-          <StatCard
-            icon={<Clock className="h-5 w-5" />}
-            value={isLoading ? '...' : pendingExpenses.length.toString()}
-            label="pending"
-            sublabel="awaiting director approval"
-            color="text-orange-500 dark:text-orange-400"
-            onClick={() => openSlideout('Pending Approval', pendingExpenses)}
-          />
-          <StatCard
-            icon={<TrendingUp className="h-5 w-5" />}
-            value={isLoading ? '...' : `ETB ${formatCompact(totalBudget - totalSpent)}`}
-            label="remaining"
-            sublabel={`${categoriesAtRisk} ${categoriesAtRisk === 1 ? 'category' : 'categories'} at risk (>80%)`}
-            color="text-teal-500 dark:text-teal-400"
-          />
-        </div>
-      </div>
-
-      <div className="p-4 md:p-6">
-        {/* AI Document Upload Banner */}
-        <Card className="mb-6 border-[#1C8C7D]/20 bg-gradient-to-r from-[#1C8C7D]/5 to-[#16A085]/5 dark:from-[#1C8C7D]/10 dark:to-[#16A085]/10">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 p-3 rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085]">
-                <Sparkles className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
-                  AI-Powered Document Analysis
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                  Upload receipts, invoices, budget documents, or expense reports. AI will extract amounts, line items,
-                  vendors, and categorize expenses automatically.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => { setAnalysisType('receipt'); setIsUploadModalOpen(true); }}
-                    className="gap-2"
-                  >
-                    <Receipt className="h-4 w-4" />
-                    Upload Receipt / Invoice
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => { setAnalysisType('budget_document'); setIsUploadModalOpen(true); }}
-                    className="gap-2"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Budget Document
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => { setAnalysisType('expense_report'); setIsUploadModalOpen(true); }}
-                    className="gap-2"
-                  >
-                    <Download className="h-4 w-4" />
-                    Expense Report
-                  </Button>
-                </div>
-              </div>
+      <div className="relative bg-gradient-to-r from-[#1C8C7D] via-[#18947F] to-[#16A085] px-4 md:px-6 py-3 md:py-4 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+        <div className="relative flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base md:text-lg font-bold text-white truncate">{PROJECT_NAME}</h2>
+            <p className="text-xs md:text-sm text-white/80 mt-0.5 line-clamp-1">Ministry of Water & Irrigation</p>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+              {['GoE Treasury', 'World Bank (IDA)', 'AfDB'].map((funder) => (
+                <span key={funder} className="text-[11px] md:text-xs text-white/90 bg-white/10 px-2 py-0.5 rounded-full">{funder}</span>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="text-right flex-shrink-0">
+            <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">{overallUtilization.toFixed(1)}%</div>
+            <div className="text-[11px] md:text-xs text-white/70">utilized</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards — scrollable row on mobile, grid on desktop */}
+      <div className="bg-white dark:bg-[#1B1F23] border-b border-slate-200 dark:border-slate-700 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
+        <div className="p-3 md:p-6">
+          <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4 scrollbar-hide">
+            <StatCard
+              icon={<DollarSign className="h-4 w-4 md:h-5 md:w-5" />}
+              value={isLoading ? '...' : `ETB ${formatCompact(totalSpent)}`}
+              label="spent"
+              sublabel={`of ETB ${formatCompact(totalBudget)} allocated`}
+              iconBg="bg-blue-50 dark:bg-blue-900/20"
+              color="text-blue-600 dark:text-blue-400"
+              onClick={() => openSlideout('All Project Expenses', expenses)}
+            />
+            <StatCard
+              icon={<CheckCircle2 className="h-4 w-4 md:h-5 md:w-5" />}
+              value={isLoading ? '...' : approvedExpenses.length.toString()}
+              label="approved"
+              sublabel="cleared by finance"
+              iconBg="bg-emerald-50 dark:bg-emerald-900/20"
+              color="text-emerald-600 dark:text-emerald-400"
+              onClick={() => openSlideout('Approved Expenses', approvedExpenses)}
+            />
+            <StatCard
+              icon={<Clock className="h-4 w-4 md:h-5 md:w-5" />}
+              value={isLoading ? '...' : pendingExpenses.length.toString()}
+              label="pending"
+              sublabel="awaiting approval"
+              iconBg="bg-amber-50 dark:bg-amber-900/20"
+              color="text-amber-600 dark:text-amber-400"
+              onClick={() => openSlideout('Pending Approval', pendingExpenses)}
+            />
+            <StatCard
+              icon={<TrendingUp className="h-4 w-4 md:h-5 md:w-5" />}
+              value={isLoading ? '...' : `ETB ${formatCompact(totalBudget - totalSpent)}`}
+              label="remaining"
+              sublabel={`${categoriesAtRisk} at risk (>80%)`}
+              iconBg="bg-teal-50 dark:bg-teal-900/20"
+              color="text-teal-600 dark:text-teal-400"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 md:p-6 space-y-6">
+        {/* AI Document Upload Banner */}
+        <div className="relative rounded-xl bg-gradient-to-br from-[#1C8C7D]/8 to-[#16A085]/5 dark:from-[#1C8C7D]/15 dark:to-[#16A085]/10 border border-[#1C8C7D]/15 dark:border-[#1C8C7D]/20 p-4 md:p-5">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="hidden sm:flex flex-shrink-0 h-10 w-10 rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#16A085] items-center justify-center shadow-sm">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <div className="sm:hidden flex-shrink-0 h-7 w-7 rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center">
+                  <Sparkles className="h-3.5 w-3.5 text-white" />
+                </div>
+                <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-white">
+                  AI Document Analysis
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
+                Upload receipts, invoices, or budget docs — AI extracts and categorizes automatically.
+              </p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <Button
+                size="sm"
+                onClick={() => { setAnalysisType('receipt'); setIsUploadModalOpen(true); }}
+                className="gap-1.5 text-xs"
+              >
+                <Upload className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Upload</span>
+                <span className="sm:hidden">Upload</span>
+              </Button>
+            </div>
+          </div>
+        </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Budget Overview - 3 columns */}
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Budget Overview - 2 columns */}
+          <div className="lg:col-span-2 space-y-6">
             {/* Budget Overview Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Budget Overview</span>
-                  {hasBudgets && (
-                    <span className="text-sm font-normal text-[#1C8C7D]">
-                      {overallUtilization.toFixed(1)}% utilized
-                    </span>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Budget Overview</h3>
+                {hasBudgets && (
+                  <span className="text-sm font-medium text-[#1C8C7D] bg-[#1C8C7D]/10 px-2.5 py-1 rounded-lg">
+                    {overallUtilization.toFixed(1)}% utilized
+                  </span>
+                )}
+              </div>
                 {isLoading ? (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
@@ -575,8 +571,8 @@ export default function BudgetPage() {
                 ) : (
                   <>
                     {/* Donut Chart + Legend */}
-                    <div className="flex items-center gap-8 mb-8">
-                      <div className="relative h-48 w-48 flex-shrink-0">
+                    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 mb-8">
+                      <div className="relative h-36 w-36 sm:h-48 sm:w-48 flex-shrink-0">
                         <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
                           <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth="15" />
                           {categories.map((category, index) => {
@@ -686,10 +682,12 @@ export default function BudgetPage() {
                       </div>
 
                       {/* Key Insights Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-700/60">
                           <div className="flex items-center gap-2 mb-3">
-                            <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            <div className="h-6 w-6 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                              <TrendingUp className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                            </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Budget vs Timeline</h5>
                           </div>
                           <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
@@ -707,9 +705,11 @@ export default function BudgetPage() {
                             </li>
                           </ul>
                         </div>
-                        <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-700/60">
                           <div className="flex items-center gap-2 mb-3">
-                            <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                            <div className="h-6 w-6 rounded-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                              <DollarSign className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                            </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Funding Source Utilization</h5>
                           </div>
                           <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
@@ -767,19 +767,17 @@ export default function BudgetPage() {
                     </div>
                   </>
                 )}
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Project Timeline vs Budget */}
             {hasBudgets && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="h-8 w-8 rounded-lg bg-[#1C8C7D]/10 flex items-center justify-center">
                     <Clock className="h-4 w-4 text-[#1C8C7D]" />
-                    Project Timeline vs Budget Spend
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Project Timeline vs Budget</h3>
+                </div>
                   <div className="space-y-4">
                     {PROJECT_PHASES.map((phase) => {
                       const phaseStart = new Date(phase.start);
@@ -831,184 +829,137 @@ export default function BudgetPage() {
                       );
                     })}
                   </div>
-                </CardContent>
-              </Card>
+              </div>
             )}
           </div>
 
-          {/* Right Column - 2 columns */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Quick Upload */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-                  Quick Upload
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => { setAnalysisType('receipt'); setIsUploadModalOpen(true); }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 hover:border-[#1C8C7D] hover:bg-[#1C8C7D]/5 transition-all"
-                  >
-                    <Camera className="h-6 w-6 text-[#1C8C7D]" />
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Receipt</span>
-                  </button>
-                  <button
-                    onClick={() => { setAnalysisType('receipt'); setIsUploadModalOpen(true); }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 hover:border-[#1C8C7D] hover:bg-[#1C8C7D]/5 transition-all"
-                  >
-                    <Receipt className="h-6 w-6 text-[#1C8C7D]" />
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Invoice</span>
-                  </button>
-                  <button
-                    onClick={() => { setAnalysisType('budget_document'); setIsUploadModalOpen(true); }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 hover:border-[#1C8C7D] hover:bg-[#1C8C7D]/5 transition-all"
-                  >
-                    <FileText className="h-6 w-6 text-[#1C8C7D]" />
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Budget Doc</span>
-                  </button>
-                  <button
-                    onClick={() => { setAnalysisType('expense_report'); setIsUploadModalOpen(true); }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 hover:border-[#1C8C7D] hover:bg-[#1C8C7D]/5 transition-all"
-                  >
-                    <Download className="h-6 w-6 text-[#1C8C7D]" />
-                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Expense Report</span>
-                  </button>
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
+                  <Sparkles className="h-3.5 w-3.5 text-[#1C8C7D]" />
                 </div>
-              </CardContent>
-            </Card>
+                Quick Actions
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Receipt', icon: Camera, type: 'receipt' as const, bg: 'bg-teal-50 dark:bg-teal-900/20', iconColor: 'text-teal-600 dark:text-teal-400' },
+                  { label: 'Invoice', icon: Receipt, type: 'receipt' as const, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
+                  { label: 'Budget Doc', icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
+                  { label: 'Expense Report', icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
+                ].map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={() => { setAnalysisType(action.type); setIsUploadModalOpen(true); }}
+                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group"
+                  >
+                    <div className={`flex-shrink-0 h-8 w-8 rounded-lg ${action.bg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
+                      <action.icon className={`h-4 w-4 ${action.iconColor}`} />
+                    </div>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 text-left leading-tight">{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Recent Activity</span>
-                  <span className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Live
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-[#1C8C7D]" />
-                  </div>
-                ) : expenses.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Clock className="h-8 w-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-                    <p className="text-sm text-slate-500">No recent expenses</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {expenses.slice(0, 5).map((expense: any) => (
-                      <div
-                        key={expense.id}
-                        className="flex items-start gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D] transition-colors"
-                      >
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center flex-shrink-0">
-                          <DollarSign className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                              {expense.description}
-                            </span>
-                            <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
-                              expense.status === 'APPROVED' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                              expense.status === 'PENDING' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
-                              'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                            }`}>
-                              {expense.status}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                            {expense.budget?.project?.name && <span>{expense.budget.project.name}</span>}
-                            {expense.category?.name && <span>• {expense.category.name}</span>}
-                          </div>
-                        </div>
-                        <div className="text-sm font-semibold text-slate-900 dark:text-white flex-shrink-0">
-                          ETB {formatCurrency(Number(expense.amount))}
-                        </div>
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Recent Activity</h3>
+                <span className="flex items-center gap-1 text-[11px] text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-2 py-0.5 rounded-full">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#1C8C7D] animate-pulse" />
+                  Live
+                </span>
+              </div>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-[#1C8C7D]" />
+                </div>
+              ) : expenses.length === 0 ? (
+                <div className="text-center py-8">
+                  <Clock className="h-8 w-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                  <p className="text-sm text-slate-500">No recent expenses</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {expenses.slice(0, 5).map((expense: any) => (
+                    <div
+                      key={expense.id}
+                      className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                    >
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        expense.status === 'APPROVED' ? 'bg-emerald-50 dark:bg-emerald-900/20' :
+                        expense.status === 'PENDING' ? 'bg-amber-50 dark:bg-amber-900/20' :
+                        'bg-red-50 dark:bg-red-900/20'
+                      }`}>
+                        <DollarSign className={`h-4 w-4 ${
+                          expense.status === 'APPROVED' ? 'text-emerald-600 dark:text-emerald-400' :
+                          expense.status === 'PENDING' ? 'text-amber-600 dark:text-amber-400' :
+                          'text-red-600 dark:text-red-400'
+                        }`} />
                       </div>
-                    ))}
-                    {expenses.length > 5 && (
-                      <Button
-                        variant="outline"
-                        className="w-full text-[#1C8C7D] border-[#1C8C7D] hover:bg-[#1C8C7D] hover:text-white"
-                        onClick={() => openSlideout('All Expenses', expenses)}
-                      >
-                        View All ({expenses.length - 5} more)
-                      </Button>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate leading-tight">
+                          {expense.vendor || expense.description?.split(' — ')[0]}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                          {expense.category?.name}
+                        </p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          {formatCompact(Number(expense.amount))}
+                        </p>
+                        <p className={`text-[11px] font-medium ${
+                          expense.status === 'APPROVED' ? 'text-emerald-600 dark:text-emerald-400' :
+                          'text-amber-600 dark:text-amber-400'
+                        }`}>{expense.status === 'APPROVED' ? 'Approved' : 'Pending'}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {expenses.length > 5 && (
+                    <button
+                      onClick={() => openSlideout('All Expenses', expenses)}
+                      className="w-full text-center text-xs font-medium text-[#1C8C7D] hover:text-[#16A085] py-2 mt-1 rounded-lg hover:bg-[#1C8C7D]/5 transition-colors"
+                    >
+                      View all {expenses.length} expenses
+                    </button>
                     )}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Project Financial Summary */}
             {hasBudgets && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-[#1C8C7D]" />
-                    Financial Summary
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Remaining Funds</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">ETB {formatCompact(totalBudget - totalSpent)}</p>
-                    </div>
-                    <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                      <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    </div>
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
+                    <TrendingUp className="h-3.5 w-3.5 text-[#1C8C7D]" />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Monthly Burn Rate</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
-                        ETB {formatCompact(totalSpent / 8.5)}
-                      </p>
+                  Financial Summary
+                </h3>
+                <div className="space-y-2">
+                  {[
+                    { label: 'Remaining Funds', value: `ETB ${formatCompact(totalBudget - totalSpent)}`, icon: DollarSign, bg: 'bg-emerald-50 dark:bg-emerald-900/20', iconColor: 'text-emerald-600 dark:text-emerald-400' },
+                    { label: 'Monthly Burn Rate', value: `ETB ${formatCompact(totalSpent / 8.5)}`, icon: TrendingUp, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
+                    { label: 'Months to Completion', value: `~${Math.ceil((totalBudget - totalSpent) / (totalSpent / 8.5))} months`, icon: Clock, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
+                    { label: 'Target Completion', value: 'June 2027', icon: CheckCircle2, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
+                    { label: 'Total Expenses', value: '247', icon: Receipt, bg: 'bg-indigo-50 dark:bg-indigo-900/20', iconColor: 'text-indigo-600 dark:text-indigo-400' },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                      <div className={`h-8 w-8 rounded-lg ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                        <item.icon className={`h-4 w-4 ${item.iconColor}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">{item.label}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{item.value}</p>
+                      </div>
                     </div>
-                    <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Months to Completion</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
-                        ~{Math.ceil((totalBudget - totalSpent) / (totalSpent / 8.5))} months
-                      </p>
-                    </div>
-                    <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                      <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Target Completion</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">June 2027</p>
-                    </div>
-                    <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                      <CheckCircle2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Total Expenses Filed</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">247</p>
-                    </div>
-                    <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                      <Receipt className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -1434,27 +1385,29 @@ export default function BudgetPage() {
 }
 
 function StatCard({
-  icon, value, label, sublabel, color, onClick,
+  icon, value, label, sublabel, iconBg, color, onClick,
 }: {
   icon: React.ReactNode;
   value: string;
   label: string;
   sublabel: string;
+  iconBg: string;
   color: string;
   onClick?: () => void;
 }) {
   return (
     <button
       onClick={onClick}
-      className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] transition-all text-left w-full"
+      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left"
     >
-      <div className="mb-4 flex items-center justify-between">
-        <div className={color}>{icon}</div>
-        {onClick && <span className="text-xs text-[#1C8C7D] font-medium">View details →</span>}
+      <div className="flex items-center gap-2.5 mb-2 md:mb-3">
+        <div className={`h-8 w-8 rounded-lg ${iconBg} flex items-center justify-center`}>
+          <div className={color}>{icon}</div>
+        </div>
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 capitalize">{label}</span>
       </div>
-      <div className="text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
-      <div className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="text-xs text-slate-500 dark:text-slate-400">{sublabel}</div>
+      <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
+      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
     </button>
   );
 }
@@ -1465,18 +1418,25 @@ function CategoryBar({ label, value, budget, max, color }: {
   const percentage = max > 0 ? (value / max) * 100 : 0;
   const utilization = budget > 0 ? (value / budget) * 100 : 0;
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-32 text-sm text-slate-700 dark:text-slate-300 truncate">{label}</div>
-      <div className="flex-1 h-6 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-slate-700 dark:text-slate-300 truncate mr-2">{label}</span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className={`text-xs font-medium ${utilization > 90 ? 'text-red-600 dark:text-red-400' : utilization > 75 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}>
+            {utilization.toFixed(0)}%
+          </span>
+          <span className="font-medium text-slate-900 dark:text-white">
+            ETB {value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : `${(value / 1000).toFixed(0)}K`}
+          </span>
+        </div>
+      </div>
+      <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         {percentage > 0 && (
           <div
             className="h-full transition-all duration-300 rounded-full"
             style={{ width: `${percentage}%`, backgroundColor: utilization > 100 ? '#FF5630' : color }}
           />
         )}
-      </div>
-      <div className="w-24 text-right text-sm font-medium text-slate-900 dark:text-white">
-        ETB {value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : `${(value / 1000).toFixed(0)}K`}
       </div>
     </div>
   );
