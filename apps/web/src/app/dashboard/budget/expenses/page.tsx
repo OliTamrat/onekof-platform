@@ -19,6 +19,8 @@ import {
   Sparkles,
   X,
   Check,
+  CheckCircle2,
+  Clock,
   FileText,
   AlertCircle,
   Filter,
@@ -233,41 +235,48 @@ export default function BudgetExpensesPage() {
         baseHref="/dashboard/budget"
       />
 
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-sm text-slate-600 dark:text-slate-400">Total Expenses</div>
-              <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
+        <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-4 md:gap-4 mb-6 scrollbar-hide">
+          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-sm text-slate-600 dark:text-slate-400">Approved</div>
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-                {isLoading ? '...' : approvedCount}
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Total</span>
+            </div>
+            <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+              {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-7 w-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-sm text-slate-600 dark:text-slate-400">Pending</div>
-              <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
-                {isLoading ? '...' : pendingCount}
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Approved</span>
+            </div>
+            <div className="text-lg md:text-xl font-bold text-emerald-600 dark:text-emerald-400">
+              {isLoading ? '...' : approvedCount}
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-7 w-7 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+                <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <Button onClick={() => setIsUploadModalOpen(true)} className="w-full gap-2">
-                <Sparkles className="h-4 w-4" />
-                AI Upload Receipt
-              </Button>
-            </CardContent>
-          </Card>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Pending</span>
+            </div>
+            <div className="text-lg md:text-xl font-bold text-amber-600 dark:text-amber-400">
+              {isLoading ? '...' : pendingCount}
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-[#1C8C7D]/5 to-[#16A085]/5 dark:from-[#1C8C7D]/10 dark:to-[#16A085]/10 border border-[#1C8C7D]/20 p-3 md:p-4 flex items-center justify-center">
+            <Button size="sm" onClick={() => setIsUploadModalOpen(true)} className="w-full gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Upload
+            </Button>
+          </div>
         </div>
 
         {/* Search & Filters */}
