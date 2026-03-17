@@ -223,7 +223,7 @@ export default function WikiPage() {
             /* Categories grid */
             <div className="max-w-5xl mx-auto">
               {/* Quick stats */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
                   <FileText className="h-4 w-4 text-blue-500" />
                   <div>
