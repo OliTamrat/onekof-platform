@@ -253,36 +253,131 @@ export default function BudgetPage() {
     });
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
-  // Compute aggregates from real data
-  const budgets: BudgetWithStats[] = budgetsData?.budgets || [];
-  const expenses = expensesData?.expenses || [];
+  // ── Demo Data (250M ETB Government Agency showcase) ──────────────
+  // Shown when no real budgets exist from the API. Once real data is
+  // created via the UI or API, real data takes precedence.
 
-  const totalBudget = budgets.reduce((sum, b) => sum + Number(b.totalBudget), 0);
+  const DEMO_CATEGORIES = [
+    { name: 'Construction & Infrastructure', budget: 85000000, spent: 62300000, color: '#1C8C7D' },
+    { name: 'Equipment & Machinery', budget: 42000000, spent: 31500000, color: '#00875A' },
+    { name: 'Labor & Personnel', budget: 38000000, spent: 29800000, color: '#FF5630' },
+    { name: 'Environmental & Social Impact', budget: 22000000, spent: 11200000, color: '#FFAB00' },
+    { name: 'IT Systems & Digital Infrastructure', budget: 18000000, spent: 14900000, color: '#6554C0' },
+    { name: 'Training & Capacity Building', budget: 15000000, spent: 8700000, color: '#0065FF' },
+    { name: 'Consulting & Professional Services', budget: 12000000, spent: 9600000, color: '#00B8D9' },
+    { name: 'Contingency & Risk Reserve', budget: 18000000, spent: 3200000, color: '#FF8B00' },
+  ];
+
+  const DEMO_BUDGETS: BudgetWithStats[] = [
+    {
+      id: 'demo-1', projectId: 'demo-p1', totalBudget: 120000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-07-08T00:00:00Z',
+      project: { id: 'demo-p1', name: 'Jira Water Dam & Irrigation Project', organizationId: 'demo-org' },
+      categories: [
+        { id: 'c1', name: 'Construction & Infrastructure', code: 'CON-001', allocatedAmount: 52000000, expenses: [{ amount: 38200000 }] },
+        { id: 'c2', name: 'Equipment & Machinery', code: 'EQP-002', allocatedAmount: 28000000, expenses: [{ amount: 21000000 }] },
+        { id: 'c3', name: 'Labor & Personnel', code: 'LAB-003', allocatedAmount: 22000000, expenses: [{ amount: 18500000 }] },
+        { id: 'c4', name: 'Environmental & Social Impact', code: 'ENV-004', allocatedAmount: 18000000, expenses: [{ amount: 8800000 }] },
+      ],
+      totalSpent: 86500000, totalAllocated: 120000000, utilization: 72.1,
+      _count: { expenses: 142, watchers: 8 },
+    },
+    {
+      id: 'demo-2', projectId: 'demo-p2', totalBudget: 65000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-09-01T00:00:00Z',
+      project: { id: 'demo-p2', name: 'Addis Ababa Digital Government Platform', organizationId: 'demo-org' },
+      categories: [
+        { id: 'c5', name: 'IT Systems & Digital Infrastructure', code: 'IT-001', allocatedAmount: 18000000, expenses: [{ amount: 14900000 }] },
+        { id: 'c6', name: 'Consulting & Professional Services', code: 'CON-005', allocatedAmount: 12000000, expenses: [{ amount: 9600000 }] },
+        { id: 'c7', name: 'Training & Capacity Building', code: 'TRN-006', allocatedAmount: 15000000, expenses: [{ amount: 8700000 }] },
+        { id: 'c8', name: 'Labor & Personnel', code: 'LAB-007', allocatedAmount: 10000000, expenses: [{ amount: 7200000 }] },
+        { id: 'c9', name: 'Contingency & Risk Reserve', code: 'CTG-008', allocatedAmount: 10000000, expenses: [{ amount: 1200000 }] },
+      ],
+      totalSpent: 41600000, totalAllocated: 65000000, utilization: 64.0,
+      _count: { expenses: 89, watchers: 5 },
+    },
+    {
+      id: 'demo-3', projectId: 'demo-p3', totalBudget: 45000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-11-15T00:00:00Z',
+      project: { id: 'demo-p3', name: 'Rural Health Facility Expansion', organizationId: 'demo-org' },
+      categories: [
+        { id: 'c10', name: 'Construction & Infrastructure', code: 'CON-009', allocatedAmount: 33000000, expenses: [{ amount: 24100000 }] },
+        { id: 'c11', name: 'Equipment & Machinery', code: 'EQP-010', allocatedAmount: 14000000, expenses: [{ amount: 10500000 }] },
+        { id: 'c12', name: 'Environmental & Social Impact', code: 'ENV-011', allocatedAmount: 4000000, expenses: [{ amount: 2400000 }] },
+        { id: 'c13', name: 'Contingency & Risk Reserve', code: 'CTG-012', allocatedAmount: 8000000, expenses: [{ amount: 2000000 }] },
+      ],
+      totalSpent: 39000000, totalAllocated: 45000000, utilization: 86.7,
+      _count: { expenses: 67, watchers: 4 },
+    },
+    {
+      id: 'demo-4', projectId: 'demo-p4', totalBudget: 20000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2026-01-10T00:00:00Z',
+      project: { id: 'demo-p4', name: 'National Education Assessment Reform', organizationId: 'demo-org' },
+      categories: [
+        { id: 'c14', name: 'Training & Capacity Building', code: 'TRN-013', allocatedAmount: 6300000, expenses: [{ amount: 4100000 }] },
+        { id: 'c15', name: 'IT Systems & Digital Infrastructure', code: 'IT-014', allocatedAmount: 5500000, expenses: [{ amount: 3800000 }] },
+        { id: 'c16', name: 'Consulting & Professional Services', code: 'CON-015', allocatedAmount: 4200000, expenses: [{ amount: 2900000 }] },
+        { id: 'c17', name: 'Labor & Personnel', code: 'LAB-016', allocatedAmount: 4000000, expenses: [{ amount: 4100000 }] },
+      ],
+      totalSpent: 14900000, totalAllocated: 20000000, utilization: 74.5,
+      _count: { expenses: 34, watchers: 3 },
+    },
+  ];
+
+  const DEMO_EXPENSES = [
+    { id: 'de-1', description: 'Dam foundation concrete supply — Phase 3', amount: 4800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-14', vendor: 'Ethio-Cement PLC', invoiceNumber: 'EC-2026-0847', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c1', name: 'Construction & Infrastructure' } },
+    { id: 'de-2', description: 'CAT 320 Excavator rental (Q1 2026)', amount: 2100000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-12', vendor: 'Mesfin Industrial Engineering', invoiceNumber: 'MIE-4521', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
+    { id: 'de-3', description: 'Cloud hosting & Azure Gov subscription (Mar)', amount: 890000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-10', vendor: 'Microsoft Ethiopia', invoiceNumber: 'MS-ETH-9932', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-4', description: 'Community environmental impact assessment — Woreda 7', amount: 1250000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-09', vendor: 'Green Impact Consulting', invoiceNumber: 'GIC-0312', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c4', name: 'Environmental & Social Impact' } },
+    { id: 'de-5', description: 'Health facility medical equipment — Batch 2', amount: 3600000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-08', vendor: 'EPHARM', invoiceNumber: 'EPH-2026-1123', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c11', name: 'Equipment & Machinery' } },
+    { id: 'de-6', description: 'Engineering team salaries — February 2026', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-05', vendor: 'Internal Payroll', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c3', name: 'Labor & Personnel' } },
+    { id: 'de-7', description: 'Teacher training workshop — Hawassa region', amount: 980000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-04', vendor: 'National Institute of Education', invoiceNumber: 'NIE-0156', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c14', name: 'Training & Capacity Building' } },
+    { id: 'de-8', description: 'GIS & survey system licenses', amount: 1450000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-03', vendor: 'Esri East Africa', invoiceNumber: 'ESRI-EA-7744', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c5', name: 'IT Systems & Digital Infrastructure' } },
+    { id: 'de-9', description: 'Structural steel reinforcement bars — 42 tons', amount: 6200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-01', vendor: 'Zuquala Steel', invoiceNumber: 'ZS-2026-0389', budget: { id: 'demo-3', project: { name: 'Rural Health Facility Expansion' } }, category: { id: 'c10', name: 'Construction & Infrastructure' } },
+    { id: 'de-10', description: 'McKinsey advisory — Digital transformation roadmap', amount: 3800000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-28', vendor: 'McKinsey & Company', invoiceNumber: 'MCK-ETH-0023', budget: { id: 'demo-2', project: { name: 'Addis Ababa Digital Government Platform' } }, category: { id: 'c6', name: 'Consulting & Professional Services' } },
+    { id: 'de-11', description: 'Solar panel installation — Site B irrigation pumps', amount: 2750000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-26', vendor: 'SolarTech Ethiopia', invoiceNumber: 'STE-1102', budget: { id: 'demo-1', project: { name: 'Jira Water Dam & Irrigation Project' } }, category: { id: 'c2', name: 'Equipment & Machinery' } },
+    { id: 'de-12', description: 'National curriculum assessment software dev', amount: 2200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-24', vendor: 'iCog Labs', invoiceNumber: 'ICG-2026-0078', budget: { id: 'demo-4', project: { name: 'National Education Assessment Reform' } }, category: { id: 'c15', name: 'IT Systems & Digital Infrastructure' } },
+  ];
+
+  // Compute aggregates — merge real API data with demo fallback
+  const apiBudgets: BudgetWithStats[] = budgetsData?.budgets || [];
+  const apiExpenses = expensesData?.expenses || [];
+  const hasRealData = apiBudgets.length > 0;
+
+  const budgets = hasRealData ? apiBudgets : DEMO_BUDGETS;
+  const expenses = hasRealData ? apiExpenses : DEMO_EXPENSES;
+
+  const totalBudget = hasRealData
+    ? budgets.reduce((sum, b) => sum + Number(b.totalBudget), 0)
+    : 250000000; // 250M ETB
   const totalSpent = budgets.reduce((sum, b) => sum + b.totalSpent, 0);
   const totalAllocated = budgets.reduce((sum, b) => sum + b.totalAllocated, 0);
   const overallUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
 
-  // Category aggregation across all budgets
-  const categoryMap = new Map<string, { name: string; budget: number; spent: number; color: string }>();
+  // Category aggregation
   const categoryColors = ['#1C8C7D', '#00875A', '#FF5630', '#FFAB00', '#6554C0', '#0065FF', '#00B8D9', '#FF8B00'];
-  budgets.forEach((b) => {
-    b.categories.forEach((cat, idx) => {
-      const existing = categoryMap.get(cat.name);
-      const catSpent = cat.expenses.reduce((s, e) => s + Number(e.amount), 0);
-      if (existing) {
-        existing.budget += Number(cat.allocatedAmount);
-        existing.spent += catSpent;
-      } else {
-        categoryMap.set(cat.name, {
-          name: cat.name,
-          budget: Number(cat.allocatedAmount),
-          spent: catSpent,
-          color: categoryColors[categoryMap.size % categoryColors.length],
-        });
-      }
+  let categories: Array<{ name: string; budget: number; spent: number; color: string }>;
+
+  if (hasRealData) {
+    const categoryMap = new Map<string, { name: string; budget: number; spent: number; color: string }>();
+    budgets.forEach((b) => {
+      b.categories.forEach((cat) => {
+        const existing = categoryMap.get(cat.name);
+        const catSpent = cat.expenses.reduce((s, e) => s + Number(e.amount), 0);
+        if (existing) {
+          existing.budget += Number(cat.allocatedAmount);
+          existing.spent += catSpent;
+        } else {
+          categoryMap.set(cat.name, {
+            name: cat.name,
+            budget: Number(cat.allocatedAmount),
+            spent: catSpent,
+            color: categoryColors[categoryMap.size % categoryColors.length],
+          });
+        }
+      });
     });
-  });
-  const categories = Array.from(categoryMap.values());
+    categories = Array.from(categoryMap.values());
+  } else {
+    categories = DEMO_CATEGORIES;
+  }
+
   const maxCategorySpent = Math.max(...categories.map(c => c.spent), 1);
 
   const approvedExpenses = expenses.filter((e: any) => e.status === 'APPROVED');
@@ -343,7 +438,7 @@ export default function BudgetPage() {
   if (!session) return null;
 
   const isLoading = budgetsLoading || expensesLoading;
-  const hasBudgets = budgets.length > 0;
+  const hasBudgets = budgets.length > 0; // Always true with demo fallback
 
   return (
     <AppLayout>
