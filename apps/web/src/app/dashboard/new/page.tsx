@@ -115,7 +115,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value="0"
@@ -382,16 +382,16 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <div className={color}>{icon}</div>
-        <Button variant="ghost" size="icon" className="h-6 w-6">
+    <div className="rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-6 shadow-sm hover:shadow-md transition-all">
+      <div className="mb-2 md:mb-4 flex items-center justify-between">
+        <div className={`p-1.5 md:p-2 rounded-lg bg-slate-100 dark:bg-slate-800/50 ${color}`}>{icon}</div>
+        <Button variant="ghost" size="icon" className="h-6 w-6 hidden md:flex">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </div>
-      <div className="text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
-      <div className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="text-xs text-slate-500 dark:text-slate-400">{sublabel}</div>
+      <div className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
+      <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
+      <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">{sublabel}</div>
     </div>
   );
 }
