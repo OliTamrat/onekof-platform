@@ -215,12 +215,16 @@ function OnboardingContent() {
 
       if (response.ok) {
         // Delete the auto-created placeholder workspace (type="personal") since user
-        // created a proper organization. Fire-and-forget to avoid blocking navigation.
-        fetch('/api/organizations/cleanup-placeholder', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ newOrganizationId: data.organization.id }),
-        }).catch(() => {});
+        // created a proper organization workspace.
+        try {
+          await fetch('/api/organizations/cleanup-placeholder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newOrganizationId: data.organization.id }),
+          });
+        } catch (cleanupError) {
+          console.error('Failed to clean up placeholder workspace:', cleanupError);
+        }
 
         await updateSession();
         redirectToSelectOrg();
@@ -239,7 +243,13 @@ function OnboardingContent() {
   const canProceedStep2 = organizationName && organizationSlug && teamSize;
   const canComplete = true;
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
+  if (status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
         <Loader2 className="h-8 w-8 animate-spin text-primary-400" />
