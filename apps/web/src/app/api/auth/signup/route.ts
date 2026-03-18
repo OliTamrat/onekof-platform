@@ -35,7 +35,22 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 12);
 
-    // Create user with default organization in a transaction
+    // Check if user has pending invitations — invite-first flow
+    const pendingInvitations = await prisma.invitation.findMany({
+      where: {
+        email: email.toLowerCase(),
+        acceptedAt: null,
+      },
+      include: {
+        organization: {
+          select: { id: true, name: true, slug: true },
+        },
+      },
+    });
+
+    const hasPendingInvitations = pendingInvitations.length > 0;
+
+    // Create user in a transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create user
       const user = await tx.user.create({
@@ -46,30 +61,40 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Create default organization/workspace
-      const schemaName = `onekof_org_${email.split('@')[0]}_${Date.now()}`.replace(/[^a-z0-9_]/g, '_');
-      const organization = await tx.organization.create({
-        data: {
-          name: `${name}'s Workspace`,
-          slug: `${email.split('@')[0]}-workspace-${Date.now()}`,
-          schemaName: schemaName,
-        },
-      });
+      let organization = null;
 
-      // Add user as organization member with OWNER role
-      await tx.organizationMember.create({
-        data: {
-          organizationId: organization.id,
-          userId: user.id,
-          role: 'OWNER',
-        },
-      });
+      if (hasPendingInvitations) {
+        // INVITE-FIRST: User has pending invitations — do NOT create auto workspace.
+        // They will join invited org(s) via the invitation accept flow after email verification.
+        // No defaultOrganizationId yet — it will be set when they accept an invitation.
+      } else {
+        // NEW USER: No invitations — create a placeholder workspace.
+        // The onboarding flow will either:
+        //   a) Convert this into a proper personal workspace (type="personal")
+        //   b) Replace it with an organization workspace after onboarding
+        const schemaName = `onekof_org_${email.split('@')[0]}_${Date.now()}`.replace(/[^a-z0-9_]/g, '_');
+        organization = await tx.organization.create({
+          data: {
+            name: `${name}'s Workspace`,
+            slug: `${email.split('@')[0]}-workspace-${Date.now()}`,
+            schemaName: schemaName,
+            type: 'personal',
+          },
+        });
 
-      // Update user with default organization
-      await tx.user.update({
-        where: { id: user.id },
-        data: { defaultOrganizationId: organization.id },
-      });
+        await tx.organizationMember.create({
+          data: {
+            organizationId: organization.id,
+            userId: user.id,
+            role: 'OWNER',
+          },
+        });
+
+        await tx.user.update({
+          where: { id: user.id },
+          data: { defaultOrganizationId: organization.id },
+        });
+      }
 
       // SECURITY FIX: Generate secure token and hash it before storage
       const { token, hash: tokenHash } = generateTokenPair();
@@ -93,14 +118,13 @@ export async function POST(req: NextRequest) {
     logSecurity('user_signup', 'low', {
       userId: user.id,
       email: user.email,
-      organizationId: organization.id,
+      organizationId: organization?.id || null,
+      hasPendingInvitations,
     });
 
     // Send email verification with secure verification link
-    // The verification URL contains the plaintext token (sent via email only)
     const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify-email?token=${verificationToken}`;
 
-    // Send email with verification link
     try {
       await sendVerificationEmail(user.email, verificationUrl);
       log.info('Verification email sent successfully', {
@@ -108,12 +132,10 @@ export async function POST(req: NextRequest) {
         email: user.email,
       });
     } catch (emailError) {
-      // Log email error but don't fail signup
       log.error('Failed to send verification email', {
         error: emailError,
         userId: user.id,
       });
-      // Continue anyway - user account is created, they can request new verification email
     }
 
     // SECURITY FIX: Never return token or verificationUrl in API response
@@ -124,12 +146,17 @@ export async function POST(req: NextRequest) {
           name: user.name,
           email: user.email,
         },
-        organization: {
-          id: organization.id,
-          name: organization.name,
-          slug: organization.slug,
-        },
-        message: 'Account created successfully. Please check your email to verify your account.',
+        organization: organization
+          ? {
+              id: organization.id,
+              name: organization.name,
+              slug: organization.slug,
+            }
+          : null,
+        hasPendingInvitations,
+        message: hasPendingInvitations
+          ? 'Account created. You have pending invitations — accept them after verifying your email.'
+          : 'Account created successfully. Please check your email to verify your account.',
       },
       { status: 201 }
     );
