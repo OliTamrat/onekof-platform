@@ -40,6 +40,7 @@ import {
   MoreVertical,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { useToast } from '@/components/ui/toast-provider';
 
 // Types
 interface Issue {
@@ -130,6 +131,7 @@ type Tab = 'details' | 'settings';
 
 export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
   const resolvedId = initialIssue?.id || issueId;
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('details');
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState(initialIssue?.description || '');
@@ -309,7 +311,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             <button
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
-                alert('Link copied to clipboard!');
+                toast.success('Link copied to clipboard');
               }}
               className="rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Share"
@@ -776,15 +778,16 @@ function WatchersSection({
   addWatcher: any;
   removeWatcher: any;
 }) {
+  const toast = useToast();
+
   const handleAddWatcher = async () => {
     try {
-      // Add current user as watcher
       await addWatcher.mutateAsync();
     } catch (error: any) {
       if (error.message === 'Already watching this issue') {
-        alert('You are already watching this issue');
+        toast.info('Already watching', 'You are already watching this issue');
       } else {
-        alert('Failed to add watcher: ' + error.message);
+        toast.error('Failed to add watcher', error.message);
       }
     }
   };
@@ -794,7 +797,7 @@ function WatchersSection({
       try {
         await removeWatcher.mutateAsync(userId);
       } catch (error: any) {
-        alert('Failed to remove watcher: ' + error.message);
+        toast.error('Failed to remove watcher', error.message);
       }
     }
   };
@@ -993,6 +996,7 @@ function SubtasksSection({ issue }: { issue: Issue }) {
 // Comments Section Component
 function CommentsSection({ issue, commentContent, setCommentContent }: { issue: Issue; commentContent: string; setCommentContent: (val: string) => void }) {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const comments = issue.comments || [];
   const [isSending, setIsSending] = useState(false);
 
@@ -1013,11 +1017,11 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
         await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
         await queryClient.invalidateQueries({ queryKey: ['issues'] });
       } else {
-        alert('Failed to send comment');
+        toast.error('Failed to send comment');
       }
     } catch (error) {
       console.error('Failed to send comment:', error);
-      alert('Failed to send comment');
+      toast.error('Failed to send comment');
     } finally {
       setIsSending(false);
     }
