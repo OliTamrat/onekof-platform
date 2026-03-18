@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Loader2 } from 'lucide-react';
+import { useToast } from '@/components/ui/toast-provider';
 
 interface CreateIssueModalProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ interface CreateIssueModalProps {
 }
 
 export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
+  const toast = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<string>('TASK');
@@ -87,7 +89,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
     e.preventDefault();
 
     if (!title.trim() || !projectId) {
-      alert('Please provide a title and select a project');
+      toast.warning('Missing fields', 'Please provide a title and select a project');
       return;
     }
 

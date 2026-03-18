@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
@@ -29,6 +30,7 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function TeamsSettingsPage() {
+  const toast = useToast();
   const [activeSection, setActiveSection] = useState('general');
   const [settings, setSettings] = useState({
     maxTeamSize: 15,
@@ -40,7 +42,7 @@ export default function TeamsSettingsPage() {
 
   const handleSave = () => {
     console.log('Saving settings:', settings);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved');
   };
 
   return (
