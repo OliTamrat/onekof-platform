@@ -50,6 +50,7 @@ export async function GET(req: NextRequest) {
       slug: m.organization.slug,
       logo: (m.organization as any).logo,
       description: (m.organization as any).description,
+      type: m.organization.type || null,
       createdAt: m.organization.createdAt.toISOString(),
       memberCount: m.organization._count.members,
       projectCount: m.organization._count.projects,
