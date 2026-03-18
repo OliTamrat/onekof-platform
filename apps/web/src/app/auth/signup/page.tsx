@@ -91,7 +91,13 @@ export default function SignUpPage() {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      router.push('/onboarding?email=' + encodeURIComponent(email));
+      if (data.hasPendingInvitations) {
+        // Invited user — skip onboarding, go to sign in to accept invitations
+        router.push('/auth/signin?message=Account created. Sign in to accept your invitations.');
+      } else {
+        // New user — proceed to onboarding to set up workspace
+        router.push('/onboarding?email=' + encodeURIComponent(email));
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {
