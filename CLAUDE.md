@@ -13,7 +13,7 @@
 
 ### Multi-Tenant Routing
 - **Subdomains**: `{org-slug}.onekof.com` → middleware extracts slug → sets `x-organization-slug` header
-- **API route org resolution**: All API routes use `user.organizations[0]` — this is the working pattern. Do NOT change to slug-based matching without a full test plan across all routes.
+- **API route org resolution**: All API routes use `resolveUserOrganization()` from `@/lib/api-organization` — reads `x-organization-slug` header (set by middleware from subdomain), falls back to `defaultOrganizationId`, then first org. This ensures correct multi-tenant isolation for users with multiple orgs.
 - **Workspace context** (`src/contexts/workspace-context.tsx`): Client-side org detection by matching `window.location.hostname` subdomain against the user's org slugs
 - **Sidebar data** comes from workspace context (client-side), **dashboard data** comes from API routes (server-side)
 
@@ -86,7 +86,7 @@ All UI must use these semantic tokens defined in `tailwind.config.ts`:
 
 These patterns are critical to production stability:
 
-- **API route org resolution** (`user.organizations[0]`) — changing this breaks the entire dashboard
+- **API route org resolution** (`resolveUserOrganization()`) — uses subdomain header for multi-tenant isolation. Do NOT revert to `organizations[0]` as it breaks multi-org users.
 - **`trustHost: true`** in auth config — removing this breaks subdomain auth
 - **Cookie domain** (`.onekof.com`) — changing this breaks cross-subdomain sessions
 - **Middleware header injection** (`x-organization-slug`) — do not modify without subdomain testing

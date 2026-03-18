@@ -1,37 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { resolveUserOrganization } from '@/lib/api-organization';
 
 export const dynamic = 'force-dynamic';
 
 // GET /api/teams - Get all teams for the current organization
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get user with organizations
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const organizationId = ctx.organizationId;
 
     // Fetch teams with member count and project count
     const teams = await prisma.team.findMany({
@@ -82,11 +61,8 @@ export async function GET(req: NextRequest) {
 // POST /api/teams - Create a new team
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     const body = await req.json();
     const { name, description, icon, color } = body;
@@ -95,26 +71,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Team name is required' }, { status: 400 });
     }
 
-    // Get user with organizations
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
+    const organizationId = ctx.organizationId;
 
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
-
-    if (orgMembership.role !== 'ADMIN' && orgMembership.role !== 'OWNER') {
+    if (ctx.role !== 'ADMIN' && ctx.role !== 'OWNER') {
       return NextResponse.json(
         { error: 'Only admins and owners can create teams' },
         { status: 403 }
@@ -129,7 +88,7 @@ export async function POST(req: NextRequest) {
         description,
         icon: icon || '👥',
         color: color || '#3B82F6',
-        createdBy: user.id,
+        createdBy: ctx.user.id,
       },
       include: {
         _count: {
@@ -145,9 +104,9 @@ export async function POST(req: NextRequest) {
     await prisma.teamMember.create({
       data: {
         teamId: team.id,
-        userId: user.id,
+        userId: ctx.user.id,
         role: 'LEAD',
-        addedBy: user.id,
+        addedBy: ctx.user.id,
       },
     });
 
