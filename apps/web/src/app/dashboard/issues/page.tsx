@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import {
@@ -52,6 +53,7 @@ const STATUS_COLUMNS = [
 ];
 
 export default function IssuesPage() {
+  const toast = useToast();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
@@ -198,7 +200,7 @@ export default function IssuesPage() {
     }
 
     if (!projectId) {
-      alert('No projects found. Please create a project first from the Projects page.');
+      toast.warning('No projects found', 'Please create a project first from the Projects page.');
       return;
     }
 
