@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban } from 'lucide-react';
+import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban, User } from 'lucide-react';
 
 interface Organization {
   id: string;
@@ -11,6 +11,7 @@ interface Organization {
   slug: string;
   plan: string;
   role: string;
+  type?: string | null;
   memberCount?: number;
 }
 
@@ -157,8 +158,15 @@ export default function SelectOrganizationPage() {
               <p className="text-slate-400 mb-6">
                 You haven&apos;t been added to any organizations yet.
               </p>
+              <div className="rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/20 p-4 mb-6 text-left">
+                <p className="text-sm text-[#1C8C7D] font-medium mb-1">Have a pending invitation?</p>
+                <p className="text-sm text-slate-400">
+                  Check your email for an invitation link to join an existing organization.
+                  Click the link in the email to accept and join.
+                </p>
+              </div>
               <p className="text-sm text-slate-400">
-                Contact your administrator to get invited, or create a new organization.
+                Or create a new workspace to get started.
               </p>
               <button
                 onClick={() => router.push('/onboarding')}
@@ -191,7 +199,11 @@ export default function SelectOrganizationPage() {
                       {/* Header with Icon and Arrow */}
                       <div className="flex items-start justify-between mb-6">
                         <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/20 border border-[#1C8C7D]/30">
-                          <Building2 className="h-7 w-7 text-[#1C8C7D]" />
+                          {org.type === 'personal' ? (
+                            <User className="h-7 w-7 text-[#1C8C7D]" />
+                          ) : (
+                            <Building2 className="h-7 w-7 text-[#1C8C7D]" />
+                          )}
                         </div>
                         <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-[#1C8C7D]/10 border border-[#1C8C7D]/30 transition-all ${isHovered ? 'bg-[#1C8C7D] border-[#1C8C7D]' : ''}`}>
                           <ArrowRight className={`h-5 w-5 transition-all ${isHovered ? 'text-white translate-x-1' : 'text-[#1C8C7D]'}`} />
@@ -210,6 +222,17 @@ export default function SelectOrganizationPage() {
 
                       {/* Badges */}
                       <div className="flex items-center gap-2 flex-wrap">
+                        {org.type === 'personal' ? (
+                          <div className="inline-flex items-center gap-1.5 rounded-lg bg-teal-500/10 border border-teal-500/20 px-3 py-1.5">
+                            <User className="h-3.5 w-3.5 text-teal-400" />
+                            <span className="text-xs font-semibold text-teal-300">Personal</span>
+                          </div>
+                        ) : (
+                          <div className="inline-flex items-center gap-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 px-3 py-1.5">
+                            <Building2 className="h-3.5 w-3.5 text-blue-400" />
+                            <span className="text-xs font-semibold text-blue-300">Organization</span>
+                          </div>
+                        )}
                         <div className={`inline-flex items-center gap-1.5 rounded-lg bg-${roleConfig.color}-500/10 border border-${roleConfig.color}-500/20 px-3 py-1.5`}>
                           <RoleIcon className={`h-3.5 w-3.5 text-${roleConfig.color}-400`} />
                           <span className={`text-xs font-semibold text-${roleConfig.color}-300`}>

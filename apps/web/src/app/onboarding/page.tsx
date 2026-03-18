@@ -15,6 +15,14 @@ import {
 // Organization types with icons and features
 const ORG_TYPES = [
   {
+    id: 'personal',
+    label: 'Personal Workspace',
+    icon: Users,
+    color: 'teal',
+    features: ['Personal tasks', 'Solo projects', 'Quick setup', 'Upgrade anytime'],
+    description: 'For individual use — manage your own tasks and projects'
+  },
+  {
     id: 'government',
     label: 'Government Ministry',
     icon: Landmark,
@@ -114,7 +122,8 @@ function OnboardingContent() {
   const [primaryUseCases, setPrimaryUseCases] = useState<string[]>([]);
   const [calendarPreference, setCalendarPreference] = useState('ethiopian');
 
-  const totalSteps = 3;
+  const isPersonalWorkspace = organizationType === 'personal';
+  const totalSteps = isPersonalWorkspace ? 1 : 3;
 
   // Auto-suggest slug from organization name
   useEffect(() => {
@@ -139,7 +148,48 @@ function OnboardingContent() {
     }
   };
 
+  const redirectToSelectOrg = () => {
+    const protocol = window.location.protocol;
+    const port = window.location.port ? `:${window.location.port}` : '';
+
+    if (window.location.hostname.includes('onekof.com')) {
+      window.location.href = `${protocol}//onekof.com/select-organization`;
+    } else {
+      window.location.href = `${protocol}//localhost${port}/select-organization`;
+    }
+  };
+
+  const handlePersonalWorkspaceSetup = async () => {
+    setIsLoading(true);
+
+    try {
+      // Finalize the existing placeholder workspace as a personal workspace
+      const response = await fetch('/api/organizations/finalize-personal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await updateSession();
+        redirectToSelectOrg();
+      } else {
+        toast.error('Setup failed', data.error || 'Please try again.');
+      }
+    } catch (error) {
+      console.error('Error setting up personal workspace:', error);
+      toast.error('Network error', 'Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleComplete = async () => {
+    if (isPersonalWorkspace) {
+      return handlePersonalWorkspaceSetup();
+    }
+
     setIsLoading(true);
 
     try {
@@ -164,18 +214,20 @@ function OnboardingContent() {
       const data = await response.json();
 
       if (response.ok) {
-        // Refresh JWT token so new org is included in session
-        await updateSession();
-
-        // Redirect to organization selection page instead of directly to dashboard
-        const protocol = window.location.protocol;
-        const port = window.location.port ? `:${window.location.port}` : '';
-
-        if (window.location.hostname.includes('onekof.com')) {
-          window.location.href = `${protocol}//onekof.com/select-organization`;
-        } else {
-          window.location.href = `${protocol}//localhost${port}/select-organization`;
+        // Delete the auto-created placeholder workspace (type="personal") since user
+        // created a proper organization workspace.
+        try {
+          await fetch('/api/organizations/cleanup-placeholder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newOrganizationId: data.organization.id }),
+          });
+        } catch (cleanupError) {
+          console.error('Failed to clean up placeholder workspace:', cleanupError);
         }
+
+        await updateSession();
+        redirectToSelectOrg();
       } else {
         toast.error('Organization creation failed', data.error || 'Please try again.');
       }
@@ -191,7 +243,13 @@ function OnboardingContent() {
   const canProceedStep2 = organizationName && organizationSlug && teamSize;
   const canComplete = true;
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
+  if (status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
         <Loader2 className="h-8 w-8 animate-spin text-primary-400" />
@@ -233,12 +291,12 @@ function OnboardingContent() {
             {/* Greeting */}
             <div>
               <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                {currentStep === 1 && 'What type of organization are you?'}
+                {currentStep === 1 && 'What type of workspace do you need?'}
                 {currentStep === 2 && 'Tell us about your organization'}
                 {currentStep === 3 && 'Final step: Create your workspace'}
               </h2>
               <p className="text-white/60">
-                {currentStep === 1 && 'This helps us set up the right features for you'}
+                {currentStep === 1 && 'Choose personal for solo use, or select your organization type'}
                 {currentStep === 2 && "We'll use this to personalize your experience"}
                 {currentStep === 3 && 'Your workspace will be ready in seconds'}
               </p>
@@ -520,7 +578,7 @@ function OnboardingContent() {
               </button>
             )}
 
-            {currentStep < totalSteps ? (
+            {currentStep < totalSteps && !isPersonalWorkspace ? (
               <button
                 onClick={handleNext}
                 disabled={
