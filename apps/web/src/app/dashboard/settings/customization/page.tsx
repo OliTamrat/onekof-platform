@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import {
   Settings,
@@ -101,6 +102,7 @@ const SECTION_INFO = {
 };
 
 export default function DashboardCustomizationPage() {
+  const toast = useToast();
   const { settings, updateSettings, applyPreset: applyOrgPreset, saveSettings: saveToAPI, hasUnsavedChanges, isLoading } = useOrganizationSettings();
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -145,10 +147,10 @@ export default function DashboardCustomizationPage() {
     setIsSaving(true);
     try {
       await saveToAPI();
-      alert('Settings saved successfully! Dashboard will reload with new configuration.');
+      toast.success('Settings saved', 'Dashboard will reload with new configuration.');
       window.location.reload(); // Reload to apply new settings
     } catch (error) {
-      alert('Failed to save settings. Please try again.');
+      toast.error('Save failed', 'Please try again.');
     } finally {
       setIsSaving(false);
     }

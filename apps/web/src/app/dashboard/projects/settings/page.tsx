@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
@@ -36,6 +37,7 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function ProjectsSettingsPage() {
+  const toast = useToast();
   const [activeSection, setActiveSection] = useState('general');
   const [settings, setSettings] = useState({
     defaultStatus: 'ACTIVE',
@@ -52,7 +54,7 @@ export default function ProjectsSettingsPage() {
   const handleSave = () => {
     // Here you would save to your API
     console.log('Saving settings:', settings);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved');
   };
 
   return (
