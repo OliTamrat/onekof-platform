@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
@@ -112,6 +113,7 @@ const FORM_TEMPLATES = [
 ];
 
 export default function ProjectsFormsPage() {
+  const toast = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<typeof FORM_TEMPLATES[0] | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
 
@@ -119,7 +121,7 @@ export default function ProjectsFormsPage() {
     e.preventDefault();
     console.log('Form submitted:', { template: selectedTemplate?.id, data: formData });
     // Here you would typically send this to your API
-    alert(`${selectedTemplate?.name} submitted successfully!`);
+    toast.success('Form submitted', `${selectedTemplate?.name} submitted successfully`);
     setSelectedTemplate(null);
     setFormData({});
   };

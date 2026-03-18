@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useToast } from '@/components/ui/toast-provider';
 import {
   CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
   Sparkles, Loader2, Calendar, Target, Zap, Shield, Smartphone,
@@ -75,6 +76,7 @@ const TEAM_SIZES = [
 function OnboardingContent() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
+  const toast = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -175,11 +177,11 @@ function OnboardingContent() {
           window.location.href = `${protocol}//localhost${port}/select-organization`;
         }
       } else {
-        alert(data.error || 'Failed to create organization. Please try again.');
+        toast.error('Organization creation failed', data.error || 'Please try again.');
       }
     } catch (error) {
       console.error('Error creating organization:', error);
-      alert('Network error. Please check your connection and try again.');
+      toast.error('Network error', 'Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }

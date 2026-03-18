@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
@@ -30,13 +31,14 @@ const TAB_ITEMS = [
 ];
 
 export default function TeamsCodePage() {
+  const toast = useToast();
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<'github' | 'gitlab' | 'bitbucket' | null>(null);
 
   const handleConnect = () => {
     if (selectedProvider) {
       console.log('Connecting to:', selectedProvider);
-      alert(`Connecting to ${selectedProvider}... This would redirect to OAuth flow in production.`);
+      toast.info('Connecting', `Redirecting to ${selectedProvider} OAuth flow`);
       setShowConnectModal(false);
     }
   };
