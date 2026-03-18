@@ -8,10 +8,50 @@ export const dynamic = 'force-dynamic';
 const ADMIN_EMAIL = 'admin@ministryofwater.et';
 
 /**
+ * GET /api/admin/cleanup-memberships
+ * Diagnose: show all memberships for both users
+ */
+export async function GET(_request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        email: { in: ['admin@ministryofwater.et', 'sifanbone@gmail.com'] },
+      },
+      select: { id: true, email: true, name: true, defaultOrganizationId: true },
+    });
+
+    const memberships = await prisma.organizationMember.findMany({
+      where: { userId: { in: users.map((u) => u.id) } },
+      include: {
+        organization: { select: { id: true, name: true, slug: true } },
+        user: { select: { id: true, email: true } },
+      },
+    });
+
+    const allOrgs = await prisma.organization.findMany({
+      select: { id: true, name: true, slug: true },
+    });
+
+    return NextResponse.json({ users, memberships, allOrgs });
+  } catch (error) {
+    return NextResponse.json({
+      error: 'Failed',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    }, { status: 500 });
+  }
+}
+
+/**
  * POST /api/admin/cleanup-memberships
- * One-time cleanup: removes incorrect cross-org memberships
- * - admin@ministryofwater.et should only be in "Ministry of Water and Irrigation"
- * - sifanbone@gmail.com should only be in "Hakim"
+ * Fix: ensure each user is only in their correct org
+ * - admin@ministryofwater.et → Ministry of Water and Irrigation only
+ * - sifanbone@gmail.com → Hakim only (restore if missing)
  */
 export async function POST(_request: NextRequest) {
   try {
@@ -21,7 +61,6 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Find both users
     const ministryUser = await prisma.user.findUnique({
       where: { email: 'admin@ministryofwater.et' },
     });
@@ -36,41 +75,28 @@ export async function POST(_request: NextRequest) {
       }, { status: 404 });
     }
 
-    // Find both orgs
-    const hakimOrg = await prisma.organization.findFirst({
-      where: { name: { contains: 'Hakim' } },
-    });
-    const ministryOrg = await prisma.organization.findUnique({
-      where: { slug: 'ministry-water-irrigation' },
+    // Find all orgs to identify them
+    const allOrgs = await prisma.organization.findMany({
+      select: { id: true, name: true, slug: true },
     });
 
-    if (!hakimOrg || !ministryOrg) {
+    const ministryOrg = allOrgs.find((o) => o.slug === 'ministry-water-irrigation');
+
+    // Hakim org: find by process of elimination or name match
+    const hakimOrg = allOrgs.find(
+      (o) => o.name.toLowerCase().includes('hakim') || o.slug.toLowerCase().includes('hakim')
+    ) || allOrgs.find((o) => o.id !== ministryOrg?.id);
+
+    if (!ministryOrg || !hakimOrg) {
       return NextResponse.json({
-        error: 'One or both organizations not found',
-        found: { hakimOrg: !!hakimOrg, ministryOrg: !!ministryOrg },
+        error: 'Cannot identify orgs',
+        allOrgs,
       }, { status: 404 });
     }
 
-    const removals: string[] = [];
+    const actions: string[] = [];
 
-    // Remove admin@ministryofwater.et from Hakim org
-    const ministryUserInHakim = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: hakimOrg.id,
-          userId: ministryUser.id,
-        },
-      },
-    });
-
-    if (ministryUserInHakim) {
-      await prisma.organizationMember.delete({
-        where: { id: ministryUserInHakim.id },
-      });
-      removals.push(`Removed admin@ministryofwater.et from "${hakimOrg.name}"`);
-    }
-
-    // Remove sifanbone@gmail.com from Ministry org
+    // Step 1: Remove sifanbone from Ministry org (if present)
     const hakimUserInMinistry = await prisma.organizationMember.findUnique({
       where: {
         organizationId_userId: {
@@ -84,10 +110,70 @@ export async function POST(_request: NextRequest) {
       await prisma.organizationMember.delete({
         where: { id: hakimUserInMinistry.id },
       });
-      removals.push(`Removed sifanbone@gmail.com from "${ministryOrg.name}"`);
+      actions.push(`Removed sifanbone@gmail.com from "${ministryOrg.name}"`);
     }
 
-    // Update default org IDs
+    // Step 2: Remove admin@ministry from Hakim org (if present)
+    const ministryUserInHakim = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: hakimOrg.id,
+          userId: ministryUser.id,
+        },
+      },
+    });
+
+    if (ministryUserInHakim) {
+      await prisma.organizationMember.delete({
+        where: { id: ministryUserInHakim.id },
+      });
+      actions.push(`Removed admin@ministryofwater.et from "${hakimOrg.name}"`);
+    }
+
+    // Step 3: Ensure sifanbone IS in Hakim org
+    const hakimUserInHakim = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: hakimOrg.id,
+          userId: hakimUser.id,
+        },
+      },
+    });
+
+    if (!hakimUserInHakim) {
+      await prisma.organizationMember.create({
+        data: {
+          organizationId: hakimOrg.id,
+          userId: hakimUser.id,
+          role: 'OWNER',
+        },
+      });
+      actions.push(`Added sifanbone@gmail.com back to "${hakimOrg.name}" as OWNER`);
+    }
+
+    // Step 4: Ensure admin@ministry IS in Ministry org
+    const ministryUserInMinistry = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: ministryOrg.id,
+          userId: ministryUser.id,
+        },
+      },
+    });
+
+    if (!ministryUserInMinistry) {
+      await prisma.organizationMember.create({
+        data: {
+          organizationId: ministryOrg.id,
+          userId: ministryUser.id,
+          role: 'OWNER',
+          budgetAccess: 'FULL_CONTROL',
+        },
+      });
+      actions.push(`Added admin@ministryofwater.et back to "${ministryOrg.name}" as OWNER`);
+    }
+
+    // Step 5: Fix default org IDs
     await prisma.user.update({
       where: { id: ministryUser.id },
       data: { defaultOrganizationId: ministryOrg.id },
@@ -96,13 +182,15 @@ export async function POST(_request: NextRequest) {
       where: { id: hakimUser.id },
       data: { defaultOrganizationId: hakimOrg.id },
     });
+    actions.push('Updated default organization IDs for both users');
 
     return NextResponse.json({
       success: true,
-      removals,
-      message: removals.length > 0
-        ? 'Cleaned up incorrect memberships'
-        : 'No incorrect memberships found — already clean',
+      actions,
+      result: {
+        'admin@ministryofwater.et': ministryOrg.name,
+        'sifanbone@gmail.com': hakimOrg.name,
+      },
     });
   } catch (error) {
     console.error('Cleanup error:', error);
