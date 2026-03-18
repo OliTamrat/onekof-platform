@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useToast } from '@/components/ui/toast-provider';
 import {
   CheckCircle2, ArrowRight, ArrowLeft, Building2, Users, Globe,
   Sparkles, Loader2, Calendar, Target, Zap, Shield, Smartphone,
@@ -74,7 +75,8 @@ const TEAM_SIZES = [
 
 function OnboardingContent() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
+  const toast = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -159,8 +161,12 @@ function OnboardingContent() {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
+        // Refresh JWT token so new org is included in session
+        await updateSession();
+
         // Redirect to organization selection page instead of directly to dashboard
         const protocol = window.location.protocol;
         const port = window.location.port ? `:${window.location.port}` : '';
@@ -171,11 +177,11 @@ function OnboardingContent() {
           window.location.href = `${protocol}//localhost${port}/select-organization`;
         }
       } else {
-        alert('Failed to create organization. Please try again.');
+        toast.error('Organization creation failed', data.error || 'Please try again.');
       }
     } catch (error) {
       console.error('Error creating organization:', error);
-      alert('An error occurred. Please try again.');
+      toast.error('Network error', 'Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }

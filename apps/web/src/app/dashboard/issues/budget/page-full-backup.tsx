@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react';
 
 export default function BudgetPage() {
+  const toast = useToast();
   const { data: session, status } = useSession();
   const router = useRouter();
   const { currentOrganization } = useWorkspace();
@@ -402,7 +404,7 @@ export default function BudgetPage() {
                     onClick={(e) => {
                       e.stopPropagation();
                       // PDF export functionality
-                      alert('Generating comprehensive budget report PDF...\n\nThis will include:\n• Budget overview & statistics\n• Category-wise analysis\n• Spending trends\n• AI recommendations\n• Transaction history');
+                      toast.info('Generating report', 'Budget report PDF is being prepared');
                     }}
                     className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-[#1C8C7D] text-white hover:bg-[#156B60] transition-colors"
                   >

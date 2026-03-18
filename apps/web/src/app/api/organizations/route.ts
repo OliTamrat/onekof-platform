@@ -166,10 +166,19 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating organization:', error);
+
+    // Surface Prisma-specific errors for debugging
+    if (error?.code === 'P2002') {
+      return NextResponse.json(
+        { error: 'An organization with this slug already exists' },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to create organization. Please try again.', details: error?.message },
       { status: 500 }
     );
   }

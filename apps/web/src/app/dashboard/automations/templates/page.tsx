@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/components/ui/toast-provider';
 import { useWorkspace } from '@/contexts/workspace-context';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -84,6 +85,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 export default function TemplatesPage() {
+  const toast = useToast();
   const { currentOrganization } = useWorkspace();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,7 +161,7 @@ export default function TemplatesPage() {
     },
     onError: (error: Error) => {
       console.error('Failed to activate template:', error.message);
-      alert(`Failed to activate template: ${error.message}`);
+      toast.error('Activation failed', error.message);
     },
   });
 
