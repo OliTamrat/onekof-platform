@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function BudgetSettingsPage() {
+  const toast = useToast();
   const [currency, setCurrency] = useState('USD');
   const [fiscalYearStart, setFiscalYearStart] = useState('01');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -22,7 +24,7 @@ export default function BudgetSettingsPage() {
 
   const handleSave = () => {
     // Save settings logic here
-    alert('Settings saved successfully!');
+    toast.success('Settings saved');
   };
 
   return (
