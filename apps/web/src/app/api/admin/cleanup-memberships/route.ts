@@ -173,7 +173,27 @@ export async function POST(_request: NextRequest) {
       actions.push(`Added admin@ministryofwater.et back to "${ministryOrg.name}" as OWNER`);
     }
 
-    // Step 5: Fix default org IDs
+    // Step 5: Remove auto-created "Oli's Workspace" org for sifanbone
+    const autoCreatedOrg = allOrgs.find(
+      (o) => o.slug.startsWith('sifanbone-workspace')
+    );
+
+    if (autoCreatedOrg) {
+      // Remove membership first, then delete the org
+      await prisma.organizationMember.deleteMany({
+        where: { organizationId: autoCreatedOrg.id },
+      });
+      // Delete related data (categories, etc.) before deleting org
+      await prisma.organizationCategory.deleteMany({
+        where: { organizationId: autoCreatedOrg.id },
+      });
+      await prisma.organization.delete({
+        where: { id: autoCreatedOrg.id },
+      });
+      actions.push(`Deleted auto-created org "${autoCreatedOrg.name}" (${autoCreatedOrg.slug})`);
+    }
+
+    // Step 6: Fix default org IDs
     await prisma.user.update({
       where: { id: ministryUser.id },
       data: { defaultOrganizationId: ministryOrg.id },
