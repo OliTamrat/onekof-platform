@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
@@ -29,6 +30,7 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function GoalsSettingsPage() {
+  const toast = useToast();
   const [activeSection, setActiveSection] = useState('general');
   const [settings, setSettings] = useState({
     defaultCycle: 'QUARTERLY',
@@ -41,7 +43,7 @@ export default function GoalsSettingsPage() {
 
   const handleSave = () => {
     console.log('Saving settings:', settings);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved');
   };
 
   return (

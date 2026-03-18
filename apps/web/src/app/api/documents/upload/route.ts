@@ -4,10 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { processDocument, extractTextFromFile, checkAIQuota } from '@/lib/ai/claude';
-import { authOptions } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,32 +44,16 @@ function determineDocumentType(fileName: string, content: string): string {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get user session
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Resolve organization from subdomain
+    const { resolveUserOrganization } = await import('@/lib/api-organization');
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
+    // Get full organization record for AI quota check
+    const organization = await prisma.organization.findUniqueOrThrow({
+      where: { id: ctx.organizationId },
     });
-
-    if (!user || !user.organizations.length) {
-      return NextResponse.json(
-        { error: 'User not found or not part of any organization' },
-        { status: 404 }
-      );
-    }
-
-    const organization = user.organizations[0].organization;
+    const user = { id: ctx.user.id, email: ctx.user.email };
 
     // Check AI quota
     const quotaCheck = await checkAIQuota(organization.id, user.id);
