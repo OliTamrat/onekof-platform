@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
   AlertCircle, Loader2, ArrowRight, Eye, EyeOff, CheckCircle2,
@@ -91,7 +92,26 @@ export default function SignUpPage() {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      router.push('/onboarding?email=' + encodeURIComponent(email));
+      // Auto-sign in so the user has a session for onboarding/invitation flows
+      const signInResult = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Account created but auto-signin failed — send to manual signin
+        router.push('/auth/signin?message=Account created. Please sign in.');
+        return;
+      }
+
+      if (data.hasPendingInvitations) {
+        // Invited user — skip onboarding, go to select-organization to see/accept invitations
+        router.push('/select-organization');
+      } else {
+        // New user — proceed to onboarding to set up workspace
+        router.push('/onboarding');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {
