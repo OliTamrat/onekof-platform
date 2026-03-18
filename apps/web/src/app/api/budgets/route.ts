@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,25 +10,10 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: { organization: true },
-        },
-      },
-    });
-
-    if (!user || !user.organizations.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const organizationId = user.organizations[0].organizationId;
+    const organizationId = ctx.organizationId;
 
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
@@ -113,25 +97,10 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: { organization: true },
-        },
-      },
-    });
-
-    if (!user || !user.organizations.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const orgId = user.organizations[0].organizationId;
+    const orgId = ctx.organizationId;
 
     const body = await request.json();
     const {
@@ -167,7 +136,7 @@ export async function POST(request: NextRequest) {
         fiscalYearStart: fiscalYearStart ? new Date(fiscalYearStart) : null,
         fiscalYearEnd: fiscalYearEnd ? new Date(fiscalYearEnd) : null,
         status: 'DRAFT',
-        createdBy: user.id,
+        createdBy: ctx.user.id,
         settings: {},
         visibilitySettings: {},
         categories: {

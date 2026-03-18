@@ -4,9 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,10 +15,8 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -29,23 +26,7 @@ export async function GET(request: NextRequest) {
     const fileType = searchParams.get('fileType');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    // Get user and organization
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || !user.organizations.length) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-    }
-
-    const organizationId = user.organizations[0].organization.id;
+    const organizationId = ctx.organizationId;
 
     // Build where clause
     const where: any = {
