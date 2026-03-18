@@ -74,7 +74,7 @@ const TEAM_SIZES = [
 
 function OnboardingContent() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -159,8 +159,12 @@ function OnboardingContent() {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
+        // Refresh JWT token so new org is included in session
+        await updateSession();
+
         // Redirect to organization selection page instead of directly to dashboard
         const protocol = window.location.protocol;
         const port = window.location.port ? `:${window.location.port}` : '';
@@ -171,11 +175,11 @@ function OnboardingContent() {
           window.location.href = `${protocol}//localhost${port}/select-organization`;
         }
       } else {
-        alert('Failed to create organization. Please try again.');
+        alert(data.error || 'Failed to create organization. Please try again.');
       }
     } catch (error) {
       console.error('Error creating organization:', error);
-      alert('An error occurred. Please try again.');
+      alert('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
