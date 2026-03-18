@@ -158,8 +158,15 @@ export default function SelectOrganizationPage() {
               <p className="text-slate-400 mb-6">
                 You haven&apos;t been added to any organizations yet.
               </p>
+              <div className="rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/20 p-4 mb-6 text-left">
+                <p className="text-sm text-[#1C8C7D] font-medium mb-1">Have a pending invitation?</p>
+                <p className="text-sm text-slate-400">
+                  Check your email for an invitation link to join an existing organization.
+                  Click the link in the email to accept and join.
+                </p>
+              </div>
               <p className="text-sm text-slate-400">
-                Contact your administrator to get invited, or create a new organization.
+                Or create a new workspace to get started.
               </p>
               <button
                 onClick={() => router.push('/onboarding')}

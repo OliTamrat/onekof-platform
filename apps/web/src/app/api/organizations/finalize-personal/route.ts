@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Find the user's existing placeholder workspace (type="personal", created at signup)
+    // Find the user's most recent placeholder workspace (type="personal", created at signup)
     const membership = await prisma.organizationMember.findFirst({
       where: {
         userId: session.user.id,
@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
       },
       include: {
         organization: true,
+      },
+      orderBy: {
+        organization: {
+          createdAt: 'desc',
+        },
       },
     });
 

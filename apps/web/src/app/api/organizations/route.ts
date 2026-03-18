@@ -161,6 +161,7 @@ export async function POST(req: NextRequest) {
           id: result.id,
           name: result.name,
           slug: result.slug,
+          type: result.type || null,
           description: (result as any).description,
           createdAt: result.createdAt.toISOString(),
         },
