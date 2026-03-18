@@ -173,18 +173,20 @@ export async function POST(_request: NextRequest) {
       actions.push(`Added admin@ministryofwater.et back to "${ministryOrg.name}" as OWNER`);
     }
 
-    // Step 5: Remove auto-created "Oli's Workspace" org for sifanbone
+    // Step 5: Remove any auto-created workspace orgs (not Ministry or Hakim)
     const autoCreatedOrg = allOrgs.find(
-      (o) => o.slug.startsWith('sifanbone-workspace')
+      (o) => o.id !== ministryOrg.id && o.id !== hakimOrg.id
     );
 
     if (autoCreatedOrg) {
-      // Remove membership first, then delete the org
+      // Remove all related data before deleting the org
       await prisma.organizationMember.deleteMany({
         where: { organizationId: autoCreatedOrg.id },
       });
-      // Delete related data (categories, etc.) before deleting org
-      await prisma.organizationCategory.deleteMany({
+      await prisma.organizationSettings.deleteMany({
+        where: { organizationId: autoCreatedOrg.id },
+      });
+      await prisma.invitation.deleteMany({
         where: { organizationId: autoCreatedOrg.id },
       });
       await prisma.organization.delete({
