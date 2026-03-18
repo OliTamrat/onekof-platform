@@ -14,7 +14,9 @@ export async function POST(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    const ALLOWED_ADMIN_EMAILS = ['admin@ministryofwater.et', 'sifanbone@gmail.com'];
+
+    if (!session?.user?.email || !ALLOWED_ADMIN_EMAILS.includes(session.user.email)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
