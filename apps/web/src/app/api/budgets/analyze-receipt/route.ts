@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
-import { authOptions } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,25 +15,11 @@ const anthropic = new Anthropic({
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { resolveUserOrganization } = await import('@/lib/api-organization');
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: { organization: true },
-        },
-      },
-    });
-
-    if (!user || !user.organizations.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const organizationId = user.organizations[0].organizationId;
+    const organizationId = ctx.organizationId;
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
