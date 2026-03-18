@@ -179,16 +179,13 @@ export async function POST(_request: NextRequest) {
     );
 
     if (autoCreatedOrg) {
-      // Remove all related data before deleting the org
+      // Remove memberships first
       await prisma.organizationMember.deleteMany({
         where: { organizationId: autoCreatedOrg.id },
       });
-      await prisma.organizationSettings.deleteMany({
-        where: { organizationId: autoCreatedOrg.id },
-      });
-      await prisma.invitation.deleteMany({
-        where: { organizationId: autoCreatedOrg.id },
-      });
+      // Clean up optional related tables (may not exist in production yet)
+      try { await prisma.organizationSettings.deleteMany({ where: { organizationId: autoCreatedOrg.id } }); } catch {}
+      try { await prisma.invitation.deleteMany({ where: { organizationId: autoCreatedOrg.id } }); } catch {}
       await prisma.organization.delete({
         where: { id: autoCreatedOrg.id },
       });
