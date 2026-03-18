@@ -1,37 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { resolveUserOrganization } from '@/lib/api-organization';
 
 export const dynamic = 'force-dynamic';
 
 // GET /api/goals - Get all goals for the current organization
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get user with organizations
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const organizationId = ctx.organizationId;
 
     // Get status filter from query params
     const status = req.nextUrl.searchParams.get('status');
@@ -106,11 +85,8 @@ export async function GET(req: NextRequest) {
 // POST /api/goals - Create a new goal
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     const body = await req.json();
     const { title, description, priority, dueDate, teamId } = body;
@@ -119,24 +95,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Goal title is required' }, { status: 400 });
     }
 
-    // Get user with organizations
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
-    }
-
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const organizationId = ctx.organizationId;
 
     // Create goal
     const goal = await prisma.goal.create({
@@ -145,8 +104,8 @@ export async function POST(req: NextRequest) {
         title,
         description,
         priority: priority || 'MEDIUM',
-        ownerId: user.id,
-        createdBy: user.id,
+        ownerId: ctx.user.id,
+        createdBy: ctx.user.id,
         ...(teamId && { teamId }),
         ...(dueDate && { dueDate: new Date(dueDate) }),
       },
