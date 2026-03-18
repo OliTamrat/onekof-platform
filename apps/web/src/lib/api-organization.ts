@@ -149,6 +149,94 @@ export async function getOrganizationContext(): Promise<{
 }
 
 /**
+ * Lightweight org resolver for API routes that need user + org context.
+ * Uses x-organization-slug header (set by middleware from subdomain) to pick the correct org.
+ * Falls back to user's default org, then first org — safe for Vercel previews without subdomains.
+ *
+ * Returns the user (with organizations included) and the resolved organizationId + membership role.
+ */
+export async function resolveUserOrganization(): Promise<{
+  data: {
+    user: { id: string; email: string; name: string | null };
+    organizationId: string;
+    role: string;
+  } | null;
+  error: NextResponse | null;
+}> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return {
+        data: null,
+        error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+      };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        defaultOrganizationId: true,
+        organizations: {
+          include: {
+            organization: {
+              select: { id: true, name: true, slug: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user || user.organizations.length === 0) {
+      return {
+        data: null,
+        error: NextResponse.json({ error: 'No organization found' }, { status: 404 }),
+      };
+    }
+
+    // 1. Try subdomain slug from middleware header
+    const headersList = headers();
+    const slug = headersList.get('x-organization-slug');
+
+    let membership = slug
+      ? user.organizations.find((m) => m.organization.slug === slug)
+      : null;
+
+    // 2. Fall back to user's default organization
+    if (!membership && user.defaultOrganizationId) {
+      membership = user.organizations.find(
+        (m) => m.organizationId === user.defaultOrganizationId
+      );
+    }
+
+    // 3. Fall back to first org (Vercel previews, localhost without subdomain)
+    if (!membership) {
+      membership = user.organizations[0];
+    }
+
+    return {
+      data: {
+        user: { id: user.id, email: user.email, name: user.name },
+        organizationId: membership.organizationId,
+        role: membership.role,
+      },
+      error: null,
+    };
+  } catch (error) {
+    console.error('Error resolving user organization:', error);
+    return {
+      data: null,
+      error: NextResponse.json(
+        { error: 'Failed to resolve organization' },
+        { status: 500 }
+      ),
+    };
+  }
+}
+
+/**
  * Helper function to check if user has specific role in organization
  */
 export function hasRole(

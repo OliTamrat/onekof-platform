@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,15 +13,8 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     // Get query parameters
     const { searchParams } = new URL(request.url);
@@ -31,28 +25,7 @@ export async function GET(request: NextRequest) {
     const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    });
-
-    if (!user || user.organizations.length === 0) {
-      return NextResponse.json(
-        { error: 'No organization found' },
-        { status: 404 }
-      );
-    }
-
-    // Get the user's default organization or first organization
-    const orgMembership = user.organizations[0];
-    const organizationId = orgMembership.organizationId;
+    const organizationId = ctx.organizationId;
 
     // Build query filters
     const where: any = {
