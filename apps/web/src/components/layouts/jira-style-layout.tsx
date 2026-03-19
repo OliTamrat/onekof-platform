@@ -114,12 +114,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
+    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-black">
       {/* Global overlays */}
       <CommandPalette />
       <KeyboardShortcutsModal />
       {/* TOP BAR - Jira Style with Centered Search */}
-      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3">
+      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-white/[0.06] bg-white dark:bg-black px-3">
         {/* Mobile Menu Button */}
         <Button
           variant="ghost"
@@ -132,7 +132,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-2 mr-2 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm shadow-md">
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm shadow-md">
             O
           </div>
           <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
@@ -177,12 +177,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
-            className="flex w-full h-9 items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm transition-colors hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-200/50 dark:hover:bg-[#22272B]/80"
+            className="flex w-full h-9 items-center gap-2 rounded-lg border border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#0A0A0A] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm transition-colors hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#111111]"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left truncate hidden sm:block">Search or jump to...</span>
             <span className="flex-1 text-left truncate sm:hidden">Search...</span>
-            <kbd className="hidden rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
+            <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-black px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
               Ctrl K
             </kbd>
           </button>
@@ -292,7 +292,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-sm font-medium text-white shadow-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-sm font-medium text-white shadow-sm">
                   {session?.user?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               </Button>
@@ -336,16 +336,16 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
-          "w-56 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
+          "w-56 border-r border-slate-200 dark:border-white/[0.06] bg-white dark:bg-black overflow-y-auto transition-transform duration-300 ease-in-out",
           // Desktop: Reset mobile fixed positioning (top-14/bottom-0/left-0 must be cleared)
           "md:relative md:top-auto md:bottom-auto md:left-auto md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
           isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
         )}>
           {/* Mobile Sidebar Header with Close Button */}
-          <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700 md:hidden">
+          <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.06] md:hidden">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold text-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm">
                 O
               </div>
               <span className="text-lg font-bold text-slate-900 dark:text-white">
@@ -367,7 +367,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
               <button
                 onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -432,7 +432,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
           {!isInProject && (
-            <div className="mt-2 border-t border-slate-200 dark:border-slate-800 pt-2 px-3">
+            <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
               <button
                 onClick={() => setIsDocsExpanded(!isDocsExpanded)}
                 className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -469,7 +469,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
           {/* If in project, show quick project info */}
           {isInProject && currentProject && (
-            <div className="mt-auto border-t border-slate-200 dark:border-slate-800 p-4">
+            <div className="mt-auto border-t border-slate-200 dark:border-white/[0.06] p-4">
               <div className="flex items-center gap-2 mb-2">
                 <div
                   className="flex h-6 w-6 items-center justify-center rounded text-xs"
@@ -487,7 +487,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
+        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-black">
           {children}
         </main>
       </div>
