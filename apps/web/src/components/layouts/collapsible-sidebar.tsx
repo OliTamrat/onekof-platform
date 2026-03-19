@@ -73,7 +73,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   sectionActive
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -97,7 +97,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive(section.href!)
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -118,7 +118,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                         'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         isActive(item.href)
                           ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium dark:bg-primary-500/20'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white'
                       )}
                     >
                       {ItemIcon && <ItemIcon className="h-3.5 w-3.5 shrink-0" />}
