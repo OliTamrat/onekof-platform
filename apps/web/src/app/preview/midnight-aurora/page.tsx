@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ArrowRight, Check, Star, Zap, Shield, BarChart3, Users, FolderKanban,
   ChevronDown, Bell, Search, Plus, MoreHorizontal, Clock, CheckCircle2,
@@ -17,7 +17,7 @@ export default function MidnightAuroraPreview() {
   const [activeView, setActiveView] = useState<'marketing' | 'dashboard'>('marketing');
 
   return (
-    <div className="min-h-screen bg-[#0F1117]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#0F1117]" style={{ fontFamily: '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif' }}>
       {/* View Toggle */}
       <div className="fixed top-4 right-4 z-50 flex gap-1 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] p-1 shadow-2xl">
         <button
@@ -50,8 +50,30 @@ export default function MidnightAuroraPreview() {
 // ─── MARKETING PAGE ──────────────────────────────────────────
 
 function MarketingPage() {
+  const heroWords = ['ship faster', 'track budgets', 'plan sprints', 'collaborate'];
+  const [heroWordIndex, setHeroWordIndex] = useState(0);
+  const [heroTyped, setHeroTyped] = useState('');
+
+  useEffect(() => {
+    const word = heroWords[heroWordIndex];
+    let i = 0;
+    setHeroTyped('');
+    const typeTimer = setInterval(() => {
+      if (i <= word.length) {
+        setHeroTyped(word.slice(0, i));
+        i++;
+      } else {
+        clearInterval(typeTimer);
+        setTimeout(() => {
+          setHeroWordIndex((prev) => (prev + 1) % heroWords.length);
+        }, 2200);
+      }
+    }, 80);
+    return () => clearInterval(typeTimer);
+  }, [heroWordIndex]);
+
   return (
-    <div className="min-h-screen bg-[#0F1117] text-white overflow-hidden" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#0F1117] text-white overflow-hidden" style={{ fontFamily: '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif' }}>
       {/* Subtle ambient glow — just one, barely visible */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[5%] left-[40%] w-[800px] h-[400px] bg-[#2563EB]/[0.04] rounded-full blur-[120px]" />
@@ -69,14 +91,14 @@ function MarketingPage() {
             </div>
             <div className="hidden md:flex items-center gap-6">
               {['Product', 'Solutions', 'Pricing', 'Enterprise'].map((item) => (
-                <button key={item} className="text-[13px] text-slate-400 hover:text-white transition-colors">
+                <button key={item} className="text-[13px] text-slate-300 hover:text-white transition-colors">
                   {item}
                 </button>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="text-[13px] text-slate-400 hover:text-white transition-colors px-3 py-1.5">
+            <button className="text-[13px] text-slate-300 hover:text-white transition-colors px-3 py-1.5">
               Sign in
             </button>
             <button className="text-[13px] font-medium bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors">
@@ -97,15 +119,18 @@ function MarketingPage() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-[72px] font-bold tracking-[-0.035em] leading-[1.05] mb-6">
-            <span className="text-white">Where ambition</span>
+          <h1 className="text-5xl md:text-[72px] font-semibold tracking-[-0.04em] leading-[1.05] mb-6">
+            <span className="text-white">One platform to</span>
             <br />
-            <span className="text-[#2563EB]">
-              meets execution
+            <span className="relative inline-block">
+              <span className="text-[#2563EB]">
+                {heroTyped}
+              </span>
+              <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-[#2563EB] align-middle" />
             </span>
           </h1>
 
-          <p className="text-[17px] text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed tracking-[-0.01em]">
+          <p className="text-[17px] text-slate-200 max-w-xl mx-auto mb-10 leading-relaxed tracking-[-0.01em]">
             The intelligent project management platform designed for Ethiopian organizations.
             Plan in your calendar, budget in Birr, deliver on time.
           </p>
@@ -133,7 +158,7 @@ function MarketingPage() {
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-[#2563EB] text-[#2563EB]" />
               ))}
-              <span className="text-[13px] text-slate-500 ml-2">4.9/5 from 500+ reviews</span>
+              <span className="text-[13px] text-slate-400 ml-2">4.9/5 from 500+ reviews</span>
             </div>
           </div>
         </div>
@@ -149,7 +174,7 @@ function MarketingPage() {
                 <div className="h-3 w-3 rounded-full bg-[#3A3D4A]" />
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="px-4 py-1 rounded-md bg-[#1A1D27] text-xs text-slate-500 border border-[#2A2D3A]">app.onekof.com/dashboard</div>
+                <div className="px-4 py-1 rounded-md bg-[#1A1D27] text-xs text-slate-400 border border-[#2A2D3A]">app.onekof.com/dashboard</div>
               </div>
             </div>
             {/* Content */}
@@ -161,13 +186,13 @@ function MarketingPage() {
               ].map((stat) => (
                 <div key={stat.label} className="rounded-lg bg-[#1A1D27] border border-[#2A2D3A] p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs text-slate-500 font-medium">{stat.label}</span>
+                    <span className="text-xs text-slate-400 font-medium">{stat.label}</span>
                     <div className="h-7 w-7 rounded-lg bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center">
                       <stat.icon className="h-3.5 w-3.5" />
                     </div>
                   </div>
                   <div className="text-2xl font-semibold text-white tracking-[-0.02em]">{stat.value}</div>
-                  <div className="text-xs text-[#2563EB] mt-1">{stat.change}</div>
+                  <div className="text-xs text-[#60A5FA] mt-1">{stat.change}</div>
                 </div>
               ))}
             </div>
@@ -183,7 +208,7 @@ function MarketingPage() {
               Built different.{' '}
               <span className="text-[#2563EB]">Built for you.</span>
             </h2>
-            <p className="text-slate-400 text-[17px] max-w-2xl mx-auto tracking-[-0.01em]">
+            <p className="text-slate-200 text-[17px] max-w-2xl mx-auto tracking-[-0.01em]">
               Every feature designed for how Ethiopian organizations actually work.
             </p>
           </div>
@@ -229,7 +254,7 @@ function MarketingPage() {
                   <feature.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-[15px] font-semibold text-white mb-2 tracking-[-0.01em]">{feature.title}</h3>
-                <p className="text-[13px] text-slate-400 leading-relaxed">{feature.description}</p>
+                <p className="text-[13px] text-slate-300 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -243,7 +268,7 @@ function MarketingPage() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-[-0.03em] text-white mb-4">
               Simple, transparent pricing
             </h2>
-            <p className="text-slate-400 text-[17px] tracking-[-0.01em]">Start free. Scale as you grow.</p>
+            <p className="text-slate-200 text-[17px] tracking-[-0.01em]">Start free. Scale as you grow.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -290,10 +315,10 @@ function MarketingPage() {
                   </div>
                 )}
                 <h3 className="text-lg font-semibold text-white mb-1 tracking-[-0.01em]">{plan.name}</h3>
-                <p className="text-[13px] text-slate-500 mb-4">{plan.description}</p>
+                <p className="text-[13px] text-slate-400 mb-4">{plan.description}</p>
                 <div className="flex items-baseline gap-1 mb-6">
                   <span className="text-3xl font-bold text-white tracking-[-0.02em]">{plan.price}</span>
-                  {plan.period && <span className="text-slate-500 text-[13px]">{plan.period}</span>}
+                  {plan.period && <span className="text-slate-400 text-[13px]">{plan.period}</span>}
                 </div>
                 <button
                   className={`w-full py-2.5 rounded-lg text-[13px] font-medium transition-all mb-6 ${
@@ -308,7 +333,7 @@ function MarketingPage() {
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-2.5">
                       <Check className="h-4 w-4 text-[#2563EB] shrink-0" />
-                      <span className="text-[13px] text-slate-400">{feature}</span>
+                      <span className="text-[13px] text-slate-300">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -325,7 +350,7 @@ function MarketingPage() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-[-0.03em] text-white mb-4">
               Ready to transform how your team works?
             </h2>
-            <p className="text-slate-400 text-[17px] mb-8 tracking-[-0.01em]">
+            <p className="text-slate-200 text-[17px] mb-8 tracking-[-0.01em]">
               Join 200+ Ethiopian organizations already using Onekof.
             </p>
             <button className="inline-flex items-center gap-2 bg-[#2563EB] text-white font-medium px-7 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors text-[14px]">
@@ -346,7 +371,7 @@ function MarketingPage() {
               </div>
               <span className="text-[14px] font-semibold text-white">Onekof</span>
             </div>
-            <p className="text-xs text-slate-600">&copy; 2024 Onekof. All rights reserved.</p>
+            <p className="text-xs text-slate-500">&copy; 2024 Onekof. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -388,7 +413,7 @@ function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F1117] flex" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#0F1117] flex" style={{ fontFamily: '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif' }}>
       {/* Sidebar */}
       <aside className="w-[240px] border-r border-[#1E2130] bg-[#13151E] flex flex-col">
         {/* Logo */}
@@ -418,7 +443,7 @@ function DashboardPage() {
               className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all ${
                 item.active
                   ? 'bg-[#2563EB]/10 text-white font-medium'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                  : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
               <item.icon className={`h-4 w-4 shrink-0 ${item.active ? 'text-[#2563EB]' : ''}`} />
@@ -477,7 +502,7 @@ function DashboardPage() {
             ].map((stat) => (
               <div key={stat.label} className="rounded-xl bg-[#161922] border border-[#2A2D3A] p-4 hover:border-[#3A3D4A] transition-colors">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[12px] text-slate-500 font-medium">{stat.label}</span>
+                  <span className="text-[12px] text-slate-400 font-medium">{stat.label}</span>
                   <div className="h-8 w-8 rounded-lg bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center">
                     <stat.icon className="h-4 w-4" />
                   </div>
@@ -504,10 +529,10 @@ function DashboardPage() {
                   <div key={task.title} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
                     {statusIcons[task.status]}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-[13px] ${task.status === 'done' ? 'text-slate-500 line-through' : 'text-slate-200'}`}>
+                      <p className={`text-[13px] ${task.status === 'done' ? 'text-slate-500 line-through' : 'text-white/90'}`}>
                         {task.title}
                       </p>
-                      <p className="text-[11px] text-slate-600 mt-0.5">{task.project}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">{task.project}</p>
                     </div>
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md ${priorityColors[task.priority]}`}>
                       {task.priority}
@@ -515,8 +540,8 @@ function DashboardPage() {
                     <div className="h-6 w-6 rounded-full bg-[#1A1D27] border border-[#2A2D3A] flex items-center justify-center">
                       <span className="text-[10px] font-medium text-slate-400">{task.assignee}</span>
                     </div>
-                    <span className="text-[11px] text-slate-600 w-16 text-right">{task.due}</span>
-                    <button className="text-slate-600 hover:text-slate-400">
+                    <span className="text-[11px] text-slate-400 w-16 text-right">{task.due}</span>
+                    <button className="text-slate-500 hover:text-slate-300">
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
                   </div>
@@ -543,12 +568,12 @@ function DashboardPage() {
                         <span className="text-[10px] font-medium text-white">{activity.user}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] text-slate-400">
-                          <span className="text-slate-300 font-medium">{activity.user}</span>
+                        <p className="text-[12px] text-slate-300">
+                          <span className="text-white font-medium">{activity.user}</span>
                           {' '}{activity.action}{' '}
                           <span className="text-[#2563EB]">{activity.target}</span>
                         </p>
-                        <p className="text-[10px] text-slate-600 mt-0.5">{activity.time}</p>
+                        <p className="text-[10px] text-slate-500 mt-0.5">{activity.time}</p>
                       </div>
                     </div>
                   ))}
