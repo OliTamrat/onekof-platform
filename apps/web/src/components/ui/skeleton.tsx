@@ -34,7 +34,7 @@ export function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#22272B]',
+        'rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#0A0A0A]',
         className
       )}
     >
@@ -55,9 +55,9 @@ export function SkeletonCard({ className }: { className?: string }) {
 
 export function SkeletonTable({ rows = 5, cols = 4, className }: { rows?: number; cols?: number; className?: string }) {
   return (
-    <div className={cn('rounded-md border border-slate-200 dark:border-slate-700 overflow-hidden', className)}>
+    <div className={cn('rounded-md border border-slate-200 dark:border-white/[0.08] overflow-hidden', className)}>
       {/* Header */}
-      <div className="flex gap-4 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/50">
+      <div className="flex gap-4 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-white/[0.08] dark:bg-slate-800/50">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-4 flex-1" />
         ))}
@@ -83,7 +83,7 @@ export function SkeletonStats({ count = 4, className }: { count?: number; classN
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#22272B]"
+          className="rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#0A0A0A]"
         >
           <Skeleton className="mb-2 h-3 w-20" />
           <Skeleton className="h-8 w-24" />
