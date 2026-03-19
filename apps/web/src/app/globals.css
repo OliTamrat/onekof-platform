@@ -9,13 +9,25 @@
     text-rendering: optimizeLegibility;
   }
 
-  ::selection {
-    background-color: rgba(99, 102, 241, 0.25);
-    color: #E0E7FF;
-  }
-
   html {
     scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-kerning: normal;
+  }
+
+  body {
+    font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  ::selection {
+    background-color: rgba(37, 99, 235, 0.25);
+    color: #DBEAFE;
   }
 }
 
@@ -72,7 +84,11 @@
   }
 
   .text-gradient-accent {
-    @apply bg-gradient-to-r from-accent-coral to-accent-gold bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-violet-400 to-primary-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-[#60A5FA] via-[#3B82F6] to-[#818CF8] bg-clip-text text-transparent;
   }
 }
 
@@ -103,9 +119,9 @@
 
 /* Auth page specific styles */
 .auth-gradient {
-  background: linear-gradient(135deg, #1B1F23 0%, #22272B 40%, #0B3A34 100%);
+  background: linear-gradient(135deg, #000000 0%, #0A0A0A 40%, #0A1628 100%);
 }
 
 .auth-glow {
-  background: radial-gradient(ellipse at 30% 50%, rgba(28, 140, 125, 0.12), transparent 60%);
+  background: radial-gradient(ellipse at 30% 50%, rgba(37, 99, 235, 0.12), transparent 60%);
 }

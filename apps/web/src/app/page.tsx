@@ -404,7 +404,7 @@ export default function HomePage() {
   const showcaseMockups = [<BudgetMockup />, <AIDocsMockup />, <CalendarMockup />, <LanguageMockup />];
 
   return (
-    <div className="min-h-screen bg-[#1B1F23] text-white selection:bg-primary-500/20">
+    <div className="min-h-screen bg-[#1B1F23] font-sans antialiased text-white selection:bg-primary-500/20">
       {/* ═══ NAVBAR ═══ */}
       <nav
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -512,7 +512,7 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h1 className="mx-auto max-w-4xl text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
+            <h1 className="mx-auto max-w-4xl font-display text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
               One platform to
               <br />
               <span className="relative inline-block">
@@ -730,7 +730,7 @@ export default function HomePage() {
           <Reveal>
             <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-20">
               <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Why Onekof</p>
-              <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
                 Foreign tools weren&apos;t built for you.
                 <br />
                 <span className="text-white/55">We are.</span>
@@ -804,7 +804,7 @@ export default function HomePage() {
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Product</p>
-              <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
                 See the real Onekof experience
               </h2>
               <p className="mt-4 text-[16px] text-white/50">
@@ -852,7 +852,7 @@ export default function HomePage() {
                   <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-3 py-1">
                     <span className="text-[11px] font-medium text-primary-400">{showcaseTabs[activeShowcase].tagline}</span>
                   </div>
-                  <h3 className="mb-3 text-2xl font-semibold tracking-[-0.02em] sm:text-[1.75rem]">
+                  <h3 className="mb-3 font-display text-2xl font-semibold tracking-[-0.03em] sm:text-[1.75rem]">
                     {showcaseTabs[activeShowcase].title}
                   </h3>
                   <p className="mb-6 text-[15px] leading-relaxed text-white/55">
@@ -894,7 +894,7 @@ export default function HomePage() {
           <Reveal>
             <div className="mx-auto mb-16 max-w-2xl text-center">
               <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Features</p>
-              <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 Everything your team needs.
                 <br />
                 <span className="text-white/55">Nothing it doesn&apos;t.</span>
@@ -939,7 +939,7 @@ export default function HomePage() {
               <Reveal key={stat.label} delay={i * 100}>
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
                   <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-primary-400/50" />
-                  <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  <div className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
                   <p className="mt-2 text-[13px] text-white/50">{stat.label}</p>
@@ -956,7 +956,7 @@ export default function HomePage() {
           <Reveal>
             <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-16">
               <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Testimonials</p>
-              <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 Loved by teams who&apos;ve
                 <br />
                 <span className="text-white/55">tried everything else</span>
@@ -1035,7 +1035,7 @@ export default function HomePage() {
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
               <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Pricing</p>
-              <h2 className="mb-4 text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+              <h2 className="mb-4 font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 Simple pricing in Ethiopian Birr
               </h2>
               <p className="text-[16px] text-white/50">
@@ -1091,13 +1091,13 @@ export default function HomePage() {
                   <div className="mb-6">
                     {plan.price !== null ? (
                       <div className="flex items-baseline gap-1.5">
-                        <span className="text-4xl font-semibold tracking-tight">
+                        <span className="font-display text-4xl font-semibold tracking-tight">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
                         <span className="text-[13px] text-white/50">ETB/user/mo</span>
                       </div>
                     ) : (
-                      <div className="text-4xl font-semibold tracking-tight">Custom</div>
+                      <div className="font-display text-4xl font-semibold tracking-tight">Custom</div>
                     )}
                     {plan.price === 0 && (
                       <p className="mt-1.5 text-[12px] text-white/40">Free forever, no card needed</p>
@@ -1134,7 +1134,7 @@ export default function HomePage() {
       <section className="border-y border-white/[0.06] py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
-            <h3 className="mb-8 text-center text-xl font-semibold tracking-[-0.02em] sm:mb-12 sm:text-2xl">
+            <h3 className="mb-8 text-center font-display text-xl font-semibold tracking-[-0.03em] sm:mb-12 sm:text-2xl">
               Why teams switch to Onekof
             </h3>
           </Reveal>
@@ -1182,7 +1182,7 @@ export default function HomePage() {
               <Sparkles className="h-3.5 w-3.5 text-primary-400" />
               <span className="text-[13px] text-white/60">Join 500+ Ethiopian teams</span>
             </div>
-            <h2 className="text-3xl font-semibold tracking-[-0.025em] sm:text-4xl lg:text-5xl">
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-5xl">
               Ready to transform how
               <br />
               your team works?
