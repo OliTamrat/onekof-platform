@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
+  const { authorized, error } = await requireSuperAdmin('ADMIN');
+  if (!authorized) return error!;
+
   try {
-    // Find the incorrect membership
     const incorrectMembership = await prisma.organizationMember.findFirst({
       where: {
         user: { email: 'admin@ministryofwater.et' },
@@ -24,7 +27,6 @@ export async function POST() {
       });
     }
 
-    // Delete the incorrect membership
     await prisma.organizationMember.delete({
       where: {
         id: incorrectMembership.id
@@ -41,6 +43,6 @@ export async function POST() {
     });
   } catch (error) {
     console.error('Error fixing membership:', error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fix membership' }, { status: 500 });
   }
 }

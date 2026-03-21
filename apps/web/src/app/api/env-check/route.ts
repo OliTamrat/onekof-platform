@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   const envVars = {
     DATABASE_URL: process.env.DATABASE_URL ? `${process.env.DATABASE_URL.substring(0, 30)}...` : 'NOT_SET',
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ? 'SET (hidden)' : 'NOT_SET',
