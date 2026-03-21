@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSuperAdmin } from '@/lib/security/superadmin';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +21,7 @@ export async function GET() {
 
     return NextResponse.json({ users, count: users.length });
   } catch (error) {
-    console.error('Error fetching users:', error);
+    logger.error('Error fetching users', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

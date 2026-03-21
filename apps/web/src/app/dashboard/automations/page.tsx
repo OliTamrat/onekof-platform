@@ -249,7 +249,7 @@ export default function AutomationsPage() {
 
             <div className="flex items-center gap-2">
               {filters.map((filter) => (
-                <button
+                <Button
                   key={filter.value}
                   onClick={() => setSelectedFilter(filter.value)}
                   className={cn(
@@ -260,7 +260,7 @@ export default function AutomationsPage() {
                   )}
                 >
                   {filter.label} ({filter.count})
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -505,7 +505,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
 
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
-          <button
+          <Button
             onClick={(e) => {
               e.stopPropagation();
               onToggle(automation.id, automation.isEnabled);
@@ -529,16 +529,16 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 <span>Inactive</span>
               </>
             )}
-          </button>
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button
+              <Button variant="ghost" size="icon"
                 onClick={(e) => e.stopPropagation()}
                 className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               >
                 <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-              </button>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
               <DropdownMenuItem

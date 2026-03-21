@@ -18,6 +18,7 @@ import {
   X,
   Zap
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -235,12 +236,12 @@ export default function ProjectsFormsPage() {
                     </p>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => setSelectedTemplate(null)}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
 
               {/* Form Content */}
@@ -312,19 +313,19 @@ export default function ProjectsFormsPage() {
 
               {/* Modal Footer */}
               <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
-                <button
+                <Button
                   type="button"
                   onClick={() => setSelectedTemplate(null)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleSubmit}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
                   Create {selectedTemplate.name}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

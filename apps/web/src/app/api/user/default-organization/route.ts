@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,7 +54,7 @@ export async function PUT(req: NextRequest) {
       message: 'Default organization updated',
     });
   } catch (error) {
-    console.error('Error updating default organization:', error);
+    logger.error('Error updating default organization', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

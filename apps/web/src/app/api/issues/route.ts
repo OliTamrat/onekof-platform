@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -165,7 +166,7 @@ export async function GET(request: NextRequest) {
       issues: issuesWithCounts,
     });
   } catch (error) {
-    console.error('Issues list error:', error);
+    logger.error('Issues list error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch issues' },
       { status: 500 }
@@ -357,7 +358,7 @@ export async function POST(request: NextRequest) {
         project.organization.id,
         ctx.user.id
       ).catch(err => {
-        console.error('Auto-watch mentioned users error:', err);
+        logger.error('Auto-watch mentioned users error', { error: err instanceof Error ? err.message : err });
       });
     }
 
@@ -369,7 +370,7 @@ export async function POST(request: NextRequest) {
       },
     }, { status: 201 });
   } catch (error) {
-    console.error('Issue creation error:', error);
+    logger.error('Issue creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create issue' },
       { status: 500 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,7 +60,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching executions:', error);
+    logger.error('Error fetching executions', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch executions' },
       { status: 500 }

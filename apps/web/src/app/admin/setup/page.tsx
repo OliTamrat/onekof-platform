@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { CheckCircle, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function AdminSetupPage() {
   const [loading, setLoading] = useState(false);
@@ -79,10 +80,10 @@ export default function AdminSetupPage() {
                 </p>
               </div>
               {step === 'project' && !result?.project && (
-                <button
+                <Button
                   onClick={createProject}
                   disabled={loading}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#1C8C7D] text-white rounded-md hover:bg-[#16A085] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3"
                 >
                   {loading ? (
                     <>
@@ -92,7 +93,7 @@ export default function AdminSetupPage() {
                   ) : (
                     'Create Project'
                   )}
-                </button>
+                </Button>
               )}
               {result?.project && (
                 <CheckCircle className="h-8 w-8 text-green-500" />
@@ -128,10 +129,10 @@ export default function AdminSetupPage() {
                 </p>
               </div>
               {step === 'expenses' && !result?.expenses && (
-                <button
+                <Button
                   onClick={createExpenses}
                   disabled={loading || !result?.project}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#1C8C7D] text-white rounded-md hover:bg-[#16A085] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3"
                 >
                   {loading ? (
                     <>
@@ -141,7 +142,7 @@ export default function AdminSetupPage() {
                   ) : (
                     'Create Expenses'
                   )}
-                </button>
+                </Button>
               )}
               {result?.expenses && (
                 <CheckCircle className="h-8 w-8 text-green-500" />

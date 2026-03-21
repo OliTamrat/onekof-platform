@@ -5,6 +5,7 @@ import { prisma } from '@onekof/database';
 import { verifyTOTPCode, decryptSecret, verifyBackupCode } from '@/lib/security/totp';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { z } from 'zod';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     const validation = verifySchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Invalid request', details: validation.error.errors },
+        { error: 'Verification code is required' },
         { status: 400 }
       );
     }
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
         : undefined,
     });
   } catch (error) {
-    console.error('2FA verify error:', error);
+    logger.error('2FA verify error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to verify two-factor code' },
       { status: 500 }
