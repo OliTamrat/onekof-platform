@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -72,7 +73,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error unlinking project from goal:', error);
+    logger.error('Error unlinking project from goal', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to unlink project from goal' },
       { status: 500 }
@@ -148,7 +149,7 @@ export async function PATCH(
       contributionWeight: updatedLink.contributionWeight
     });
   } catch (error) {
-    console.error('Error updating project contribution:', error);
+    logger.error('Error updating project contribution', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update project contribution' },
       { status: 500 }

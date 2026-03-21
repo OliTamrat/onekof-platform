@@ -26,6 +26,7 @@ import {
   BarChart3,
   Sparkles,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Project {
   id: string;
@@ -203,7 +204,7 @@ export default function IssuesTimelinePage() {
             {/* Time Range Selector */}
             <div className="flex items-center gap-2 bg-gray-100 dark:bg-[#282E33] rounded-lg p-1">
               {(['30d', '90d', '6m', '1y'] as const).map((range) => (
-                <button
+                <Button
                   key={range}
                   onClick={() => setTimeRange(range)}
                   className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
@@ -213,7 +214,7 @@ export default function IssuesTimelinePage() {
                   }`}
                 >
                   {range === '30d' ? '30 Days' : range === '90d' ? '90 Days' : range === '6m' ? '6 Months' : '1 Year'}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -242,7 +243,7 @@ export default function IssuesTimelinePage() {
             <div className="max-w-7xl mx-auto space-y-6">
               {/* Summary Stats - Clickable Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <button
+                <Button variant="outline"
                   onClick={() => projects.length > 0 && setSelectedProject(projects[0])}
                   className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer text-left"
                 >
@@ -257,9 +258,9 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">Total Projects</p>
                     </div>
                   </div>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   onClick={() => {
                     const onTrack = projects.find(p => p.status === 'ON_TRACK');
                     if (onTrack) setSelectedProject(onTrack);
@@ -277,9 +278,9 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">On Track</p>
                     </div>
                   </div>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   onClick={() => {
                     const atRisk = projects.find(p => p.status === 'AT_RISK' || p.status === 'DELAYED');
                     if (atRisk) setSelectedProject(atRisk);
@@ -297,9 +298,9 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">At Risk/Delayed</p>
                     </div>
                   </div>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   onClick={() => {
                     const completed = projects.find(p => p.status === 'COMPLETED');
                     if (completed) setSelectedProject(completed);
@@ -317,7 +318,7 @@ export default function IssuesTimelinePage() {
                       <p className="text-xs text-gray-500 dark:text-[#6B7684]">Completed</p>
                     </div>
                   </div>
-                </button>
+                </Button>
               </div>
 
               {/* Project Timeline Cards */}
@@ -369,9 +370,9 @@ export default function IssuesTimelinePage() {
                               )}
                             </div>
                           </div>
-                          <button className="p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-lg transition-colors">
+                          <Button className="p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-lg transition-colors">
                             <ChevronRight className="h-5 w-5 text-gray-400" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
 
@@ -763,12 +764,12 @@ export default function IssuesTimelinePage() {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
-                <button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors">
+                <Button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors">
                   View Full Project
-                </button>
-                <button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                </Button>
+                <Button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
                   Export Timeline Report
-                </button>
+                </Button>
               </div>
             </div>
           </SlideoutPanelContent>

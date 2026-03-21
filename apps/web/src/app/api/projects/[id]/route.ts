@@ -90,7 +90,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Project fetch error:', error);
+    log.error('Project fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch project' },
       { status: 500 }
@@ -188,7 +188,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.error('Project update error:', error);
+    log.error('Project update error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update project' },
       { status: 500 }
@@ -242,7 +242,7 @@ export async function DELETE(
       message: 'Project deleted successfully',
     });
   } catch (error) {
-    console.error('Project deletion error:', error);
+    log.error('Project deletion error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete project' },
       { status: 500 }

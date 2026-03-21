@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,7 +87,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching team:', error);
+    logger.error('Error fetching team', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch team' },
       { status: 500 }
@@ -186,7 +187,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.error('Error updating team:', error);
+    logger.error('Error updating team', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update team' },
       { status: 500 }
@@ -251,7 +252,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting team:', error);
+    logger.error('Error deleting team', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete team' },
       { status: 500 }

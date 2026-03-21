@@ -30,6 +30,7 @@ import {
   PauseCircle,
   XCircle,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
 type TaskPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -243,13 +244,13 @@ export default function IssuesBoardPage() {
                             {columnTasks.length}
                           </span>
                         </div>
-                        <button
+                        <Button variant="ghost" size="icon"
                           onClick={() => setShowCreateModal(true)}
                           className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                           title="Add task"
                         >
                           <Plus className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-                        </button>
+                        </Button>
                       </div>
 
                       {/* Droppable Column */}

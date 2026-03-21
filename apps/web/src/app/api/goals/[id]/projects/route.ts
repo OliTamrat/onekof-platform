@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,7 +76,7 @@ export async function GET(
 
     return NextResponse.json({ projects });
   } catch (error) {
-    console.error('Error fetching goal projects:', error);
+    logger.error('Error fetching goal projects', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch goal projects' },
       { status: 500 }
@@ -199,7 +200,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error('Error linking project to goal:', error);
+    logger.error('Error linking project to goal', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to link project to goal' },
       { status: 500 }

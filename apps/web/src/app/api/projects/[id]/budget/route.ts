@@ -4,6 +4,7 @@ import { prisma } from '@onekof/database';
 import { checkBudgetAccess, getBudgetAccess, filterBudgetData } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -119,7 +120,7 @@ export async function GET(
       }
     });
   } catch (error) {
-    console.error('Budget fetch error:', error);
+    logger.error('Budget fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to fetch budget' }, { status: 500 });
   }
 }
@@ -215,7 +216,7 @@ export async function POST(
 
     return NextResponse.json({ budget }, { status: 201 });
   } catch (error) {
-    console.error('Budget creation error:', error);
+    logger.error('Budget creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to create/update budget' }, { status: 500 });
   }
 }

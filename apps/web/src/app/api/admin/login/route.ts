@@ -27,7 +27,7 @@ function generateToken(user: AdminUser): string {
   const timestamp = Date.now().toString();
   const payload = JSON.stringify({ username: user.username, role: user.role, name: user.name });
   const payloadB64 = Buffer.from(payload).toString('base64url');
-  const signature = createHmac('sha256', ADMIN_SECRET)
+  const signature = createHmac('sha256', ADMIN_SECRET!)
     .update(`${payloadB64}.${timestamp}`)
     .digest('base64url');
   return `${payloadB64}.${timestamp}.${signature}`;
@@ -46,7 +46,7 @@ export function verifyToken(token: string): { username: string; role: string; na
   if (isNaN(age) || age > 24 * 60 * 60 * 1000) return null;
 
   // Verify signature
-  const expected = createHmac('sha256', ADMIN_SECRET)
+  const expected = createHmac('sha256', ADMIN_SECRET!)
     .update(`${payloadB64}.${timestamp}`)
     .digest('base64url');
   if (signature !== expected) return null;

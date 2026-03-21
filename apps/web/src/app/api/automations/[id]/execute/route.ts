@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -91,9 +92,9 @@ export async function POST(
             executionLog.actions.push({
               action,
               status: 'failed',
-              error: error.message,
+              error: 'Action execution failed',
             });
-            executionLog.errors.push(error.message);
+            executionLog.errors.push('Action execution failed');
           }
         }
 
@@ -105,7 +106,7 @@ export async function POST(
       }
     } catch (error: any) {
       status = 'FAILED';
-      executionLog.errors.push(error.message);
+      executionLog.errors.push('Automation execution failed');
     }
 
     const executionTime = Date.now() - startTime;
@@ -144,7 +145,7 @@ export async function POST(
           : 'Automation execution failed',
     });
   } catch (error) {
-    console.error('Error executing automation:', error);
+    logger.error('Error executing automation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to execute automation' },
       { status: 500 }
@@ -257,19 +258,21 @@ async function executeAction(
       break;
 
     case 'add_comment':
-      // Add a comment
-      await prisma.comment.create({
-        data: {
-          taskId: entityType === 'TASK' ? entityId : undefined,
-          authorId: userId,
-          content: params.comment,
-        },
-      });
+      // Add a comment (only if entity is a task)
+      if (entityType === 'TASK' && entityId) {
+        await prisma.comment.create({
+          data: {
+            taskId: entityId,
+            authorId: userId,
+            content: params.comment,
+          },
+        });
+      }
       break;
 
     case 'send_notification':
       // Send notification (placeholder - implement your notification logic)
-      console.log('Sending notification:', params);
+      logger.info('Sending notification', { params });
       break;
 
     case 'update_field':

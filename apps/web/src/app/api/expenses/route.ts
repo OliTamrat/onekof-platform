@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 
 export const dynamic = 'force-dynamic';
@@ -107,7 +108,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Expenses list error:', error);
+    logger.error('Expenses list error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch expenses' },
       { status: 500 }
@@ -204,7 +205,7 @@ export async function POST(request: NextRequest) {
       message: 'Expense submitted for approval',
     }, { status: 201 });
   } catch (error) {
-    console.error('Expense creation error:', error);
+    logger.error('Expense creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create expense' },
       { status: 500 }

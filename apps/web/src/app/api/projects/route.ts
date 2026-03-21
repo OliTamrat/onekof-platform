@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { getOrganizationContext } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -119,7 +120,7 @@ export async function GET(request: NextRequest) {
       projects: projectsWithStats,
     });
   } catch (error) {
-    console.error('Projects list error:', error);
+    logger.error('Projects list error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch projects' },
       { status: 500 }
@@ -225,7 +226,7 @@ export async function POST(request: NextRequest) {
       },
     }, { status: 201 });
   } catch (error) {
-    console.error('Project creation error:', error);
+    logger.error('Project creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create project' },
       { status: 500 }

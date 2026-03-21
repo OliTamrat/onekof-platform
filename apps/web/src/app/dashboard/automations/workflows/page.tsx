@@ -17,6 +17,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { Button } from '@/components/ui/button';
 
 // Mock workflows data
 const WORKFLOWS = [
@@ -101,10 +102,10 @@ export default function AutomationsWorkflowsPage() {
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
+          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <Zap className="h-4 w-4" />
             Create Workflow
-          </button>
+          </Button>
         </div>
 
         {/* Workflows List */}
@@ -141,10 +142,10 @@ export default function AutomationsWorkflowsPage() {
                     <span>{workflow.executions} executions</span>
                   </div>
                 </div>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
+                <Button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
                   {workflow.status === 'ACTIVE' ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                   {workflow.status === 'ACTIVE' ? 'Pause' : 'Resume'}
-                </button>
+                </Button>
               </div>
             </div>
           ))}

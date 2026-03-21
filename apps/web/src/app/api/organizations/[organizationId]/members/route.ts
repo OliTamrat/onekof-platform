@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +79,7 @@ export async function GET(
       members: formattedMembers,
     });
   } catch (error) {
-    console.error('Failed to fetch organization members:', error);
+    logger.error('Failed to fetch organization members', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch members' },
       { status: 500 }

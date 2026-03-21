@@ -68,12 +68,12 @@ export default function DashboardPage() {
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
             The session is taking longer than expected to load. This might be a configuration issue.
           </p>
-          <button
+          <Button
             onClick={() => router.push('/auth/signin')}
             className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
           >
             Go to Sign In
-          </button>
+          </Button>
         </div>
       </div>
     );

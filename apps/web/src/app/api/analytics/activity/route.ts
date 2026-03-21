@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { getRecentActivities, getEntityActivityTimeline } from '@/lib/activity-logger';
 import type { ActivityEntityType, ActivityAction } from '@/lib/activity-logger';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -186,7 +187,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Activity feed error:', error);
+    logger.error('Activity feed error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch activity feed' },
       { status: 500 }

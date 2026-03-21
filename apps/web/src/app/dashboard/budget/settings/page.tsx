@@ -12,6 +12,7 @@ import {
   Users,
   Shield
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function BudgetSettingsPage() {
   const toast = useToast();
@@ -103,7 +104,7 @@ export default function BudgetSettingsPage() {
                   Receive notifications when budgets approach their limits
                 </p>
               </div>
-              <button
+              <Button
                 onClick={() => setNotificationsEnabled(!notificationsEnabled)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   notificationsEnabled ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
@@ -114,7 +115,7 @@ export default function BudgetSettingsPage() {
                     notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
-              </button>
+              </Button>
             </div>
 
             <div>
@@ -151,7 +152,7 @@ export default function BudgetSettingsPage() {
                   All expenses must be approved before being processed
                 </p>
               </div>
-              <button
+              <Button
                 onClick={() => setApprovalRequired(!approvalRequired)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   approvalRequired ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
@@ -162,7 +163,7 @@ export default function BudgetSettingsPage() {
                     approvalRequired ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
-              </button>
+              </Button>
             </div>
 
             <div>
@@ -188,16 +189,16 @@ export default function BudgetSettingsPage() {
 
         {/* Save Button */}
         <div className="flex items-center justify-end gap-3">
-          <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">
+          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
           >
             <Save className="h-4 w-4" />
             Save Settings
-          </button>
+          </Button>
         </div>
       </div>
     </AppLayout>

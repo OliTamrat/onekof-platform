@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'overview', label: 'Overview', icon: Target, href: '/dashboard/teams/overview', active: true },
@@ -314,7 +315,7 @@ export default function TeamsOverviewPage() {
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Team Activity This Week</h3>
                     <div className="flex gap-2">
                       {(['week', 'month', 'quarter'] as const).map((range) => (
-                        <button
+                        <Button
                           key={range}
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
@@ -324,7 +325,7 @@ export default function TeamsOverviewPage() {
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

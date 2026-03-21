@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getConnections, getEvents } from '@/lib/integrations/store';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +41,7 @@ export async function GET(req: NextRequest) {
       recentEvents: events.slice(0, 20),
     });
   } catch (error) {
-    console.error('Integrations GET error:', error);
+    logger.error('Integrations GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

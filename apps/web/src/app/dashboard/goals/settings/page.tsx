@@ -16,6 +16,7 @@ import {
   Shield,
   Target
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -57,10 +58,10 @@ export default function GoalsSettingsPage() {
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goal Settings</h1>
             </div>
-            <button onClick={handleSave} className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
+            <Button onClick={handleSave} className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Save className="h-4 w-4" />
               Save Changes
-            </button>
+            </Button>
           </div>
           <div className="flex items-center gap-1 px-6">
             {TAB_ITEMS.map((tab) => {
@@ -81,10 +82,10 @@ export default function GoalsSettingsPage() {
               {SETTINGS_SECTIONS.map((section) => {
                 const Icon = section.icon;
                 return (
-                  <button key={section.id} onClick={() => setActiveSection(section.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === section.id ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20' : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'}`}>
+                  <Button key={section.id} onClick={() => setActiveSection(section.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === section.id ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20' : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'}`}>
                     <Icon className="h-4 w-4" />
                     {section.label}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
