@@ -29,6 +29,12 @@ import {
   ToggleLeft,
   ToggleRight,
   Activity,
+  Sparkles,
+  UserCheck,
+  MessageSquare,
+  Rocket,
+  ClipboardList,
+  type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { cn } from '@/lib/utils';
@@ -1178,17 +1184,18 @@ function ConfigTab({
               Notification Rules
             </h3>
             <div className="space-y-1">
-              {[
-                { key: 'taskCreated', label: 'Task created', icon: '✨' },
-                { key: 'taskCompleted', label: 'Task completed', icon: '✅' },
-                { key: 'taskAssigned', label: 'Task assigned', icon: '👤' },
-                { key: 'commentAdded', label: 'Comment added', icon: '💬' },
-                { key: 'projectUpdated', label: 'Project updated', icon: '🚀' },
-                { key: 'dailyDigest', label: 'Daily digest', icon: '📋' },
-              ].map(item => (
+              {([
+                { key: 'taskCreated', label: 'Task created', icon: Sparkles },
+                { key: 'taskCompleted', label: 'Task completed', icon: CheckCircle2 },
+                { key: 'taskAssigned', label: 'Task assigned', icon: UserCheck },
+                { key: 'commentAdded', label: 'Comment added', icon: MessageSquare },
+                { key: 'projectUpdated', label: 'Project updated', icon: Rocket },
+                { key: 'dailyDigest', label: 'Daily digest', icon: ClipboardList },
+              ] as { key: string; label: string; icon: LucideIcon }[]).map(item => (
                 <ToggleRow
                   key={item.key}
-                  label={`${item.icon} ${item.label}`}
+                  label={item.label}
+                  icon={<item.icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />}
                   enabled={config.notifications?.[item.key] ?? false}
                   onChange={v => handleToggle(`notifications.${item.key}`, v)}
                   disabled={saving}
