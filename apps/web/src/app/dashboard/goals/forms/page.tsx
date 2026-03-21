@@ -12,7 +12,11 @@ import {
   FileText,
   Plus,
   Target,
-  X
+  X,
+  TrendingUp,
+  RotateCcw,
+  Lightbulb,
+  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -26,12 +30,12 @@ const TAB_ITEMS = [
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
 ];
 
-const FORM_TEMPLATES = [
+const FORM_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon; fields: { name: string; type: string; placeholder?: string; required: boolean; options?: string[] }[] }[] = [
   {
     id: 'okr-objective',
     name: 'OKR - Objective',
     description: 'Create a new objective with key results',
-    icon: '🎯',
+    icon: Target,
     fields: [
       { name: 'Objective Title', type: 'text', placeholder: 'What do you want to achieve?', required: true },
       { name: 'Objective Description', type: 'textarea', placeholder: 'Describe the objective in detail...', required: true },
@@ -48,7 +52,7 @@ const FORM_TEMPLATES = [
     id: 'key-result',
     name: 'Key Result',
     description: 'Add a key result to an existing objective',
-    icon: '📊',
+    icon: BarChart3,
     fields: [
       { name: 'Linked Objective', type: 'text', placeholder: 'Which objective does this support?', required: true },
       { name: 'Key Result', type: 'text', placeholder: 'Measurable outcome', required: true },
@@ -62,7 +66,7 @@ const FORM_TEMPLATES = [
     id: 'goal-update',
     name: 'Goal Progress Update',
     description: 'Report progress on an existing goal',
-    icon: '📈',
+    icon: TrendingUp,
     fields: [
       { name: 'Goal', type: 'text', placeholder: 'Which goal are you updating?', required: true },
       { name: 'Progress Percentage', type: 'number', placeholder: '0-100', required: true },
@@ -76,7 +80,7 @@ const FORM_TEMPLATES = [
     id: 'goal-retrospective',
     name: 'Goal Retrospective',
     description: 'Review completed goal outcomes',
-    icon: '🔄',
+    icon: RotateCcw,
     fields: [
       { name: 'Goal Title', type: 'text', placeholder: 'Completed goal', required: true },
       { name: 'Final Achievement', type: 'select', options: ['Exceeded', 'Met', 'Partially Met', 'Not Met'], required: true },
@@ -90,7 +94,7 @@ const FORM_TEMPLATES = [
     id: 'initiative-proposal',
     name: 'Initiative Proposal',
     description: 'Propose a new strategic initiative',
-    icon: '💡',
+    icon: Lightbulb,
     fields: [
       { name: 'Initiative Name', type: 'text', placeholder: 'What is the initiative?', required: true },
       { name: 'Business Case', type: 'textarea', placeholder: 'Why should we do this?', required: true },
@@ -169,7 +173,9 @@ export default function GoalsFormsPage() {
                   onClick={() => setSelectedTemplate(template)}
                   className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                 >
-                  <div className="text-4xl mb-4">{template.icon}</div>
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
+                    <template.icon className="h-5 w-5 text-primary-500" />
+                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {template.name}
                   </h3>

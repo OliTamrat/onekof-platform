@@ -26,6 +26,7 @@ import {
   X
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { IconRenderer } from '@/components/ui/icon-renderer';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { GOALS_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
@@ -934,7 +935,7 @@ export default function GoalsPage() {
                             className="flex h-12 w-12 items-center justify-center rounded-lg text-2xl shrink-0"
                             style={{ backgroundColor: project.color || '#1C8C7D' }}
                           >
-                            {project.icon || '📁'}
+                            <IconRenderer iconName={project.icon} className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2 mb-2">

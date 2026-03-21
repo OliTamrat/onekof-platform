@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { IconRenderer } from '@/components/ui/icon-renderer';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -338,7 +339,7 @@ export default function DashboardPage() {
                         className="flex h-8 w-8 items-center justify-center rounded text-sm"
                         style={{ backgroundColor: project.color || '#3B82F6' }}
                       >
-                        {project.icon || '📁'}
+                        <IconRenderer iconName={project.icon || undefined} className="h-5 w-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">

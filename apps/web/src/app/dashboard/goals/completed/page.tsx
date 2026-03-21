@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { GOALS_TABS } from '@/config/department-tabs';
 import {
   Target,
   Search,
@@ -56,6 +57,8 @@ export default function GoalsCompletedPage() {
         iconColor="#10B981"
         currentTab="completed"
         baseHref="/dashboard/goals"
+        customTabs={GOALS_TABS}
+        showTabs
       />
 
       <div className="p-6">

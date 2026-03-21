@@ -465,7 +465,7 @@ export default function ProjectsSummaryPage() {
                           className="flex h-10 w-10 items-center justify-center rounded"
                           style={{ backgroundColor: project.color || '#1C8C7D' }}
                         >
-                          <IconRenderer iconName={project.icon} className="h-5 w-5 text-white" fallback="📁" />
+                          <IconRenderer iconName={project.icon} className="h-5 w-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">

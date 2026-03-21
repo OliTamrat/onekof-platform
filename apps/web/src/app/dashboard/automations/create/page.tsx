@@ -15,7 +15,15 @@ import {
   Sparkles,
   AlertCircle,
   CheckCircle2,
-  Info
+  Info,
+  UserCheck,
+  RotateCcw,
+  MessageSquare,
+  Bell,
+  Pencil,
+  Target,
+  Archive,
+  type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -82,15 +90,15 @@ const OPERATORS = [
 ];
 
 // Action Types
-const ACTION_TYPES = [
-  { value: 'assign_to_user', label: 'Assign to user', description: 'Assign task/project to a user', icon: '👤' },
-  { value: 'change_status', label: 'Change status', description: 'Update the status field', icon: '🔄' },
-  { value: 'add_comment', label: 'Add comment', description: 'Post an automated comment', icon: '💬' },
-  { value: 'send_notification', label: 'Send notification', description: 'Notify users or teams', icon: '🔔' },
-  { value: 'update_field', label: 'Update field', description: 'Change a specific field value', icon: '✏️' },
-  { value: 'create_task', label: 'Create task', description: 'Create a new task', icon: '➕' },
-  { value: 'update_goal_progress', label: 'Update goal progress', description: 'Recalculate goal progress', icon: '🎯' },
-  { value: 'archive_project', label: 'Archive project', description: 'Move project to archive', icon: '📦' },
+const ACTION_TYPES: { value: string; label: string; description: string; icon: LucideIcon }[] = [
+  { value: 'assign_to_user', label: 'Assign to user', description: 'Assign task/project to a user', icon: UserCheck },
+  { value: 'change_status', label: 'Change status', description: 'Update the status field', icon: RotateCcw },
+  { value: 'add_comment', label: 'Add comment', description: 'Post an automated comment', icon: MessageSquare },
+  { value: 'send_notification', label: 'Send notification', description: 'Notify users or teams', icon: Bell },
+  { value: 'update_field', label: 'Update field', description: 'Change a specific field value', icon: Pencil },
+  { value: 'create_task', label: 'Create task', description: 'Create a new task', icon: Plus },
+  { value: 'update_goal_progress', label: 'Update goal progress', description: 'Recalculate goal progress', icon: Target },
+  { value: 'archive_project', label: 'Archive project', description: 'Move project to archive', icon: Archive },
 ];
 
 interface Condition {
