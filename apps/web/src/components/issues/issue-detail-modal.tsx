@@ -852,9 +852,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Automation */}
               <div className="border-t border-slate-700 pt-4">
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => setShowAutomation(!showAutomation)}
-                  className="flex w-full items-center justify-between text-xs font-medium text-slate-400 hover:text-white transition-colors"
+                  className="flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-xs font-medium text-slate-400 hover:text-white"
                 >
                   <div className="flex items-center gap-1">
                     <Zap className="h-3.5 w-3.5" />
@@ -865,29 +866,31 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   ) : (
                     <ChevronDown className="h-3.5 w-3.5" />
                   )}
-                </button>
+                </Button>
                 {showAutomation && (
                   <div className="mt-2 space-y-2 text-xs text-white">
                     <div className="text-slate-400">No automation rules</div>
-                    <button
+                    <Button
+                      variant="link"
                       onClick={() => showAlert('Add Automation Rule', 'Create rules for auto-assign, status transitions, and notifications', 'info')}
-                      className="block w-full text-left text-primary-500 hover:underline"
+                      className="h-auto p-0 block w-full text-left text-primary-500"
                     >
                       + Add rule
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Configure Button */}
-            <button
+            <Button
+              variant="outline"
               onClick={() => showAlert('Configure Issue', 'Customize fields, workflows, and automation settings for this issue', 'info')}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-slate-700 bg-[#282E33] px-3 py-2 text-sm font-medium text-white hover:bg-slate-700 transition-colors"
+              className="mt-6 w-full border-slate-700 bg-[#282E33] text-white hover:bg-slate-700"
             >
               <Settings className="h-4 w-4" />
               Configure
-            </button>
+            </Button>
           </div>
         </div>
       </div>
