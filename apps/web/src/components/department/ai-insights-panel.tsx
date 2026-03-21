@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Task {
   id: string;
@@ -425,20 +426,22 @@ function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number
         </div>
       ))}
       {!showAll && remaining > 0 && (
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setShowAll(true)}
-          className="text-[11px] font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-1 transition-colors"
+          className="h-auto text-[11px] font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-1"
         >
           + {remaining} more {remaining === 1 ? 'task' : 'tasks'}
-        </button>
+        </Button>
       )}
       {showAll && tasks.length > maxShow && (
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setShowAll(false)}
-          className="text-[11px] font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-1 transition-colors"
+          className="h-auto text-[11px] font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-1"
         >
           Show less
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -452,9 +455,10 @@ function InsightCard({ insight }: { insight: Insight }) {
 
   return (
     <div className={cn('rounded-lg overflow-hidden transition-all', styles.card)}>
-      <button
+      <Button
+        variant="ghost"
         onClick={() => hasDetails && setExpanded(!expanded)}
-        className={cn('w-full text-left p-3.5 flex items-start gap-3', hasDetails && 'cursor-pointer')}
+        className={cn('w-full h-auto text-left p-3.5 flex items-start gap-3 rounded-none', hasDetails && 'cursor-pointer')}
       >
         <div className={cn('rounded-lg p-1.5 shrink-0', styles.iconBg)}>
           <InsightIcon className={cn('h-4 w-4', styles.icon)} />
@@ -476,19 +480,20 @@ function InsightCard({ insight }: { insight: Insight }) {
             </p>
           )}
         </div>
-      </button>
+      </Button>
       {expanded && insight.relatedTasks && (
         <div className="px-3.5 pb-3.5 border-t border-slate-200/40 dark:border-slate-700/40 pt-2">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Affected Tasks ({insight.relatedTasks.length})
             </span>
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setExpanded(false)}
-              className="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors"
+              className="h-auto px-1 py-0.5 text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5"
             >
               Collapse <ChevronUp className="h-3 w-3" />
-            </button>
+            </Button>
           </div>
           <TaskDrillDown tasks={insight.relatedTasks} />
         </div>
@@ -503,9 +508,10 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
 
   return (
     <div className="flex flex-col">
-      <button
+      <Button
+        variant="ghost"
         onClick={() => hasDetails && setExpanded(!expanded)}
-        className={cn('flex items-start gap-2.5 p-3 text-left', hasDetails && 'cursor-pointer')}
+        className={cn('flex h-auto w-full items-start gap-2.5 p-3 rounded-none text-left', hasDetails && 'cursor-pointer')}
       >
         <ArrowRight className="h-3.5 w-3.5 text-primary-500 shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
@@ -520,16 +526,17 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
         <span className={cn('text-[9px] font-bold uppercase px-1.5 py-0.5 rounded shrink-0', PRIORITY_BADGE[rec.priority])}>
           {rec.priority}
         </span>
-      </button>
+      </Button>
       {expanded && rec.relatedTasks && (
         <div className="px-3 pb-3 pt-1 border-t border-slate-100 dark:border-slate-800">
           <TaskDrillDown tasks={rec.relatedTasks} maxShow={3} />
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setExpanded(false)}
-            className="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 mt-1.5 px-3 transition-colors"
+            className="h-auto text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 mt-1.5 px-3 py-0.5"
           >
             Collapse <ChevronUp className="h-3 w-3" />
-          </button>
+          </Button>
         </div>
       )}
     </div>

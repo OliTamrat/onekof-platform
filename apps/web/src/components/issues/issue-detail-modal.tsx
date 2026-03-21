@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AlertModal } from '@/components/ui/alert-modal';
+import { Button } from '@/components/ui/button';
 
 interface Issue {
   id: string;
@@ -223,15 +224,19 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3">
-            <button
-              className="text-slate-400 hover:text-white transition-colors"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-slate-400 hover:text-white"
               title="Settings"
               onClick={() => showAlert('Settings', 'Settings functionality coming soon!', 'info')}
             >
               <Settings className="h-5 w-5" />
-            </button>
-            <button
-              className="text-slate-400 hover:text-white transition-colors"
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-slate-400 hover:text-white"
               title="Copy link"
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
@@ -239,23 +244,27 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
               }}
             >
               <Link2 className="h-5 w-5" />
-            </button>
-            <button
-              className="text-slate-400 hover:text-white transition-colors"
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-slate-400 hover:text-white"
               title="More actions"
               onClick={() => showAlert('More Actions', 'Available actions: Delete, Archive, Move, Clone, Export', 'info')}
             >
               <MoreHorizontal className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
 
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white"
             title="Close"
           >
             <X className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Content Container */}
@@ -351,10 +360,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
             {/* Description */}
             <div className="mb-6">
-              <button className="mb-2 flex w-full items-center justify-between text-sm font-semibold text-white">
+              <Button variant="ghost" className="mb-2 flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-sm font-semibold text-white">
                 Description
                 <ChevronDown className="h-4 w-4" />
-              </button>
+              </Button>
 
               {isEditingDescription ? (
                 <div className="space-y-2">
@@ -366,22 +375,25 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     placeholder="Add a description..."
                   />
                   <div className="flex gap-2">
-                    <button
+                    <Button
+                      size="sm"
                       onClick={handleDescriptionSave}
                       disabled={updateIssueMutation.isPending}
-                      className="rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
+                      className="bg-primary-500 text-white hover:bg-primary-600"
                     >
                       {updateIssueMutation.isPending ? 'Saving...' : 'Save'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => {
                         setIsEditingDescription(false);
                         setEditedDescription(issue.description || '');
                       }}
-                      className="rounded-md border border-slate-700 bg-[#282E33] px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-700 transition-colors"
+                      className="border-slate-700 bg-[#282E33] text-white hover:bg-slate-700"
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -396,13 +408,13 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
             {/* Subtasks */}
             <div className="mb-6">
-              <button className="mb-2 flex w-full items-center justify-between text-sm font-semibold text-white">
+              <Button variant="ghost" className="mb-2 flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-sm font-semibold text-white">
                 <div className="flex items-center gap-2">
                   Subtasks
                   <span className="text-slate-400">{issue.subtaskProgress || 0}% Done</span>
                 </div>
                 <ChevronDown className="h-4 w-4" />
-              </button>
+              </Button>
 
               {/* Progress Bar */}
               <div className="mb-3 h-2 w-full rounded-full bg-slate-700">
@@ -466,23 +478,26 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       autoFocus
                       disabled={createSubtaskMutation.isPending}
                     />
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={handleCreateSubtask}
                       disabled={createSubtaskMutation.isPending || !newSubtaskTitle.trim()}
-                      className="text-primary-500 hover:text-white disabled:opacity-50 transition-colors"
+                      className="h-auto w-auto p-1 text-primary-500 hover:text-white"
                       title="Add subtask"
                     >
                       <Send className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 ) : (
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setIsCreatingSubtask(true)}
-                    className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white transition-colors"
+                    className="flex w-full h-auto items-center gap-2 rounded-md p-2 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white"
                   >
                     <Plus className="h-4 w-4" />
                     Add subtask
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -490,10 +505,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
             {/* Linked Goals */}
             {issue.goals && issue.goals.length > 0 && (
               <div className="mb-6">
-                <button className="mb-2 flex w-full items-center justify-between text-sm font-semibold text-white">
+                <Button variant="ghost" className="mb-2 flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-sm font-semibold text-white">
                   Linked to Goals
                   <ChevronDown className="h-4 w-4" />
-                </button>
+                </Button>
 
                 <div className="space-y-2">
                   {issue.goals.map((goalLink: any) => (
@@ -514,28 +529,29 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
             {/* Documentation Section */}
             <div className="mb-6">
-              <button className="mb-2 flex w-full items-center justify-between text-sm font-semibold text-white">
+              <Button variant="ghost" className="mb-2 flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-sm font-semibold text-white">
                 <div className="flex items-center gap-2">
                   Documentation
                 </div>
                 <MoreHorizontal className="h-4 w-4" />
-              </button>
+              </Button>
 
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => showAlert('Link Documentation', 'Connect this issue to wiki pages, docs, or knowledge base articles', 'info')}
-                className="flex w-full items-center gap-2 rounded-md border border-slate-700 bg-[#1B1F23] p-3 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white transition-colors"
+                className="flex w-full h-auto items-center gap-2 rounded-md border border-slate-700 bg-[#1B1F23] p-3 text-sm text-slate-400 hover:bg-[#282E33] hover:text-white"
               >
                 <FileText className="h-4 w-4" />
                 Link documentation
-              </button>
+              </Button>
             </div>
 
             {/* Activity - Comments */}
             <div className="mb-6">
               <div className="mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
-                <button className="border-b-2 border-primary-500 px-1 pb-2 text-sm font-medium text-white">
+                <Button variant="ghost" className="h-auto rounded-none border-b-2 border-primary-500 px-1 pb-2 text-sm font-medium text-white">
                   Comments
-                </button>
+                </Button>
                 <span className="text-sm text-slate-400">({issue.comments?.length || 0})</span>
               </div>
 
@@ -577,13 +593,14 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     className="w-full rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
                     disabled={createCommentMutation.isPending}
                   />
-                  <button
+                  <Button
+                    size="sm"
                     onClick={handlePostComment}
                     disabled={createCommentMutation.isPending || !commentContent.trim()}
-                    className="mt-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
+                    className="mt-2 bg-primary-500 text-white hover:bg-primary-600"
                   >
                     {createCommentMutation.isPending ? 'Posting...' : 'Comment'}
-                  </button>
+                  </Button>
                   <div className="mt-2 text-xs text-slate-400">
                     Pro tip: press <kbd className="rounded bg-slate-700 px-1.5 py-0.5">Ctrl</kbd> + <kbd className="rounded bg-slate-700 px-1.5 py-0.5">Enter</kbd> to comment
                   </div>
@@ -603,13 +620,15 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
             {/* Details Header */}
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-white">Details</h3>
-              <button
-                className="text-slate-400 hover:text-white transition-colors"
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-slate-400 hover:text-white"
                 onClick={() => showAlert('Configure Details', 'Customize which fields to show in the Details panel', 'info')}
                 title="Configure details"
               >
                 <Settings className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
 
             <div className="space-y-4">
@@ -632,12 +651,13 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     <span className="text-sm text-white">{issue.assignee.name}</span>
                   </div>
                 ) : (
-                  <button
-                    className="text-sm text-primary-500 hover:underline"
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-sm text-primary-500"
                     onClick={() => showAlert('Assign to Me', 'This feature will assign this issue to you automatically', 'info')}
                   >
                     Assign to me
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -738,9 +758,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                       updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
                     }}
                     customInput={
-                      <button className="text-sm text-primary-500 hover:underline">
+                      <Button variant="link" className="h-auto p-0 text-sm text-primary-500">
                         Set due date
-                      </button>
+                      </Button>
                     }
                     dateFormat="MMM dd, yyyy"
                     calendarClassName="!bg-white !border-[#DFE1E6] !shadow-lg"
@@ -763,12 +783,13 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                     ))}
                   </div>
                 ) : (
-                  <button
-                    className="text-sm text-primary-500 hover:underline"
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-sm text-primary-500"
                     onClick={() => showAlert('Add Labels', 'Add tags and labels to categorize this issue', 'info')}
                   >
                     Add labels
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -797,9 +818,10 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
 
               {/* Development */}
               <div className="border-t border-slate-700 pt-4">
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => setShowDevelopment(!showDevelopment)}
-                  className="flex w-full items-center justify-between text-xs font-medium text-slate-400 hover:text-white transition-colors"
+                  className="flex h-auto w-full items-center justify-between rounded-none px-0 py-1 text-xs font-medium text-slate-400 hover:text-white"
                 >
                   <span>Development</span>
                   {showDevelopment ? (
@@ -807,21 +829,23 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   ) : (
                     <ChevronDown className="h-3.5 w-3.5" />
                   )}
-                </button>
+                </Button>
                 {showDevelopment && (
                   <div className="mt-2 space-y-2 text-xs text-white">
-                    <button
+                    <Button
+                      variant="link"
                       onClick={() => showAlert('Create Branch', 'Create a new Git branch for this issue', 'info')}
-                      className="block w-full text-left text-primary-500 hover:underline"
+                      className="h-auto p-0 block w-full text-left text-primary-500"
                     >
                       + Create branch
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="link"
                       onClick={() => showAlert('Link Pull Request', 'Link an existing pull request to this issue', 'info')}
-                      className="block w-full text-left text-primary-500 hover:underline"
+                      className="h-auto p-0 block w-full text-left text-primary-500"
                     >
                       + Link PR
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
