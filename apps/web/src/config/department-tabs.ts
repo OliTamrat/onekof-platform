@@ -12,6 +12,16 @@ import {
   Sparkles,
   Zap,
   BookOpen,
+  BarChart3,
+  LayoutDashboard,
+  Clock,
+  Code,
+  BookMarked,
+  DollarSign,
+  Receipt,
+  Target,
+  Users,
+  Settings,
 } from 'lucide-react';
 import type { TabDefinition } from '@/components/navigation/unified-page-header';
 
@@ -46,4 +56,51 @@ export const KNOWLEDGE_TABS: TabDefinition[] = [
   { id: 'automations', label: 'Automation', icon: Zap, href: '/automations' },
   { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/wiki' },
   { id: 'docs', label: 'Docs', icon: BookOpen, href: '/docs' },
+];
+
+export const BUDGET_TABS: TabDefinition[] = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
+  { id: 'expenses', label: 'Expenses', icon: Receipt, href: '/expenses' },
+  { id: 'income', label: 'Income', icon: TrendingUp, href: '/income' },
+  { id: 'forecasting', label: 'Forecasting', icon: BarChart3, href: '/forecasting' },
+  { id: 'reports', label: 'Reports', icon: FileText, href: '/reports' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+];
+
+export const TEAMS_TABS: TabDefinition[] = [
+  { id: 'overview', label: 'Summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
+];
+
+export const GOALS_TABS: TabDefinition[] = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
+];
+
+export const DOCUMENTS_TABS: TabDefinition[] = [
+  { id: 'documents', label: 'All Documents', icon: Sparkles, href: '' },
+  { id: 'recent', label: 'Recent', icon: Clock, href: '/recent' },
+  { id: 'shared', label: 'Shared', icon: Users, href: '/shared' },
+  { id: 'templates', label: 'Templates', icon: FileText, href: '/templates' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+];
+
+export const AUTOMATIONS_TABS: TabDefinition[] = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/summary' },
+  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
 ];
