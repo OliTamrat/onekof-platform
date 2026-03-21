@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { prisma } from '@onekof/database';
+import { prisma, Prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
 import { requireAuth, requireExpenseAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
@@ -78,7 +78,7 @@ export async function GET(
 
     return NextResponse.json({ expense });
   } catch (error) {
-    console.error('Expense fetch error:', error);
+    log.error('Expense fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch expense' },
       { status: 500 }
@@ -186,7 +186,7 @@ export async function PATCH(
       message: 'Expense updated successfully',
     });
   } catch (error) {
-    console.error('Expense update error:', error);
+    log.error('Expense update error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update expense' },
       { status: 500 }
@@ -255,7 +255,7 @@ export async function DELETE(
         revisionNumber: 1, // TODO: Calculate
         changeType: 'EXPENSE_DELETED',
         before: expense,
-        after: null,
+        after: Prisma.JsonNull,
         changedBy: user.id,
         reason: reason || 'Expense deleted by submitter',
       },
@@ -274,7 +274,7 @@ export async function DELETE(
       message: 'Expense deleted successfully',
     });
   } catch (error) {
-    console.error('Expense deletion error:', error);
+    log.error('Expense deletion error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete expense' },
       { status: 500 }

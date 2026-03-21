@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -137,10 +138,10 @@ export default function ForgotPasswordPage() {
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={isLoading || status === 'success'}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50"
+              className="w-full rounded-lg py-2.5 text-sm font-semibold"
             >
               {isLoading ? (
                 <>
@@ -155,7 +156,7 @@ export default function ForgotPasswordPage() {
               ) : (
                 'Send Reset Instructions'
               )}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-6 text-center">

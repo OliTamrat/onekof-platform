@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { verifyTokenHash, isTokenExpired } from '@/lib/security/tokens';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -132,7 +133,7 @@ export async function POST(request: NextRequest) {
       role: matchedInvitation.role,
     });
   } catch (error) {
-    console.error('Error accepting invitation:', error);
+    logger.error('Error accepting invitation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to accept invitation' },
       { status: 500 }
@@ -207,7 +208,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error validating invitation:', error);
+    logger.error('Error validating invitation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to validate invitation' },
       { status: 500 }

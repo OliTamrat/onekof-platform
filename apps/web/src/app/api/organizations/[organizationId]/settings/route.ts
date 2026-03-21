@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 import type { OrganizationSettings } from '@/types/organization-settings';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,7 +104,7 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching organization settings:', error);
+    logger.error('Error fetching organization settings', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -228,7 +229,7 @@ export async function PUT(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error updating organization settings:', error);
+    logger.error('Error updating organization settings', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

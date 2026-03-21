@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -92,7 +93,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Document fetch error:', error);
+    logger.error('Document fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch document' },
       { status: 500 }
@@ -132,7 +133,7 @@ export async function PATCH(
       document,
     });
   } catch (error) {
-    console.error('Document update error:', error);
+    logger.error('Document update error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update document' },
       { status: 500 }
@@ -166,7 +167,7 @@ export async function DELETE(
       message: 'Document deleted successfully',
     });
   } catch (error) {
-    console.error('Document delete error:', error);
+    logger.error('Document delete error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete document' },
       { status: 500 }

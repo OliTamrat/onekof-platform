@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -113,7 +114,7 @@ export async function POST(
         task.project.organization.id,
         user.id
       ).catch(err => {
-        console.error('Auto-watch mentioned users in comment error:', err);
+        logger.error('Auto-watch mentioned users in comment error', { error: err instanceof Error ? err.message : err });
       });
 
       // Log comment activity
@@ -131,7 +132,7 @@ export async function POST(
       comment: result,
     }, { status: 201 });
   } catch (error) {
-    console.error('Comment creation error:', error);
+    logger.error('Comment creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create comment' },
       { status: 500 }

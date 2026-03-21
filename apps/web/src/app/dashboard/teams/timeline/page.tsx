@@ -16,6 +16,7 @@ import {
   UserPlus,
   Users
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
@@ -174,7 +175,7 @@ export default function TeamsTimelinePage() {
         {/* Filters */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => setSelectedFilter('all')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'all'
@@ -183,8 +184,8 @@ export default function TeamsTimelinePage() {
               }`}
             >
               All Events
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('team_created')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'team_created'
@@ -193,8 +194,8 @@ export default function TeamsTimelinePage() {
               }`}
             >
               Team Created
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('member_added')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'member_added'
@@ -203,8 +204,8 @@ export default function TeamsTimelinePage() {
               }`}
             >
               Members Added
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('milestone')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'milestone'
@@ -213,7 +214,7 @@ export default function TeamsTimelinePage() {
               }`}
             >
               Milestones
-            </button>
+            </Button>
           </div>
         </div>
 

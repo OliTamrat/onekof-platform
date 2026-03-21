@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +79,7 @@ export async function GET(
 
     return NextResponse.json({ teams });
   } catch (error) {
-    console.error('Error fetching project teams:', error);
+    logger.error('Error fetching project teams', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch project teams' },
       { status: 500 }
@@ -200,7 +201,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error('Error assigning team to project:', error);
+    logger.error('Error assigning team to project', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to assign team to project' },
       { status: 500 }

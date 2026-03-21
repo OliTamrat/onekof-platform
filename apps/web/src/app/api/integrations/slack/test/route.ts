@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { testSlackConnection } from '@/lib/integrations/slack';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,7 @@ export async function POST() {
     const result = await testSlackConnection(org.id);
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Slack test error:', error);
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+    logger.error('Slack test error', { error: error instanceof Error ? error.message : error });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

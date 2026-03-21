@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { testWebhookEndpoint } from '@/lib/integrations/webhooks';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
     const result = await testWebhookEndpoint(org.id, endpointId);
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Webhook test error:', error);
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+    logger.error('Webhook test error', { error: error instanceof Error ? error.message : error });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

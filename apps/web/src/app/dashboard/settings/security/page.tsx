@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { Shield, Smartphone, Key, Copy, Check, Loader2, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface TwoFactorSetupData {
   secret: string;
@@ -199,14 +200,14 @@ export default function SecuritySettingsPage() {
                 Use an authenticator app (like Google Authenticator, Authy, or 1Password) to generate
                 one-time codes for signing in. This protects your account even if your password is compromised.
               </p>
-              <button
+              <Button
                 onClick={handleSetup}
                 disabled={isLoading}
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors disabled:opacity-50"
               >
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
                 Set Up Two-Factor Authentication
-              </button>
+              </Button>
             </div>
           )}
 
@@ -216,12 +217,12 @@ export default function SecuritySettingsPage() {
                 Your account is protected with two-factor authentication. You will need your authenticator
                 app or a backup code to sign in.
               </p>
-              <button
+              <Button variant="destructive"
                 onClick={() => setStep('disable')}
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
               >
                 Disable Two-Factor Authentication
-              </button>
+              </Button>
             </div>
           )}
 
@@ -263,22 +264,22 @@ export default function SecuritySettingsPage() {
                     className="w-40 px-4 py-2.5 text-center text-lg font-mono tracking-widest border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent"
                     maxLength={6}
                   />
-                  <button
+                  <Button
                     onClick={handleVerify}
                     disabled={isLoading || verificationCode.length < 6}
                     className="px-4 py-2.5 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors disabled:opacity-50"
                   >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify & Enable'}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={() => { setStep('idle'); setSetupData(null); setVerificationCode(''); }}
                 className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 Cancel setup
-              </button>
+              </Button>
             </div>
           )}
 
@@ -297,7 +298,7 @@ export default function SecuritySettingsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 {setupData.backupCodes.map((code, index) => (
-                  <button
+                  <Button
                     key={index}
                     onClick={() => copyBackupCode(code, index)}
                     className="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors"
@@ -308,24 +309,24 @@ export default function SecuritySettingsPage() {
                     ) : (
                       <Copy className="h-3.5 w-3.5 text-gray-400" />
                     )}
-                  </button>
+                  </Button>
                 ))}
               </div>
 
               <div className="flex gap-3">
-                <button
+                <Button
                   onClick={copyAllCodes}
                   className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   {copiedIndex === -1 ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                   {copiedIndex === -1 ? 'Copied!' : 'Copy All Codes'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => { setStep('idle'); setSetupData(null); setSuccess(''); }}
                   className="px-4 py-2 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors"
                 >
                   Done
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -352,19 +353,19 @@ export default function SecuritySettingsPage() {
                 />
               </div>
               <div className="flex gap-3">
-                <button
+                <Button variant="destructive"
                   onClick={handleDisable}
                   disabled={isLoading || !disablePassword}
                   className="px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
                   {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm Disable'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => { setStep('idle'); setDisablePassword(''); setError(''); }}
                   className="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           )}

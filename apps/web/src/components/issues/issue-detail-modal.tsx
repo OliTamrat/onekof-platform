@@ -735,9 +735,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                 {issue.dueDate ? (
                   <div className="relative">
                     <DatePicker
-                      selected={issue.dueDate ? new Date(issue.dueDate) : null}
+                      selected={issue.dueDate ? new Date(issue.dueDate) : undefined}
                       onChange={(date: Date | null) => {
-                        updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
+                        updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : undefined });
                       }}
                       customInput={
                         <div className="flex items-center gap-1.5 text-sm text-white cursor-pointer hover:text-primary-500 transition-colors">
@@ -753,9 +753,9 @@ export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailMo
                   </div>
                 ) : (
                   <DatePicker
-                    selected={null}
+                    selected={undefined}
                     onChange={(date: Date | null) => {
-                      updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : null });
+                      updateIssueMutation.mutate({ dueDate: date ? date.toISOString() : undefined });
                     }}
                     customInput={
                       <Button variant="link" className="h-auto p-0 text-sm text-primary-500">

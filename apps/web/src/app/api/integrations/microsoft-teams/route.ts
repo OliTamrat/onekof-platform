@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getTeamsOAuthUrl, disconnectTeams, updateTeamsConfig, updateTeamsNotifications } from '@/lib/integrations/microsoft-teams';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Teams GET error:', error);
+    logger.error('Teams GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -72,7 +73,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Teams PUT error:', error);
+    logger.error('Teams PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -90,7 +91,7 @@ export async function DELETE() {
     await disconnectTeams(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Teams DELETE error:', error);
+    logger.error('Teams DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

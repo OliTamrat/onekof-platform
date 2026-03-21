@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getSlackOAuthUrl, disconnectSlack, updateSlackConfig, updateSlackNotifications } from '@/lib/integrations/slack';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,7 +46,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Slack GET error:', error);
+    logger.error('Slack GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -74,7 +75,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Slack PUT error:', error);
+    logger.error('Slack PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -93,7 +94,7 @@ export async function DELETE() {
     await disconnectSlack(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Slack DELETE error:', error);
+    logger.error('Slack DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

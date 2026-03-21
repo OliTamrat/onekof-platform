@@ -16,6 +16,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { Button } from '@/components/ui/button';
 
 // Mock reports data
 const REPORTS = [
@@ -80,10 +81,10 @@ export default function BudgetReportsPage() {
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
+          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <FileSpreadsheet className="h-4 w-4" />
             Generate Report
-          </button>
+          </Button>
         </div>
 
         {/* Reports Grid */}
@@ -115,10 +116,10 @@ export default function BudgetReportsPage() {
                 </div>
               </div>
 
-              <button className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
+              <Button className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
                 <Download className="h-4 w-4" />
                 Download
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -154,10 +155,10 @@ export default function BudgetReportsPage() {
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedReport?.size}</p>
               </div>
               <div className="pt-4">
-                <button className="w-full flex items-center justify-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
+                <Button className="w-full flex items-center justify-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
                   <Download className="h-4 w-4" />
                   Download Report
-                </button>
+                </Button>
               </div>
             </div>
           </SlideoutPanelSection>

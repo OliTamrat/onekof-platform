@@ -243,7 +243,7 @@ export default function TemplatesPage() {
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-gray-600 dark:text-slate-400" />
               {categories.map((category) => (
-                <button
+                <Button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={cn(
@@ -254,7 +254,7 @@ export default function TemplatesPage() {
                   )}
                 >
                   {category}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -582,7 +582,7 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
 
       {/* Action Button */}
       <div className="border-t border-gray-200 dark:border-slate-700 px-3 py-2 bg-gray-50 dark:bg-[#1B1F23]">
-        <button
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             onActivate(template);
@@ -591,7 +591,7 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
         >
           <Zap className="h-3.5 w-3.5" />
           Activate
-        </button>
+        </Button>
       </div>
     </div>
   );

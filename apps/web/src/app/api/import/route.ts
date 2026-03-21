@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
   const result = parseCSV(content);
 
   if (result.errors.length > 0 && result.rows.length === 0) {
-    return NextResponse.json({
-      error: 'Failed to parse CSV',
-      details: result.errors,
-    }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Failed to parse CSV. Check the file format and try again.' },
+      { status: 400 }
+    );
   }
 
   // Return parsed data for preview before committing

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Organization {
   id: string;
@@ -168,13 +169,13 @@ export default function SelectOrganizationPage() {
               <p className="text-sm text-slate-400">
                 Or create a new workspace to get started.
               </p>
-              <button
+              <Button
                 onClick={() => router.push('/onboarding')}
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1C8C7D] to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1C8C7D]/20 transition-all hover:shadow-xl hover:shadow-[#1C8C7D]/30 hover:scale-[1.02]"
+                className="mt-8 rounded-xl px-6 py-3 text-sm font-semibold shadow-lg hover:scale-[1.02]"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>Create Organization</span>
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -283,13 +284,14 @@ export default function SelectOrganizationPage() {
           {/* Footer */}
           <div className="mt-12 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <button
+              <Button
+                variant="ghost"
                 onClick={handleSignOut}
-                className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+                className="text-sm text-slate-400 hover:text-white hover:bg-transparent"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Sign out</span>
-              </button>
+              </Button>
             </div>
             <p className="mt-4 text-xs text-slate-400">
               © 2026 Onekof. Built with ❤️ for Ethiopia

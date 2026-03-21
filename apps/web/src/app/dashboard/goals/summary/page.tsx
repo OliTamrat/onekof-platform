@@ -23,6 +23,7 @@ import {
   Star
 } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary', active: true },
@@ -380,7 +381,7 @@ export default function GoalsSummaryPage() {
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Quarterly Progress</h3>
                     <div className="flex gap-2">
                       {(['quarter', 'year', 'all'] as const).map((range) => (
-                        <button
+                        <Button
                           key={range}
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
@@ -390,7 +391,7 @@ export default function GoalsSummaryPage() {
                           }`}
                         >
                           {range === 'quarter' ? 'Quarter' : range === 'year' ? 'Year' : 'All Time'}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Lock, Loader2, CheckCircle2, AlertCircle, Check, X, Eye, EyeOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -265,13 +266,15 @@ function ResetPasswordContent() {
                     className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
                     placeholder="Enter your new password"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-gray-400 hover:bg-transparent hover:text-gray-600"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
+                  </Button>
                 </div>
 
                 {/* Password strength indicator */}
@@ -337,13 +340,15 @@ function ResetPasswordContent() {
                     className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
                     placeholder="Confirm your new password"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-gray-400 hover:bg-transparent hover:text-gray-600"
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
+                  </Button>
                 </div>
                 {confirmPassword && password !== confirmPassword && (
                   <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
@@ -359,10 +364,10 @@ function ResetPasswordContent() {
                 )}
               </div>
 
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading || status === 'success' || password !== confirmPassword || !password}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0070f3] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#0070f3]/20 hover:bg-[#0056b3] hover:shadow-xl hover:shadow-[#0070f3]/30 focus:outline-none focus:ring-4 focus:ring-[#0070f3]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full rounded-lg py-3.5 text-sm font-semibold shadow-lg"
               >
                 {isLoading ? (
                   <>
@@ -380,7 +385,7 @@ function ResetPasswordContent() {
                     Reset Password
                   </>
                 )}
-              </button>
+              </Button>
 
               {/* Security note */}
               <div className="rounded-lg bg-blue-50 border border-blue-100 p-4">
