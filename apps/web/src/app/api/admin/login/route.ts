@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHmac } from 'crypto';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +11,7 @@ interface AdminUser {
   name: string;
 }
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'onekof-admin-default-secret-change-me';
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
 function getAdminUsers(): AdminUser[] {
   const raw = process.env.ADMIN_USERS || '';
@@ -33,6 +34,8 @@ function generateToken(user: AdminUser): string {
 }
 
 export function verifyToken(token: string): { username: string; role: string; name: string } | null {
+  if (!ADMIN_SECRET) return null;
+
   const parts = token.split('.');
   if (parts.length !== 3) return null;
 
@@ -57,6 +60,16 @@ export function verifyToken(token: string): { username: string; role: string; na
 }
 
 export async function POST(request: NextRequest) {
+  if (!ADMIN_SECRET) {
+    return NextResponse.json(
+      { error: 'Admin authentication not configured. Set ADMIN_SECRET in environment variables.' },
+      { status: 503 }
+    );
+  }
+
+  const rateLimitError = await checkRateLimit(request, 'login');
+  if (rateLimitError) return rateLimitError;
+
   const adminUsers = getAdminUsers();
 
   if (adminUsers.length === 0) {
