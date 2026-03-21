@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,35 +18,35 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const url = req.nextUrl;
+    const hasPagination = url.searchParams.has('page');
+
     // Fetch user with default organization
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { defaultOrganizationId: true },
     });
 
-    // Fetch all organizations where user is a member
-    const memberships = await prisma.organizationMember.findMany({
-      where: { userId: session.user.id },
-      include: {
-        organization: {
-          include: {
-            _count: {
-              select: {
-                members: true,
-                projects: true,
-              },
+    const includeClause = {
+      organization: {
+        include: {
+          _count: {
+            select: {
+              members: true,
+              projects: true,
             },
           },
         },
       },
-      orderBy: {
-        organization: {
-          createdAt: 'desc',
-        },
-      },
-    });
+    };
 
-    const organizations = memberships.map(m => ({
+    const orderByClause = {
+      organization: {
+        createdAt: 'desc' as const,
+      },
+    };
+
+    const formatMembership = (m: any) => ({
       id: m.organization.id,
       name: m.organization.name,
       slug: m.organization.slug,
@@ -55,7 +57,45 @@ export async function GET(req: NextRequest) {
       memberCount: m.organization._count.members,
       projectCount: m.organization._count.projects,
       role: m.role,
-    }));
+    });
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(req);
+
+      const whereClause = { userId: session.user.id };
+
+      const [memberships, total] = await Promise.all([
+        prisma.organizationMember.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.organizationMember.count({ where: whereClause }),
+      ]);
+
+      const organizations = memberships.map(formatMembership);
+
+      const defaultOrganization = user?.defaultOrganizationId
+        ? organizations.find(org => org.id === user.defaultOrganizationId)
+        : null;
+
+      const response = buildPaginatedResponse(organizations, total, { page, limit, skip });
+      return NextResponse.json({
+        ...response,
+        defaultOrganization: defaultOrganization || organizations[0] || null,
+      });
+    }
+
+    // Legacy response (backward compatible)
+    const memberships = await prisma.organizationMember.findMany({
+      where: { userId: session.user.id },
+      include: includeClause,
+      orderBy: orderByClause,
+    });
+
+    const organizations = memberships.map(formatMembership);
 
     // Find default organization
     const defaultOrganization = user?.defaultOrganizationId
@@ -67,7 +107,7 @@ export async function GET(req: NextRequest) {
       defaultOrganization: defaultOrganization || organizations[0] || null,
     });
   } catch (error) {
-    console.error('Error fetching organizations:', error);
+    logger.error('Error fetching organizations', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -169,7 +209,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('Error creating organization:', error);
+    logger.error('Error creating organization', { error: error instanceof Error ? error.message : error });
 
     // Surface Prisma-specific errors for debugging
     if (error?.code === 'P2002') {
@@ -180,7 +220,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: 'Failed to create organization. Please try again.', details: error?.message },
+      { error: 'Failed to create organization. Please try again.' },
       { status: 500 }
     );
   }

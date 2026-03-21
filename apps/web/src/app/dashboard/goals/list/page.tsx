@@ -18,6 +18,7 @@ import {
   Users,
   type LucideIcon,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -90,10 +91,10 @@ export default function GoalsListPage() {
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goals List</h1>
             </div>
-            <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
+            <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Target className="h-4 w-4" />
               Create Goal
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}

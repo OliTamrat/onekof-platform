@@ -15,6 +15,7 @@ import {
   LogOut,
   Trash2,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function ProfilePage() {
   const { data: session, status, update } = useSession();
@@ -141,12 +142,12 @@ export default function ProfilePage() {
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
               {!isEditing && (
-                <button
+                <Button
                   onClick={() => setIsEditing(true)}
                   className="rounded-lg bg-[#0EA5E9] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2"
                 >
                   Edit Profile
-                </button>
+                </Button>
               )}
             </div>
 
@@ -207,7 +208,7 @@ export default function ProfilePage() {
               {/* Action Buttons (only show when editing) */}
               {isEditing && (
                 <div className="flex gap-3 pt-4">
-                  <button
+                  <Button
                     onClick={handleSave}
                     disabled={isSaving}
                     className="flex items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50"
@@ -220,14 +221,14 @@ export default function ProfilePage() {
                     ) : (
                       'Save Changes'
                     )}
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="outline"
                     onClick={handleCancel}
                     disabled={isSaving}
                     className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -258,7 +259,7 @@ export default function ProfilePage() {
           <div className="rounded-lg border border-red-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-red-600">Danger Zone</h2>
             <div className="space-y-4">
-              <button
+              <Button
                 onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                 className="flex w-full items-center justify-between rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
               >
@@ -271,9 +272,9 @@ export default function ProfilePage() {
                     <p className="text-sm text-gray-600">Sign out of your account on this device</p>
                   </div>
                 </div>
-              </button>
+              </Button>
 
-              <button className="flex w-full items-center justify-between rounded-lg border border-red-200 p-4 transition-colors hover:bg-red-50">
+              <Button variant="destructive" className="flex w-full items-center justify-between rounded-lg border border-red-200 p-4 transition-colors hover:bg-red-50">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-50">
                     <Trash2 className="h-5 w-5 text-red-600" />
@@ -285,7 +286,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 </div>
-              </button>
+              </Button>
             </div>
           </div>
         </div>

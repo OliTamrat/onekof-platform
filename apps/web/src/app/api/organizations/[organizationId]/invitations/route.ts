@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,7 +69,7 @@ export async function GET(
 
     return NextResponse.json({ invitations: formattedInvitations });
   } catch (error) {
-    console.error('Error fetching invitations:', error);
+    logger.error('Error fetching invitations', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch invitations' },
       { status: 500 }
@@ -227,7 +228,7 @@ export async function POST(
         role
       );
     } catch (emailError) {
-      console.error('Failed to send invitation email:', emailError);
+      logger.error('Failed to send invitation email', { error: emailError instanceof Error ? emailError.message : emailError });
     }
 
     return NextResponse.json({
@@ -241,7 +242,7 @@ export async function POST(
       message: `Invitation sent to ${normalizedEmail}`,
     });
   } catch (error) {
-    console.error('Error creating invitation:', error);
+    logger.error('Error creating invitation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to send invitation' },
       { status: 500 }
@@ -298,7 +299,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Invitation revoked' });
   } catch (error) {
-    console.error('Error revoking invitation:', error);
+    logger.error('Error revoking invitation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to revoke invitation' },
       { status: 500 }

@@ -24,6 +24,7 @@ import {
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { ProjectDetailModal } from '@/components/analytics/project-detail-modal';
 import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary', active: true },
@@ -335,7 +336,7 @@ export default function ProjectsSummaryPage() {
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Project Health</h3>
                     <div className="flex gap-2">
                       {(['week', 'month', 'quarter'] as const).map((range) => (
-                        <button
+                        <Button
                           key={range}
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
@@ -345,7 +346,7 @@ export default function ProjectsSummaryPage() {
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

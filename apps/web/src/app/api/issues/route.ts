@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
-import { authOptions } from '@/lib/auth';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -167,7 +166,7 @@ export async function GET(request: NextRequest) {
       issues: issuesWithCounts,
     });
   } catch (error) {
-    console.error('Issues list error:', error);
+    logger.error('Issues list error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch issues' },
       { status: 500 }
@@ -181,27 +180,8 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     // Parse request body
     const body = await request.json();
@@ -252,7 +232,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!project) {
+    if (!project || project.organization.id !== ctx.organizationId) {
       return NextResponse.json(
         { error: 'Project not found' },
         { status: 404 }
@@ -283,7 +263,7 @@ export async function POST(request: NextRequest) {
           assigneeId: assigneeId || null,
           // TODO: Add teamId when TeamTask relation is added to schema
           // teamId: teamId || null,
-          reporterId: user.id,
+          reporterId: ctx.user.id,
           labels: labels || [],
           dueDate: dueDate ? new Date(dueDate) : null,
           estimate: estimate || null,
@@ -321,20 +301,20 @@ export async function POST(request: NextRequest) {
       await tx.taskWatcher.create({
         data: {
           taskId: newTask.id,
-          userId: user.id,
+          userId: ctx.user.id,
           watchReason: 'AUTO_CREATED',
-          addedBy: user.id,
+          addedBy: ctx.user.id,
         },
       });
 
       // Smart Auto-Watch: If assignee is different from creator, auto-add them as watcher
-      if (assigneeId && assigneeId !== user.id) {
+      if (assigneeId && assigneeId !== ctx.user.id) {
         await tx.taskWatcher.create({
           data: {
             taskId: newTask.id,
             userId: assigneeId,
             watchReason: 'AUTO_ASSIGNED',
-            addedBy: user.id,
+            addedBy: ctx.user.id,
           },
         });
       }
@@ -343,12 +323,12 @@ export async function POST(request: NextRequest) {
       if (watchers && Array.isArray(watchers) && watchers.length > 0) {
         await tx.taskWatcher.createMany({
           data: watchers
-            .filter((userId: string) => userId !== user.id && userId !== assigneeId) // Avoid duplicates
+            .filter((userId: string) => userId !== ctx.user.id && userId !== assigneeId) // Avoid duplicates
             .map((userId: string) => ({
               taskId: newTask.id,
               userId,
               watchReason: 'MANUAL',
-              addedBy: user.id,
+              addedBy: ctx.user.id,
             })),
           skipDuplicates: true,
         });
@@ -376,9 +356,9 @@ export async function POST(request: NextRequest) {
         issue.id,
         contentToCheck,
         project.organization.id,
-        user.id
+        ctx.user.id
       ).catch(err => {
-        console.error('Auto-watch mentioned users error:', err);
+        logger.error('Auto-watch mentioned users error', { error: err instanceof Error ? err.message : err });
       });
     }
 
@@ -390,7 +370,7 @@ export async function POST(request: NextRequest) {
       },
     }, { status: 201 });
   } catch (error) {
-    console.error('Issue creation error:', error);
+    logger.error('Issue creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create issue' },
       { status: 500 }

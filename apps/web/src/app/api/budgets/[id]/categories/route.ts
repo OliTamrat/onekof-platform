@@ -4,6 +4,7 @@ import { prisma } from '@onekof/database';
 import { checkBudgetAccess } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,7 +96,7 @@ export async function GET(
 
     return NextResponse.json({ categories: categoriesWithUtilization });
   } catch (error) {
-    console.error('Categories fetch error:', error);
+    logger.error('Categories fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 });
   }
 }
@@ -175,7 +176,7 @@ export async function POST(
 
     return NextResponse.json({ category }, { status: 201 });
   } catch (error) {
-    console.error('Category creation error:', error);
+    logger.error('Category creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to create category' }, { status: 500 });
   }
 }

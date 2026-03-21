@@ -97,13 +97,13 @@ export default function ProjectsPage() {
               </h1>
             </div>
 
-            <button
+            <Button
               onClick={() => setIsCreateModalOpen(true)}
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}
@@ -130,13 +130,13 @@ export default function ProjectsPage() {
                   : 'Get started by creating your first project'}
               </p>
               {!searchQuery && (
-                <button
+                <Button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
                   Create Project
-                </button>
+                </Button>
               )}
             </div>
           ) : (
@@ -243,12 +243,12 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <Button variant="ghost" size="icon"
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-slate-400" />
-            </button>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
             <DropdownMenuItem
@@ -342,12 +342,12 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <Button variant="ghost" size="icon"
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-slate-400" />
-            </button>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
             <DropdownMenuItem

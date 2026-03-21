@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { addWebhookEndpoint, removeWebhookEndpoint, updateWebhookEndpoint } from '@/lib/integrations/webhooks';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     const endpoint = await addWebhookEndpoint(org.id, { name, url, events });
     return NextResponse.json({ endpoint });
   } catch (error) {
-    console.error('Webhook endpoint POST error:', error);
+    logger.error('Webhook endpoint POST error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -50,7 +51,7 @@ export async function PUT(req: NextRequest) {
     await updateWebhookEndpoint(org.id, endpointId, updates);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Webhook endpoint PUT error:', error);
+    logger.error('Webhook endpoint PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -73,7 +74,7 @@ export async function DELETE(req: NextRequest) {
     await removeWebhookEndpoint(org.id, endpointId);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Webhook endpoint DELETE error:', error);
+    logger.error('Webhook endpoint DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

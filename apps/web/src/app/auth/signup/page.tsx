@@ -8,6 +8,7 @@ import {
   AlertCircle, Loader2, ArrowRight, Eye, EyeOff, CheckCircle2,
   Calendar, Languages, Wallet, Brain, Kanban, Shield, Check,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface OrganizationInfo {
   id: string;
@@ -259,14 +260,16 @@ export default function SignUpPage() {
                   className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="At least 8 characters"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/20 transition-colors hover:text-white/40"
+                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/40"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                </Button>
               </div>
               {password.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
@@ -293,21 +296,23 @@ export default function SignUpPage() {
                   className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="Confirm your password"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/20 transition-colors hover:text-white/40"
+                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/40"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                </Button>
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-xl bg-primary-500 py-3.5 text-[14px] font-medium text-white shadow-lg transition-all hover:bg-primary-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group w-full rounded-xl py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -320,7 +325,7 @@ export default function SignUpPage() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               )}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">

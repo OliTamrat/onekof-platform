@@ -33,7 +33,7 @@ export async function GET() {
       name: 'Database',
       status: 'down',
       latency: Date.now() - dbStart,
-      detail: error instanceof Error ? error.message : 'Connection failed',
+      detail: 'Database connection failed',
     });
   }
 
@@ -53,7 +53,7 @@ export async function GET() {
       name: 'Prisma ORM',
       status: 'down',
       latency: Date.now() - prismaStart,
-      detail: error instanceof Error ? error.message : 'Query failed',
+      detail: 'ORM query failed',
     });
   }
 

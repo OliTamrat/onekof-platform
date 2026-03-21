@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,7 +78,7 @@ export async function GET(
       })),
     });
   } catch (error) {
-    console.error('Error fetching projects:', error);
+    logger.error('Error fetching projects', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -205,7 +206,7 @@ export async function POST(
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating project:', error);
+    logger.error('Error creating project', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

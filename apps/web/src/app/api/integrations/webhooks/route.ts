@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectWebhooks, disconnectWebhooks } from '@/lib/integrations/webhooks';
 import { getConnection } from '@/lib/integrations/store';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Webhooks GET error:', error);
+    logger.error('Webhooks GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -56,7 +57,7 @@ export async function DELETE() {
     await disconnectWebhooks(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Webhooks DELETE error:', error);
+    logger.error('Webhooks DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

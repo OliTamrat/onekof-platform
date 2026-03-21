@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,10 +41,10 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json({ users, memberships, allOrgs });
   } catch (error) {
-    return NextResponse.json({
-      error: 'Failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch membership data' },
+      { status: 500 }
+    );
   }
 }
 
@@ -212,10 +213,10 @@ export async function POST(_request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Cleanup error:', error);
-    return NextResponse.json({
-      error: 'Cleanup failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 });
+    logger.error('Cleanup error', { error: error instanceof Error ? error.message : error });
+    return NextResponse.json(
+      { error: 'Cleanup failed' },
+      { status: 500 }
+    );
   }
 }

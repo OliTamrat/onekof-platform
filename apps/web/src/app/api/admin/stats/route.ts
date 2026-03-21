@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { requireSuperAdmin } from '@/lib/security/superadmin';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -74,9 +75,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Admin stats error:', error);
+    logger.error('Admin stats error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
-      { error: 'Failed to fetch stats', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to fetch stats' },
       { status: 500 }
     );
   }

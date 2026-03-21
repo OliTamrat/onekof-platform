@@ -3,6 +3,7 @@
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Bell, CheckCircle2, AlertCircle, Info, Users, Calendar, FileText, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Notification {
   id: string;
@@ -123,7 +124,7 @@ export default function NotificationsPage() {
 
             {/* Filter Tabs */}
             <div className="flex gap-2">
-              <button
+              <Button
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   filter === 'all'
@@ -132,8 +133,8 @@ export default function NotificationsPage() {
                 }`}
               >
                 All
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setFilter('unread')}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   filter === 'unread'
@@ -142,7 +143,7 @@ export default function NotificationsPage() {
                 }`}
               >
                 Unread ({unreadCount})
-              </button>
+              </Button>
             </div>
           </div>
         </div>
