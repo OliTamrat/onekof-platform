@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { TEAMS_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -260,9 +261,9 @@ export default function TeamsPage() {
         title="Teams"
         icon={<Users className="h-6 w-6" />}
         iconColor="#10B981"
-
-        currentTab="team"
+        currentTab="overview"
         baseHref="/dashboard/teams"
+        customTabs={TEAMS_TABS}
         showTabs
         showSearch
         showFilters

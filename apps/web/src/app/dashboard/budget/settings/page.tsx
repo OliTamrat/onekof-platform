@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { BUDGET_TABS } from '@/config/department-tabs';
 import {
   Settings,
   Save,
@@ -36,6 +37,8 @@ export default function BudgetSettingsPage() {
         iconColor="#F59E0B"
         currentTab="settings"
         baseHref="/dashboard/budget"
+        customTabs={BUDGET_TABS}
+        showTabs
       />
 
       <div className="p-6 max-w-4xl">
