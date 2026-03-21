@@ -20,9 +20,9 @@ export async function POST(request: NextRequest) {
     const apiKey = request.headers.get('x-api-key') || request.nextUrl.searchParams.get('apiKey');
     const cronSecret = process.env.CRON_SECRET;
 
-    if (cronSecret && apiKey !== cronSecret) {
+    if (!cronSecret || apiKey !== cronSecret) {
       return NextResponse.json(
-        { error: 'Unauthorized - Invalid API key' },
+        { error: 'Unauthorized - Invalid or missing API key' },
         { status: 401 }
       );
     }
