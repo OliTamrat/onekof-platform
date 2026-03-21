@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   try {
     const users = await prisma.user.findMany({
       select: {

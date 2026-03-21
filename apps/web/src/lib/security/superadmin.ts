@@ -10,9 +10,11 @@ interface AdminIdentity {
   name: string;
 }
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'onekof-admin-default-secret-change-me';
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
 function verifyToken(token: string): AdminIdentity | null {
+  if (!ADMIN_SECRET) return null;
+
   const parts = token.split('.');
   if (parts.length !== 3) return null;
 
