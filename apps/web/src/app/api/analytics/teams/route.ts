@@ -6,6 +6,7 @@ import {
   getDailyActivityAggregates,
 } from '@/lib/activity-logger';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -220,7 +221,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Teams analytics error:', error);
+    logger.error('Teams analytics error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch teams analytics' },
       { status: 500 }

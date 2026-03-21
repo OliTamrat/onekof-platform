@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -161,12 +162,10 @@ Return ONLY valid JSON, no explanations.`,
         extractedData = JSON.parse(responseText);
       }
     } catch (parseError) {
-      console.error('Failed to parse Claude response:', responseText);
+      logger.error('Failed to parse Claude response', { responseText });
       return NextResponse.json(
         {
           error: 'Failed to extract budget data from document',
-          details: 'AI could not parse the document structure',
-          rawResponse: responseText.substring(0, 500), // First 500 chars for debugging
         },
         { status: 422 }
       );
@@ -176,9 +175,7 @@ Return ONLY valid JSON, no explanations.`,
     if (!extractedData.totalBudget || !extractedData.categories || extractedData.categories.length === 0) {
       return NextResponse.json(
         {
-          error: 'Incomplete budget data extracted',
-          details: 'Could not find budget amount or categories in the document',
-          extractedData,
+          error: 'Incomplete budget data extracted. Could not find budget amount or categories in the document.',
         },
         { status: 422 }
       );
@@ -198,7 +195,7 @@ Return ONLY valid JSON, no explanations.`,
       },
     });
   } catch (error: any) {
-    console.error('Document processing error:', error);
+    logger.error('Document processing error', { error: error instanceof Error ? error.message : error });
 
     // Handle specific Anthropic API errors
     if (error.status === 401) {
@@ -218,7 +215,6 @@ Return ONLY valid JSON, no explanations.`,
     return NextResponse.json(
       {
         error: 'Failed to process document',
-        details: error.message,
       },
       { status: 500 }
     );
@@ -299,7 +295,7 @@ export async function PUT(request: NextRequest) {
       message: 'Budget created successfully from AI extraction',
     }, { status: 201 });
   } catch (error) {
-    console.error('Budget creation from extraction error:', error);
+    logger.error('Budget creation from extraction error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create budget' },
       { status: 500 }

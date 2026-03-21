@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -204,9 +205,7 @@ Return ONLY valid JSON`,
     } catch {
       return NextResponse.json(
         {
-          error: 'Failed to extract data from document',
-          details: 'AI could not parse the document. Try a clearer image or PDF.',
-          rawResponse: responseText.substring(0, 500),
+          error: 'Failed to extract data from document. Try a clearer image or PDF.',
         },
         { status: 422 }
       );
@@ -237,7 +236,7 @@ Return ONLY valid JSON`,
       },
     });
   } catch (error: any) {
-    console.error('Receipt analysis error:', error);
+    logger.error('Receipt analysis error', { error: error instanceof Error ? error.message : error });
 
     if (error.status === 401) {
       return NextResponse.json(
@@ -254,7 +253,7 @@ Return ONLY valid JSON`,
     }
 
     return NextResponse.json(
-      { error: 'Failed to analyze document', details: error.message },
+      { error: 'Failed to analyze document' },
       { status: 500 }
     );
   }

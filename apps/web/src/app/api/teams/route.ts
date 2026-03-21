@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +79,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ teams: formattedTeams });
   } catch (error) {
-    console.error('Error fetching teams:', error);
+    logger.error('Error fetching teams', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch teams' },
       { status: 500 }
@@ -154,7 +155,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error creating team:', error);
+    logger.error('Error creating team', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create team' },
       { status: 500 }

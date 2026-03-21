@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectEmail, disconnectEmail, updateEmailConfig, updateEmailNotifications } from '@/lib/integrations/email';
 import { getConnection } from '@/lib/integrations/store';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Email GET error:', error);
+    logger.error('Email GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -65,7 +66,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Email PUT error:', error);
+    logger.error('Email PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -83,7 +84,7 @@ export async function DELETE() {
     await disconnectEmail(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Email DELETE error:', error);
+    logger.error('Email DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

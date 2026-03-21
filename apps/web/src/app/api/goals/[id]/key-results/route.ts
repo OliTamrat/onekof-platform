@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +52,7 @@ export async function GET(
 
     return NextResponse.json({ keyResults });
   } catch (error) {
-    console.error('Error fetching key results:', error);
+    logger.error('Error fetching key results', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch key results' },
       { status: 500 }
@@ -122,7 +123,7 @@ export async function POST(
 
     return NextResponse.json({ keyResult });
   } catch (error) {
-    console.error('Error creating key result:', error);
+    logger.error('Error creating key result', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create key result' },
       { status: 500 }

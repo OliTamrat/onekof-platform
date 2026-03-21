@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/components/ui/button';
 
 export default function ProjectBudgetPage() {
   const params = useParams();
@@ -110,14 +111,14 @@ export default function ProjectBudgetPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
+            <Button variant="outline" className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
               <Eye className="h-4 w-4 inline mr-2" />
               Export Report
-            </button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-[#1C8C7D] rounded-lg hover:bg-[#156B60] transition-colors">
+            </Button>
+            <Button className="px-4 py-2 text-sm font-medium text-white bg-[#1C8C7D] rounded-lg hover:bg-[#156B60] transition-colors">
               <Package className="h-4 w-4 inline mr-2" />
               Submit Expense
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -168,9 +169,9 @@ export default function ProjectBudgetPage() {
                     {categories.length} categories • {expenses.length} total expenses
                   </p>
                 </div>
-                <button className="p-2 hover:bg-gray-100 dark:hover:bg-[#1B1F23] rounded-lg transition-colors">
+                <Button className="p-2 hover:bg-gray-100 dark:hover:bg-[#1B1F23] rounded-lg transition-colors">
                   <MoreHorizontal className="h-5 w-5 text-gray-500" />
-                </button>
+                </Button>
               </div>
 
               <div className="space-y-4">
@@ -261,9 +262,9 @@ export default function ProjectBudgetPage() {
                     Latest budget transactions
                   </p>
                 </div>
-                <button className="text-sm text-[#1C8C7D] hover:underline font-medium">
+                <Button variant="link" className="text-sm text-[#1C8C7D] hover:underline font-medium">
                   View all
-                </button>
+                </Button>
               </div>
 
               <div className="space-y-3">
@@ -430,7 +431,7 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button variant="outline"
       onClick={onClick}
       className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left w-full"
     >
@@ -443,6 +444,6 @@ function StatCard({
       <div className="text-4xl font-bold text-gray-900 dark:text-white">{value}</div>
       <div className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-300">{label}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400">{sublabel}</div>
-    </button>
+    </Button>
   );
 }

@@ -460,9 +460,9 @@ export default function IntegrationsPage() {
           )}>
             {toast.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
             {toast.message}
-            <button onClick={() => setToast(null)} className="ml-2 hover:opacity-80">
+            <Button onClick={() => setToast(null)} className="ml-2 hover:opacity-80">
               <X className="h-3.5 w-3.5" />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -509,7 +509,7 @@ export default function IntegrationsPage() {
               </div>
               <div className="flex gap-1.5 flex-wrap">
                 {(['all', ...Object.keys(CATEGORY_LABELS)] as (IntegrationCategory | 'all')[]).map(key => (
-                  <button
+                  <Button
                     key={key}
                     onClick={() => setCategoryFilter(key)}
                     className={cn(
@@ -520,7 +520,7 @@ export default function IntegrationsPage() {
                     )}
                   >
                     {key === 'all' ? 'All' : CATEGORY_LABELS[key]}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -698,7 +698,7 @@ function IntegrationCard({
   const Logo = integration.logo;
 
   return (
-    <button
+    <Button variant="outline"
       onClick={onSelect}
       className={cn(
         'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full',
@@ -772,7 +772,7 @@ function IntegrationCard({
           <span className="text-[10px] text-slate-400 dark:text-slate-500">+{integration.features.length - 3}</span>
         )}
       </div>
-    </button>
+    </Button>
   );
 }
 
@@ -836,17 +836,17 @@ function IntegrationDetailPanel({
               </div>
             </div>
           </div>
-          <button
+          <Button variant="ghost" size="icon"
             onClick={onClose}
             className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
             <X className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
-          <button
+          <Button
             onClick={() => setActiveTab('overview')}
             className={cn(
               'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -856,10 +856,10 @@ function IntegrationDetailPanel({
             )}
           >
             Overview
-          </button>
+          </Button>
           {isConnected && (
             <>
-              <button
+              <Button
                 onClick={() => setActiveTab('config')}
                 className={cn(
                   'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -869,8 +869,8 @@ function IntegrationDetailPanel({
                 )}
               >
                 Configure
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setActiveTab('activity')}
                 className={cn(
                   'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -880,11 +880,11 @@ function IntegrationDetailPanel({
                 )}
               >
                 Activity
-              </button>
+              </Button>
             </>
           )}
           {!isConnected && (
-            <button
+            <Button
               onClick={() => setActiveTab('config')}
               className={cn(
                 'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -894,7 +894,7 @@ function IntegrationDetailPanel({
               )}
             >
               Setup Guide
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -1403,7 +1403,7 @@ function ToggleRow({
   icon?: React.ReactNode;
 }) {
   return (
-    <button
+    <Button
       onClick={() => onChange(!enabled)}
       disabled={disabled}
       className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-[#1B1F23] transition-colors text-left disabled:opacity-50"
@@ -1424,6 +1424,6 @@ function ToggleRow({
           <ToggleLeft className="h-5 w-5 text-slate-300 dark:text-slate-600" />
         )}
       </div>
-    </button>
+    </Button>
   );
 }

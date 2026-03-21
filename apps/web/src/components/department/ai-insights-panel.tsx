@@ -421,7 +421,7 @@ function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number
               {task.assignee.name.charAt(0)}
             </div>
           ) : (
-            <UserCircle className="h-4 w-4 text-slate-300 dark:text-slate-600 shrink-0" title="Unassigned" />
+            <span title="Unassigned"><UserCircle className="h-4 w-4 text-slate-300 dark:text-slate-600 shrink-0" /></span>
           )}
         </div>
       ))}

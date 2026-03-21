@@ -115,12 +115,12 @@ export default function DocsPage() {
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Docs</h1>
             </div>
 
-            <button
+            <Button
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}
@@ -158,7 +158,7 @@ export default function DocsPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 onClick={() => setViewMode('grid')}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'grid'
@@ -167,8 +167,8 @@ export default function DocsPage() {
                 }`}
               >
                 <Grid3x3 className="h-4 w-4" />
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setViewMode('list')}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'list'
@@ -177,7 +177,7 @@ export default function DocsPage() {
                 }`}
               >
                 <List className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -287,12 +287,12 @@ export default function DocsPage() {
                     : 'Create your first space to start building your knowledge base'}
                 </p>
                 {!searchQuery && (
-                  <button
+                  <Button
                     className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                     Create Space
-                  </button>
+                  </Button>
                 )}
               </div>
             )}

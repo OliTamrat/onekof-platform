@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,12 +21,12 @@ export async function GET(request: NextRequest) {
     if (error || !ctx) return error!;
 
     // Get query parameters
-    const { searchParams } = new URL(request.url);
-    const projectId = searchParams.get('projectId');
-    const budgetId = searchParams.get('budgetId');
-    const status = searchParams.get('status');
-    const fileType = searchParams.get('fileType');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const url = request.nextUrl;
+    const projectId = url.searchParams.get('projectId');
+    const budgetId = url.searchParams.get('budgetId');
+    const status = url.searchParams.get('status');
+    const fileType = url.searchParams.get('fileType');
+    const hasPagination = url.searchParams.has('page');
 
     const organizationId = ctx.organizationId;
 
@@ -39,27 +41,22 @@ export async function GET(request: NextRequest) {
     if (status) where.status = status;
     if (fileType) where.fileType = fileType;
 
-    // Fetch documents
-    const documents = await prisma.document.findMany({
-      where,
-      include: {
-        extractedBudgetItems: {
-          where: { status: 'PENDING' },
-        },
-        extractedMilestones: {
-          where: { status: 'PENDING' },
-        },
-        aiProcessingResults: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-        },
+    const includeClause = {
+      extractedBudgetItems: {
+        where: { status: 'PENDING' },
       },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-    });
+      extractedMilestones: {
+        where: { status: 'PENDING' },
+      },
+      aiProcessingResults: {
+        orderBy: { createdAt: 'desc' } as const,
+        take: 1,
+      },
+    };
 
-    // Format response
-    const formattedDocuments = documents.map((doc) => ({
+    const orderByClause = { createdAt: 'desc' as const };
+
+    const formatDocument = (doc: any) => ({
       id: doc.id,
       fileName: doc.fileName,
       fileType: doc.fileType,
@@ -85,14 +82,44 @@ export async function GET(request: NextRequest) {
       projectId: doc.projectId,
       budgetId: doc.budgetId,
       tags: doc.tags,
-    }));
+    });
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [documents, total] = await Promise.all([
+        prisma.document.findMany({
+          where,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.document.count({ where }),
+      ]);
+
+      const formattedDocuments = documents.map(formatDocument);
+      return NextResponse.json(buildPaginatedResponse(formattedDocuments, total, { page, limit, skip }));
+    }
+
+    // Legacy response (backward compatible)
+    const limit = parseInt(url.searchParams.get('limit') || '50');
+
+    const documents = await prisma.document.findMany({
+      where,
+      include: includeClause,
+      orderBy: orderByClause,
+      take: limit,
+    });
+
+    const formattedDocuments = documents.map(formatDocument);
 
     return NextResponse.json({
       documents: formattedDocuments,
       total: formattedDocuments.length,
     });
   } catch (error) {
-    console.error('Documents fetch error:', error);
+    logger.error('Documents fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch documents' },
       { status: 500 }

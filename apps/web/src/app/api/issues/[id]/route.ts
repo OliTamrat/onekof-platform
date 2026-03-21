@@ -172,7 +172,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Issue fetch error:', error);
+    log.error('Issue fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch issue' },
       { status: 500 }
@@ -329,7 +329,7 @@ export async function PATCH(
         });
       } catch (watcherError) {
         // Don't fail the update if watcher creation fails
-        console.error('Auto-watch on assignment error:', watcherError);
+        log.error('Auto-watch on assignment error', { error: watcherError instanceof Error ? watcherError.message : watcherError });
       }
     }
 
@@ -353,7 +353,7 @@ export async function PATCH(
           projectWithOrg.organization.id,
           currentUser.id
         ).catch(err => {
-          console.error('Auto-watch mentioned users error:', err);
+          log.error('Auto-watch mentioned users error', { error: err instanceof Error ? err.message : err });
         });
       }
     }
@@ -362,7 +362,7 @@ export async function PATCH(
     if (status !== undefined) {
       // Run in background to avoid blocking the response
       handleTaskStatusChange(params.id, issue.projectId).catch(err => {
-        console.error('Progress aggregation error:', err);
+        log.error('Progress aggregation error', { error: err instanceof Error ? err.message : err });
       });
     }
 
@@ -419,7 +419,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.error('Issue update error:', error);
+    log.error('Issue update error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update issue' },
       { status: 500 }
@@ -483,7 +483,7 @@ export async function DELETE(
       message: 'Issue deleted successfully',
     });
   } catch (error) {
-    console.error('Issue deletion error:', error);
+    log.error('Issue deletion error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete issue' },
       { status: 500 }

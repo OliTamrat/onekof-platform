@@ -12,6 +12,7 @@ import {
   User,
   AlertCircle
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Report {
   id: string;
@@ -212,12 +213,12 @@ export default function IssuesReportsPage() {
                   <div className="flex items-center gap-2">
                     {report.status === 'submitted' || report.status === 'current' ? (
                       <>
-                        <button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
+                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
                           <Eye className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-                        </button>
-                        <button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
+                        </Button>
+                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
                           <Download className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-                        </button>
+                        </Button>
                       </>
                     ) : null}
                   </div>

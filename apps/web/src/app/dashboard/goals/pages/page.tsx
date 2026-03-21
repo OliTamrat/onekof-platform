@@ -13,6 +13,7 @@ import {
   Plus,
   Target
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -86,10 +87,10 @@ export default function GoalsPagesPage() {
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goal Pages</h1>
             </div>
-            <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
+            <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
               Create Page
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}
@@ -117,7 +118,7 @@ export default function GoalsPagesPage() {
         {/* View Selector */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => setSelectedView('pages')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedView === 'pages'
@@ -126,8 +127,8 @@ export default function GoalsPagesPage() {
               }`}
             >
               All Pages
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedView('templates')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedView === 'templates'
@@ -136,7 +137,7 @@ export default function GoalsPagesPage() {
               }`}
             >
               Templates
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -153,7 +154,7 @@ export default function GoalsPagesPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {PAGE_TEMPLATES.map((template) => (
-                  <button
+                  <Button variant="outline"
                     key={template.id}
                     className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                   >
@@ -168,7 +169,7 @@ export default function GoalsPagesPage() {
                       <Plus className="h-4 w-4" />
                       Create {template.name}
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

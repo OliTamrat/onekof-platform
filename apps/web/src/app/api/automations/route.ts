@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,7 +80,7 @@ export async function GET(request: NextRequest) {
       statistics,
     });
   } catch (error) {
-    console.error('Error fetching automations:', error);
+    logger.error('Error fetching automations', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch automations' },
       { status: 500 }
@@ -160,7 +161,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ automation }, { status: 201 });
   } catch (error) {
-    console.error('Error creating automation:', error);
+    logger.error('Error creating automation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create automation' },
       { status: 500 }

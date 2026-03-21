@@ -11,6 +11,7 @@ import {
   GraduationCap, HeartHandshake, Construction, HeartPulse, Landmark,
   Briefcase
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Organization types with icons and features
 const ORG_TYPES = [
@@ -326,7 +327,7 @@ function OnboardingContent() {
                   {ORG_TYPES.map((type) => {
                     const Icon = type.icon;
                     return (
-                      <button
+                      <Button
                         key={type.id}
                         onClick={() => setOrganizationType(type.id)}
                         className={`relative rounded-xl border p-4 text-left transition-all ${
@@ -352,7 +353,7 @@ function OnboardingContent() {
                             </span>
                           ))}
                         </div>
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -419,7 +420,7 @@ function OnboardingContent() {
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {TEAM_SIZES.map((size) => (
-                      <button
+                      <Button
                         key={size.value}
                         onClick={() => setTeamSize(size.value)}
                         className={`rounded-xl border py-2 px-3 text-sm font-semibold transition-all ${
@@ -429,7 +430,7 @@ function OnboardingContent() {
                         }`}
                       >
                         {size.label}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -465,7 +466,7 @@ function OnboardingContent() {
                     Calendar Preference
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <button
+                    <Button
                       onClick={() => setCalendarPreference('ethiopian')}
                       className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'ethiopian'
@@ -481,9 +482,9 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
                       <div className="text-xs text-white/60">የኢትዮጵያ ዘመን አቆጣጠር</div>
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => setCalendarPreference('gregorian')}
                       className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'gregorian'
@@ -499,9 +500,9 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
                       <div className="text-xs text-white/60">International</div>
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => setCalendarPreference('both')}
                       className={`rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'both'
@@ -517,7 +518,7 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Both</div>
                       <div className="text-xs text-white/60">Show both calendars</div>
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -569,17 +570,17 @@ function OnboardingContent() {
           {/* Navigation Buttons */}
           <div className="mt-8 flex items-center justify-between">
             {currentStep > 1 && (
-              <button
+              <Button variant="outline"
                 onClick={handleBack}
                 className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#1B1F23] px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Back</span>
-              </button>
+              </Button>
             )}
 
             {currentStep < totalSteps && !isPersonalWorkspace ? (
-              <button
+              <Button
                 onClick={handleNext}
                 disabled={
                   (currentStep === 1 && !canProceedStep1) ||
@@ -592,9 +593,9 @@ function OnboardingContent() {
                   <span>Continue</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </div>
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 onClick={handleComplete}
                 disabled={isLoading}
                 className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
@@ -611,7 +612,7 @@ function OnboardingContent() {
                     <CheckCircle2 className="h-4 w-4" />
                   </div>
                 )}
-              </button>
+              </Button>
             )}
           </div>
 
