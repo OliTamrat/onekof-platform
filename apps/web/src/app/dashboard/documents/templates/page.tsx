@@ -2,6 +2,7 @@
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { FileText, Sparkles } from 'lucide-react';
 
 const TEMPLATES = [
@@ -14,7 +15,7 @@ const TEMPLATES = [
 export default function DocumentsTemplatesPage() {
   return (
     <AppLayout>
-      <UnifiedPageHeader title="Document Templates" icon={<FileText className="h-6 w-6" />} iconColor="#3B82F6" currentTab="templates" baseHref="/dashboard/documents" />
+      <UnifiedPageHeader title="Document Templates" icon={<FileText className="h-6 w-6" />} iconColor="#3B82F6" currentTab="templates" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {TEMPLATES.map((template) => (

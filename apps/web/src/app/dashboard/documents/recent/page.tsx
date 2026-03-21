@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Clock, FileText, User } from 'lucide-react';
 
 const RECENT_DOCS = [
@@ -15,7 +16,7 @@ const RECENT_DOCS = [
 export default function DocumentsRecentPage() {
   return (
     <AppLayout>
-      <UnifiedPageHeader title="Recent Documents" icon={<Clock className="h-6 w-6" />} iconColor="#3B82F6" currentTab="recent" baseHref="/dashboard/documents" />
+      <UnifiedPageHeader title="Recent Documents" icon={<Clock className="h-6 w-6" />} iconColor="#3B82F6" currentTab="recent" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
       <div className="p-6">
         <div className="space-y-3">
           {RECENT_DOCS.map((doc) => (

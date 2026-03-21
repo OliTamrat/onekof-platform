@@ -12,6 +12,7 @@ import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DocumentUpload } from '@/components/documents/document-upload';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import {
   FileText,
   Sparkles,
@@ -105,6 +106,7 @@ export default function DocumentsPage() {
         iconColor="#1C8C7D"
         currentTab="documents"
         baseHref="/dashboard/documents"
+        customTabs={DOCUMENTS_TABS}
         showTabs
         showSearch
         showFilters
