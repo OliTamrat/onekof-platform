@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/toast-provider';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import {
   DollarSign,
@@ -225,6 +226,7 @@ export default function BudgetPage() {
         currentTab="budget"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
