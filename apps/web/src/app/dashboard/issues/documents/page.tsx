@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 
 import { DocumentUpload } from '@/components/documents/document-upload';
 import {
@@ -107,6 +108,7 @@ export default function DocumentsPage() {
         currentTab="documents"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
