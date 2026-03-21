@@ -193,7 +193,7 @@ export default function AutomationsPage() {
         {/* Jira-style Header Section */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-3 md:px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <Zap className="h-6 w-6" />
@@ -214,7 +214,7 @@ export default function AutomationsPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
+          <div className="flex items-center gap-1 px-3 md:px-6 overflow-x-auto">
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -235,7 +235,7 @@ export default function AutomationsPage() {
           </div>
 
           {/* Search and Filter Bar */}
-          <div className="flex items-center justify-between gap-3 px-6 py-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-3 md:px-6 py-3">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
@@ -267,7 +267,7 @@ export default function AutomationsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 p-3 md:p-6 md:grid-cols-2 lg:grid-cols-4 md:gap-4">
           <StatsCard
             icon={Activity}
             label="Total Automations"
@@ -299,7 +299,7 @@ export default function AutomationsPage() {
         </div>
 
         {/* Automations Content */}
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 overflow-y-auto px-3 md:px-6 pb-3 md:pb-6">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
