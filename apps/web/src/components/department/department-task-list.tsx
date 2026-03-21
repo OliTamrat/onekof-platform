@@ -20,6 +20,7 @@ interface Task {
   dueDate?: string | null;
   assignee?: { id: string; name: string; avatar?: string };
   project: { id: string; name: string; key: string; color: string };
+  labels?: string[];
 }
 
 type DepartmentCategory = 'development' | 'marketing' | 'operations' | 'research' | 'knowledge' | 'general';
@@ -130,7 +131,14 @@ export function DepartmentTaskList({
     },
   });
 
-  const allTasks = issuesData?.issues || [];
+  const allTasks = useMemo(() => {
+    const tasks = issuesData?.issues || [];
+    if (defaultLabels.length === 0) return tasks;
+    return tasks.filter(t =>
+      !t.labels || t.labels.length === 0 ||
+      t.labels.some(l => defaultLabels.includes(l))
+    );
+  }, [issuesData, defaultLabels]);
 
   // Apply search + filters
   const filteredTasks = useMemo(() => {
@@ -301,11 +309,11 @@ export function DepartmentTaskList({
           </div>
         ) : viewMode === 'board' ? (
           /* Board view - kanban columns by status */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 sm:p-6 h-full auto-rows-min">
+          <div className="flex gap-4 p-4 sm:p-6 h-full overflow-x-auto">
             {STATUS_ORDER.filter(s => filteredTasks.some(t => t.status === s)).map(status => {
               const statusTasks = filteredTasks.filter(t => t.status === status);
               return (
-                <div key={status} className="flex flex-col rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-[#22272B] min-w-0">
+                <div key={status} className="flex flex-col rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-[#22272B] min-w-[280px] w-72 flex-shrink-0">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                     <div className="flex items-center gap-2.5">
                       <span className={cn('rounded-md px-2 py-1 text-[11px] font-bold tracking-wide', STATUS_BADGE[status])}>
