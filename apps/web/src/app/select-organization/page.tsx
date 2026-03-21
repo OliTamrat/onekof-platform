@@ -118,7 +118,7 @@ export default function SelectOrganizationPage() {
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-teal-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-primary-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Main Content */}
@@ -223,9 +223,9 @@ export default function SelectOrganizationPage() {
                       {/* Badges */}
                       <div className="flex items-center gap-2 flex-wrap">
                         {org.type === 'personal' ? (
-                          <div className="inline-flex items-center gap-1.5 rounded-lg bg-teal-500/10 border border-teal-500/20 px-3 py-1.5">
-                            <User className="h-3.5 w-3.5 text-teal-400" />
-                            <span className="text-xs font-semibold text-teal-300">Personal</span>
+                          <div className="inline-flex items-center gap-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20 px-3 py-1.5">
+                            <User className="h-3.5 w-3.5 text-primary-400" />
+                            <span className="text-xs font-semibold text-primary-300">Personal</span>
                           </div>
                         ) : (
                           <div className="inline-flex items-center gap-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 px-3 py-1.5">

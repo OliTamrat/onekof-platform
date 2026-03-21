@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
+import { Button } from '@/components/ui/button';
 
 // Types
 interface Issue {
@@ -298,43 +299,51 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           {/* Right: Action Icons */}
           <div className="flex items-center gap-1">
             {/* Watch Icon with Count */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => addWatcherMutation.mutateAsync(undefined).catch(() => {})}
-              className="flex items-center gap-1 rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="h-auto w-auto flex items-center gap-1 rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               title="Watch this issue"
             >
               <Eye className="h-4 w-4 md:h-5 md:w-5" />
               <span className="text-xs md:text-sm font-medium">{watchers.length}</span>
-            </button>
+            </Button>
 
             {/* Share Icon */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
                 toast.success('Link copied to clipboard');
               }}
-              className="rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="h-auto w-auto rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               title="Share"
             >
               <Share2 className="h-4 w-4 md:h-5 md:w-5" />
-            </button>
+            </Button>
 
             {/* More Menu */}
-            <button
-              className="rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-auto w-auto rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               title="More options"
             >
               <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
-            </button>
+            </Button>
 
             {/* Close Button */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="h-auto w-auto rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               title="Close"
             >
               <X className="h-4 w-4 md:h-5 md:w-5" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -354,9 +363,10 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
         {/* Jira-Style Bottom Tab Bar */}
         <div className="flex items-center border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1B1F23]">
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab('details')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
+            className={`flex-1 h-auto rounded-none flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
               activeTab === 'details'
                 ? 'border-primary-500 text-primary-500 dark:text-primary-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400'
@@ -364,10 +374,11 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           >
             <Info className="h-4 w-4" />
             <span className="hidden sm:inline">Details</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => setActiveTab('settings')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
+            className={`flex-1 h-auto rounded-none flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors border-t-2 ${
               activeTab === 'settings'
                 ? 'border-primary-500 text-primary-500 dark:text-primary-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400'
@@ -375,7 +386,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           >
             <Settings className="h-4 w-4" />
             <span className="hidden sm:inline">Settings</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -469,24 +480,26 @@ function DetailsTab({
         <div className="flex items-center gap-2 flex-wrap">
           {/* Status Badge */}
           <div className="relative">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold ${statusColors[issue.status]} hover:opacity-80 transition-opacity`}
+              className={`h-auto inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold ${statusColors[issue.status]} hover:opacity-80`}
             >
               {issue.status.replace('_', ' ')}
               <ChevronDown className="h-3 w-3" />
-            </button>
+            </Button>
             {isStatusDropdownOpen && (
               <div className="absolute left-0 top-full mt-1 z-10 w-44 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-lg overflow-hidden">
                 {statusOptions.map((status) => (
-                  <button
+                  <Button
                     key={status.value}
+                    variant="ghost"
                     onClick={() => {
                       updateIssue.mutate({ status: status.value });
                       setIsStatusDropdownOpen(false);
                       flashSaved();
                     }}
-                    className={`w-full text-left px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] flex items-center gap-2 ${
+                    className={`w-full h-auto justify-start rounded-none text-left px-3 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] flex items-center gap-2 ${
                       issue.status === status.value ? 'bg-gray-50 dark:bg-[#1B1F23]' : ''
                     }`}
                   >
@@ -494,7 +507,7 @@ function DetailsTab({
                     <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${status.color} ${issue.status !== status.value ? 'ml-5' : ''}`}>
                       {status.label}
                     </span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -516,12 +529,13 @@ function DetailsTab({
           <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold text-gray-900 dark:text-white">Description</h2>
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setIsEditingDescription(!isEditingDescription)}
-                className="text-sm text-primary-500 hover:text-primary-600 dark:text-primary-400 font-medium"
+                className="h-auto px-2 py-1 text-sm text-primary-500 hover:text-primary-600 dark:text-primary-400 font-medium"
               >
                 {isEditingDescription ? 'Cancel' : 'Edit'}
-              </button>
+              </Button>
             </div>
 
             {isEditingDescription ? (
@@ -533,21 +547,24 @@ function DetailsTab({
                   placeholder="Add a description..."
                 />
                 <div className="flex justify-end gap-2">
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setIsEditingDescription(false)}
-                    className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md"
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    size="sm"
                     onClick={() => {
                       updateIssue.mutate({ description: editedDescription });
                       setIsEditingDescription(false);
                     }}
-                    className="px-3 py-1.5 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600"
+                    className="bg-primary-500 text-white hover:bg-primary-600"
                   >
                     Save
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -593,40 +610,43 @@ function DetailsTab({
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Priority</span>
               <div className="relative flex items-center gap-2 flex-1">
                 <Flag className={`h-4 w-4 shrink-0 ${issue.priority ? priorityColors[issue.priority] : 'text-gray-400'}`} />
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => setIsPriorityDropdownOpen(!isPriorityDropdownOpen)}
-                  className={`${issue.priority ? priorityColors[issue.priority] : 'text-gray-500'} hover:underline cursor-pointer flex items-center gap-1 text-sm font-medium`}
+                  className={`h-auto px-1 py-0.5 ${issue.priority ? priorityColors[issue.priority] : 'text-gray-500'} hover:underline cursor-pointer flex items-center gap-1 text-sm font-medium`}
                 >
                   {issue.priority || 'None'}
                   <ChevronDown className="h-3 w-3" />
-                </button>
+                </Button>
                 {isPriorityDropdownOpen && (
                   <div className="absolute left-0 top-full mt-1 z-10 w-40 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-lg overflow-hidden">
                     {priorityOptions.map((priority) => (
-                      <button
+                      <Button
                         key={priority.value}
+                        variant="ghost"
                         onClick={() => {
                           updateIssue.mutate({ priority: priority.value });
                           setIsPriorityDropdownOpen(false);
                           flashSaved();
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] ${
+                        className={`w-full h-auto justify-start rounded-none text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] ${
                           issue.priority === priority.value ? 'bg-gray-50 dark:bg-[#1B1F23]' : ''
                         }`}
                       >
                         <span className={priority.color}>{priority.label}</span>
-                      </button>
+                      </Button>
                     ))}
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => {
                         updateIssue.mutate({ priority: null });
                         setIsPriorityDropdownOpen(false);
                         flashSaved();
                       }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] text-gray-500"
+                      className="w-full h-auto justify-start rounded-none text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] text-gray-500"
                     >
                       None
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -653,16 +673,17 @@ function DetailsTab({
                     className="border border-gray-300 dark:border-slate-700 rounded px-2 py-1 text-sm bg-white dark:bg-[#282E33] text-gray-900 dark:text-white"
                   />
                 ) : (
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setIsEditingDueDate(true)}
-                    className={`text-sm cursor-pointer ${
+                    className={`h-auto px-1.5 py-0.5 text-sm cursor-pointer ${
                       issue.dueDate && new Date(issue.dueDate) < new Date()
-                        ? 'text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded px-1.5 py-0.5'
+                        ? 'text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded'
                         : 'text-gray-900 dark:text-white hover:underline'
                     }`}
                   >
                     {issue.dueDate ? format(new Date(issue.dueDate), 'MMM dd, yyyy') : 'None'}
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -811,14 +832,15 @@ function WatchersSection({
             Watchers ({watchers.length})
           </h2>
         </div>
-        <button
+        <Button
+          variant="ghost"
           onClick={handleAddWatcher}
           disabled={addWatcher.isPending}
-          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline disabled:opacity-50"
+          className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
         >
           <Plus className="h-4 w-4" />
           {addWatcher.isPending ? 'Adding...' : 'Watch'}
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-2">
@@ -848,14 +870,16 @@ function WatchersSection({
                   </p>
                 </div>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => handleRemoveWatcher(watcher.userId)}
                 disabled={removeWatcher.isPending}
-                className="text-gray-400 hover:text-red-600 disabled:opacity-50"
+                className="h-auto w-auto p-1 text-gray-400 hover:text-red-600"
                 title="Stop watching"
               >
                 <EyeOff className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           ))
         ) : (
@@ -926,13 +950,14 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             Subtasks ({subtasks.length})
           </h2>
         </div>
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsAddingSubtask(!isAddingSubtask)}
-          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
+          className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
         >
           <Plus className="h-4 w-4" />
           Add subtask
-        </button>
+        </Button>
       </div>
 
       {/* Add Subtask Form */}
@@ -955,22 +980,25 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             autoFocus
           />
           <div className="flex justify-end gap-2">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 setIsAddingSubtask(false);
                 setSubtaskTitle('');
               }}
-              className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              size="sm"
               onClick={handleAddSubtask}
               disabled={!subtaskTitle.trim()}
-              className="px-3 py-1.5 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-primary-500 text-white hover:bg-primary-600"
             >
               Add
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -1051,14 +1079,15 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
           }}
         />
         <div className="flex justify-end mt-2">
-          <button
+          <Button
+            size="sm"
             onClick={handleSendComment}
             disabled={!commentContent.trim() || isSending}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary-500 text-white hover:bg-primary-600"
           >
             <Send className="h-4 w-4" />
             {isSending ? 'Sending...' : 'Send'}
-          </button>
+          </Button>
         </div>
       </div>
 

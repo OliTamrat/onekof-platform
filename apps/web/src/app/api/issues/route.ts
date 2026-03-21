@@ -4,6 +4,7 @@ import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,83 +82,86 @@ export async function GET(request: NextRequest) {
     // Note: label filtering is done client-side after fetching since
     // Prisma Json field filtering varies by database provider
 
-    // Get all issues
-    const issues = await prisma.task.findMany({
-      where,
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-            key: true,
-            color: true,
-          },
-        },
-        assignee: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-          },
-        },
-        reporter: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-          },
-        },
-        // TODO: Add watchers when TaskWatcher model is added to schema
-        // watchers: {
-        //   select: {
-        //     userId: true,
-        //   },
-        // },
-        // TODO: Add goals when TaskGoal model is added to schema
-        // goals: {
-        //   include: {
-        //     goal: {
-        //       select: {
-        //         id: true,
-        //         title: true,
-        //         status: true,
-        //       },
-        //     },
-        //   },
-        // },
-        comments: {
-          where: {
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-          },
-        },
-        attachments: {
-          select: {
-            id: true,
-          },
+    const includeClause = {
+      project: {
+        select: {
+          id: true,
+          name: true,
+          key: true,
+          color: true,
         },
       },
-      orderBy: {
-        createdAt: 'desc',
+      assignee: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatar: true,
+        },
       },
-    });
+      reporter: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatar: true,
+        },
+      },
+      comments: {
+        where: {
+          deletedAt: null,
+        },
+        select: {
+          id: true,
+        },
+      },
+      attachments: {
+        select: {
+          id: true,
+        },
+      },
+    };
 
-    // Transform issues with counts
-    const issuesWithCounts = issues.map((issue: any) => ({
+    const orderByClause = {
+      createdAt: 'desc' as const,
+    };
+
+    const transformIssue = (issue: any) => ({
       ...issue,
       commentCount: issue.comments.length,
       attachmentCount: issue.attachments.length,
-      // TODO: Add when watchers/goals are added to schema
-      // watcherIds: issue.watchers.map(w => w.userId),
-      // goalLinks: issue.goals.map(g => g.goal),
-      // Remove the arrays since we only need counts
       comments: undefined,
       attachments: undefined,
-    }));
+    });
+
+    const url = request.nextUrl;
+    const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [issues, total] = await Promise.all([
+        prisma.task.findMany({
+          where,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.task.count({ where }),
+      ]);
+
+      const issuesWithCounts = issues.map(transformIssue);
+      return NextResponse.json(buildPaginatedResponse(issuesWithCounts, total, { page, limit, skip }));
+    }
+
+    const issues = await prisma.task.findMany({
+      where,
+      include: includeClause,
+      orderBy: orderByClause,
+    });
+
+    const issuesWithCounts = issues.map(transformIssue);
 
     return NextResponse.json({
       issues: issuesWithCounts,

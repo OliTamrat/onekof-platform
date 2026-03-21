@@ -123,11 +123,12 @@ export function RoleSelection({ onSelect, onSkip }: RoleSelectionProps) {
             const isSelected = selectedRole === role.id;
 
             return (
-              <button
+              <Button
                 key={role.id}
+                variant="ghost"
                 onClick={() => setSelectedRole(role.id)}
                 className={cn(
-                  "w-full flex items-start gap-4 p-4 rounded-lg border-2 transition-all text-left",
+                  "w-full h-auto flex items-start gap-4 p-4 rounded-lg border-2 transition-all text-left",
                   isSelected
                     ? "border-[#1C8C7D] bg-[#1C8C7D]/5 dark:bg-[#1C8C7D]/10"
                     : "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] hover:border-slate-300 dark:hover:border-slate-600"
@@ -163,29 +164,31 @@ export function RoleSelection({ onSelect, onSkip }: RoleSelectionProps) {
                     </div>
                   </div>
                 )}
-              </button>
+              </Button>
             );
           })}
         </div>
 
         {!showMore && (
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowMore(true)}
-            className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             Show more roles
             <ChevronDown className="h-4 w-4" />
-          </button>
+          </Button>
         )}
 
         {showMore && (
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowMore(false)}
-            className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             Show fewer roles
             <ChevronDown className="h-4 w-4 rotate-180" />
-          </button>
+          </Button>
         )}
 
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">

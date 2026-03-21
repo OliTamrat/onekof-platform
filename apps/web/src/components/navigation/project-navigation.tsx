@@ -9,6 +9,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MoreHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,10 +76,13 @@ export function ProjectNavigation({
         {moreTabs.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 border-b-2 border-transparent px-3 py-3 text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-1 h-auto border-b-2 border-transparent px-3 py-3 text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white rounded-none"
+              >
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="text-xs">More</span>
-              </button>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 max-h-[400px] overflow-y-auto">
               {categories.map((category, categoryIndex) => (

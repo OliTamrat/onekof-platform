@@ -146,7 +146,7 @@ export default function AdminOrganizationsPage() {
             <p className="text-[11px] text-slate-500 dark:text-slate-400">Members (this page)</p>
           </div>
           <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3">
-            <p className="text-lg font-bold text-teal-600 dark:text-teal-400">{totalProjects}</p>
+            <p className="text-lg font-bold text-primary-600 dark:text-primary-400">{totalProjects}</p>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">Projects (this page)</p>
           </div>
         </div>

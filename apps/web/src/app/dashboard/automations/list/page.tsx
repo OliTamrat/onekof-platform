@@ -110,7 +110,7 @@ export default function AutomationsListPage() {
       case 'PROJECT':
         return 'text-blue-600 dark:text-blue-400';
       case 'PERSONAL':
-        return 'text-teal-600 dark:text-teal-400';
+        return 'text-primary-600 dark:text-primary-400';
       default:
         return 'text-gray-600 dark:text-gray-400';
     }
