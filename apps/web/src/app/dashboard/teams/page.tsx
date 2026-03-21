@@ -338,13 +338,13 @@ export default function TeamsPage() {
                     <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                       Create your first team to get started
                     </p>
-                    <button
+                    <Button
                       onClick={() => setIsCreateDialogOpen(true)}
                       className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       Create Team
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -800,7 +800,7 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
         </div>
 
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
+          <Button variant="ghost" size="icon"
             onClick={() => onToggleFavorite(team.id, team.isFavorite)}
             className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700"
           >
@@ -811,13 +811,13 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
                   : 'text-gray-400 dark:text-slate-400'
               }`}
             />
-          </button>
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700">
+              <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700">
                 <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-slate-400" />
-              </button>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
               <DropdownMenuItem onClick={() => onManage(team)} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700">

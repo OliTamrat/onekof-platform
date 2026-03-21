@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,7 +96,7 @@ export async function GET(
       })),
     });
   } catch (error) {
-    console.error('Watchers fetch error:', error);
+    logger.error('Watchers fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch watchers' },
       { status: 500 }
@@ -250,7 +251,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error('Add watcher error:', error);
+    logger.error('Add watcher error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to add watcher' },
       { status: 500 }

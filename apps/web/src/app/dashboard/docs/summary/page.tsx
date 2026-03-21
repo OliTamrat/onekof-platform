@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary', active: true },
@@ -216,7 +217,7 @@ export default function DocsSummaryPage() {
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Content Activity</h3>
                     <div className="flex gap-2">
                       {(['week', 'month', 'quarter'] as const).map((range) => (
-                        <button
+                        <Button
                           key={range}
                           onClick={() => setTimeRange(range)}
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
@@ -226,7 +227,7 @@ export default function DocsSummaryPage() {
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

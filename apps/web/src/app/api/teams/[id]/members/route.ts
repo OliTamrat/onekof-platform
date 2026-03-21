@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,7 +88,7 @@ export async function GET(
 
     return NextResponse.json({ members: formattedMembers });
   } catch (error) {
-    console.error('Error fetching team members:', error);
+    logger.error('Error fetching team members', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch team members' },
       { status: 500 }
@@ -218,7 +219,7 @@ export async function POST(
           invitationUrl
         );
       } catch (emailError) {
-        console.error('Failed to send invitation email:', emailError);
+        logger.error('Failed to send invitation email', { error: emailError instanceof Error ? emailError.message : emailError });
       }
 
       return NextResponse.json({
@@ -290,7 +291,7 @@ export async function POST(
           'Member'
         );
       } catch (emailError) {
-        console.error('Failed to send invitation email:', emailError);
+        logger.error('Failed to send invitation email', { error: emailError instanceof Error ? emailError.message : emailError });
       }
 
       return NextResponse.json({
@@ -336,7 +337,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error('Error adding team member:', error);
+    logger.error('Error adding team member', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to add team member' },
       { status: 500 }

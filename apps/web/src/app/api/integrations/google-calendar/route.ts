@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getGoogleCalendarOAuthUrl, disconnectGoogleCalendar, updateGoogleCalendarConfig } from '@/lib/integrations/google-calendar';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Google Calendar GET error:', error);
+    logger.error('Google Calendar GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -63,7 +64,7 @@ export async function PUT(req: NextRequest) {
     await updateGoogleCalendarConfig(org.id, body);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Google Calendar PUT error:', error);
+    logger.error('Google Calendar PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -81,7 +82,7 @@ export async function DELETE() {
     await disconnectGoogleCalendar(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Google Calendar DELETE error:', error);
+    logger.error('Google Calendar DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

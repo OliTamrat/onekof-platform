@@ -12,6 +12,7 @@ import {
   Folder,
   Plus
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -35,10 +36,10 @@ export default function ProjectsPagesPage() {
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Pages</h1>
             </div>
-            <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
+            <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
               Create Page
-            </button>
+            </Button>
           </div>
           <div className="flex items-center gap-1 px-6">
             {TAB_ITEMS.map((tab) => {
@@ -95,10 +96,10 @@ export default function ProjectsPagesPage() {
                 </div>
               </div>
             </div>
-            <button className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600">
+            <Button className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
               Create Your First Page
-            </button>
+            </Button>
           </div>
         </div>
       </div>

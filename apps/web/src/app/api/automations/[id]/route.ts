@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +41,7 @@ export async function GET(
 
     return NextResponse.json({ automation });
   } catch (error) {
-    console.error('Error fetching automation:', error);
+    logger.error('Error fetching automation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch automation' },
       { status: 500 }
@@ -120,7 +121,7 @@ export async function PATCH(
 
     return NextResponse.json({ automation: updatedAutomation });
   } catch (error) {
-    console.error('Error updating automation:', error);
+    logger.error('Error updating automation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update automation' },
       { status: 500 }
@@ -172,7 +173,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting automation:', error);
+    logger.error('Error deleting automation', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete automation' },
       { status: 500 }

@@ -5,6 +5,7 @@ import { prisma } from '@onekof/database';
 import { generateTOTPSecret, encryptSecret, generateBackupCodes } from '@/lib/security/totp';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import QRCode from 'qrcode';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
       message: 'Scan the QR code with your authenticator app, then verify with a code to enable 2FA.',
     });
   } catch (error) {
-    console.error('2FA setup error:', error);
+    logger.error('2FA setup error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to set up two-factor authentication' },
       { status: 500 }

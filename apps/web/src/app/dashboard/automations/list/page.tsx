@@ -20,6 +20,7 @@ import {
   Sparkles,
   Zap
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Tab navigation items
 const TAB_ITEMS = [
@@ -180,10 +181,10 @@ export default function AutomationsListPage() {
               />
             </div>
 
-            <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700">
+            <Button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700">
               <Filter className="h-4 w-4" />
               Filter
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -298,7 +299,7 @@ export default function AutomationsListPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <button
+                          <Button
                             onClick={() => toggleMutation.mutate({ id: automation.id, isEnabled: automation.isEnabled })}
                             className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
                               automation.isEnabled
@@ -308,7 +309,7 @@ export default function AutomationsListPage() {
                             title={automation.isEnabled ? 'Disable' : 'Enable'}
                           >
                             {automation.isEnabled ? <PowerOff className="h-3 w-3" /> : <Power className="h-3 w-3" />}
-                          </button>
+                          </Button>
                         </td>
                       </tr>
                     );

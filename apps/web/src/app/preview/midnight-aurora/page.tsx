@@ -7,6 +7,7 @@ import {
   Circle, TrendingUp, Calendar, MessageSquare, Layers,
   Home, Settings, ListTodo, Target, PieChart,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // ============================================================
 // MIDNIGHT REFINED — Clean, Professional Dark Theme
@@ -20,7 +21,7 @@ export default function MidnightAuroraPreview() {
     <div className="min-h-screen bg-[#0F1117]" style={{ fontFamily: '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif' }}>
       {/* View Toggle */}
       <div className="fixed top-4 right-4 z-50 flex gap-1 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] p-1 shadow-2xl">
-        <button
+        <Button
           onClick={() => setActiveView('marketing')}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
             activeView === 'marketing'
@@ -29,8 +30,8 @@ export default function MidnightAuroraPreview() {
           }`}
         >
           Marketing
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setActiveView('dashboard')}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
             activeView === 'dashboard'
@@ -39,7 +40,7 @@ export default function MidnightAuroraPreview() {
           }`}
         >
           Dashboard
-        </button>
+        </Button>
       </div>
 
       {activeView === 'marketing' ? <MarketingPage /> : <DashboardPage />}
@@ -91,19 +92,19 @@ function MarketingPage() {
             </div>
             <div className="hidden md:flex items-center gap-6">
               {['Product', 'Solutions', 'Pricing', 'Enterprise'].map((item) => (
-                <button key={item} className="text-[13px] text-slate-300 hover:text-white transition-colors">
+                <Button key={item} className="text-[13px] text-slate-300 hover:text-white transition-colors">
                   {item}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="text-[13px] text-slate-300 hover:text-white transition-colors px-3 py-1.5">
+            <Button className="text-[13px] text-slate-300 hover:text-white transition-colors px-3 py-1.5">
               Sign in
-            </button>
-            <button className="text-[13px] font-medium bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors">
+            </Button>
+            <Button className="text-[13px] font-medium bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1d4ed8] transition-colors">
               Start Free
-            </button>
+            </Button>
           </div>
         </div>
       </nav>
@@ -136,13 +137,13 @@ function MarketingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button className="group inline-flex items-center justify-center gap-2 bg-[#2563EB] text-white font-medium px-7 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors text-[14px]">
+            <Button className="group inline-flex items-center justify-center gap-2 bg-[#2563EB] text-white font-medium px-7 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors text-[14px]">
               Start Free Trial
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-            <button className="inline-flex items-center justify-center gap-2 border border-[#2A2D3A] text-slate-300 font-medium px-7 py-3 rounded-lg hover:bg-white/[0.04] hover:border-[#3A3D4A] transition-all text-[14px]">
+            </Button>
+            <Button variant="outline" className="inline-flex items-center justify-center gap-2 border border-[#2A2D3A] text-slate-300 font-medium px-7 py-3 rounded-lg hover:bg-white/[0.04] hover:border-[#3A3D4A] transition-all text-[14px]">
               Book a Demo
-            </button>
+            </Button>
           </div>
 
           {/* Social Proof */}
@@ -320,7 +321,7 @@ function MarketingPage() {
                   <span className="text-3xl font-bold text-white tracking-[-0.02em]">{plan.price}</span>
                   {plan.period && <span className="text-slate-400 text-[13px]">{plan.period}</span>}
                 </div>
-                <button
+                <Button
                   className={`w-full py-2.5 rounded-lg text-[13px] font-medium transition-all mb-6 ${
                     plan.highlight
                       ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
@@ -328,7 +329,7 @@ function MarketingPage() {
                   }`}
                 >
                   {plan.cta}
-                </button>
+                </Button>
                 <div className="space-y-3">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-2.5">
@@ -353,10 +354,10 @@ function MarketingPage() {
             <p className="text-slate-200 text-[17px] mb-8 tracking-[-0.01em]">
               Join 200+ Ethiopian organizations already using Onekof.
             </p>
-            <button className="inline-flex items-center gap-2 bg-[#2563EB] text-white font-medium px-7 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors text-[14px]">
+            <Button className="inline-flex items-center gap-2 bg-[#2563EB] text-white font-medium px-7 py-3 rounded-lg hover:bg-[#1d4ed8] transition-colors text-[14px]">
               Start Your Free Trial
               <ArrowRight className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -426,19 +427,19 @@ function DashboardPage() {
 
         {/* Org Switcher */}
         <div className="px-3 py-3 border-b border-[#1E2130]">
-          <button className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors">
+          <Button className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors">
             <div className="h-6 w-6 rounded bg-[#2563EB] flex items-center justify-center">
               <span className="text-[10px] font-semibold text-white">M</span>
             </div>
             <span className="text-[13px] text-slate-300 flex-1 text-left truncate">Ministry of Tech</span>
             <ChevronDown className="h-3.5 w-3.5 text-slate-600" />
-          </button>
+          </Button>
         </div>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-3 space-y-0.5">
           {navItems.map((item) => (
-            <button
+            <Button
               key={item.label}
               className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all ${
                 item.active
@@ -448,7 +449,7 @@ function DashboardPage() {
             >
               <item.icon className={`h-4 w-4 shrink-0 ${item.active ? 'text-[#2563EB]' : ''}`} />
               <span>{item.label}</span>
-            </button>
+            </Button>
           ))}
         </nav>
 
@@ -476,17 +477,17 @@ function DashboardPage() {
             <span className="text-xs text-slate-500">Overview</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <button className="h-8 w-8 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] flex items-center justify-center hover:bg-[#1E2130] transition-colors">
+            <Button className="h-8 w-8 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] flex items-center justify-center hover:bg-[#1E2130] transition-colors">
               <Search className="h-3.5 w-3.5 text-slate-500" />
-            </button>
-            <button className="h-8 w-8 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] flex items-center justify-center hover:bg-[#1E2130] transition-colors relative">
+            </Button>
+            <Button className="h-8 w-8 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] flex items-center justify-center hover:bg-[#1E2130] transition-colors relative">
               <Bell className="h-3.5 w-3.5 text-slate-500" />
               <div className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#2563EB] text-[9px] font-semibold text-white flex items-center justify-center">3</div>
-            </button>
-            <button className="h-8 flex items-center gap-1.5 px-3 rounded-lg bg-[#2563EB] text-white text-[12px] font-medium hover:bg-[#1d4ed8] transition-colors">
+            </Button>
+            <Button className="h-8 flex items-center gap-1.5 px-3 rounded-lg bg-[#2563EB] text-white text-[12px] font-medium hover:bg-[#1d4ed8] transition-colors">
               <Plus className="h-3.5 w-3.5" />
               New Task
-            </button>
+            </Button>
           </div>
         </header>
 
@@ -520,9 +521,9 @@ function DashboardPage() {
             <div className="col-span-2 rounded-xl bg-[#161922] border border-[#2A2D3A]">
               <div className="flex items-center justify-between px-5 py-4 border-b border-[#1E2130]">
                 <h2 className="text-[13px] font-semibold text-white">Recent Tasks</h2>
-                <button className="text-[12px] text-[#2563EB] hover:text-[#60A5FA] transition-colors font-medium">
+                <Button className="text-[12px] text-[#2563EB] hover:text-[#60A5FA] transition-colors font-medium">
                   View All
-                </button>
+                </Button>
               </div>
               <div className="divide-y divide-[#1E2130]">
                 {tasks.map((task) => (
@@ -541,9 +542,9 @@ function DashboardPage() {
                       <span className="text-[10px] font-medium text-slate-400">{task.assignee}</span>
                     </div>
                     <span className="text-[11px] text-slate-400 w-16 text-right">{task.due}</span>
-                    <button className="text-slate-500 hover:text-slate-300">
+                    <Button className="text-slate-500 hover:text-slate-300">
                       <MoreHorizontal className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -590,13 +591,13 @@ function DashboardPage() {
                     { icon: Users, label: 'Invite Member' },
                     { icon: MessageSquare, label: 'Send Update' },
                   ].map((action) => (
-                    <button
+                    <Button
                       key={action.label}
                       className="flex flex-col items-center gap-2 p-3 rounded-lg bg-[#1A1D27] border border-[#2A2D3A] hover:border-[#3A3D4A] hover:bg-[#1E2130] transition-all"
                     >
                       <action.icon className="h-4 w-4 text-slate-400" />
                       <span className="text-[10px] text-slate-400 font-medium">{action.label}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>

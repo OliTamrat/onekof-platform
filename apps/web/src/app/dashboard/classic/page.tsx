@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
   LogOut
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -70,12 +71,12 @@ export default function DashboardPage() {
           <p className="text-sm text-gray-400 mb-4">
             The session is taking longer than expected to load. This might be a configuration issue.
           </p>
-          <button
+          <Button
             onClick={() => router.push('/auth/signin')}
             className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
           >
             Go to Sign In
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -142,24 +143,24 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             {/* Dashboard Switcher */}
-            <button
+            <Button
               onClick={() => router.push('/dashboard')}
               className="flex items-center gap-2 rounded-md border border-[#1C8C7D] px-4 py-2 text-sm font-semibold text-[#1C8C7D] hover:bg-[#1C8C7D] hover:text-white transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
               Switch to Modern Dashboard
-            </button>
-            <button className="flex items-center gap-2 rounded-md bg-[#1C8C7D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#156B60]">
+            </Button>
+            <Button className="flex items-center gap-2 rounded-md bg-[#1C8C7D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#156B60]">
               <Plus className="h-4 w-4" />
               Create
-            </button>
-            <button className="rounded-md p-2 hover:bg-[#1B1F23]">
+            </Button>
+            <Button variant="ghost" size="icon" className="rounded-md p-2 hover:bg-[#1B1F23]">
               <Bell className="h-5 w-5 text-gray-400" />
-            </button>
+            </Button>
 
             {/* User Profile Dropdown */}
             <div className="relative group">
-              <button className="flex items-center gap-2 rounded-md p-2 hover:bg-[#1B1F23]">
+              <Button className="flex items-center gap-2 rounded-md p-2 hover:bg-[#1B1F23]">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1C8C7D] text-sm font-semibold text-white">
                   {session.user?.name?.charAt(0).toUpperCase() || session.user?.email?.charAt(0).toUpperCase() || 'U'}
                 </div>
@@ -168,7 +169,7 @@ export default function DashboardPage() {
                   <span className="text-xs text-gray-400">{session.user?.email}</span>
                 </div>
                 <ChevronDown className="h-4 w-4 text-gray-400" />
-              </button>
+              </Button>
 
               {/* Dropdown Menu */}
               <div className="absolute right-0 top-full mt-2 hidden w-56 rounded-lg border border-gray-800 bg-[#22272B] py-2 shadow-xl group-hover:block">
@@ -176,20 +177,20 @@ export default function DashboardPage() {
                   <p className="text-sm font-medium text-white">{session.user?.name}</p>
                   <p className="text-xs text-gray-400">{session.user?.email}</p>
                 </div>
-                <button
+                <Button
                   onClick={() => router.push('/settings/profile')}
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-[#1B1F23]"
                 >
                   <Settings className="h-4 w-4" />
                   Settings
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => signOut({ callbackUrl: '/auth/signin' })}
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-[#1B1F23]"
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -327,9 +328,9 @@ export default function DashboardPage() {
               <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Recent activity</h2>
-                  <button className="rounded p-1 hover:bg-[#1B1F23]">
+                  <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#1B1F23]">
                     <MoreHorizontal className="h-4 w-4 text-gray-400" />
-                  </button>
+                  </Button>
                 </div>
                 <p className="mb-6 text-sm text-gray-400">
                   Stay up to date with what's happening across the space.
@@ -390,7 +391,7 @@ export default function DashboardPage() {
 
 function NavItem({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
   return (
-    <button
+    <Button
       className={`mb-1 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
         active
           ? 'bg-[#1C8C7D]/20 text-[#1C8C7D]'
@@ -399,7 +400,7 @@ function NavItem({ icon, label, active }: { icon: React.ReactNode; label: string
     >
       {icon}
       {label}
-    </button>
+    </Button>
   );
 }
 
@@ -420,9 +421,9 @@ function StatCard({
     <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
       <div className="flex items-start justify-between">
         <div className={color}>{icon}</div>
-        <button className="rounded p-1 hover:bg-[#1B1F23]">
+        <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#1B1F23]">
           <MoreHorizontal className="h-4 w-4 text-gray-400" />
-        </button>
+        </Button>
       </div>
       <div className="mt-4">
         <div className="text-3xl font-bold text-white">{value}</div>

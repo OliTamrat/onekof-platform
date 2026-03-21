@@ -72,11 +72,7 @@ export async function POST(req: NextRequest) {
 
     // In development, log the URL for testing (server-side only)
     if (process.env.NODE_ENV === 'development') {
-      console.log('==========================================');
-      console.log('EMAIL VERIFICATION URL (Development Only):');
-      console.log(verificationUrl);
-      console.log('Valid for 24 hours');
-      console.log('==========================================');
+      log.debug('EMAIL VERIFICATION URL (Development Only)', { verificationUrl, validFor: '24 hours' });
     }
 
     // SECURITY FIX: Never return token or verificationUrl in API response
@@ -87,7 +83,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Send verification error:', error);
+    log.error('Send verification error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

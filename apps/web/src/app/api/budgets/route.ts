@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -110,7 +111,7 @@ export async function GET(request: NextRequest) {
       count: budgets.length,
     });
   } catch (error) {
-    console.error('Budget list error:', error);
+    logger.error('Budget list error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch budgets' },
       { status: 500 }
@@ -194,7 +195,7 @@ export async function POST(request: NextRequest) {
       message: 'Budget created successfully',
     }, { status: 201 });
   } catch (error) {
-    console.error('Budget creation error:', error);
+    logger.error('Budget creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create budget' },
       { status: 500 }

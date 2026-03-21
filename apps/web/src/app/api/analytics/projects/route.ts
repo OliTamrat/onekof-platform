@@ -6,6 +6,7 @@ import {
   getDailyActivityAggregates,
 } from '@/lib/activity-logger';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -175,7 +176,7 @@ export async function GET(request: NextRequest) {
       );
     } catch (activityError) {
       // Activity logging not available - continue without it
-      console.log('Activity logging not available');
+      logger.warn('Activity logging not available');
     }
 
     return NextResponse.json({
@@ -203,7 +204,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Projects analytics error:', error);
+    logger.error('Projects analytics error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch projects analytics' },
       { status: 500 }

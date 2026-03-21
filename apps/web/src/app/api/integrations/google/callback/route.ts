@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectGoogle } from '@/lib/integrations/google';
 import type { OAuthState } from '@/lib/integrations/types';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,9 +39,9 @@ export async function GET(req: NextRequest) {
       new URL(`${redirectUrl}?connected=google`, req.nextUrl.origin)
     );
   } catch (error) {
-    console.error('Google callback error:', error);
+    logger.error('Google callback error', { error: error instanceof Error ? error.message : error });
     return NextResponse.redirect(
-      new URL(`/dashboard/settings/integrations?error=${encodeURIComponent(error instanceof Error ? error.message : 'connection_failed')}`, req.nextUrl.origin)
+      new URL('/dashboard/settings/integrations?error=connection_failed', req.nextUrl.origin)
     );
   }
 }

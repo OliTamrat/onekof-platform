@@ -603,7 +603,7 @@ export default function BudgetPage() {
                         {categories.slice(0, 6).map((category) => {
                           const utilRate = category.budget > 0 ? ((category.spent / category.budget) * 100).toFixed(1) : '0.0';
                           return (
-                            <button
+                            <Button
                               key={category.name}
                               onClick={() => openSlideout(
                                 `${category.name} Expenses`,
@@ -621,7 +621,7 @@ export default function BudgetPage() {
                                   ETB {formatCompact(category.spent)}
                                 </span>
                               </div>
-                            </button>
+                            </Button>
                           );
                         })}
                       </div>
@@ -850,7 +850,7 @@ export default function BudgetPage() {
                   { label: 'Budget Doc', icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
                   { label: 'Expense Report', icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
                 ].map((action) => (
-                  <button
+                  <Button variant="ghost" size="icon"
                     key={action.label}
                     onClick={() => { setAnalysisType(action.type); setIsUploadModalOpen(true); }}
                     className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group"
@@ -859,7 +859,7 @@ export default function BudgetPage() {
                       <action.icon className={`h-4 w-4 ${action.iconColor}`} />
                     </div>
                     <span className="text-xs font-medium text-slate-700 dark:text-slate-300 text-left leading-tight">{action.label}</span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -920,12 +920,12 @@ export default function BudgetPage() {
                     </div>
                   ))}
                   {expenses.length > 5 && (
-                    <button
+                    <Button
                       onClick={() => openSlideout('All Expenses', expenses)}
                       className="w-full text-center text-xs font-medium text-[#1C8C7D] hover:text-[#16A085] py-2 mt-1 rounded-lg hover:bg-[#1C8C7D]/5 transition-colors"
                     >
                       View all {expenses.length} expenses
-                    </button>
+                    </Button>
                     )}
                   </div>
                 )}
@@ -983,9 +983,9 @@ export default function BudgetPage() {
                   <p className="text-sm text-white/80">AI will extract and categorize data automatically</p>
                 </div>
               </div>
-              <button onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
+              <Button variant="ghost" onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
                 <X className="h-5 w-5" />
-              </button>
+              </Button>
             </div>
 
             {/* Modal Content */}
@@ -1001,7 +1001,7 @@ export default function BudgetPage() {
                         { value: 'budget_document', label: 'Budget Doc', icon: FileText },
                         { value: 'expense_report', label: 'Expense Report', icon: Download },
                       ].map((type) => (
-                        <button
+                        <Button
                           key={type.value}
                           onClick={() => setAnalysisType(type.value as any)}
                           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -1012,7 +1012,7 @@ export default function BudgetPage() {
                         >
                           <type.icon className="h-4 w-4" />
                           {type.label}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -1314,9 +1314,9 @@ export default function BudgetPage() {
                   <h2 className="text-xl font-bold text-white">{slideoutTitle}</h2>
                   <p className="text-sm text-white/80 mt-1">{slideoutData.length} items</p>
                 </div>
-                <button onClick={() => setIsActivitySlideoutOpen(false)} className="rounded-md p-2 text-white hover:bg-white/20">
+                <Button variant="ghost" size="icon" onClick={() => setIsActivitySlideoutOpen(false)} className="rounded-md p-2 text-white hover:bg-white/20">
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -1396,7 +1396,7 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button variant="outline"
       onClick={onClick}
       className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left"
     >
@@ -1408,7 +1408,7 @@ function StatCard({
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
       <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
-    </button>
+    </Button>
   );
 }
 
