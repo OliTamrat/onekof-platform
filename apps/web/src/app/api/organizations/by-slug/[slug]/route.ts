@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,7 +61,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching organization:', error);
+    logger.error('Error fetching organization', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch organization' },
       { status: 500 }

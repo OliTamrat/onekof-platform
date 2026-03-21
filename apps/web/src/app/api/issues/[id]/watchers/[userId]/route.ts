@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,7 +125,7 @@ export async function DELETE(
       message: 'Watcher removed successfully',
     });
   } catch (error) {
-    console.error('Remove watcher error:', error);
+    logger.error('Remove watcher error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to remove watcher' },
       { status: 500 }
@@ -228,7 +229,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.error('Update watcher preferences error:', error);
+    logger.error('Update watcher preferences error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update watcher preferences' },
       { status: 500 }

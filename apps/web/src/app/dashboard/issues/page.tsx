@@ -15,6 +15,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import type { ProjectType } from '@/lib/project-navigation';
+import { Button } from '@/components/ui/button';
 
 // Types
 interface Issue {
@@ -282,13 +283,13 @@ export default function IssuesPage() {
                           {provided.placeholder}
 
                           {/* Add Issue Button */}
-                          <button
+                          <Button
                             onClick={() => setShowCreateModal(true)}
                             className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
                             Create
-                          </button>
+                          </Button>
                       </div>
                     )}
                   </Droppable>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,7 +42,8 @@ export async function GET(req: NextRequest) {
       { createdAt: 'desc' as const },
     ];
 
-    const transformGoal = (goal: { id: string; organizationId: string; title: string; description: string | null; status: string; priority: string; progress: number; ownerId: string; team: { id: string; name: string; icon: string | null; color: string | null } | null; startDate: Date | null; dueDate: Date | null; keyResults: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean }[]; createdAt: Date; updatedAt: Date; completedAt: Date | null }) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const transformGoal = (goal: any) => ({
       id: goal.id,
       organizationId: goal.organizationId,
       title: goal.title,
@@ -102,7 +104,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ goals: formattedGoals });
   } catch (error) {
-    console.error('Error fetching goals:', error);
+    logger.error('Error fetching goals', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch goals' },
       { status: 500 }
@@ -169,7 +171,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error creating goal:', error);
+    logger.error('Error creating goal', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to create goal' },
       { status: 500 }

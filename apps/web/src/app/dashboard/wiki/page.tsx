@@ -177,13 +177,13 @@ export default function WikiPage() {
           {activeCategory ? (
             /* Category detail view */
             <div className="max-w-4xl mx-auto">
-              <button
+              <Button variant="link"
                 onClick={() => setSelectedCategory(null)}
                 className="flex items-center gap-1.5 text-sm text-primary-600 dark:text-primary-400 hover:underline mb-4"
               >
                 <ArrowRight className="h-3.5 w-3.5 rotate-180" />
                 Back to all categories
-              </button>
+              </Button>
 
               <div className="flex items-center gap-3 mb-6">
                 <div className={cn('rounded-xl p-3', activeCategory.bg)}>
@@ -250,7 +250,7 @@ export default function WikiPage() {
               {/* Category grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredCategories.map(category => (
-                  <button
+                  <Button variant="outline"
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
                     className="group text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all"
@@ -280,7 +280,7 @@ export default function WikiPage() {
                         <span className="text-[11px] text-primary-500 pl-5">+{category.articles.length - 2} more</span>
                       )}
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
 

@@ -18,6 +18,7 @@ import {
   Users,
   type LucideIcon,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -69,13 +70,13 @@ export default function ProjectsBoardPage() {
               </h1>
             </div>
 
-            <button
+            <Button
               onClick={() => router.push('/dashboard/projects?create=true')}
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
               Create Project
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}
@@ -201,13 +202,13 @@ export default function ProjectsBoardPage() {
                     ))}
 
                     {/* Add Project Button */}
-                    <button
+                    <Button
                       onClick={() => router.push('/dashboard/projects?create=true')}
                       className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       Add Project
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

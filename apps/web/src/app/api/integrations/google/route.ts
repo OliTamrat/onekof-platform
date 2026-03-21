@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getGoogleOAuthUrl, disconnectGoogle, updateGoogleConfig } from '@/lib/integrations/google';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
       } : null,
     });
   } catch (error) {
-    console.error('Google GET error:', error);
+    logger.error('Google GET error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -64,7 +65,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Google PUT error:', error);
+    logger.error('Google PUT error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -82,7 +83,7 @@ export async function DELETE() {
     await disconnectGoogle(org.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Google DELETE error:', error);
+    logger.error('Google DELETE error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

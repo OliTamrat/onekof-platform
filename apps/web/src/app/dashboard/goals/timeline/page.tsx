@@ -16,6 +16,7 @@ import {
   Target,
   TrendingUp
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -174,7 +175,7 @@ export default function GoalsTimelinePage() {
         {/* Filters */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => setSelectedFilter('all')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'all'
@@ -183,8 +184,8 @@ export default function GoalsTimelinePage() {
               }`}
             >
               All Events
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('goal_created')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'goal_created'
@@ -193,8 +194,8 @@ export default function GoalsTimelinePage() {
               }`}
             >
               Goals Created
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('progress_update')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'progress_update'
@@ -203,8 +204,8 @@ export default function GoalsTimelinePage() {
               }`}
             >
               Progress Updates
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setSelectedFilter('milestone_reached')}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'milestone_reached'
@@ -213,7 +214,7 @@ export default function GoalsTimelinePage() {
               }`}
             >
               Milestones
-            </button>
+            </Button>
           </div>
         </div>
 

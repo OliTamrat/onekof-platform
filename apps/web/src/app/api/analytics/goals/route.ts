@@ -6,6 +6,7 @@ import {
   getDailyActivityAggregates,
 } from '@/lib/activity-logger';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -216,7 +217,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Goals analytics error:', error);
+    logger.error('Goals analytics error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch goals analytics' },
       { status: 500 }

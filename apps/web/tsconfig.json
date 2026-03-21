@@ -18,8 +18,8 @@
     "noImplicitAny": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
-    // Phase 2 (next): Enable null safety
-    // "strictNullChecks": true,
+    // Phase 2: Null safety enabled
+    "strictNullChecks": true,
     // Phase 3 (final): Full strict mode
     // "strict": true,
     "noUnusedLocals": false,

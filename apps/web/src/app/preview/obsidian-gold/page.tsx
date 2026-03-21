@@ -7,6 +7,7 @@ import {
   Circle, AlertCircle, TrendingUp, Calendar, MessageSquare, Layers,
   Home, Settings, ListTodo, Target, PieChart,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // ============================================================
 // OPTION 2: OBSIDIAN & GOLD — Luxury Precision
@@ -19,7 +20,7 @@ export default function ObsidianGoldPreview() {
     <div className="min-h-screen bg-[#09090B]">
       {/* View Toggle */}
       <div className="fixed top-4 right-4 z-50 flex gap-2 rounded-full bg-[#18181B] border border-[#27272A] p-1 shadow-2xl">
-        <button
+        <Button
           onClick={() => setActiveView('marketing')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
             activeView === 'marketing'
@@ -28,8 +29,8 @@ export default function ObsidianGoldPreview() {
           }`}
         >
           Marketing
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setActiveView('dashboard')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
             activeView === 'dashboard'
@@ -38,7 +39,7 @@ export default function ObsidianGoldPreview() {
           }`}
         >
           Dashboard
-        </button>
+        </Button>
       </div>
 
       {activeView === 'marketing' ? <MarketingPage /> : <DashboardPage />}
@@ -63,19 +64,19 @@ function MarketingPage() {
             </div>
             <div className="hidden md:flex items-center gap-6">
               {['Product', 'Solutions', 'Pricing', 'Enterprise'].map((item) => (
-                <button key={item} className="text-sm text-zinc-400 hover:text-white transition-colors">
+                <Button key={item} className="text-sm text-zinc-400 hover:text-white transition-colors">
                   {item}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="text-sm text-zinc-400 hover:text-white transition-colors px-3 py-1.5">
+            <Button className="text-sm text-zinc-400 hover:text-white transition-colors px-3 py-1.5">
               Sign in
-            </button>
-            <button className="text-sm font-medium bg-gradient-to-r from-amber-500 to-yellow-500 text-black px-4 py-2 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/20">
+            </Button>
+            <Button className="text-sm font-medium bg-gradient-to-r from-amber-500 to-yellow-500 text-black px-4 py-2 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/20">
               Start Free
-            </button>
+            </Button>
           </div>
         </div>
       </nav>
@@ -107,13 +108,13 @@ function MarketingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-semibold px-8 py-3.5 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/25 text-sm">
+            <Button className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-semibold px-8 py-3.5 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/25 text-sm">
               Start Free Trial
               <ArrowRight className="h-4 w-4" />
-            </button>
-            <button className="inline-flex items-center justify-center gap-2 border border-[#27272A] text-zinc-300 font-medium px-8 py-3.5 rounded-lg hover:bg-[#18181B] hover:border-[#3F3F46] transition-all text-sm">
+            </Button>
+            <Button className="inline-flex items-center justify-center gap-2 border border-[#27272A] text-zinc-300 font-medium px-8 py-3.5 rounded-lg hover:bg-[#18181B] hover:border-[#3F3F46] transition-all text-sm">
               Book a Demo
-            </button>
+            </Button>
           </div>
 
           {/* Social Proof */}
@@ -295,7 +296,7 @@ function MarketingPage() {
                   <span className="text-3xl font-bold text-white">{plan.price}</span>
                   {plan.period && <span className="text-zinc-500 text-sm">{plan.period}</span>}
                 </div>
-                <button
+                <Button
                   className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all mb-6 ${
                     plan.highlight
                       ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-black hover:from-amber-400 hover:to-yellow-400 shadow-lg shadow-amber-500/20'
@@ -303,7 +304,7 @@ function MarketingPage() {
                   }`}
                 >
                   {plan.cta}
-                </button>
+                </Button>
                 <div className="space-y-3">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-2">
@@ -328,10 +329,10 @@ function MarketingPage() {
             <p className="text-zinc-400 text-lg mb-8">
               Join 200+ Ethiopian organizations already using Onekof.
             </p>
-            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-semibold px-8 py-3.5 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/25 text-sm">
+            <Button className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-semibold px-8 py-3.5 rounded-lg hover:from-amber-400 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/25 text-sm">
               Start Your Free Trial
               <ArrowRight className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -404,20 +405,20 @@ function DashboardPage() {
         {/* Org Switcher */}
         {!sidebarCollapsed && (
           <div className="px-3 py-3 border-b border-[#27272A]">
-            <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#18181B] transition-colors">
+            <Button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#18181B] transition-colors">
               <div className="h-6 w-6 rounded bg-amber-500/20 flex items-center justify-center">
                 <span className="text-xs font-bold text-amber-400">M</span>
               </div>
               <span className="text-sm text-zinc-300 flex-1 text-left truncate">Ministry of Tech</span>
               <ChevronDown className="h-3.5 w-3.5 text-zinc-600" />
-            </button>
+            </Button>
           </div>
         )}
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-3 space-y-0.5">
           {navItems.map((item) => (
-            <button
+            <Button
               key={item.label}
               className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-all ${
                 item.active
@@ -427,7 +428,7 @@ function DashboardPage() {
             >
               <item.icon className={`h-4 w-4 shrink-0 ${item.active ? 'text-amber-400' : ''}`} />
               {!sidebarCollapsed && <span>{item.label}</span>}
-            </button>
+            </Button>
           ))}
         </nav>
 
@@ -457,17 +458,17 @@ function DashboardPage() {
             <span className="text-xs text-zinc-500">Overview</span>
           </div>
           <div className="flex items-center gap-3">
-            <button className="h-8 w-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center hover:bg-[#27272A] transition-colors">
+            <Button className="h-8 w-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center hover:bg-[#27272A] transition-colors">
               <Search className="h-4 w-4 text-zinc-500" />
-            </button>
-            <button className="h-8 w-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center hover:bg-[#27272A] transition-colors relative">
+            </Button>
+            <Button className="h-8 w-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center hover:bg-[#27272A] transition-colors relative">
               <Bell className="h-4 w-4 text-zinc-500" />
               <div className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-amber-500 text-[9px] font-bold text-black flex items-center justify-center">3</div>
-            </button>
-            <button className="h-8 flex items-center gap-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-black text-xs font-medium hover:from-amber-400 hover:to-yellow-400 transition-all">
+            </Button>
+            <Button className="h-8 flex items-center gap-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-black text-xs font-medium hover:from-amber-400 hover:to-yellow-400 transition-all">
               <Plus className="h-3.5 w-3.5" />
               New Task
-            </button>
+            </Button>
           </div>
         </header>
 
@@ -503,7 +504,7 @@ function DashboardPage() {
             <div className="col-span-2 rounded-xl bg-[#0F0F12] border border-[#27272A]">
               <div className="flex items-center justify-between px-5 py-4 border-b border-[#27272A]">
                 <h2 className="text-sm font-semibold text-white">Recent Tasks</h2>
-                <button className="text-xs text-amber-400 hover:text-amber-300 transition-colors">View All</button>
+                <Button className="text-xs text-amber-400 hover:text-amber-300 transition-colors">View All</Button>
               </div>
               <div className="divide-y divide-[#27272A]">
                 {tasks.map((task) => (
@@ -522,9 +523,9 @@ function DashboardPage() {
                       <span className="text-[10px] font-medium text-zinc-400">{task.assignee}</span>
                     </div>
                     <span className="text-xs text-zinc-600 w-16 text-right">{task.due}</span>
-                    <button className="text-zinc-600 hover:text-zinc-400">
+                    <Button className="text-zinc-600 hover:text-zinc-400">
                       <MoreHorizontal className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -571,13 +572,13 @@ function DashboardPage() {
                     { icon: Users, label: 'Invite Member' },
                     { icon: MessageSquare, label: 'Send Update' },
                   ].map((action) => (
-                    <button
+                    <Button
                       key={action.label}
                       className="flex flex-col items-center gap-2 p-3 rounded-lg bg-[#18181B] border border-[#27272A] hover:border-amber-500/30 hover:bg-amber-500/5 transition-all"
                     >
                       <action.icon className="h-4 w-4 text-amber-400" />
                       <span className="text-[10px] text-zinc-400 font-medium">{action.label}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>

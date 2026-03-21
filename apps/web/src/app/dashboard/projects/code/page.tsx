@@ -18,6 +18,7 @@ import {
   Plus,
   X
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -53,13 +54,13 @@ export default function ProjectsCodePage() {
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">Code</h1>
             </div>
-            <button
+            <Button
               onClick={() => setShowConnectModal(true)}
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
               Connect Repository
-            </button>
+            </Button>
           </div>
 
           <div className="flex items-center gap-1 px-6">
@@ -99,13 +100,13 @@ export default function ProjectsCodePage() {
                 <p className="text-sm text-gray-600 dark:text-slate-400">View active feature branches</p>
               </div>
             </div>
-            <button
+            <Button
               onClick={() => setShowConnectModal(true)}
               className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
               Connect Repository
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -115,9 +116,9 @@ export default function ProjectsCodePage() {
             <div className="w-full max-w-md bg-white dark:bg-[#22272B] rounded-lg shadow-xl">
               <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Connect Repository</h2>
-                <button onClick={() => setShowConnectModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <Button onClick={() => setShowConnectModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
 
               <div className="p-6 space-y-4">
@@ -126,7 +127,7 @@ export default function ProjectsCodePage() {
                 </p>
 
                 <div className="space-y-3">
-                  <button
+                  <Button
                     onClick={() => setSelectedProvider('github')}
                     className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'github'
@@ -139,9 +140,9 @@ export default function ProjectsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">GitHub</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect your GitHub repositories</div>
                     </div>
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() => setSelectedProvider('gitlab')}
                     className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'gitlab'
@@ -154,9 +155,9 @@ export default function ProjectsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect your GitLab repositories</div>
                     </div>
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() => setSelectedProvider('bitbucket')}
                     className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'bitbucket'
@@ -169,24 +170,24 @@ export default function ProjectsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">Bitbucket</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect your Bitbucket repositories</div>
                     </div>
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
-                <button
+                <Button
                   onClick={() => setShowConnectModal(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleConnect}
                   disabled={!selectedProvider}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Connect
-                </button>
+                </Button>
               </div>
             </div>
           </div>

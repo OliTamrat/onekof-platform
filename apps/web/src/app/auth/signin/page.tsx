@@ -8,6 +8,7 @@ import {
   AlertCircle, Loader2, ArrowRight, Eye, EyeOff, Shield,
   Calendar, Languages, Wallet, Brain, Kanban, BarChart3,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface OrganizationInfo {
   name: string;
@@ -224,14 +225,16 @@ function SignInContent() {
                   className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                   placeholder="Enter your password"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/20 transition-colors hover:text-white/40"
+                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/40"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -255,10 +258,10 @@ function SignInContent() {
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
-              className="group w-full rounded-xl bg-primary-500 py-3.5 text-[14px] font-medium text-white shadow-lg transition-all hover:bg-primary-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group w-full rounded-xl py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -271,7 +274,7 @@ function SignInContent() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               )}
-            </button>
+            </Button>
           </form>
 
           {/* Divider */}
@@ -283,10 +286,11 @@ function SignInContent() {
 
           {/* OAuth */}
           <div className="grid grid-cols-2 gap-3">
-            <button
+            <Button
+              variant="outline"
               onClick={() => handleOAuthSignIn('google')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70 disabled:opacity-50"
+              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/50 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -295,17 +299,18 @@ function SignInContent() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
               Google
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
               onClick={() => handleOAuthSignIn('azure-ad')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70 disabled:opacity-50"
+              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/50 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#00A4EF">
                 <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" />
               </svg>
               Microsoft
-            </button>
+            </Button>
           </div>
 
           {isMainDomain && (

@@ -397,7 +397,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                             className="flex h-5 w-5 items-center justify-center rounded shrink-0"
                             style={{ backgroundColor: project.color || '#3B82F6' }}
                           >
-                            <IconRenderer iconName={project.icon} className="h-3 w-3 text-white" fallback="📁" />
+                            <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
                           </div>
                           <span className="truncate flex-1">{project.name}</span>
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 opacity-0 group-hover:opacity-100" />
@@ -416,7 +416,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                         className="flex h-5 w-5 items-center justify-center rounded shrink-0"
                         style={{ backgroundColor: project.color || '#3B82F6' }}
                       >
-                        <IconRenderer iconName={project.icon} className="h-3 w-3 text-white" fallback="📁" />
+                        <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
                       </div>
                       <span className="truncate">{project.name}</span>
                     </Link>

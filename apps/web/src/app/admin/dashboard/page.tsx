@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface Stats {
   totalUsers: number;
@@ -103,12 +104,13 @@ export default function AdminDashboardPage() {
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
             The stats API returned an error. Check server logs for details.
           </p>
-          <button
+          <Button
+            variant="link"
             onClick={() => window.location.reload()}
-            className="text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline"
+            className="text-xs font-medium text-primary-600 dark:text-primary-400"
           >
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     );

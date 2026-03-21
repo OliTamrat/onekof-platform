@@ -14,6 +14,7 @@ import {
   Target,
   X
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -163,7 +164,7 @@ export default function GoalsFormsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {FORM_TEMPLATES.map((template) => (
-                <button
+                <Button variant="outline"
                   key={template.id}
                   onClick={() => setSelectedTemplate(template)}
                   className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
@@ -179,7 +180,7 @@ export default function GoalsFormsPage() {
                     <Plus className="h-4 w-4" />
                     Create {template.name}
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -198,12 +199,12 @@ export default function GoalsFormsPage() {
                     {selectedTemplate.description}
                   </p>
                 </div>
-                <button
+                <Button
                   onClick={() => setSelectedTemplate(null)}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
@@ -251,19 +252,19 @@ export default function GoalsFormsPage() {
               </form>
 
               <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
-                <button
+                <Button
                   type="button"
                   onClick={() => setSelectedTemplate(null)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleSubmit}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
                   Submit {selectedTemplate.name}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

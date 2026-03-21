@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { aggregateMetricsForAllOrganizations, aggregateAllMetrics, type MetricsResult } from '@/lib/metrics-aggregation';
+import logger from '@/lib/logger';
 
 type MetricsPeriod = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
 
@@ -61,12 +62,9 @@ export async function POST(request: NextRequest) {
       });
     }
   } catch (error) {
-    console.error('Metrics aggregation error:', error);
+    logger.error('Metrics aggregation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
-      {
-        error: 'Failed to aggregate metrics',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Failed to aggregate metrics' },
       { status: 500 }
     );
   }

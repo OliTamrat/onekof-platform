@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
       deleted: toDelete.length,
     });
   } catch (error) {
-    console.error('Error cleaning up placeholder workspace:', error);
+    logger.error('Error cleaning up placeholder workspace', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to clean up placeholder workspace' },
       { status: 500 }
