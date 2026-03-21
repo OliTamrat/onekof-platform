@@ -356,13 +356,15 @@ export function DualCalendar({
                   {uniqueProjects.map(p => {
                     const active = selectedProjects.includes(p.id);
                     return (
-                      <button
+                      <Button
                         key={p.id}
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setSelectedProjects(prev =>
                           active ? prev.filter(id => id !== p.id) : [...prev, p.id]
                         )}
                         className={cn(
-                          'flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          'h-auto flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
                           active
                             ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/30'
                             : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -370,7 +372,7 @@ export function DualCalendar({
                       >
                         <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
                         {p.name}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -383,32 +385,36 @@ export function DualCalendar({
                   {(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'] as const).map(s => {
                     const active = selectedStatuses.includes(s);
                     return (
-                      <button
+                      <Button
                         key={s}
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setSelectedStatuses(prev =>
                           active ? prev.filter(x => x !== s) : [...prev, s]
                         )}
                         className={cn(
-                          'rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          'h-auto rounded-md px-2 py-1 text-xs font-medium transition-colors',
                           active
                             ? STATUS_BG[s]
                             : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                         )}
                       >
                         {s.replace('_', ' ')}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
               </div>
 
               {activeFilterCount > 0 && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => { setSelectedProjects([]); setSelectedStatuses([]); }}
-                  className="self-end text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors"
+                  className="self-end h-auto px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-red-500"
                 >
                   Clear all
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -470,10 +476,11 @@ function TaskChip({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={(e) => { e.stopPropagation(); onClick?.(); }}
       className={cn(
-        'w-full text-left rounded-md border-l-[3px] transition-all cursor-pointer group',
+        'w-full h-auto text-left rounded-md border-l-[3px] transition-all cursor-pointer group p-0',
         'hover:shadow-md hover:scale-[1.01]',
         'bg-white dark:bg-[#22272B]',
         STATUS_COLORS[task.status] || 'border-l-slate-300',
@@ -495,7 +502,7 @@ function TaskChip({
           {task.title}
         </span>
       </div>
-    </button>
+    </Button>
   );
 }
 
@@ -626,12 +633,13 @@ function MonthView({
                         />
                       ))}
                       {dayTasks.length > 2 && (
-                        <button
+                        <Button
+                          variant="ghost"
                           onClick={(e) => { e.stopPropagation(); }}
-                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="w-full h-auto text-center rounded-md py-0.5 px-1 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                         >
                           +{dayTasks.length - 2} more
-                        </button>
+                        </Button>
                       )}
                     </div>
 
@@ -646,12 +654,13 @@ function MonthView({
                         />
                       ))}
                       {dayTasks.length > 3 && (
-                        <button
+                        <Button
+                          variant="ghost"
                           onClick={(e) => { e.stopPropagation(); }}
-                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="w-full h-auto text-center rounded-md py-0.5 px-1 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                         >
                           +{dayTasks.length - 3} more
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>
