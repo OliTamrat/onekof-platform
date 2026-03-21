@@ -131,6 +131,19 @@ These patterns are critical to production stability:
 - **Minimize deployments**: Batch changes into a single commit and push ONCE. Vercel triggers a preview build on every push.
 - Only push when a complete, tested batch of work is ready.
 
+## Custom Agents
+
+Specialized agents live in `.claude/agents/` for targeted code reviews and audits:
+
+| Agent | File | Purpose |
+|-------|------|---------|
+| Senior Security | `senior-security.md` | Security audits, OWASP checks, auth flow review, multi-tenant isolation, rate limiting |
+| UI/UX Designer | `ui-ux-designer.md` | Design system compliance, dark mode, accessibility, visual consistency |
+| Senior Software Engineer | `senior-software-engineer.md` | Architecture review, code quality, performance, technical debt, codebase health |
+| Senior Database Developer | `senior-database-developer.md` | Schema review, query optimization, migration planning, indexing, data integrity |
+
+All agents are pre-loaded with platform context, stability rules, and the design system tokens. They produce structured reports with severity-ranked findings.
+
 ## Development Workflow
 
 - Always work on the designated feature branch.
