@@ -191,7 +191,7 @@ export default function IssuesBoardPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500">Please sign in to view the board.</p>
+          <p className="text-slate-500">Please sign in to view the board.</p>
         </div>
       </AppLayout>
     );
@@ -214,13 +214,13 @@ export default function IssuesBoardPage() {
         showInsights
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-slate-50 dark:bg-[#1B1F23]">
         <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary-500 dark:border-gray-700"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Loading board...</p>
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Loading board...</p>
               </div>
             </div>
           ) : (
@@ -233,25 +233,25 @@ export default function IssuesBoardPage() {
                   return (
                     <div
                       key={column.id}
-                      className="flex w-72 sm:w-80 shrink-0 flex-col rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
+                      className="flex w-72 sm:w-80 shrink-0 flex-col rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
                     >
                       {/* Column Header */}
-                      <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 p-4">
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-                          <h3 className="font-semibold text-gray-900 dark:text-white">
+                          <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                          <h3 className="font-semibold text-slate-900 dark:text-white">
                             {column.title}
                           </h3>
-                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-gray-100 dark:bg-[#282E33] px-2 text-xs font-medium text-gray-600 dark:text-slate-400">
+                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-slate-100 dark:bg-[#282E33] px-2 text-xs font-medium text-slate-600 dark:text-slate-400">
                             {columnTasks.length}
                           </span>
                         </div>
                         <Button variant="ghost" size="icon"
                           onClick={() => setShowCreateModal(true)}
-                          className="rounded p-1 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="rounded p-1 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
                           title="Add task"
                         >
-                          <Plus className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+                          <Plus className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                         </Button>
                       </div>
 
@@ -293,8 +293,8 @@ export default function IssuesBoardPage() {
                                         {dueDate && (
                                           <div className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
                                             dueDate.isOverdue
-                                              ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400'
-                                              : 'bg-gray-100 text-gray-600 dark:bg-[#282E33] dark:text-slate-400'
+                                              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                              : 'bg-slate-100 text-slate-600 dark:bg-[#282E33] dark:text-slate-400'
                                           }`}>
                                             <Clock className="h-3 w-3" />
                                             {dueDate.formatted}
@@ -303,13 +303,13 @@ export default function IssuesBoardPage() {
                                       </div>
 
                                       {/* Task Title */}
-                                      <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2 line-clamp-2">
+                                      <h4 className="text-sm font-medium text-slate-900 dark:text-white mb-2 line-clamp-2">
                                         {task.title}
                                       </h4>
 
                                       {/* Task Description */}
                                       {task.description && (
-                                        <p className="text-xs text-gray-600 dark:text-slate-400 mb-3 line-clamp-2">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
                                           {task.description}
                                         </p>
                                       )}
@@ -321,7 +321,7 @@ export default function IssuesBoardPage() {
                                             className="h-2 w-2 rounded-full"
                                             style={{ backgroundColor: task.project.color }}
                                           />
-                                          <span className="text-xs text-gray-500 dark:text-[#6B7684]">
+                                          <span className="text-xs text-slate-500 dark:text-slate-400">
                                             {task.project.key}
                                           </span>
                                         </div>
@@ -349,13 +349,13 @@ export default function IssuesBoardPage() {
                                           {task.tags.slice(0, 2).map((tag, idx) => (
                                             <span
                                               key={idx}
-                                              className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400"
+                                              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#282E33] text-slate-600 dark:text-slate-400"
                                             >
                                               {tag}
                                             </span>
                                           ))}
                                           {task.tags.length > 2 && (
-                                            <span className="text-[10px] text-gray-500 dark:text-[#6B7684]">
+                                            <span className="text-[10px] text-slate-500 dark:text-slate-400">
                                               +{task.tags.length - 2}
                                             </span>
                                           )}
@@ -372,7 +372,7 @@ export default function IssuesBoardPage() {
                             {columnTasks.length === 0 && !snapshot.isDraggingOver && (
                               <div className="flex flex-col items-center justify-center py-8 text-center">
                                 <div className={`mb-2 h-2 w-2 rounded-full ${column.color} opacity-30`} />
-                                <p className="text-xs text-gray-500 dark:text-[#6B7684]">No tasks</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">No tasks</p>
                               </div>
                             )}
                           </div>
