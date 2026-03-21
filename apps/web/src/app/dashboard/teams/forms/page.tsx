@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
+import type { LucideIcon } from 'lucide-react';
 import {
   BarChart3,
   Book,
   Clock,
   Code,
   FileText,
+  Package,
   Plus,
+  UserPlus,
   Users,
   X
 } from 'lucide-react';
@@ -26,12 +29,12 @@ const TAB_ITEMS = [
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
 ];
 
-const FORM_TEMPLATES = [
+const FORM_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon; fields: { name: string; type: string; placeholder?: string; options?: string[]; required: boolean }[] }[] = [
   {
     id: 'team-onboarding',
     name: 'Team Onboarding',
     description: 'Onboard new team members',
-    icon: '👋',
+    icon: UserPlus,
     fields: [
       { name: 'Team Member Name', type: 'text', placeholder: 'Full name', required: true },
       { name: 'Email', type: 'email', placeholder: 'email@company.com', required: true },
@@ -45,7 +48,7 @@ const FORM_TEMPLATES = [
     id: 'team-performance-review',
     name: 'Performance Review',
     description: 'Quarterly team performance review',
-    icon: '📊',
+    icon: BarChart3,
     fields: [
       { name: 'Team Name', type: 'text', placeholder: 'Team being reviewed', required: true },
       { name: 'Review Period', type: 'select', options: ['Q1', 'Q2', 'Q3', 'Q4'], required: true },
@@ -59,7 +62,7 @@ const FORM_TEMPLATES = [
     id: 'team-meeting',
     name: 'Team Meeting',
     description: 'Schedule and document team meetings',
-    icon: '🤝',
+    icon: Users,
     fields: [
       { name: 'Meeting Title', type: 'text', placeholder: 'e.g., Sprint Planning', required: true },
       { name: 'Meeting Type', type: 'select', options: ['Planning', 'Retrospective', 'Sync', 'All-hands'], required: true },
@@ -73,7 +76,7 @@ const FORM_TEMPLATES = [
     id: 'team-offboarding',
     name: 'Team Offboarding',
     description: 'Offboard departing team members',
-    icon: '👋',
+    icon: UserPlus,
     fields: [
       { name: 'Team Member Name', type: 'text', placeholder: 'Full name', required: true },
       { name: 'Last Day', type: 'date', required: true },
@@ -87,7 +90,7 @@ const FORM_TEMPLATES = [
     id: 'team-resource-request',
     name: 'Resource Request',
     description: 'Request additional team resources',
-    icon: '📦',
+    icon: Package,
     fields: [
       { name: 'Resource Type', type: 'select', options: ['Headcount', 'Budget', 'Tools', 'Training'], required: true },
       { name: 'Request Priority', type: 'select', options: ['Critical', 'High', 'Medium', 'Low'], required: true },
@@ -166,7 +169,9 @@ export default function TeamsFormsPage() {
                   onClick={() => setSelectedTemplate(template)}
                   className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                 >
-                  <div className="text-4xl mb-4">{template.icon}</div>
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
+                    <template.icon className="h-5 w-5 text-primary-500" />
+                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {template.name}
                   </h3>
