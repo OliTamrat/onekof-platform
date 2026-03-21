@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Settings, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -12,7 +13,7 @@ export default function DocumentsSettingsPage() {
 
   return (
     <AppLayout>
-      <UnifiedPageHeader title="Documents Settings" icon={<Settings className="h-6 w-6" />} iconColor="#3B82F6" currentTab="settings" baseHref="/dashboard/documents" />
+      <UnifiedPageHeader title="Documents Settings" icon={<Settings className="h-6 w-6" />} iconColor="#3B82F6" currentTab="settings" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
       <div className="p-6 max-w-4xl">
         <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">General Settings</h2>
