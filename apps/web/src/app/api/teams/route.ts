@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,29 +13,27 @@ export async function GET(req: NextRequest) {
 
     const organizationId = ctx.organizationId;
 
-    // Fetch teams with member count and project count
-    const teams = await prisma.team.findMany({
-      where: {
-        organizationId,
-        deletedAt: null,
-      },
-      include: {
-        _count: {
-          select: {
-            members: true,
-            projects: true,
-          },
+    const whereClause = {
+      organizationId,
+      deletedAt: null,
+    };
+
+    const includeClause = {
+      _count: {
+        select: {
+          members: true,
+          projects: true,
         },
       },
-      orderBy: [
-        { isFavorite: 'desc' },
-        { isDefault: 'desc' },
-        { createdAt: 'desc' },
-      ],
-    });
+    };
 
-    // Format response
-    const formattedTeams = teams.map((team: { id: string; name: string; description: string | null; icon: string | null; color: string | null; isDefault: boolean; isFavorite: boolean; _count: { members: number; projects: number }; createdAt: Date; updatedAt: Date }) => ({
+    const orderByClause = [
+      { isFavorite: 'desc' as const },
+      { isDefault: 'desc' as const },
+      { createdAt: 'desc' as const },
+    ];
+
+    const transformTeam = (team: { id: string; name: string; description: string | null; icon: string | null; color: string | null; isDefault: boolean; isFavorite: boolean; _count: { members: number; projects: number }; createdAt: Date; updatedAt: Date }) => ({
       id: team.id,
       name: team.name,
       description: team.description,
@@ -46,7 +45,36 @@ export async function GET(req: NextRequest) {
       projectCount: team._count.projects,
       createdAt: team.createdAt.toISOString(),
       updatedAt: team.updatedAt.toISOString(),
-    }));
+    });
+
+    const url = req.nextUrl;
+    const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(req);
+
+      const [teams, total] = await Promise.all([
+        prisma.team.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.team.count({ where: whereClause }),
+      ]);
+
+      const formattedTeams = teams.map(transformTeam);
+      return NextResponse.json(buildPaginatedResponse(formattedTeams, total, { page, limit, skip }));
+    }
+
+    const teams = await prisma.team.findMany({
+      where: whereClause,
+      include: includeClause,
+      orderBy: orderByClause,
+    });
+
+    const formattedTeams = teams.map(transformTeam);
 
     return NextResponse.json({ teams: formattedTeams });
   } catch (error) {

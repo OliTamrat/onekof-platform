@@ -317,7 +317,7 @@ export default function DashboardPage() {
             value={tasksCreated.toString()}
             label="created"
             sublabel="in the last 7 days"
-            color="text-teal-500 dark:text-teal-400"
+            color="text-primary-500 dark:text-primary-400"
             onClick={handleShowCreatedTasks}
           />
           <StatCard

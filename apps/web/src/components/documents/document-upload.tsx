@@ -7,6 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import { Upload, FileText, Sparkles, AlertCircle, CheckCircle2, Loader2, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface DocumentUploadProps {
   projectId?: string;
@@ -201,12 +202,13 @@ export function DocumentUpload({
               Files to Upload ({files.length})
             </h4>
             {!uploading && (
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setFiles([])}
-                className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                className="h-auto px-2 py-1 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               >
                 Clear all
-              </button>
+              </Button>
             )}
           </div>
 
@@ -260,12 +262,14 @@ export function DocumentUpload({
 
                   {/* Remove Button */}
                   {!status && !uploading && (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => removeFile(index)}
-                      className="flex-shrink-0 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                      className="flex-shrink-0 h-auto w-auto p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                     >
                       <X className="h-4 w-4" />
-                    </button>
+                    </Button>
                   )}
                 </div>
               );
@@ -276,13 +280,13 @@ export function DocumentUpload({
 
       {/* Upload Button */}
       {files.length > 0 && !uploading && (
-        <button
+        <Button
           onClick={handleUpload}
           className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1C8C7D] to-[#16A085] text-white rounded-lg font-medium hover:from-[#156B60] hover:to-[#128A75] transition-all duration-200"
         >
           <Sparkles className="h-4 w-4" />
           Upload & Process with AI
-        </button>
+        </Button>
       )}
 
       {/* AI Processing Info */}

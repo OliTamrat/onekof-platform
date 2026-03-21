@@ -241,7 +241,7 @@ export function EmptyState({
         <Button
           onClick={onAction}
           size={compact ? 'sm' : 'default'}
-          className="mt-2 bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
+          className="mt-2 bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600"
         >
           {actionLabel}
         </Button>

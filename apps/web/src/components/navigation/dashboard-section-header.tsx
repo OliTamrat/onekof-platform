@@ -7,6 +7,7 @@
  */
 
 import { Plus, Search, Filter, MoreVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -74,13 +75,14 @@ export function DashboardSectionHeader({
         </div>
 
         {onCreateClick && (
-          <button
+          <Button
+            size="sm"
             onClick={onCreateClick}
-            className="flex items-center gap-1.5 md:gap-2 rounded-md bg-primary-500 px-3 md:px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 shrink-0"
+            className="shrink-0"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{createButtonLabel}</span>
-          </button>
+          </Button>
         )}
       </div>
 
@@ -111,10 +113,13 @@ export function DashboardSectionHeader({
           {moreTabs.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex flex-col items-center gap-1 border-b-2 border-transparent px-3 py-2 text-xs text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white">
+                <Button
+                  variant="ghost"
+                  className="flex flex-col items-center gap-1 h-auto border-b-2 border-transparent px-3 py-2 text-xs text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white rounded-none"
+                >
                   <MoreVertical className="h-4 w-4" />
                   <span className="text-xs">More</span>
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 {moreTabs.map((tab) => {
@@ -177,13 +182,15 @@ export function DashboardSectionHeader({
           )}
 
           {showFilter && (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={onFilterClick}
-              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700"
+              className="gap-2"
             >
               <Filter className="h-4 w-4" />
               <span className="hidden sm:inline">Filter</span>
-            </button>
+            </Button>
           )}
         </div>
       )}

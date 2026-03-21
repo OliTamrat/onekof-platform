@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface SlideoutPanelProps {
   open?: boolean;
@@ -109,7 +110,7 @@ export function SlideoutPanel({
       <div
         ref={panelRef}
         className={cn(
-          'relative flex h-full w-full flex-col bg-white dark:bg-[#0A0A0A] shadow-2xl',
+          'relative flex h-full w-full flex-col bg-white dark:bg-[#282E33] shadow-2xl',
           sizeClasses[size],
           className
         )}
@@ -124,13 +125,15 @@ export function SlideoutPanel({
             )}
           </div>
 
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="rounded-md p-1 text-gray-600 dark:text-slate-400 transition-colors hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+            className="h-8 w-8 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
             aria-label="Close panel"
           >
             <X className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Content */}
@@ -140,7 +143,7 @@ export function SlideoutPanel({
 
         {/* Footer */}
         {showFooter && footer && (
-          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-black px-4 sm:px-6 py-3 sm:py-4">
+          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-3 sm:py-4">
             {footer}
           </div>
         )}
@@ -171,7 +174,7 @@ interface SlideoutPanelSidebarProps {
 
 export function SlideoutPanelSidebar({ children, className }: SlideoutPanelSidebarProps) {
   return (
-    <div className={cn('hidden sm:block w-64 overflow-y-auto border-l border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-black px-4 sm:px-6 py-4 sm:py-6', className)}>
+    <div className={cn('hidden sm:block w-64 overflow-y-auto border-l border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-4 sm:py-6', className)}>
       {children}
     </div>
   );

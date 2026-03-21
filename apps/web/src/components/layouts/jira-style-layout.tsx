@@ -114,12 +114,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-black">
+    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
       {/* Global overlays */}
       <CommandPalette />
       <KeyboardShortcutsModal />
       {/* TOP BAR - Jira Style with Centered Search */}
-      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-white/[0.06] bg-white dark:bg-black px-3">
+      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#1B1F23] px-3">
         {/* Mobile Menu Button */}
         <Button
           variant="ghost"
@@ -172,20 +172,21 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* SEARCH BAR - Opens Command Palette */}
         <div className="flex flex-1 min-w-0 max-w-md">
-          <button
+          <Button
+            variant="outline"
             onClick={() => {
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
-            className="flex w-full h-9 items-center gap-2 rounded-lg border border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#0A0A0A] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm transition-colors hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#111111]"
+            className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#282E33] justify-start font-normal"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left truncate hidden sm:block">Search or jump to...</span>
             <span className="flex-1 text-left truncate sm:hidden">Search...</span>
-            <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-black px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
+            <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
               Ctrl K
             </kbd>
-          </button>
+          </Button>
         </div>
 
         {/* Spacer - pushes action buttons to the far right on desktop */}
@@ -336,7 +337,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* LEFT SIDEBAR - Changes based on context */}
         <aside className={cn(
-          "w-56 border-r border-slate-200 dark:border-white/[0.06] bg-white dark:bg-black overflow-y-auto transition-transform duration-300 ease-in-out",
+          "w-56 border-r border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
           // Desktop: Reset mobile fixed positioning (top-14/bottom-0/left-0 must be cleared)
           "md:relative md:top-auto md:bottom-auto md:left-auto md:translate-x-0 md:z-auto md:h-full",
           // Mobile: Fixed position with slide-in animation, positioned below header
@@ -368,9 +369,10 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
             <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 <span>PROJECTS</span>
                 <ChevronRight
@@ -379,7 +381,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                     isProjectsExpanded && 'rotate-90'
                   )}
                 />
-              </button>
+              </Button>
 
               {isProjectsExpanded && (
                 <div className="space-y-0.5 mt-1">
@@ -433,9 +435,10 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
           {!isInProject && (
             <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setIsDocsExpanded(!isDocsExpanded)}
-                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 <span>DOCS & SPACES</span>
                 <ChevronRight
@@ -444,7 +447,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                     isDocsExpanded && 'rotate-90'
                   )}
                 />
-              </button>
+              </Button>
 
               {isDocsExpanded && (
                 <div className="space-y-0.5 mt-1">
@@ -487,7 +490,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-black">
+        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
           {children}
         </main>
       </div>

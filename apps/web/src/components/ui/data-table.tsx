@@ -99,8 +99,8 @@ export function DataTable<T extends Record<string, unknown>>({
 
   const SortIcon = ({ colKey }: { colKey: string }) => {
     if (sortKey !== colKey) return <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />;
-    if (sortDir === 'asc') return <ArrowUp className="h-3.5 w-3.5 text-teal-500" />;
-    return <ArrowDown className="h-3.5 w-3.5 text-teal-500" />;
+    if (sortDir === 'asc') return <ArrowUp className="h-3.5 w-3.5 text-primary-500" />;
+    return <ArrowDown className="h-3.5 w-3.5 text-primary-500" />;
   };
 
   return (
@@ -116,15 +116,17 @@ export function DataTable<T extends Record<string, unknown>>({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-slate-700 dark:bg-[#22272B] dark:text-white dark:placeholder:text-slate-500"
+                className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 dark:border-slate-700 dark:bg-[#22272B] dark:text-white dark:placeholder:text-slate-500"
               />
               {search && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setSearch('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 p-0.5"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
             </div>
           )}
@@ -147,13 +149,14 @@ export function DataTable<T extends Record<string, unknown>>({
                     )}
                   >
                     {col.sortable ? (
-                      <button
+                      <Button
+                        variant="ghost"
                         onClick={() => handleSort(col.key)}
-                        className="flex items-center gap-1.5 transition-colors hover:text-slate-700 dark:hover:text-white"
+                        className="flex items-center gap-1.5 h-auto p-0 font-semibold text-xs uppercase tracking-wider hover:text-slate-700 dark:hover:text-white"
                       >
                         {col.header}
                         <SortIcon colKey={col.key} />
-                      </button>
+                      </Button>
                     ) : (
                       col.header
                     )}
@@ -235,7 +238,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   onClick={() => setPage(pageNum)}
                   className={cn(
                     'h-8 w-8 p-0 text-xs',
-                    page === pageNum && 'bg-teal-600 text-white hover:bg-teal-700'
+                    page === pageNum && 'bg-primary-600 text-white hover:bg-primary-700'
                   )}
                 >
                   {pageNum + 1}
