@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,50 +24,47 @@ export async function GET(request: NextRequest) {
     };
     if (projectId) where.projectId = projectId;
 
-    const budgets = await prisma.budget.findMany({
-      where,
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-            organizationId: true,
-          },
+    const includeClause = {
+      project: {
+        select: {
+          id: true,
+          name: true,
+          organizationId: true,
         },
-        categories: {
-          include: {
-            expenses: {
-              where: {
-                status: 'APPROVED',
-                deletedAt: null,
-              },
+      },
+      categories: {
+        include: {
+          expenses: {
+            where: {
+              status: 'APPROVED' as const,
+              deletedAt: null,
             },
           },
         },
-        _count: {
-          select: {
-            expenses: true,
-            watchers: true,
-          },
+      },
+      _count: {
+        select: {
+          expenses: true,
+          watchers: true,
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    };
 
-    // Calculate spending for each budget
-    const budgetsWithStats = budgets.map(budget => {
-      const totalSpent = budget.categories.reduce((sum, category) => {
+    const orderByClause = {
+      createdAt: 'desc' as const,
+    };
+
+    const transformBudget = (budget: any) => {
+      const totalSpent = budget.categories.reduce((sum: number, category: any) => {
         const categorySpent = category.expenses.reduce(
-          (expSum, exp) => expSum + Number(exp.amount),
+          (expSum: number, exp: any) => expSum + Number(exp.amount),
           0
         );
         return sum + categorySpent;
       }, 0);
 
       const totalAllocated = budget.categories.reduce(
-        (sum, cat) => sum + Number(cat.allocatedAmount),
+        (sum: number, cat: any) => sum + Number(cat.allocatedAmount),
         0
       );
 
@@ -76,7 +74,36 @@ export async function GET(request: NextRequest) {
         totalAllocated,
         utilization: totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0,
       };
+    };
+
+    const url = request.nextUrl;
+    const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [budgets, total] = await Promise.all([
+        prisma.budget.findMany({
+          where,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.budget.count({ where }),
+      ]);
+
+      const budgetsWithStats = budgets.map(transformBudget);
+      return NextResponse.json(buildPaginatedResponse(budgetsWithStats, total, { page, limit, skip }));
+    }
+
+    const budgets = await prisma.budget.findMany({
+      where,
+      include: includeClause,
+      orderBy: orderByClause,
     });
+
+    const budgetsWithStats = budgets.map(transformBudget);
 
     return NextResponse.json({
       budgets: budgetsWithStats,

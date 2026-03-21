@@ -130,11 +130,12 @@ export function RoleSelection({ onSelect, onSkip }: RoleSelectionProps) {
               const isSelected = selectedRole === role.id;
 
               return (
-                <button
+                <Button
                   key={role.id}
+                  variant="ghost"
                   onClick={() => setSelectedRole(role.id)}
                   className={cn(
-                    "group w-full flex items-start gap-4 p-5 rounded-xl border-2 transition-all text-left relative overflow-hidden",
+                    "group w-full h-auto flex items-start gap-4 p-5 rounded-xl border-2 transition-all text-left relative overflow-hidden",
                     isSelected
                       ? "border-[#1C8C7D] bg-gradient-to-r from-[#1C8C7D]/10 to-transparent dark:from-[#1C8C7D]/20 dark:to-transparent shadow-md"
                       : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#161B22] hover:border-[#1C8C7D]/30 hover:shadow-sm"
@@ -168,29 +169,31 @@ export function RoleSelection({ onSelect, onSkip }: RoleSelectionProps) {
                       </div>
                     </div>
                   )}
-                </button>
+                </Button>
               );
             })}
           </div>
 
           {!showMore && ROLE_OPTIONS.length > 5 && (
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setShowMore(true)}
-              className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-[#1C8C7D] hover:text-[#156B60] transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-[#1C8C7D] hover:text-[#156B60] rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50"
             >
               Show more roles
               <ChevronDown className="h-4 w-4" />
-            </button>
+            </Button>
           )}
 
           {showMore && (
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setShowMore(false)}
-              className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50"
             >
               Show fewer roles
               <ChevronDown className="h-4 w-4 rotate-180" />
-            </button>
+            </Button>
           )}
 
           <div className="flex items-center justify-between mt-10 pt-8 border-t border-slate-200 dark:border-slate-800">

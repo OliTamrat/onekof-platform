@@ -494,8 +494,8 @@ export default function BudgetPage() {
               value={isLoading ? '...' : `ETB ${formatCompact(totalBudget - totalSpent)}`}
               label="remaining"
               sublabel={`${categoriesAtRisk} at risk (>80%)`}
-              iconBg="bg-teal-50 dark:bg-teal-900/20"
-              color="text-teal-600 dark:text-teal-400"
+              iconBg="bg-primary-50 dark:bg-primary-900/20"
+              color="text-primary-600 dark:text-primary-400"
             />
           </div>
         </div>
@@ -845,7 +845,7 @@ export default function BudgetPage() {
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Receipt', icon: Camera, type: 'receipt' as const, bg: 'bg-teal-50 dark:bg-teal-900/20', iconColor: 'text-teal-600 dark:text-teal-400' },
+                  { label: 'Receipt', icon: Camera, type: 'receipt' as const, bg: 'bg-primary-50 dark:bg-primary-900/20', iconColor: 'text-primary-600 dark:text-primary-400' },
                   { label: 'Invoice', icon: Receipt, type: 'receipt' as const, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
                   { label: 'Budget Doc', icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
                   { label: 'Expense Report', icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },

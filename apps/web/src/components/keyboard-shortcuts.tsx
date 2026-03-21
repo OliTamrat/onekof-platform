@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Shortcut {
   keys: string[];
@@ -71,17 +72,19 @@ export function KeyboardShortcutsModal() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
             <div className="flex items-center gap-2.5">
-              <Keyboard className="h-5 w-5 text-teal-500" />
+              <Keyboard className="h-5 w-5 text-primary-500" />
               <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                 Keyboard Shortcuts
               </h2>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setIsOpen(false)}
-              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white"
+              className="h-8 w-8 text-slate-400 hover:text-slate-600 dark:hover:text-white"
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
 
           {/* Shortcuts List */}

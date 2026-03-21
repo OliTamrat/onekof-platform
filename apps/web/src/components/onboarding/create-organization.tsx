@@ -188,12 +188,13 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
                 const isSelected = formData.teamSize === option.id;
 
                 return (
-                  <button
+                  <Button
                     key={option.id}
                     type="button"
+                    variant="ghost"
                     onClick={() => setFormData((prev) => ({ ...prev, teamSize: option.id }))}
                     className={cn(
-                      "w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left",
+                      "w-full h-auto flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left",
                       isSelected
                         ? "border-[#1C8C7D] bg-[#1C8C7D]/5 dark:bg-[#1C8C7D]/10"
                         : "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] hover:border-slate-300 dark:hover:border-slate-600"
@@ -222,7 +223,7 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
                         {option.description}
                       </p>
                     </div>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
