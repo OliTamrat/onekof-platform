@@ -38,6 +38,7 @@ import {
   ListChecks,
   GanttChart,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 /* ─── Hooks ─── */
 function useInView(threshold = 0.12) {
@@ -255,12 +256,12 @@ function CalendarMockup() {
       <div className="flex items-center justify-between">
         <span className="text-[14px] font-medium text-white/70">መጋቢት 2017</span>
         <div className="flex gap-1">
-          <button className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
+          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
             <ChevronLeft className="h-3.5 w-3.5" />
-          </button>
-          <button className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
+          </Button>
+          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
             <ChevronRight className="h-3.5 w-3.5" />
-          </button>
+          </Button>
         </div>
       </div>
       <div className="grid grid-cols-7 gap-0.5">
@@ -451,9 +452,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" aria-label="Toggle menu">
+          <Button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" aria-label="Toggle menu">
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 text-white/60" />}
-          </button>
+          </Button>
         </div>
 
         {/* Mobile menu */}
@@ -818,7 +819,7 @@ export default function HomePage() {
               {/* Tab buttons */}
               <div className="mb-8 flex flex-wrap justify-center gap-2">
                 {showcaseTabs.map((tab, i) => (
-                  <button
+                  <Button
                     key={tab.id}
                     onClick={() => setActiveShowcase(i)}
                     className={`group flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium transition-all duration-300 sm:gap-2 sm:px-5 sm:py-3 sm:text-[13px] ${
@@ -829,7 +830,7 @@ export default function HomePage() {
                   >
                     <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-primary-400' : 'text-white/40'}`} />
                     {tab.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
 
@@ -1043,15 +1044,15 @@ export default function HomePage() {
               </p>
 
               <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1">
-                <button
+                <Button
                   onClick={() => setBilling('monthly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
                     billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
                   Monthly
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setBilling('yearly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
                     billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
@@ -1059,7 +1060,7 @@ export default function HomePage() {
                 >
                   Yearly
                   {billing !== 'yearly' && <span className="ml-1.5 text-[11px] font-semibold text-emerald-400">Save 20%</span>}
-                </button>
+                </Button>
               </div>
             </div>
           </Reveal>

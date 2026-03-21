@@ -224,7 +224,7 @@ export default function IssuesIncidentsPage() {
               Track and manage safety, operational, and environmental incidents
             </p>
           </div>
-          <Button className="w-full sm:w-auto bg-red-600 hover:bg-red-700">
+          <Button variant="destructive" className="w-full sm:w-auto bg-red-600 hover:bg-red-700">
             <Plus className="w-4 h-4 mr-2" />
             Report Incident
           </Button>

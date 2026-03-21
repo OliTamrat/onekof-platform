@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOrganizationContext } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,32 +22,33 @@ export async function GET(request: NextRequest) {
     }
 
     const { organization } = context;
+    const url = request.nextUrl;
+    const hasPagination = url.searchParams.has('page');
 
-    // Get all members of the organization
     const { prisma } = await import('@onekof/database');
-    const members = await prisma.organizationMember.findMany({
-      where: {
-        organizationId: organization.id,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-            createdAt: true,
-          },
+
+    const whereClause = {
+      organizationId: organization.id,
+    };
+
+    const includeClause = {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatar: true,
+          createdAt: true,
         },
       },
-      orderBy: [
-        { role: 'asc' }, // OWNER first, then ADMIN, then MEMBER
-        { joinedAt: 'asc' },
-      ],
-    });
+    };
 
-    // Format response
-    const formattedMembers = members.map((member: any) => ({
+    const orderByClause = [
+      { role: 'asc' as const }, // OWNER first, then ADMIN, then MEMBER
+      { joinedAt: 'asc' as const },
+    ];
+
+    const formatMember = (member: any) => ({
       id: member.user.id,
       name: member.user.name || 'Unknown',
       email: member.user.email,
@@ -54,14 +57,41 @@ export async function GET(request: NextRequest) {
       budgetAccess: member.budgetAccess,
       joinedAt: member.joinedAt.toISOString(),
       userCreatedAt: member.user.createdAt.toISOString(),
-    }));
+    });
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [members, total] = await Promise.all([
+        prisma.organizationMember.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.organizationMember.count({ where: whereClause }),
+      ]);
+
+      const formattedMembers = members.map(formatMember);
+      return NextResponse.json(buildPaginatedResponse(formattedMembers, total, { page, limit, skip }));
+    }
+
+    // Legacy response (backward compatible)
+    const members = await prisma.organizationMember.findMany({
+      where: whereClause,
+      include: includeClause,
+      orderBy: orderByClause,
+    });
+
+    const formattedMembers = members.map(formatMember);
 
     return NextResponse.json({
       members: formattedMembers,
       total: formattedMembers.length,
     });
   } catch (error) {
-    console.error('Organization members error:', error);
+    logger.error('Organization members error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch organization members' },
       { status: 500 }

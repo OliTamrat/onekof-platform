@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +21,7 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('🏛️ Creating Ministry of Water and Irrigation...\n');
+    logger.info('Creating Ministry of Water and Irrigation');
 
     // 1. Create or find Organization
     let ministry = await prisma.organization.findUnique({
@@ -28,7 +29,7 @@ export async function POST(_request: NextRequest) {
     });
 
     if (ministry) {
-      console.log(`✅ Found existing organization: ${ministry.name}`);
+      logger.info('Found existing organization', { name: ministry.name });
     } else {
       ministry = await prisma.organization.create({
         data: {
@@ -51,7 +52,7 @@ export async function POST(_request: NextRequest) {
           ]
         }
       });
-      console.log(`✅ Created organization: ${ministry.name}`);
+      logger.info('Created organization', { name: ministry.name });
     }
 
     // 2. Create or find admin user
@@ -82,7 +83,7 @@ export async function POST(_request: NextRequest) {
           budgetAccess: 'FULL_CONTROL'
         }
       });
-      console.log(`✅ Added ${adminUser.email} as organization owner`);
+      logger.info('Added user as organization owner', { email: adminUser.email });
     }
 
     // 4. Check if Jira project already exists
@@ -136,7 +137,7 @@ export async function POST(_request: NextRequest) {
           }
         }
       });
-      console.log(`✅ Created project: ${project.name} (${project.key})`);
+      logger.info('Created project', { name: project.name, key: project.key });
     }
 
     // 6. Create budget if it doesn't exist
@@ -188,7 +189,7 @@ export async function POST(_request: NextRequest) {
         },
         include: { categories: true }
       });
-      console.log(`✅ Created budget: ${Number(budget.totalBudget).toLocaleString()} ${budget.currency}`);
+      logger.info('Created budget', { totalBudget: Number(budget.totalBudget), currency: budget.currency });
     }
 
     // 7. Create budget categories if they don't exist
@@ -247,7 +248,7 @@ export async function POST(_request: NextRequest) {
           }
         });
       }
-      console.log(`✅ Created ${categories.length} budget categories`);
+      logger.info('Created budget categories', { count: categories.length });
     }
 
     return NextResponse.json({
@@ -274,10 +275,10 @@ export async function POST(_request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Ministry project creation error:', error);
-    return NextResponse.json({
-      error: 'Failed to create ministry project',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    logger.error('Ministry project creation error', { error: error instanceof Error ? error.message : error });
+    return NextResponse.json(
+      { error: 'Failed to create ministry project' },
+      { status: 500 }
+    );
   }
 }

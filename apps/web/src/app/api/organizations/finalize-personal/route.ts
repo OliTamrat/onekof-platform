@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
       message: 'Personal workspace is ready.',
     });
   } catch (error) {
-    console.error('Error finalizing personal workspace:', error);
+    logger.error('Error finalizing personal workspace', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to set up personal workspace' },
       { status: 500 }

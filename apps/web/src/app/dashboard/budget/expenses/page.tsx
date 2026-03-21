@@ -295,7 +295,7 @@ export default function BudgetExpensesPage() {
               </div>
               <div className="flex gap-2">
                 {['all', 'PENDING', 'APPROVED', 'REJECTED', 'PAID'].map((s) => (
-                  <button
+                  <Button
                     key={s}
                     onClick={() => setStatusFilter(s)}
                     className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${
@@ -305,7 +305,7 @@ export default function BudgetExpensesPage() {
                     }`}
                   >
                     {s === 'all' ? 'All' : s.charAt(0) + s.slice(1).toLowerCase()}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -464,9 +464,9 @@ export default function BudgetExpensesPage() {
                 <Sparkles className="h-5 w-5 text-white" />
                 <h2 className="text-lg font-semibold text-white">AI Receipt Analysis</h2>
               </div>
-              <button onClick={() => { setIsUploadModalOpen(false); resetUpload(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
+              <Button variant="ghost" onClick={() => { setIsUploadModalOpen(false); resetUpload(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
                 <X className="h-5 w-5" />
-              </button>
+              </Button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6">

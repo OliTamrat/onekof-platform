@@ -17,6 +17,7 @@ import {
   Users,
   Workflow
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -72,13 +73,13 @@ export default function ProjectsSettingsPage() {
               </h1>
             </div>
 
-            <button
+            <Button
               onClick={handleSave}
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Save className="h-4 w-4" />
               Save Changes
-            </button>
+            </Button>
           </div>
 
           {/* Navigation Tabs */}
@@ -107,7 +108,7 @@ export default function ProjectsSettingsPage() {
               {SETTINGS_SECTIONS.map((section) => {
                 const Icon = section.icon;
                 return (
-                  <button
+                  <Button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
@@ -118,7 +119,7 @@ export default function ProjectsSettingsPage() {
                   >
                     <Icon className="h-4 w-4" />
                     {section.label}
-                  </button>
+                  </Button>
                 );
               })}
             </div>

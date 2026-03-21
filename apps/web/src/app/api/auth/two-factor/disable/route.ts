@@ -5,6 +5,7 @@ import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { z } from 'zod';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     const validation = disableSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Invalid request', details: validation.error.errors },
+        { error: 'Password is required to disable 2FA' },
         { status: 400 }
       );
     }
@@ -88,7 +89,7 @@ export async function POST(req: NextRequest) {
       message: 'Two-factor authentication has been disabled.',
     });
   } catch (error) {
-    console.error('2FA disable error:', error);
+    logger.error('2FA disable error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to disable two-factor authentication' },
       { status: 500 }

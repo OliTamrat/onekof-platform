@@ -35,6 +35,7 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type GoalStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'AT_RISK' | 'COMPLETED' | 'CANCELLED';
 type GoalPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -326,13 +327,13 @@ export default function IssuesGoalsPage() {
                 </p>
               </div>
 
-              <button
+              <Button
                 onClick={() => setShowCreateGoal(true)}
                 className="flex items-center gap-2 rounded-lg bg-[#8B5CF6] px-4 py-2 text-sm font-medium text-white hover:bg-[#7C3AED] transition-colors shadow-sm"
               >
                 <Plus className="h-4 w-4" />
                 Create Goal
-              </button>
+              </Button>
             </div>
 
             {/* Status Filter */}
@@ -344,7 +345,7 @@ export default function IssuesGoalsPage() {
                 { value: 'AT_RISK', label: 'At Risk', icon: AlertTriangle },
                 { value: 'COMPLETED', label: 'Completed', icon: CheckCircle2 },
               ].map(({ value, label, icon: Icon }) => (
-                <button
+                <Button
                   key={value}
                   onClick={() => setStatusFilter(value)}
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
@@ -355,7 +356,7 @@ export default function IssuesGoalsPage() {
                 >
                   <Icon className="h-4 w-4" />
                   {label}
-                </button>
+                </Button>
               ))}
             </div>
 
@@ -379,13 +380,13 @@ export default function IssuesGoalsPage() {
                     : `No goals with status "${statusFilter.replace('_', ' ').toLowerCase()}"`}
                 </p>
                 {statusFilter === 'all' && (
-                  <button
+                  <Button
                     onClick={() => setShowCreateGoal(true)}
                     className="mt-4 flex items-center gap-2 rounded-lg bg-[#8B5CF6] px-4 py-2 text-sm font-medium text-white hover:bg-[#7C3AED]"
                   >
                     <Plus className="h-4 w-4" />
                     Create Goal
-                  </button>
+                  </Button>
                 )}
               </div>
             ) : (
@@ -411,7 +412,7 @@ export default function IssuesGoalsPage() {
                             {/* Title Row */}
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1">
-                                <button
+                                <Button
                                   onClick={() => toggleGoalExpand(goal.id)}
                                   className="flex items-center gap-2 text-left w-full group"
                                 >
@@ -423,7 +424,7 @@ export default function IssuesGoalsPage() {
                                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#8B5CF6] transition-colors">
                                     {goal.title}
                                   </h3>
-                                </button>
+                                </Button>
                                 {goal.description && (
                                   <p className="mt-1 text-sm text-gray-600 dark:text-slate-400 line-clamp-2 ml-6">
                                     {goal.description}
@@ -587,12 +588,12 @@ export default function IssuesGoalsPage() {
                 <Target className="h-5 w-5 text-[#8B5CF6]" />
                 Create Goal (OKR)
               </h2>
-              <button
+              <Button variant="ghost" size="icon"
                 onClick={() => setShowCreateGoal(false)}
                 className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
               >
                 <Plus className="h-5 w-5 rotate-45 text-gray-600 dark:text-slate-400" />
-              </button>
+              </Button>
             </div>
 
             <form onSubmit={handleCreateGoal} className="p-6 space-y-6">
@@ -682,13 +683,13 @@ export default function IssuesGoalsPage() {
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                     Key Results
                   </h3>
-                  <button
+                  <Button
                     type="button"
                     onClick={addKeyResult}
                     className="text-sm text-[#8B5CF6] hover:text-[#7C3AED] font-medium"
                   >
                     + Add Key Result
-                  </button>
+                  </Button>
                 </div>
 
                 {goalFormData.keyResults.map((kr, index) => (
@@ -704,13 +705,13 @@ export default function IssuesGoalsPage() {
                         />
                       </div>
                       {goalFormData.keyResults.length > 1 && (
-                        <button
+                        <Button
                           type="button"
                           onClick={() => removeKeyResult(index)}
                           className="mt-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                         >
                           <XCircle className="h-5 w-5" />
-                        </button>
+                        </Button>
                       )}
                     </div>
 
@@ -745,21 +746,21 @@ export default function IssuesGoalsPage() {
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowCreateGoal(false)}
                   className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={createGoalMutation.isPending}
                   className="flex items-center gap-2 rounded-lg bg-[#8B5CF6] px-4 py-2 text-sm font-medium text-white hover:bg-[#7C3AED] transition-colors shadow-sm disabled:opacity-50"
                 >
                   <Plus className="h-4 w-4" />
                   {createGoalMutation.isPending ? 'Creating...' : 'Create Goal'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { processDocument, extractTextFromFile, checkAIQuota } from '@/lib/ai/claude';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,10 +112,7 @@ export async function POST(request: NextRequest) {
       extractedText = await extractTextFromFile(buffer, file.type);
     } catch (error) {
       return NextResponse.json(
-        {
-          error: 'Failed to extract text from file',
-          details: error instanceof Error ? error.message : 'Unknown error',
-        },
+        { error: 'Failed to extract text from file' },
         { status: 500 }
       );
     }
@@ -154,12 +152,9 @@ export async function POST(request: NextRequest) {
       message: 'Document uploaded successfully. AI processing in progress...',
     });
   } catch (error) {
-    console.error('Document upload error:', error);
+    logger.error('Document upload error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
-      {
-        error: 'Failed to upload document',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Failed to upload document' },
       { status: 500 }
     );
   }
@@ -225,9 +220,9 @@ async function processDocumentAsync(
       await extractMilestones(documentId, result.extractedData, userId);
     }
 
-    console.log(`✅ Document ${documentId} processed successfully`);
+    logger.info('Document processed successfully', { documentId });
   } catch (error) {
-    console.error('AI processing error:', error);
+    logger.error('AI processing error', { error: error instanceof Error ? error.message : error });
 
     // Update document status to FAILED
     await prisma.document.update({
@@ -295,7 +290,7 @@ async function extractBudgetItems(
       });
     }
   } catch (error) {
-    console.error('Error extracting budget items:', error);
+    logger.error('Error extracting budget items', { error: error instanceof Error ? error.message : error });
   }
 }
 
@@ -332,6 +327,6 @@ async function extractMilestones(
       });
     }
   } catch (error) {
-    console.error('Error extracting milestones:', error);
+    logger.error('Error extracting milestones', { error: error instanceof Error ? error.message : error });
   }
 }

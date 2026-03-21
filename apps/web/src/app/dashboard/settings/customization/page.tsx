@@ -22,6 +22,7 @@ import {
 import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
 import type { OrganizationSettings, DashboardSectionId, OrganizationType } from '@/types/organization-settings';
+import { Button } from '@/components/ui/button';
 
 // Mock current organization settings (replace with real data from API/context)
 const INITIAL_SETTINGS: OrganizationSettings = {
@@ -197,15 +198,15 @@ export default function DashboardCustomizationPage() {
                   Unsaved changes
                 </span>
               )}
-              <button
+              <Button
                 onClick={resetToDefaults}
                 disabled={isLoading}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RotateCcw className="h-4 w-4" />
                 Reset
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSaveSettings}
                 disabled={!hasUnsavedChanges || isSaving || isLoading}
                 className={`flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md ${
@@ -216,7 +217,7 @@ export default function DashboardCustomizationPage() {
               >
                 {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -233,7 +234,7 @@ export default function DashboardCustomizationPage() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {presets.map((preset) => (
-                  <button
+                  <Button
                     key={preset.name}
                     onClick={() => applyPreset(preset.name)}
                     className={`text-left p-4 rounded-lg border-2 transition-all ${
@@ -261,7 +262,7 @@ export default function DashboardCustomizationPage() {
                         </span>
                       )}
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -295,7 +296,7 @@ export default function DashboardCustomizationPage() {
                             <p className="text-xs text-gray-600 dark:text-slate-400">{info.description}</p>
                           </div>
                         </div>
-                        <button
+                        <Button
                           onClick={() => toggleSection(id as DashboardSectionId)}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                             isEnabled ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
@@ -306,7 +307,7 @@ export default function DashboardCustomizationPage() {
                               isEnabled ? 'translate-x-6' : 'translate-x-1'
                             }`}
                           />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   );
@@ -325,14 +326,14 @@ export default function DashboardCustomizationPage() {
                   {Object.entries(settings.features.budget).map(([feature, enabled]) => (
                     <div key={feature} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-slate-700">
                       <span className="text-sm text-gray-900 dark:text-white capitalize">{feature.replace(/([A-Z])/g, ' $1').trim()}</span>
-                      <button
+                      <Button
                         onClick={() => toggleFeature('budget', feature)}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                           enabled ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                         }`}
                       >
                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -348,42 +349,42 @@ export default function DashboardCustomizationPage() {
                     <div className="font-medium text-sm text-gray-900 dark:text-white">AI Assistant</div>
                     <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Enable AI-powered help and suggestions</div>
                   </div>
-                  <button
+                  <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, aiAssistant: !settings.features.aiAssistant } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.aiAssistant ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings.features.aiAssistant ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-slate-700">
                   <div>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">Advanced Analytics</div>
                     <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Detailed insights and data visualization</div>
                   </div>
-                  <button
+                  <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, analytics: !settings.features.analytics } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.analytics ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings.features.analytics ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-slate-700">
                   <div>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">Third-party Integrations</div>
                     <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Connect with external tools and services</div>
                   </div>
-                  <button
+                  <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, integrations: !settings.features.integrations } })}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       settings.features.integrations ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings.features.integrations ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

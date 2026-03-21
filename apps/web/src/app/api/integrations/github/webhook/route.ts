@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyGitHubWebhookSignature, handleGitHubWebhook } from '@/lib/integrations/github';
 import { getConnections } from '@/lib/integrations/store';
 import type { GitHubConfig } from '@/lib/integrations/types';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, delivery: deliveryId });
   } catch (error) {
-    console.error('GitHub webhook error:', error);
+    logger.error('GitHub webhook error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

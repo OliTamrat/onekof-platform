@@ -121,12 +121,12 @@ export default function IssuesSummaryPage() {
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
             The session is taking longer than expected to load. This might be a configuration issue.
           </p>
-          <button
+          <Button
             onClick={() => router.push('/auth/signin')}
             className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
           >
             Go to Sign In
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -339,7 +339,7 @@ export default function IssuesSummaryPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Status Overview */}
           <div className="lg:col-span-2">
-            <button
+            <Button
               onClick={handleShowAllStatusOverview}
               className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
             >
@@ -421,7 +421,7 @@ export default function IssuesSummaryPage() {
 
                 {/* Legend - Properly aligned */}
                 <div className="flex-1 w-full space-y-2 md:space-y-3">
-                  <button
+                  <Button variant="ghost" size="icon"
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
@@ -430,8 +430,8 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">To Do</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="ghost" size="icon"
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
@@ -440,8 +440,8 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Progress</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="ghost" size="icon"
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
@@ -450,8 +450,8 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Review</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="ghost" size="icon"
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
@@ -460,7 +460,7 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">Done</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -481,7 +481,7 @@ export default function IssuesSummaryPage() {
                 </div>
               </div>
               </div>
-            </button>
+            </Button>
           </div>
 
           {/* Right Sidebar */}
@@ -630,12 +630,12 @@ export default function IssuesSummaryPage() {
                     {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'} found
                   </p>
                 </div>
-                <button
+                <Button variant="ghost" size="icon"
                   onClick={() => setIsFilterModalOpen(false)}
                   className="rounded-md p-2 text-white hover:bg-white/20 transition-colors"
                 >
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -712,7 +712,7 @@ export default function IssuesSummaryPage() {
               {filteredTasks.length > 0 ? (
                 <div className="space-y-3">
                   {filteredTasks.map((task: any) => (
-                    <button
+                    <Button
                       key={task.id}
                       onClick={() => {
                         setSelectedIssue(task);
@@ -790,7 +790,7 @@ export default function IssuesSummaryPage() {
                           <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700" />
                         )}
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : (
@@ -842,7 +842,7 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button
       onClick={onClick}
       className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
@@ -866,7 +866,7 @@ function StatCard({
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
         <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-1">{sublabel}</div>
       </div>
-    </button>
+    </Button>
   );
 }
 

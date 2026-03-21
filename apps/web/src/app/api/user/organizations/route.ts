@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getUserOrganizations } from '@/lib/organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,7 @@ export async function GET() {
       })),
     });
   } catch (error) {
-    console.error('Error fetching user organizations:', error);
+    logger.error('Error fetching user organizations', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch organizations' },
       { status: 500 }

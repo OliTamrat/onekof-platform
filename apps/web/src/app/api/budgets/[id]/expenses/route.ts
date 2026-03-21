@@ -4,6 +4,7 @@ import { prisma } from '@onekof/database';
 import { checkBudgetAccess, canApproveExpense } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +79,7 @@ export async function GET(
 
     return NextResponse.json({ expenses });
   } catch (error) {
-    console.error('Expenses fetch error:', error);
+    logger.error('Expenses fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to fetch expenses' }, { status: 500 });
   }
 }
@@ -184,7 +185,7 @@ export async function POST(
 
     return NextResponse.json({ expense }, { status: 201 });
   } catch (error) {
-    console.error('Expense creation error:', error);
+    logger.error('Expense creation error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to create expense' }, { status: 500 });
   }
 }

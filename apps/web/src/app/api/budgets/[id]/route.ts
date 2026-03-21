@@ -128,7 +128,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Budget fetch error:', error);
+    log.error('Budget fetch error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch budget' },
       { status: 500 }
@@ -214,7 +214,7 @@ export async function PATCH(
       message: 'Budget updated successfully',
     });
   } catch (error) {
-    console.error('Budget update error:', error);
+    log.error('Budget update error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to update budget' },
       { status: 500 }
@@ -278,7 +278,7 @@ export async function DELETE(
       message: 'Budget deleted successfully',
     });
   } catch (error) {
-    console.error('Budget deletion error:', error);
+    log.error('Budget deletion error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to delete budget' },
       { status: 500 }
