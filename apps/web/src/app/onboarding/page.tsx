@@ -466,9 +466,12 @@ function OnboardingContent() {
                     Calendar Preference
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setCalendarPreference('ethiopian')}
-                      className={`rounded-xl border p-3 text-left transition-all ${
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('ethiopian'); } }}
+                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'ethiopian'
                           ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
                           : 'border-white/[0.08] hover:border-white/[0.15]'
@@ -482,11 +485,14 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
                       <div className="text-xs text-white/60">የኢትዮጵያ ዘመን አቆጣጠር</div>
-                    </Button>
+                    </div>
 
-                    <Button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setCalendarPreference('gregorian')}
-                      className={`rounded-xl border p-3 text-left transition-all ${
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('gregorian'); } }}
+                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'gregorian'
                           ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
                           : 'border-white/[0.08] hover:border-white/[0.15]'
@@ -500,11 +506,14 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
                       <div className="text-xs text-white/60">International</div>
-                    </Button>
+                    </div>
 
-                    <Button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setCalendarPreference('both')}
-                      className={`rounded-xl border p-3 text-left transition-all ${
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('both'); } }}
+                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
                         calendarPreference === 'both'
                           ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
                           : 'border-white/[0.08] hover:border-white/[0.15]'
@@ -518,7 +527,7 @@ function OnboardingContent() {
                       </div>
                       <div className="font-semibold text-white text-sm mb-0.5">Both</div>
                       <div className="text-xs text-white/60">Show both calendars</div>
-                    </Button>
+                    </div>
                   </div>
                 </div>
 
