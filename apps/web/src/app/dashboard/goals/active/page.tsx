@@ -73,9 +73,9 @@ export default function GoalsActivePage() {
         baseHref="/dashboard/goals"
       />
 
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="text-sm text-gray-600 dark:text-slate-400">Active Goals</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredGoals.length}</div>

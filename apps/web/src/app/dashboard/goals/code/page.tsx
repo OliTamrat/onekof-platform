@@ -128,9 +128,12 @@ export default function GoalsCodePage() {
                 </p>
 
                 <div className="space-y-3">
-                  <Button
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedProvider('github')}
-                    className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProvider('github'); } }}
+                    className={`w-full cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'github'
                         ? 'border-primary-500 bg-primary-500/5'
                         : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-[#3C434A]'
@@ -141,11 +144,14 @@ export default function GoalsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">GitHub</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect GitHub repositories</div>
                     </div>
-                  </Button>
+                  </div>
 
-                  <Button
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedProvider('gitlab')}
-                    className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProvider('gitlab'); } }}
+                    className={`w-full cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'gitlab'
                         ? 'border-primary-500 bg-primary-500/5'
                         : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-[#3C434A]'
@@ -156,11 +162,14 @@ export default function GoalsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect GitLab repositories</div>
                     </div>
-                  </Button>
+                  </div>
 
-                  <Button
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedProvider('bitbucket')}
-                    className={`w-full flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProvider('bitbucket'); } }}
+                    className={`w-full cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
                       selectedProvider === 'bitbucket'
                         ? 'border-primary-500 bg-primary-500/5'
                         : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-[#3C434A]'
@@ -171,7 +180,7 @@ export default function GoalsCodePage() {
                       <div className="font-semibold text-gray-900 dark:text-white">Bitbucket</div>
                       <div className="text-xs text-gray-600 dark:text-slate-400">Connect Bitbucket repositories</div>
                     </div>
-                  </Button>
+                  </div>
                 </div>
               </div>
 

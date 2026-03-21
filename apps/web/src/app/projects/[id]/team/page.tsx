@@ -38,7 +38,7 @@ export default function ProjectTeamPage() {
   }
 
   return (
-    <div className="h-full overflow-auto bg-gray-50 dark:bg-[#1B1F23] p-6">
+    <div className="h-full overflow-auto bg-gray-50 dark:bg-[#1B1F23] p-4 sm:p-6">
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -68,7 +68,7 @@ export default function ProjectTeamPage() {
             members.map(member => (
               <div
                 key={member.id}
-                className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow"
+                className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 sm:p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-[#1C8C7D] flex items-center justify-center text-lg text-white font-semibold">

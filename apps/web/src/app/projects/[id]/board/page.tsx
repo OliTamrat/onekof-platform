@@ -54,7 +54,7 @@ export default function ProjectBoardPage() {
         {STATUSES.map(status => (
           <div
             key={status.id}
-            className="flex w-80 flex-shrink-0 flex-col rounded-lg bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700"
+            className="flex w-72 sm:w-80 flex-shrink-0 flex-col rounded-lg bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700"
           >
             {/* Column Header */}
             <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-4 py-3">
