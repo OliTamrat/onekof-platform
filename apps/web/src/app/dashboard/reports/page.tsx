@@ -16,7 +16,6 @@ export default function ReportsAndAnalyticsPage() {
 
         currentTab="summary"
         baseHref="/dashboard/reports"
-        showTabs
         showSearch
         showFilters
         showGroupBy

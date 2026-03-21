@@ -47,6 +47,7 @@ import {
   Eye,
   Lock,
   Unlock,
+  FolderKanban,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -110,15 +111,17 @@ interface IconRendererProps {
  * Renders a Lucide React icon by name
  * Used to dynamically display icons stored as strings in the database
  */
-export function IconRenderer({ iconName, className, style, fallback = '📁' }: IconRendererProps) {
+export function IconRenderer({ iconName, className, style, fallback }: IconRendererProps) {
   if (!iconName) {
-    return <>{fallback}</>;
+    if (fallback) return <>{fallback}</>;
+    return <FolderKanban className={className} style={style} />;
   }
 
   const IconComponent = ICON_MAP[iconName];
 
   if (!IconComponent) {
-    return <>{fallback}</>;
+    if (fallback) return <>{fallback}</>;
+    return <FolderKanban className={className} style={style} />;
   }
 
   return <IconComponent className={className} style={style} />;
