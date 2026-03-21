@@ -2,6 +2,7 @@
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { Settings } from 'lucide-react';
 
 export default function IssuesSettingsPage() {
@@ -14,6 +15,7 @@ export default function IssuesSettingsPage() {
         currentTab="settings"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy

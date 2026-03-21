@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { QuickAddEventModal } from '@/components/calendar/quick-add-event-modal';
 import { DualCalendar, type CalendarTask } from '@/components/calendar/dual-calendar';
@@ -86,6 +87,7 @@ export default function IssuesCalendarPage() {
         currentTab="calendar"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
