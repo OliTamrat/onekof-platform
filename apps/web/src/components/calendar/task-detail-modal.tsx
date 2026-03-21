@@ -22,6 +22,7 @@ import {
   Paperclip,
 } from 'lucide-react';
 import type { CalendarTask } from './dual-calendar';
+import { Button } from '@/components/ui/button';
 
 interface TaskDetailModalProps {
   task: CalendarTask;
@@ -146,27 +147,32 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           <div className="flex items-center gap-2">
             {!isEditing && (
               <>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => setIsEditing(true)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                  className="rounded-lg text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={handleDelete}
-                  className="rounded-lg p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  className="rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                   title="Delete task"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </>
             )}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+              className="rounded-lg hover:bg-gray-100 dark:hover:bg-[#282E33]"
             >
               <X className="h-5 w-5 text-gray-600 dark:text-slate-400" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -411,21 +417,22 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           {/* Action Buttons */}
           {isEditing && (
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={() => setIsEditing(false)}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                className="rounded-lg text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors disabled:opacity-50"
+                className="rounded-lg bg-primary-500 text-white hover:bg-primary-600"
               >
                 <Save className="h-4 w-4" />
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
-              </button>
+              </Button>
             </div>
           )}
         </form>

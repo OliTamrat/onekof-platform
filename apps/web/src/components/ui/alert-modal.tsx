@@ -1,6 +1,7 @@
 'use client';
 
 import { X, Info, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface AlertModalProps {
   isOpen: boolean;
@@ -49,13 +50,15 @@ export function AlertModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-md rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-2xl">
         {/* Close Button */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute right-4 top-4 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+          className="absolute right-4 top-4 h-8 w-8 text-slate-400 hover:text-slate-900 dark:hover:text-white"
           title="Close"
         >
           <X className="h-5 w-5" />
-        </button>
+        </Button>
 
         {/* Content */}
         <div className="p-6">
@@ -75,19 +78,18 @@ export function AlertModal({
           {/* Actions */}
           <div className="flex justify-end gap-3 pl-9">
             {cancelText && (
-              <button
+              <Button
+                variant="outline"
                 onClick={onClose}
-                className="rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#282E33] px-4 py-2 text-sm font-medium text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
               >
                 {cancelText}
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={handleConfirm}
-              className="rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               {confirmText}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

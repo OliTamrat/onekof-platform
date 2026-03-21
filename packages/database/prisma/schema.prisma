@@ -421,6 +421,8 @@ model Task {
 
   // Hierarchy
   parentId String? @map("parent_id")
+  parent   Task?   @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: SetNull)
+  subtasks Task[]  @relation("TaskSubtasks")
 
   // Time tracking
   estimate    Int?      @map("estimate") // In hours
@@ -439,7 +441,7 @@ model Task {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  assignee          User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  assignee          User?         @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   reporter          User          @relation("TaskReporter", fields: [reporterId], references: [id])
   comments          Comment[]
   attachments       Attachment[]
@@ -456,6 +458,7 @@ model Task {
   @@index([reporterId, createdAt]) // Tasks I reported
   @@index([status, dueDate]) // Global task due date queries
   @@index([priority, status, deletedAt]) // Priority-based views
+  @@index([parentId]) // Subtask lookups
   @@map("tasks")
   @@schema("public")
 }

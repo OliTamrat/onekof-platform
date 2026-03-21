@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast-provider';
+import { Button } from '@/components/ui/button';
 
 interface CreateIssueModalProps {
   onClose: () => void;
@@ -133,12 +134,14 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Create New Issue
           </h2>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#282E33] dark:hover:text-gray-300"
+            className="rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#282E33] dark:hover:text-gray-300"
           >
             <X className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         {/* Form */}
@@ -324,7 +327,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                         type="checkbox"
                         checked={selectedGoals.includes(goal.id)}
                         onChange={() => toggleGoal(goal.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                        className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
                         {goal.title}
@@ -350,7 +353,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                         type="checkbox"
                         checked={selectedWatchers.includes(member.userId)}
                         onChange={() => toggleWatcher(member.userId)}
-                        className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                        className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
                         {member.user?.name || member.user?.email}
@@ -367,21 +370,22 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 border-t border-gray-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:text-gray-300 dark:hover:bg-[#282E33]"
+            className="rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:text-gray-300 dark:hover:bg-[#282E33]"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSubmit}
             disabled={createIssueMutation.isPending || !title.trim() || !projectId}
-            className="flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+            className="rounded-lg bg-primary-600 text-white hover:bg-primary-700"
           >
             {createIssueMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {createIssueMutation.isPending ? 'Creating...' : 'Create Issue'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

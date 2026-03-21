@@ -23,6 +23,7 @@ import {
   type EthiopianDate
 } from '@/lib/ethiopian-calendar';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export type CalendarSystem = 'gregorian' | 'ethiopian';
 export type ViewMode = 'month' | 'week' | 'day' | 'timeline';
@@ -236,26 +237,32 @@ export function DualCalendar({
           {/* Left: Date nav */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div className="flex items-center gap-1">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => navigate('prev')}
-                className="rounded-md p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                className="h-auto w-auto p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                 aria-label="Previous"
               >
                 <ChevronLeft className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={goToToday}
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors"
+                className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]"
               >
                 Today
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => navigate('next')}
-                className="rounded-md p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                className="h-auto w-auto p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                 aria-label="Next"
               >
                 <ChevronRight className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              </button>
+              </Button>
             </div>
             <h2 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white truncate">
               {formatCurrentDate()}
@@ -268,14 +275,16 @@ export function DualCalendar({
           </div>
 
           {/* Right: Calendar toggle */}
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setCalendarSystem(prev => prev === 'gregorian' ? 'ethiopian' : 'gregorian')}
-            className="flex items-center gap-1.5 rounded-md border border-slate-300 dark:border-slate-600 px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+            className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] shrink-0"
           >
             <Globe className="h-3.5 w-3.5 text-primary-500" />
             <span className="hidden sm:inline">{calendarSystem === 'gregorian' ? 'Gregorian' : 'Ethiopian'}</span>
             <span className="sm:hidden">{calendarSystem === 'gregorian' ? 'GC' : 'EC'}</span>
-          </button>
+          </Button>
         </div>
 
         {/* Bottom row: View mode + actions */}
@@ -284,11 +293,12 @@ export function DualCalendar({
             {/* View mode tabs */}
             <div className="flex items-center rounded-lg bg-slate-100 dark:bg-[#1B1F23] p-0.5 sm:p-1">
               {viewModes.map(({ id, icon: Icon, label }) => (
-                <button
+                <Button
                   key={id}
+                  variant="ghost"
                   onClick={() => setViewMode(id)}
                   className={cn(
-                    'flex items-center gap-1.5 rounded-md px-2 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-all',
+                    'flex h-auto items-center gap-1.5 rounded-md px-2 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-all',
                     viewMode === id
                       ? 'bg-white dark:bg-[#22272B] text-slate-900 dark:text-white shadow-sm'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -296,17 +306,19 @@ export function DualCalendar({
                 >
                   <Icon className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">{label}</span>
-                </button>
+                </Button>
               ))}
             </div>
 
             {/* Actions */}
             <div className="flex items-center gap-1.5 sm:gap-2">
               {showFilters && (
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowFilterPanel(!showFilterPanel)}
                   className={cn(
-                    'flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors',
+                    'flex items-center gap-1.5 transition-colors',
                     showFilterPanel || activeFilterCount > 0
                       ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
                       : 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]'
@@ -319,15 +331,16 @@ export function DualCalendar({
                       {activeFilterCount}
                     </span>
                   )}
-                </button>
+                </Button>
               )}
-              <button
+              <Button
+                size="sm"
                 onClick={() => onCreateTask?.(currentDate)}
-                className="flex items-center gap-1.5 rounded-md bg-primary-500 px-2.5 py-1.5 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm"
+                className="bg-primary-500 text-white hover:bg-primary-600 shadow-sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Create Task</span>
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -343,13 +356,15 @@ export function DualCalendar({
                   {uniqueProjects.map(p => {
                     const active = selectedProjects.includes(p.id);
                     return (
-                      <button
+                      <Button
                         key={p.id}
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setSelectedProjects(prev =>
                           active ? prev.filter(id => id !== p.id) : [...prev, p.id]
                         )}
                         className={cn(
-                          'flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          'h-auto flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
                           active
                             ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/30'
                             : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -357,7 +372,7 @@ export function DualCalendar({
                       >
                         <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
                         {p.name}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -370,32 +385,36 @@ export function DualCalendar({
                   {(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'] as const).map(s => {
                     const active = selectedStatuses.includes(s);
                     return (
-                      <button
+                      <Button
                         key={s}
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setSelectedStatuses(prev =>
                           active ? prev.filter(x => x !== s) : [...prev, s]
                         )}
                         className={cn(
-                          'rounded-md px-2 py-1 text-xs font-medium transition-colors',
+                          'h-auto rounded-md px-2 py-1 text-xs font-medium transition-colors',
                           active
                             ? STATUS_BG[s]
                             : 'bg-slate-100 dark:bg-[#282E33] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                         )}
                       >
                         {s.replace('_', ' ')}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
               </div>
 
               {activeFilterCount > 0 && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => { setSelectedProjects([]); setSelectedStatuses([]); }}
-                  className="self-end text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors"
+                  className="self-end h-auto px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-red-500"
                 >
                   Clear all
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -457,10 +476,11 @@ function TaskChip({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={(e) => { e.stopPropagation(); onClick?.(); }}
       className={cn(
-        'w-full text-left rounded-md border-l-[3px] transition-all cursor-pointer group',
+        'w-full h-auto text-left rounded-md border-l-[3px] transition-all cursor-pointer group p-0',
         'hover:shadow-md hover:scale-[1.01]',
         'bg-white dark:bg-[#22272B]',
         STATUS_COLORS[task.status] || 'border-l-slate-300',
@@ -482,7 +502,7 @@ function TaskChip({
           {task.title}
         </span>
       </div>
-    </button>
+    </Button>
   );
 }
 
@@ -613,12 +633,13 @@ function MonthView({
                         />
                       ))}
                       {dayTasks.length > 2 && (
-                        <button
+                        <Button
+                          variant="ghost"
                           onClick={(e) => { e.stopPropagation(); }}
-                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="w-full h-auto text-center rounded-md py-0.5 px-1 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                         >
                           +{dayTasks.length - 2} more
-                        </button>
+                        </Button>
                       )}
                     </div>
 
@@ -633,12 +654,13 @@ function MonthView({
                         />
                       ))}
                       {dayTasks.length > 3 && (
-                        <button
+                        <Button
+                          variant="ghost"
                           onClick={(e) => { e.stopPropagation(); }}
-                          className="w-full text-center rounded-md py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="w-full h-auto text-center rounded-md py-0.5 px-1 text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
                         >
                           +{dayTasks.length - 3} more
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>

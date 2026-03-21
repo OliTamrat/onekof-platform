@@ -29,19 +29,19 @@ const config: Config = {
         ],
       },
       colors: {
-        // Semantic tokens — Electric Blue design system
+        // Semantic tokens — Teal design system (#1C8C7D primary)
         primary: {
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          200: '#BFDBFE',
-          300: '#93C5FD',
-          400: '#3B82F6',
-          500: '#2563EB', // Main electric blue accent
-          600: '#1D4ED8',
-          700: '#1E40AF',
-          800: '#1E3A8A',
-          900: '#1E3A8A',
-          950: '#172554',
+          50: '#EFFEFB',
+          100: '#C7FFF5',
+          200: '#90F8E8',
+          300: '#51E8D2',
+          400: '#22C9B0',
+          500: '#1C8C7D', // Main teal accent
+          600: '#167064',
+          700: '#155A51',
+          800: '#164842',
+          900: '#173C38',
+          950: '#082220',
         },
         // Violet accent for AI features, highlights, badges
         violet: {
@@ -57,20 +57,20 @@ const config: Config = {
           900: '#4C1D95',
           950: '#2E1065',
         },
-        // Dark mode surface system — Pure black for premium feel
+        // Dark mode surface system — Three-tier per CLAUDE.md
         surface: {
           DEFAULT: '#FFFFFF',
           secondary: '#F8FAFC',
-          dark: '#000000',
-          'dark-secondary': '#0A0A0A',
+          dark: '#1B1F23',
+          'dark-secondary': '#1B1F23',
         },
         card: {
           DEFAULT: '#FFFFFF',
-          dark: '#0A0A0A',
+          dark: '#22272B',
         },
         elevated: {
           DEFAULT: '#FFFFFF',
-          dark: '#111111',
+          dark: '#282E33',
         },
         // Legacy palettes — kept for backward compatibility
         brand: {
@@ -137,11 +137,11 @@ const config: Config = {
             950: '#253858',
           },
           dark: {
-            bg: '#000000',
-            surface: '#0A0A0A',
-            border: '#1A1A1A',
-            sidebar: '#000000',
-            navbar: '#000000',
+            bg: '#1B1F23',
+            surface: '#22272B',
+            border: '#2D3339',
+            sidebar: '#1B1F23',
+            navbar: '#1B1F23',
           },
           success: '#10B981',
           warning: '#F59E0B',
@@ -150,22 +150,22 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        'gradient-brand': 'linear-gradient(135deg, #2563EB, #7C3AED)',
-        'gradient-brand-hover': 'linear-gradient(135deg, #1D4ED8, #6D28D9)',
-        'gradient-accent': 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
-        'gradient-hero': 'linear-gradient(135deg, #000000 0%, #050510 40%, #0A0A1A 100%)',
-        'gradient-dark': 'linear-gradient(135deg, #000000, #050510)',
+        'gradient-brand': 'linear-gradient(135deg, #1C8C7D, #7C3AED)',
+        'gradient-brand-hover': 'linear-gradient(135deg, #167064, #6D28D9)',
+        'gradient-accent': 'linear-gradient(135deg, #8B5CF6, #1C8C7D)',
+        'gradient-hero': 'linear-gradient(135deg, #1B1F23 0%, #171B1F 40%, #131619 100%)',
+        'gradient-dark': 'linear-gradient(135deg, #1B1F23, #171B1F)',
         'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
       },
       boxShadow: {
-        'brand-sm': '0 2px 8px -2px rgba(37, 99, 235, 0.25)',
-        'brand-md': '0 4px 16px -4px rgba(37, 99, 235, 0.3)',
-        'brand-lg': '0 8px 32px -8px rgba(37, 99, 235, 0.35)',
-        'brand-xl': '0 16px 48px -12px rgba(37, 99, 235, 0.4)',
+        'brand-sm': '0 2px 8px -2px rgba(28, 140, 125, 0.25)',
+        'brand-md': '0 4px 16px -4px rgba(28, 140, 125, 0.3)',
+        'brand-lg': '0 8px 32px -8px rgba(28, 140, 125, 0.35)',
+        'brand-xl': '0 16px 48px -12px rgba(28, 140, 125, 0.4)',
         'accent-md': '0 4px 16px -4px rgba(139, 92, 246, 0.3)',
-        'glow': '0 0 40px rgba(37, 99, 235, 0.15)',
-        'glow-lg': '0 0 80px rgba(37, 99, 235, 0.2)',
-        'glow-blue': '0 0 60px rgba(59, 130, 246, 0.15)',
+        'glow': '0 0 40px rgba(28, 140, 125, 0.15)',
+        'glow-lg': '0 0 80px rgba(28, 140, 125, 0.2)',
+        'glow-teal': '0 0 60px rgba(28, 140, 125, 0.15)',
         'glow-violet': '0 0 60px rgba(139, 92, 246, 0.12)',
       },
       animation: {
