@@ -832,14 +832,15 @@ function WatchersSection({
             Watchers ({watchers.length})
           </h2>
         </div>
-        <button
+        <Button
+          variant="ghost"
           onClick={handleAddWatcher}
           disabled={addWatcher.isPending}
-          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline disabled:opacity-50"
+          className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
         >
           <Plus className="h-4 w-4" />
           {addWatcher.isPending ? 'Adding...' : 'Watch'}
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-2">
@@ -869,14 +870,16 @@ function WatchersSection({
                   </p>
                 </div>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => handleRemoveWatcher(watcher.userId)}
                 disabled={removeWatcher.isPending}
-                className="text-gray-400 hover:text-red-600 disabled:opacity-50"
+                className="h-auto w-auto p-1 text-gray-400 hover:text-red-600"
                 title="Stop watching"
               >
                 <EyeOff className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           ))
         ) : (
@@ -947,13 +950,14 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             Subtasks ({subtasks.length})
           </h2>
         </div>
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsAddingSubtask(!isAddingSubtask)}
-          className="flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
+          className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-primary-500 dark:text-primary-400 hover:underline"
         >
           <Plus className="h-4 w-4" />
           Add subtask
-        </button>
+        </Button>
       </div>
 
       {/* Add Subtask Form */}
@@ -976,22 +980,25 @@ function SubtasksSection({ issue }: { issue: Issue }) {
             autoFocus
           />
           <div className="flex justify-end gap-2">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 setIsAddingSubtask(false);
                 setSubtaskTitle('');
               }}
-              className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              size="sm"
               onClick={handleAddSubtask}
               disabled={!subtaskTitle.trim()}
-              className="px-3 py-1.5 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-primary-500 text-white hover:bg-primary-600"
             >
               Add
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -1072,14 +1079,15 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
           }}
         />
         <div className="flex justify-end mt-2">
-          <button
+          <Button
+            size="sm"
             onClick={handleSendComment}
             disabled={!commentContent.trim() || isSending}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white text-sm rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary-500 text-white hover:bg-primary-600"
           >
             <Send className="h-4 w-4" />
             {isSending ? 'Sending...' : 'Send'}
-          </button>
+          </Button>
         </div>
       </div>
 
