@@ -259,9 +259,12 @@ export default function ProfilePage() {
           <div className="rounded-lg border border-red-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-red-600">Danger Zone</h2>
             <div className="space-y-4">
-              <Button
+              <div
+                role="button"
+                tabIndex={0}
                 onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                className="flex w-full items-center justify-between rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); signOut({ callbackUrl: '/auth/signin' }); } }}
+                className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-50">
@@ -272,9 +275,13 @@ export default function ProfilePage() {
                     <p className="text-sm text-gray-600">Sign out of your account on this device</p>
                   </div>
                 </div>
-              </Button>
+              </div>
 
-              <Button variant="destructive" className="flex w-full items-center justify-between rounded-lg border border-red-200 p-4 transition-colors hover:bg-red-50">
+              <div
+                role="button"
+                tabIndex={0}
+                className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-red-200 p-4 transition-colors hover:bg-red-50"
+              >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-50">
                     <Trash2 className="h-5 w-5 text-red-600" />
@@ -286,7 +293,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 </div>
-              </Button>
+              </div>
             </div>
           </div>
         </div>

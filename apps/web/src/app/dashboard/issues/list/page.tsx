@@ -129,7 +129,7 @@ export default function IssuesListPage() {
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
 
         {/* Issues Table */}
-        <div className="flex-1 overflow-auto px-6 py-4">
+        <div className="flex-1 overflow-auto px-3 md:px-6 py-3 md:py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-gray-600 dark:text-slate-400">Loading issues...</div>
@@ -146,7 +146,8 @@ export default function IssuesListPage() {
             </div>
           ) : (
             <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+              <div className="overflow-x-auto">
+              <table className="min-w-[640px] w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead className="bg-gray-50 dark:bg-[#282E33]">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -187,7 +188,7 @@ export default function IssuesListPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900 dark:text-white line-clamp-2">
+                        <div className="text-sm text-gray-900 dark:text-white truncate max-w-[200px]">
                           {issue.title}
                         </div>
                       </td>
@@ -242,6 +243,7 @@ export default function IssuesListPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </div>
