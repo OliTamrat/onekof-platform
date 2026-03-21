@@ -40,6 +40,7 @@ interface AIInsightsPanelProps {
   tasks: Task[];
   category: Category;
   title: string;
+  onTaskClick?: (taskId: string) => void;
 }
 
 interface Insight {
@@ -400,7 +401,7 @@ const PRIORITY_BADGE = {
   low: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800',
 };
 
-function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number }) {
+function TaskDrillDown({ tasks, maxShow = 5, onTaskClick }: { tasks: Task[]; maxShow?: number; onTaskClick?: (taskId: string) => void }) {
   const [showAll, setShowAll] = useState(false);
   const displayed = showAll ? tasks : tasks.slice(0, maxShow);
   const remaining = tasks.length - maxShow;
@@ -408,13 +409,18 @@ function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number
   return (
     <div className="mt-2.5 space-y-1">
       {displayed.map(task => (
-        <div
+        <button
           key={task.id}
-          className="flex items-center gap-2.5 rounded-md bg-white/70 dark:bg-[#1B1F23]/70 border border-slate-200/60 dark:border-slate-700/60 px-3 py-1.5 group"
+          type="button"
+          onClick={() => onTaskClick?.(task.id)}
+          className={cn(
+            'flex w-full items-center gap-2.5 rounded-md bg-white/70 dark:bg-[#1B1F23]/70 border border-slate-200/60 dark:border-slate-700/60 px-3 py-1.5 group text-left transition-colors',
+            onTaskClick && 'cursor-pointer hover:bg-primary-50/60 dark:hover:bg-primary-900/10 hover:border-primary-300 dark:hover:border-primary-700'
+          )}
         >
           <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', PRIORITY_DOT[task.priority])} />
           <span className="text-[10px] font-semibold text-primary-600 dark:text-primary-400 shrink-0 w-14 truncate">{task.key}</span>
-          <span className="text-xs text-slate-800 dark:text-slate-200 truncate flex-1">{task.title}</span>
+          <span className={cn('text-xs text-slate-800 dark:text-slate-200 truncate flex-1', onTaskClick && 'group-hover:text-primary-600 dark:group-hover:text-primary-400')}>{task.title}</span>
           <span className="text-[9px] font-medium text-slate-500 dark:text-slate-400 shrink-0">{STATUS_LABEL[task.status] || task.status}</span>
           {task.assignee ? (
             <div className="h-4.5 w-4.5 rounded-full bg-primary-500 flex items-center justify-center text-[8px] text-white font-medium shrink-0" title={task.assignee.name}>
@@ -423,7 +429,7 @@ function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number
           ) : (
             <span title="Unassigned"><UserCircle className="h-4 w-4 text-slate-300 dark:text-slate-600 shrink-0" /></span>
           )}
-        </div>
+        </button>
       ))}
       {!showAll && remaining > 0 && (
         <Button
@@ -447,7 +453,7 @@ function TaskDrillDown({ tasks, maxShow = 5 }: { tasks: Task[]; maxShow?: number
   );
 }
 
-function InsightCard({ insight }: { insight: Insight }) {
+function InsightCard({ insight, onTaskClick }: { insight: Insight; onTaskClick?: (taskId: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const styles = INSIGHT_STYLES[insight.type];
   const InsightIcon = insight.icon;
@@ -495,14 +501,14 @@ function InsightCard({ insight }: { insight: Insight }) {
               Collapse <ChevronUp className="h-3 w-3" />
             </Button>
           </div>
-          <TaskDrillDown tasks={insight.relatedTasks} />
+          <TaskDrillDown tasks={insight.relatedTasks} onTaskClick={onTaskClick} />
         </div>
       )}
     </div>
   );
 }
 
-function RecommendationCard({ rec }: { rec: Recommendation }) {
+function RecommendationCard({ rec, onTaskClick }: { rec: Recommendation; onTaskClick?: (taskId: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const hasDetails = rec.relatedTasks && rec.relatedTasks.length > 0;
 
@@ -529,7 +535,7 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
       </Button>
       {expanded && rec.relatedTasks && (
         <div className="px-3 pb-3 pt-1 border-t border-slate-100 dark:border-slate-800">
-          <TaskDrillDown tasks={rec.relatedTasks} maxShow={3} />
+          <TaskDrillDown tasks={rec.relatedTasks} maxShow={3} onTaskClick={onTaskClick} />
           <Button
             variant="ghost"
             onClick={() => setExpanded(false)}
@@ -543,7 +549,7 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
   );
 }
 
-export function AIInsightsPanel({ tasks, category, title }: AIInsightsPanelProps) {
+export function AIInsightsPanel({ tasks, category, title, onTaskClick }: AIInsightsPanelProps) {
   const insights = useMemo(() => getCategoryInsights(tasks, category), [tasks, category]);
   const recommendations = useMemo(() => getRecommendations(tasks, category), [tasks, category]);
   const workload = useMemo(() => analyzeWorkload(tasks), [tasks]);
@@ -648,7 +654,7 @@ export function AIInsightsPanel({ tasks, category, title }: AIInsightsPanelProps
           </h4>
           <div className="space-y-2.5">
             {insights.length > 0 ? insights.map((insight, i) => (
-              <InsightCard key={i} insight={insight} />
+              <InsightCard key={i} insight={insight} onTaskClick={onTaskClick} />
             )) : (
               <div className={cn('rounded-lg overflow-hidden', INSIGHT_STYLES.success.card)}>
                 <div className="p-3.5 flex items-center gap-3">
@@ -672,7 +678,7 @@ export function AIInsightsPanel({ tasks, category, title }: AIInsightsPanelProps
               </h4>
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
                 {recommendations.map((rec, i) => (
-                  <RecommendationCard key={i} rec={rec} />
+                  <RecommendationCard key={i} rec={rec} onTaskClick={onTaskClick} />
                 ))}
               </div>
             </div>
