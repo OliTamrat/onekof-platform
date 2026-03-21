@@ -101,7 +101,7 @@ export default function AdminUsersPage() {
   const withOrgsCount = users.filter(u => u.organizations.length > 0).length;
 
   return (
-    <div className="p-6 sm:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-3 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -171,7 +171,7 @@ export default function AdminUsersPage() {
       ) : (
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#1B1F23]">
                   <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">User</th>

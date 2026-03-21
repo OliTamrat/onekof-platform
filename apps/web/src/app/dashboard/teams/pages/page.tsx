@@ -155,9 +155,11 @@ export default function TeamsPagesPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {PAGE_TEMPLATES.map((template) => (
-                  <Button variant="outline"
+                  <div
+                    role="button"
+                    tabIndex={0}
                     key={template.id}
-                    className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
+                    className="cursor-pointer text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                   >
                     <div className="text-4xl mb-4">{template.icon}</div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -170,7 +172,7 @@ export default function TeamsPagesPage() {
                       <Plus className="h-4 w-4" />
                       Create {template.name}
                     </div>
-                  </Button>
+                  </div>
                 ))}
               </div>
             </div>

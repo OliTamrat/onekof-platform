@@ -431,8 +431,9 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <Button variant="outline"
+    <div role="button" tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}
       className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left w-full"
     >
       <div className="mb-4 flex items-center justify-between">
@@ -444,6 +445,6 @@ function StatCard({
       <div className="text-4xl font-bold text-gray-900 dark:text-white">{value}</div>
       <div className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-300">{label}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400">{sublabel}</div>
-    </Button>
+    </div>
   );
 }
