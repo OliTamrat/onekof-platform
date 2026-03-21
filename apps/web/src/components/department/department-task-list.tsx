@@ -234,7 +234,7 @@ export function DepartmentTaskList({
 
       {/* AI Insights Panel */}
       {insightsOpen && (
-        <AIInsightsPanel tasks={allTasks} category={category} title={title} />
+        <AIInsightsPanel tasks={allTasks} category={category} title={title} onTaskClick={setSelectedTaskId} />
       )}
 
       {/* Quick create bar */}
