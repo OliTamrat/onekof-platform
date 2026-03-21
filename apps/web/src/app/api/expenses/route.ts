@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+
 
 export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/expenses
- * List expenses with filtering
+ * List expenses with filtering — scoped to the user's current organization
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     const { searchParams } = new URL(request.url);
     const budgetId = searchParams.get('budgetId');
@@ -24,6 +22,11 @@ export async function GET(request: NextRequest) {
 
     const where: any = {
       deletedAt: null,
+      budget: {
+        project: {
+          organizationId: ctx.organizationId,
+        },
+      },
     };
 
     if (budgetId) where.budgetId = budgetId;
@@ -118,18 +121,8 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     const body = await request.json();
     const {
@@ -154,12 +147,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check budget exists
+    // Check budget exists and belongs to user's organization
     const budget = await prisma.budget.findUnique({
       where: { id: budgetId },
+      include: { project: { select: { organizationId: true } } },
     });
 
     if (!budget) {
+      return NextResponse.json({ error: 'Budget not found' }, { status: 404 });
+    }
+
+    if (budget.project.organizationId !== ctx.organizationId) {
       return NextResponse.json({ error: 'Budget not found' }, { status: 404 });
     }
 
@@ -177,7 +175,7 @@ export async function POST(request: NextRequest) {
         vendor,
         receiptUrl,
         status: 'PENDING', // Always starts as pending
-        submittedBy: user.id,
+        submittedBy: ctx.user.id,
         notes,
       },
       include: {
