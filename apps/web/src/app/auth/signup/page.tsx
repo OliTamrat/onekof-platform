@@ -189,7 +189,7 @@ export default function SignUpPage() {
       </div>
 
       {/* RIGHT — Sign up form */}
-      <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
+      <div className="flex w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 lg:w-1/2">
         <div className="w-full max-w-[420px]">
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">

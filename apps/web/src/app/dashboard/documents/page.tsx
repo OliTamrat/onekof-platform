@@ -113,13 +113,13 @@ export default function DocumentsPage() {
         showInsights={false}
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-3 md:p-6 space-y-6">
 
         {/* Upload Component */}
         <DocumentUpload onUploadComplete={handleUploadComplete} />
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
