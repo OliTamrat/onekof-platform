@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
   TrendingUp,
@@ -289,6 +290,7 @@ export default function IssuesSummaryPage() {
         currentTab="summary"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy

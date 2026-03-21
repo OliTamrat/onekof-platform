@@ -18,6 +18,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
@@ -205,6 +206,7 @@ export default function IssuesBoardPage() {
         currentTab="board"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
