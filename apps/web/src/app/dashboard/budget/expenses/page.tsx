@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { BUDGET_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -233,6 +234,8 @@ export default function BudgetExpensesPage() {
         iconColor="#F59E0B"
         currentTab="expenses"
         baseHref="/dashboard/budget"
+        customTabs={BUDGET_TABS}
+        showTabs
       />
 
       <div className="p-4 md:p-6">
