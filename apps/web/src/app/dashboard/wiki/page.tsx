@@ -68,8 +68,8 @@ const WIKI_CATEGORIES: WikiCategory[] = [
     name: 'Team Collaboration',
     description: 'How to work effectively with your team members',
     icon: Users,
-    color: 'text-teal-600 dark:text-teal-400',
-    bg: 'bg-teal-50 dark:bg-teal-900/20',
+    color: 'text-primary-600 dark:text-primary-400',
+    bg: 'bg-primary-50 dark:bg-primary-900/20',
     pageCount: 6,
     articles: [
       { title: 'Inviting Team Members', excerpt: 'How to invite users, assign roles, and manage permissions.', updatedAt: '1 day ago' },
@@ -239,7 +239,7 @@ export default function WikiPage() {
                   </div>
                 </div>
                 <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
-                  <TrendingUp className="h-4 w-4 text-teal-500" />
+                  <TrendingUp className="h-4 w-4 text-primary-500" />
                   <div>
                     <p className="text-lg font-bold text-slate-900 dark:text-white">Active</p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">Updated recently</p>

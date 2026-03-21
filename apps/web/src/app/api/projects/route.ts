@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { getOrganizationContext } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,46 +23,47 @@ export async function GET(request: NextRequest) {
 
     const { organization } = context;
 
-    // Get all projects for the organization
-    const projects = await prisma.project.findMany({
-      where: {
-        organizationId: organization.id,
-        deletedAt: null,
-      },
-      include: {
-        tasks: {
-          where: {
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-            status: true,
-          },
+    const url = request.nextUrl;
+    const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
+
+    const whereClause = {
+      organizationId: organization.id,
+      deletedAt: null,
+    };
+
+    const includeClause = {
+      tasks: {
+        where: {
+          deletedAt: null,
         },
-        members: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-              },
+        select: {
+          id: true,
+          status: true,
+        },
+      },
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
             },
           },
         },
       },
-      orderBy: {
-        updatedAt: 'desc',
-      },
-    });
+    };
 
-    // Transform projects with computed fields
-    const projectsWithStats = projects.map(project => {
+    const orderByClause = {
+      updatedAt: 'desc' as const,
+    };
+
+    const transformProject = (project: any) => {
       const totalTasks = project.tasks.length;
-      const completedTasks = project.tasks.filter(t => t.status === 'DONE').length;
-      const inProgressTasks = project.tasks.filter(t => t.status === 'IN_PROGRESS').length;
-      const todoTasks = project.tasks.filter(t => t.status === 'TODO').length;
+      const completedTasks = project.tasks.filter((t: any) => t.status === 'DONE').length;
+      const inProgressTasks = project.tasks.filter((t: any) => t.status === 'IN_PROGRESS').length;
+      const todoTasks = project.tasks.filter((t: any) => t.status === 'TODO').length;
 
       return {
         id: project.id,
@@ -70,9 +72,9 @@ export async function GET(request: NextRequest) {
         description: project.description,
         status: project.status,
         type: project.type || 'BUSINESS',
-        color: project.color || '#3B82F6', // ✅ Use proper column
-        icon: project.icon || '📁', // ✅ Use proper column
-        lead: project.leadId ? project.members.find(m => m.userId === project.leadId)?.user : null,
+        color: project.color || '#3B82F6',
+        icon: project.icon || '📁',
+        lead: project.leadId ? project.members.find((m: any) => m.userId === project.leadId)?.user : null,
         memberCount: project.members.length,
         taskStats: {
           total: totalTasks,
@@ -83,9 +85,35 @@ export async function GET(request: NextRequest) {
         progress: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
-        isFavorite: project.isFavorite, // ✅ Use proper column
+        isFavorite: project.isFavorite,
       };
+    };
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [projects, total] = await Promise.all([
+        prisma.project.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.project.count({ where: whereClause }),
+      ]);
+
+      const projectsWithStats = projects.map(transformProject);
+      return NextResponse.json(buildPaginatedResponse(projectsWithStats, total, { page, limit, skip }));
+    }
+
+    const projects = await prisma.project.findMany({
+      where: whereClause,
+      include: includeClause,
+      orderBy: orderByClause,
     });
+
+    const projectsWithStats = projects.map(transformProject);
 
     return NextResponse.json({
       projects: projectsWithStats,
