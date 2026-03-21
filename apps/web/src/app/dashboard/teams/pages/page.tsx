@@ -3,15 +3,21 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
+import type { LucideIcon } from 'lucide-react';
 import {
   BarChart3,
   Book,
+  BookOpen,
+  ClipboardList,
   Clock,
   Code,
   FileIcon,
   FileText,
   FolderIcon,
+  Pencil,
   Plus,
+  RotateCcw,
+  Target,
   Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,42 +32,42 @@ const TAB_ITEMS = [
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages', active: true },
 ];
 
-const PAGE_TEMPLATES = [
+const PAGE_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon }[] = [
   {
     id: 'team-charter',
     name: 'Team Charter',
     description: 'Define team mission, values, and goals',
-    icon: '📋',
+    icon: ClipboardList,
   },
   {
     id: 'team-handbook',
     name: 'Team Handbook',
     description: 'Document team processes and best practices',
-    icon: '📖',
+    icon: BookOpen,
   },
   {
     id: 'meeting-notes',
     name: 'Meeting Notes',
     description: 'Template for team meeting minutes',
-    icon: '📝',
+    icon: Pencil,
   },
   {
     id: 'retrospective',
     name: 'Retrospective',
     description: 'Sprint or quarterly retrospective template',
-    icon: '🔄',
+    icon: RotateCcw,
   },
   {
     id: 'team-goals',
     name: 'Team Goals',
     description: 'Document quarterly or annual team objectives',
-    icon: '🎯',
+    icon: Target,
   },
   {
     id: 'team-roster',
     name: 'Team Roster',
     description: 'Team member directory with roles and contacts',
-    icon: '👥',
+    icon: Users,
   },
 ];
 
@@ -161,7 +167,9 @@ export default function TeamsPagesPage() {
                     key={template.id}
                     className="cursor-pointer text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                   >
-                    <div className="text-4xl mb-4">{template.icon}</div>
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
+                      <template.icon className="h-5 w-5 text-primary-500" />
+                    </div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {template.name}
                     </h3>

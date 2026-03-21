@@ -554,7 +554,7 @@ export default function TeamsPage() {
                 className="flex h-10 w-10 items-center justify-center rounded"
                 style={{ backgroundColor: selectedTeam.color }}
               >
-                <IconRenderer iconName={selectedTeam.icon} className="h-5 w-5 text-white" fallback="👥" />
+                <IconRenderer iconName={selectedTeam.icon} className="h-5 w-5 text-white" />
               </div>
             }
           >
@@ -797,7 +797,7 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
           className="flex h-12 w-12 items-center justify-center rounded-lg"
           style={{ backgroundColor: team.color }}
         >
-          <IconRenderer iconName={team.icon} className="h-6 w-6 text-white" fallback="👥" />
+          <IconRenderer iconName={team.icon} className="h-6 w-6 text-white" />
         </div>
 
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
