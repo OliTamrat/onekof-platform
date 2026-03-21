@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   try {
     const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
-
-    // Mask password for security
     const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':****@');
 
     return NextResponse.json({
@@ -19,6 +21,6 @@ export async function GET() {
       vercelEnv: process.env.VERCEL_ENV
     });
   } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to check database' }, { status: 500 });
   }
 }
