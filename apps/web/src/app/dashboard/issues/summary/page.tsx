@@ -339,8 +339,11 @@ export default function IssuesSummaryPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Status Overview */}
           <div className="lg:col-span-2">
-            <Button
+            <div
+              role="button"
+              tabIndex={0}
               onClick={handleShowAllStatusOverview}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShowAllStatusOverview(); }}
               className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
             >
               {/* 3D depth effect */}
@@ -421,8 +424,11 @@ export default function IssuesSummaryPage() {
 
                 {/* Legend - Properly aligned */}
                 <div className="flex-1 w-full space-y-2 md:space-y-3">
-                  <Button variant="ghost" size="icon"
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -430,9 +436,12 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">To Do</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
-                  </Button>
-                  <Button variant="ghost" size="icon"
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -440,9 +449,12 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Progress</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
-                  </Button>
-                  <Button variant="ghost" size="icon"
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -450,9 +462,12 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Review</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
-                  </Button>
-                  <Button variant="ghost" size="icon"
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -460,7 +475,7 @@ export default function IssuesSummaryPage() {
                       <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">Done</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
-                  </Button>
+                  </div>
                 </div>
               </div>
 
@@ -481,7 +496,7 @@ export default function IssuesSummaryPage() {
                 </div>
               </div>
               </div>
-            </Button>
+            </div>
           </div>
 
           {/* Right Sidebar */}
@@ -712,13 +727,16 @@ export default function IssuesSummaryPage() {
               {filteredTasks.length > 0 ? (
                 <div className="space-y-3">
                   {filteredTasks.map((task: any) => (
-                    <Button
+                    <div
                       key={task.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => {
                         setSelectedIssue(task);
                         setIsFilterModalOpen(false);
                       }}
-                      className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200"
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
+                      className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -790,7 +808,7 @@ export default function IssuesSummaryPage() {
                           <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700" />
                         )}
                       </div>
-                    </Button>
+                    </div>
                   ))}
                 </div>
               ) : (
@@ -842,8 +860,11 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <Button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
       className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
       {/* Subtle gradient overlay on hover */}
@@ -866,7 +887,7 @@ function StatCard({
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
         <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-1">{sublabel}</div>
       </div>
-    </Button>
+    </div>
   );
 }
 

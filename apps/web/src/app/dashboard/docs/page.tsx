@@ -107,7 +107,7 @@ export default function DocsPage() {
         {/* Jira-style Header Section */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-3 md:px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <BookOpen className="h-6 w-6" />
@@ -124,7 +124,7 @@ export default function DocsPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 px-6">
+          <div className="flex items-center gap-1 px-3 md:px-6 overflow-x-auto">
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -145,7 +145,7 @@ export default function DocsPage() {
           </div>
 
           {/* Search and Filter Bar */}
-          <div className="flex items-center justify-between gap-3 px-6 py-3">
+          <div className="flex items-center justify-between gap-3 px-3 md:px-6 py-3">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
@@ -183,7 +183,7 @@ export default function DocsPage() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {/* Recent Pages Section */}
           <div className="mb-8">
             <div className="mb-4 flex items-center justify-between">
@@ -381,7 +381,7 @@ function SpaceListItem({ space, showBorder }: SpaceListItemProps) {
     <Link
       href={`/dashboard/docs/spaces/${space.id}`}
       className={cn(
-        'flex items-center gap-4 px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
+        'flex items-center gap-4 px-4 md:px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
         showBorder && 'border-b border-gray-200 dark:border-slate-700'
       )}
     >
