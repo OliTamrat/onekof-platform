@@ -95,6 +95,15 @@ export const DOCUMENTS_TABS: TabDefinition[] = [
   { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
 ];
 
+export const ISSUES_TABS: TabDefinition[] = [
+  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/summary' },
+  { id: 'list', label: 'List', icon: ListChecks, href: '' },
+  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
+  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
+  { id: 'team', label: 'Team', icon: Users, href: '/team' },
+  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+];
+
 export const AUTOMATIONS_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/summary' },
   { id: 'list', label: 'List', icon: ListChecks, href: '/list' },

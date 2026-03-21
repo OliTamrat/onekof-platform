@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import {
   BookOpen,
   Search,
@@ -264,6 +265,7 @@ export default function IssuesWikiPage() {
         currentTab="wiki"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
