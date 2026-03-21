@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHmac } from 'crypto';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Slack events error:', error);
+    logger.error('Slack events error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

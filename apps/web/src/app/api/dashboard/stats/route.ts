@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,7 +94,7 @@ export async function GET(_request: NextRequest) {
       totalTasks: allTasks.length,
     });
   } catch (error) {
-    console.error('Dashboard stats error:', error);
+    logger.error('Dashboard stats error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to fetch dashboard stats' },
       { status: 500 }

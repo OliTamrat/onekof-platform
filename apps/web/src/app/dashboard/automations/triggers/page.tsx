@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Activity, Search, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
+import { Button } from '@/components/ui/button';
 
 const TRIGGERS = [
   { id: 1, name: 'Task Created', type: 'Event', condition: 'When a new task is created', workflows: 5, status: 'ACTIVE', lastTriggered: '10 min ago' },
@@ -39,9 +40,9 @@ export default function AutomationsTriggersPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input type="text" placeholder="Search triggers..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
-          <button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
+          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <Activity className="h-4 w-4" />Create Trigger
-          </button>
+          </Button>
         </div>
         <div className="space-y-3">
           {filteredTriggers.map((trigger) => (

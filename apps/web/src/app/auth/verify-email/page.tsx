@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, AlertCircle, Loader2, Mail, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -208,10 +209,10 @@ function VerifyEmailContent() {
                         />
                       </div>
                     </div>
-                    <button
+                    <Button
                       type="submit"
                       disabled={isResending}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2 disabled:opacity-50"
+                      className="w-full rounded-lg py-2.5 text-sm font-semibold"
                     >
                       {isResending ? (
                         <>
@@ -221,7 +222,7 @@ function VerifyEmailContent() {
                       ) : (
                         'Resend Verification Email'
                       )}
-                    </button>
+                    </Button>
                   </form>
                 </div>
 

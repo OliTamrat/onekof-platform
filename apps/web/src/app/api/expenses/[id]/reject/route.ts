@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -89,7 +90,7 @@ export async function POST(
       message: 'Expense rejected successfully',
     });
   } catch (error) {
-    console.error('Expense rejection error:', error);
+    logger.error('Expense rejection error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Failed to reject expense' },
       { status: 500 }

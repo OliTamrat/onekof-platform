@@ -83,12 +83,12 @@ export default function BudgetPage() {
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
               The session is taking longer than expected to load. This might be a configuration issue.
             </p>
-            <button
+            <Button
               onClick={() => router.push('/auth/signin')}
               className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
             >
               Go to Sign In
-            </button>
+            </Button>
           </div>
         </div>
       </AppLayout>
@@ -349,7 +349,7 @@ export default function BudgetPage() {
                   {categories.map((category) => {
                     const utilizationRate = ((category.spent / category.budget) * 100).toFixed(1);
                     return (
-                      <button
+                      <Button variant="ghost" size="icon"
                         key={category.name}
                         onClick={(e) => { e.stopPropagation(); handleShowCategoryDetails(category.name); }}
                         className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
@@ -364,7 +364,7 @@ export default function BudgetPage() {
                             ETB {(category.spent / 1000000).toFixed(1)}M
                           </span>
                         </div>
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -402,7 +402,7 @@ export default function BudgetPage() {
                       <span className="text-xs font-medium text-[#1C8C7D]">AI-Generated</span>
                     </div>
                   </div>
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       // PDF export functionality
@@ -412,7 +412,7 @@ export default function BudgetPage() {
                   >
                     <Download className="h-4 w-4" />
                     Export PDF Report
-                  </button>
+                  </Button>
                 </div>
 
                 {/* AI Summary Content */}
@@ -554,7 +554,7 @@ export default function BudgetPage() {
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Filter by:</span>
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     onClick={() => setActivityFilter('all')}
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'all'
@@ -563,8 +563,8 @@ export default function BudgetPage() {
                     }`}
                   >
                     All
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setActivityFilter('approved')}
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'approved'
@@ -573,8 +573,8 @@ export default function BudgetPage() {
                     }`}
                   >
                     Approved
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setActivityFilter('pending')}
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'pending'
@@ -583,8 +583,8 @@ export default function BudgetPage() {
                     }`}
                   >
                     Pending
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setActivityFilter('category')}
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'category'
@@ -593,7 +593,7 @@ export default function BudgetPage() {
                     }`}
                   >
                     By Category
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -694,7 +694,7 @@ export default function BudgetPage() {
                   return true;
                 }).length > 2 && (
                   <div className="mt-4 text-center">
-                    <button
+                    <Button
                       onClick={() => {
                         setFilteredTransactions(recentTransactions.filter((transaction) => {
                           if (activityFilter === 'all') return true;
@@ -713,7 +713,7 @@ export default function BudgetPage() {
                         if (activityFilter === 'pending') return transaction.status === 'pending';
                         return true;
                       }).length - 2} more)
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -813,12 +813,12 @@ export default function BudgetPage() {
                 {/* View All Watchers Button */}
                 {budgetWatchers.length > 2 && (
                   <div className="mt-4 text-center">
-                    <button
+                    <Button
                       onClick={() => setIsWatchersSlideoutOpen(true)}
                       className="px-4 py-2 text-sm font-medium rounded-md border border-[#1C8C7D] text-[#1C8C7D] hover:bg-[#1C8C7D] hover:text-white transition-colors"
                     >
                       View All Watchers ({budgetWatchers.length - 2} more)
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -865,12 +865,12 @@ export default function BudgetPage() {
                       {categoriesAtRisk} {categoriesAtRisk === 1 ? 'category is' : 'categories are'} approaching budget limits at <span className="font-semibold text-orange-600 dark:text-orange-400">80%+ utilization</span>.
                     </p>
                     <div className="flex items-center gap-2">
-                      <button className="px-4 py-2 text-sm font-medium rounded-md bg-orange-600 text-white hover:bg-orange-700 transition-colors">
+                      <Button className="px-4 py-2 text-sm font-medium rounded-md bg-orange-600 text-white hover:bg-orange-700 transition-colors">
                         Review Categories
-                      </button>
-                      <button className="px-4 py-2 text-sm font-medium rounded-md border border-orange-300 dark:border-orange-700 text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                      </Button>
+                      <Button className="px-4 py-2 text-sm font-medium rounded-md border border-orange-300 dark:border-orange-700 text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                         View Details
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -933,12 +933,12 @@ export default function BudgetPage() {
                     {filteredTransactions.length} {filteredTransactions.length === 1 ? 'item' : 'items'} found
                   </p>
                 </div>
-                <button
+                <Button variant="ghost" size="icon"
                   onClick={() => setIsActivitySlideoutOpen(false)}
                   className="rounded-md p-2 text-white hover:bg-white/20 transition-colors"
                 >
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -1087,12 +1087,12 @@ export default function BudgetPage() {
                     {budgetWatchers.length} team {budgetWatchers.length === 1 ? 'member' : 'members'} watching
                   </p>
                 </div>
-                <button
+                <Button variant="ghost" size="icon"
                   onClick={() => setIsWatchersSlideoutOpen(false)}
                   className="rounded-md p-2 text-white hover:bg-white/20 transition-colors"
                 >
                   <X className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -1145,10 +1145,10 @@ export default function BudgetPage() {
 
             {/* Footer Actions */}
             <div className="border-t border-gray-200 dark:border-gray-800 px-6 py-4 bg-gray-50 dark:bg-[#22272B]">
-              <button className="w-full px-4 py-2 text-sm font-medium rounded-md bg-[#1C8C7D] text-white hover:bg-[#156B60] transition-colors">
+              <Button className="w-full px-4 py-2 text-sm font-medium rounded-md bg-[#1C8C7D] text-white hover:bg-[#156B60] transition-colors">
                 <Plus className="h-4 w-4 inline-block mr-2" />
                 Add Watcher
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -1192,7 +1192,7 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <button
+    <Button variant="outline"
       onClick={onClick}
       className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left"
     >
@@ -1202,7 +1202,7 @@ function StatCard({
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
       <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
-    </button>
+    </Button>
   );
 }
 

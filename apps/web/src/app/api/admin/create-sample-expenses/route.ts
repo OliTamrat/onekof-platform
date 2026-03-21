@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma, type ExpenseType, type ExpenseStatus, type PaymentStatus, type Currency } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('🌊 Creating sample expenses for Jira Water Dam & Irrigation project...\n');
+    logger.info('Creating sample expenses for Jira Water Dam & Irrigation project');
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
@@ -343,10 +344,10 @@ export async function POST(_request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Sample expenses creation error:', error);
-    return NextResponse.json({
-      error: 'Failed to create sample expenses',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    logger.error('Sample expenses creation error', { error: error instanceof Error ? error.message : error });
+    return NextResponse.json(
+      { error: 'Failed to create sample expenses' },
+      { status: 500 }
+    );
   }
 }

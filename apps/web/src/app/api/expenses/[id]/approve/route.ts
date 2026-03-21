@@ -4,6 +4,7 @@ import { prisma } from '@onekof/database';
 import { canApproveExpense, checkBudgetAccess } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,7 +96,7 @@ export async function POST(
         : 'Expense rejected'
     });
   } catch (error) {
-    console.error('Expense approval error:', error);
+    logger.error('Expense approval error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Failed to process expense' }, { status: 500 });
   }
 }

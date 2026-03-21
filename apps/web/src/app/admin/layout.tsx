@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
 
 interface AdminInfo {
   username: string;
@@ -162,13 +163,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <ChevronLeft className="h-4 w-4" />
           Back to Site
         </Link>
-        <button
+        <Button
+          variant="ghost"
           onClick={handleLogout}
-          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+          className="flex w-full items-center justify-start gap-2 rounded-lg px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500"
         >
           <LogOut className="h-4 w-4" />
           Sign Out
-        </button>
+        </Button>
         <div className="flex items-center justify-end px-3 py-1">
           <ThemeToggle />
         </div>
@@ -197,12 +199,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
         <header className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23]">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setMobileOpen(true)}
-            className="rounded-lg p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#22272B]"
+            className="rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#22272B]"
           >
             <Menu className="h-5 w-5" />
-          </button>
+          </Button>
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
               <Shield className="h-3 w-3 text-white" />
