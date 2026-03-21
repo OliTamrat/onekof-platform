@@ -231,7 +231,7 @@ export default function IssuesBoardPage() {
                   return (
                     <div
                       key={column.id}
-                      className="flex w-80 shrink-0 flex-col rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
+                      className="flex w-72 sm:w-80 shrink-0 flex-col rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
                     >
                       {/* Column Header */}
                       <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">

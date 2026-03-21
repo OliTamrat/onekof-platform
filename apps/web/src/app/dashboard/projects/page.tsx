@@ -87,7 +87,7 @@ export default function ProjectsPage() {
         {/* Jira-style Header Section */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Project Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-3 md:px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 {currentOrganization?.name?.substring(0, 2).toUpperCase() || 'PR'}
@@ -110,7 +110,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Projects Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">

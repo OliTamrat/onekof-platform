@@ -273,7 +273,7 @@ export default function TeamsPage() {
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Teams Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
@@ -388,7 +388,7 @@ export default function TeamsPage() {
           <SlideoutPanelContent>
             <form onSubmit={(e) => { e.preventDefault(); handleCreateTeam(); }} className="space-y-6">
               {/* Basic Information Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 md:p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Basic Information</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -442,7 +442,7 @@ export default function TeamsPage() {
               </div>
 
               {/* Appearance Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 md:p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Appearance</h3>
                 <div className="space-y-4">
                   <IconPicker
@@ -475,7 +475,7 @@ export default function TeamsPage() {
               </div>
 
               {/* Team Settings Card */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 md:p-6">
                 <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Team Settings</h3>
                 <div className="space-y-4">
                   <div className="space-y-2">
