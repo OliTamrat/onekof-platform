@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Sparkles, Search, FileText, Calendar, User } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ export default function DocumentsAllPage() {
 
   return (
     <AppLayout>
-      <UnifiedPageHeader title="All Documents" icon={<Sparkles className="h-6 w-6" />} iconColor="#3B82F6" currentTab="all" baseHref="/dashboard/documents" />
+      <UnifiedPageHeader title="All Documents" icon={<Sparkles className="h-6 w-6" />} iconColor="#3B82F6" currentTab="all" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
       <div className="p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
