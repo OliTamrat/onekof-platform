@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { BUDGET_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -432,8 +433,9 @@ export default function BudgetPage() {
         title="Budget"
         icon={<DollarSign className="h-6 w-6" />}
         iconColor="#1C8C7D"
-        currentTab="budget"
+        currentTab="summary"
         baseHref="/dashboard/budget"
+        customTabs={BUDGET_TABS}
         showTabs
         showSearch
       />

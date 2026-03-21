@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { GOALS_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -380,9 +381,9 @@ export default function GoalsPage() {
         title="Goals"
         icon={<Target className="h-6 w-6" />}
         iconColor="#F59E0B"
-
-        currentTab="goals"
+        currentTab="summary"
         baseHref="/dashboard/goals"
+        customTabs={GOALS_TABS}
         showTabs
         showSearch
         showFilters
