@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { BUDGET_TABS } from '@/config/department-tabs';
 import {
   PieChart,
   TrendingUp,
@@ -28,6 +29,8 @@ export default function BudgetForecastingPage() {
         iconColor="#F59E0B"
         currentTab="forecasting"
         baseHref="/dashboard/budget"
+        customTabs={BUDGET_TABS}
+        showTabs
       />
 
       <div className="p-4 md:p-6">
