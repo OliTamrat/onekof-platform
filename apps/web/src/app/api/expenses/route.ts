@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,8 +21,6 @@ export async function GET(request: NextRequest) {
     const budgetId = searchParams.get('budgetId');
     const categoryId = searchParams.get('categoryId');
     const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
 
     const where: any = {
       deletedAt: null,
@@ -31,36 +30,64 @@ export async function GET(request: NextRequest) {
     if (categoryId) where.categoryId = categoryId;
     if (status) where.status = status;
 
+    const includeClause = {
+      budget: {
+        select: {
+          id: true,
+          project: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          code: true,
+        },
+      },
+      attachments: {
+        where: {
+          deletedAt: null,
+        },
+      },
+    };
+
+    const orderByClause = {
+      transactionDate: 'desc' as const,
+    };
+
+    const url = request.nextUrl;
+    const hasPagination = url.searchParams.has('page');
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+
+      const [expenses, total] = await Promise.all([
+        prisma.expense.findMany({
+          where,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.expense.count({ where }),
+      ]);
+
+      return NextResponse.json(buildPaginatedResponse(expenses, total, { page, limit, skip }));
+    }
+
+    // Existing offset-based pagination (backward compatible)
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
+
     const [expenses, total] = await Promise.all([
       prisma.expense.findMany({
         where,
-        include: {
-          budget: {
-            select: {
-              id: true,
-              project: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
-          category: {
-            select: {
-              id: true,
-              name: true,
-              code: true,
-            },
-          },
-          attachments: {
-            where: {
-              deletedAt: null,
-            },
-          },
-        },
-        orderBy: {
-          transactionDate: 'desc',
-        },
+        include: includeClause,
+        orderBy: orderByClause,
         take: limit,
         skip: offset,
       }),

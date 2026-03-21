@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,34 +16,32 @@ export async function GET(req: NextRequest) {
     // Get status filter from query params
     const status = req.nextUrl.searchParams.get('status');
 
-    // Fetch goals with key results
-    const goals = await prisma.goal.findMany({
-      where: {
-        organizationId,
-        deletedAt: null,
-        ...(status && status !== 'all' && { status: status as any }),
-      },
-      include: {
-        keyResults: {
-          orderBy: { createdAt: 'asc' },
-        },
-        team: {
-          select: {
-            id: true,
-            name: true,
-            icon: true,
-            color: true,
-          },
-        },
-      },
-      orderBy: [
-        { priority: 'desc' },
-        { createdAt: 'desc' },
-      ],
-    });
+    const whereClause = {
+      organizationId,
+      deletedAt: null,
+      ...(status && status !== 'all' && { status: status as any }),
+    };
 
-    // Format response
-    const formattedGoals = goals.map((goal: { id: string; organizationId: string; title: string; description: string | null; status: string; priority: string; progress: number; ownerId: string; team: { id: string; name: string; icon: string | null; color: string | null } | null; startDate: Date | null; dueDate: Date | null; keyResults: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean }[]; createdAt: Date; updatedAt: Date; completedAt: Date | null }) => ({
+    const includeClause = {
+      keyResults: {
+        orderBy: { createdAt: 'asc' as const },
+      },
+      team: {
+        select: {
+          id: true,
+          name: true,
+          icon: true,
+          color: true,
+        },
+      },
+    };
+
+    const orderByClause = [
+      { priority: 'desc' as const },
+      { createdAt: 'desc' as const },
+    ];
+
+    const transformGoal = (goal: { id: string; organizationId: string; title: string; description: string | null; status: string; priority: string; progress: number; ownerId: string; team: { id: string; name: string; icon: string | null; color: string | null } | null; startDate: Date | null; dueDate: Date | null; keyResults: { id: string; description: string; unit: string; target: number; current: number; isCompleted: boolean }[]; createdAt: Date; updatedAt: Date; completedAt: Date | null }) => ({
       id: goal.id,
       organizationId: goal.organizationId,
       title: goal.title,
@@ -70,7 +69,36 @@ export async function GET(req: NextRequest) {
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
       completedAt: goal.completedAt?.toISOString(),
-    }));
+    });
+
+    const url = req.nextUrl;
+    const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
+
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(req);
+
+      const [goals, total] = await Promise.all([
+        prisma.goal.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.goal.count({ where: whereClause }),
+      ]);
+
+      const formattedGoals = goals.map(transformGoal);
+      return NextResponse.json(buildPaginatedResponse(formattedGoals, total, { page, limit, skip }));
+    }
+
+    const goals = await prisma.goal.findMany({
+      where: whereClause,
+      include: includeClause,
+      orderBy: orderByClause,
+    });
+
+    const formattedGoals = goals.map(transformGoal);
 
     return NextResponse.json({ goals: formattedGoals });
   } catch (error) {

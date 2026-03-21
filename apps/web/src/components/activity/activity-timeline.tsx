@@ -21,6 +21,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { Button } from '@/components/ui/button';
 
 interface Activity {
   id: string;
@@ -66,7 +67,7 @@ const actionColors: Record<string, string> = {
   DELETED: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
   COMPLETED: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
   ASSIGNED: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-  COMMENTED: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+  COMMENTED: 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300',
   WATCHED: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
 };
 
@@ -143,13 +144,14 @@ export function ActivityTimeline({
           <span>Failed to load activities</span>
         </div>
         {selectedEntityType && (
-          <button
+          <Button
+            variant="link"
             onClick={() => handleFilterChange(undefined)}
-            className="flex items-center gap-1.5 text-sm text-[#1C8C7D] hover:underline"
+            className="flex items-center gap-1.5 text-sm text-primary-500"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Show all activity
-          </button>
+          </Button>
         )}
       </div>
     );
@@ -163,17 +165,15 @@ export function ActivityTimeline({
           <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Filter by:</span>
           <div className="flex gap-1.5 flex-wrap">
             {FILTER_TABS.map((tab) => (
-              <button
+              <Button
                 key={tab.key ?? 'all'}
+                variant={selectedEntityType === tab.key ? 'default' : 'secondary'}
+                size="sm"
                 onClick={() => handleFilterChange(tab.key)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  selectedEntityType === tab.key
-                    ? 'bg-[#1C8C7D] text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
+                className="h-auto px-3 py-1.5 text-xs"
               >
                 {tab.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -203,13 +203,15 @@ export function ActivityTimeline({
               : 'Activity will appear here as team members work on tasks, projects, and goals.'}
           </p>
           {selectedEntityType && (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => handleFilterChange(undefined)}
-              className="mt-3 flex items-center gap-1.5 rounded-md border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-medium text-[#1C8C7D] hover:bg-[#1C8C7D]/5 transition-colors"
+              className="mt-3 text-xs text-primary-500 hover:bg-primary-500/5"
             >
               <ArrowLeft className="h-3 w-3" />
               Show all activity
-            </button>
+            </Button>
           )}
         </div>
       ) : (
@@ -328,26 +330,28 @@ export function ActivityTimeline({
           {/* Pagination */}
           {pagination && (pagination.hasMore || offset > 0) && (
             <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setOffset(Math.max(0, offset - limit))}
                 disabled={offset === 0}
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-700 dark:text-slate-300"
               >
                 Previous
-              </button>
+              </Button>
 
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 Showing {offset + 1} - {Math.min(offset + activities.length, pagination.total)} of{' '}
                 {pagination.total}
               </span>
 
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setOffset(offset + limit)}
                 disabled={!pagination.hasMore}
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-700 dark:text-slate-300"
               >
                 Next
-              </button>
+              </Button>
             </div>
           )}
         </>

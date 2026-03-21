@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { getSidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation-dynamic';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
@@ -67,10 +68,11 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
             {/* Section Header */}
             {hasSubItems ? (
               // Collapsible section
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => toggleSection(section.id)}
                 className={cn(
-                  'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  'flex w-full items-center gap-2 h-auto px-3 py-2 text-sm font-medium justify-start',
                   sectionActive
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
@@ -88,7 +90,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                 ) : (
                   <ChevronRight className="h-4 w-4 shrink-0" />
                 )}
-              </button>
+              </Button>
             ) : (
               // Single link (no collapse)
               <Link

@@ -265,7 +265,7 @@ export default function BudgetPage() {
             value={categoriesUnderBudget.toString()}
             label="on track"
             sublabel={`of ${totalCategories} budget categories`}
-            color="text-teal-500 dark:text-teal-400"
+            color="text-primary-500 dark:text-primary-400"
             onClick={handleShowUnderBudgetCategories}
           />
           </div>
