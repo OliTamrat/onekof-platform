@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import type { ProjectType } from '@/lib/project-navigation';
@@ -222,6 +223,7 @@ export default function IssuesPage() {
         currentTab="list"
         baseHref="/dashboard/issues"
         showTabs
+        customTabs={ISSUES_TABS}
         showSearch
         showFilters
         showGroupBy
