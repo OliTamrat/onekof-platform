@@ -160,6 +160,97 @@ All agents are pre-loaded with platform context, stability rules, and the design
 
 ---
 
+## Platform Audit Findings (March 21, 2026)
+
+Full audit covering Security, UI/UX Design System, Code Quality, and Database Schema.
+
+### Summary
+
+| Area | Critical | High | Medium | Low |
+|------|----------|------|--------|-----|
+| Security | 2 | 3 | 2 | 3 |
+| UI/UX Design System | 1 | 3 | 1 | 1 |
+| Code Quality | 0 | 1 | 8 | 5 |
+| Database & Schema | 3 | 3 | 4 | 3 |
+| **TOTAL** | **6** | **10** | **15** | **12** |
+
+### Critical Findings
+
+1. **Hardcoded default `ADMIN_SECRET` fallback** — `src/app/api/admin/login/route.ts`, `src/lib/security/superadmin.ts`. If env var is not set, anyone can forge admin tokens using the default secret.
+2. **No rate limiting on `/api/admin/login`** — highest-privilege endpoint has zero brute-force protection.
+3. **Primary color mismatch** — `tailwind.config.ts` uses blue `#2563EB`, CLAUDE.md specifies teal `#1C8C7D`. All `primary-*` tokens resolve to wrong color.
+4. **Missing `@relation` on Document model** — `projectId` and `budgetId` are plain strings with no Prisma relation. Orphaned documents on parent deletion.
+5. **Missing `@relation` on user audit fields** — 8+ models (`createdBy`, `approvedBy`, `uploadedBy`, `changedBy`, `userId`) have no relation to User model. N+1 queries and orphaned records.
+6. **Missing `@relation` on `BudgetCategory.parentId`** — nested category hierarchy has no self-referential relation.
+
+### High Findings
+
+7. **Account lockout duration bug** — `Math.min(0, ...)` always returns 0, progressive lockout never escalates.
+8. **Unauthenticated invitation endpoint** — `GET /api/invitations/accept` leaks org names and inviter details without session.
+9. **CRON endpoint open if `CRON_SECRET` not set** — accepts any request, triggers expensive aggregation.
+10. **2,876 lines of backup files** — 4 dead `*-backup.tsx` files bloating the codebase.
+11. **Hardcoded teal colors** — 7+ components use `teal-500/600/700` instead of `primary-*` tokens.
+12. **Non-standard dark mode backgrounds** — 18+ components use `#0A0A0A`, `#111111`, `black` instead of the three-tier system (`#1B1F23`, `#22272B`, `#282E33`).
+13. **Missing `Task.parentId` self-relation** — subtask hierarchy broken.
+14. **195 raw `<button>` elements** — should use `<Button>` component.
+
+### Medium Findings
+
+15. Debug endpoints exposed without auth (`/api/debug/*`, `/api/env-check`, `/api/test-db`)
+16. Account lockout fails open on error (returns `{ locked: false }`)
+17. TypeScript strict mode disabled; `ignoreBuildErrors: true`
+18. Unused dependencies (`next-intl`, `@trpc/*`)
+19. No pagination on list endpoints (unbounded arrays)
+20. Low test coverage (~3%, no API route tests)
+21. Inconsistent soft delete (core models yes, membership/watcher models no)
+22. Missing NOT NULL on audit fields (`BudgetAuditLog.userId`, `BudgetAuditLog.action`)
+23. `Task.assigneeId` missing `onDelete: SetNull`
+
+### Low Findings
+
+24. Error details leaked to client in organizations API
+25. Inconsistent password validation (8 chars reset vs 12 signup)
+26. API key accepted in query params (logged in server/proxy logs)
+27. Console.log in 20+ production API routes
+28. Image domains config only allows localhost
+29. Inconsistent API error response shapes
+30. Decimal fields return Prisma objects instead of numbers
+
+### Recommended Order of Work
+
+**Week 1 — Security Critical (4-5 hours):**
+- [ ] Remove hardcoded `ADMIN_SECRET` fallback — require env var
+- [ ] Add rate limiting to `/api/admin/login`
+- [ ] Fix account lockout `Math.min(0, ...)` bug
+- [ ] Secure CRON endpoint (fail if `CRON_SECRET` not set)
+- [ ] Add auth check to `GET /api/invitations/accept`
+- [ ] Protect or remove `/api/debug/*` endpoints
+
+**Week 2 — Schema & Design (6-8 hours):**
+- [ ] Add missing `@relation` on Document, BudgetCategory, Task, AIUsage, audit fields
+- [ ] Delete 4 backup files (2,876 lines)
+- [ ] Remove unused dependencies (next-intl, @trpc)
+- [ ] Fix dark mode backgrounds to three-tier system
+- [ ] Replace hardcoded teal with `primary-*` tokens
+- [ ] Resolve primary color palette (teal vs blue)
+
+**Week 3 — Quality (8-10 hours):**
+- [ ] Add pagination to all list endpoints
+- [ ] Standardize API error responses
+- [ ] Add soft delete to remaining models
+- [ ] Replace console.log with structured logger
+- [ ] Enable TypeScript strictNullChecks
+- [ ] Convert raw `<button>` to `<Button>` components
+
+**Week 4+ — Hardening (ongoing):**
+- [ ] Increase test coverage to 50%+ (focus API routes)
+- [ ] Enable full TypeScript strict mode
+- [ ] Split large files (budget page, email.ts)
+- [ ] Connection pooling (Prisma Accelerate)
+- [ ] Redis caching for read-heavy endpoints
+
+---
+
 ## Strategic Roadmap — Next To Do
 
 ### Phase 1: Admin Dashboard (Current Priority)

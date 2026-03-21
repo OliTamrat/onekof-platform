@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   try {
-    // Test database connection
     const userCount = await prisma.user.count();
 
-    // Check environment variables
     const envStatus = {
       DATABASE_URL: !!process.env.DATABASE_URL,
       NEXTAUTH_SECRET: !!process.env.NEXTAUTH_SECRET,
@@ -25,13 +27,8 @@ export async function GET() {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Database test error:', error);
     return NextResponse.json(
-      {
-        status: 'error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-      },
+      { status: 'error', message: 'Database connection failed' },
       { status: 500 }
     );
   }

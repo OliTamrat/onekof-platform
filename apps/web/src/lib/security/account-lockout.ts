@@ -49,7 +49,8 @@ export async function recordFailedLogin(email: string): Promise<{
     const newAttempts = currentAttempts + 1;
 
     if (newAttempts >= LOCKOUT_CONFIG.maxAttempts) {
-      const durationIndex = Math.min(0, LOCKOUT_CONFIG.lockoutDurations.length - 1);
+      const lockoutCount = Math.floor(newAttempts / LOCKOUT_CONFIG.maxAttempts) - 1;
+      const durationIndex = Math.min(Math.max(0, lockoutCount), LOCKOUT_CONFIG.lockoutDurations.length - 1);
       const lockoutMinutes = LOCKOUT_CONFIG.lockoutDurations[durationIndex];
       const lockedUntil = new Date(now.getTime() + lockoutMinutes * 60 * 1000);
 
@@ -170,7 +171,7 @@ export async function isAccountLocked(email: string): Promise<{
     };
   } catch (error) {
     log.error('Failed to check account lockout status', { error, email });
-    return { locked: false };
+    return { locked: true, minutesRemaining: LOCKOUT_CONFIG.lockoutDurations[0] };
   }
 }
 

@@ -146,6 +146,14 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'You must be signed in to view invitation details' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
 
@@ -187,20 +195,13 @@ export async function GET(request: NextRequest) {
 
     const isExpired = isTokenExpired(matchedInvitation.expiresAt);
 
-    // Get inviter info
-    const inviter = await prisma.user.findUnique({
-      where: { id: matchedInvitation.invitedBy },
-      select: { name: true, email: true },
-    });
-
     return NextResponse.json({
       valid: !isExpired,
       invitation: {
-        email: matchedInvitation.email,
         role: matchedInvitation.role,
         organizationName: matchedInvitation.organization.name,
         organizationSlug: matchedInvitation.organization.slug,
-        invitedBy: inviter?.name || inviter?.email || 'A team member',
+        invitedBy: 'A team member',
         expiresAt: matchedInvitation.expiresAt.toISOString(),
         isExpired,
       },
