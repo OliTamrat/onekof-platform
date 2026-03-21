@@ -125,8 +125,8 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
 
     const measure = () => {
       const containerWidth = container.offsetWidth - 100;
-      const tabWidth = 110;
-      const count = Math.max(3, Math.min(tabs.length, Math.floor(containerWidth / tabWidth)));
+      const tabWidth = 90;
+      const count = Math.max(2, Math.min(tabs.length, Math.floor(containerWidth / tabWidth)));
       setVisibleCount(count);
     };
 

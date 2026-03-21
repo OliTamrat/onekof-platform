@@ -152,7 +152,7 @@ export default function MembersPage() {
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-4">
+        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
@@ -187,7 +187,7 @@ export default function MembersPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-3 md:px-6 py-3 md:py-4 space-y-4">
           {/* Invite Form */}
           {showInviteForm && (
             <div className="rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/10 p-4">
@@ -198,7 +198,7 @@ export default function MembersPage() {
               <p className="mb-3 text-xs text-gray-600 dark:text-slate-400">
                 Invite anyone to your organization — they don&apos;t need an existing account. An invitation email will be sent with a link to join.
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   type="email"
                   value={inviteEmail}
@@ -309,7 +309,8 @@ export default function MembersPage() {
                 Active Members ({filteredMembers.length})
               </h2>
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
-                <table className="w-full">
+                <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px]">
                   <thead className="bg-gray-50 dark:bg-[#1B1F23] border-b border-gray-200 dark:border-slate-700">
                     <tr>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -372,6 +373,7 @@ export default function MembersPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
           )}

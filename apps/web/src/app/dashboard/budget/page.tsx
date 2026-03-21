@@ -408,7 +408,7 @@ export default function BudgetPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
-          <div className="text-center max-w-md p-6">
+          <div className="text-center max-w-md p-3 md:p-6">
             <AlertCircle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
@@ -536,7 +536,7 @@ export default function BudgetPage() {
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Budget Overview - 2 columns */}
           <div className="lg:col-span-2 space-y-6">
             {/* Budget Overview Card */}
@@ -603,13 +603,16 @@ export default function BudgetPage() {
                         {categories.slice(0, 6).map((category) => {
                           const utilRate = category.budget > 0 ? ((category.spent / category.budget) * 100).toFixed(1) : '0.0';
                           return (
-                            <Button
+                            <div
                               key={category.name}
+                              role="button"
+                              tabIndex={0}
                               onClick={() => openSlideout(
                                 `${category.name} Expenses`,
                                 expenses.filter((e: any) => e.category?.name === category.name)
                               )}
-                              className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors"
+                              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openSlideout(`${category.name} Expenses`, expenses.filter((ex: any) => ex.category?.name === category.name)); }}
+                              className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
                             >
                               <div className="flex items-center gap-2 flex-1 min-w-0">
                                 <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: category.color }} />
@@ -621,7 +624,7 @@ export default function BudgetPage() {
                                   ETB {formatCompact(category.spent)}
                                 </span>
                               </div>
-                            </Button>
+                            </div>
                           );
                         })}
                       </div>
@@ -850,16 +853,19 @@ export default function BudgetPage() {
                   { label: 'Budget Doc', icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
                   { label: 'Expense Report', icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
                 ].map((action) => (
-                  <Button variant="ghost" size="icon"
+                  <div
                     key={action.label}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => { setAnalysisType(action.type); setIsUploadModalOpen(true); }}
-                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group"
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setAnalysisType(action.type); setIsUploadModalOpen(true); } }}
+                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group cursor-pointer"
                   >
                     <div className={`flex-shrink-0 h-8 w-8 rounded-lg ${action.bg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                       <action.icon className={`h-4 w-4 ${action.iconColor}`} />
                     </div>
                     <span className="text-xs font-medium text-slate-700 dark:text-slate-300 text-left leading-tight">{action.label}</span>
-                  </Button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -920,12 +926,15 @@ export default function BudgetPage() {
                     </div>
                   ))}
                   {expenses.length > 5 && (
-                    <Button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => openSlideout('All Expenses', expenses)}
-                      className="w-full text-center text-xs font-medium text-[#1C8C7D] hover:text-[#16A085] py-2 mt-1 rounded-lg hover:bg-[#1C8C7D]/5 transition-colors"
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openSlideout('All Expenses', expenses); }}
+                      className="w-full text-center text-xs font-medium text-[#1C8C7D] hover:text-[#16A085] py-2 mt-1 rounded-lg hover:bg-[#1C8C7D]/5 transition-colors cursor-pointer"
                     >
                       View all {expenses.length} expenses
-                    </Button>
+                    </div>
                     )}
                   </div>
                 )}
@@ -971,7 +980,7 @@ export default function BudgetPage() {
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} />
           <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:max-h-[90vh] z-50 bg-white dark:bg-[#22272B] rounded-xl shadow-2xl overflow-hidden flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
+            <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center gap-3">
                 <Sparkles className="h-5 w-5 text-white" />
                 <div>
@@ -989,7 +998,7 @@ export default function BudgetPage() {
             </div>
 
             {/* Modal Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               {!extractedData ? (
                 <>
                   {/* Analysis Type Selector */}
@@ -1272,7 +1281,7 @@ export default function BudgetPage() {
 
             {/* Modal Footer */}
             {extractedData && (
-              <div className="border-t border-slate-200 dark:border-slate-700 px-6 py-4 bg-slate-50 dark:bg-[#1B1F23] flex items-center gap-3">
+              <div className="border-t border-slate-200 dark:border-slate-700 px-4 md:px-6 py-4 bg-slate-50 dark:bg-[#1B1F23] flex items-center gap-3">
                 <Button
                   variant="outline"
                   onClick={resetUploadState}
@@ -1308,7 +1317,7 @@ export default function BudgetPage() {
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsActivitySlideoutOpen(false)} />
           <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#1B1F23] shadow-2xl overflow-hidden flex flex-col animate-slide-in-right">
-            <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
+            <div className="border-b border-slate-200 dark:border-slate-700 px-4 md:px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-white">{slideoutTitle}</h2>
@@ -1320,7 +1329,7 @@ export default function BudgetPage() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               {slideoutData.length === 0 ? (
                 <div className="text-center py-12">
                   <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-3" />
@@ -1396,9 +1405,12 @@ function StatCard({
   onClick?: () => void;
 }) {
   return (
-    <Button variant="outline"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
+      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left cursor-pointer"
     >
       <div className="flex items-center gap-2.5 mb-2 md:mb-3">
         <div className={`h-8 w-8 rounded-lg ${iconBg} flex items-center justify-center`}>
@@ -1408,7 +1420,7 @@ function StatCard({
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
       <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
-    </Button>
+    </div>
   );
 }
 
