@@ -16,7 +16,6 @@ export default function TimelinePage() {
 
         currentTab="timeline"
         baseHref="/dashboard/timeline"
-        showTabs
         showSearch
         showFilters
         showGroupBy
