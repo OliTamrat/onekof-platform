@@ -28,7 +28,6 @@ import { Button } from '@/components/ui/button';
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary', active: true },
   { id: 'goals', label: 'Goals', icon: null, href: '/dashboard/goals' },
-  { id: 'archive', label: 'Archive', icon: null, href: '/dashboard/goals/archive' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/goals/settings' },
 ];
 

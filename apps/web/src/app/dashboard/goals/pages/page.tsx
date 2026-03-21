@@ -6,12 +6,16 @@ import Link from 'next/link';
 import {
   BarChart3,
   Book,
+  Calendar,
   Clock,
   Code,
   FileIcon,
   FileText,
+  Map,
+  Pencil,
   Plus,
-  Target
+  Target,
+  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -25,42 +29,42 @@ const TAB_ITEMS = [
   { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages', active: true },
 ];
 
-const PAGE_TEMPLATES = [
+const PAGE_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon }[] = [
   {
     id: 'okr-framework',
     name: 'OKR Framework Guide',
     description: 'Document your OKR methodology and best practices',
-    icon: '📚',
+    icon: Book,
   },
   {
     id: 'goal-planning',
     name: 'Goal Planning',
     description: 'Template for quarterly and annual planning',
-    icon: '📅',
+    icon: Calendar,
   },
   {
     id: 'strategy-doc',
     name: 'Strategy Document',
     description: 'Long-term strategic goals and initiatives',
-    icon: '🎯',
+    icon: Target,
   },
   {
     id: 'okr-review',
     name: 'OKR Review Notes',
     description: 'Template for OKR review meetings',
-    icon: '📝',
+    icon: Pencil,
   },
   {
     id: 'goal-alignment',
     name: 'Goal Alignment Map',
     description: 'Visualize how team goals align with company objectives',
-    icon: '🗺️',
+    icon: Map,
   },
   {
     id: 'success-metrics',
     name: 'Success Metrics Dashboard',
     description: 'Track and document key success indicators',
-    icon: '📊',
+    icon: BarChart3,
   },
 ];
 
@@ -160,7 +164,9 @@ export default function GoalsPagesPage() {
                     key={template.id}
                     className="cursor-pointer text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
                   >
-                    <div className="text-4xl mb-4">{template.icon}</div>
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
+                      <template.icon className="h-5 w-5 text-primary-500" />
+                    </div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {template.name}
                     </h3>
