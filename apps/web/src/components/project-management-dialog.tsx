@@ -421,26 +421,28 @@ export function ProjectManagementDialog({
               <div className="flex items-center justify-between mb-3">
                 <Label className="text-gray-900 dark:text-white">Add Member</Label>
                 <div className="flex rounded-md border border-gray-200 dark:border-slate-700 overflow-hidden text-xs">
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setInviteMode('org')}
-                    className={`px-3 py-1.5 transition-colors ${
+                    className={`h-auto rounded-none px-3 py-1.5 text-xs transition-colors ${
                       inviteMode === 'org'
-                        ? 'bg-primary-500 text-white'
+                        ? 'bg-primary-500 text-white hover:bg-primary-600'
                         : 'bg-gray-50 dark:bg-[#22272B] text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                     }`}
                   >
                     Organization
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
                     onClick={() => setInviteMode('external')}
-                    className={`px-3 py-1.5 transition-colors ${
+                    className={`h-auto rounded-none px-3 py-1.5 text-xs transition-colors ${
                       inviteMode === 'external'
-                        ? 'bg-primary-500 text-white'
+                        ? 'bg-primary-500 text-white hover:bg-primary-600'
                         : 'bg-gray-50 dark:bg-[#22272B] text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                     }`}
                   >
                     External Invite
-                  </button>
+                  </Button>
                 </div>
               </div>
 

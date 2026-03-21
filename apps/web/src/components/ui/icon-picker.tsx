@@ -140,10 +140,11 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
 
       <div className="relative">
         {/* Selected Icon Display */}
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-full items-center gap-3 rounded-md border border-slate-700 bg-[#1B1F23] px-3 py-2 text-sm text-white hover:bg-[#22272B] focus:border-primary-500 focus:outline-none transition-colors"
+          className="flex h-10 w-full items-center gap-3 justify-start border-slate-700 bg-[#1B1F23] text-white hover:bg-[#22272B] focus:border-primary-500"
         >
           {SelectedIconComponent ? (
             <>
@@ -153,7 +154,7 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
           ) : (
             <span className="text-slate-400">Choose an icon...</span>
           )}
-        </button>
+        </Button>
 
         {/* Icon Picker Dropdown */}
         {isOpen && (
@@ -183,19 +184,19 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
               {!searchQuery && (
                 <div className="mb-4 flex flex-wrap gap-2">
                   {Object.keys(ICON_CATEGORIES).map((category) => (
-                    <button
+                    <Button
                       key={category}
                       type="button"
+                      variant={selectedCategory === category ? 'default' : 'ghost'}
+                      size="sm"
                       onClick={() => setSelectedCategory(category as keyof typeof ICON_CATEGORIES)}
                       className={cn(
-                        'rounded-md px-3 py-1 text-xs font-medium transition-colors',
-                        selectedCategory === category
-                          ? 'bg-primary-500 text-white'
-                          : 'bg-[#1B1F23] text-slate-400 hover:bg-[#282E33]'
+                        'h-auto px-3 py-1 text-xs',
+                        selectedCategory !== category && 'bg-[#1B1F23] text-slate-400 hover:bg-[#282E33]'
                       )}
                     >
                       {category}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -204,16 +205,18 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
               <div className="max-h-[300px] overflow-y-auto">
                 <div className="grid grid-cols-6 gap-2">
                   {filteredIcons.map(({ name, icon: Icon }) => (
-                    <button
+                    <Button
                       key={name}
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => {
                         onChange(name);
                         setIsOpen(false);
                         setSearchQuery('');
                       }}
                       className={cn(
-                        'flex h-12 w-12 items-center justify-center rounded-md border transition-all hover:scale-110',
+                        'h-12 w-12 rounded-md border transition-all hover:scale-110',
                         value === name
                           ? 'border-primary-500 bg-primary-500/20'
                           : 'border-slate-700 bg-[#1B1F23] hover:border-primary-500 hover:bg-[#282E33]'
@@ -224,7 +227,7 @@ export function IconPicker({ value, onChange, label, className }: IconPickerProp
                         'h-5 w-5',
                         value === name ? 'text-primary-500' : 'text-slate-400'
                       )} />
-                    </button>
+                    </Button>
                   ))}
                 </div>
 

@@ -35,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Breadcrumb {
   label: string;
@@ -167,9 +168,10 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
       {hasOverflow && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <Button
+              variant="ghost"
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-2.5 text-xs md:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap shrink-0',
+                'flex items-center gap-1.5 px-2.5 h-auto py-2.5 text-xs md:text-sm font-medium rounded-none border-b-2 whitespace-nowrap shrink-0',
                 overflowTabs.some(tab => activeTab === tab.id)
                   ? 'border-primary-500 text-primary-500'
                   : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33]'
@@ -177,7 +179,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
             >
               <MoreHorizontal className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
               <span>More</span>
-            </button>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
             {overflowTabs.map((tab) => {
@@ -335,12 +337,14 @@ export function UnifiedPageHeader({
                 className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
               {searchVal && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
             </div>
           )}
@@ -351,12 +355,14 @@ export function UnifiedPageHeader({
             {showFilters && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className={cn(
-                      'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                      'gap-1.5 md:gap-2 px-2 md:px-3 shrink-0',
                       totalActiveFilters > 0
                         ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                        : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33]'
+                        : ''
                     )}
                     title="Filter"
                   >
@@ -367,7 +373,7 @@ export function UnifiedPageHeader({
                         {totalActiveFilters}
                       </span>
                     )}
-                  </button>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-64">
                   <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
@@ -430,12 +436,14 @@ export function UnifiedPageHeader({
             {showGroupBy && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className={cn(
-                      'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                      'gap-1.5 md:gap-2 px-2 md:px-3 shrink-0',
                       groupBy !== 'none'
                         ? 'border-primary-500 bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                        : 'border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33]'
+                        : ''
                     )}
                     title="Group by"
                   >
@@ -443,7 +451,7 @@ export function UnifiedPageHeader({
                     <span className="hidden md:inline">
                       {groupBy !== 'none' ? `By ${groupBy}` : 'Group'}
                     </span>
-                  </button>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
                   {(['none', 'status', 'priority'] as GroupByField[]).map(field => (
@@ -462,10 +470,12 @@ export function UnifiedPageHeader({
 
             {/* Insights */}
             {showInsights && (
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={onInsightsToggle}
                 className={cn(
-                  'flex items-center gap-1.5 md:gap-2 rounded-md border px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium transition-colors shrink-0',
+                  'gap-1.5 md:gap-2 px-2 md:px-3 shrink-0',
                   insightsOpen
                     ? 'border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400'
                     : 'border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50'
@@ -474,22 +484,24 @@ export function UnifiedPageHeader({
               >
                 <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 <span className="hidden md:inline">Insights</span>
-              </button>
+              </Button>
             )}
 
             {/* View Settings */}
             {showViewSettings && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button
-                    className="flex items-center gap-1.5 md:gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors shrink-0"
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 md:gap-2 px-2 md:px-3 shrink-0"
                     title="View settings"
                   >
                     <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">
                       {viewMode === 'list' ? 'List' : viewMode === 'board' ? 'Board' : 'Compact'}
                     </span>
-                  </button>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44">
                   {([
@@ -520,25 +532,29 @@ export function UnifiedPageHeader({
           <div className="flex flex-wrap items-center gap-1.5 mt-2">
             {Object.entries(activeFilters).map(([field, values]) =>
               values.map(value => (
-                <button
+                <Button
                   key={`${field}-${value}`}
+                  variant="outline"
+                  size="sm"
                   onClick={() => toggleFilter(field as FilterField, value)}
-                  className="inline-flex items-center gap-1 rounded-full border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-950/30 px-2 py-0.5 text-[11px] font-medium text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
+                  className="h-auto rounded-full border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-950/30 px-2 py-0.5 text-[11px] text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40"
                 >
                   <span className="capitalize">{field}:</span> {value.replace('_', ' ')}
                   <X className="h-3 w-3 ml-0.5" />
-                </button>
+                </Button>
               ))
             )}
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 onFilterChange?.('status', []);
                 onFilterChange?.('priority', []);
               }}
-              className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 ml-1"
+              className="h-auto text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 ml-1 px-1 py-0.5"
             >
               Clear all
-            </button>
+            </Button>
           </div>
         )}
       </div>

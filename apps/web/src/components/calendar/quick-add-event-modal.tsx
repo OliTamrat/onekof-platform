@@ -13,6 +13,7 @@ import {
   User,
 } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
+import { Button } from '@/components/ui/button';
 
 interface QuickAddEventModalProps {
   date: Date;
@@ -113,22 +114,23 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
       showFooter
       footer={
         <div className="flex items-center justify-end gap-3">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={onClose}
-            className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+            className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#282E33]"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             form="quick-add-form"
             disabled={createMutation.isPending || !formData.title.trim()}
-            className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50"
+            className="bg-primary-500 text-white hover:bg-primary-600 shadow-sm"
           >
             <Plus className="h-4 w-4" />
             {createMutation.isPending ? 'Creating...' : 'Create Event'}
-          </button>
+          </Button>
         </div>
       }
     >

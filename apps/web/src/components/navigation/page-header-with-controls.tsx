@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 interface Breadcrumb {
   label: string;
@@ -136,11 +137,11 @@ export function PageHeaderWithControls({
           {showFilters && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <Button variant="outline" size="sm" className="gap-2">
                   <Filter className="h-4 w-4" />
                   <span>Filter</span>
                   <ChevronDown className="h-3 w-3" />
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
                 <DropdownMenuItem>By Status</DropdownMenuItem>
@@ -155,11 +156,11 @@ export function PageHeaderWithControls({
           {showGroupBy && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <Button variant="outline" size="sm" className="gap-2">
                   <LayoutGrid className="h-4 w-4" />
                   <span>Group by: {selectedGroupBy}</span>
                   <ChevronDown className="h-3 w-3" />
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48">
                 <DropdownMenuItem onClick={() => handleGroupByChange('status')}>
@@ -182,21 +183,25 @@ export function PageHeaderWithControls({
         <div className="flex items-center gap-2">
           {/* Insights */}
           {showInsights && (
-            <button className="flex items-center gap-2 rounded-md border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 px-3 py-1.5 text-sm font-medium text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50"
+            >
               <Sparkles className="h-4 w-4" />
               <span>Insights</span>
-            </button>
+            </Button>
           )}
 
           {/* View Settings */}
           {showViewSettings && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
+                <Button variant="outline" size="sm" className="gap-2">
                   <Settings className="h-4 w-4" />
                   <span className="hidden md:inline">View</span>
                   <ChevronDown className="h-3 w-3" />
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem onClick={() => handleViewChange('board')}>
