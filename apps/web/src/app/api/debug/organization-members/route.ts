@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   try {
     const members = await prisma.organizationMember.findMany({
       include: {
@@ -25,6 +29,6 @@ export async function GET() {
     return NextResponse.json({ members: formatted }, { status: 200 });
   } catch (error) {
     console.error('Error fetching members:', error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch members' }, { status: 500 });
   }
 }
