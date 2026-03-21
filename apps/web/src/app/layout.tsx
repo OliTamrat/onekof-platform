@@ -174,7 +174,7 @@ export default function RootLayout({
           `
         }} />
       </head>
-      <body className={cn('min-h-screen bg-white dark:bg-black antialiased')}>
+      <body className={cn('min-h-screen bg-white dark:bg-[#1B1F23] antialiased')}>
         <Providers>{children}</Providers>
       </body>
     </html>

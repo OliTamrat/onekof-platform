@@ -14,7 +14,7 @@ export function PresenceIndicator() {
         {onlineUsers.slice(0, 5).map((user) => (
           <div
             key={user}
-            className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-[10px] font-medium text-white dark:border-gray-800"
+            className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-primary-500 text-[10px] font-medium text-white dark:border-gray-800"
             title={user}
           >
             {user[0]?.toUpperCase() || '?'}

@@ -34,7 +34,7 @@ export function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#0A0A0A]',
+        'rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#22272B]',
         className
       )}
     >
@@ -83,7 +83,7 @@ export function SkeletonStats({ count = 4, className }: { count?: number; classN
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#0A0A0A]"
+          className="rounded-md border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#22272B]"
         >
           <Skeleton className="mb-2 h-3 w-20" />
           <Skeleton className="h-8 w-24" />

@@ -137,8 +137,8 @@ export default function AdminDashboardPage() {
       label: 'Projects',
       value: stats.totalProjects,
       icon: FolderKanban,
-      color: 'text-teal-600 dark:text-teal-400',
-      bg: 'bg-teal-50 dark:bg-teal-900/20',
+      color: 'text-primary-600 dark:text-primary-400',
+      bg: 'bg-primary-50 dark:bg-primary-900/20',
     },
     {
       label: 'Tasks',

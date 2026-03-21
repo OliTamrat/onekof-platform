@@ -97,12 +97,12 @@ export function GanttChart({ tasks, startDate: propStart, endDate: propEnd, onTa
 
   const statusColors: Record<string, string> = {
     completed: 'bg-green-500',
-    active: 'bg-teal-500',
-    'in-progress': 'bg-teal-500',
+    active: 'bg-primary-500',
+    'in-progress': 'bg-primary-500',
     planning: 'bg-blue-400',
     'on-hold': 'bg-amber-500',
     cancelled: 'bg-red-400',
-    default: 'bg-teal-500',
+    default: 'bg-primary-500',
   };
 
   const today = new Date();
@@ -211,7 +211,7 @@ export function GanttChart({ tasks, startDate: propStart, endDate: propEnd, onTa
               key={task.id}
               className={cn(
                 'flex items-center border-b border-gray-100 px-4 transition-colors dark:border-gray-700/50',
-                hoveredTaskId === task.id && 'bg-teal-50/50 dark:bg-teal-900/10'
+                hoveredTaskId === task.id && 'bg-primary-50/50 dark:bg-primary-900/10'
               )}
               style={{ height: rowHeight }}
               onMouseEnter={() => setHoveredTaskId(task.id)}
@@ -311,7 +311,7 @@ export function GanttChart({ tasks, startDate: propStart, endDate: propEnd, onTa
                     key={task.id}
                     className={cn(
                       'relative flex items-center border-b border-gray-50 transition-colors dark:border-gray-700/20',
-                      isHovered && 'bg-teal-50/30 dark:bg-teal-900/5'
+                      isHovered && 'bg-primary-50/30 dark:bg-primary-900/5'
                     )}
                     style={{ height: rowHeight }}
                     onMouseEnter={() => setHoveredTaskId(task.id)}

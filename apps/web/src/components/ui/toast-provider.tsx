@@ -9,6 +9,7 @@ import {
   Info,
   X,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -105,12 +106,14 @@ function ToastItem({
           </p>
         )}
       </div>
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => onDismiss(toast.id)}
-        className="shrink-0 rounded p-0.5 text-slate-400 transition-colors hover:bg-slate-200/50 hover:text-slate-600 dark:hover:bg-slate-700/50 dark:hover:text-white"
+        className="shrink-0 h-6 w-6 p-0.5 text-slate-400 hover:bg-slate-200/50 hover:text-slate-600 dark:hover:bg-slate-700/50 dark:hover:text-white"
       >
         <X className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   );
 }

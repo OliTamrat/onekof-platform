@@ -3,6 +3,7 @@
 import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
+import { Button } from '@/components/ui/button';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -134,29 +135,31 @@ export class ErrorBoundary extends React.Component<
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button
+                <Button
                   onClick={this.handleReset}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  className="w-full"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Try Again
-                </button>
+                </Button>
 
-                <button
+                <Button
+                  variant="secondary"
                   onClick={this.handleReload}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+                  className="w-full"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Reload Page
-                </button>
+                </Button>
 
-                <button
+                <Button
+                  variant="secondary"
                   onClick={this.handleGoHome}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+                  className="w-full"
                 >
                   <Home className="h-4 w-4" />
                   Go to Homepage
-                </button>
+                </Button>
               </div>
 
               {/* Support Link */}

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Notification {
   id: string;
@@ -37,7 +38,7 @@ const typeConfig: Record<
   task_completed: { icon: Check, color: 'text-green-500', bgColor: 'bg-green-50 dark:bg-green-900/20' },
   comment: { icon: MessageSquare, color: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
   budget_alert: { icon: BarChart3, color: 'text-orange-500', bgColor: 'bg-orange-50 dark:bg-orange-900/20' },
-  goal_update: { icon: Target, color: 'text-teal-500', bgColor: 'bg-teal-50 dark:bg-teal-900/20' },
+  goal_update: { icon: Target, color: 'text-primary-500', bgColor: 'bg-primary-50 dark:bg-primary-900/20' },
   team_invite: { icon: Users, color: 'text-indigo-500', bgColor: 'bg-indigo-50 dark:bg-indigo-900/20' },
   document_processed: { icon: FileText, color: 'text-cyan-500', bgColor: 'bg-cyan-50 dark:bg-cyan-900/20' },
   automation_triggered: { icon: Zap, color: 'text-yellow-500', bgColor: 'bg-yellow-50 dark:bg-yellow-900/20' },
@@ -146,10 +147,12 @@ export function NotificationCenter() {
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Bell Button */}
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
+          'relative h-9 w-9 rounded-lg',
           'text-slate-500 hover:bg-slate-100 hover:text-slate-700',
           'dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white',
           isOpen && 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-white'
@@ -161,7 +164,7 @@ export function NotificationCenter() {
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
-      </button>
+      </Button>
 
       {/* Dropdown */}
       {isOpen && (
@@ -173,36 +176,40 @@ export function NotificationCenter() {
             </h3>
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={markAllAsRead}
-                  className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-teal-600 transition-colors hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-900/20"
+                  className="flex items-center gap-1 h-auto px-2 py-1 text-xs text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
                 >
                   <CheckCheck className="h-3.5 w-3.5" />
                   Mark all read
-                </button>
+                </Button>
               )}
             </div>
           </div>
 
           {/* Filter Tabs */}
           <div className="flex border-b border-slate-200 px-2 dark:border-slate-700">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setFilter('all')}
               className={cn(
-                'px-3 py-2 text-xs font-medium transition-colors',
+                'h-auto rounded-none px-3 py-2 text-xs font-medium',
                 filter === 'all'
-                  ? 'border-b-2 border-teal-500 text-teal-600 dark:text-teal-400'
+                  ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'
               )}
             >
               All
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setFilter('unread')}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors',
+                'h-auto rounded-none flex items-center gap-1.5 px-3 py-2 text-xs font-medium',
                 filter === 'unread'
-                  ? 'border-b-2 border-teal-500 text-teal-600 dark:text-teal-400'
+                  ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'
               )}
             >
@@ -212,7 +219,7 @@ export function NotificationCenter() {
                   {unreadCount}
                 </span>
               )}
-            </button>
+            </Button>
           </div>
 
           {/* Notification List */}
@@ -232,12 +239,14 @@ export function NotificationCenter() {
                 const config = typeConfig[notification.type];
                 const Icon = config.icon;
                 return (
-                  <button
+                  <Button
                     key={notification.id}
+                    variant="ghost"
                     onClick={() => handleNotificationClick(notification)}
                     className={cn(
-                      'group flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50',
-                      !notification.read && 'bg-teal-50/30 dark:bg-teal-900/5'
+                      'group flex w-full h-auto items-start gap-3 rounded-none px-4 py-3 text-left',
+                      'hover:bg-slate-50 dark:hover:bg-slate-800/50',
+                      !notification.read && 'bg-primary-50/30 dark:bg-primary-900/5'
                     )}
                   >
                     {/* Icon */}
@@ -263,12 +272,14 @@ export function NotificationCenter() {
                         >
                           {notification.title}
                         </p>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={(e) => removeNotification(notification.id, e)}
-                          className="shrink-0 rounded p-0.5 opacity-0 transition-opacity hover:bg-slate-200 group-hover:opacity-100 dark:hover:bg-slate-700"
+                          className="shrink-0 h-auto w-auto rounded p-0.5 opacity-0 transition-opacity hover:bg-slate-200 group-hover:opacity-100 dark:hover:bg-slate-700"
                         >
                           <X className="h-3.5 w-3.5 text-slate-400" />
-                        </button>
+                        </Button>
                       </div>
                       <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                         {notification.message}
@@ -280,9 +291,9 @@ export function NotificationCenter() {
 
                     {/* Unread dot */}
                     {!notification.read && (
-                      <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-teal-500" />
+                      <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
                     )}
-                  </button>
+                  </Button>
                 );
               })
             )}
@@ -290,15 +301,16 @@ export function NotificationCenter() {
 
           {/* Footer */}
           <div className="border-t border-slate-200 px-4 py-2.5 dark:border-slate-700">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => {
                 router.push('/dashboard/notifications');
                 setIsOpen(false);
               }}
-              className="w-full rounded-lg py-1.5 text-center text-xs font-medium text-teal-600 transition-colors hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-900/20"
+              className="w-full h-auto rounded-lg py-1.5 text-center text-xs font-medium text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
             >
               View all notifications
-            </button>
+            </Button>
           </div>
         </div>
       )}
