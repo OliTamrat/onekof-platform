@@ -385,7 +385,7 @@ export default function TeamsOverviewPage() {
                           className="flex h-10 w-10 items-center justify-center rounded"
                           style={{ backgroundColor: team.color || '#1C8C7D' }}
                         >
-                          <IconRenderer iconName={team.icon} className="h-5 w-5 text-white" fallback="👥" />
+                          <IconRenderer iconName={team.icon} className="h-5 w-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2">

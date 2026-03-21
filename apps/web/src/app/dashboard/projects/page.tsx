@@ -270,7 +270,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
         className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg"
         style={{ backgroundColor: project.color || '#1C8C7D' }}
       >
-        <IconRenderer iconName={project.icon} className="h-6 w-6 text-white" fallback="📁" />
+        <IconRenderer iconName={project.icon} className="h-6 w-6 text-white" />
       </div>
 
       <div className="mb-4">
@@ -311,7 +311,7 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
         className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded"
         style={{ backgroundColor: project.color || '#1C8C7D' }}
       >
-        <IconRenderer iconName={project.icon} className="h-5 w-5 text-white" fallback="📁" />
+        <IconRenderer iconName={project.icon} className="h-5 w-5 text-white" />
       </div>
 
       <div className="flex-1 min-w-0">
