@@ -268,7 +268,7 @@ export default function AutomationsSummaryPage() {
                 <div className="space-y-4">
                   <StatusBar label="Organization" count={automationsByScope.organization} total={totalAutomations} color="bg-indigo-500" />
                   <StatusBar label="Project" count={automationsByScope.project} total={totalAutomations} color="bg-blue-500" />
-                  <StatusBar label="Personal" count={automationsByScope.personal} total={totalAutomations} color="bg-teal-500" />
+                  <StatusBar label="Personal" count={automationsByScope.personal} total={totalAutomations} color="bg-primary-500" />
                 </div>
               </div>
 

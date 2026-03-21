@@ -8,6 +8,7 @@ import { UnifiedPageHeader, type TabDefinition, type FilterField, type GroupByFi
 import { AIInsightsPanel } from '@/components/department/ai-insights-panel';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Task {
   id: string;
@@ -240,29 +241,33 @@ export function DepartmentTaskList({
               autoFocus
               className="flex-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#282E33] px-3 py-1.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
-            <button
+            <Button
               type="submit"
+              size="sm"
               disabled={createMutation.isPending || !newTaskTitle.trim()}
-              className="rounded-md bg-primary-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors"
+              className="bg-primary-500 text-white hover:bg-primary-600"
             >
               {createMutation.isPending ? '...' : 'Add'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => { setShowCreateForm(false); setNewTaskTitle(''); }}
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+              className="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
             >
               Cancel
-            </button>
+            </Button>
           </form>
         ) : (
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            className="h-auto px-2 py-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400"
           >
             <Plus className="h-4 w-4" />
             <span>Create task</span>
-          </button>
+          </Button>
         )}
       </div>
 
@@ -283,13 +288,15 @@ export function DepartmentTaskList({
                 : emptyMessage}
             </p>
             {!search && !Object.values(activeFilters).some(v => v.length > 0) && (
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setShowCreateForm(true)}
-                className="mt-3 flex items-center gap-1.5 rounded-md border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors"
+                className="mt-3 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Create your first task
-              </button>
+              </Button>
             )}
           </div>
         ) : viewMode === 'board' ? (
@@ -309,10 +316,11 @@ export function DepartmentTaskList({
                   </div>
                   <div className="flex-1 overflow-y-auto p-3 space-y-3">
                     {statusTasks.map(task => (
-                      <button
+                      <Button
                         key={task.id}
+                        variant="ghost"
                         onClick={() => setSelectedTaskId(task.id)}
-                        className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all shadow-sm group"
+                        className="w-full h-auto text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-4 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all shadow-sm group"
                       >
                         <div className="flex items-center gap-2 mb-2">
                           <span className={cn('h-2 w-2 rounded-full', PRIORITY_DOT[task.priority])} />
@@ -339,7 +347,7 @@ export function DepartmentTaskList({
                             </div>
                           )}
                         </div>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -366,11 +374,12 @@ export function DepartmentTaskList({
                 )}
 
                 {tasks.map(task => (
-                  <button
+                  <Button
                     key={task.id}
+                    variant="ghost"
                     onClick={() => setSelectedTaskId(task.id)}
                     className={cn(
-                      'flex w-full items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-[#22272B] transition-colors group',
+                      'flex w-full h-auto items-center gap-3 rounded-none text-left hover:bg-slate-50 dark:hover:bg-[#22272B] transition-colors group',
                       viewMode === 'compact' ? 'px-4 py-1.5 sm:px-6' : 'px-4 py-3 sm:px-6'
                     )}
                   >
@@ -406,7 +415,7 @@ export function DepartmentTaskList({
                         {task.assignee.name.charAt(0)}
                       </div>
                     )}
-                  </button>
+                  </Button>
                 ))}
               </div>
             ))}

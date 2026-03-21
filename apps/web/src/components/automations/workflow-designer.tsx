@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Plus, Trash2, ArrowDown, Zap, Filter, Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface WorkflowTrigger {
   id: string;
@@ -105,21 +106,23 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
   return (
     <div className={cn('space-y-4', className)}>
       {/* Trigger */}
-      <div className="rounded-lg border-2 border-dashed border-teal-300 bg-teal-50 p-4 dark:border-teal-700 dark:bg-teal-900/20">
-        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-teal-700 dark:text-teal-400">
+      <div className="rounded-lg border-2 border-dashed border-primary-300 bg-primary-50 p-4 dark:border-primary-700 dark:bg-primary-900/20">
+        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary-700 dark:text-primary-400">
           <Zap className="h-4 w-4" />
           Trigger
         </div>
         {rule.trigger ? (
           <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm dark:bg-gray-800">
             <span className="text-sm font-medium text-gray-900 dark:text-white">{rule.trigger.label}</span>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setRule((prev) => ({ ...prev, trigger: null }))}
-              className="text-gray-400 hover:text-red-500"
+              className="h-auto w-auto p-1 text-gray-400 hover:text-red-500"
               aria-label="Remove trigger"
             >
               <Trash2 className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         ) : (
           <select
@@ -203,17 +206,18 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
                   className="flex-1 rounded border border-gray-200 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   aria-label="Condition value"
                 />
-                <button onClick={() => removeCondition(condition.id)} className="text-gray-400 hover:text-red-500" aria-label="Remove condition">
+                <Button variant="ghost" size="icon" onClick={() => removeCondition(condition.id)} className="h-auto w-auto p-1 text-gray-400 hover:text-red-500" aria-label="Remove condition">
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             ))}
-            <button
+            <Button
+              variant="ghost"
               onClick={addCondition}
-              className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
+              className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
             >
               <Plus className="h-3 w-3" /> Add condition
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -236,9 +240,9 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
             {rule.actions.map((action) => (
               <div key={action.id} className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm dark:bg-gray-800">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">{action.label}</span>
-                <button onClick={() => removeAction(action.id)} className="text-gray-400 hover:text-red-500" aria-label="Remove action">
+                <Button variant="ghost" size="icon" onClick={() => removeAction(action.id)} className="h-auto w-auto p-1 text-gray-400 hover:text-red-500" aria-label="Remove action">
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             ))}
             <select
@@ -262,12 +266,12 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
       {/* Save */}
       {rule.trigger && rule.actions.length > 0 && onSave && (
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={() => onSave(rule)}
-            className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+            className="bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           >
             Save Automation
-          </button>
+          </Button>
         </div>
       )}
     </div>
