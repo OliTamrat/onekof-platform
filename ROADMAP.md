@@ -209,7 +209,7 @@ To enable OAuth login, you need to configure API keys from each provider:
 
 ### **PHASE 4: AI-Powered Features** (2-3 weeks)
 
-#### AI Integration (Anthropic Claude)
+#### AI Integration (Anthropic)
 - [ ] **Smart Task Creation**
   - [ ] AI-assisted task breakdown
   - [ ] Auto-generate subtasks from epic
@@ -478,7 +478,7 @@ To enable OAuth login, you need to configure API keys from each provider:
 - **Real-time**: WebSockets/Pusher/Supabase Realtime
 - **File Storage**: Supabase Storage/AWS S3
 - **Email**: Resend/SendGrid
-- **AI**: Anthropic Claude API
+- **AI**: Anthropic API
 - **Search**: Algolia/Meilisearch
 - **Cache**: Redis/Vercel KV
 - **Queue**: BullMQ/Inngest

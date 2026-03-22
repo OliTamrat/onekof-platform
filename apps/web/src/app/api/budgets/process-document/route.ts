@@ -7,7 +7,7 @@ import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
-// Initialize Claude API client
+// Initialize Anthropic API client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 });
@@ -62,19 +62,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert file to base64 for Claude API
+    // Convert file to base64 for AI API
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64 = buffer.toString('base64');
 
-    // Prepare media type for Claude
+    // Prepare media type for AI
     const mediaType = file.type === 'application/pdf'
       ? 'application/pdf'
       : file.type.startsWith('image/')
       ? file.type as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
       : 'application/pdf'; // Default
 
-    // Call Claude API to extract budget information
+    // Call AI API to extract budget information
     const contentBlocks: Array<Record<string, unknown>> = [];
 
     // Use image block for image types, document block for PDFs
@@ -138,7 +138,7 @@ Return ONLY valid JSON, no explanations.`,
     });
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: process.env.AI_MODEL_ADVANCED || 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
       messages: [
         {
@@ -148,10 +148,10 @@ Return ONLY valid JSON, no explanations.`,
       ],
     });
 
-    // Parse Claude's response
+    // Parse AI's response
     const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
 
-    // Extract JSON from response (Claude might wrap it in markdown)
+    // Extract JSON from response (AI might wrap it in markdown)
     let extractedData;
     try {
       // Try to find JSON in the response
@@ -162,7 +162,7 @@ Return ONLY valid JSON, no explanations.`,
         extractedData = JSON.parse(responseText);
       }
     } catch (parseError) {
-      logger.error('Failed to parse Claude response', { responseText });
+      logger.error('Failed to parse AI response', { responseText });
       return NextResponse.json(
         {
           error: 'Failed to extract budget data from document',
@@ -191,7 +191,7 @@ Return ONLY valid JSON, no explanations.`,
         fileSize: file.size,
         fileType: file.type,
         processedAt: new Date().toISOString(),
-        model: 'claude-3-5-sonnet-20241022',
+        model: process.env.AI_MODEL_ADVANCED || 'claude-3-5-sonnet-20241022',
       },
     });
   } catch (error: any) {

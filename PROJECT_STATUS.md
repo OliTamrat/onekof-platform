@@ -167,7 +167,7 @@ Deployment:   Ready for Vercel
 Real-time:    WebSockets/Supabase Realtime
 File Storage: Supabase Storage
 Email:        Resend/SendGrid
-AI:           Anthropic Claude API
+AI:           Anthropic API
 Search:       Algolia/Meilisearch
 Cache:        Redis/Vercel KV
 ```
@@ -231,7 +231,7 @@ Cache:        Redis/Vercel KV
 
 ### AI-Powered
 
-- Claude AI integration planned (Phase 4)
+- AI integration planned (Phase 4)
 - Smart task creation and breakdown
 - Auto-categorization and assignment
 - Risk detection and deadline recommendations

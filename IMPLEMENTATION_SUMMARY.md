@@ -29,7 +29,7 @@ A comprehensive technical specification including:
 - PostgreSQL 16 with pgvector for vector embeddings
 - Redis for caching and sessions
 - Socket.io + Yjs for real-time collaboration
-- Anthropic Claude for AI features
+- Anthropic for AI features
 
 ---
 
@@ -231,7 +231,7 @@ These are high-priority next steps:
 ### Phase 4: Advanced Features (Week 10-14)
 - [ ] Full-text search (Elasticsearch)
 - [ ] Semantic search (pgvector + embeddings)
-- [ ] AI features (Claude integration)
+- [ ] AI features (AI integration)
   - [ ] Task decomposition
   - [ ] Summarization
   - [ ] Smart suggestions
@@ -365,7 +365,7 @@ These are high-priority next steps:
 1. Complete project management module
 2. Build documentation editor (Tiptap + Yjs)
 3. Implement search (Elasticsearch + pgvector)
-4. Add AI features (Claude integration)
+4. Add AI features (AI integration)
 
 ### Long-Term (Next 3-6 Months)
 1. Ethiopian localization (calendar + languages)

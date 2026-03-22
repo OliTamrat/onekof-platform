@@ -2,7 +2,7 @@
 
 /**
  * AI-Powered Document Upload Component
- * Drag-and-drop interface for uploading documents with Claude AI processing
+ * Drag-and-drop interface for uploading documents with AI processing
  */
 
 import { useState, useCallback } from 'react';
@@ -299,7 +299,7 @@ export function DocumentUpload({
                 AI Processing in Progress
               </p>
               <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                Claude AI is analyzing your documents for key insights, budget items, and milestones...
+                AI is analyzing your documents for key insights, budget items, and milestones...
               </p>
             </div>
           </div>

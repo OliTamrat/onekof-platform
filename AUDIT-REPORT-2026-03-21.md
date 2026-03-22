@@ -33,7 +33,7 @@ The platform has strong architectural security (multi-tenant isolation, JWT auth
 | 7 | HIGH | Security | `/api/invitations/accept` GET endpoint has no auth check | 15 min |
 | 8 | HIGH | Security | CRON endpoint `/api/analytics/aggregate` open if `CRON_SECRET` not set | 15 min |
 | 9 | HIGH | Code Quality | 2,876 lines of backup files need deletion | 10 min |
-| 10 | CRITICAL | UI/UX | Primary color mismatch — tailwind.config uses `#2563EB` (blue), CLAUDE.md specifies `#1C8C7D` (teal) | 30 min |
+| 10 | CRITICAL | UI/UX | Primary color mismatch — tailwind.config uses `#2563EB` (blue), DEVELOPMENT.md specifies `#1C8C7D` (teal) | 30 min |
 
 ---
 
@@ -141,7 +141,7 @@ If `recordFailedLogin` throws, it returns `{ locked: false }` — silently allow
 **Severity:** CRITICAL
 **File:** `tailwind.config.ts:33-45`, `src/app/layout.tsx:87`, `src/components/layouts/jira-style-layout.tsx:135,295`
 
-CLAUDE.md specifies primary accent as **teal `#1C8C7D`**, but the codebase uses **electric blue `#2563EB`** throughout — in Tailwind config, HTML meta theme-color, logo gradients.
+DEVELOPMENT.md specifies primary accent as **teal `#1C8C7D`**, but the codebase uses **electric blue `#2563EB`** throughout — in Tailwind config, HTML meta theme-color, logo gradients.
 
 **Fix:** Update `tailwind.config.ts` primary palette to teal `#1C8C7D` and update all references.
 
@@ -159,20 +159,20 @@ CLAUDE.md specifies primary accent as **teal `#1C8C7D`**, but the codebase uses 
 **Severity:** HIGH
 **Files:** 18+ components
 
-| Current | Expected (CLAUDE.md) | Where |
+| Current | Expected (DEVELOPMENT.md) | Where |
 |---------|----------------------|-------|
 | `dark:bg-black` | `dark:bg-[#1B1F23]` | layout.tsx, jira-style-layout.tsx |
 | `dark:bg-[#0A0A0A]` | `dark:bg-[#22272B]` | card.tsx, input.tsx, button.tsx, dialog.tsx, dropdown-menu.tsx, select.tsx, skeleton.tsx, slideout-panel.tsx, tabs.tsx |
 | `dark:bg-[#111111]` | `dark:bg-[#282E33]` | dialog.tsx, dropdown-menu.tsx, tabs.tsx |
 | `dark:bg-[#2D3748]` | Non-standard | textarea.tsx, data-table.tsx |
 
-**Fix:** Systematically replace dark mode backgrounds to match the three-tier system in CLAUDE.md.
+**Fix:** Systematically replace dark mode backgrounds to match the three-tier system in DEVELOPMENT.md.
 
 ### 2.4 Raw `<button>` Elements
 **Severity:** HIGH
 **Files:** jira-style-layout.tsx:175, collapsible-sidebar.tsx:70, workflow-designer.tsx:267, dashboard-layout.tsx:57, and others
 
-195 raw `<button>`/`<input>` elements found. CLAUDE.md requires ALL buttons use `<Button>` component.
+195 raw `<button>`/`<input>` elements found. DEVELOPMENT.md requires ALL buttons use `<Button>` component.
 
 **Fix:** Replace raw elements with UI components where applicable.
 
@@ -207,7 +207,7 @@ CLAUDE.md specifies primary accent as **teal `#1C8C7D`**, but the codebase uses 
 `tsconfig.json:17` has `"strict": false` with phased approach. Phase 2 (strictNullChecks) and Phase 3 are commented out. `next.config.mjs:21-23` has `ignoreBuildErrors: true`.
 
 ### 3.3 Unused Dependencies
-- `next-intl` — i18n was removed per CLAUDE.md but package remains
+- `next-intl` — i18n was removed per DEVELOPMENT.md but package remains
 - `@trpc/*` — installed but zero usage found
 
 ### 3.4 No Pagination on List Endpoints

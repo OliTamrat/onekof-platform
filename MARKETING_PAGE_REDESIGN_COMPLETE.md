@@ -56,7 +56,7 @@ High-impact stats on teal gradient background:
    "Amharic, Afaan Oromoo, Tigrinya, English"
 
 3. **AI-Powered Everything**
-   "Claude AI turns ideas into tasks"
+   "AI turns ideas into tasks"
 
 4. **Built for Speed**
    "Hosted in Ethiopia. Built for real Ethiopian internet"
@@ -166,7 +166,7 @@ All CTAs use brand teal (#1C8C7D) and link to `/auth/signup`
 ### Value Propositions
 - Ethiopian calendar (only PM tool with this)
 - 4 native languages (Amharic, Afaan Oromoo, Tigrinya, English)
-- AI-powered (Claude integration)
+- AI-powered (Anthropic integration)
 - Data sovereignty (hosted in Ethiopia)
 - Cheaper than competitors ($8/user vs Jira's $14.50/user)
 
@@ -244,7 +244,7 @@ Dashboard Dark: #1B1F23 (matches actual product)
 - Per-user language preferences
 
 ### 3. **AI-Powered** ✨
-- Claude AI integration
+- AI integration
 - Generate tasks from descriptions
 - Auto-summarize meetings
 - Smart suggestions in any language
@@ -391,5 +391,5 @@ Your marketing page is now a **conversion-optimized sales agent** that:
 
 **🇪🇹 Shaping the Future of PM in Ethiopia!**
 
-Made with ❤️ by Claude Code
+Made with ❤️ by Onekof Team
 Commit: `628c7e7`

@@ -300,7 +300,7 @@ To make Onekof truly AI-powered and sellable, we need to build these features in
 │                        HERO SECTION                          │
 │  ┌──────────────────────────┐  ┌───────────────────────┐   │
 │  │  ✨ AI Assistant Badge   │  │   LIVE AI DEMO        │   │
-│  │  "Powered by Claude AI"  │  │   ┌─────────────────┐ │   │
+│  │  "Powered by AI"  │  │   ┌─────────────────┐ │   │
 │  └──────────────────────────┘  │   │ User types:     │ │   │
 │                                  │   │ "Build auth sys"│ │   │
 │  The PM tool with AI that       │   │                 │ │   │

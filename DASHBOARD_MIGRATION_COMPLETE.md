@@ -250,5 +250,5 @@ See `DASHBOARD_ROADMAP_ATLASSIAN_INSPIRED.md` for the complete 20-week plan to b
 
 **Migration completed successfully!** 🚀
 
-Made with ❤️ by Claude Code
+Made with ❤️ by Onekof Team
 March 1, 2026

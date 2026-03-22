@@ -52,7 +52,7 @@ DIRECT_URL=${DATABASE_URL}
 # OpenAI API (for AI Documents feature)
 OPENAI_API_KEY=sk-your_openai_api_key_here
 
-# Anthropic Claude (alternative AI provider)
+# Anthropic (alternative AI provider)
 ANTHROPIC_API_KEY=sk-ant-your_anthropic_key_here
 ```
 
@@ -215,4 +215,4 @@ Check logs in Vercel Dashboard → Deployments → View Function Logs
 ---
 
 **Last Updated:** March 5, 2026
-**Generated with:** Claude Code 🤖
+**Generated with:** Onekof Team

@@ -253,7 +253,7 @@ Now that your foundation is set up:
    - Issue tracking
    - Documentation (Tiptap editor)
    - Real-time collaboration (Yjs)
-4. **Add AI Features:** Integrate Anthropic Claude for smart suggestions
+4. **Add AI Features:** Integrate Anthropic for smart suggestions
 5. **Ethiopian Localization:** Implement calendar and language switching
 
 ---

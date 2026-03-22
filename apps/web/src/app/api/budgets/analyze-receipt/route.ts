@@ -187,7 +187,7 @@ Return ONLY valid JSON`,
     contentBlocks.push({ type: 'text', text: prompt });
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: process.env.AI_MODEL_ADVANCED || 'claude-sonnet-4-20250514',
       max_tokens: 4096,
       messages: [{ role: 'user', content: contentBlocks as any }],
     });
