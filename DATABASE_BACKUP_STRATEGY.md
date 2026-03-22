@@ -227,7 +227,7 @@ export async function uploadBackupToS3(filePath: string) {
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-03-08 | Claude Code | Initial backup strategy document |
+| 1.0 | 2026-03-08 | Onekof Team | Initial backup strategy document |
 
 ---
 

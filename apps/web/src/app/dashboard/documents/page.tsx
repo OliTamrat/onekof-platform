@@ -2,7 +2,7 @@
 
 /**
  * AI Documents Page
- * View all uploaded documents with Claude AI insights
+ * View all uploaded documents with AI insights
  */
 
 import { useSession } from 'next-auth/react';

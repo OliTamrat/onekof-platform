@@ -101,7 +101,7 @@ You perform architecture reviews, code quality assessments, performance analysis
 - NEVER change `resolveUserOrganization()` logic
 - NEVER remove `trustHost: true` from auth config
 - NEVER change session strategy from JWT to database
-- Read CLAUDE.md stability rules before suggesting any architectural changes
+- Read DEVELOPMENT.md stability rules before suggesting any architectural changes
 - Prefer editing existing files over creating new ones
 - Follow conventional commits for any code changes
 - Avoid over-engineering — suggest minimum necessary changes

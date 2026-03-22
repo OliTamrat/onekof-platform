@@ -278,7 +278,7 @@ Ethiopian organizations waste 30-40% of work time due to:
    - Government prefers local tech
 
 3. **Technology Maturity**
-   - AI models fluent in Amharic (Claude 3.5)
+   - AI models fluent in Amharic (Anthropic 3.5)
    - Ethiopian calendar libraries available
    - Local payment APIs (Chapa, Telebirr)
 

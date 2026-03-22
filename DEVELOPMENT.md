@@ -1,4 +1,4 @@
-# CLAUDE.md — Onekof Platform Development Rules
+# DEVELOPMENT.md — Onekof Platform Development Rules
 
 ## Architecture Overview
 
@@ -103,7 +103,7 @@ These patterns are critical to production stability:
 
 ## Git Commit Rules
 
-- **NO attribution links** in commit messages. Never append `https://claude.ai/code/...` or any AI tool URLs.
+- **NO attribution links** in commit messages. Never append AI tool URLs.
 - **NO author identification** in commits, code comments, or deployment metadata.
 - **Git author MUST be**: `OliTamrat <oli.oli@udc.edu>` — always set `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, and `GIT_COMMITTER_EMAIL` before committing.
 - **Commit messages** follow conventional commits: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `style:`, `perf:`, `test:`
@@ -133,7 +133,7 @@ These patterns are critical to production stability:
 
 ## Custom Agents
 
-Specialized agents live in `.claude/agents/` for targeted code reviews and audits:
+Specialized agents live in `.agents/` for targeted code reviews and audits:
 
 | Agent | File | Purpose |
 |-------|------|---------|
@@ -178,7 +178,7 @@ Full audit covering Security, UI/UX Design System, Code Quality, and Database Sc
 
 1. **Hardcoded default `ADMIN_SECRET` fallback** — `src/app/api/admin/login/route.ts`, `src/lib/security/superadmin.ts`. If env var is not set, anyone can forge admin tokens using the default secret.
 2. **No rate limiting on `/api/admin/login`** — highest-privilege endpoint has zero brute-force protection.
-3. **Primary color mismatch** — `tailwind.config.ts` uses blue `#2563EB`, CLAUDE.md specifies teal `#1C8C7D`. All `primary-*` tokens resolve to wrong color.
+3. **Primary color mismatch** — `tailwind.config.ts` uses blue `#2563EB`, DEVELOPMENT.md specifies teal `#1C8C7D`. All `primary-*` tokens resolve to wrong color.
 4. **Missing `@relation` on Document model** — `projectId` and `budgetId` are plain strings with no Prisma relation. Orphaned documents on parent deletion.
 5. **Missing `@relation` on user audit fields** — 8+ models (`createdBy`, `approvedBy`, `uploadedBy`, `changedBy`, `userId`) have no relation to User model. N+1 queries and orphaned records.
 6. **Missing `@relation` on `BudgetCategory.parentId`** — nested category hierarchy has no self-referential relation.
