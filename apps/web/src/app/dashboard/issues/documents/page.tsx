@@ -2,7 +2,7 @@
 
 /**
  * AI Documents Page
- * View all uploaded documents with Claude AI insights
+ * View all uploaded documents with AI insights
  */
 
 import { useSession } from 'next-auth/react';
@@ -125,7 +125,7 @@ export default function DocumentsPage() {
               AI Document Processing
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Upload documents for intelligent analysis powered by Claude AI
+              Upload documents for intelligent analysis powered by AI
             </p>
           </div>
 

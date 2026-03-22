@@ -525,5 +525,5 @@ function ProjectsPage() {
 
 ---
 
-Made with ❤️ by Claude Code
+Made with ❤️ by Onekof Team
 March 1, 2026

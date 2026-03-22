@@ -49,7 +49,7 @@ Onekof is built as a modern, cloud-native SaaS platform designed to compete with
 ┌───────▼────────┐    ┌──────────▼──────────┐    ┌────────▼────────┐
 │  Core Services │    │  Collaboration      │    │  AI Services    │
 │                │    │  Engine             │    │                 │
-│ - Projects     │    │                     │    │ - Claude API    │
+│ - Projects     │    │                     │    │ - Anthropic API │
 │ - Issues       │    │ - WebSocket Server  │    │ - Embeddings    │
 │ - Workflows    │    │ - CRDT Sync (Yjs)   │    │ - Smart Suggest │
 │ - Permissions  │    │ - Presence          │    │ - Summarization │
@@ -122,7 +122,7 @@ Onekof is built as a modern, cloud-native SaaS platform designed to compete with
 
 | Layer | Technology | Justification |
 |-------|-----------|---------------|
-| **LLM** | Anthropic Claude 3.5 Sonnet | Best reasoning, long context, function calling |
+| **LLM** | Anthropic 3.5 Sonnet | Best reasoning, long context, function calling |
 | **AI SDK** | Vercel AI SDK | Streaming, tool calling, edge-compatible |
 | **Embeddings** | text-embedding-3-large | Best quality embeddings for search |
 | **Vector Store** | pgvector | Keep everything in Postgres, simpler |
@@ -1083,7 +1083,7 @@ Focus on tasks that are:
 - Realistic for the project type`;
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: process.env.AI_MODEL || 'anthropic-sonnet',
     max_tokens: 4096,
     messages: [{ role: 'user', content: prompt }],
   });
@@ -1266,7 +1266,7 @@ Focus on tasks that are:
 1. Kanban/Scrum boards (drag & drop)
 2. Sprint management
 3. Reporting & analytics
-4. AI features (Claude integration)
+4. AI features (Anthropic integration)
 5. Workflow automation builder
 6. Mobile app (React Native)
 

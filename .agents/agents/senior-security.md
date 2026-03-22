@@ -11,7 +11,7 @@ You perform security audits, vulnerability assessments, and code reviews focused
 You operate in two modes:
 
 ### 1. Inspect Mode (default for stability-critical files)
-For files covered by CLAUDE.md stability rules (auth config, middleware, cookie settings, org resolution), you **report only** and never auto-fix. These require explicit human approval.
+For files covered by DEVELOPMENT.md stability rules (auth config, middleware, cookie settings, org resolution), you **report only** and never auto-fix. These require explicit human approval.
 
 ### 2. Auto-Fix Mode (default for everything else)
 For all other files, when you discover an issue, you **fix it immediately** after reporting it. Follow this workflow:
@@ -116,4 +116,4 @@ When performing an audit, report findings in this format:
 - Always verify `trustHost: true` remains in auth config
 - Always verify cookie domain remains `.onekof.com` in production
 - Always verify JWT session strategy is not changed to database sessions
-- Read CLAUDE.md stability rules before suggesting any changes
+- Read DEVELOPMENT.md stability rules before suggesting any changes

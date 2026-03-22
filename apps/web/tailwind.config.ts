@@ -57,7 +57,7 @@ const config: Config = {
           900: '#4C1D95',
           950: '#2E1065',
         },
-        // Dark mode surface system — Three-tier per CLAUDE.md
+        // Dark mode surface system — Three-tier per DEVELOPMENT.md
         surface: {
           DEFAULT: '#FFFFFF',
           secondary: '#F8FAFC',

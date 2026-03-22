@@ -830,7 +830,7 @@ Month 12-18: Pan-African expansion prep
 ### 4. **AI-First Architecture**
 - AI included, not extra (competitors charge $7/user)
 - Amharic-language AI (no one else has this)
-- Built on Claude 3.5 Sonnet (best reasoning)
+- Built on Anthropic 3.5 Sonnet (best reasoning)
 
 ### 5. **Pan-African Playbook**
 - Ethiopia success → Kenya, Nigeria, Ghana

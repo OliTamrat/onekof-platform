@@ -1,6 +1,6 @@
 /**
- * Claude AI Service
- * Anthropic Claude Haiku integration for document processing
+ * AI Document Processing Service
+ * Anthropic Haiku integration for document processing
  * Cost-effective, fast AI processing for invoices, contracts, proposals, etc.
  */
 
@@ -13,7 +13,7 @@ const anthropic = new Anthropic({
 
 // Model configuration
 export const AI_CONFIG = {
-  model: 'claude-3-haiku-20240307', // Fast & cheap model
+  model: process.env.AI_MODEL || 'claude-3-haiku-20240307',
   maxTokens: 4096,
   temperature: 0.2, // Lower temperature for consistent, factual extraction
   costs: {
@@ -52,7 +52,7 @@ export interface AIProcessingResult {
 }
 
 /**
- * Process a document with Claude AI
+ * Process a document with AI
  */
 export async function processDocument(
   documentContent: string,
@@ -65,7 +65,7 @@ export async function processDocument(
     // Build context-aware prompt based on document type
     const prompt = buildPrompt(documentContent, documentType, fileName);
 
-    // Call Claude API
+    // Call Anthropic API
     const response = await anthropic.messages.create({
       model: AI_CONFIG.model,
       max_tokens: AI_CONFIG.maxTokens,
@@ -104,7 +104,7 @@ export async function processDocument(
       processingTime,
     };
   } catch (error) {
-    console.error('Claude AI processing error:', error);
+    console.error('AI processing error:', error);
     throw new Error(`AI processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
@@ -286,11 +286,11 @@ export async function extractTextFromFile(
   fileBuffer: Buffer,
   mimeType: string
 ): Promise<string> {
-  // For MVP, we'll use Claude's vision API for images and PDFs
+  // For MVP, we'll use the vision API for images and PDFs
   // In production, use pdf-parse, tesseract.js, or similar libraries
 
   if (mimeType.startsWith('image/')) {
-    // Convert image to base64 for Claude vision
+    // Convert image to base64 for AI vision
     const base64Image = fileBuffer.toString('base64');
 
     const response = await anthropic.messages.create({

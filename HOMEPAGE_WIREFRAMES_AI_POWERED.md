@@ -32,7 +32,7 @@
 │ ┌──────────────────────────────────────────────────────────────────┐ │
 │ │                                                                  │ │
 │ │  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                                  │ │
-│ │  ┃ ✨ Powered by Claude AI    ┃  🟢 Live Demo Running            │ │
+│ │  ┃ ✨ Powered by AI    ┃  🟢 Live Demo Running            │ │
 │ │  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛                                  │ │
 │ │                                                                  │ │
 │ │  ┌─────────────────────────────┐  ┌─────────────────────────┐  │ │
@@ -71,7 +71,7 @@
 **Key Elements:**
 - **Live AI Demo** (right side) - Visitors type feature, see AI generate tasks instantly
 - **Real-time interaction** - No mockup, actual OpenAI API call
-- **Badge "Powered by Claude AI"** - Credibility
+- **Badge "Powered by AI"** - Credibility
 - **Concrete value prop** - "30 minutes → 10 seconds"
 - **SF Pro font** - Keep clean typography
 - **Blue accent** - #0EA5E9 for CTAs
@@ -591,5 +591,5 @@ After implementing these wireframes, track:
 
 ---
 
-Made with ❤️ by Claude Code
+Made with ❤️ by Onekof Team
 March 1, 2026

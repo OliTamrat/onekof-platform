@@ -175,7 +175,7 @@ npm run dev
 </tr>
 <tr>
 <td><strong>AI</strong></td>
-<td>Anthropic Claude 3 Haiku (cost-optimized)</td>
+<td>Anthropic Haiku (cost-optimized)</td>
 </tr>
 <tr>
 <td><strong>Auth</strong></td>
@@ -286,7 +286,7 @@ onekof-platform/
 - [x] Project-type-aware navigation (6 types)
 - [x] 20+ navigation pages with consistent UX
 - [x] Collapsible sidebar with 7 core categories
-- [x] AI-powered document processing (Claude Haiku)
+- [x] AI-powered document processing (Anthropic Haiku)
 - [x] Advanced budget management
 - [x] Team collaboration & RBAC
 - [x] Dark mode support

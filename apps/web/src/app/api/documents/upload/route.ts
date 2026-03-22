@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { processDocument, extractTextFromFile, checkAIQuota } from '@/lib/ai/claude';
+import { processDocument, extractTextFromFile, checkAIQuota, AI_CONFIG } from '@/lib/ai/ai-service';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -171,7 +171,7 @@ async function processDocumentAsync(
   userId: string
 ) {
   try {
-    // Process with Claude AI
+    // Process with AI
     const result = await processDocument(
       content,
       documentType as any,
@@ -187,7 +187,7 @@ async function processDocumentAsync(
         aiSummary: result.summary,
         aiInsights: result.insights,
         aiConfidence: result.insights.confidence,
-        aiModel: 'claude-3-haiku-20240307',
+        aiModel: AI_CONFIG.model,
         aiTokensUsed: result.tokensUsed.total,
         extractedData: result.extractedData,
       },
@@ -200,7 +200,7 @@ async function processDocumentAsync(
         processingType: 'EXTRACTION',
         prompt: `Process ${documentType} document: ${fileName}`,
         response: JSON.stringify(result),
-        model: 'claude-3-haiku-20240307',
+        model: AI_CONFIG.model,
         tokensUsed: result.tokensUsed.total,
         cost: result.cost,
         latency: result.processingTime,
