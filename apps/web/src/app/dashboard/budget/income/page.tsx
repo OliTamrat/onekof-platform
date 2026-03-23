@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { BUDGET_TABS } from '@/config/department-tabs';
@@ -9,7 +11,11 @@ import {
   Search,
   Calendar,
   Tag,
-  TrendingUp
+  TrendingUp,
+  Loader2,
+  Landmark,
+  Globe,
+  Building2,
 } from 'lucide-react';
 import {
   SlideoutPanel,
@@ -17,46 +23,102 @@ import {
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
 
-// Mock income data
-const INCOME = [
-  { id: 1, source: 'Project Payment - ABC Corp', amount: 25000, category: 'Project Revenue', date: '2024-03-01', status: 'RECEIVED', recurring: false },
-  { id: 2, source: 'Subscription Revenue', amount: 15000, category: 'Recurring Revenue', date: '2024-03-01', status: 'RECEIVED', recurring: true },
-  { id: 3, source: 'Consulting Services', amount: 8000, category: 'Service Revenue', date: '2024-03-10', status: 'PENDING', recurring: false },
-  { id: 4, source: 'License Fees', amount: 3500, category: 'License Revenue', date: '2024-03-15', status: 'RECEIVED', recurring: true },
-  { id: 5, source: 'Training Workshop', amount: 5000, category: 'Training Revenue', date: '2024-03-20', status: 'PENDING', recurring: false },
-  { id: 6, source: 'Support Contracts', amount: 12000, category: 'Support Revenue', date: '2024-03-25', status: 'RECEIVED', recurring: true },
-];
+interface FundingSource {
+  id: string;
+  source: string;
+  amount: number;
+  currency: string;
+  exchangeRate?: number;
+  date?: string;
+  projectName: string;
+  budgetId: string;
+  totalBudget: number;
+  amountInETB: number;
+}
 
 export default function BudgetIncomePage() {
+  const { status } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedIncome, setSelectedIncome] = useState<any | null>(null);
+  const [selectedSource, setSelectedSource] = useState<FundingSource | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
 
-  const filteredIncome = INCOME.filter((income) =>
-    income.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    income.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const { data: budgetsData, isLoading } = useQuery({
+    queryKey: ['budgets', 'org'],
+    queryFn: async () => {
+      const res = await fetch('/api/budgets');
+      if (!res.ok) throw new Error('Failed to fetch budgets');
+      return res.json();
+    },
+    enabled: status === 'authenticated',
+  });
+
+  const budgets = budgetsData?.budgets || [];
+
+  // Extract funding sources from all budgets
+  const fundingSources: FundingSource[] = [];
+  budgets.forEach((b: any) => {
+    // Primary budget allocation as a funding source
+    fundingSources.push({
+      id: `${b.id}-primary`,
+      source: 'Primary Budget Allocation',
+      amount: Number(b.totalBudget),
+      currency: b.currency || 'ETB',
+      projectName: b.project?.name || 'Unknown',
+      budgetId: b.id,
+      totalBudget: Number(b.totalBudget),
+      amountInETB: Number(b.totalBudget),
+    });
+
+    // Additional funding sources from JSON field
+    const additional = Array.isArray(b.additionalFunding) ? b.additionalFunding : [];
+    additional.forEach((fund: any, idx: number) => {
+      const rate = fund.exchangeRate || 1;
+      fundingSources.push({
+        id: `${b.id}-add-${idx}`,
+        source: fund.source || 'External Funding',
+        amount: Number(fund.amount || 0),
+        currency: fund.currency || 'ETB',
+        exchangeRate: rate,
+        date: fund.date,
+        projectName: b.project?.name || 'Unknown',
+        budgetId: b.id,
+        totalBudget: Number(b.totalBudget),
+        amountInETB: Number(fund.amount || 0) * rate,
+      });
+    });
+  });
+
+  const filteredSources = fundingSources.filter((s) =>
+    searchQuery === '' ||
+    s.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.currency.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'RECEIVED': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const totalFunding = filteredSources.reduce((sum, s) => sum + s.amountInETB, 0);
+  const externalFunding = filteredSources.filter(s => s.source !== 'Primary Budget Allocation').reduce((sum, s) => sum + s.amountInETB, 0);
+  const sourceCount = new Set(filteredSources.map(s => s.source)).size;
+
+  const formatCompact = (amount: number) => {
+    if (amount >= 1000000) return `${(amount / 1000000).toFixed(1)}M`;
+    if (amount >= 1000) return `${(amount / 1000).toFixed(0)}K`;
+    return amount.toFixed(0);
   };
 
-  const handleIncomeClick = (income: any) => {
-    setSelectedIncome(income);
-    setIsSlideoutOpen(true);
-  };
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('en-US', { minimumFractionDigits: 0 }).format(Math.round(amount));
 
-  const totalIncome = filteredIncome.reduce((sum, inc) => sum + inc.amount, 0);
-  const recurringIncome = filteredIncome.filter(inc => inc.recurring).reduce((sum, inc) => sum + inc.amount, 0);
+  const getSourceIcon = (source: string) => {
+    const s = source.toLowerCase();
+    if (s.includes('bank') || s.includes('treasury')) return Landmark;
+    if (s.includes('world') || s.includes('ifc') || s.includes('afdb') || s.includes('grant')) return Globe;
+    return Building2;
+  };
 
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Income"
+        title="Income & Funding"
         icon={<TrendingUp className="h-6 w-6" />}
         iconColor="#10B981"
         currentTab="income"
@@ -65,117 +127,182 @@ export default function BudgetIncomePage() {
         showTabs
       />
 
-      <div className="p-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Total Income</div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">${totalIncome.toLocaleString()}</div>
+      <div className="p-4 md:p-6">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Recurring Revenue</div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">${recurringIncome.toLocaleString()}</div>
+        ) : fundingSources.length === 0 ? (
+          <div className="text-center py-16">
+            <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Funding Sources</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Create a budget with additional funding sources to track income here.
+            </p>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Pending</div>
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
-              {filteredIncome.filter(i => i.status === 'PENDING').length}
-            </div>
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search income sources..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-          </div>
-        </div>
-
-        {/* Income List */}
-        <div className="space-y-3">
-          {filteredIncome.map((income) => (
-            <div
-              key={income.id}
-              onClick={() => handleIncomeClick(income)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <TrendingUp className="h-5 w-5 text-[#10B981]" />
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{income.source}</h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(income.status)}`}>
-                      {income.status}
-                    </span>
-                    {income.recurring && (
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
-                        RECURRING
-                      </span>
-                    )}
+        ) : (
+          <>
+            {/* Stats Cards */}
+            <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-3 md:gap-4 mb-6 scrollbar-hide">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                    <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Tag className="h-3 w-3" />
-                      {income.category}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {income.date}
-                    </span>
-                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">Total Funding</div>
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-bold text-green-600 dark:text-green-400">${income.amount.toLocaleString()}</div>
+                <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">ETB {formatCompact(totalFunding)}</div>
+                <div className="text-xs text-slate-500 mt-1">{sourceCount} funding sources</div>
+              </div>
+
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                    <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">External Funding</div>
+                </div>
+                <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">ETB {formatCompact(externalFunding)}</div>
+                <div className="text-xs text-slate-500 mt-1">
+                  {totalFunding > 0 ? ((externalFunding / totalFunding) * 100).toFixed(0) : 0}% of total
                 </div>
               </div>
+
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                    <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">Active Budgets</div>
+                </div>
+                <div className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400">{budgets.length}</div>
+                <div className="text-xs text-slate-500 mt-1">across projects</div>
+              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Search Bar */}
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 mb-6 shadow-sm">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search funding sources, projects, currencies..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+
+            {/* Funding Sources List */}
+            <div className="space-y-3">
+              {filteredSources.map((source) => {
+                const Icon = getSourceIcon(source.source);
+                return (
+                  <div
+                    key={source.id}
+                    onClick={() => { setSelectedSource(source); setIsSlideoutOpen(true); }}
+                    className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center flex-shrink-0">
+                            <Icon className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                          </div>
+                          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{source.source}</h3>
+                          {source.source !== 'Primary Budget Allocation' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                              EXTERNAL
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400 ml-11">
+                          <span className="flex items-center gap-1">
+                            <Tag className="h-3 w-3" />
+                            {source.projectName}
+                          </span>
+                          {source.date && (
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(source.date).toLocaleDateString()}
+                            </span>
+                          )}
+                          {source.currency !== 'ETB' && source.exchangeRate && (
+                            <span className="text-[11px] text-slate-500">
+                              Rate: 1 {source.currency} = {source.exchangeRate} ETB
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                          {source.currency} {formatCurrency(source.amount)}
+                        </div>
+                        {source.currency !== 'ETB' && (
+                          <div className="text-xs text-slate-500 mt-0.5">
+                            ~ ETB {formatCurrency(source.amountInETB)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Slideout Panel for Income Details */}
+      {/* Slideout Panel */}
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title="Income Details"
+        title="Funding Source Details"
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Income Information">
+          <SlideoutPanelSection title="Source Information">
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Source</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedIncome?.source}</p>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Source</label>
+                <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedSource?.source}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
-                <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-1">${selectedIncome?.amount.toLocaleString()}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedIncome?.category}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedIncome?.date}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                <p className="text-sm mt-1">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedIncome?.status)}`}>
-                    {selectedIncome?.status}
-                  </span>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Amount</label>
+                <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+                  {selectedSource?.currency} {formatCurrency(selectedSource?.amount || 0)}
                 </p>
+                {selectedSource?.currency !== 'ETB' && (
+                  <p className="text-sm text-slate-500 mt-0.5">
+                    ~ ETB {formatCurrency(selectedSource?.amountInETB || 0)}
+                  </p>
+                )}
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedIncome?.recurring ? 'Recurring' : 'One-time'}</p>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Project</label>
+                <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedSource?.projectName}</p>
+              </div>
+              {selectedSource?.date && (
+                <div>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Date</label>
+                  <p className="text-sm text-slate-900 dark:text-white mt-1">
+                    {new Date(selectedSource.date).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
+              {selectedSource?.exchangeRate && selectedSource?.currency !== 'ETB' && (
+                <div>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Exchange Rate</label>
+                  <p className="text-sm text-slate-900 dark:text-white mt-1">
+                    1 {selectedSource.currency} = {selectedSource.exchangeRate} ETB
+                  </p>
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Total Project Budget</label>
+                <p className="text-sm text-slate-900 dark:text-white mt-1">
+                  ETB {formatCurrency(selectedSource?.totalBudget || 0)}
+                </p>
               </div>
             </div>
           </SlideoutPanelSection>
