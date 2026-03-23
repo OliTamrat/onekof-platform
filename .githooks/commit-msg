@@ -1,0 +1,16 @@
+#!/bin/sh
+# Strip AI tool references from commit messages automatically.
+# Prevents claude.ai URLs and AI attribution from leaking into git history.
+#
+# Setup: git config core.hooksPath .githooks
+
+commit_msg_file="$1"
+
+# Remove claude.ai session URLs
+sed -i '/https:\/\/claude\.ai/d' "$commit_msg_file"
+
+# Remove any anthropic.ai URLs
+sed -i '/https:\/\/anthropic\.ai/d' "$commit_msg_file"
+
+# Remove empty trailing lines left behind
+sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$commit_msg_file"
