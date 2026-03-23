@@ -704,11 +704,13 @@ function IntegrationCard({
   const Logo = integration.logo;
 
   return (
-    <Button variant="outline"
+    <button
+      type="button"
       onClick={onSelect}
       className={cn(
-        'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full',
+        'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full h-auto overflow-hidden',
         'bg-white dark:bg-[#22272B]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:ring-offset-[#1B1F23]',
         isSelected
           ? 'border-primary-500 dark:border-primary-500 ring-2 ring-primary-500/20 shadow-md'
           : isComingSoon
@@ -768,17 +770,17 @@ function IntegrationCard({
         {integration.description}
       </p>
 
-      <div className="flex flex-wrap gap-1.5">
-        {integration.features.slice(0, 3).map(feature => (
-          <span key={feature} className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded">
+      <div className="flex flex-wrap gap-1.5 overflow-hidden">
+        {integration.features.slice(0, 2).map(feature => (
+          <span key={feature} className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded truncate max-w-[160px]">
             {feature}
           </span>
         ))}
-        {integration.features.length > 3 && (
-          <span className="text-[10px] text-slate-400 dark:text-slate-500">+{integration.features.length - 3}</span>
+        {integration.features.length > 2 && (
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 shrink-0">+{integration.features.length - 2}</span>
         )}
       </div>
-    </Button>
+    </button>
   );
 }
 
