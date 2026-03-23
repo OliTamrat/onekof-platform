@@ -187,14 +187,12 @@ export default function BudgetExpensesPage() {
     { id: 'de-20', description: 'Contingency draw — unexpected rock formation removal', amount: 3500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-01', vendor: 'Sur Construction', invoiceNumber: 'SUR-CTG-001', budget: { id: 'water-dam-budget', project: { name: P } }, category: { id: 'c8', name: 'Contingency & Risk Reserve' } },
   ];
 
+  // Use only real API data — no demo fallback to prevent cross-org data leaks
   const apiExpenses: Expense[] = expensesData?.expenses || [];
   const apiBudgets = budgetsData?.budgets || [];
-  const hasRealExpenses = apiExpenses.length > 0;
 
-  const expenses = hasRealExpenses ? apiExpenses : DEMO_EXPENSES;
-  const budgets = hasRealExpenses ? apiBudgets : [
-    { id: 'water-dam-budget', project: { name: 'Water Dam & Irrigation Project' } },
-  ];
+  const expenses = apiExpenses;
+  const budgets = apiBudgets;
 
   const filteredExpenses = expenses.filter((expense) => {
     const matchesSearch = searchQuery === '' ||

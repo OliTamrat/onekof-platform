@@ -324,15 +324,15 @@ export default function BudgetPage() {
     { id: 'de-20', description: 'Contingency draw — unexpected rock formation removal', amount: 3500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-01', vendor: 'Sur Construction', invoiceNumber: 'SUR-CTG-001', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c8', name: 'Contingency & Risk Reserve' } },
   ];
 
-  // Compute aggregates — merge real API data with demo fallback
+  // Compute aggregates — use only real API data (no demo fallback to prevent cross-org data leaks)
   const apiBudgets: BudgetWithStats[] = budgetsData?.budgets || [];
   const apiExpenses = expensesData?.expenses || [];
   const hasRealData = apiBudgets.length > 0;
 
-  const budgets = hasRealData ? apiBudgets : DEMO_BUDGETS;
-  const expenses = hasRealData ? apiExpenses : DEMO_EXPENSES;
+  const budgets = apiBudgets;
+  const expenses = apiExpenses;
 
-  const totalBudget = 250000000; // Always 250M ETB for this project
+  const totalBudget = budgets.reduce((sum, b) => sum + (b.totalBudget || b.totalAllocated), 0);
   const totalSpent = budgets.reduce((sum, b) => sum + b.totalSpent, 0);
   const totalAllocated = budgets.reduce((sum, b) => sum + b.totalAllocated, 0);
   const overallUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
@@ -425,7 +425,7 @@ export default function BudgetPage() {
   if (!session) return null;
 
   const isLoading = budgetsLoading || expensesLoading;
-  const hasBudgets = budgets.length > 0; // Always true with demo fallback
+  const hasBudgets = budgets.length > 0;
 
   return (
     <AppLayout>
