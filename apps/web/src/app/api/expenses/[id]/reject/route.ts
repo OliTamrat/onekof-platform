@@ -56,6 +56,14 @@ export async function POST(
       );
     }
 
+    // Calculate next revision number
+    const lastRevision = await prisma.budgetRevision.findFirst({
+      where: { budgetId: expense.budgetId },
+      orderBy: { revisionNumber: 'desc' },
+      select: { revisionNumber: true },
+    });
+    const nextRevisionNumber = (lastRevision?.revisionNumber || 0) + 1;
+
     // Reject expense and create revision
     const [rejectedExpense] = await prisma.$transaction([
       prisma.expense.update({
@@ -73,9 +81,9 @@ export async function POST(
       prisma.budgetRevision.create({
         data: {
           budgetId: expense.budgetId,
-          revisionNumber: 1, // TODO: Calculate
+          revisionNumber: nextRevisionNumber,
           changeType: 'EXPENSE_REJECTED',
-          before: { status: expense.status },
+          before: { status: expense.status, expenseId: expense.id },
           after: { status: 'REJECTED', rejectedBy: user.id, reason },
           changedBy: user.id,
           reason,
