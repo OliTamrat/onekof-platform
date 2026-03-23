@@ -15,7 +15,7 @@
 - **Solution:** All-in-one PM platform with Ethiopian calendar, multi-language support (Amharic, Oromo, Tigrinya), and AI-powered workflows
 - **Market:** $127M TAM in Ethiopia (government + private sector)
 - **Traction:** Phase 2 complete - Working Kanban board, user authentication, multi-tenant architecture
-- **Advantage:** 64% cheaper than Atlassian, built for Ethiopian workflows, AI-powered
+- **Advantage:** Affordable pricing for Ethiopian market, built for local workflows, AI-powered
 - **Ask:** $500K seed round for 18-month runway to reach 5,000 paid users
 
 ---
@@ -32,7 +32,7 @@
    - No centralized view of what teams are working on
 
 2. **Language Barriers Kill Productivity**
-   - Jira/Monday.com only support English
+   - Foreign PM tools only support English
    - 68% of Ethiopian workers prefer working in Amharic/Oromo/Tigrinya
    - Miscommunication costs 15+ hours per week per team
 
@@ -42,7 +42,7 @@
    - Sprint planning doesn't align with Ethiopian holidays/work weeks
 
 4. **Unaffordable & Complex Foreign Tools**
-   - Atlassian costs $13.80/user/month ($165/year)
+   - Foreign PM tools cost $10-15/user/month ($120-180/year)
    - For 100-person org: $16,500/year in hard currency
    - Takes weeks to configure, requires expensive consultants
 
@@ -66,11 +66,12 @@
 ### Onekof: Built for Ethiopia, Globally Competitive
 
 **A unified platform that replaces:**
-- ❌ Jira (issue tracking) → ✅ Onekof Issues
-- ❌ Confluence (documentation) → ✅ Onekof Docs
-- ❌ Monday.com (project boards) → ✅ Onekof Kanban
-- ❌ Slack (communication) → ✅ Onekof Messaging
-- ❌ WhatsApp (team chat) → ✅ Onekof Real-time Chat
+A unified platform that consolidates:
+- Issue tracking → Onekof Issues
+- Documentation → Onekof Docs
+- Project boards → Onekof Kanban
+- Team communication → Onekof Messaging
+- Real-time chat → Onekof Chat
 
 ### Core Features
 
@@ -263,74 +264,63 @@
 
 ## 🏆 Slide 4: Competitive Landscape
 
-### Direct Competitors
+### Current Market Reality
 
-| Competitor | Pricing | Strengths | Weaknesses |
-|------------|---------|-----------|------------|
-| **Atlassian (Jira + Confluence)** | $13.80/user/mo | Market leader, feature-rich | Expensive, complex, English-only, no Ethiopian calendar |
-| **Monday.com** | $12/user/mo | Beautiful UI, easy onboarding | No Ethiopian support, USD only |
-| **Asana** | $10.99/user/mo | Good UX, integrations | English-only, expensive |
-| **ClickUp** | $7/user/mo | All-in-one, AI features | Cluttered UI, no localization |
-| **Trello** | $5/user/mo | Simple, free tier | Limited features, not enterprise-ready |
-
-### Indirect Competitors (Current Solutions)
+Ethiopian organizations currently rely on:
 
 1. **Microsoft Excel + Email**
    - 87% of Ethiopian orgs use this
-   - Free (pirated copies)
-   - No collaboration, version control nightmare
+   - No collaboration, no version control, no visibility
 
 2. **WhatsApp Groups**
-   - Free, everyone has it
    - No structure, lost messages, no accountability
 
-3. **Google Sheets**
-   - $6/user/month (Google Workspace)
-   - Decent collaboration
-   - Not built for PM, no workflows
+3. **Foreign PM Tools** ($10-15/user/month)
+   - English-only, no Ethiopian calendar
+   - Require USD/credit cards (forex friction)
+   - No local payment integration
+   - Complex setup, steep learning curve
+
+**No existing tool serves the Ethiopian market.**
 
 ### Why Onekof Wins
 
-#### 1. **Price Advantage: 64% Cheaper**
-```
-Atlassian (Jira + Confluence): $13.80/user/month
-Onekof:                         $5.00/user/month
-SAVINGS:                        $8.80/user/month (64%)
+#### 1. **Purpose-Built for Ethiopia**
+- Ethiopian calendar (የካቲት, መጋቢት, etc.)
+- Amharic, Oromo, Tigrinya UI
+- Chapa/Telebirr payment
+- ETB pricing (no forex required)
+- Ethiopian holiday tracking
+- Government workflow templates
 
-For 100-user org:
-Atlassian: $16,560/year
-Onekof:     $6,000/year
-SAVE:      $10,560/year (64%)
+#### 2. **Affordable Pricing**
 ```
+Onekof: $5.00/user/month
 
-#### 2. **Ethiopian Features No One Else Has**
-- ✅ Ethiopian calendar (የካቲት, መጋቢት, etc.)
-- ✅ Amharic, Oromo, Tigrinya UI
-- ✅ Chapa/Telebirr payment
-- ✅ ETB pricing (no forex)
-- ✅ Ethiopian holiday tracking
-- ✅ Government workflow templates
+For 100-user org: $6,000/year
+(Foreign tools: $12,000-$18,000/year)
+```
 
 #### 3. **AI-Powered (Included, Not Extra)**
-- Atlassian AI: $7/user/month extra
-- Onekof AI: Included in $5/month
-- **Saves $7/user/month on AI features alone**
+- AI features built in at $5/month
+- No additional per-user AI fees
 
 #### 4. **All-in-One Platform**
-| Feature | Atlassian | Onekof |
-|---------|-----------|--------|
-| Issue tracking | Jira ($7.75) | ✅ Included |
-| Documentation | Confluence ($6.05) | ✅ Included |
-| Chat/collaboration | Slack ($8.75) | ✅ Included |
-| File storage | Dropbox ($12.50) | ✅ Included |
-| **TOTAL** | **$35/user/mo** | **$5/user/mo** |
+| Feature | Onekof |
+|---------|--------|
+| Issue tracking | Included |
+| Documentation | Included |
+| Team collaboration | Included |
+| File storage | Included |
+| Budget management | Included |
+| **Total** | **$5/user/mo** |
 
-**Onekof replaces 4 tools, saves $30/user/month**
+**One platform, one price — no tool sprawl**
 
 #### 5. **Offline-First for African Internet**
 - Works without internet
 - Syncs when connection returns
-- Competitors fail without connectivity
+- Designed for infrastructure realities
 
 ---
 
@@ -652,7 +642,7 @@ Month 12-18: Pan-African expansion prep
 - Speaking: Tech conferences, government events
 
 #### **4. Paid Advertising** ($5K/month in Year 2)
-- Google Ads: "Jira alternative Ethiopia"
+- Google Ads: "project management Ethiopia"
 - LinkedIn Ads: Target CTOs, IT Directors
 - Facebook Ads: Amharic-language campaigns
 
@@ -709,9 +699,9 @@ Month 12-18: Pan-African expansion prep
 - Advises on enterprise features
 - Potential customer champion
 
-**3. Atlassian Alumni**
+**3. SaaS Industry Veteran**
 - Advises on product roadmap
-- Best practices from Jira/Confluence
+- Best practices from enterprise SaaS at scale
 
 ---
 
@@ -823,14 +813,14 @@ Month 12-18: Pan-African expansion prep
 - Built-in government workflow templates
 
 ### 3. **Price Disruption**
-- 64% cheaper than Atlassian ($5 vs $13.80)
-- All-in-one (saves $30/user on tool sprawl)
+- Affordable pricing at $5/user/month
+- All-in-one platform (no tool sprawl)
 - Ethiopian pricing in ETB (no forex)
 
 ### 4. **AI-First Architecture**
 - AI included, not extra (competitors charge $7/user)
 - Amharic-language AI (no one else has this)
-- Built on Anthropic 3.5 Sonnet (best reasoning)
+- Built on advanced AI models optimized for document processing
 
 ### 5. **Pan-African Playbook**
 - Ethiopia success → Kenya, Nigeria, Ghana
@@ -841,7 +831,7 @@ Month 12-18: Pan-African expansion prep
 ### 6. **Exceptional Team**
 - Founder: [Your unique advantage - Ethiopian + tech experience]
 - Engineers: Top 1% in Ethiopia (Addis Tech talent)
-- Advisors: Former government officials + Atlassian alumni
+- Advisors: Former government officials + SaaS industry veterans
 
 ### 7. **Massive Market Tailwinds**
 - Ethiopian government digitization mandate
@@ -879,7 +869,7 @@ Month 12-18: Pan-African expansion prep
 #### **A. Market Research**
 - Ethiopian Digital Economy Strategy 2025
 - World Bank Ethiopia Digital Development Report
-- Atlassian market share in Africa
+- PM software adoption in Africa
 - Ethiopian government IT spending ($200M/year)
 
 #### **B. Customer Testimonials** (In Progress)
@@ -932,7 +922,7 @@ Month 12-18: Pan-African expansion prep
 - Payback period: 10 months
 
 **Competitive Advantage:**
-- 64% cheaper than Atlassian
+- Affordable at $5/user/month
 - Ethiopian calendar & languages
 - AI included (not extra)
 - Local payments (Chapa, Telebirr)
@@ -945,7 +935,7 @@ Month 12-18: Pan-African expansion prep
 
 **Founders:** [Your name & background]
 **Team:** Hiring 7 (CTO, engineers, sales, support)
-**Advisors:** Former gov official, Ethiopian Airlines IT, Atlassian alumni
+**Advisors:** Former gov official, Ethiopian Airlines IT, SaaS industry veteran
 
 **Contact:** hello@onekof.com
 

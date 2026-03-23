@@ -118,7 +118,7 @@ Dynamic navigation generation for 6 industry verticals:
 
 Each type generates 10-12 context-specific navigation tabs with appropriate icons.
 
-#### A.6.6 — Jira-Style Layout System
+#### A.6.6 — Workspace Layout System
 **Files:** `apps/web/src/components/layouts/jira-style-layout.tsx`, `apps/web/src/components/layouts/collapsible-sidebar.tsx`
 
 Original layout implementation featuring:
@@ -253,7 +253,7 @@ The following describe novel methods and systems that may qualify for patent or 
 
 **Title:** A Method for Generating Context-Specific Application Navigation Based on Project Classification
 
-**Technical Problem:** General-purpose project management tools (Jira, Asana) show the same navigation to all projects regardless of industry. A construction project doesn't need "Code Repositories" and a software project doesn't need "Materials Tracking." This creates UI clutter and confusion.
+**Technical Problem:** General-purpose project management tools show the same navigation to all projects regardless of industry. A construction project doesn't need "Code Repositories" and a software project doesn't need "Materials Tracking." This creates UI clutter and confusion.
 
 **Novel Solution:**
 1. Projects are classified into one of 6 industry types at creation: SOFTWARE, BUSINESS, MARKETING, OPERATIONS, RESEARCH, CONSTRUCTION

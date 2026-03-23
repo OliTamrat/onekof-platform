@@ -1,5 +1,5 @@
 # Onekof - Executive Summary
-## Ethiopian Project Management Platform
+## The First Purpose-Built Project Management Platform for Ethiopian Organizations
 
 **Date:** March 1, 2026
 
@@ -13,20 +13,20 @@
 
 Ethiopian organizations waste 30-40% of work time due to:
 - No digital PM tools (87% use Excel/email)
-- Language barriers (Jira is English-only)
+- Language barriers (existing tools are English-only)
 - Calendar confusion (Ethiopian calendar not supported)
 - Expensive foreign tools ($16,500/year for 100 users)
 - Payment friction (no Chapa/Telebirr support)
 
 ### Our Solution
 
-**All-in-one platform** replacing Jira + Confluence + Slack:
-- ✅ Kanban boards with drag-and-drop (LIVE)
-- ✅ Ethiopian calendar integration (የካቲት ⇄ February)
-- ✅ Multi-language UI (Amharic, Oromo, Tigrinya)
-- ✅ AI-powered workflows (included, not extra)
-- ✅ Local payments (Chapa, Telebirr, CBE Birr)
-- ✅ Government-ready features (audit logs, SSO, compliance)
+**Unified platform replacing disconnected tools** — project management, documentation, team communication, and file storage in one place:
+- Kanban boards with drag-and-drop (LIVE)
+- Ethiopian calendar integration
+- Multi-language UI (Amharic, Oromo, Tigrinya)
+- AI-powered workflows (included, not extra)
+- Local payments (Chapa, Telebirr, CBE Birr)
+- Government-ready features (audit logs, SSO, compliance)
 
 ---
 
@@ -52,7 +52,7 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 ## Business Model
 
-### Pricing (64% Cheaper than Atlassian)
+### Pricing — Affordable for the Ethiopian Market
 
 | Tier | Price | Target |
 |------|-------|--------|
@@ -61,9 +61,7 @@ Ethiopian organizations waste 30-40% of work time due to:
 | **Enterprise** | $8/user/mo | Banks, large orgs |
 | **Government** | $3/user/mo | Ministries, SOEs |
 
-**Atlassian (Jira + Confluence):** $13.80/user/month
-**Onekof:** $5/user/month
-**SAVINGS:** 64%
+All tiers include project management, documentation, team chat, file storage, and AI features — no add-ons or per-feature charges.
 
 ### Revenue Projections
 
@@ -77,7 +75,7 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 - **CAC:** $50 (blended)
 - **LTV:** $153 (36-month retention)
-- **LTV:CAC:** 3.06:1 ✅ (Target: >3:1)
+- **LTV:CAC:** 3.06:1 (Target: >3:1)
 - **Gross Margin:** 85%
 - **Payback Period:** 10 months
 
@@ -85,20 +83,20 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 ## Competitive Advantage
 
-### 7 Reasons Onekof Wins
+### Why Onekof Wins
 
-1. **Price Disruption**
-   - 64% cheaper than Atlassian
-   - All-in-one (saves $30/user on tool sprawl)
+1. **Purpose-Built for Ethiopia**
+   - Only platform with Ethiopian calendar
+   - Only platform with Amharic/Oromo/Tigrinya UI
+   - Only platform accepting Chapa/Telebirr
 
-2. **Unfair Ethiopian Advantages**
-   - Only tool with Ethiopian calendar
-   - Only tool with Amharic/Oromo/Tigrinya
-   - Only tool accepting Chapa/Telebirr
+2. **Affordable Pricing**
+   - Designed for Ethiopian market purchasing power
+   - All-in-one pricing eliminates multi-tool costs
 
 3. **AI-First Architecture**
-   - AI included in $5/month (Atlassian charges extra $7/user)
-   - Amharic-language AI (unique)
+   - Advanced AI included at every tier — no extra charge
+   - Amharic-language AI (unique capability)
 
 4. **Government-Ready**
    - Custom workflows (procurement, budget approval)
@@ -111,18 +109,13 @@ Ethiopian organizations waste 30-40% of work time due to:
    - "Digital Ethiopia 2025" mandate
 
 6. **Pan-African Playbook**
-   - Ethiopia → Kenya → Nigeria → Ghana
+   - Ethiopia to Kenya to Nigeria to Ghana
    - Multi-language DNA
    - Local payment expertise
 
-7. **All-in-One Platform**
-   | Feature | Atlassian | Onekof |
-   |---------|-----------|--------|
-   | Issue tracking | Jira ($7.75) | ✅ Included |
-   | Documentation | Confluence ($6.05) | ✅ Included |
-   | Chat | Slack ($8.75) | ✅ Included |
-   | Storage | Dropbox ($12.50) | ✅ Included |
-   | **TOTAL** | **$35/user** | **$5/user** |
+7. **Unified Platform**
+   - Issue tracking, documentation, team chat, and file storage in a single product
+   - One login, one subscription, one place for all project work
 
 ---
 
@@ -130,21 +123,19 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 ### What We've Built (Phase 2 Complete)
 
-✅ Working Kanban board with drag-and-drop
-✅ Full CRUD for issues and projects
-✅ User authentication & multi-tenant architecture
-✅ Issue detail modal with comments UI
-✅ Inline issue creation
-✅ Dark mode & responsive design
-
-**Demo:** http://localhost:3002/dashboard/issues
+- Working Kanban board with drag-and-drop
+- Full CRUD for issues and projects
+- User authentication & multi-tenant architecture
+- Issue detail modal with comments UI
+- Inline issue creation
+- Dark mode & responsive design
 
 ### Market Validation
 
-✅ 15 customer discovery interviews (93% said they'd pay $5/user)
-✅ In talks with Ministry of Innovation for pilot
-✅ Letter of Intent from Ethiopian Airlines
-✅ Partnership discussions with UNDP Ethiopia
+- 15 customer discovery interviews (93% said they'd pay $5/user)
+- In talks with Ministry of Innovation for pilot
+- Letter of Intent from Ethiopian Airlines
+- Partnership discussions with UNDP Ethiopia
 
 ### Roadmap (Next 18 Months)
 
@@ -199,7 +190,7 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 1. **Ministry of Innovation Partnership**
    - Pilot with 500 users
-   - Case study → Win 5 more ministries
+   - Case study to win 5 more ministries
    - Target: 3,000 government users
 
 2. **Government Tenders**
@@ -262,7 +253,7 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 - Former Ministry of Innovation CTO (government access)
 - Ethiopian Airlines IT Director (enterprise champion)
-- Atlassian Alumni (product best practices)
+- SaaS Industry Veteran (product best practices)
 
 ---
 
@@ -278,7 +269,7 @@ Ethiopian organizations waste 30-40% of work time due to:
    - Government prefers local tech
 
 3. **Technology Maturity**
-   - AI models fluent in Amharic (Anthropic 3.5)
+   - Advanced AI models fluent in Amharic
    - Ethiopian calendar libraries available
    - Local payment APIs (Chapa, Telebirr)
 
@@ -302,32 +293,32 @@ Ethiopian organizations waste 30-40% of work time due to:
 
 ### Next Steps
 
-1. ☎️ **Schedule call** (30 min)
-2. 🖥️ **Product demo** (live Kanban board)
-3. 🤝 **Customer intros** (Ministry of Innovation)
-4. 📊 **Due diligence** (codebase, financials)
-5. ✍️ **Term sheet** (close in 30 days)
+1. **Schedule call** (30 min)
+2. **Product demo** (live Kanban board)
+3. **Customer intros** (Ministry of Innovation)
+4. **Due diligence** (codebase, financials)
+5. **Term sheet** (close in 30 days)
 
 ---
 
 ## Investment Highlights
 
-✅ **Massive Market:** $127M TAM (Ethiopia), $2.3B (Africa)
-✅ **Unfair Advantages:** Ethiopian calendar, local languages, local payments
-✅ **Price Disruption:** 64% cheaper than Atlassian
-✅ **Product Traction:** Kanban MVP live, LOI from government
-✅ **Exceptional Unit Economics:** LTV:CAC 3.06:1, 85% margins
-✅ **Clear Path to $3.2M ARR in Year 3**
-✅ **Pan-African Expansion:** Proven playbook for Kenya, Nigeria, Ghana
-✅ **Strong Team:** [Your advantage] + world-class advisors
+- **Massive Market:** $127M TAM (Ethiopia), $2.3B (Africa)
+- **Unfair Advantages:** Ethiopian calendar, local languages, local payments
+- **Affordable Pricing:** Purpose-built for Ethiopian market purchasing power
+- **Product Traction:** Kanban MVP live, LOI from government
+- **Exceptional Unit Economics:** LTV:CAC 3.06:1, 85% margins
+- **Clear Path to $3.2M ARR in Year 3**
+- **Pan-African Expansion:** Proven playbook for Kenya, Nigeria, Ghana
+- **Strong Team:** [Your advantage] + world-class advisors
 
 ---
 
 **The future of work in Africa is being built in Ethiopia.**
 
-**Join us. 🇪🇹**
+**Join us.**
 
 ---
 
-Built with ❤️ by Onekof Team
+Built by Onekof Team
 March 1, 2026
