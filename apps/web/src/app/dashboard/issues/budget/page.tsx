@@ -430,7 +430,7 @@ export default function BudgetPage() {
                       <div className="flex-1">
                         <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Executive Summary</h4>
                         <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                          The Jira Water Dam and Irrigation project has utilized <span className="font-semibold text-[#1C8C7D]">ETB {(spent / 1000000).toFixed(1)}M ({((spent / totalBudget) * 100).toFixed(1)}%)</span> of the total <span className="font-semibold">ETB {(totalBudget / 1000000).toFixed(1)}M</span> budget allocation.
+                          The Water Dam and Irrigation project has utilized <span className="font-semibold text-[#1C8C7D]">ETB {(spent / 1000000).toFixed(1)}M ({((spent / totalBudget) * 100).toFixed(1)}%)</span> of the total <span className="font-semibold">ETB {(totalBudget / 1000000).toFixed(1)}M</span> budget allocation.
                           Based on current spending patterns, the project is on track with <span className="font-semibold text-green-600 dark:text-green-400">{categoriesUnderBudget} out of {totalCategories} categories</span> operating within budget limits.
                           {categoriesAtRisk > 0 && (
                             <span className="font-semibold text-orange-600 dark:text-orange-400"> However, {categoriesAtRisk} {categoriesAtRisk === 1 ? 'category requires' : 'categories require'} immediate attention due to high utilization rates exceeding 80%.</span>
