@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { useToast } from '@/components/ui/toast-provider';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
@@ -10,23 +12,107 @@ import {
   Save,
   Bell,
   DollarSign,
-  Users,
-  Shield
+  Shield,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+interface BudgetSettings {
+  alertThresholds?: number[];
+  autoApproval?: boolean;
+  requireReceipts?: boolean;
+  approvalLevels?: Record<string, string[]>;
+  currency?: string;
+  fiscalYearStartMonth?: string;
+  notificationsEnabled?: boolean;
+  budgetAlertThreshold?: number;
+  approvalRequired?: boolean;
+  approvalThresholdAmount?: number;
+}
+
 export default function BudgetSettingsPage() {
+  const { status } = useSession();
   const toast = useToast();
-  const [currency, setCurrency] = useState('USD');
-  const [fiscalYearStart, setFiscalYearStart] = useState('01');
+  const queryClient = useQueryClient();
+
+  // Form state
+  const [currency, setCurrency] = useState('ETB');
+  const [fiscalYearStart, setFiscalYearStart] = useState('07');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [budgetAlertThreshold, setBudgetAlertThreshold] = useState('80');
   const [approvalRequired, setApprovalRequired] = useState(true);
-  const [approvalThreshold, setApprovalThreshold] = useState('1000');
+  const [approvalThreshold, setApprovalThreshold] = useState('1000000');
+  const [selectedBudgetId, setSelectedBudgetId] = useState('');
+
+  // Fetch budgets
+  const { data: budgetsData, isLoading } = useQuery({
+    queryKey: ['budgets', 'org'],
+    queryFn: async () => {
+      const res = await fetch('/api/budgets');
+      if (!res.ok) throw new Error('Failed to fetch budgets');
+      return res.json();
+    },
+    enabled: status === 'authenticated',
+  });
+
+  const budgets = budgetsData?.budgets || [];
+
+  // Load settings from selected budget
+  useEffect(() => {
+    if (budgets.length > 0 && !selectedBudgetId) {
+      setSelectedBudgetId(budgets[0].id);
+    }
+  }, [budgets, selectedBudgetId]);
+
+  useEffect(() => {
+    const budget = budgets.find((b: any) => b.id === selectedBudgetId);
+    if (budget) {
+      setCurrency(budget.currency || 'ETB');
+      const settings: BudgetSettings = (budget.settings as BudgetSettings) || {};
+      setFiscalYearStart(settings.fiscalYearStartMonth || '07');
+      setNotificationsEnabled(settings.notificationsEnabled ?? true);
+      setBudgetAlertThreshold(String(settings.budgetAlertThreshold ?? 80));
+      setApprovalRequired(settings.approvalRequired ?? true);
+      setApprovalThreshold(String(settings.approvalThresholdAmount ?? 1000000));
+    }
+  }, [selectedBudgetId, budgets]);
+
+  // Save mutation
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedBudgetId) throw new Error('No budget selected');
+      const res = await fetch(`/api/budgets/${selectedBudgetId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          settings: {
+            fiscalYearStartMonth: fiscalYearStart,
+            notificationsEnabled,
+            budgetAlertThreshold: Number(budgetAlertThreshold),
+            approvalRequired,
+            approvalThresholdAmount: Number(approvalThreshold),
+            currency,
+          },
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to save settings');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['budgets'] });
+      toast.success('Budget settings saved successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
 
   const handleSave = () => {
-    // Save settings logic here
-    toast.success('Settings saved');
+    saveMutation.mutate();
   };
 
   return (
@@ -42,167 +128,205 @@ export default function BudgetSettingsPage() {
       />
 
       <div className="p-6 max-w-4xl">
-        {/* General Settings */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <DollarSign className="h-5 w-5 text-[#F59E0B]" />
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">General Settings</h2>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D]" />
           </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Currency
-              </label>
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="USD">USD - US Dollar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="ETB">ETB - Ethiopian Birr</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Fiscal Year Start Month
-              </label>
-              <select
-                value={fiscalYearStart}
-                onChange={(e) => setFiscalYearStart(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-              </select>
-            </div>
+        ) : budgets.length === 0 ? (
+          <div className="text-center py-16">
+            <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Found</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Create a budget in a project first to configure settings.</p>
           </div>
-        </div>
-
-        {/* Notifications */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Bell className="h-5 w-5 text-[#F59E0B]" />
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Enable Budget Alerts</label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Receive notifications when budgets approach their limits
-                </p>
+        ) : (
+          <>
+            {/* Budget Selector */}
+            {budgets.length > 1 && (
+              <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Select Budget
+                </label>
+                <select
+                  value={selectedBudgetId}
+                  onChange={(e) => setSelectedBudgetId(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  {budgets.map((b: any) => (
+                    <option key={b.id} value={b.id}>
+                      {b.project?.name || 'Unnamed'} — {b.currency} {Number(b.totalBudget).toLocaleString()}
+                    </option>
+                  ))}
+                </select>
               </div>
+            )}
+
+            {/* General Settings */}
+            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <DollarSign className="h-5 w-5 text-[#F59E0B]" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">General Settings</h2>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Currency
+                  </label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="ETB">ETB - Ethiopian Birr</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Fiscal Year Start Month
+                  </label>
+                  <select
+                    value={fiscalYearStart}
+                    onChange={(e) => setFiscalYearStart(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July (Ethiopian FY)</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Notifications */}
+            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Bell className="h-5 w-5 text-[#F59E0B]" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Enable Budget Alerts</label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Receive notifications when budgets approach their limits
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      notificationsEnabled ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Budget Alert Threshold (%)
+                  </label>
+                  <input
+                    type="number"
+                    value={budgetAlertThreshold}
+                    onChange={(e) => setBudgetAlertThreshold(e.target.value)}
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Alert when budget utilization reaches this percentage
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Approval Workflow */}
+            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Shield className="h-5 w-5 text-[#F59E0B]" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Approval Workflow</h2>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Require Expense Approval</label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      All expenses must be approved before being processed
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setApprovalRequired(!approvalRequired)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      approvalRequired ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        approvalRequired ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Approval Threshold Amount (ETB)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">ETB</span>
+                    <input
+                      type="number"
+                      value={approvalThreshold}
+                      onChange={(e) => setApprovalThreshold(e.target.value)}
+                      min="0"
+                      className="w-full pl-12 pr-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Expenses above this amount require higher-level approval
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex items-center justify-end gap-3">
               <Button
-                onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notificationsEnabled ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
-                }`}
+                onClick={handleSave}
+                disabled={saveMutation.isPending || !selectedBudgetId}
+                className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#1C8C7D] hover:bg-[#16A085] rounded-md"
               >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
+                {saveMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                Save Settings
               </Button>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Budget Alert Threshold (%)
-              </label>
-              <input
-                type="number"
-                value={budgetAlertThreshold}
-                onChange={(e) => setBudgetAlertThreshold(e.target.value)}
-                min="0"
-                max="100"
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Alert when budget reaches this percentage of the limit
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Approval Workflow */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Shield className="h-5 w-5 text-[#F59E0B]" />
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Approval Workflow</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Require Expense Approval</label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  All expenses must be approved before being processed
-                </p>
-              </div>
-              <Button
-                onClick={() => setApprovalRequired(!approvalRequired)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  approvalRequired ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    approvalRequired ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </Button>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Approval Threshold Amount
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                <input
-                  type="number"
-                  value={approvalThreshold}
-                  onChange={(e) => setApprovalThreshold(e.target.value)}
-                  min="0"
-                  className="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Expenses above this amount require approval
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="flex items-center justify-end gap-3">
-          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
-          >
-            <Save className="h-4 w-4" />
-            Save Settings
-          </Button>
-        </div>
+          </>
+        )}
       </div>
     </AppLayout>
   );

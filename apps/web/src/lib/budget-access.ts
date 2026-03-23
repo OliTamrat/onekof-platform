@@ -258,23 +258,20 @@ export async function canApproveExpense(
   }
 
   // Check approval levels from settings
-  const settings: any = budget.settings;
-  const approvalLevels = settings.approvalLevels || {};
+  const settings: any = budget.settings || {};
 
   // For FULL_CONTROL, can approve anything
   if (hasAccessLevel(accessLevel, BudgetAccess.FULL_CONTROL)) {
     return { canApprove: true };
   }
 
-  // Check amount thresholds
-  // This is where you'd implement multi-level approval logic
-  // For now, APPROVE level can approve up to a certain amount
-  const maxApprovalAmount = 1000000; // 1M ETB
+  // Read threshold from budget settings, fall back to 1M ETB
+  const maxApprovalAmount = settings.approvalThresholdAmount || 1000000;
 
   if (expenseAmount > maxApprovalAmount) {
     return {
       canApprove: false,
-      reason: `Expenses over ${maxApprovalAmount.toLocaleString()} require higher approval`
+      reason: `Expenses over ETB ${maxApprovalAmount.toLocaleString()} require higher-level approval`
     };
   }
 
