@@ -1,4 +1,4 @@
-export type IntegrationProvider = 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar';
+export type IntegrationProvider = 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar' | 'jira';
 
 export type IntegrationStatus = 'connected' | 'disconnected' | 'error' | 'pending';
 
@@ -157,13 +157,23 @@ export interface GoogleCalendarConfig {
   defaultReminder: number; // minutes before
 }
 
-// Data Import
-export interface DataImportConfig {
-  source: string;
+// Jira Import
+export interface JiraConfig {
+  siteUrl: string;
+  email: string;
+  projects: JiraProject[];
   importStatus: 'idle' | 'in_progress' | 'completed' | 'failed';
   lastImportAt: string | null;
   statusMapping: Record<string, string>;
   userMapping: Record<string, string>;
+}
+
+export interface JiraProject {
+  id: string;
+  key: string;
+  name: string;
+  imported: boolean;
+  issueCount?: number;
 }
 
 export type IntegrationConfig =
@@ -174,7 +184,7 @@ export type IntegrationConfig =
   | WebhooksConfig
   | EmailConfig
   | GoogleCalendarConfig
-  | DataImportConfig;
+  | JiraConfig;
 
 export interface IntegrationEvent {
   id: string;
