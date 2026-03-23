@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/toast-provider';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -20,7 +21,8 @@ import {
   Download,
   Eye,
   User,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 
 export default function BudgetPage() {
@@ -96,42 +98,79 @@ export default function BudgetPage() {
     );
   }
 
+  // Fetch real budget data scoped to current organization
+  const { data: budgetsData, isLoading: budgetsLoading } = useQuery({
+    queryKey: ['budgets', 'issues'],
+    queryFn: async () => {
+      const res = await fetch('/api/budgets');
+      if (!res.ok) throw new Error('Failed to fetch budgets');
+      return res.json();
+    },
+    enabled: status === 'authenticated',
+  });
+
+  const { data: expensesData, isLoading: expensesLoading } = useQuery({
+    queryKey: ['expenses', 'issues'],
+    queryFn: async () => {
+      const res = await fetch('/api/expenses');
+      if (!res.ok) throw new Error('Failed to fetch expenses');
+      return res.json();
+    },
+    enabled: status === 'authenticated',
+  });
+
   // Don't render if not authenticated
   if (!session) {
     return null;
   }
 
-  // TODO: Replace with real API data scoped to the current organization's project
-  // This mock data currently shows for ALL orgs — needs org-scoped budget API
-  const totalBudget = 125000000; // ETB
-  const allocated = 98000000;
-  const spent = 72500000;
-  const pending = 5200000;
+  const apiBudgets = budgetsData?.budgets || [];
+  const apiExpenses = expensesData?.expenses || [];
+  const isLoading = budgetsLoading || expensesLoading;
+  const hasBudgets = apiBudgets.length > 0;
 
-  const categories = [
-    { name: 'Construction & Infrastructure', budget: 50000000, spent: 35000000, color: '#1C8C7D' },
-    { name: 'Equipment & Materials', budget: 30000000, spent: 22000000, color: '#00875A' },
-    { name: 'Labor & Personnel', budget: 25000000, spent: 10000000, color: '#FF5630' },
-    { name: 'Environmental & Social', budget: 10000000, spent: 3000000, color: '#FFAB00' },
-    { name: 'Contingency', budget: 10000000, spent: 2500000, color: '#6554C0' },
-  ];
+  // Compute from real data
+  const categoryColors = ['#1C8C7D', '#00875A', '#FF5630', '#FFAB00', '#6554C0', '#0065FF', '#00B8D9', '#FF8B00'];
+  const categories = hasBudgets
+    ? (() => {
+        const categoryMap = new Map<string, { name: string; budget: number; spent: number; color: string }>();
+        apiBudgets.forEach((b: any) => {
+          (b.categories || []).forEach((cat: any) => {
+            const catSpent = (cat.expenses || []).reduce((s: number, e: any) => s + Number(e.amount), 0);
+            const existing = categoryMap.get(cat.name);
+            if (existing) {
+              existing.budget += Number(cat.allocatedAmount);
+              existing.spent += catSpent;
+            } else {
+              categoryMap.set(cat.name, {
+                name: cat.name,
+                budget: Number(cat.allocatedAmount),
+                spent: catSpent,
+                color: categoryColors[categoryMap.size % categoryColors.length],
+              });
+            }
+          });
+        });
+        return Array.from(categoryMap.values());
+      })()
+    : [];
 
-  const recentTransactions = [
-    { id: 1, date: '2026-03-03', category: 'Construction & Infrastructure', description: 'Dam foundation materials', amount: -1200000, status: 'approved', user: 'Dr. Abebe Kebede' },
-    { id: 2, date: '2026-03-02', category: 'Equipment & Materials', description: 'Heavy machinery rental', amount: -850000, status: 'approved', user: 'Eng. Tigist Haile' },
-    { id: 3, date: '2026-03-01', category: 'Labor & Personnel', description: 'Engineering team - Feb 2026', amount: -2100000, status: 'approved', user: 'Finance Team' },
-    { id: 4, date: '2026-02-28', category: 'Environmental & Social', description: 'Community consultation', amount: -350000, status: 'pending', user: 'Social Impact Team' },
-    { id: 5, date: '2026-02-27', category: 'Construction & Infrastructure', description: 'Irrigation system components', amount: -980000, status: 'approved', user: 'Dr. Abebe Kebede' },
-    { id: 6, date: '2026-02-26', category: 'Equipment & Materials', description: 'Survey equipment', amount: -420000, status: 'approved', user: 'Eng. Tigist Haile' },
-    { id: 7, date: '2026-02-25', category: 'Labor & Personnel', description: 'Construction workers - Week 8', amount: -680000, status: 'approved', user: 'HR Department' },
-  ];
+  const totalBudget = apiBudgets.reduce((sum: number, b: any) => sum + Number(b.totalBudget || b.totalAllocated || 0), 0);
+  const allocated = apiBudgets.reduce((sum: number, b: any) => sum + Number(b.totalAllocated || 0), 0);
+  const spent = apiBudgets.reduce((sum: number, b: any) => sum + Number(b.totalSpent || 0), 0);
+  const pending = apiExpenses.filter((e: any) => e.status === 'PENDING').reduce((sum: number, e: any) => sum + Number(e.amount), 0);
 
-  const budgetWatchers: { id: number; name: string; role: string; avatar: string | null; watching: string[] }[] = [
-    { id: 1, name: 'Minister Seleshi Bekele', role: 'Minister', avatar: null, watching: ['All Categories'] },
-    { id: 2, name: 'Dr. Abebe Kebede', role: 'Project Director', avatar: null, watching: ['Construction & Infrastructure', 'Equipment & Materials'] },
-    { id: 3, name: 'Finance Director', role: 'CFO', avatar: null, watching: ['All Categories'] },
-    { id: 4, name: 'Budget Committee', role: 'Committee', avatar: null, watching: ['All Categories'] },
-  ];
+  const recentTransactions = apiExpenses.slice(0, 10).map((e: any, i: number) => ({
+    id: i + 1,
+    date: e.transactionDate || e.createdAt,
+    category: e.category?.name || 'Uncategorized',
+    description: e.description,
+    amount: -Number(e.amount),
+    status: (e.status || '').toLowerCase(),
+    user: e.vendor || 'Unknown',
+  }));
+
+  const budgetWatchers: { id: number; name: string; role: string; avatar: string | null; watching: string[] }[] = [];
 
   const totalCategories = categories.length;
   const maxCategorySpent = Math.max(...categories.map(c => c.spent), 1);
@@ -235,6 +274,25 @@ export default function BudgetPage() {
         showInsights
       />
 
+      {isLoading ? (
+        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#1B1F23]">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D] mx-auto mb-3" />
+            <p className="text-sm text-slate-500 dark:text-slate-400">Loading budget data...</p>
+          </div>
+        </div>
+      ) : !hasBudgets ? (
+        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#1B1F23]">
+          <div className="text-center max-w-md">
+            <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Yet</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Create a budget in any project to start tracking expenses here.
+            </p>
+          </div>
+        </div>
+      ) : (
+      <>
       {/* Stats Cards — sticky only on desktop */}
       <div className="bg-white dark:bg-[#1B1F23] border-b border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
         <div className="p-3 md:p-6">
@@ -518,7 +576,7 @@ export default function BudgetPage() {
                       <li className="flex items-start gap-2">
                         <Clock className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
                         <span>
-                          <span className="font-medium">Timeline Insight:</span> At the current spending rate, the project budget will be exhausted in approximately {Math.ceil((totalBudget - spent) / (spent / 30))} days. Plan accordingly for Q2 2026.
+                          <span className="font-medium">Timeline Insight:</span> At the current spending rate, the remaining budget covers approximately {spent > 0 ? Math.ceil((totalBudget - spent) / (spent / 30)) : '—'} days.
                         </span>
                       </li>
                     </ul>
@@ -527,7 +585,7 @@ export default function BudgetPage() {
                   {/* Report Timestamp */}
                   <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
                     <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                    <span>Ministry of Water and Irrigation • Ethiopia</span>
+                    <span>Budget Analysis</span>
                   </div>
                 </div>
               </div>
@@ -902,7 +960,7 @@ export default function BudgetPage() {
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">Projected End Date</p>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                        {Math.ceil((totalBudget - spent) / (spent / 30))} days remaining
+                        {spent > 0 ? Math.ceil((totalBudget - spent) / (spent / 30)) : '—'} days remaining
                       </p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -1173,6 +1231,8 @@ export default function BudgetPage() {
             }
           `}</style>
         </>
+      )}
+      </>
       )}
     </AppLayout>
   );

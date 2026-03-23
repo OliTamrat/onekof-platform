@@ -232,38 +232,38 @@ onekof-platform/
 
 ## Roadmap
 
-### v0.1 — Foundation (Current)
-- [x] Project-type-aware navigation (6 types)
-- [x] 20+ navigation pages with consistent UX
+### v0.1 — Foundation (Complete)
+- [x] Project-type-aware navigation (7 types incl. Custom)
+- [x] 140+ navigation pages with consistent UX
 - [x] Collapsible sidebar with 7 core categories
-- [x] AI-powered document processing
+- [x] AI-powered document processing (Claude API)
 - [x] Advanced budget management with ETB support
-- [x] Team collaboration & RBAC
+- [x] Team collaboration & RBAC (4 role types)
 - [x] Dark mode support
 - [x] Mobile responsive design
 
-### v0.2 — Enhanced Features (In Progress)
-- [ ] Ethiopian calendar (Ge'ez) toggle
-- [ ] Advanced reports & analytics dashboards
-- [ ] Real-time notifications system
-- [ ] Email integration (invites, digests)
-- [ ] File attachments with drag-and-drop
-- [ ] Advanced filtering & search
-- [ ] Export to Excel/PDF
+### v0.2 — Enhanced Features (Nearly Complete)
+- [x] Ethiopian calendar (Ge'ez) toggle & dual calendar view
+- [x] Real-time notifications system (SSE + notification center)
+- [x] Email integration (invites, digests via Resend)
+- [x] File attachments with drag-and-drop
+- [x] Advanced filtering & search
+- [x] Advanced reports & analytics dashboards
+- [x] Export to Excel/PDF (CSV, JSON, Excel XML, PDF via print)
 
-### v0.3 — Localization & Scale
-- [ ] Amharic language support
-- [ ] Full Ethiopian calendar integration
+### v0.3 — Localization & Scale (In Progress)
+- [x] Public REST API (120+ endpoints + OpenAPI 3.0 spec)
+- [ ] Custom workflow builder (automation rules engine done, visual builder partial)
+- [ ] Full Ethiopian calendar integration (conversion library done, UI integration partial)
+- [ ] Amharic language support (schema + fonts ready, i18n framework needed)
 - [ ] Local payment gateways (Chapa, Telebirr, CBE Birr)
-- [ ] Custom workflow builder
 - [ ] Mobile apps (iOS & Android)
-- [ ] Public REST API
 
 ### v1.0 — Production Ready
-- [ ] Automation & rules engine
+- [x] Automation & rules engine (triggers, conditions, actions, templates)
+- [ ] White-label deployment options (multi-tenant + branding fields ready, advanced theming needed)
 - [ ] Custom fields & dynamic forms
 - [ ] Time tracking & resource planning
-- [ ] White-label deployment options
 - [ ] Enterprise SSO (SAML, LDAP)
 
 ---
