@@ -1,47 +1,49 @@
 <div align="center">
 
-# 🚀 Onekof Platform
+# Onekof Platform
 
-### *Modern Project Management for African Enterprises*
+### *Purpose-Built Project Management for Ethiopian Organizations*
 
-**Enterprise-grade project management with Ethiopian-first design**
+**A unified workspace for planning, budgeting, and collaboration — designed from the ground up for Ethiopian government agencies, NGOs, and enterprises.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748?logo=prisma)](https://www.prisma.io/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
-[Features](#-key-features) • [Demo](#-screenshots) • [Installation](#-quick-start) • [Documentation](#-documentation) • [Roadmap](#-roadmap)
+[Features](#key-features) • [Screenshots](#screenshots) • [Installation](#quick-start) • [Documentation](#documentation) • [Roadmap](#roadmap)
 
 </div>
 
 ---
 
-## 📖 About Onekof
+## About Onekof
 
-Onekof is a **modern, enterprise-grade project management platform** designed specifically for Ethiopian government agencies, NGOs, and enterprises. We combine the power of Jira-style issue tracking with comprehensive budget management, team collaboration, and AI-powered document processing.
+Onekof is a **unified project management platform** purpose-built for Ethiopian organizations. It brings together task management, budget tracking, team collaboration, and AI-powered document processing into a single workspace — eliminating the need for multiple disconnected tools.
 
-### Why Onekof?
+Unlike general-purpose project management software built for Western markets, Onekof was designed from day one to address the specific workflows, financial structures, and operational realities of Ethiopian teams.
 
-🇪🇹 **Ethiopian-First Design** - Built with ETB currency, multilingual support (Amharic, Oromo, Tigrinya), and infrastructure project templates
+### What Makes Onekof Different
 
-🤖 **AI-Powered** - Automatic document processing to extract budget items, milestones, and vendors from invoices and contracts
+**Ethiopian-First Design** — Native ETB currency support, project templates aligned with Ethiopian government and enterprise workflows, and infrastructure designed for local deployment requirements.
 
-💰 **Cost-Effective** - All-in-one platform replacing multiple expensive tools (Jira, Confluence, Budget software)
+**Unified Workspace** — Task tracking, budget management, document processing, team collaboration, and reporting in one platform. No switching between separate tools.
 
-🎯 **Project-Type Aware** - Different workflows for SOFTWARE, BUSINESS, MARKETING, OPERATIONS, RESEARCH, and CONSTRUCTION projects
+**AI-Powered Document Processing** — Upload invoices, contracts, and RFPs. The system automatically extracts budget items, milestones, and vendor information with confidence scoring.
 
-📱 **Modern Experience** - Beautiful, responsive interface with dark mode support and mobile optimization
+**Project-Type Awareness** — Six specialized project types (Software, Business, Marketing, Operations, Research, Construction) with tailored navigation, workflows, and reporting for each.
+
+**Multi-Tenant Architecture** — Organizations operate in isolated workspaces with subdomain routing, role-based access control, and cross-organization security boundaries.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 🎯 Multi-Project Types
+### Multi-Project Types
 - SOFTWARE projects with code integration
 - BUSINESS projects with P&L tracking
 - MARKETING campaigns with analytics
@@ -52,7 +54,7 @@ Onekof is a **modern, enterprise-grade project management platform** designed sp
 </td>
 <td width="50%">
 
-### 📊 Comprehensive Navigation
+### Comprehensive Navigation
 - Dynamic navigation (11-12 tabs per project type)
 - Board, List, Calendar, Timeline views
 - Team, Goals, Budget, Reports pages
@@ -64,44 +66,44 @@ Onekof is a **modern, enterprise-grade project management platform** designed sp
 <tr>
 <td>
 
-### 🤖 AI Document Processing
+### AI Document Processing
 - Upload invoices, contracts, RFPs
 - Automatic budget item extraction
 - Vendor and milestone detection
-- Confidence scoring
-- 50 docs/month free tier
+- Confidence scoring per extraction
+- 50 documents/month on free tier
 
 </td>
 <td>
 
-### 💰 Budget Management
+### Budget Management
 - Multi-category budgets (CAPEX, OPEX, etc.)
 - Real-time tracking & variance alerts
 - Budget watchers & notifications
-- Beautiful dashboard with insights
-- ETB currency support
+- Dashboard with financial insights
+- Native ETB currency support
 
 </td>
 </tr>
 <tr>
 <td>
 
-### 👥 Team Collaboration
+### Team Collaboration
 - Organization-based workspaces
 - Role-based access control (RBAC)
-- Member management
+- Member management & invitations
 - Activity tracking & audit logs
 - User profiles with avatars
 
 </td>
 <td>
 
-### 🔐 Enterprise Security
-- NextAuth.js authentication
-- Soft delete with restoration
-- Full audit trail
-- Organization-level isolation
-- OAuth support (Google, GitHub)
+### Enterprise Security
+- JWT authentication with OAuth support
+- Soft delete with data restoration
+- Full audit trail on all actions
+- Organization-level data isolation
+- Cross-subdomain session management
 
 </td>
 </tr>
@@ -109,24 +111,24 @@ Onekof is a **modern, enterprise-grade project management platform** designed sp
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 <table>
 <tr>
-<td><strong>Issue Board</strong><br/><em>Kanban-style project management</em></td>
-<td><strong>Budget Dashboard</strong><br/><em>Real-time budget tracking</em></td>
+<td><strong>Issue Board</strong><br/><em>Visual task management with drag-and-drop</em></td>
+<td><strong>Budget Dashboard</strong><br/><em>Real-time financial tracking in ETB</em></td>
 </tr>
 <tr>
-<td><strong>AI Document Processing</strong><br/><em>Automatic data extraction</em></td>
-<td><strong>Dark Mode</strong><br/><em>Beautiful night-time interface</em></td>
+<td><strong>AI Document Processing</strong><br/><em>Automatic data extraction from uploads</em></td>
+<td><strong>Dark Mode</strong><br/><em>Full dark theme across all components</em></td>
 </tr>
 </table>
 
-> 📸 *Screenshots coming soon - Platform currently in active development*
+> *Screenshots coming soon — platform currently in active development*
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -137,32 +139,32 @@ Node.js 18+  •  PostgreSQL 14+  •  Git
 ### Installation
 
 ```bash
-# 1️⃣ Clone the repository
+# 1. Clone the repository
 git clone https://github.com/OliTamrat/onekof-platform.git
 cd onekof-platform
 
-# 2️⃣ Install dependencies
+# 2. Install dependencies
 npm install
 
-# 3️⃣ Set up environment variables
+# 3. Set up environment variables
 cp apps/web/.env.example apps/web/.env
 # Edit apps/web/.env with your database URL and secrets
 
-# 4️⃣ Set up the database
+# 4. Set up the database
 cd packages/database
-npx prisma generate    # Generate Prisma client
-npx prisma db push     # Create database tables
+npx prisma generate
+npx prisma db push
 
-# 5️⃣ Start development server
+# 5. Start development server
 cd ../..
 npm run dev
 ```
 
-🎉 **Open http://localhost:3000** - You're ready to go!
+Open **http://localhost:3000** to get started.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 <table>
 <tr>
@@ -175,29 +177,29 @@ npm run dev
 </tr>
 <tr>
 <td><strong>AI</strong></td>
-<td>Anthropic Haiku (cost-optimized)</td>
+<td>Anthropic Haiku (cost-optimized document processing)</td>
 </tr>
 <tr>
 <td><strong>Auth</strong></td>
-<td>NextAuth.js v4 with OAuth support</td>
+<td>NextAuth.js v4 with JWT strategy and OAuth</td>
 </tr>
 <tr>
 <td><strong>UI</strong></td>
-<td>Radix UI, Lucide React Icons, Custom Design System</td>
+<td>Radix UI primitives, Lucide Icons, custom design system</td>
 </tr>
 <tr>
 <td><strong>State</strong></td>
-<td>TanStack Query, React Hook Form, Zod</td>
+<td>TanStack Query, React Hook Form, Zod validation</td>
 </tr>
 <tr>
 <td><strong>Deployment</strong></td>
-<td>Vercel (frontend), Render/Supabase (database)</td>
+<td>Vercel (frontend), PostgreSQL (managed database)</td>
 </tr>
 </table>
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 onekof-platform/
@@ -220,7 +222,7 @@ onekof-platform/
 │   │   ├── prisma/
 │   │   │   └── schema.prisma   # Database schema
 │   │   └── package.json
-│   └── ui/                     # Shared UI components (future)
+│   └── ui/                     # Shared UI components
 │
 ├── turbo.json                  # Turborepo config
 └── package.json                # Root package.json
@@ -228,99 +230,45 @@ onekof-platform/
 
 ---
 
-## 🎯 Onekof vs. Competition
+## Roadmap
 
-<table>
-<tr>
-<th>Feature</th>
-<th>Jira + Confluence</th>
-<th>Onekof ⚡</th>
-</tr>
-<tr>
-<td><strong>Pricing</strong></td>
-<td>$13.80/user/month</td>
-<td><strong>Coming Soon</strong></td>
-</tr>
-<tr>
-<td><strong>Setup Time</strong></td>
-<td>Hours of configuration</td>
-<td><strong>5 minutes ⚡</strong></td>
-</tr>
-<tr>
-<td><strong>Learning Curve</strong></td>
-<td>Steep (weeks)</td>
-<td><strong>Intuitive (minutes) 🎯</strong></td>
-</tr>
-<tr>
-<td><strong>AI Document Processing</strong></td>
-<td>❌ Not available</td>
-<td><strong>✅ Built-in</strong></td>
-</tr>
-<tr>
-<td><strong>Budget Management</strong></td>
-<td>💰 Paid add-on</td>
-<td><strong>✅ Integrated</strong></td>
-</tr>
-<tr>
-<td><strong>Ethiopian Support</strong></td>
-<td>❌ None</td>
-<td><strong>🇪🇹 ETB, Multilingual</strong></td>
-</tr>
-<tr>
-<td><strong>Platform</strong></td>
-<td>Separate products</td>
-<td><strong>✅ All-in-one</strong></td>
-</tr>
-<tr>
-<td><strong>Modern UI</strong></td>
-<td>Legacy interface</td>
-<td><strong>✅ Clean, modern design</strong></td>
-</tr>
-</table>
-
----
-
-## 🗺️ Roadmap
-
-### ✅ v0.1 - Foundation (Current)
+### v0.1 — Foundation (Current)
 - [x] Project-type-aware navigation (6 types)
 - [x] 20+ navigation pages with consistent UX
 - [x] Collapsible sidebar with 7 core categories
-- [x] AI-powered document processing (Anthropic Haiku)
-- [x] Advanced budget management
+- [x] AI-powered document processing
+- [x] Advanced budget management with ETB support
 - [x] Team collaboration & RBAC
 - [x] Dark mode support
 - [x] Mobile responsive design
 
-### 🚧 v0.2 - Enhanced Features (In Progress)
-- [ ] Full Calendar with Ethiopian calendar toggle
-- [ ] Advanced Reports & Analytics dashboards
+### v0.2 — Enhanced Features (In Progress)
+- [ ] Ethiopian calendar (Ge'ez) toggle
+- [ ] Advanced reports & analytics dashboards
 - [ ] Real-time notifications system
 - [ ] Email integration (invites, digests)
-- [ ] File attachment with drag-and-drop
-- [ ] Advanced filtering & search (JQL-like)
+- [ ] File attachments with drag-and-drop
+- [ ] Advanced filtering & search
 - [ ] Export to Excel/PDF
 
-### 🔮 v0.3 - Localization & Scale
-- [ ] **Multilingual:** Amharic (አማርኛ), Oromo (Afaan Oromo), Tigrinya (ትግርኛ)
-- [ ] **Ethiopian Calendar:** Full Ge'ez calendar integration
-- [ ] **Payment Gateways:** Chapa, Telebirr, CBE Birr
-- [ ] **Advanced Workflows:** Custom workflow builder
-- [ ] **Mobile Apps:** iOS & Android native apps
-- [ ] **Integrations:** Slack, MS Teams, Zapier
-- [ ] **API:** Public REST API with documentation
+### v0.3 — Localization & Scale
+- [ ] Amharic language support
+- [ ] Full Ethiopian calendar integration
+- [ ] Local payment gateways (Chapa, Telebirr, CBE Birr)
+- [ ] Custom workflow builder
+- [ ] Mobile apps (iOS & Android)
+- [ ] Public REST API
 
-### 🌟 v1.0 - Production Ready
-- [ ] Advanced automation & rules engine
+### v1.0 — Production Ready
+- [ ] Automation & rules engine
 - [ ] Custom fields & dynamic forms
 - [ ] Time tracking & resource planning
-- [ ] Advanced permissions & compliance
-- [ ] White-label options
+- [ ] White-label deployment options
 - [ ] Enterprise SSO (SAML, LDAP)
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 ### Environment Variables
 
@@ -335,17 +283,17 @@ DIRECT_URL="${DATABASE_URL}"
 NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
 NEXTAUTH_URL="http://localhost:3000"
 
-# AI Document Processing (Optional - for AI features)
-ANTHROPIC_API_KEY="sk-ant-your-anthropic-key-here"
+# AI Document Processing (Optional)
+ANTHROPIC_API_KEY="your-api-key"
 
-# OAuth (Optional - for social login)
+# OAuth (Optional)
 GOOGLE_CLIENT_ID="your-google-oauth-client-id"
 GOOGLE_CLIENT_SECRET="your-google-oauth-secret"
 GITHUB_ID="your-github-oauth-app-id"
 GITHUB_SECRET="your-github-oauth-secret"
 ```
 
-> 📖 **Full deployment guide:** See [VERCEL_ENV_SETUP.md](VERCEL_ENV_SETUP.md)
+> See [VERCEL_ENV_SETUP.md](VERCEL_ENV_SETUP.md) for full deployment guide.
 
 ### Development Commands
 
@@ -354,22 +302,21 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Lint code
-npm run format       # Format with Prettier
 
 # Database commands
 cd packages/database
-npx prisma studio    # Open Prisma Studio (database GUI)
+npx prisma studio    # Open database GUI
 npx prisma generate  # Regenerate Prisma client
-npx prisma db push   # Push schema changes to database
+npx prisma db push   # Push schema changes
 ```
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
-### Deploy to Vercel (Recommended)
+### Deploy to Vercel
 
-1. **Push to GitHub** (already done ✅)
+1. **Push to GitHub**
    ```bash
    git push origin master
    ```
@@ -381,62 +328,36 @@ npx prisma db push   # Push schema changes to database
    - Root Directory: **`apps/web`**
 
 3. **Configure Environment Variables**
-   Add required variables (see [VERCEL_ENV_SETUP.md](VERCEL_ENV_SETUP.md)):
    - `DATABASE_URL`
    - `NEXTAUTH_SECRET`
    - `NEXTAUTH_URL`
 
-4. **Deploy** 🚀
-   - Vercel auto-deploys on every push to `master`
-   - Add custom domain: **onekof.com** in Vercel dashboard
-
-> 💡 **Tip:** Use separate databases for production and preview deployments
+4. **Deploy** — Vercel auto-deploys on every push to `master`
 
 ---
 
-## 🤝 Contributing
+## License
 
-We welcome contributions! Here's how:
+**Proprietary** — All rights reserved. Copyright 2026 Onekof.
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to your branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Write meaningful commit messages
-- Add comments for complex logic
-- Test your changes thoroughly
-- Update documentation as needed
+This software is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written consent from the copyright holder.
 
 ---
 
-## 📄 License
+## Contact
 
-**Proprietary** - All rights reserved © 2026 Onekof
+**Website:** [onekof.com](https://onekof.com)
 
-This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
+**GitHub:** [github.com/OliTamrat/onekof-platform](https://github.com/OliTamrat/onekof-platform)
+
+**Issues:** [github.com/OliTamrat/onekof-platform/issues](https://github.com/OliTamrat/onekof-platform/issues)
 
 ---
-
-## 📞 Contact & Support
 
 <div align="center">
 
-**🌐 Website:** [onekof.com](https://onekof.com) *(coming soon)*
+*Built for Ethiopian teams. Designed for real work.*
 
-**💻 GitHub:** [github.com/OliTamrat/onekof-platform](https://github.com/OliTamrat/onekof-platform)
-
-**🐛 Report Issues:** [github.com/OliTamrat/onekof-platform/issues](https://github.com/OliTamrat/onekof-platform/issues)
-
----
-
-### Made in USA 🇺🇸 with ❤️ for Ethiopia 🇪🇹
-
-*Empowering African enterprises with world-class project management*
-
-**[⬆ Back to Top](#-onekof-platform)**
+**[Back to Top](#onekof-platform)**
 
 </div>
