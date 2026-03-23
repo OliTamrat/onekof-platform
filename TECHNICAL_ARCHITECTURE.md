@@ -2,14 +2,14 @@
 ## World-Class Project Management Platform
 
 **Version:** 1.0
-**Target:** Enterprise-grade, globally competitive with Atlassian
+**Target:** Enterprise-grade project management for Ethiopian organizations
 **Scale:** 100K+ organizations, 10M+ users
 
 ---
 
 ## Executive Summary
 
-Onekof is built as a modern, cloud-native SaaS platform designed to compete with and exceed Atlassian's Jira and Confluence. The architecture prioritizes:
+Onekof is built as a modern, cloud-native SaaS platform purpose-built for Ethiopian government agencies, NGOs, and enterprises. The architecture prioritizes:
 
 - **Real-time collaboration** at scale
 - **Multi-tenancy** with complete data isolation
@@ -903,7 +903,7 @@ class SearchEngine {
 
 ### State Machine Implementation
 
-**Visual Builder** + **JSON Definition** approach (like Jira Automation)
+**Visual Builder** + **JSON Definition** approach for workflow automation
 
 ```typescript
 // lib/workflows/workflow-engine.ts
@@ -1116,22 +1116,22 @@ Focus on tasks that are:
 
 ---
 
-## Innovations Beyond Atlassian
+## Platform Differentiators
 
-### What Onekof Does Better
+### What Makes Onekof Unique
 
-| Feature | Jira/Confluence | Onekof |
+| Feature | Foreign PM Tools | Onekof |
 |---------|-----------------|--------|
 | **Setup Time** | Hours of configuration | 5-minute guided setup with templates |
-| **AI Integration** | Paid add-on ($10/user) | Built-in, context-aware, no extra cost |
-| **Mobile Experience** | Poor, limited functionality | Native offline-first app |
-| **Document Collaboration** | Separate product (Confluence) | Integrated, real-time like Notion |
+| **AI Integration** | Paid add-on or unavailable | Built-in, context-aware, no extra cost |
+| **Mobile Experience** | Limited functionality | Native offline-first app |
+| **Document Collaboration** | Separate tools required | Integrated, real-time collaborative editing |
 | **Search** | Keyword only | Semantic + keyword hybrid |
 | **Calendar** | Gregorian only | Ethiopian + Gregorian toggle |
 | **Language Support** | English-first | English + Amharic + Oromo + Tigrinya |
-| **Pricing** | $7.75-$15.25/user | $3-$8/user (50% cheaper) |
+| **Pricing** | $7-$15+/user | $3-$8/user |
 | **Learning Curve** | Steep (weeks to master) | Intuitive (hours to proficient) |
-| **Automation** | Complex JQL required | Visual no-code builder |
+| **Automation** | Complex query syntax required | Visual no-code builder |
 | **Async Collaboration** | Comments only | Voice notes, async video, screen recordings |
 
 ### Unique Features
@@ -1140,7 +1140,7 @@ Focus on tasks that are:
    - NGO project tracking (donor reporting, beneficiary tracking)
    - Government procurement workflow
    - Construction project management
-   - Software development (like Jira)
+   - Software development (agile boards, sprints, backlog)
 
 2. **Bi-Directional Calendar**
    - See deadlines in both Gregorian and Ethiopian calendar

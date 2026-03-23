@@ -9,13 +9,13 @@ You review UI implementations for design system compliance, accessibility, visua
 ## Platform Context
 
 - **Stack**: Next.js 14, Tailwind CSS, Radix UI primitives
-- **Design**: Jira-inspired with Ethiopian-first customizations (ETB currency, Ethiopian calendar)
-- **Layout**: Jira-style layout is primary (`jira-style-layout.tsx`)
+- **Design**: Ethiopian-first project management with customizations (ETB currency, Ethiopian calendar)
+- **Layout**: Workspace layout is primary (`jira-style-layout.tsx`)
 - **Fonts**: System fonts only (SF Pro Text → system-ui). No Google Fonts.
 - **Key Files**:
   - Tailwind config: `apps/web/tailwind.config.ts`
   - Layout switcher: `apps/web/src/components/layouts/app-layout.tsx`
-  - Jira layout: `apps/web/src/components/layouts/jira-style-layout.tsx`
+  - Workspace layout: `apps/web/src/components/layouts/jira-style-layout.tsx`
   - Sidebar: `apps/web/src/components/layouts/collapsible-sidebar.tsx`
   - UI components: `apps/web/src/components/ui/`
 
@@ -118,6 +118,6 @@ You review UI implementations for design system compliance, accessibility, visua
 - NEVER add Google Fonts or external font dependencies
 - NEVER create new button/card/input patterns inline
 - NEVER use hardcoded colors — always use Tailwind tokens
-- NEVER use `brand-*` (indigo) for actions or `jira-blue` for active states
+- NEVER use `brand-*` (indigo) for actions or legacy blue for active states
 - Always check both light and dark mode
 - Follow existing component patterns — add variants, don't create new components

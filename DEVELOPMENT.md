@@ -25,7 +25,7 @@
 
 ### Active Layout
 - `src/components/layouts/app-layout.tsx` switches layout based on `LAYOUT_CONFIG`
-- **Jira-style layout** is the primary layout (`jira-style-layout.tsx`)
+- **Workspace layout** is the primary layout (`jira-style-layout.tsx`)
 - Uses `collapsible-sidebar.tsx` for section navigation
 - `three-tier-layout.tsx` exists as an alternative but is not the default
 
@@ -52,7 +52,7 @@ All UI must use these semantic tokens defined in `tailwind.config.ts`:
 | `muted-*` | `slate-100` | `slate-800` | Secondary backgrounds |
 
 **Primary accent**: `#1C8C7D` (teal) — ALL primary buttons, active states, focus rings, links
-**Do NOT use**: `slate-900` for primary buttons, `jira-blue` for active states, `brand-*` (indigo) for actions
+**Do NOT use**: `slate-900` for primary buttons, legacy blue for active states, `brand-*` (indigo) for actions
 
 ### Border Radius
 - `rounded-md` (6px): Buttons, inputs, badges, dropdown items
@@ -153,7 +153,7 @@ All agents are pre-loaded with platform context, stability rules, and the design
 
 ## Project Context
 
-- **Design**: Jira-inspired with Ethiopian-first customizations (ETB currency, Ethiopian calendar)
+- **Design**: Ethiopian-first project management with customizations (ETB currency, Ethiopian calendar)
 - **Pages**: ~164 pages across dashboard, projects, auth, settings, marketing
 - **Language**: English only. i18n/multilingual was removed — the previous implementation (next-intl) only switched fonts without translating any content. Do NOT re-add i18n unless a full translation pipeline is in place.
 - **No external fonts**: All fonts are system fonts or local @font-face declarations. Do NOT add Google Fonts or other CDN font dependencies — they cause CSP issues and add latency.
@@ -312,6 +312,6 @@ Current capacity: ~200-500 concurrent users. Steps to scale:
 - [x] AI Insights panel with expandable drill-down details per insight
 - [x] Board view responsive grid with larger, more readable cards
 - [x] Dark mode consistency across all components
-- [x] Jira-style layout as primary layout
+- [x] Workspace layout as primary layout
 - [x] Multi-tenant subdomain routing
 - [x] JWT auth with cross-subdomain cookies
