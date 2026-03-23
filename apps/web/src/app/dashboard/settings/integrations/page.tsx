@@ -34,6 +34,7 @@ import {
   MessageSquare,
   Rocket,
   ClipboardList,
+  Upload,
   type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -88,17 +89,9 @@ function TeamsLogo({ className }: { className?: string }) {
   );
 }
 
-function JiraLogo({ className }: { className?: string }) {
+function ClipboardIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 48 48">
-      <defs>
-        <linearGradient id="jira-a" x1="40%" y1="0%" x2="60%" y2="100%">
-          <stop offset="0%" stopColor="#0052CC"/>
-          <stop offset="100%" stopColor="#2684FF"/>
-        </linearGradient>
-      </defs>
-      <path fill="url(#jira-a)" d="M44.7 22.3 25.7 3.3 24 1.6 8.5 17.1l-5.2 5.2a1.9 1.9 0 0 0 0 2.7l10.1 10.1L24 45.7l15.5-15.5.3-.3 4.9-4.9a1.9 1.9 0 0 0 0-2.7zM24 30.8l-7.1-7.1L24 16.6l7.1 7.1L24 30.8z"/>
-    </svg>
+    <Upload className={className} />
   );
 }
 
@@ -177,7 +170,7 @@ interface Integration {
   features: string[];
   setupSteps: string[];
   docsUrl: string;
-  provider?: 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar' | 'jira';
+  provider?: 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar';
 }
 
 interface ConnectionData {
@@ -254,15 +247,14 @@ const INTEGRATIONS: Integration[] = [
     docsUrl: '#',
   },
   {
-    id: 'jira',
-    name: 'Jira Import',
-    description: 'Import existing projects, issues, and workflows from Jira into Onekof.',
-    logo: JiraLogo,
+    id: 'data-import',
+    name: 'Data Import',
+    description: 'Import existing projects, issues, and workflows from CSV, JSON, or other tools into Onekof.',
+    logo: ClipboardIcon,
     category: 'productivity',
     status: 'available',
-    provider: 'jira',
-    features: ['Full project import', 'Issue & subtask migration', 'Status & workflow mapping', 'User matching'],
-    setupSteps: ['Click "Connect Jira" to authorize with Atlassian', 'Select projects to import', 'Map statuses & fields', 'Review and confirm import'],
+    features: ['Full project import', 'Issue & subtask migration', 'Status & workflow mapping', 'CSV/JSON upload'],
+    setupSteps: ['Click "Start Import" to begin', 'Upload your data file or connect source', 'Map statuses & fields', 'Review and confirm import'],
     docsUrl: '#',
   },
   {
@@ -704,11 +696,13 @@ function IntegrationCard({
   const Logo = integration.logo;
 
   return (
-    <Button variant="outline"
+    <button
+      type="button"
       onClick={onSelect}
       className={cn(
-        'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full',
+        'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full h-auto',
         'bg-white dark:bg-[#22272B]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:ring-offset-[#1B1F23]',
         isSelected
           ? 'border-primary-500 dark:border-primary-500 ring-2 ring-primary-500/20 shadow-md'
           : isComingSoon
@@ -778,7 +772,7 @@ function IntegrationCard({
           <span className="text-[10px] text-slate-400 dark:text-slate-500">+{integration.features.length - 3}</span>
         )}
       </div>
-    </Button>
+    </button>
   );
 }
 
