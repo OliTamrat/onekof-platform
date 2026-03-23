@@ -254,75 +254,7 @@ export default function BudgetPage() {
     });
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
-  // ── Demo Data: Water Dam & Irrigation Project ──────────────
-  // Single project — 250M ETB funded by GoE + World Bank + AfDB
-  // All expenses are tied to this project. Phases map to the project timeline.
 
-  const PROJECT_NAME = 'Water Dam & Irrigation Project';
-  const PROJECT_FUNDED_BY = 'Government of Ethiopia, World Bank (IDA), African Development Bank';
-  const PROJECT_FISCAL_YEAR = '2025/2026 (Ethiopian FY 2018)';
-
-  // Project timeline phases (tied to budget categories)
-  const PROJECT_PHASES = [
-    { name: 'Phase 1: Site Preparation & Foundation', start: '2025-07-08', end: '2025-12-31', status: 'COMPLETED', progress: 100 },
-    { name: 'Phase 2: Dam Core Construction', start: '2026-01-01', end: '2026-06-30', status: 'IN_PROGRESS', progress: 62 },
-    { name: 'Phase 3: Spillway & Outlet Works', start: '2026-04-01', end: '2026-09-30', status: 'IN_PROGRESS', progress: 28 },
-    { name: 'Phase 4: Irrigation Canal Network', start: '2026-07-01', end: '2027-01-07', status: 'PLANNED', progress: 0 },
-    { name: 'Phase 5: Electromechanical & Commissioning', start: '2027-01-08', end: '2027-06-30', status: 'PLANNED', progress: 0 },
-  ];
-
-  const DEMO_CATEGORIES = [
-    { name: 'Dam Construction & Civil Works', budget: 82000000, spent: 58700000, color: '#1C8C7D' },
-    { name: 'Irrigation Canal & Distribution', budget: 38000000, spent: 12400000, color: '#00875A' },
-    { name: 'Heavy Equipment & Machinery', budget: 32000000, spent: 26800000, color: '#FF5630' },
-    { name: 'Engineering & Labor', budget: 35000000, spent: 28200000, color: '#FFAB00' },
-    { name: 'Environmental & Social Safeguards', budget: 18000000, spent: 11500000, color: '#6554C0' },
-    { name: 'Consulting & Project Management', budget: 15000000, spent: 12100000, color: '#0065FF' },
-    { name: 'Land Acquisition & Resettlement', budget: 12000000, spent: 10800000, color: '#00B8D9' },
-    { name: 'Contingency & Risk Reserve', budget: 18000000, spent: 3500000, color: '#FF8B00' },
-  ];
-
-  const DEMO_BUDGETS: BudgetWithStats[] = [
-    {
-      id: 'water-dam-budget', projectId: 'water-dam-project', totalBudget: 250000000, currency: 'ETB', status: 'ACTIVE', createdAt: '2025-07-08T00:00:00Z',
-      project: { id: 'water-dam-project', name: PROJECT_NAME, organizationId: 'mowi-org' },
-      categories: [
-        { id: 'c1', name: 'Dam Construction & Civil Works', code: 'DAM-001', allocatedAmount: 82000000, expenses: [{ amount: 58700000 }] },
-        { id: 'c2', name: 'Irrigation Canal & Distribution', code: 'IRR-002', allocatedAmount: 38000000, expenses: [{ amount: 12400000 }] },
-        { id: 'c3', name: 'Heavy Equipment & Machinery', code: 'EQP-003', allocatedAmount: 32000000, expenses: [{ amount: 26800000 }] },
-        { id: 'c4', name: 'Engineering & Labor', code: 'ENG-004', allocatedAmount: 35000000, expenses: [{ amount: 28200000 }] },
-        { id: 'c5', name: 'Environmental & Social Safeguards', code: 'ENV-005', allocatedAmount: 18000000, expenses: [{ amount: 11500000 }] },
-        { id: 'c6', name: 'Consulting & Project Management', code: 'CON-006', allocatedAmount: 15000000, expenses: [{ amount: 12100000 }] },
-        { id: 'c7', name: 'Land Acquisition & Resettlement', code: 'LAR-007', allocatedAmount: 12000000, expenses: [{ amount: 10800000 }] },
-        { id: 'c8', name: 'Contingency & Risk Reserve', code: 'CTG-008', allocatedAmount: 18000000, expenses: [{ amount: 3500000 }] },
-      ],
-      totalSpent: 164000000, totalAllocated: 250000000, utilization: 65.6,
-      _count: { expenses: 247, watchers: 12 },
-    },
-  ];
-
-  const DEMO_EXPENSES = [
-    { id: 'de-1', description: 'RCC dam body concrete — Batch 14 (4,200 m³)', amount: 8400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-15', vendor: 'Ethio-Cement PLC', invoiceNumber: 'EC-2026-0847', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
-    { id: 'de-2', description: 'CAT 390F Excavator & CAT D8T Dozer rental (Q1)', amount: 4200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-13', vendor: 'Mesfin Industrial Engineering', invoiceNumber: 'MIE-4521', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
-    { id: 'de-3', description: 'Spillway gate fabrication — steel plates & hinges', amount: 6800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-11', vendor: 'Zuquala Steel', invoiceNumber: 'ZS-2026-0389', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
-    { id: 'de-4', description: 'Community resettlement — Woreda 7 (42 households)', amount: 3200000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-03-10', vendor: 'Amhara Regional Authority', invoiceNumber: 'ARA-RST-0312', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c7', name: 'Land Acquisition & Resettlement' } },
-    { id: 'de-5', description: 'Engineering team salaries — February 2026 (68 staff)', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-05', vendor: 'Internal Payroll', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c4', name: 'Engineering & Labor' } },
-    { id: 'de-6', description: 'Environmental monitoring — downstream water quality Q1', amount: 1800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-04', vendor: 'Green Impact Consulting', invoiceNumber: 'GIC-0312', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
-    { id: 'de-7', description: 'SolarTech irrigation pump station — Phase 3 solar array', amount: 5500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-03', vendor: 'SolarTech Ethiopia', invoiceNumber: 'STE-1102', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
-    { id: 'de-8', description: 'Construction workers wages — Week 36 (320 laborers)', amount: 2800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-03-01', vendor: 'Internal Payroll', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c4', name: 'Engineering & Labor' } },
-    { id: 'de-9', description: 'SMEC International — dam safety review & design audit', amount: 4500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-28', vendor: 'SMEC International', invoiceNumber: 'SMEC-ETH-0156', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c6', name: 'Consulting & Project Management' } },
-    { id: 'de-10', description: 'GIS topographic survey — irrigation canal alignment', amount: 2100000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-26', vendor: 'Esri East Africa', invoiceNumber: 'ESRI-EA-7744', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
-    { id: 'de-11', description: 'Reinforcement steel bars — 85 tons (dam abutment)', amount: 7200000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-24', vendor: 'Habesha Steel', invoiceNumber: 'HS-2026-0456', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
-    { id: 'de-12', description: 'Downstream community livelihood restoration program', amount: 2400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-22', vendor: 'World Bank Social Team', invoiceNumber: 'WB-SOC-0089', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
-    { id: 'de-13', description: 'Pump station concrete works & pipe laying (2.4 km)', amount: 4800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-20', vendor: 'METEC', invoiceNumber: 'METEC-2026-0078', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c2', name: 'Irrigation Canal & Distribution' } },
-    { id: 'de-14', description: 'Land compensation — 180 hectares agricultural land', amount: 5400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-18', vendor: 'Amhara Land Administration', invoiceNumber: 'ALA-COMP-0034', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c7', name: 'Land Acquisition & Resettlement' } },
-    { id: 'de-15', description: 'Crane rental — Liebherr LTM 1300 (dam crest work)', amount: 3800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-15', vendor: 'Sur Construction', invoiceNumber: 'SUR-CR-229', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
-    { id: 'de-16', description: 'Hydrological monitoring station equipment', amount: 1950000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-12', vendor: 'Hach Company', invoiceNumber: 'HACH-ETH-330', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c3', name: 'Heavy Equipment & Machinery' } },
-    { id: 'de-17', description: 'EIA compliance audit — Q1 2026 (World Bank requirement)', amount: 2200000, currency: 'ETB', status: 'PENDING', type: 'ACTUAL', transactionDate: '2026-02-10', vendor: 'ERM Consulting', invoiceNumber: 'ERM-ETH-0023', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c5', name: 'Environmental & Social Safeguards' } },
-    { id: 'de-18', description: 'Project management office — February operational costs', amount: 1800000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-08', vendor: 'Ministry of Water & Irrigation', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c6', name: 'Consulting & Project Management' } },
-    { id: 'de-19', description: 'Geotechnical testing — dam foundation core samples', amount: 1400000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-05', vendor: 'Ethiopian Geological Survey', invoiceNumber: 'EGS-2026-0012', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c1', name: 'Dam Construction & Civil Works' } },
-    { id: 'de-20', description: 'Contingency draw — unexpected rock formation removal', amount: 3500000, currency: 'ETB', status: 'APPROVED', type: 'ACTUAL', transactionDate: '2026-02-01', vendor: 'Sur Construction', invoiceNumber: 'SUR-CTG-001', budget: { id: 'water-dam-budget', project: { name: PROJECT_NAME } }, category: { id: 'c8', name: 'Contingency & Risk Reserve' } },
-  ];
 
   // Compute aggregates — use only real API data (no demo fallback to prevent cross-org data leaks)
   const apiBudgets: BudgetWithStats[] = budgetsData?.budgets || [];
@@ -362,7 +294,7 @@ export default function BudgetPage() {
     });
     categories = Array.from(categoryMap.values());
   } else {
-    categories = DEMO_CATEGORIES;
+    categories = [];
   }
 
   const maxCategorySpent = Math.max(...categories.map(c => c.spent), 1);
@@ -440,25 +372,24 @@ export default function BudgetPage() {
         showSearch
       />
 
-      {/* Project Header Banner */}
-      <div className="relative bg-gradient-to-r from-[#1C8C7D] via-[#18947F] to-[#16A085] px-4 md:px-6 py-3 md:py-4 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
-        <div className="relative flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-base md:text-lg font-bold text-white truncate">{PROJECT_NAME}</h2>
-            <p className="text-xs md:text-sm text-white/80 mt-0.5 line-clamp-1">Ministry of Water & Irrigation</p>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-              {['GoE Treasury', 'World Bank (IDA)', 'AfDB'].map((funder) => (
-                <span key={funder} className="text-[11px] md:text-xs text-white/90 bg-white/10 px-2 py-0.5 rounded-full">{funder}</span>
-              ))}
+      {/* Project Header Banner — only show when real budget data exists */}
+      {hasBudgets && budgets[0]?.project && (
+        <div className="relative bg-gradient-to-r from-[#1C8C7D] via-[#18947F] to-[#16A085] px-4 md:px-6 py-3 md:py-4 overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base md:text-lg font-bold text-white truncate">{budgets[0].project.name}</h2>
+              {budgets.length > 1 && (
+                <p className="text-xs md:text-sm text-white/80 mt-0.5 line-clamp-1">and {budgets.length - 1} other {budgets.length - 1 === 1 ? 'budget' : 'budgets'}</p>
+              )}
+            </div>
+            <div className="text-right flex-shrink-0">
+              <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">{overallUtilization.toFixed(1)}%</div>
+              <div className="text-[11px] md:text-xs text-white/70">utilized</div>
             </div>
           </div>
-          <div className="text-right flex-shrink-0">
-            <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">{overallUtilization.toFixed(1)}%</div>
-            <div className="text-[11px] md:text-xs text-white/70">utilized</div>
-          </div>
         </div>
-      </div>
+      )}
 
       {/* Stats Cards — scrollable row on mobile, grid on desktop */}
       <div className="bg-white dark:bg-[#1B1F23] border-b border-slate-200 dark:border-slate-700 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
@@ -668,19 +599,24 @@ export default function BudgetPage() {
                           <div>
                             <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Executive Summary</h4>
                             <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                              The <span className="font-semibold">{PROJECT_NAME}</span> has utilized{' '}
+                              {budgets.length === 1 ? (
+                                <>The <span className="font-semibold">{budgets[0]?.project?.name || 'project'}</span> has</>
+                              ) : (
+                                <>Your organization&apos;s {budgets.length} budgets have</>
+                              )} utilized{' '}
                               <span className="font-semibold text-[#1C8C7D]">ETB {formatCompact(totalSpent)} ({overallUtilization.toFixed(1)}%)</span> of the{' '}
-                              <span className="font-semibold">ETB 250M</span> total funding.
-                              Phase 1 (Site Preparation) is complete. Phase 2 (Dam Core Construction) is 62% complete and on track.
-                              Phase 3 (Spillway & Outlet Works) has begun at 28% — early mobilization is ahead of schedule.
+                              <span className="font-semibold">ETB {formatCompact(totalBudget)}</span> total allocation.
                               {categoriesAtRisk > 0 && (
                                 <span className="text-orange-600 dark:text-orange-400 font-semibold">
-                                  {' '}However, {categoriesAtRisk} budget {categoriesAtRisk === 1 ? 'category has' : 'categories have'} exceeded 80% utilization and require immediate review before Phase 4 begins.
+                                  {' '}{categoriesAtRisk} budget {categoriesAtRisk === 1 ? 'category has' : 'categories have'} exceeded 80% utilization and require review.
                                 </span>
                               )}
-                              {' '}At the current burn rate (ETB {formatCompact(totalSpent / 8.5)}/month), the remaining{' '}
-                              <span className="font-semibold">ETB {formatCompact(totalBudget - totalSpent)}</span> covers approximately{' '}
-                              <span className="font-semibold">{Math.ceil((totalBudget - totalSpent) / (totalSpent / 8.5))} months</span> — aligned with the July 2027 completion target.
+                              {totalSpent > 0 && (
+                                <>
+                                  {' '}Remaining budget:{' '}
+                                  <span className="font-semibold">ETB {formatCompact(totalBudget - totalSpent)}</span>.
+                                </>
+                              )}
                             </p>
                           </div>
                         </div>
@@ -746,96 +682,35 @@ export default function BudgetPage() {
                           {categoriesAtRisk > 0 && (
                             <li className="flex items-start gap-2">
                               <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                              <span><span className="font-medium">Reallocation Needed:</span> {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')} — consider transferring ETB 3-5M from Contingency Reserve before Phase 4 procurement.</span>
+                              <span><span className="font-medium">Reallocation Needed:</span> {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')} — consider reallocating funds from under-utilized categories.</span>
                             </li>
                           )}
-                          <li className="flex items-start gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span><span className="font-medium">Procurement Window:</span> Phase 4 (Irrigation Canal Network) starts July 2026. Initiate tender for canal lining materials by April 2026 to avoid rainy-season delays.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Clock className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                            <span><span className="font-medium">World Bank Disbursement:</span> Next IDA tranche (ETB 18.6M) expected May 2026. Current cash flow supports operations through June without interruption.</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <Eye className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                            <span><span className="font-medium">Audit Readiness:</span> Q1 2026 expenditures are fully documented. 4 pending expenses (ETB {formatCompact(pendingExpenses.reduce((s: number, e: any) => s + Number(e.amount), 0))}) need approval before the April donor reporting deadline.</span>
-                          </li>
+                          {pendingExpenses.length > 0 && (
+                            <li className="flex items-start gap-2">
+                              <Clock className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">Pending Approvals:</span> {pendingExpenses.length} expense{pendingExpenses.length === 1 ? '' : 's'} (ETB {formatCompact(pendingExpenses.reduce((s: number, e: any) => s + Number(e.amount), 0))}) awaiting approval.</span>
+                            </li>
+                          )}
+                          {overallUtilization < 50 && totalBudget > 0 && (
+                            <li className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span><span className="font-medium">Budget Health:</span> Utilization is at {overallUtilization.toFixed(1)}%. Budget allocation is within healthy limits.</span>
+                            </li>
+                          )}
                         </ul>
                       </div>
 
                       {/* Report Footer */}
                       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
                         <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                        <span>Ministry of Water & Irrigation — Ethiopia</span>
+                        <span>Budget Analysis</span>
                       </div>
                     </div>
                   </>
                 )}
             </div>
 
-            {/* Project Timeline vs Budget */}
-            {hasBudgets && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-slate-700/60">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="h-8 w-8 rounded-lg bg-[#1C8C7D]/10 flex items-center justify-center">
-                    <Clock className="h-4 w-4 text-[#1C8C7D]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Project Timeline vs Budget</h3>
-                </div>
-                  <div className="space-y-4">
-                    {PROJECT_PHASES.map((phase) => {
-                      const phaseStart = new Date(phase.start);
-                      const phaseEnd = new Date(phase.end);
-                      const now = new Date();
-                      const totalDays = Math.ceil((phaseEnd.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
-                      const elapsed = Math.max(0, Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24)));
-                      const timeProgress = Math.min(100, (elapsed / totalDays) * 100);
-
-                      return (
-                        <div key={phase.name} className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D] transition-all">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{phase.name}</h4>
-                            <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
-                              phase.status === 'COMPLETED' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                              phase.status === 'IN_PROGRESS' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
-                              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                            }`}>
-                              {phase.status === 'COMPLETED' ? 'Completed' : phase.status === 'IN_PROGRESS' ? `${phase.progress}% Complete` : 'Planned'}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
-                            <span>{phaseStart.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} — {phaseEnd.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
-                            {phase.status === 'IN_PROGRESS' && (
-                              <span>Time elapsed: {timeProgress.toFixed(0)}%</span>
-                            )}
-                          </div>
-                          {/* Progress bar — physical progress */}
-                          <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all"
-                              style={{
-                                width: `${phase.progress}%`,
-                                backgroundColor: phase.status === 'COMPLETED' ? '#00875A' : phase.status === 'IN_PROGRESS' ? '#1C8C7D' : '#94a3b8',
-                              }}
-                            />
-                          </div>
-                          {phase.status === 'IN_PROGRESS' && phase.progress > 0 && timeProgress > 0 && (
-                            <div className="mt-2 flex items-center gap-1.5 text-xs">
-                              <Sparkles className="h-3 w-3 text-[#1C8C7D]" />
-                              <span className={`font-medium ${
-                                phase.progress >= timeProgress ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'
-                              }`}>
-                                {phase.progress >= timeProgress ? 'Ahead of schedule' : 'Behind schedule'} — {phase.progress}% done at {timeProgress.toFixed(0)}% timeline
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-              </div>
-            )}
+            {/* Project Timeline vs Budget — will render when real phase data is available from API */}
           </div>
 
           {/* Right Column */}
