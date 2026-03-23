@@ -255,6 +255,7 @@ export default function BudgetPage() {
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
 
+
   // Compute aggregates — use only real API data (no demo fallback to prevent cross-org data leaks)
   const apiBudgets: BudgetWithStats[] = budgetsData?.budgets || [];
   const apiExpenses = expensesData?.expenses || [];

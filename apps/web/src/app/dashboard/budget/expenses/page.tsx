@@ -162,6 +162,8 @@ export default function BudgetExpensesPage() {
     });
   }, [extractedData, selectedBudgetId, createExpenseMutation]);
 
+
+
   // Use only real API data — no demo fallback to prevent cross-org data leaks
   const apiExpenses: Expense[] = expensesData?.expenses || [];
   const apiBudgets = budgetsData?.budgets || [];
