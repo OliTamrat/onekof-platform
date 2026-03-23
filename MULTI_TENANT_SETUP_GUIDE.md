@@ -2,7 +2,7 @@
 
 ## Overview
 
-Onekof uses a **Jira-style multi-tenant architecture** where each organization has its own subdomain and completely isolated data.
+Onekof uses a **subdomain-based multi-tenant architecture** where each organization has its own subdomain and completely isolated data.
 
 ### Architecture Components
 
@@ -249,6 +249,6 @@ You now have a fully functional multi-tenant SaaS platform where:
 ✅ Data is completely isolated per organization
 ✅ Users can belong to multiple organizations
 ✅ Authentication works across subdomains
-✅ Jira-style architecture is implemented
+✅ Multi-tenant architecture is implemented
 
 **Next:** Configure Vercel wildcard domains to enable subdomain access in production!
