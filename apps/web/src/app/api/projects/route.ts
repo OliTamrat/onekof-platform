@@ -157,8 +157,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       name, description, key, color, icon,
-      template, projectType, priority, leadId, defaultAssignee,
+      template, projectType, priority, leadId, ownerId, defaultAssignee,
       startDate, dueDate, teamIds,
+      // Enterprise fields
+      department, category, entityType, visibility, riskLevel,
+      budgetCode, tags,
     } = body;
 
     // Validate required fields
@@ -192,6 +195,7 @@ export async function POST(request: NextRequest) {
         description,
         key: key.toUpperCase(),
         organizationId: organization.id,
+        ownerId: ownerId || null,
         leadId: leadId || user.id,
         defaultAssignee: defaultAssignee || null,
         status: 'ACTIVE',
@@ -202,6 +206,14 @@ export async function POST(request: NextRequest) {
         icon: icon || '📁',
         startDate: startDate ? new Date(startDate) : null,
         dueDate: dueDate ? new Date(dueDate) : null,
+        // Enterprise fields
+        department: department || null,
+        category: category || null,
+        entityType: entityType || 'INTERNAL',
+        visibility: visibility || 'INTERNAL',
+        riskLevel: riskLevel || 'NOT_ASSESSED',
+        budgetCode: budgetCode || null,
+        tags: Array.isArray(tags) ? tags : [],
         createdBy: user.id,
       },
       include: {
