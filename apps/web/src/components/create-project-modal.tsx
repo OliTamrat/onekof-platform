@@ -8,16 +8,13 @@ import {
   SlideoutPanelContent,
 } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { DateRangePicker } from '@/components/ui/date-picker';
 import { PROJECT_TYPE_CONFIGS } from '@/config/project-types';
 import {
   FolderKanban, Check, ChevronRight, ChevronLeft,
   AlertTriangle, Shield, Building2, Users, Calendar,
-  Palette, Settings2, Eye,
+  Palette, Eye, Loader2,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -100,6 +97,21 @@ const STEPS = [
   { id: 5, title: 'Appearance', icon: Palette, description: 'Workflow & branding' },
   { id: 6, title: 'Review', icon: Eye, description: 'Confirm & create' },
 ] as const;
+
+// ---------------------------------------------------------------------------
+// Shared styles — matches SlideoutPanel design system used across the app
+// ---------------------------------------------------------------------------
+
+const inputClass = 'w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-colors';
+const labelClass = 'mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300';
+const helpClass = 'mt-1 text-xs text-slate-400 dark:text-slate-500';
+
+const cardClass = (active: boolean) =>
+  `flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
+    active
+      ? 'border-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
+      : 'border-slate-200 dark:border-slate-700 hover:border-primary-500/50 bg-white dark:bg-[#1B1F23]'
+  }`;
 
 // ---------------------------------------------------------------------------
 // Component
@@ -238,16 +250,6 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     }
   };
 
-  // Shared styles
-  const selectClass = 'flex h-10 w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-colors';
-  const inputOverride = 'bg-white dark:bg-[#1B1F23] border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-primary-500';
-  const cardClass = (active: boolean) =>
-    `flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
-      active
-        ? 'border-primary-500 bg-primary-500/5 dark:bg-primary-500/10'
-        : 'border-slate-200 dark:border-slate-700 hover:border-primary-500/50 bg-white dark:bg-[#1B1F23]'
-    }`;
-
   // Helper to get member name
   const getMemberName = (id: string) => {
     const m = orgMembers.find(m => m.userId === id);
@@ -264,46 +266,45 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   // -------------------------------------------------------------------------
 
   const renderStep1 = () => (
-    <div className="space-y-5">
-      <div className="space-y-1.5">
-        <Label htmlFor="name">
+    <div className="space-y-4">
+      <div>
+        <label className={labelClass}>
           Project Name <span className="text-red-500">*</span>
-        </Label>
-        <Input
-          id="name"
+        </label>
+        <input
+          type="text"
           placeholder="e.g., Website Redesign, Mobile App, Q1 Marketing Campaign"
           value={formData.name}
           onChange={(e) => handleNameChange(e.target.value)}
           required
           autoFocus
-          className={inputOverride}
+          className={inputClass}
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="key">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>
             Project Key <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="key"
+          </label>
+          <input
+            type="text"
             placeholder="MAP"
             value={formData.key}
             onChange={(e) => update('key', e.target.value.toUpperCase())}
             maxLength={10}
             required
-            className={inputOverride}
+            className={inputClass}
           />
-          <p className="text-[11px] text-slate-400">Used in issue keys (e.g., {formData.key || 'MAP'}-1)</p>
+          <p className={helpClass}>Used in issue keys (e.g., {formData.key || 'MAP'}-1)</p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="project-type">Project Type</Label>
+        <div>
+          <label className={labelClass}>Project Type</label>
           <select
-            id="project-type"
             value={formData.projectType}
             onChange={(e) => update('projectType', e.target.value)}
-            className={selectClass}
+            className={inputClass}
           >
             {Object.entries(PROJECT_TYPE_CONFIGS).map(([key, config]) => (
               <option key={key} value={key}>{config.name}</option>
@@ -312,21 +313,20 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
+      <div>
+        <label className={labelClass}>Description</label>
+        <textarea
           placeholder="Describe goals, objectives, and key deliverables..."
           value={formData.description}
           onChange={(e) => update('description', e.target.value)}
           rows={4}
-          className={inputOverride}
+          className={inputClass}
         />
       </div>
 
       {/* Type feature preview */}
       {formData.projectType && PROJECT_TYPE_CONFIGS[formData.projectType] && (
-        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#1B1F23] p-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B] p-3">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
             Default views for {PROJECT_TYPE_CONFIGS[formData.projectType].name}
           </p>
@@ -343,36 +343,36 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   );
 
   const renderStep2 = () => (
-    <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="department">Department</Label>
-          <Input
-            id="department"
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Department</label>
+          <input
+            type="text"
             placeholder="e.g., Engineering, Finance, HR"
             value={formData.department}
             onChange={(e) => update('department', e.target.value)}
-            className={inputOverride}
+            className={inputClass}
           />
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="category">Category / Program</Label>
-          <Input
-            id="category"
+        <div>
+          <label className={labelClass}>Category / Program</label>
+          <input
+            type="text"
             placeholder="e.g., Digital Transformation, R&D"
             value={formData.category}
             onChange={(e) => update('category', e.target.value)}
-            className={inputOverride}
+            className={inputClass}
           />
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="entity-type">
+      <div>
+        <label className={labelClass}>
           <span className="flex items-center gap-1.5">
             <Building2 className="h-3.5 w-3.5" /> Entity Type
           </span>
-        </Label>
+        </label>
         <div className="grid grid-cols-2 gap-2">
           {([
             { value: 'INTERNAL', label: 'Internal', desc: 'Within your organization' },
@@ -391,25 +391,24 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               />
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{entity.label}</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">{entity.desc}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{entity.desc}</p>
               </div>
             </label>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="visibility">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>
             <span className="flex items-center gap-1.5">
               <Shield className="h-3.5 w-3.5" /> Visibility
             </span>
-          </Label>
+          </label>
           <select
-            id="visibility"
             value={formData.visibility}
             onChange={(e) => update('visibility', e.target.value)}
-            className={selectClass}
+            className={inputClass}
           >
             <option value="PUBLIC">Public - All org members</option>
             <option value="INTERNAL">Internal - Project members & admins</option>
@@ -418,17 +417,16 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
           </select>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="risk-level">
+        <div>
+          <label className={labelClass}>
             <span className="flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5" /> Risk Level
             </span>
-          </Label>
+          </label>
           <select
-            id="risk-level"
             value={formData.riskLevel}
             onChange={(e) => update('riskLevel', e.target.value)}
-            className={selectClass}
+            className={inputClass}
           >
             <option value="NOT_ASSESSED">Not Assessed</option>
             <option value="LOW">Low</option>
@@ -439,48 +437,43 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="budget-code">
-            <span className="flex items-center gap-1.5">
-              <Settings2 className="h-3.5 w-3.5" /> Budget Code
-            </span>
-          </Label>
-          <Input
-            id="budget-code"
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Budget Code</label>
+          <input
+            type="text"
             placeholder="e.g., FY26-ENG-001"
             value={formData.budgetCode}
             onChange={(e) => update('budgetCode', e.target.value)}
-            className={inputOverride}
+            className={inputClass}
           />
-          <p className="text-[11px] text-slate-400">Financial tracking code for this project</p>
+          <p className={helpClass}>Financial tracking code for this project</p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="tags">Tags</Label>
-          <Input
-            id="tags"
+        <div>
+          <label className={labelClass}>Tags</label>
+          <input
+            type="text"
             placeholder="e.g., urgent, q1-2026, client-acme"
             value={formData.tags}
             onChange={(e) => update('tags', e.target.value)}
-            className={inputOverride}
+            className={inputClass}
           />
-          <p className="text-[11px] text-slate-400">Comma-separated labels</p>
+          <p className={helpClass}>Comma-separated labels</p>
         </div>
       </div>
     </div>
   );
 
   const renderStep3 = () => (
-    <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="owner">Project Owner</Label>
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Project Owner</label>
           <select
-            id="owner"
             value={formData.ownerId}
             onChange={(e) => update('ownerId', e.target.value)}
-            className={selectClass}
+            className={inputClass}
           >
             <option value="">Same as creator</option>
             {orgMembers.map((member) => (
@@ -490,16 +483,15 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               </option>
             ))}
           </select>
-          <p className="text-[11px] text-slate-400">Executive sponsor or budget holder</p>
+          <p className={helpClass}>Executive sponsor or budget holder</p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="lead">Project Lead</Label>
+        <div>
+          <label className={labelClass}>Project Lead</label>
           <select
-            id="lead"
             value={formData.leadId}
             onChange={(e) => update('leadId', e.target.value)}
-            className={selectClass}
+            className={inputClass}
           >
             <option value="">Unassigned</option>
             {orgMembers.map((member) => (
@@ -508,17 +500,16 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               </option>
             ))}
           </select>
-          <p className="text-[11px] text-slate-400">Day-to-day project manager</p>
+          <p className={helpClass}>Day-to-day project manager</p>
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="default-assignee">Default Assignee</Label>
+      <div>
+        <label className={labelClass}>Default Assignee</label>
         <select
-          id="default-assignee"
           value={formData.defaultAssignee}
           onChange={(e) => update('defaultAssignee', e.target.value)}
-          className={selectClass}
+          className={inputClass}
         >
           <option value="">Unassigned</option>
           <option value="PROJECT_LEAD">Project Lead</option>
@@ -528,56 +519,54 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             </option>
           ))}
         </select>
-        <p className="text-[11px] text-slate-400">New issues are automatically assigned to this person</p>
+        <p className={helpClass}>New issues are automatically assigned to this person</p>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="teams">Teams</Label>
-        <div className="space-y-2">
-          {orgTeams.length === 0 ? (
-            <p className="text-sm text-slate-400 dark:text-slate-500 py-2">No teams available</p>
-          ) : (
-            <div className="max-h-[200px] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
-              {orgTeams.map((team) => {
-                const isSelected = formData.teamIds.includes(team.id);
-                return (
-                  <label
-                    key={team.id}
-                    className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer transition-colors ${
-                      isSelected
-                        ? 'bg-primary-500/5 dark:bg-primary-500/10'
-                        : 'hover:bg-slate-50 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {
-                        const next = isSelected
-                          ? formData.teamIds.filter(id => id !== team.id)
-                          : [...formData.teamIds, team.id];
-                        update('teamIds', next);
-                      }}
-                      className="h-4 w-4 rounded text-primary-500 focus:ring-primary-500 border-slate-300 dark:border-slate-600"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{team.name}</p>
-                      <p className="text-[11px] text-slate-400">{team.memberCount} member{team.memberCount !== 1 ? 's' : ''}</p>
-                    </div>
-                  </label>
-                );
-              })}
-            </div>
-          )}
-        </div>
+      <div>
+        <label className={labelClass}>Teams</label>
+        {orgTeams.length === 0 ? (
+          <p className="text-sm text-slate-400 dark:text-slate-500 py-2">No teams available</p>
+        ) : (
+          <div className="max-h-[200px] overflow-y-auto rounded-md border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
+            {orgTeams.map((team) => {
+              const isSelected = formData.teamIds.includes(team.id);
+              return (
+                <label
+                  key={team.id}
+                  className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer transition-colors ${
+                    isSelected
+                      ? 'bg-primary-500/5 dark:bg-primary-500/10'
+                      : 'hover:bg-slate-50 dark:hover:bg-[#22272B]'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => {
+                      const next = isSelected
+                        ? formData.teamIds.filter(id => id !== team.id)
+                        : [...formData.teamIds, team.id];
+                      update('teamIds', next);
+                    }}
+                    className="h-4 w-4 rounded text-primary-500 focus:ring-primary-500 border-slate-300 dark:border-slate-600"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{team.name}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{team.memberCount} member{team.memberCount !== 1 ? 's' : ''}</p>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
 
   const renderStep4 = () => (
-    <div className="space-y-5">
-      <div className="space-y-1.5">
-        <Label>Priority</Label>
+    <div className="space-y-4">
+      <div>
+        <label className={labelClass}>Priority</label>
         <div className="grid grid-cols-5 gap-2">
           {([
             { value: 'CRITICAL', label: 'Critical', color: 'bg-red-500' },
@@ -603,8 +592,8 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label>Project Timeline</Label>
+      <div>
+        <label className={labelClass}>Project Timeline</label>
         <DateRangePicker
           startDate={formData.startDate}
           endDate={formData.dueDate}
@@ -616,7 +605,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       </div>
 
       {formData.startDate && formData.dueDate && (
-        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#1B1F23] p-3">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#22272B] p-3">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
             Duration: {Math.ceil((new Date(formData.dueDate).getTime() - new Date(formData.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
           </p>
@@ -626,9 +615,9 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   );
 
   const renderStep5 = () => (
-    <div className="space-y-5">
-      <div className="space-y-1.5">
-        <Label>Workflow Template</Label>
+    <div className="space-y-4">
+      <div>
+        <label className={labelClass}>Workflow Template</label>
         <div className="space-y-2">
           {[
             { value: 'KANBAN', name: 'Kanban', desc: 'Continuous flow: To Do, In Progress, Done' },
@@ -653,8 +642,8 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
           <IconPicker
             value={formData.icon}
             onChange={(icon) => update('icon', icon)}
@@ -662,22 +651,21 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
           />
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="color">Color</Label>
+        <div>
+          <label className={labelClass}>Color</label>
           <div className="flex gap-2">
-            <Input
-              id="color"
+            <input
               type="color"
               value={formData.color}
               onChange={(e) => update('color', e.target.value)}
-              className="w-10 h-10 p-1 cursor-pointer border-slate-200 dark:border-slate-700"
+              className="w-10 h-10 p-1 cursor-pointer rounded-md border border-slate-200 dark:border-slate-700"
             />
-            <Input
+            <input
               type="text"
               value={formData.color}
               onChange={(e) => update('color', e.target.value)}
               placeholder="#1C8C7D"
-              className={inputOverride + ' flex-1'}
+              className={inputClass + ' flex-1'}
             />
           </div>
         </div>
@@ -736,7 +724,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     ];
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="rounded-lg border border-primary-200 dark:border-primary-500/30 bg-primary-50 dark:bg-primary-500/5 p-3">
           <p className="text-sm text-primary-700 dark:text-primary-400">
             Review your project configuration below. Click <strong>Create Project</strong> to finalize.
@@ -745,7 +733,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
 
         {reviewSections.map((section) => (
           <div key={section.title} className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <div className="bg-slate-50 dark:bg-[#1B1F23] px-3 py-2 border-b border-slate-200 dark:border-slate-700">
+            <div className="bg-slate-50 dark:bg-[#22272B] px-3 py-2 border-b border-slate-200 dark:border-slate-700">
               <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">{section.title}</p>
             </div>
             <div className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -774,7 +762,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   };
 
   // -------------------------------------------------------------------------
-  // Layout
+  // Layout — SlideoutPanel matching app-wide design system
   // -------------------------------------------------------------------------
 
   return (
@@ -823,6 +811,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                 disabled={isSubmitting}
                 className="bg-primary-500 hover:bg-primary-600 text-white gap-1.5"
               >
+                {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {isSubmitting ? 'Creating...' : 'Create Project'}
               </Button>
             )}
@@ -835,7 +824,6 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         <nav className="mb-6">
           <ol className="flex items-center gap-1">
             {STEPS.map((step, idx) => {
-              const StepIcon = step.icon;
               const isActive = currentStep === step.id;
               const isComplete = currentStep > step.id;
 
@@ -844,7 +832,6 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                   <button
                     type="button"
                     onClick={() => {
-                      // Allow clicking back to completed steps
                       if (isComplete) {
                         setError('');
                         setCurrentStep(step.id);
@@ -855,7 +842,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                       isActive
                         ? 'bg-primary-500/10 dark:bg-primary-500/15'
                         : isComplete
-                          ? 'hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer'
+                          ? 'hover:bg-slate-100 dark:hover:bg-[#22272B] cursor-pointer'
                           : 'opacity-50 cursor-default'
                     }`}
                   >
