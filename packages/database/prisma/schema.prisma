@@ -340,17 +340,36 @@ model Project {
   icon        String? // Emoji or icon identifier
   color       String? // Hex color
 
-  // Settings
-  defaultAssignee String? @map("default_assignee")
-  leadId          String? @map("lead_id")
+  // Ownership & Assignment
+  ownerId         String? @map("owner_id") // Project owner (may differ from lead)
+  leadId          String? @map("lead_id") // Day-to-day project lead
+  defaultAssignee String? @map("default_assignee") // Auto-assign new issues
+
+  // Organizational context
+  department String? // Department or division (e.g., "Engineering", "Finance")
+  category   String? // Business category or program area
+
+  // Entity & compliance
+  entityType   ProjectEntityType @default(INTERNAL)
+  visibility   ProjectVisibility @default(INTERNAL)
+  riskLevel    ProjectRiskLevel  @default(NOT_ASSESSED) @map("risk_level")
+  budgetCode   String?           @map("budget_code") // Financial tracking code
+  tags         Json              @default("[]") // Flexible tagging ["urgent", "q1-2026"]
+
+  // Timeline
+  startDate DateTime? @map("start_date")
+  dueDate   DateTime? @map("due_date")
+
+  // Priority
+  priority ProjectPriority @default(MEDIUM)
 
   // Project type and status
-  type       ProjectType     @default(BUSINESS) // Type of project (Software, Marketing, etc.)
+  type       ProjectType     @default(BUSINESS)
   template   ProjectTemplate @default(KANBAN)
   status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
   isArchived Boolean         @default(false) @map("is_archived")
   isFavorite Boolean         @default(false) @map("is_favorite")
-  settings   Json            @default("{}") // Color, icon, etc.
+  settings   Json            @default("{}") // Extended metadata
 
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
@@ -372,6 +391,11 @@ model Project {
   @@index([organizationId, type, status]) // Projects by type
   @@index([leadId, deletedAt]) // Projects I lead
   @@index([updatedAt, deletedAt]) // Recently updated
+  @@index([organizationId, priority, status]) // Projects by priority
+  @@index([organizationId, dueDate]) // Projects by due date
+  @@index([organizationId, department, status]) // Projects by department
+  @@index([organizationId, entityType, status]) // Projects by entity type
+  @@index([organizationId, riskLevel]) // Projects by risk level
   @@map("projects")
   @@schema("public")
 }
@@ -533,6 +557,44 @@ enum ProjectRole {
   ADMIN
   MEMBER
   VIEWER
+
+  @@schema("public")
+}
+
+enum ProjectPriority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  NONE
+
+  @@schema("public")
+}
+
+enum ProjectEntityType {
+  INTERNAL      // Internal organizational project
+  EXTERNAL      // External client or vendor project
+  JOINT_VENTURE // Joint venture with partner organization
+  GOVERNMENT    // Government-contracted project
+
+  @@schema("public")
+}
+
+enum ProjectVisibility {
+  PUBLIC    // Visible to all org members
+  INTERNAL  // Visible to project members and admins
+  PRIVATE   // Visible only to explicit project members
+  CONFIDENTIAL // Restricted access with audit logging
+
+  @@schema("public")
+}
+
+enum ProjectRiskLevel {
+  NOT_ASSESSED
+  LOW
+  MODERATE
+  HIGH
+  CRITICAL
 
   @@schema("public")
 }

@@ -24,6 +24,8 @@ export interface Project {
   icon?: string | null;
   color?: string | null;
   template: 'KANBAN' | 'SCRUM' | 'CUSTOM';
+  type?: string;
+  priority?: string;
   isArchived: boolean;
   isFavorite: boolean;
   organizationId: string;
@@ -31,7 +33,24 @@ export interface Project {
   updatedAt: string;
   taskCount?: number;
   status?: string;
+  // Ownership
+  ownerId?: string | null;
+  leadId?: string | null;
   lead?: { name?: string; email?: string } | null;
+  defaultAssignee?: string | null;
+  // Organization
+  department?: string | null;
+  category?: string | null;
+  entityType?: string | null;
+  visibility?: string | null;
+  riskLevel?: string | null;
+  budgetCode?: string | null;
+  tags?: string[];
+  // Timeline
+  startDate?: string | null;
+  dueDate?: string | null;
+  // Metadata
+  settings?: Record<string, unknown>;
   _count?: { members?: number; tasks?: number };
 }
 
