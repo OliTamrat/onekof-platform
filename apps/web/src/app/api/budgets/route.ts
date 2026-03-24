@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       createdAt: 'desc' as const,
     };
 
-    const transformBudget = (budget: any, userMap: Map<string, { name: string | null; email: string }>) => {
+    const transformBudget = (budget: any) => {
       const totalSpent = budget.categories.reduce((sum: number, category: any) => {
         const categorySpent = category.expenses.reduce(
           (expSum: number, exp: any) => expSum + Number(exp.amount),
@@ -69,32 +69,12 @@ export async function GET(request: NextRequest) {
         0
       );
 
-      const creator = budget.createdBy ? userMap.get(budget.createdBy) : null;
-      const approver = budget.approvedBy ? userMap.get(budget.approvedBy) : null;
-
       return {
         ...budget,
         totalSpent,
         totalAllocated,
         utilization: totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0,
-        creatorName: creator?.name || creator?.email || null,
-        approverName: approver?.name || approver?.email || null,
       };
-    };
-
-    // Helper to resolve user IDs to names
-    const resolveUsers = async (budgets: any[]) => {
-      const userIds = new Set<string>();
-      for (const b of budgets) {
-        if (b.createdBy) userIds.add(b.createdBy);
-        if (b.approvedBy) userIds.add(b.approvedBy);
-      }
-      if (userIds.size === 0) return new Map();
-      const users = await prisma.user.findMany({
-        where: { id: { in: Array.from(userIds) } },
-        select: { id: true, name: true, email: true },
-      });
-      return new Map(users.map(u => [u.id, { name: u.name, email: u.email }]));
     };
 
     const url = request.nextUrl;
@@ -114,8 +94,7 @@ export async function GET(request: NextRequest) {
         prisma.budget.count({ where }),
       ]);
 
-      const userMap = await resolveUsers(budgets);
-      const budgetsWithStats = budgets.map(b => transformBudget(b, userMap));
+      const budgetsWithStats = budgets.map(transformBudget);
       return NextResponse.json(buildPaginatedResponse(budgetsWithStats, total, { page, limit, skip }));
     }
 
@@ -125,8 +104,7 @@ export async function GET(request: NextRequest) {
       orderBy: orderByClause,
     });
 
-    const userMap = await resolveUsers(budgets);
-    const budgetsWithStats = budgets.map(b => transformBudget(b, userMap));
+    const budgetsWithStats = budgets.map(transformBudget);
 
     return NextResponse.json({
       budgets: budgetsWithStats,

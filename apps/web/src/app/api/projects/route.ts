@@ -75,14 +75,7 @@ export async function GET(request: NextRequest) {
         type: project.type || 'BUSINESS',
         color: project.color || '#3B82F6',
         icon: project.icon || '📁',
-        leadId: project.leadId,
         lead: project.leadId ? project.members.find((m: any) => m.userId === project.leadId)?.user : null,
-        defaultAssignee: project.defaultAssignee,
-        priority: project.priority,
-        template: project.template,
-        startDate: project.startDate,
-        dueDate: project.dueDate,
-        settings: project.settings,
         memberCount: project.members.length,
         taskStats: {
           total: totalTasks,
@@ -155,14 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const {
-      name, description, key, color, icon,
-      template, projectType, priority, leadId, ownerId, defaultAssignee,
-      startDate, dueDate, teamIds,
-      // Enterprise fields
-      department, category, entityType, visibility, riskLevel,
-      budgetCode, tags,
-    } = body;
+    const { name, description, key, color, icon } = body;
 
     // Validate required fields
     if (!name || !key) {
@@ -195,27 +181,12 @@ export async function POST(request: NextRequest) {
         description,
         key: key.toUpperCase(),
         organizationId: organization.id,
-        ownerId: ownerId || null,
-        leadId: leadId || user.id,
-        defaultAssignee: defaultAssignee || null,
+        leadId: user.id,
         status: 'ACTIVE',
-        type: projectType || 'BUSINESS',
-        priority: priority || 'MEDIUM',
-        template: template || 'KANBAN',
-        color: color || '#3B82F6',
-        icon: icon || '📁',
-        startDate: startDate ? new Date(startDate) : null,
-        dueDate: dueDate ? new Date(dueDate) : null,
-        // Enterprise fields
-        department: department || null,
-        category: category || null,
-        entityType: entityType || 'INTERNAL',
-        visibility: visibility || 'INTERNAL',
-        riskLevel: riskLevel || 'NOT_ASSESSED',
-        budgetCode: budgetCode || null,
-        tags: Array.isArray(tags) ? tags : [],
-        createdBy: user.id,
-      },
+        color: color || '#3B82F6', // ✅ Use proper column
+        icon: icon || '📁', // ✅ Use proper column
+        settings: {}, // Keep for other settings
+      } as any,
       include: {
         members: {
           include: {
@@ -238,30 +209,12 @@ export async function POST(request: NextRequest) {
         projectId: project.id,
         userId: user.id,
         role: 'ADMIN',
-        addedBy: user.id,
-      },
+      } as any,
     });
-
-    // Link teams to project if provided
-    if (teamIds && Array.isArray(teamIds) && teamIds.length > 0) {
-      await prisma.projectTeam.createMany({
-        data: teamIds.map((teamId: string) => ({
-          projectId: project.id,
-          teamId,
-          addedBy: user.id,
-        })),
-        skipDuplicates: true,
-      });
-    }
 
     return NextResponse.json({
       project: {
         ...project,
-        type: project.type,
-        priority: project.priority,
-        startDate: project.startDate?.toISOString() || null,
-        dueDate: project.dueDate?.toISOString() || null,
-        settings: project.settings,
         taskStats: {
           total: 0,
           completed: 0,

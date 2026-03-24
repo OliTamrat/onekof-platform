@@ -68,21 +68,6 @@ export async function GET(
         icon: p.icon,
         color: p.color,
         template: p.template,
-        type: p.type,
-        priority: p.priority,
-        ownerId: p.ownerId,
-        leadId: p.leadId,
-        defaultAssignee: p.defaultAssignee,
-        department: p.department,
-        category: p.category,
-        entityType: p.entityType,
-        visibility: p.visibility,
-        riskLevel: p.riskLevel,
-        budgetCode: p.budgetCode,
-        tags: p.tags,
-        startDate: p.startDate?.toISOString() || null,
-        dueDate: p.dueDate?.toISOString() || null,
-        settings: p.settings,
         isArchived: p.isArchived,
         isFavorite: p.isFavorite,
         organizationId: p.organizationId,
@@ -142,15 +127,7 @@ export async function POST(
       );
     }
 
-    const body = await req.json();
-    const {
-      name, key, description, icon, color, template,
-      projectType, priority, leadId, ownerId, defaultAssignee,
-      startDate, dueDate, teamIds,
-      // Enterprise fields
-      department, category, entityType, visibility, riskLevel,
-      budgetCode, tags,
-    } = body;
+    const { name, key, description, icon, color, template } = await req.json();
 
     // Validation
     if (!name || !key) {
@@ -185,7 +162,7 @@ export async function POST(
       );
     }
 
-    // Create project with all fields
+    // Create project
     const project = await prisma.project.create({
       data: {
         organizationId,
@@ -195,21 +172,6 @@ export async function POST(
         icon,
         color,
         template: template || 'KANBAN',
-        type: projectType || 'BUSINESS',
-        priority: priority || 'MEDIUM',
-        ownerId: ownerId || null,
-        leadId: leadId || null,
-        defaultAssignee: defaultAssignee || null,
-        startDate: startDate ? new Date(startDate) : null,
-        dueDate: dueDate ? new Date(dueDate) : null,
-        // Enterprise fields
-        department: department || null,
-        category: category || null,
-        entityType: entityType || 'INTERNAL',
-        visibility: visibility || 'INTERNAL',
-        riskLevel: riskLevel || 'NOT_ASSESSED',
-        budgetCode: budgetCode || null,
-        tags: Array.isArray(tags) ? tags : [],
         createdBy: session.user.id,
       },
       include: {
@@ -222,28 +184,6 @@ export async function POST(
       },
     });
 
-    // Add creator as project member
-    await prisma.projectMember.create({
-      data: {
-        projectId: project.id,
-        userId: session.user.id,
-        role: 'ADMIN',
-        addedBy: session.user.id,
-      },
-    });
-
-    // Link teams to project if provided
-    if (teamIds && Array.isArray(teamIds) && teamIds.length > 0) {
-      await prisma.projectTeam.createMany({
-        data: teamIds.map((teamId: string) => ({
-          projectId: project.id,
-          teamId,
-          addedBy: session.user.id,
-        })),
-        skipDuplicates: true,
-      });
-    }
-
     return NextResponse.json(
       {
         project: {
@@ -254,21 +194,6 @@ export async function POST(
           icon: project.icon,
           color: project.color,
           template: project.template,
-          type: project.type,
-          priority: project.priority,
-          ownerId: project.ownerId,
-          leadId: project.leadId,
-          defaultAssignee: project.defaultAssignee,
-          department: project.department,
-          category: project.category,
-          entityType: project.entityType,
-          visibility: project.visibility,
-          riskLevel: project.riskLevel,
-          budgetCode: project.budgetCode,
-          tags: project.tags,
-          startDate: project.startDate?.toISOString() || null,
-          dueDate: project.dueDate?.toISOString() || null,
-          settings: project.settings,
           isArchived: project.isArchived,
           isFavorite: project.isFavorite,
           organizationId: project.organizationId,

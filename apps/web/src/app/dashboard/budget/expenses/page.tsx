@@ -27,7 +27,6 @@ import {
   Filter,
   RotateCcw,
   Plus,
-  ShieldCheck,
 } from 'lucide-react';
 import {
   SlideoutPanel,
@@ -59,10 +58,6 @@ export default function BudgetExpensesPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
-
-  // Approval state
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [showRejectForm, setShowRejectForm] = useState(false);
 
   // AI Upload state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -119,27 +114,6 @@ export default function BudgetExpensesPage() {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       setIsUploadModalOpen(false);
       resetUpload();
-    },
-  });
-
-  // Approve/Reject expense
-  const approvalMutation = useMutation({
-    mutationFn: async ({ expenseId, action, reason }: { expenseId: string; action: 'APPROVE' | 'REJECT'; reason?: string }) => {
-      const res = await fetch(`/api/expenses/${expenseId}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, rejectionReason: reason }),
-      });
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Failed'); }
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['expenses'] });
-      if (selectedExpense) {
-        setSelectedExpense({ ...selectedExpense, status: data.expense.status });
-      }
-      setShowRejectForm(false);
-      setRejectionReason('');
     },
   });
 
@@ -455,83 +429,6 @@ export default function BudgetExpensesPage() {
               )}
             </div>
           </SlideoutPanelSection>
-
-          {/* Approve / Reject Actions — only for PENDING expenses */}
-          {selectedExpense?.status === 'PENDING' && (
-            <SlideoutPanelSection title="Actions">
-              <div className="space-y-3">
-                {!showRejectForm ? (
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => selectedExpense && approvalMutation.mutate({ expenseId: selectedExpense.id, action: 'APPROVE' })}
-                      disabled={approvalMutation.isPending}
-                      className="flex-1 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-                    >
-                      {approvalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                      Approve
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowRejectForm(true)}
-                      className="flex-1 gap-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
-                    >
-                      <X className="h-4 w-4" />
-                      Reject
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <textarea
-                      value={rejectionReason}
-                      onChange={(e) => setRejectionReason(e.target.value)}
-                      placeholder="Reason for rejection (required)..."
-                      className="w-full p-3 text-sm border border-red-200 dark:border-red-800 rounded-lg bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                      rows={3}
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => selectedExpense && rejectionReason.trim() && approvalMutation.mutate({ expenseId: selectedExpense.id, action: 'REJECT', reason: rejectionReason })}
-                        disabled={approvalMutation.isPending || !rejectionReason.trim()}
-                        className="flex-1 gap-2 bg-red-600 hover:bg-red-700 text-white"
-                      >
-                        {approvalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />}
-                        Confirm Rejection
-                      </Button>
-                      <Button variant="outline" onClick={() => { setShowRejectForm(false); setRejectionReason(''); }} className="gap-2">
-                        Cancel
-                      </Button>
-                    </div>
-                    {approvalMutation.isError && (
-                      <p className="text-sm text-red-600 dark:text-red-400">{approvalMutation.error.message}</p>
-                    )}
-                  </div>
-                )}
-                {approvalMutation.isError && !showRejectForm && (
-                  <p className="text-sm text-red-600 dark:text-red-400">{approvalMutation.error.message}</p>
-                )}
-              </div>
-            </SlideoutPanelSection>
-          )}
-
-          {/* Show approval result for already-processed expenses */}
-          {selectedExpense?.status === 'APPROVED' && (
-            <SlideoutPanelSection title="Approval Status">
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                <span className="text-sm font-medium text-green-800 dark:text-green-300">Approved</span>
-              </div>
-            </SlideoutPanelSection>
-          )}
-          {selectedExpense?.status === 'REJECTED' && (
-            <SlideoutPanelSection title="Rejection Status">
-              <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                <div className="flex items-center gap-2 mb-1">
-                  <AlertCircle className="h-5 w-5 text-red-600" />
-                  <span className="text-sm font-medium text-red-800 dark:text-red-300">Rejected</span>
-                </div>
-              </div>
-            </SlideoutPanelSection>
-          )}
         </SlideoutPanelContent>
       </SlideoutPanel>
 

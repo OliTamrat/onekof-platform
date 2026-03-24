@@ -63,64 +63,39 @@ export default function ProjectBudgetPage() {
   // Rejected expenses
   const rejectedCount = expenses.filter((e: any) => e.status === 'REJECTED').length;
 
-  // AI Budget Watchers — data-driven insights from real budget data
-  const budgetWatchers = (() => {
-    const insights: Array<{ id: string; type: string; icon: any; color: string; title: string; message: string; timestamp: Date; priority: string }> = [];
-    const formatAmt = (n: number) => n >= 1000000 ? `${(n/1000000).toFixed(1)}M` : n >= 1000 ? `${(n/1000).toFixed(0)}K` : n.toFixed(0);
-
-    // Find at-risk categories (>75% utilization)
-    const catStats = categories.map((c: any) => {
-      const spent = c.expenses?.reduce((s: number, e: any) => s + Number(e.amount), 0) || 0;
-      const allocated = Number(c.allocatedAmount || 0);
-      return { name: c.name, spent, allocated, util: allocated > 0 ? (spent / allocated) * 100 : 0 };
-    });
-
-    const atRisk = catStats.filter(c => c.util > 75);
-    if (atRisk.length > 0) {
-      const top = atRisk.sort((a, b) => b.util - a.util)[0];
-      insights.push({
-        id: 'risk-1', type: 'warning', icon: AlertCircle, color: 'text-yellow-500',
-        title: `${top.name} Alert`,
-        message: `${top.name} is at ${top.util.toFixed(0)}% utilization (ETB ${formatAmt(top.spent)} of ${formatAmt(top.allocated)}). Review upcoming expenses.`,
-        timestamp: new Date(), priority: 'high',
-      });
+  // AI Budget Watchers (simulated insights)
+  const budgetWatchers = [
+    {
+      id: '1',
+      type: 'warning',
+      icon: AlertCircle,
+      color: 'text-yellow-500',
+      title: 'Construction Budget Alert',
+      message: 'Construction & Infrastructure category is approaching 75% utilization. Consider reviewing upcoming expenses.',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      priority: 'high'
+    },
+    {
+      id: '2',
+      type: 'info',
+      icon: Sparkles,
+      color: 'text-blue-500',
+      title: 'Budget Optimization Opportunity',
+      message: 'Based on spending patterns, you could reallocate 5M ETB from Contingency to Equipment category.',
+      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+      priority: 'medium'
+    },
+    {
+      id: '3',
+      type: 'success',
+      icon: CheckCircle,
+      color: 'text-green-500',
+      title: 'On-Track Budget Performance',
+      message: 'Personnel & Salaries category is well-managed with consistent monthly spending.',
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      priority: 'low'
     }
-
-    // Find under-utilized categories for reallocation suggestion
-    const underUsed = catStats.filter(c => c.util < 40 && c.allocated > 0);
-    if (underUsed.length > 0 && atRisk.length > 0) {
-      const source = underUsed.sort((a, b) => a.util - b.util)[0];
-      insights.push({
-        id: 'opt-1', type: 'info', icon: Sparkles, color: 'text-blue-500',
-        title: 'Budget Optimization',
-        message: `${source.name} is at ${source.util.toFixed(0)}% — consider reallocating surplus to ${atRisk[0].name}.`,
-        timestamp: new Date(), priority: 'medium',
-      });
-    }
-
-    // Overall health check
-    const overallUtil = totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0;
-    if (overallUtil <= 75 && atRisk.length === 0) {
-      insights.push({
-        id: 'health-1', type: 'success', icon: CheckCircle, color: 'text-green-500',
-        title: 'On-Track Performance',
-        message: `Overall budget is at ${overallUtil.toFixed(0)}% utilization. All categories within healthy limits.`,
-        timestamp: new Date(), priority: 'low',
-      });
-    }
-
-    // Pending approvals alert
-    if (pendingApprovals > 0) {
-      insights.push({
-        id: 'pending-1', type: 'info', icon: AlertCircle, color: 'text-amber-500',
-        title: 'Pending Approvals',
-        message: `${pendingApprovals} expense${pendingApprovals === 1 ? '' : 's'} awaiting approval.`,
-        timestamp: new Date(), priority: 'medium',
-      });
-    }
-
-    return insights;
-  })();
+  ];
 
   return (
     <div className="h-full overflow-auto bg-gray-50 dark:bg-[#1B1F23] p-6">
