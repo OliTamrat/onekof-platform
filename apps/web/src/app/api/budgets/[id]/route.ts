@@ -200,7 +200,7 @@ export async function PATCH(
       prisma.budgetRevision.create({
         data: {
           budgetId: params.id,
-          revisionNumber: await prisma.budgetRevision.count({ where: { budgetId: params.id } }) + 1,
+          revisionNumber: 1, // TODO: Calculate actual revision number
           changeType: 'BUDGET_UPDATED',
           before: currentBudget,
           after: { ...currentBudget, ...updateData },
