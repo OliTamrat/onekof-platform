@@ -68,6 +68,13 @@ export async function GET(
         icon: p.icon,
         color: p.color,
         template: p.template,
+        type: p.type,
+        priority: p.priority,
+        leadId: p.leadId,
+        defaultAssignee: p.defaultAssignee,
+        startDate: p.startDate?.toISOString() || null,
+        dueDate: p.dueDate?.toISOString() || null,
+        settings: p.settings,
         isArchived: p.isArchived,
         isFavorite: p.isFavorite,
         organizationId: p.organizationId,
@@ -127,7 +134,12 @@ export async function POST(
       );
     }
 
-    const { name, key, description, icon, color, template } = await req.json();
+    const body = await req.json();
+    const {
+      name, key, description, icon, color, template,
+      projectType, priority, leadId, defaultAssignee,
+      startDate, dueDate, teamIds,
+    } = body;
 
     // Validation
     if (!name || !key) {
@@ -162,7 +174,7 @@ export async function POST(
       );
     }
 
-    // Create project
+    // Create project with all fields
     const project = await prisma.project.create({
       data: {
         organizationId,
@@ -172,6 +184,12 @@ export async function POST(
         icon,
         color,
         template: template || 'KANBAN',
+        type: projectType || 'BUSINESS',
+        priority: priority || 'MEDIUM',
+        leadId: leadId || null,
+        defaultAssignee: defaultAssignee || null,
+        startDate: startDate ? new Date(startDate) : null,
+        dueDate: dueDate ? new Date(dueDate) : null,
         createdBy: session.user.id,
       },
       include: {
@@ -184,6 +202,28 @@ export async function POST(
       },
     });
 
+    // Add creator as project member
+    await prisma.projectMember.create({
+      data: {
+        projectId: project.id,
+        userId: session.user.id,
+        role: 'ADMIN',
+        addedBy: session.user.id,
+      },
+    });
+
+    // Link teams to project if provided
+    if (teamIds && Array.isArray(teamIds) && teamIds.length > 0) {
+      await prisma.projectTeam.createMany({
+        data: teamIds.map((teamId: string) => ({
+          projectId: project.id,
+          teamId,
+          addedBy: session.user.id,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
     return NextResponse.json(
       {
         project: {
@@ -194,6 +234,13 @@ export async function POST(
           icon: project.icon,
           color: project.color,
           template: project.template,
+          type: project.type,
+          priority: project.priority,
+          leadId: project.leadId,
+          defaultAssignee: project.defaultAssignee,
+          startDate: project.startDate?.toISOString() || null,
+          dueDate: project.dueDate?.toISOString() || null,
+          settings: project.settings,
           isArchived: project.isArchived,
           isFavorite: project.isFavorite,
           organizationId: project.organizationId,

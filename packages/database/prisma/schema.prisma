@@ -344,13 +344,20 @@ model Project {
   defaultAssignee String? @map("default_assignee")
   leadId          String? @map("lead_id")
 
+  // Timeline
+  startDate DateTime? @map("start_date")
+  dueDate   DateTime? @map("due_date")
+
+  // Priority
+  priority ProjectPriority @default(MEDIUM)
+
   // Project type and status
   type       ProjectType     @default(BUSINESS) // Type of project (Software, Marketing, etc.)
   template   ProjectTemplate @default(KANBAN)
   status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
   isArchived Boolean         @default(false) @map("is_archived")
   isFavorite Boolean         @default(false) @map("is_favorite")
-  settings   Json            @default("{}") // Color, icon, etc.
+  settings   Json            @default("{}") // Extended metadata
 
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
@@ -372,6 +379,8 @@ model Project {
   @@index([organizationId, type, status]) // Projects by type
   @@index([leadId, deletedAt]) // Projects I lead
   @@index([updatedAt, deletedAt]) // Recently updated
+  @@index([organizationId, priority, status]) // Projects by priority
+  @@index([organizationId, dueDate]) // Projects by due date
   @@map("projects")
   @@schema("public")
 }
@@ -533,6 +542,16 @@ enum ProjectRole {
   ADMIN
   MEMBER
   VIEWER
+
+  @@schema("public")
+}
+
+enum ProjectPriority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  NONE
 
   @@schema("public")
 }

@@ -33,10 +33,12 @@ export function CreateProjectModal({
     icon: 'Briefcase',
     color: '#1C8C7D',
     template: 'KANBAN' as 'KANBAN' | 'SCRUM' | 'CUSTOM',
-    projectType: 'SOFTWARE' as 'SOFTWARE' | 'BUSINESS' | 'MARKETING' | 'OPERATIONS' | 'OTHER',
+    projectType: 'SOFTWARE' as 'SOFTWARE' | 'BUSINESS' | 'MARKETING' | 'OPERATIONS' | 'RESEARCH' | 'CONSTRUCTION' | 'CUSTOM',
+    priority: 'MEDIUM' as 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'NONE',
     startDate: '',
     dueDate: '',
     leadId: '',
+    defaultAssignee: '',
     teamIds: [] as string[],
   });
 
@@ -116,7 +118,8 @@ export function CreateProjectModal({
 
       setFormData({
         name: '', key: '', description: '', icon: 'Briefcase', color: '#1C8C7D',
-        template: 'KANBAN', projectType: 'SOFTWARE', startDate: '', dueDate: '', leadId: '', teamIds: [],
+        template: 'KANBAN', projectType: 'SOFTWARE', priority: 'MEDIUM',
+        startDate: '', dueDate: '', leadId: '', defaultAssignee: '', teamIds: [],
       });
 
       await refreshProjects();
@@ -209,7 +212,9 @@ export function CreateProjectModal({
                   <option value="BUSINESS">Business</option>
                   <option value="MARKETING">Marketing</option>
                   <option value="OPERATIONS">Operations</option>
-                  <option value="OTHER">Other</option>
+                  <option value="RESEARCH">Research</option>
+                  <option value="CONSTRUCTION">Construction</option>
+                  <option value="CUSTOM">Custom</option>
                 </select>
               </div>
             </div>
@@ -224,6 +229,22 @@ export function CreateProjectModal({
                 rows={3}
                 className={inputOverride}
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="priority">Priority</Label>
+              <select
+                id="priority"
+                value={formData.priority}
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value as typeof formData.priority })}
+                className={selectClass}
+              >
+                <option value="CRITICAL">Critical</option>
+                <option value="HIGH">High</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="LOW">Low</option>
+                <option value="NONE">None</option>
+              </select>
             </div>
           </section>
 
@@ -267,24 +288,44 @@ export function CreateProjectModal({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="teams">Teams</Label>
+                <Label htmlFor="default-assignee">Default Assignee</Label>
                 <select
-                  id="teams"
-                  multiple
-                  value={formData.teamIds}
-                  onChange={(e) => {
-                    const selected = Array.from(e.target.selectedOptions, option => option.value);
-                    setFormData({ ...formData, teamIds: selected });
-                  }}
-                  className={selectClass + ' min-h-[80px]'}
+                  id="default-assignee"
+                  value={formData.defaultAssignee}
+                  onChange={(e) => setFormData({ ...formData, defaultAssignee: e.target.value })}
+                  className={selectClass}
                 >
-                  {orgTeams.map((team) => (
-                    <option key={team.id} value={team.id}>
-                      {team.name} ({team.memberCount})
+                  <option value="">Unassigned</option>
+                  <option value="PROJECT_LEAD">Project Lead</option>
+                  {orgMembers.map((member) => (
+                    <option key={member.userId} value={member.userId}>
+                      {member.name || member.email}
                     </option>
                   ))}
                 </select>
+                <p className="text-[11px] text-slate-400">Auto-assign new issues to this person</p>
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="teams">Teams</Label>
+              <select
+                id="teams"
+                multiple
+                value={formData.teamIds}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions, option => option.value);
+                  setFormData({ ...formData, teamIds: selected });
+                }}
+                className={selectClass + ' min-h-[80px]'}
+              >
+                {orgTeams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name} ({team.memberCount})
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-slate-400">Hold Ctrl/Cmd to select multiple teams</p>
             </div>
           </section>
 
