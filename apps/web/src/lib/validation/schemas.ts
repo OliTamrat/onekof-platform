@@ -152,7 +152,7 @@ export const createBudgetSchema = z.object({
   fiscalYearStart: z.string().datetime(),
   fiscalYearEnd: z.string().datetime(),
   totalBudget: z.number().positive('Total budget must be positive').max(999999999, 'Budget too large'),
-  currency: z.string().length(3, 'Currency must be 3-letter code').default('USD'),
+  currency: z.string().length(3, 'Currency must be 3-letter code').default('ETB'),
   settings: z.record(z.any()).optional(),
 });
 

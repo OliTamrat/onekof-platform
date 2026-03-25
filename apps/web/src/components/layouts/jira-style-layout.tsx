@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { PricingModal } from '@/components/pricing-modal';
 import { CommandPalette } from '@/components/command-palette';
 import { NotificationCenter } from '@/components/notification-center';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { KeyboardShortcutsModal, useKeyboardShortcuts } from '@/components/keyboard-shortcuts';
 import { CollapsibleSidebar } from './collapsible-sidebar';
 import { Button } from '@/components/ui/button';
@@ -219,6 +220,11 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Desktop: Language Switcher */}
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
 
           {/* Desktop: Notifications */}
           <div className="hidden md:block">
