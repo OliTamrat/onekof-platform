@@ -355,7 +355,7 @@ model Project {
   category   String? // Business category or program area
 
   // Entity & compliance
-  entityType   ProjectEntityType @default(INTERNAL)
+  entityType   ProjectEntityType @default(INTERNAL) @map("entity_type")
   visibility   ProjectVisibility @default(INTERNAL)
   riskLevel    ProjectRiskLevel  @default(NOT_ASSESSED) @map("risk_level")
   budgetCode   String?           @map("budget_code") // Financial tracking code
