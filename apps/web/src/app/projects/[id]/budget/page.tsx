@@ -75,9 +75,9 @@ export default function ProjectBudgetPage() {
       return { name: c.name, spent, allocated, util: allocated > 0 ? (spent / allocated) * 100 : 0 };
     });
 
-    const atRisk = catStats.filter(c => c.util > 75);
+    const atRisk = catStats.filter((c: any) => c.util > 75);
     if (atRisk.length > 0) {
-      const top = atRisk.sort((a, b) => b.util - a.util)[0];
+      const top = atRisk.sort((a: any, b: any) => b.util - a.util)[0];
       insights.push({
         id: 'risk-1', type: 'warning', icon: AlertCircle, color: 'text-yellow-500',
         title: `${top.name} Alert`,
@@ -87,9 +87,9 @@ export default function ProjectBudgetPage() {
     }
 
     // Find under-utilized categories for reallocation suggestion
-    const underUsed = catStats.filter(c => c.util < 40 && c.allocated > 0);
+    const underUsed = catStats.filter((c: any) => c.util < 40 && c.allocated > 0);
     if (underUsed.length > 0 && atRisk.length > 0) {
-      const source = underUsed.sort((a, b) => a.util - b.util)[0];
+      const source = underUsed.sort((a: any, b: any) => a.util - b.util)[0];
       insights.push({
         id: 'opt-1', type: 'info', icon: Sparkles, color: 'text-blue-500',
         title: 'Budget Optimization',

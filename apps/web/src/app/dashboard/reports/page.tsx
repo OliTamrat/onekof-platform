@@ -228,13 +228,13 @@ export default function ReportsAndAnalyticsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     {stats?.atRiskProjects > 0 && (
                       <div>
-                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats.atRiskProjects}</p>
+                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats?.atRiskProjects}</p>
                         <p className="text-xs text-slate-600 dark:text-slate-400">projects at risk</p>
                       </div>
                     )}
                     {(stats?.taskStats?.overdue || 0) > 0 && (
                       <div>
-                        <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.taskStats.overdue}</p>
+                        <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats?.taskStats?.overdue}</p>
                         <p className="text-xs text-slate-600 dark:text-slate-400">overdue tasks</p>
                       </div>
                     )}

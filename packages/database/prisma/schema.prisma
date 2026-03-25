@@ -147,6 +147,11 @@ model User {
   lockedUntil         DateTime? @map("locked_until")
   passwordChangedAt   DateTime? @map("password_changed_at")
 
+  // 🔒 SECURITY: Two-Factor Authentication (TOTP)
+  twoFactorEnabled     Boolean   @default(false) @map("two_factor_enabled")
+  twoFactorSecret      String?   @map("two_factor_secret")
+  twoFactorBackupCodes String[]  @default([]) @map("two_factor_backup_codes")
+
   // Preferences
   preferences Json @default("{}") // UI preferences, notifications, etc.
 
