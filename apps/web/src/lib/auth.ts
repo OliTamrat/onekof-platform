@@ -12,6 +12,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  // @ts-expect-error trustHost exists in NextAuth v4.24+ but types lag behind
   trustHost: true, // Allow NextAuth to work on any host (Vercel, custom domains, etc.)
   cookies: {
     // Configure cookies to work across subdomains
@@ -128,7 +129,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          image: user.avatar,
+          avatar: user.avatar,
         };
       },
     }),

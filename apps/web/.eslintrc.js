@@ -1,3 +1,6 @@
 module.exports = {
-  extends: ['@onekof/config/eslint/next.js'],
+  extends: [require.resolve('../../packages/config/eslint/next.js')],
+  rules: {
+    'react/no-unescaped-entities': 'off',
+  },
 };
