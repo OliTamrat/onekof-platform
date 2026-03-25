@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export type AdminRole = 'OWNER' | 'ADMIN' | 'VIEWER';
 
-interface AdminIdentity {
+export interface AdminIdentity {
   username: string;
   role: AdminRole;
   name: string;

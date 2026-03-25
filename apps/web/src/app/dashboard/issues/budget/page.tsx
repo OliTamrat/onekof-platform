@@ -176,12 +176,12 @@ export default function BudgetPage() {
   const maxCategorySpent = Math.max(...categories.map(c => c.spent), 1);
 
   // Calculate stats
-  const approvedThisWeek = recentTransactions.filter(t =>
+  const approvedThisWeek = recentTransactions.filter((t: any) =>
     t.status === 'approved' &&
     new Date(t.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   ).length;
 
-  const pendingApproval = recentTransactions.filter(t => t.status === 'pending').length;
+  const pendingApproval = recentTransactions.filter((t: any) => t.status === 'pending').length;
 
   const categoriesUnderBudget = categories.filter(c => c.spent < c.budget).length;
 
@@ -192,7 +192,7 @@ export default function BudgetPage() {
 
   // Handlers for drill-down
   const handleShowApprovedTransactions = () => {
-    const approved = recentTransactions.filter(t =>
+    const approved = recentTransactions.filter((t: any) =>
       t.status === 'approved' &&
       new Date(t.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     );
@@ -202,7 +202,7 @@ export default function BudgetPage() {
   };
 
   const handleShowPendingTransactions = () => {
-    const pending = recentTransactions.filter(t => t.status === 'pending');
+    const pending = recentTransactions.filter((t: any) => t.status === 'pending');
     setFilteredTransactions(pending);
     setFilterTitle('Pending Approval');
     setIsActivitySlideoutOpen(true);
@@ -241,7 +241,7 @@ export default function BudgetPage() {
     const category = categories.find(c => c.name === categoryName);
     if (!category) return;
 
-    const categoryTransactions = recentTransactions.filter(t => t.category === categoryName);
+    const categoryTransactions = recentTransactions.filter((t: any) => t.category === categoryName);
     const utilizationRate = ((category.spent / category.budget) * 100).toFixed(1);
     const remaining = category.budget - category.spent;
 
@@ -666,14 +666,14 @@ export default function BudgetPage() {
                 {/* Activities */}
                 <div className="space-y-4">
                   {recentTransactions
-                    .filter((transaction) => {
+                    .filter((transaction: any) => {
                       if (activityFilter === 'all') return true;
                       if (activityFilter === 'approved') return transaction.status === 'approved';
                       if (activityFilter === 'pending') return transaction.status === 'pending';
                       return true;
                     })
                     .slice(0, 2)
-                    .map((transaction, index) => (
+                    .map((transaction: any, index: number) => (
                       <div
                         key={transaction.id}
                         className="relative pl-12 animate-fade-in"
@@ -748,7 +748,7 @@ export default function BudgetPage() {
                 </div>
 
                 {/* View All Activity Button */}
-                {recentTransactions.filter((transaction) => {
+                {recentTransactions.filter((transaction: any) => {
                   if (activityFilter === 'all') return true;
                   if (activityFilter === 'approved') return transaction.status === 'approved';
                   if (activityFilter === 'pending') return transaction.status === 'pending';
@@ -757,7 +757,7 @@ export default function BudgetPage() {
                   <div className="mt-4 text-center">
                     <Button
                       onClick={() => {
-                        setFilteredTransactions(recentTransactions.filter((transaction) => {
+                        setFilteredTransactions(recentTransactions.filter((transaction: any) => {
                           if (activityFilter === 'all') return true;
                           if (activityFilter === 'approved') return transaction.status === 'approved';
                           if (activityFilter === 'pending') return transaction.status === 'pending';
@@ -768,7 +768,7 @@ export default function BudgetPage() {
                       }}
                       className="px-4 py-2 text-sm font-medium rounded-md border border-[#1C8C7D] text-[#1C8C7D] hover:bg-[#1C8C7D] hover:text-white transition-colors"
                     >
-                      View All Activity ({recentTransactions.filter((transaction) => {
+                      View All Activity ({recentTransactions.filter((transaction: any) => {
                         if (activityFilter === 'all') return true;
                         if (activityFilter === 'approved') return transaction.status === 'approved';
                         if (activityFilter === 'pending') return transaction.status === 'pending';

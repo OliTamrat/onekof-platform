@@ -54,7 +54,7 @@ interface BudgetWithStats {
   _count: { expenses: number; watchers: number };
   creatorName?: string | null;
   approverName?: string | null;
-  status: string;
+  approvalStatus?: string;
   approvedAt?: string | null;
 }
 
