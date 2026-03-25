@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
+import { useLanguage } from '@/contexts/language-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { projects, isLoadingProjects } = useWorkspace();
+  const { t, fontClass } = useLanguage();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
 
@@ -284,10 +286,10 @@ export default function DashboardPage() {
               <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-red-800 dark:text-red-300">
-                  Failed to load dashboard data
+                  {t('dashboard.failedToLoad')}
                 </p>
                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                  {apiError.message}. Try refreshing the page or signing in again.
+                  {apiError.message}. {t('dashboard.tryRefreshing')}
                 </p>
               </div>
             </div>
@@ -299,32 +301,32 @@ export default function DashboardPage() {
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={tasksCompleted.toString()}
-            label="completed"
-            sublabel="in the last 7 days"
+            label={t('dashboard.completed')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-green-500 dark:text-green-400"
             onClick={handleShowCompletedTasks}
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
             value={tasksUpdated.toString()}
-            label="updated"
-            sublabel="in the last 7 days"
+            label={t('dashboard.updated')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-blue-500 dark:text-blue-400"
             onClick={handleShowUpdatedTasks}
           />
           <StatCard
             icon={<Plus className="h-5 w-5" />}
             value={tasksCreated.toString()}
-            label="created"
-            sublabel="in the last 7 days"
+            label={t('dashboard.created')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-primary-500 dark:text-primary-400"
             onClick={handleShowCreatedTasks}
           />
           <StatCard
             icon={<Clock className="h-5 w-5" />}
             value={tasksDueSoon.toString()}
-            label="due soon"
-            sublabel="in the next 7 days"
+            label={t('dashboard.dueSoon')}
+            sublabel={t('dashboard.inNext7Days')}
             color="text-orange-500 dark:text-orange-400"
             onClick={handleShowDueSoonTasks}
           />
@@ -348,14 +350,14 @@ export default function DashboardPage() {
               <div className="relative z-10">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Status overview
+                  {t('dashboard.statusOverview')}
                 </h2>
                 <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">
-                  Click to view details →
+                  {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
               <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
-                Get a snapshot of the status of your work items. Click anywhere to drill down.
+                {t('dashboard.statusDescription')}
               </p>
 
               {/* Donut Chart - Responsive Layout */}
@@ -413,7 +415,7 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">Total items</div>
+                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
                   </div>
                 </div>
 
@@ -477,17 +479,17 @@ export default function DashboardPage() {
               {/* Priority Breakdown */}
               <div className="mt-8">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900 dark:text-white">Priority breakdown</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Get a holistic view of how work is being prioritized.
+                  {t('dashboard.priorityDescription')}
                 </p>
                 <div className="space-y-2">
-                  <PriorityBar label="Highest" value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
-                  <PriorityBar label="High" value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
-                  <PriorityBar label="Medium" value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
-                  <PriorityBar label="Low" value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
-                  <PriorityBar label="Lowest" value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
+                  <PriorityBar label={t('priority.highest')} value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
+                  <PriorityBar label={t('priority.high')} value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
+                  <PriorityBar label={t('priority.medium')} value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
+                  <PriorityBar label={t('priority.low')} value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
+                  <PriorityBar label={t('priority.lowest')} value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
                 </div>
               </div>
               </div>
@@ -502,17 +504,17 @@ export default function DashboardPage() {
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Recent activity
+                    {t('dashboard.recentActivity')}
                   </h2>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
                       <Sparkles className="h-3.5 w-3.5" />
-                      <span>AI-Powered</span>
+                      <span>{t('dashboard.aiPowered')}</span>
                     </div>
                   </div>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Stay up to date with what's happening across your organization.
+                  {t('dashboard.recentActivityDescription')}
                 </p>
                 <ActivityTimeline limit={20} showFilters={true} />
               </div>
@@ -524,7 +526,7 @@ export default function DashboardPage() {
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Types of work
+                    {t('dashboard.typesOfWork')}
                   </h2>
                   <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
                     View all items

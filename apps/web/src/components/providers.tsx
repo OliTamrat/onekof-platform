@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WorkspaceProvider } from '@/contexts/workspace-context';
 import { OrganizationSettingsProvider } from '@/contexts/organization-settings-context';
+import { LanguageProvider } from '@/contexts/language-context';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { ToastProvider } from '@/components/ui/toast-provider';
 import { LiveAnnouncerProvider } from '@/components/ui/live-announcer';
@@ -64,7 +65,9 @@ function OrganizationSettingsWrapper({ children }: { children: React.ReactNode }
   // The sidebar component will pass the settings when available
   return (
     <OrganizationSettingsProvider>
-      {children}
+      <LanguageProvider>
+        {children}
+      </LanguageProvider>
     </OrganizationSettingsProvider>
   );
 }

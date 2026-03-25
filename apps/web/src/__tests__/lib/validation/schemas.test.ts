@@ -294,7 +294,7 @@ describe('Validation Schemas', () => {
     it('accepts valid budget data', () => {
       const result = createBudgetSchema.parse(validBudget);
       expect(result.totalBudget).toBe(100000);
-      expect(result.currency).toBe('USD');
+      expect(result.currency).toBe('ETB');
     });
 
     it('rejects negative budget', () => {
