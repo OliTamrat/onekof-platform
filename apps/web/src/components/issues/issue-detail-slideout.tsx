@@ -131,8 +131,8 @@ interface IssueDetailSlideoutProps {
 
 type Tab = 'details' | 'settings';
 
-export function IssueDetailSlideout({
-  const { t } = useLanguage(); issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
+export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
+  const { t } = useLanguage();
   const resolvedId = initialIssue?.id || issueId;
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('details');

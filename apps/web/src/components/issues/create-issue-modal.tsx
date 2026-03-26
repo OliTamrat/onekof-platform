@@ -13,8 +13,8 @@ interface CreateIssueModalProps {
   defaultStatus?: string;
 }
 
-export function CreateIssueModal({
-  const { t } = useLanguage(); onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
+export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
+  const { t } = useLanguage();
   const toast = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
