@@ -6,6 +6,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
+import { useLanguage } from '@/contexts/language-context';
   BookOpen,
   Search,
   Users,
@@ -38,6 +39,7 @@ const categoryLabels = {
 };
 
 export default function IssuesWikiPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 

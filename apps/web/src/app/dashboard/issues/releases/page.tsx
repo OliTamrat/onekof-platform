@@ -20,6 +20,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Release {
   id: string;
@@ -56,6 +57,7 @@ const statusConfig = {
 };
 
 export default function IssuesReleasesPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const [selectedView, setSelectedView] = useState<'all' | 'active' | 'completed'>('active');
 

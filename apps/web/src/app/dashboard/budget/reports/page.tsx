@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
+import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
@@ -49,6 +50,7 @@ interface ReportData {
 }
 
 export default function BudgetReportsPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);

@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { useWorkspace } from '@/contexts/workspace-context';
 import Link from 'next/link';
 import {
+import { useLanguage } from '@/contexts/language-context';
   BarChart3,
   Book,
   Calendar,
@@ -25,6 +26,7 @@ const TAB_ITEMS = [
 ];
 
 export default function ProjectsTimelinePage() {
+  const { t } = useLanguage();
   const { projects } = useWorkspace();
 
   const groupedProjects = projects.reduce((acc: Record<string, any[]>, project) => {

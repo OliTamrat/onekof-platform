@@ -14,6 +14,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import {
+import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
@@ -30,6 +31,7 @@ const ACTIVE_GOALS = [
 ];
 
 export default function GoalsActivePage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoal, setSelectedGoal] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

@@ -55,6 +55,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { DateRangePicker } from '@/components/ui/date-picker';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface Goal {
@@ -93,6 +94,7 @@ interface KeyResult {
 }
 
 export default function GoalsPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);

@@ -6,6 +6,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
+import { useLanguage } from '@/contexts/language-context';
   Zap,
   Clock,
   Calendar,
@@ -37,6 +38,7 @@ const categoryLabels = {
 };
 
 export default function IssuesAutomationPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [expandedRules, setExpandedRules] = useState<Set<string>>(new Set());

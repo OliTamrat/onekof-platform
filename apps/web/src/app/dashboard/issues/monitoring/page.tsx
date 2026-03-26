@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {
+import { useLanguage } from '@/contexts/language-context';
   Activity,
   AlertTriangle,
   CheckCircle2,
@@ -54,6 +55,7 @@ const statusConfig = {
 };
 
 export default function IssuesMonitoringPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
 
   // Fetch projects

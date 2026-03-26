@@ -39,6 +39,7 @@ import {
 import { AppLayout } from '@/components/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // ─── Brand SVG Logos ───────────────────────────────────────────────────────────
 
@@ -335,6 +336,7 @@ const CATEGORY_LABELS: Record<IntegrationCategory, string> = {
 // ─── Page Component ────────────────────────────────────────────────────────────
 
 export default function IntegrationsPage() {
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<IntegrationCategory | 'all'>('all');
   const [selected, setSelected] = useState<Integration | null>(null);

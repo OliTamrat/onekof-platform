@@ -28,6 +28,7 @@ import {
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary', active: true },
@@ -37,6 +38,7 @@ const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: str
 ];
 
 export default function DocsSummaryPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('month');
 

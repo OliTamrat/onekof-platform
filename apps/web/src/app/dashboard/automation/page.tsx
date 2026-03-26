@@ -1,10 +1,12 @@
 'use client';
 
 import {
+import { useLanguage } from '@/contexts/language-context';
   Zap
 } from 'lucide-react';
 
 export default function AutomationPage() {
+  const { t } = useLanguage();
   return (
     <div className="p-8">
       <div className="flex items-center justify-center min-h-[60vh]">

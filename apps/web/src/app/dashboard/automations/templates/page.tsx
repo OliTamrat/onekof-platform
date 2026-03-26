@@ -43,6 +43,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'list', label: 'All Automations', icon: List, href: '/dashboard/automations' },
@@ -85,6 +86,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 export default function TemplatesPage() {
+  const { t } = useLanguage();
   const toast = useToast();
   const { currentOrganization } = useWorkspace();
   const router = useRouter();

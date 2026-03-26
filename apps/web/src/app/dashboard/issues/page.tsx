@@ -17,6 +17,7 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import type { ProjectType } from '@/lib/project-navigation';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface Issue {
@@ -55,6 +56,7 @@ const STATUS_COLUMNS = [
 ];
 
 export default function IssuesPage() {
+  const { t } = useLanguage();
   const toast = useToast();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);

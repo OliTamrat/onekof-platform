@@ -7,6 +7,7 @@ import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Sparkles, Search, FileText, Calendar, User } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const DOCUMENTS = [
   { id: 1, title: 'Q1 Business Report', type: 'Report', createdBy: 'John Smith', createdAt: '2024-03-15', size: '2.4 MB', tags: ['Business', 'Q1'] },
@@ -18,6 +19,7 @@ const DOCUMENTS = [
 ];
 
 export default function DocumentsAllPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDoc, setSelectedDoc] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

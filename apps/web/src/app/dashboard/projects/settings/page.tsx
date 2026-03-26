@@ -18,6 +18,7 @@ import {
   Workflow
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -38,6 +39,7 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function ProjectsSettingsPage() {
+  const { t } = useLanguage();
   const toast = useToast();
   const [activeSection, setActiveSection] = useState('general');
   const [settings, setSettings] = useState({

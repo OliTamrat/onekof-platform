@@ -10,6 +10,7 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { QuickAddEventModal } from '@/components/calendar/quick-add-event-modal';
 import { DualCalendar, type CalendarTask } from '@/components/calendar/dual-calendar';
 import { Calendar as CalendarIcon } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Issue {
   id: string;
@@ -27,6 +28,7 @@ interface Issue {
 }
 
 export default function IssuesCalendarPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);

@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Shield, Smartphone, Key, Copy, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface TwoFactorSetupData {
   secret: string;
@@ -11,6 +12,7 @@ interface TwoFactorSetupData {
 }
 
 export default function SecuritySettingsPage() {
+  const { t } = useLanguage();
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [setupData, setSetupData] = useState<TwoFactorSetupData | null>(null);
   const [verificationCode, setVerificationCode] = useState('');

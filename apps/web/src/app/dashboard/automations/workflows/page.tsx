@@ -18,6 +18,7 @@ import {
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock workflows data
 const WORKFLOWS = [
@@ -30,6 +31,7 @@ const WORKFLOWS = [
 ];
 
 export default function AutomationsWorkflowsPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

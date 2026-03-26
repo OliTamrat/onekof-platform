@@ -17,6 +17,7 @@ import {
   Users
 } from 'lucide-react';
 import {
+import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
@@ -45,6 +46,7 @@ const ACTIVITIES = [
 ];
 
 export default function TeamsActivityPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

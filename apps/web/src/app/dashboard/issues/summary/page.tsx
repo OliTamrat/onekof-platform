@@ -14,6 +14,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
+import { useLanguage } from '@/contexts/language-context';
   TrendingUp,
   Clock,
   CheckCircle2,
@@ -29,6 +30,7 @@ import {
 } from 'lucide-react';
 
 export default function IssuesSummaryPage() {
+  const { t } = useLanguage();
   const { data: session, status } = useSession();
   const router = useRouter();
   const { projects, isLoadingProjects } = useWorkspace();
@@ -104,7 +106,7 @@ export default function IssuesSummaryPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Loading...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}/p>
         </div>
       </div>
     );

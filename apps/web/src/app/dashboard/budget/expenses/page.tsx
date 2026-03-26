@@ -30,6 +30,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import {
+import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
@@ -53,6 +54,7 @@ interface Expense {
 }
 
 export default function BudgetExpensesPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
