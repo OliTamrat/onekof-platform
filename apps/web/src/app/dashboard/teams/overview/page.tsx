@@ -194,9 +194,7 @@ export default function TeamsOverviewPage() {
                 href="/dashboard/teams"
                 className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
-                <Plus className="h-4 w-4" />
-                New Team
-              </Link>
+                <Plus className="h-4 w-4" />{t("teams.newTeam")}</Link>
             </div>
           </div>
 

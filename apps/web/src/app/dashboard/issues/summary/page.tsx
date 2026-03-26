@@ -450,7 +450,7 @@ export default function IssuesSummaryPage() {
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-blue-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Progress</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inProgress")}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
                   </div>
@@ -463,7 +463,7 @@ export default function IssuesSummaryPage() {
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-yellow-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">In Review</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inReview")}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
                   </div>

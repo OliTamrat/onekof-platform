@@ -50,16 +50,16 @@ const typeConfig = {
 
 const priorityConfig = {
   critical: { color: 'bg-red-600 text-white', label: 'Critical' },
-  high: { color: 'bg-orange-600 text-white', label: 'High' },
-  medium: { color: 'bg-yellow-600 text-white', label: 'Medium' },
-  low: { color: 'bg-gray-500 text-white', label: 'Low' }
+  high: { color: 'bg-orange-600 text-white', label: t('priority.high') },
+  medium: { color: 'bg-yellow-600 text-white', label: t('priority.medium') },
+  low: { color: 'bg-gray-500 text-white', label: t('priority.low') }
 };
 
 const statusConfig = {
   planned: { color: 'bg-gray-200 text-gray-800', label: 'Planned' },
   approved: { color: 'bg-blue-200 text-blue-800', label: 'Approved' },
   ready: { color: 'bg-green-200 text-green-800', label: 'Ready' },
-  blocked: { color: 'bg-red-200 text-red-800', label: 'Blocked' }
+  blocked: { color: 'bg-red-200 text-red-800', label: t('status.blocked') }
 };
 
 export default function IssuesBacklogPage() {
@@ -247,7 +247,7 @@ export default function IssuesBacklogPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="text-xs">Blocked</CardDescription>
+              <CardDescription className="text-xs">{t("status.blocked")}</CardDescription>
               <CardTitle className="text-2xl text-red-600">{groupedByStatus.blocked.length}</CardTitle>
             </CardHeader>
           </Card>

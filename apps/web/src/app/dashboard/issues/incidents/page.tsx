@@ -54,9 +54,9 @@ const typeConfig = {
 
 const severityConfig = {
   critical: { color: 'bg-red-600 text-white', label: 'Critical' },
-  high: { color: 'bg-orange-600 text-white', label: 'High' },
-  medium: { color: 'bg-yellow-600 text-white', label: 'Medium' },
-  low: { color: 'bg-gray-500 text-white', label: 'Low' }
+  high: { color: 'bg-orange-600 text-white', label: t('priority.high') },
+  medium: { color: 'bg-yellow-600 text-white', label: t('priority.medium') },
+  low: { color: 'bg-gray-500 text-white', label: t('priority.low') }
 };
 
 const statusConfig = {
