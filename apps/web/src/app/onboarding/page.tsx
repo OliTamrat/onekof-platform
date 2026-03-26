@@ -12,6 +12,8 @@ import {
   Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 // Organization types with icons and features
 const ORG_TYPES = [
@@ -86,6 +88,7 @@ function OnboardingContent() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
   const toast = useToast();
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -262,6 +265,11 @@ function OnboardingContent() {
 
   return (
     <div className="min-h-screen bg-[#1B1F23] relative overflow-hidden">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gradient-to-br from-primary-500/[0.08] to-primary-700/[0.05] blur-3xl animate-pulse sm:-top-40 sm:-right-40 sm:h-96 sm:w-96" />

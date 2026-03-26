@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface CommandItem {
   id: string;
@@ -41,6 +42,7 @@ interface CommandItem {
 export function CommandPalette() {
   const router = useRouter();
   const { projects, currentOrganization } = useWorkspace();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -49,25 +51,25 @@ export function CommandPalette() {
 
   // Navigation commands
   const navigationItems: CommandItem[] = [
-    { id: 'nav-home', label: 'Home', description: 'Go to dashboard', icon: Home, action: () => router.push('/dashboard'), category: 'navigation', keywords: ['dashboard', 'main'] },
-    { id: 'nav-projects', label: 'Projects', description: 'View all projects', icon: FolderKanban, action: () => router.push('/dashboard/projects'), category: 'navigation', keywords: ['project', 'list'] },
-    { id: 'nav-issues', label: 'Issues', description: 'View all issues', icon: ListChecks, action: () => router.push('/dashboard/issues'), category: 'navigation', keywords: ['task', 'bug', 'ticket'] },
-    { id: 'nav-budget', label: 'Budget', description: 'Financial overview', icon: BarChart3, action: () => router.push('/dashboard/budget'), category: 'navigation', keywords: ['money', 'finance', 'expense'] },
-    { id: 'nav-documents', label: 'AI Documents', description: 'Document processing', icon: Sparkles, action: () => router.push('/dashboard/documents'), category: 'navigation', keywords: ['doc', 'file', 'upload'] },
-    { id: 'nav-teams', label: 'Teams', description: 'Team management', icon: Users, action: () => router.push('/dashboard/teams'), category: 'navigation', keywords: ['member', 'people', 'group'] },
-    { id: 'nav-goals', label: 'Goals', description: 'OKRs and objectives', icon: Target, action: () => router.push('/dashboard/goals'), category: 'navigation', keywords: ['okr', 'objective', 'key result'] },
-    { id: 'nav-automations', label: 'Automations', description: 'Workflow rules', icon: Zap, action: () => router.push('/dashboard/automations'), category: 'navigation', keywords: ['workflow', 'rule', 'trigger'] },
-    { id: 'nav-docs', label: 'Docs & Wiki', description: 'Knowledge base', icon: BookOpen, action: () => router.push('/dashboard/docs'), category: 'navigation', keywords: ['wiki', 'knowledge', 'documentation'] },
-    { id: 'nav-calendar', label: 'Calendar', description: 'Schedule and events', icon: Calendar, action: () => router.push('/dashboard/calendar'), category: 'navigation', keywords: ['schedule', 'event', 'date'] },
-    { id: 'nav-starred', label: 'Starred', description: 'Favorited items', icon: Star, action: () => router.push('/dashboard/starred'), category: 'navigation', keywords: ['favorite', 'bookmark'] },
-    { id: 'nav-settings', label: 'Settings', description: 'Account settings', icon: Settings, action: () => router.push('/settings'), category: 'navigation', keywords: ['preference', 'config', 'account'] },
+    { id: 'nav-home', label: t('nav.home'), description: t('dashboard.title'), icon: Home, action: () => router.push('/dashboard'), category: 'navigation', keywords: ['dashboard', 'main'] },
+    { id: 'nav-projects', label: t('nav.projects'), description: t('nav.allProjects'), icon: FolderKanban, action: () => router.push('/dashboard/projects'), category: 'navigation', keywords: ['project', 'list'] },
+    { id: 'nav-issues', label: t('nav.issues'), description: t('nav.issues'), icon: ListChecks, action: () => router.push('/dashboard/issues'), category: 'navigation', keywords: ['task', 'bug', 'ticket'] },
+    { id: 'nav-budget', label: t('nav.budget'), description: t('budget.title'), icon: BarChart3, action: () => router.push('/dashboard/budget'), category: 'navigation', keywords: ['money', 'finance', 'expense'] },
+    { id: 'nav-documents', label: t('nav.aiDocuments'), description: t('nav.aiDocuments'), icon: Sparkles, action: () => router.push('/dashboard/documents'), category: 'navigation', keywords: ['doc', 'file', 'upload'] },
+    { id: 'nav-teams', label: t('nav.teams'), description: t('teams.title'), icon: Users, action: () => router.push('/dashboard/teams'), category: 'navigation', keywords: ['member', 'people', 'group'] },
+    { id: 'nav-goals', label: t('nav.goals'), description: t('goals.title'), icon: Target, action: () => router.push('/dashboard/goals'), category: 'navigation', keywords: ['okr', 'objective', 'key result'] },
+    { id: 'nav-automations', label: t('nav.automation'), description: t('nav.automation'), icon: Zap, action: () => router.push('/dashboard/automations'), category: 'navigation', keywords: ['workflow', 'rule', 'trigger'] },
+    { id: 'nav-docs', label: t('nav.docs'), description: t('nav.docs'), icon: BookOpen, action: () => router.push('/dashboard/docs'), category: 'navigation', keywords: ['wiki', 'knowledge', 'documentation'] },
+    { id: 'nav-calendar', label: t('nav.calendar'), description: t('nav.calendar'), icon: Calendar, action: () => router.push('/dashboard/calendar'), category: 'navigation', keywords: ['schedule', 'event', 'date'] },
+    { id: 'nav-starred', label: t('nav.starred'), description: t('nav.starred'), icon: Star, action: () => router.push('/dashboard/starred'), category: 'navigation', keywords: ['favorite', 'bookmark'] },
+    { id: 'nav-settings', label: t('nav.settings'), description: t('settings.title'), icon: Settings, action: () => router.push('/settings'), category: 'navigation', keywords: ['preference', 'config', 'account'] },
   ];
 
   // Action commands
   const actionItems: CommandItem[] = [
-    { id: 'action-new-issue', label: 'Create Issue', description: 'Create a new task or bug', icon: Plus, action: () => { router.push('/dashboard/issues?create=true'); }, category: 'action', keywords: ['new', 'task', 'bug', 'create'] },
-    { id: 'action-new-project', label: 'Create Project', description: 'Start a new project', icon: Plus, action: () => { router.push('/dashboard/projects?create=true'); }, category: 'action', keywords: ['new', 'project', 'create'] },
-    { id: 'action-new-doc', label: 'Upload Document', description: 'Process with AI', icon: FileText, action: () => { router.push('/dashboard/documents?upload=true'); }, category: 'action', keywords: ['new', 'upload', 'document', 'ai'] },
+    { id: 'action-new-issue', label: t('nav.createIssue'), description: t('nav.createIssue'), icon: Plus, action: () => { router.push('/dashboard/issues?create=true'); }, category: 'action', keywords: ['new', 'task', 'bug', 'create'] },
+    { id: 'action-new-project', label: t('nav.createProject'), description: t('nav.createProject'), icon: Plus, action: () => { router.push('/dashboard/projects?create=true'); }, category: 'action', keywords: ['new', 'project', 'create'] },
+    { id: 'action-new-doc', label: t('nav.uploadDocument'), description: t('nav.uploadDocument'), icon: FileText, action: () => { router.push('/dashboard/documents?upload=true'); }, category: 'action', keywords: ['new', 'upload', 'document', 'ai'] },
   ];
 
   // Project commands
@@ -197,7 +199,7 @@ export function CommandPalette() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Search or jump to..."
+              placeholder={t('nav.searchPlaceholder')}
               className="h-14 flex-1 bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
             />
             <kbd className="hidden rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 sm:inline-block">

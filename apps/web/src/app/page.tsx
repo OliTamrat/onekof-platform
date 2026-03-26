@@ -39,6 +39,8 @@ import {
   GanttChart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 
 /* ─── Hooks ─── */
 function useInView(threshold = 0.12) {
@@ -357,6 +359,7 @@ function LanguageMockup() {
 
 /* ─── MAIN PAGE ─── */
 export default function HomePage() {
+  const { t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeShowcase, setActiveShowcase] = useState(0);
@@ -435,18 +438,19 @@ export default function HomePage() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
+            <LanguageSwitcher />
             <Link
               href="/auth/signin"
               className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-colors hover:text-white/80"
             >
-              Log in
+              {t('common.signIn')}
             </Link>
             <Link
               href="/auth/signup"
               className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-5 py-2 text-[13px] font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:brightness-110"
             >
               <span className="relative z-10 flex items-center gap-1.5">
-                Get started
+                {t('common.getStarted')}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
               </span>
             </Link>
@@ -472,9 +476,9 @@ export default function HomePage() {
                 </a>
               ))}
               <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
-                <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">Log in</Link>
+                <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">{t('common.signIn')}</Link>
                 <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
-                  Get started
+                  {t('common.getStarted')}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -527,9 +531,7 @@ export default function HomePage() {
 
           <Reveal delay={200}>
             <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/55 sm:text-[18px]">
-              Projects, tasks, budgets, documents, and dashboards in one workspace.
-              Native Ethiopian calendar, local languages, ETB currency, and workflows
-              built for how Ethiopian teams actually work.
+              {t('auth.projectsDescription')}
             </p>
           </Reveal>
 
