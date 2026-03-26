@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Sparkles, Zap, Clock, Users, MessageSquare } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface PricingModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface PricingModalProps {
 }
 
 export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModalProps) {
+  const { t } = useLanguage();
   const plans = [
     {
       name: 'Free',
@@ -83,10 +85,10 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
               </div>
               <div>
                 <DialogTitle className="text-3xl font-bold text-slate-900 dark:text-white">
-                  Choose your plan
+                  {t('pricing.choosePlan')}
                 </DialogTitle>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  Select the perfect plan for your team's needs
+                  {t('pricing.selectPerfectPlan')}
                 </p>
               </div>
             </div>
@@ -97,7 +99,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
                   <Sparkles className="h-5 w-5 text-primary-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
-                      Premium Trial Active
+                      {t('pricing.premiumTrialActive')}
                     </p>
                     <p className="text-sm text-slate-700 dark:text-slate-300">
                       Your trial ends on <strong className="text-primary-600 dark:text-primary-400">{trialEndsDate}</strong>.
@@ -129,7 +131,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
                 {plan.recommended && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                     <div className="bg-primary-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wide">
-                      Recommended
+                      {t('pricing.recommended')}
                     </div>
                   </div>
                 )}
