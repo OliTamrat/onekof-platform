@@ -144,7 +144,7 @@ export default function ProjectsListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}/div>
+              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}</div>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="flex h-full items-center justify-center">

@@ -121,7 +121,7 @@ export default function ProjectsBoardPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}/div>
+              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}</div>
             </div>
           ) : (
             <div className="flex h-full gap-4">
