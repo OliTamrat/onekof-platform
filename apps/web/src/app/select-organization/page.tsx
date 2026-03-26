@@ -5,6 +5,8 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface Organization {
   id: string;
@@ -31,6 +33,7 @@ const PLAN_CONFIG = {
 export default function SelectOrganizationPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredOrg, setHoveredOrg] = useState<string | null>(null);
@@ -98,7 +101,7 @@ export default function SelectOrganizationPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#1C8C7D] mx-auto mb-4" />
-          <p className="text-slate-400 text-sm">Loading your organizations...</p>
+          <p className="text-slate-400 text-sm">{t('selectOrg.loadingOrgs')}</p>
         </div>
       </div>
     );
@@ -109,6 +112,11 @@ export default function SelectOrganizationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23] relative overflow-hidden">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Ethiopian flag accent */}
       <div className="absolute top-0 left-0 right-0 h-1 flex z-50">
         <div className="flex-1 bg-[#078930]" />
@@ -141,10 +149,10 @@ export default function SelectOrganizationPage() {
             {/* Greeting */}
             <div className="mb-4">
               <h2 className="text-4xl font-bold text-white mb-3">
-                Welcome back, {session?.user?.name?.split(' ')[0] || ''}
+                {t('selectOrg.welcomeBackName', { name: session?.user?.name?.split(' ')[0] || '' })}
               </h2>
               <p className="text-lg text-slate-300">
-                Select your workspace to continue
+                {t('selectOrg.selectWorkspace')}
               </p>
             </div>
           </div>
