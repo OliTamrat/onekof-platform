@@ -25,6 +25,7 @@ import {
   Wrench
 } from 'lucide-react';
 import { Select } from '@/components/ui/select';
+import { useLanguage } from '@/contexts/language-context';
 
 interface BacklogItem {
   id: string;
@@ -62,6 +63,7 @@ const statusConfig = {
 };
 
 export default function IssuesBacklogPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

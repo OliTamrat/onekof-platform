@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Clock, FileText, User } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const RECENT_DOCS = [
   { id: 1, title: 'Q1 Business Report', type: 'Report', lastAccessed: '5 min ago', user: 'You' },
@@ -14,6 +15,7 @@ const RECENT_DOCS = [
 ];
 
 export default function DocumentsRecentPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <UnifiedPageHeader title="Recent Documents" icon={<Clock className="h-6 w-6" />} iconColor="#3B82F6" currentTab="recent" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />

@@ -12,6 +12,7 @@ import {
   TrendingUp,
   ChevronDown
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface AutomationRule {
   id: string;
@@ -37,6 +38,7 @@ const categoryLabels = {
 };
 
 export default function IssuesAutomationPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [expandedRules, setExpandedRules] = useState<Set<string>>(new Set());

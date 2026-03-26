@@ -4,8 +4,10 @@ import { ListChecks } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DepartmentTaskList } from '@/components/department/department-task-list';
 import { DEVELOPMENT_TABS } from '@/config/department-tabs';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function BacklogPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <DepartmentTaskList

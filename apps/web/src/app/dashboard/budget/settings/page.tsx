@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface BudgetSettings {
   alertThresholds?: number[];
@@ -32,6 +33,7 @@ interface BudgetSettings {
 }
 
 export default function BudgetSettingsPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const toast = useToast();
   const queryClient = useQueryClient();

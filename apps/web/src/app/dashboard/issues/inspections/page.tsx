@@ -7,8 +7,10 @@ import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
   CheckCircle2
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function IssuesInspectionsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch projects

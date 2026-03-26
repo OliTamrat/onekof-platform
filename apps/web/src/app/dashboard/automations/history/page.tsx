@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Clock, Search, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 const HISTORY = [
   { id: 1, workflow: 'New Task Assignment', status: 'SUCCESS', triggeredBy: 'Task Created', executedAt: '10 min ago', duration: '1.2s' },
@@ -16,6 +17,7 @@ const HISTORY = [
 ];
 
 export default function AutomationsHistoryPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExecution, setSelectedExecution] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

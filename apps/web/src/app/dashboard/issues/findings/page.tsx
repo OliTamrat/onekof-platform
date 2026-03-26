@@ -7,8 +7,10 @@ import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
   FileText
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function IssuesFindingsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch projects

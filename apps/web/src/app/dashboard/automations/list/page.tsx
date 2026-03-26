@@ -21,6 +21,7 @@ import {
   Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // Tab navigation items
 const TAB_ITEMS = [
@@ -53,6 +54,7 @@ interface Automation {
 }
 
 export default function AutomationsListPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();

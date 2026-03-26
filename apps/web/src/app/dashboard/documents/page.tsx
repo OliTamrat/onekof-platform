@@ -25,8 +25,10 @@ import {
   Eye,
   Loader2
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DocumentsPage() {
+  const { t } = useLanguage();
   const { data: session, status } = useSession();
   const router = useRouter();
   const { currentOrganization } = useWorkspace();

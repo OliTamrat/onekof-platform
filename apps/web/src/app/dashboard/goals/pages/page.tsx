@@ -18,6 +18,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
@@ -76,6 +77,7 @@ const EXISTING_PAGES = [
 ];
 
 export default function GoalsPagesPage() {
+  const { t } = useLanguage();
   const [selectedView, setSelectedView] = useState<'templates' | 'pages'>('pages');
 
   return (

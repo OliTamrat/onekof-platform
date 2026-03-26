@@ -16,8 +16,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function RecentPagesPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [searchQuery, setSearchQuery] = React.useState('');
 

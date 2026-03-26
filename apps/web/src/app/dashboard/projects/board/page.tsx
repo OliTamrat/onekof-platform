@@ -19,6 +19,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -38,6 +39,7 @@ const STATUS_COLUMNS = [
 ];
 
 export default function ProjectsBoardPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const { projects, isLoadingProjects } = useWorkspace();
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,7 +121,7 @@ export default function ProjectsBoardPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">Loading projects...</div>
+              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}</div>
             </div>
           ) : (
             <div className="flex h-full gap-4">

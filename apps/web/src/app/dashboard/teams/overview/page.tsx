@@ -24,6 +24,7 @@ import {
 import { IconRenderer } from '@/components/ui/icon-renderer';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'overview', label: 'Overview', icon: Target, href: '/dashboard/teams/overview', active: true },
@@ -33,6 +34,7 @@ const TAB_ITEMS = [
 ];
 
 export default function TeamsOverviewPage() {
+  const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('month');
 
   // Fetch teams analytics data

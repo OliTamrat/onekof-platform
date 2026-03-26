@@ -4,8 +4,10 @@ import {
   FileText
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DocPageDetailPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const pageId = params.id;
 

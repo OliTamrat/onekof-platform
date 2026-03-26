@@ -19,6 +19,7 @@ import {
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Notification {
   id: string;
@@ -97,6 +98,7 @@ const sampleNotifications: Notification[] = [
 
 export function NotificationCenter() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [notifications, setNotifications] = React.useState<Notification[]>(sampleNotifications);
   const [filter, setFilter] = React.useState<'all' | 'unread'>('all');

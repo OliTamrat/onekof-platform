@@ -24,6 +24,7 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { IconRenderer } from '@/components/ui/icon-renderer';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/docs/summary' },
@@ -33,6 +34,7 @@ const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: str
 ];
 
 export default function DocsPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = React.useState('');

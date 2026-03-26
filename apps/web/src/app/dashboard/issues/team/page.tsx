@@ -60,6 +60,7 @@ import {
   Briefcase,
   Settings,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface TeamMember {
@@ -88,6 +89,7 @@ interface Team {
 }
 
 export default function IssuesTeamPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 

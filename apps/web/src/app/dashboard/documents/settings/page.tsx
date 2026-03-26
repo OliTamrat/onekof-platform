@@ -6,8 +6,10 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Settings, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DocumentsSettingsPage() {
+  const { t } = useLanguage();
   const [autoSave, setAutoSave] = useState(true);
   const [versionControl, setVersionControl] = useState(true);
 
@@ -29,7 +31,7 @@ export default function DocumentsSettingsPage() {
           </div>
         </div>
         <div className="flex items-center justify-end gap-3">
-          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">Cancel</Button>
+          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">{t("common.cancel")}</Button>
           <Button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"><Save className="h-4 w-4" />Save Settings</Button>
         </div>
       </div>

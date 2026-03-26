@@ -27,6 +27,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ReportData {
   id: string;
@@ -49,6 +50,7 @@ interface ReportData {
 }
 
 export default function BudgetReportsPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);

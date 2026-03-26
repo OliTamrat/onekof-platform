@@ -8,8 +8,7 @@ import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import {
-  Activity,
+import {  Activity,
   AlertTriangle,
   CheckCircle2,
   Droplets,
@@ -21,6 +20,7 @@ import {
   Wind,
   Zap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface MonitoringPoint {
   id: string;
@@ -54,6 +54,7 @@ const statusConfig = {
 };
 
 export default function IssuesMonitoringPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
 
   // Fetch projects

@@ -17,6 +17,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock completed goals data
 const COMPLETED_GOALS = [
@@ -29,6 +30,7 @@ const COMPLETED_GOALS = [
 ];
 
 export default function GoalsCompletedPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoal, setSelectedGoal] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

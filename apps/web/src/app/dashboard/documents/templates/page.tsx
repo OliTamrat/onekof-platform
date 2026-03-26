@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { FileText, Sparkles } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TEMPLATES = [
   { id: 1, name: 'Project Proposal Template', description: 'Standard template for project proposals', uses: 45 },
@@ -13,6 +14,7 @@ const TEMPLATES = [
 ];
 
 export default function DocumentsTemplatesPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <UnifiedPageHeader title="Document Templates" icon={<FileText className="h-6 w-6" />} iconColor="#3B82F6" currentTab="templates" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />

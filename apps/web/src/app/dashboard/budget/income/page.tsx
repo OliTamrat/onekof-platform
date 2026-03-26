@@ -22,6 +22,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 interface FundingSource {
   id: string;
@@ -37,6 +38,7 @@ interface FundingSource {
 }
 
 export default function BudgetIncomePage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSource, setSelectedSource] = useState<FundingSource | null>(null);

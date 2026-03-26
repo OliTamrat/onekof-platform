@@ -44,6 +44,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
@@ -90,6 +91,7 @@ interface AutomationTemplate {
 }
 
 export default function AutomationsPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'enabled' | 'disabled' | 'ai'>('all');

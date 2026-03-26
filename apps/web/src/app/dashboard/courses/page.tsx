@@ -1,10 +1,11 @@
 'use client';
 
-import {
-  GraduationCap
+import {  GraduationCap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function CoursesPage() {
+  const { t } = useLanguage();
   return (
     <div className="p-8">
       <div className="flex items-center justify-center min-h-[60vh]">
