@@ -345,7 +345,7 @@ export default function IssuesGoalsPage() {
               {[
                 { value: 'all', label: 'All Goals', icon: Target },
                 { value: 'NOT_STARTED', label: 'Not Started', icon: Circle },
-                { value: 'IN_PROGRESS', label: 'In Progress', icon: Play },
+                { value: 'IN_PROGRESS', label: t('status.inProgress'), icon: Play },
                 { value: 'AT_RISK', label: 'At Risk', icon: AlertTriangle },
                 { value: 'COMPLETED', label: 'Completed', icon: CheckCircle2 },
               ].map(({ value, label, icon: Icon }) => (

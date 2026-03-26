@@ -325,7 +325,7 @@ export default function ReportsAndAnalyticsPage() {
                       <span className="text-sm font-semibold text-green-600 dark:text-green-400">{goalStats.completed}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">In Progress</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{t("status.inProgress")}</span>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{goalStats.inProgress}</span>
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-2">

@@ -42,6 +42,7 @@ import {
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface Issue {
@@ -131,6 +132,7 @@ interface IssueDetailSlideoutProps {
 type Tab = 'details' | 'settings';
 
 export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
+  const { t } = useLanguage();
   const resolvedId = initialIssue?.id || issueId;
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('details');

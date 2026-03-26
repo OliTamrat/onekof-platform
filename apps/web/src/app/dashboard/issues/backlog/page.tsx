@@ -247,7 +247,7 @@ export default function IssuesBacklogPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="text-xs">Blocked</CardDescription>
+              <CardDescription className="text-xs">{t("status.blocked")}</CardDescription>
               <CardTitle className="text-2xl text-red-600">{groupedByStatus.blocked.length}</CardTitle>
             </CardHeader>
           </Card>

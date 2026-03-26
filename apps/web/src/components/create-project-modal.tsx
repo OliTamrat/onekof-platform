@@ -16,6 +16,7 @@ import {
   AlertTriangle, Shield, Building2, Users, Calendar,
   Palette, Eye, Loader2,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -119,6 +120,7 @@ const cardClass = (active: boolean) =>
 
 export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalProps) {
   const { currentOrganization, refreshProjects } = useWorkspace();
+  const { t } = useLanguage();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
