@@ -5,6 +5,7 @@ import { notFound, useParams } from 'next/navigation';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { DepartmentTaskList } from '@/components/department/department-task-list';
 import { getDepartmentForPath, DASHBOARD_DEPARTMENTS } from '@/config/dashboard-template';
+import { useLanguage } from '@/contexts/language-context';
 
 /**
  * Dynamic project-scoped department page.
@@ -19,6 +20,7 @@ import { getDepartmentForPath, DASHBOARD_DEPARTMENTS } from '@/config/dashboard-
  * gets all department pages with navigation, controls, and AI insights.
  */
 export default function ProjectDepartmentPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const projectId = params.projectId as string;
   const departmentPath = (params.department as string[])?.join('/') || '';

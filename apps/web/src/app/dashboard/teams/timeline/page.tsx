@@ -17,6 +17,7 @@ import {
   Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
@@ -122,6 +123,7 @@ const TIMELINE_EVENTS = [
 ];
 
 export default function TeamsTimelinePage() {
+  const { t } = useLanguage();
   const [selectedFilter, setSelectedFilter] = useState('all');
 
   const filteredEvents = TIMELINE_EVENTS.filter((event) =>

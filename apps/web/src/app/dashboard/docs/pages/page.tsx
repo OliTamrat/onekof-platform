@@ -3,6 +3,7 @@
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { FileText, Search } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const PAGES = [
   { id: 1, title: 'Engineering Standards', folder: 'Technical', lastModified: '2024-03-15' },
@@ -12,6 +13,7 @@ const PAGES = [
 ];
 
 export default function DocsPagesPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <UnifiedPageHeader title="All Pages" icon={<FileText className="h-6 w-6" />} iconColor="#06B6D4" currentTab="pages" baseHref="/dashboard/docs" />

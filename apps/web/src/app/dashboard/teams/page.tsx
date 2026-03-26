@@ -52,6 +52,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { IconRenderer } from '@/components/ui/icon-renderer';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface TeamMember {
@@ -79,6 +80,7 @@ interface Team {
 }
 
 export default function TeamsPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
@@ -337,14 +339,14 @@ export default function TeamsPage() {
                       No teams found
                     </p>
                     <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
-                      Create your first team to get started
+                      {t('emptyStates.noTeamsDesc')}
                     </p>
                     <Button
                       onClick={() => setIsCreateDialogOpen(true)}
                       className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
-                      Create Team
+                      {t('emptyStates.createTeam')}
                     </Button>
                   </div>
                 )}
@@ -360,7 +362,7 @@ export default function TeamsPage() {
             setIsCreateDialogOpen(false);
             resetForm();
           }}
-          title="Create New Team"
+          title={t('teams.newTeam')}
           size="md"
           showFooter
           footer={
@@ -374,14 +376,14 @@ export default function TeamsPage() {
                 disabled={createTeamMutation.isPending}
                 className="bg-gray-200 dark:bg-[#282E33] border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-700"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 onClick={handleCreateTeam}
                 disabled={!formData.name || createTeamMutation.isPending}
                 className="bg-primary-500 hover:bg-primary-600 text-white"
               >
-                {createTeamMutation.isPending ? 'Creating...' : 'Create Team'}
+                {createTeamMutation.isPending ? t('common.loading') : t('emptyStates.createTeam')}
               </Button>
             </div>
           }
@@ -394,7 +396,7 @@ export default function TeamsPage() {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="team-name" className="text-gray-900 dark:text-white">
-                      Team Name <span className="text-red-400">*</span>
+                      {t('teams.teamName')} <span className="text-red-400">*</span>
                     </Label>
                     <Input
                       id="team-name"

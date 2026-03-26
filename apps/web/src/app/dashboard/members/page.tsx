@@ -7,6 +7,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
+import { useLanguage } from '@/contexts/language-context';
   Users,
   Crown,
   Shield,
@@ -46,6 +47,7 @@ interface PendingInvitation {
 }
 
 export default function MembersPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const queryClient = useQueryClient();
 

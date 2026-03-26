@@ -6,6 +6,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { BookOpen, Search, FileText, Calendar, User } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const WIKI_PAGES = [
   { id: 1, title: 'Getting Started Guide', category: 'Guides', author: 'Admin', lastUpdated: '2024-03-15', views: 234 },
@@ -16,6 +17,7 @@ const WIKI_PAGES = [
 ];
 
 export default function DocsWikiPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPage, setSelectedPage] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

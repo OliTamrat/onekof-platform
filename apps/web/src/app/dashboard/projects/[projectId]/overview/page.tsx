@@ -14,8 +14,10 @@ import {
   Loader2,
 } from 'lucide-react';
 import { DASHBOARD_DEPARTMENTS } from '@/config/dashboard-template';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ProjectOverviewPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const projectId = params.projectId as string;
 

@@ -6,6 +6,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Activity, Search, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TRIGGERS = [
   { id: 1, name: 'Task Created', type: 'Event', condition: 'When a new task is created', workflows: 5, status: 'ACTIVE', lastTriggered: '10 min ago' },
@@ -16,6 +17,7 @@ const TRIGGERS = [
 ];
 
 export default function AutomationsTriggersPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTrigger, setSelectedTrigger] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

@@ -1,8 +1,10 @@
 'use client';
 
 import { EmptyState } from '@/components/ui/empty-state';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function FacilitiesPage() {
+  const { t } = useLanguage();
   return (
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Facilities</h1>

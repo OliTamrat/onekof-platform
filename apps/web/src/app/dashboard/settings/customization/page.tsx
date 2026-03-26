@@ -23,6 +23,7 @@ import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-p
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
 import type { OrganizationSettings, DashboardSectionId, OrganizationType } from '@/types/organization-settings';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock current organization settings (replace with real data from API/context)
 const INITIAL_SETTINGS: OrganizationSettings = {
@@ -103,6 +104,7 @@ const SECTION_INFO = {
 };
 
 export default function DashboardCustomizationPage() {
+  const { t } = useLanguage();
   const toast = useToast();
   const { settings, updateSettings, applyPreset: applyOrgPreset, saveSettings: saveToAPI, hasUnsavedChanges, isLoading } = useOrganizationSettings();
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);

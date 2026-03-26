@@ -17,8 +17,10 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ReportsAndAnalyticsPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
 
   const { data: projectsData, isLoading: projectsLoading } = useQuery({

@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { DOCUMENTS_TABS } from '@/config/department-tabs';
 import { Users, FileText, User } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const SHARED_DOCS = [
   { id: 1, title: 'Project Proposal', sharedWith: 5, sharedBy: 'Sarah Johnson', sharedDate: '2024-03-15' },
@@ -12,6 +13,7 @@ const SHARED_DOCS = [
 ];
 
 export default function DocumentsSharedPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <UnifiedPageHeader title="Shared Documents" icon={<Users className="h-6 w-6" />} iconColor="#3B82F6" currentTab="shared" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />

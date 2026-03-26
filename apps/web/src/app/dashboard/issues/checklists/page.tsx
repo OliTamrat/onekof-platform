@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
+import { useLanguage } from '@/contexts/language-context';
   ClipboardCheck,
   CheckCircle2,
   Circle,
@@ -152,6 +153,7 @@ const checklists: Checklist[] = [
 ];
 
 export default function IssuesChecklistsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 

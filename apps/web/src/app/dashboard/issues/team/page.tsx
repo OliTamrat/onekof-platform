@@ -46,6 +46,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
+import { useLanguage } from '@/contexts/language-context';
   Users,
   Plus,
   Mail,
@@ -88,6 +89,7 @@ interface Team {
 }
 
 export default function IssuesTeamPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 

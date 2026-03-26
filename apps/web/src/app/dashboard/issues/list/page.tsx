@@ -6,6 +6,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
+import { useLanguage } from '@/contexts/language-context';
   CheckSquare,
   Calendar
 } from 'lucide-react';
@@ -35,6 +36,7 @@ interface Issue {
 }
 
 export default function IssuesListPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
 

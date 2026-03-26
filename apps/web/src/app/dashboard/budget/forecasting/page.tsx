@@ -6,6 +6,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { BUDGET_TABS } from '@/config/department-tabs';
 import {
+import { useLanguage } from '@/contexts/language-context';
   TrendingUp,
   TrendingDown,
   Calendar,
@@ -38,6 +39,7 @@ interface BudgetWithStats {
 }
 
 export default function BudgetForecastingPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
 
   const { data: budgetsData, isLoading } = useQuery({

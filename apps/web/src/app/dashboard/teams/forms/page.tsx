@@ -18,6 +18,7 @@ import {
   X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
@@ -103,6 +104,7 @@ const FORM_TEMPLATES: { id: string; name: string; description: string; icon: Luc
 ];
 
 export default function TeamsFormsPage() {
+  const { t } = useLanguage();
   const toast = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<typeof FORM_TEMPLATES[0] | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});

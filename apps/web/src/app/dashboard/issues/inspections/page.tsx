@@ -5,10 +5,12 @@ import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
+import { useLanguage } from '@/contexts/language-context';
   CheckCircle2
 } from 'lucide-react';
 
 export default function IssuesInspectionsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch projects
