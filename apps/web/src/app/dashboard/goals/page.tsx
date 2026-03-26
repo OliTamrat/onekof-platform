@@ -373,9 +373,9 @@ export default function GoalsPage() {
 
   const statusFilters = [
     { value: 'all', label: 'All Goals', count: filteredGoals.length },
-    { value: 'IN_PROGRESS', label: 'In Progress', count: goalsByStatus.IN_PROGRESS.length },
-    { value: 'AT_RISK', label: 'At Risk', count: goalsByStatus.AT_RISK.length },
-    { value: 'COMPLETED', label: 'Completed', count: goalsByStatus.COMPLETED.length },
+    { value: 'IN_PROGRESS', label: t('status.inProgress'), count: goalsByStatus.IN_PROGRESS.length },
+    { value: 'AT_RISK', label: t('goals.atRisk'), count: goalsByStatus.AT_RISK.length },
+    { value: 'COMPLETED', label: t('goals.completed'), count: goalsByStatus.COMPLETED.length },
   ];
 
   return (
@@ -468,7 +468,7 @@ export default function GoalsPage() {
                 disabled={!formData.title || createGoalMutation.isPending}
                 className="bg-primary-500 hover:bg-primary-600 text-white"
               >
-                {createGoalMutation.isPending ? 'Creating...' : 'Create Goal'}
+                {createGoalMutation.isPending ? t('common.loading') : t('goals.newGoal')}
               </Button>
             </div>
           }
@@ -1015,13 +1015,13 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
   const getStatusConfig = (status: Goal['status']) => {
     switch (status) {
       case 'NOT_STARTED':
-        return { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-700', label: 'Not Started' };
+        return { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-700', label: t('goals.notStarted') };
       case 'IN_PROGRESS':
-        return { icon: TrendingUp, color: 'text-primary-500', bg: 'bg-primary-500/20', label: 'In Progress' };
+        return { icon: TrendingUp, color: 'text-primary-500', bg: 'bg-primary-500/20', label: t('status.inProgress') };
       case 'AT_RISK':
-        return { icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-500/20', label: 'At Risk' };
+        return { icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-500/20', label: t('goals.atRisk') };
       case 'COMPLETED':
-        return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-500/20', label: 'Completed' };
+        return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-500/20', label: t('goals.completed') };
       default:
         return { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-700', label: status };
     }
@@ -1032,11 +1032,11 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
       case 'CRITICAL':
         return { color: 'text-red-500', label: 'Critical' };
       case 'HIGH':
-        return { color: 'text-orange-500', label: 'High' };
+        return { color: 'text-orange-500', label: t('priority.high') };
       case 'MEDIUM':
-        return { color: 'text-yellow-500', label: 'Medium' };
+        return { color: 'text-yellow-500', label: t('priority.medium') };
       case 'LOW':
-        return { color: 'text-green-500', label: 'Low' };
+        return { color: 'text-green-500', label: t('priority.low') };
     }
   };
 

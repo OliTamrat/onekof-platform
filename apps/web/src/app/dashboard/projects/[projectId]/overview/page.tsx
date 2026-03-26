@@ -101,7 +101,7 @@ export default function ProjectOverviewPage() {
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
               <div className="flex items-center gap-2 mb-1">
                 <Clock className="h-4 w-4 text-blue-500" />
-                <span className="text-xs font-medium text-gray-500 dark:text-slate-400">In Progress</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t("status.inProgress")}</span>
               </div>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.inProgress}</p>
             </div>
