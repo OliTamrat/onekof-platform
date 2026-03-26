@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AlertModal } from '@/components/ui/alert-modal';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Issue {
   id: string;
@@ -83,6 +84,7 @@ interface IssueDetailModalProps {
 }
 
 export function IssueDetailModal({ issue: initialIssue, onClose }: IssueDetailModalProps) {
+  const { t } = useLanguage();
   const [editedStatus, setEditedStatus] = useState(initialIssue.status);
   const [editedDescription, setEditedDescription] = useState(initialIssue.description || '');
   const [isEditingDescription, setIsEditingDescription] = useState(false);

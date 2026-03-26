@@ -538,9 +538,7 @@ export default function IssuesTeamPage() {
                       className="gap-2 bg-primary-500 hover:bg-primary-600 text-white"
                       onClick={() => setIsAddMemberDialogOpen(true)}
                     >
-                      <UserPlus className="h-4 w-4" />
-                      Add Member
-                    </Button>
+                      <UserPlus className="h-4 w-4" />{t("teams.addMember")}</Button>
                   </div>
 
                   <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23]">

@@ -223,7 +223,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="h-3 w-3 rounded-full bg-blue-500"></div>
-                      <span className="text-sm text-slate-700 dark:text-slate-300">In Progress</span>
+                      <span className="text-sm text-slate-700 dark:text-slate-300">{t("status.inProgress")}</span>
                     </div>
                     <span className="text-sm font-medium text-slate-900 dark:text-white">1</span>
                   </div>

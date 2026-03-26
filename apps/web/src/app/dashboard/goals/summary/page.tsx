@@ -200,9 +200,7 @@ export default function GoalsSummaryPage() {
                 href="/dashboard/goals"
                 className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
-                <Plus className="h-4 w-4" />
-                New Goal
-              </Link>
+                <Plus className="h-4 w-4" />{t("goals.newGoal")}</Link>
             </div>
           </div>
 
@@ -441,7 +439,7 @@ export default function GoalsSummaryPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-orange-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">In Progress</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">{t("status.inProgress")}</span>
                     </div>
                   </div>
                 </div>

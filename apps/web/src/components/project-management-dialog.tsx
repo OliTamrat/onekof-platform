@@ -13,6 +13,7 @@ import {
   SlideoutPanelContent,
 } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -61,6 +62,7 @@ export function ProjectManagementDialog({
   open,
   onOpenChange,
 }: ProjectManagementDialogProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('details');
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');

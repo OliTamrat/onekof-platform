@@ -184,7 +184,7 @@ export default function IssuesCodePage() {
         <Tabs value={selectedView} onValueChange={(v) => setSelectedView(v as any)} className="w-full">
           <TabsList className="grid w-full grid-cols-3 max-w-md">
             <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="in-review">In Review</TabsTrigger>
+            <TabsTrigger value="in-review">{t("status.inReview")}</TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
           </TabsList>
         </Tabs>
@@ -212,7 +212,7 @@ export default function IssuesCodePage() {
               <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                 <option value="all">All Statuses</option>
                 <option value="pending">Pending</option>
-                <option value="in-review">In Review</option>
+                <option value="in-review">{t("status.inReview")}</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
                 <option value="revision-needed">Needs Revision</option>
@@ -238,7 +238,7 @@ export default function IssuesCodePage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription className="text-xs">In Review</CardDescription>
+              <CardDescription className="text-xs">{t("status.inReview")}</CardDescription>
               <CardTitle className="text-2xl text-blue-600">
                 {reviews.filter(r => r.status === 'in-review').length}
               </CardTitle>
