@@ -7,7 +7,6 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-import { useLanguage } from '@/contexts/language-context';
   Users,
   Crown,
   Shield,
@@ -25,6 +24,7 @@ import { useLanguage } from '@/contexts/language-context';
   Copy,
   Check,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface OrganizationMember {
   id: string;

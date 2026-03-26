@@ -3,7 +3,6 @@
 import { AppLayout } from '@/components/layouts/app-layout';
 import Link from 'next/link';
 import {
-import { useLanguage } from '@/contexts/language-context';
   BarChart3,
   Book,
   Clock,
@@ -13,6 +12,7 @@ import { useLanguage } from '@/contexts/language-context';
   Plus,
   Zap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },

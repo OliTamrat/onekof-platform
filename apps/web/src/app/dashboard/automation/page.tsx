@@ -1,9 +1,8 @@
 'use client';
 
-import {
-import { useLanguage } from '@/contexts/language-context';
-  Zap
+import {  Zap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function AutomationPage() {
   const { t } = useLanguage();

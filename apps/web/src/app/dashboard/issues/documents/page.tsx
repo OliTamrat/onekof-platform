@@ -15,7 +15,6 @@ import { ISSUES_TABS } from '@/config/department-tabs';
 
 import { DocumentUpload } from '@/components/documents/document-upload';
 import {
-import { useLanguage } from '@/contexts/language-context';
   FileText,
   Sparkles,
   CheckCircle2,
@@ -27,6 +26,7 @@ import { useLanguage } from '@/contexts/language-context';
   Eye,
   Loader2
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DocumentsPage() {
   const { t } = useLanguage();

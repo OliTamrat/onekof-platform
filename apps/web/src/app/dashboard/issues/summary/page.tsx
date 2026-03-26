@@ -14,7 +14,6 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import {
-import { useLanguage } from '@/contexts/language-context';
   TrendingUp,
   Clock,
   CheckCircle2,
@@ -28,6 +27,7 @@ import { useLanguage } from '@/contexts/language-context';
   X,
   User
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function IssuesSummaryPage() {
   const { t } = useLanguage();

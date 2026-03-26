@@ -11,7 +11,6 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import {
-import { useLanguage } from '@/contexts/language-context';
   DollarSign,
   TrendingUp,
   Clock,
@@ -25,6 +24,7 @@ import { useLanguage } from '@/contexts/language-context';
   X,
   Loader2
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function BudgetPage() {
   const { t } = useLanguage();

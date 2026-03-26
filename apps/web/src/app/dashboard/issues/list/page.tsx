@@ -6,10 +6,10 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
-import { useLanguage } from '@/contexts/language-context';
   CheckSquare,
   Calendar
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Issue {
   id: string;

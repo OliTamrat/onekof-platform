@@ -1,9 +1,7 @@
 'use client';
 
-import {
+import { Settings } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
-  Settings
-} from 'lucide-react';
 
 export default function SettingsPage() {
   const { t } = useLanguage();

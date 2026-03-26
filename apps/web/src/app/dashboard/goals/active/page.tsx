@@ -14,11 +14,11 @@ import {
   AlertCircle
 } from 'lucide-react';
 import {
-import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock active goals data
 const ACTIVE_GOALS = [

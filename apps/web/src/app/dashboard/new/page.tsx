@@ -9,7 +9,6 @@ import { IconRenderer } from '@/components/ui/icon-renderer';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { Button } from '@/components/ui/button';
 import {
-import { useLanguage } from '@/contexts/language-context';
   TrendingUp,
   Clock,
   CheckCircle2,
@@ -20,6 +19,7 @@ import { useLanguage } from '@/contexts/language-context';
   ArrowLeft,
   Sparkles
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DashboardPage() {
   const { t } = useLanguage();

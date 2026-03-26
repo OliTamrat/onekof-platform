@@ -1,9 +1,8 @@
 'use client';
 
-import {
-import { useLanguage } from '@/contexts/language-context';
-  GraduationCap
+import {  GraduationCap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function CoursesPage() {
   const { t } = useLanguage();

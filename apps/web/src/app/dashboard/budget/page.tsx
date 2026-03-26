@@ -11,7 +11,6 @@ import { BUDGET_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-import { useLanguage } from '@/contexts/language-context';
   DollarSign,
   TrendingUp,
   Clock,
@@ -33,6 +32,7 @@ import { useLanguage } from '@/contexts/language-context';
   Check,
   RotateCcw,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface BudgetWithStats {
   id: string;
