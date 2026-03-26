@@ -19,7 +19,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const locales: Locale[] = ['en', 'am', 'om'];
+  const locales: Locale[] = ['en', 'am', 'om', 'ti', 'so'];
 
   return (
     <div ref={ref} className="relative">
@@ -49,7 +49,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
               <span className="w-7 text-xs font-semibold text-slate-500 dark:text-slate-400">
                 {LOCALE_FLAGS[l]}
               </span>
-              <span className={l === 'am' ? 'font-ethiopic' : ''}>
+              <span className={(l === 'am' || l === 'ti') ? 'font-ethiopic' : ''}>
                 {LOCALE_NAMES[l]}
               </span>
               {locale === l && (
