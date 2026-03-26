@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary', active: true },
@@ -32,6 +33,7 @@ const TAB_ITEMS = [
 ];
 
 export default function GoalsSummaryPage() {
+  const { t } = useLanguage();
   const [timeRange, setTimeRange] = useState<'quarter' | 'year' | 'all'>('quarter');
 
   // Fetch goals analytics data

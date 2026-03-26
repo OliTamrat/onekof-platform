@@ -17,6 +17,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock team goals data
 const TEAM_GOALS = [
@@ -29,6 +30,7 @@ const TEAM_GOALS = [
 ];
 
 export default function GoalsTeamsPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

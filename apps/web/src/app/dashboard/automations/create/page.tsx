@@ -32,6 +32,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
 
 // Entity Types
 const ENTITY_TYPES = [
@@ -115,6 +116,7 @@ interface Action {
 }
 
 export default function CreateAutomationPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const router = useRouter();
   const queryClient = useQueryClient();

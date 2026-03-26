@@ -13,6 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Report {
   id: string;
@@ -88,6 +89,7 @@ const reports: Report[] = [
 ];
 
 export default function IssuesReportsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');

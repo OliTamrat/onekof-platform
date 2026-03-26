@@ -18,6 +18,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock active goals data
 const ACTIVE_GOALS = [
@@ -30,6 +31,7 @@ const ACTIVE_GOALS = [
 ];
 
 export default function GoalsActivePage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoal, setSelectedGoal] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);

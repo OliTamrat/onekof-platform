@@ -13,6 +13,7 @@ import {
   Star,
   Eye
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface WikiArticle {
   id: string;
@@ -38,6 +39,7 @@ const categoryLabels = {
 };
 
 export default function IssuesWikiPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 

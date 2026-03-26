@@ -22,6 +22,7 @@ import {
 import { AppLayout } from '@/components/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface WikiCategory {
   id: string;
@@ -120,6 +121,7 @@ const WIKI_CATEGORIES: WikiCategory[] = [
 ];
 
 export default function WikiPage() {
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 

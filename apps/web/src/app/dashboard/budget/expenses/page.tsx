@@ -34,6 +34,7 @@ import {
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Expense {
   id: string;
@@ -53,6 +54,7 @@ interface Expense {
 }
 
 export default function BudgetExpensesPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');

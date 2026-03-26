@@ -17,6 +17,7 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface BudgetWithStats {
   id: string;
@@ -38,6 +39,7 @@ interface BudgetWithStats {
 }
 
 export default function BudgetForecastingPage() {
+  const { t } = useLanguage();
   const { status } = useSession();
 
   const { data: budgetsData, isLoading } = useQuery({

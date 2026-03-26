@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Incident {
   id: string;
@@ -66,6 +67,7 @@ const statusConfig = {
 };
 
 export default function IssuesIncidentsPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');

@@ -34,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { IconRenderer } from '@/components/ui/icon-renderer';
+import { useLanguage } from '@/contexts/language-context';
 
 
 
@@ -41,6 +42,7 @@ export default function ProjectsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { currentOrganization, projects, isLoadingProjects } = useWorkspace();
+  const { t } = useLanguage();
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -70,7 +72,7 @@ export default function ProjectsPage() {
       <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-          <p className="text-sm text-slate-400">Loading...</p>
+          <p className="text-sm text-slate-400">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -102,7 +104,7 @@ export default function ProjectsPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Create
+              {t('common.create')}
             </Button>
           </div>
 
@@ -115,19 +117,19 @@ export default function ProjectsPage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Loading projects...</p>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('common.loading')}</p>
               </div>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <Folder className="h-16 w-16 text-gray-300 dark:text-slate-700 mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                {searchQuery ? 'No projects found' : 'No projects yet'}
+                {searchQuery ? t('common.noResults') : t('projects.noProjects')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 max-w-sm text-center">
                 {searchQuery
-                  ? 'Try adjusting your search query'
-                  : 'Get started by creating your first project'}
+                  ? t('common.noResults')
+                  : t('projects.createFirst')}
               </p>
               {!searchQuery && (
                 <Button
@@ -135,7 +137,7 @@ export default function ProjectsPage() {
                   className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Create Project
+                  {t('emptyStates.createProject')}
                 </Button>
               )}
             </div>
@@ -146,7 +148,7 @@ export default function ProjectsPage() {
                 <div>
                   <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    Starred
+                    {t('nav.starred')}
                   </h2>
                   {viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

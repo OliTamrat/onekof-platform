@@ -13,6 +13,7 @@ import {
   Folder,
   Plus
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
@@ -25,6 +26,7 @@ const TAB_ITEMS = [
 ];
 
 export default function ProjectsTimelinePage() {
+  const { t } = useLanguage();
   const { projects } = useWorkspace();
 
   const groupedProjects = projects.reduce((acc: Record<string, any[]>, project) => {

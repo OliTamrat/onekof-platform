@@ -37,6 +37,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 type GoalStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'AT_RISK' | 'COMPLETED' | 'CANCELLED';
 type GoalPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -80,6 +81,7 @@ interface Team {
 }
 
 export default function IssuesGoalsPage() {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>('all');

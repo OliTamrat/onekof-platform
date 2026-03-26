@@ -14,6 +14,7 @@ import {
   Calendar,
   AlertTriangle
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ChecklistItem {
   id: string;
@@ -152,6 +153,7 @@ const checklists: Checklist[] = [
 ];
 
 export default function IssuesChecklistsPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 

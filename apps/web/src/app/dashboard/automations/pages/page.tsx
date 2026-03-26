@@ -12,6 +12,7 @@ import {
   Plus,
   Zap
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
@@ -24,6 +25,7 @@ const TAB_ITEMS = [
 ];
 
 export default function AutomationsPagesPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">

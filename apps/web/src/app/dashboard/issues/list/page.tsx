@@ -9,6 +9,7 @@ import {
   CheckSquare,
   Calendar
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Issue {
   id: string;
@@ -35,6 +36,7 @@ interface Issue {
 }
 
 export default function IssuesListPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
 

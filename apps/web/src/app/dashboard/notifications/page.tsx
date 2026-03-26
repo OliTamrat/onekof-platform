@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { Bell, CheckCircle2, AlertCircle, Info, Users, Calendar, FileText, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Notification {
   id: string;
@@ -16,6 +17,7 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
   // Mock notifications data

@@ -24,6 +24,7 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface OrganizationMember {
   id: string;
@@ -46,6 +47,7 @@ interface PendingInvitation {
 }
 
 export default function MembersPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const queryClient = useQueryClient();
 

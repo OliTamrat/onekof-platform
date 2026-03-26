@@ -22,6 +22,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary', active: true },
@@ -34,6 +35,7 @@ const TAB_ITEMS = [
 ];
 
 export default function AutomationsSummaryPage() {
+  const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('month');
   const [loading, setLoading] = useState(true);

@@ -7,8 +7,10 @@ import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
   FileSpreadsheet
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function IssuesDataPage() {
+  const { t } = useLanguage();
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch projects

@@ -28,6 +28,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Project {
   id: string;
@@ -50,6 +51,7 @@ interface Project {
 }
 
 export default function IssuesTimelinePage() {
+  const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [timeRange, setTimeRange] = useState<'30d' | '90d' | '6m' | '1y'>('90d');
 

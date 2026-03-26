@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Search, FileText } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function DocsSearchPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
   return (

@@ -13,6 +13,7 @@ import {
   Zap,
   type LucideIcon,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
   { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
@@ -25,6 +26,7 @@ const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: str
 ];
 
 export default function AutomationsBoardPage() {
+  const { t } = useLanguage();
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
