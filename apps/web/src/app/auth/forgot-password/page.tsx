@@ -4,8 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ForgotPasswordPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -42,6 +45,11 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex min-h-screen">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Left side - Branding */}
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0EA5E9] via-[#0284C7] to-[#0369A1] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
@@ -56,9 +64,9 @@ export default function ForgotPasswordPage() {
         <div className="space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold leading-tight text-white">
-              Forgot Your Password?
+              {t('auth.forgotPasswordTitle')}
               <br />
-              No Worries!
+
             </h1>
             <p className="text-lg text-white/90">
               We'll send you instructions to reset your password and get you back on track.
@@ -88,11 +96,11 @@ export default function ForgotPasswordPage() {
             className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to sign in
+            {t('auth.backToSignIn')}
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Reset your password</h2>
+            <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
             <p className="mt-2 text-sm text-gray-600">
               Enter your email address and we'll send you instructions to reset your password.
             </p>
@@ -122,7 +130,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <div className="relative mt-1">
                 <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -146,24 +154,24 @@ export default function ForgotPasswordPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Sending...
+                  {t('auth.sending')}
                 </>
               ) : status === 'success' ? (
                 <>
                   <CheckCircle2 className="h-4 w-4" />
-                  Email Sent
+                  {t('auth.emailSent')}
                 </>
               ) : (
-                'Send Reset Instructions'
+                t('auth.sendResetInstructions')
               )}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Remember your password?{' '}
+              {t('auth.rememberPassword')}{' '}
               <Link href="/auth/signin" className="font-semibold text-[#0EA5E9] hover:text-[#0284C7]">
-                Sign in
+                {t('common.signIn')}
               </Link>
             </p>
           </div>
