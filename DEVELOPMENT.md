@@ -155,7 +155,7 @@ All agents are pre-loaded with platform context, stability rules, and the design
 
 - **Design**: Ethiopian-first project management with customizations (ETB currency, Ethiopian calendar)
 - **Pages**: ~164 pages across dashboard, projects, auth, settings, marketing
-- **Language**: English only. i18n/multilingual was removed — the previous implementation (next-intl) only switched fonts without translating any content. Do NOT re-add i18n unless a full translation pipeline is in place.
+- **Language**: 5-language support (EN, AM, OM, TI, SO) via custom i18n in `src/locales/`. Uses `LanguageProvider` context + `useLanguage()` hook with `t('key')` dot-notation. English fallback automatic. 362 keys per locale across 21 sections.
 - **No external fonts**: All fonts are system fonts or local @font-face declarations. Do NOT add Google Fonts or other CDN font dependencies — they cause CSP issues and add latency.
 
 ---
