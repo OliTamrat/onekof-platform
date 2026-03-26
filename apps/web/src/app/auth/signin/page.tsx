@@ -9,6 +9,8 @@ import {
   Calendar, Languages, Wallet, Brain, Kanban, BarChart3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 
 interface OrganizationInfo {
   name: string;
@@ -20,6 +22,7 @@ interface OrganizationInfo {
 function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
   const [email, setEmail] = useState('');
@@ -81,7 +84,7 @@ function SignInContent() {
           setRequiresTwoFactor(true);
           setError('');
         } else if (result.error === 'CredentialsSignin') {
-          setError('Invalid email or password');
+          setError(t('auth.invalidCredentials'));
         } else {
           setError(result.error);
         }
@@ -89,7 +92,7 @@ function SignInContent() {
         router.push('/select-organization');
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError(t('errors.somethingWentWrong'));
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +105,11 @@ function SignInContent() {
 
   return (
     <div className="flex min-h-screen bg-[#1B1F23]">
+      {/* Language Switcher - top right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         {/* Ambient glow */}
@@ -121,22 +129,21 @@ function SignInContent() {
           {/* Main content */}
           <div className="max-w-md">
             <h2 className="text-4xl font-semibold leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
-              Welcome back
+              {t('auth.welcomeBack')}
               <br />
-              <span className="text-white/30">to your workspace</span>
+              <span className="text-white/30">{t('auth.toYourWorkspace')}</span>
             </h2>
             <p className="mt-5 text-[16px] leading-relaxed text-white/30">
-              Projects, budgets, documents, and dashboards — all with native
-              Ethiopian calendar and language support.
+              {t('auth.projectsDescription')}
             </p>
 
             {/* Feature pills */}
             <div className="mt-8 flex flex-wrap gap-2">
               {[
-                { icon: Calendar, label: 'Ethiopian Calendar' },
-                { icon: Languages, label: '4 Languages' },
-                { icon: Wallet, label: 'ETB Budgets' },
-                { icon: Brain, label: 'AI Documents' },
+                { icon: Calendar, label: t('auth.ethiopianCalendar') },
+                { icon: Languages, label: t('auth.languages') },
+                { icon: Wallet, label: t('auth.etbBudgets') },
+                { icon: Brain, label: t('auth.aiDocuments') },
               ].map((f) => (
                 <div key={f.label} className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
                   <f.icon className="h-3.5 w-3.5 text-primary-400" />
@@ -174,11 +181,11 @@ function SignInContent() {
           </div>
 
           <div className="mb-10">
-            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">Sign in</h3>
+            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">{t('auth.signInTitle')}</h3>
             <p className="mt-2 text-[14px] text-white/30">
-              Don&apos;t have an account?{' '}
+              {t('auth.noAccount')}{' '}
               <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
-                Sign up
+                {t('common.signUp')}
               </Link>
             </p>
           </div>
@@ -193,7 +200,7 @@ function SignInContent() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/50">
-                Email
+                {t('auth.email')}
               </label>
               <input
                 id="email"
@@ -209,10 +216,10 @@ function SignInContent() {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label htmlFor="password" className="text-[13px] font-medium text-white/50">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
-                  Forgot?
+                  {t('auth.forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
@@ -266,11 +273,11 @@ function SignInContent() {
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {requiresTwoFactor ? 'Verifying...' : 'Signing in...'}
+                  {requiresTwoFactor ? t('auth.verifying') : t('auth.signingIn')}
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  {requiresTwoFactor ? 'Verify & Sign In' : 'Continue'}
+                  {requiresTwoFactor ? t('auth.verifyAndSignIn') : t('common.continueBtn')}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               )}
@@ -280,7 +287,7 @@ function SignInContent() {
           {/* Divider */}
           <div className="my-8 flex items-center gap-4">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <span className="text-[11px] font-medium uppercase tracking-wider text-white/15">Or</span>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-white/15">{t('common.or')}</span>
             <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
 
@@ -298,7 +305,7 @@ function SignInContent() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              Google
+              {t('auth.google')}
             </Button>
             <Button
               variant="outline"
@@ -309,14 +316,14 @@ function SignInContent() {
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#00A4EF">
                 <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" />
               </svg>
-              Microsoft
+              {t('auth.microsoft')}
             </Button>
           </div>
 
           {isMainDomain && (
             <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
               <p className="text-[13px] text-white/30">
-                <span className="font-medium text-white/50">Direct access:</span>{' '}
+                <span className="font-medium text-white/50">{t('auth.directAccess')}</span>{' '}
                 <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
                   your-org.onekof.com
                 </code>
@@ -325,7 +332,7 @@ function SignInContent() {
           )}
 
           <p className="mt-10 text-center text-[12px] text-white/15">
-            &copy; 2026 Onekof &middot; Built for Ethiopia
+            &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
           </p>
         </div>
       </div>
