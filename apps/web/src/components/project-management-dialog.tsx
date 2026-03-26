@@ -13,6 +13,7 @@ import {
   SlideoutPanelContent,
 } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -57,6 +58,7 @@ interface ProjectManagementDialogProps {
 }
 
 export function ProjectManagementDialog({
+  const { t } = useLanguage();
   project,
   open,
   onOpenChange,

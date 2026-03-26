@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface CreateIssueModalProps {
   onClose: () => void;
@@ -12,7 +13,8 @@ interface CreateIssueModalProps {
   defaultStatus?: string;
 }
 
-export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
+export function CreateIssueModal({
+  const { t } = useLanguage(); onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
   const toast = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
