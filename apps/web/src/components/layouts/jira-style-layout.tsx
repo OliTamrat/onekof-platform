@@ -11,6 +11,7 @@ import { PricingModal } from '@/components/pricing-modal';
 import { CommandPalette } from '@/components/command-palette';
 import { NotificationCenter } from '@/components/notification-center';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 import { KeyboardShortcutsModal, useKeyboardShortcuts } from '@/components/keyboard-shortcuts';
 import { CollapsibleSidebar } from './collapsible-sidebar';
 import { Button } from '@/components/ui/button';
@@ -69,6 +70,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { currentOrganization, organizations, projects, currentProject, switchOrganization, setCurrentProject } = useWorkspace();
+  const { t } = useLanguage();
   useKeyboardShortcuts();
 
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
@@ -87,16 +89,16 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
   // Dashboard navigation (when not in a project)
   const dashboardNav = [
-    { name: 'Home', href: '/dashboard', icon: Home },
-    { name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
-    { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
-    { name: 'Budget', href: '/dashboard/budget', icon: BarChart3 },
-    { name: 'AI Documents', href: '/dashboard/documents', icon: Sparkles },
-    { name: 'Teams', href: '/dashboard/teams', icon: Users },
-    { name: 'Goals', href: '/dashboard/goals', icon: Target },
-    { name: 'Automation', href: '/dashboard/automations', icon: Zap },
-    { name: 'Docs & Wiki', href: '/dashboard/docs', icon: BookOpen },
-    { name: 'Starred', href: '/dashboard/starred', icon: Star },
+    { name: t('nav.home'), href: '/dashboard', icon: Home },
+    { name: t('nav.projects'), href: '/dashboard/projects', icon: FolderKanban },
+    { name: t('nav.issues'), href: '/dashboard/issues', icon: ListChecks },
+    { name: t('nav.budget'), href: '/dashboard/budget', icon: BarChart3 },
+    { name: t('nav.aiDocuments'), href: '/dashboard/documents', icon: Sparkles },
+    { name: t('nav.teams'), href: '/dashboard/teams', icon: Users },
+    { name: t('nav.goals'), href: '/dashboard/goals', icon: Target },
+    { name: t('nav.automation'), href: '/dashboard/automations', icon: Zap },
+    { name: t('nav.docs'), href: '/dashboard/docs', icon: BookOpen },
+    { name: t('nav.starred'), href: '/dashboard/starred', icon: Star },
   ];
 
   // Project navigation (when in a specific project)
@@ -151,7 +153,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-64">
-            <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('nav.workspaces')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {organizations.map((org) => (
               <DropdownMenuItem
@@ -182,8 +184,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#282E33] justify-start font-normal"
           >
             <Search className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-left truncate hidden sm:block">Search or jump to...</span>
-            <span className="flex-1 text-left truncate sm:hidden">Search...</span>
+            <span className="flex-1 text-left truncate hidden sm:block">{t('nav.searchPlaceholder')}</span>
+            <span className="flex-1 text-left truncate sm:hidden">{t('common.search')}</span>
             <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
               Ctrl K
             </kbd>
@@ -200,23 +202,23 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="default" size="sm" className="gap-2 h-9 bg-primary-500 hover:bg-primary-600 text-white hidden md:flex">
                 <Plus className="h-4 w-4" />
-                <span className="hidden lg:inline">Create</span>
+                <span className="hidden lg:inline">{t('common.create')}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Create new...</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('nav.createNew')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push("/dashboard/issues?create=issue")}>
                 <ListChecks className="mr-2 h-4 w-4" />
-                Issue
+                {t('nav.issue')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/projects?create=project")}>
                 <FolderKanban className="mr-2 h-4 w-4" />
-                Project
+                {t('nav.createProject')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/docs?create=page")}>
                 <FileText className="mr-2 h-4 w-4" />
-                Wiki Page
+                {t('nav.wikiPage')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -244,51 +246,51 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setIsCreateMenuOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
-                Create
+                {t('common.create')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/notifications")}>
                 <div className="flex items-center w-full">
                   <Bell className="mr-2 h-4 w-4" />
-                  Notifications
+                  {t('nav.notifications')}
                   <span className="ml-auto h-2 w-2 rounded-full bg-red-500"></span>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsPricingModalOpen(true)}>
                 <Zap className="mr-2 h-4 w-4 fill-purple-500 text-purple-500" />
-                <span className="text-purple-600 dark:text-purple-400 font-medium">See plans</span>
+                <span className="text-purple-600 dark:text-purple-400 font-medium">{t('nav.seePlans')}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push("/settings")}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
-                Settings
+                {t('nav.settings')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/help")}>
                 <HelpCircle className="mr-2 h-4 w-4" />
-                Help
+                {t('nav.help')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="ml-4">Theme</span>
+                  <span className="ml-4">{t('settings.theme')}</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuItem onClick={() => setTheme('light')}>
                     <Sun className="mr-2 h-4 w-4" />
-                    <span>Light</span>
+                    <span>{t('nav.light')}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme('dark')}>
                     <Moon className="mr-2 h-4 w-4" />
-                    <span>Dark</span>
+                    <span>{t('nav.dark')}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme('system')}>
                     <Monitor className="mr-2 h-4 w-4" />
-                    <span>System</span>
+                    <span>{t('nav.system')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
@@ -312,20 +314,20 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push('/settings')}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
-                Settings
+                {t('nav.settings')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push('/help')}>
                 <HelpCircle className="mr-2 h-4 w-4" />
-                Help
+                {t('nav.help')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsPricingModalOpen(true)}>
                 <Zap className="mr-2 h-4 w-4 fill-purple-500 text-purple-500" />
-                <span className="text-purple-600 dark:text-purple-400 font-medium">See plans</span>
+                <span className="text-purple-600 dark:text-purple-400 font-medium">{t('nav.seePlans')}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign out
+                {t('common.signOut')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -380,7 +382,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                 className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                <span>PROJECTS</span>
+                <span>{t('nav.projects').toUpperCase()}</span>
                 <ChevronRight
                   className={cn(
                     'h-3 w-3 transition-transform',
@@ -431,7 +433,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                     href="/dashboard/projects"
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 mt-2"
                   >
-                    View all projects →
+                    {t('nav.viewAllProjects')}
                   </Link>
                 </div>
               )}
@@ -446,7 +448,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 onClick={() => setIsDocsExpanded(!isDocsExpanded)}
                 className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                <span>DOCS & SPACES</span>
+                <span>{t('nav.docs').toUpperCase()}</span>
                 <ChevronRight
                   className={cn(
                     'h-3 w-3 transition-transform',
@@ -462,14 +464,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                   >
                     <Folders className="h-4 w-4" />
-                    <span>All Spaces</span>
+                    <span>{t('nav.allSpaces')}</span>
                   </Link>
                   <Link
                     href="/dashboard/docs/recent"
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                   >
                     <FileText className="h-4 w-4" />
-                    <span>Recent Pages</span>
+                    <span>{t('nav.recentPages')}</span>
                   </Link>
                 </div>
               )}
