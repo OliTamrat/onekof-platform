@@ -53,7 +53,7 @@ export default function DashboardPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}/p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
         </div>
       </div>
     );
