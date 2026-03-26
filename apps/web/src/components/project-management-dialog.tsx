@@ -58,11 +58,11 @@ interface ProjectManagementDialogProps {
 }
 
 export function ProjectManagementDialog({
-  const { t } = useLanguage();
   project,
   open,
   onOpenChange,
 }: ProjectManagementDialogProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('details');
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');
