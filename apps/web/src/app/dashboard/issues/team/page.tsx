@@ -46,7 +46,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-import { useLanguage } from '@/contexts/language-context';
   Users,
   Plus,
   Mail,
@@ -61,6 +60,7 @@ import { useLanguage } from '@/contexts/language-context';
   Briefcase,
   Settings,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface TeamMember {

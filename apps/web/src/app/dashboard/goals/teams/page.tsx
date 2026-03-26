@@ -13,11 +13,11 @@ import {
   BarChart3
 } from 'lucide-react';
 import {
-import { useLanguage } from '@/contexts/language-context';
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { useLanguage } from '@/contexts/language-context';
 
 // Mock team goals data
 const TEAM_GOALS = [

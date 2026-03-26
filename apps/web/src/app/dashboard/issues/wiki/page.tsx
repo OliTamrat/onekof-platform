@@ -6,7 +6,6 @@ import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
-import { useLanguage } from '@/contexts/language-context';
   BookOpen,
   Search,
   Users,
@@ -14,6 +13,7 @@ import { useLanguage } from '@/contexts/language-context';
   Star,
   Eye
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface WikiArticle {
   id: string;

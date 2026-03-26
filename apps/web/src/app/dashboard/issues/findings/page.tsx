@@ -5,9 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
-import { useLanguage } from '@/contexts/language-context';
   FileText
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function IssuesFindingsPage() {
   const { t } = useLanguage();

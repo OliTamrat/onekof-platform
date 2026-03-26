@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { ProjectPageHeader } from '@/components/navigation/project-page-header';
 import {
-import { useLanguage } from '@/contexts/language-context';
   ClipboardCheck,
   CheckCircle2,
   Circle,
@@ -15,6 +14,7 @@ import { useLanguage } from '@/contexts/language-context';
   Calendar,
   AlertTriangle
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ChecklistItem {
   id: string;
