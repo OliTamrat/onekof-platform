@@ -9,6 +9,8 @@ import {
   Calendar, Languages, Wallet, Brain, Kanban, Shield, Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 
 interface OrganizationInfo {
   id: string;
@@ -20,6 +22,7 @@ interface OrganizationInfo {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -69,12 +72,12 @@ export default function SignUpPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('auth.passwordsDontMatch'));
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(t('auth.atLeast8Chars'));
       return;
     }
 
@@ -121,13 +124,18 @@ export default function SignUpPage() {
   };
 
   const passwordChecks = [
-    { label: 'At least 8 characters', met: password.length >= 8 },
-    { label: 'Contains a number', met: /\d/.test(password) },
-    { label: 'Contains uppercase', met: /[A-Z]/.test(password) },
+    { label: t('auth.atLeast8Chars'), met: password.length >= 8 },
+    { label: t('auth.containsNumber'), met: /\d/.test(password) },
+    { label: t('auth.containsUppercase'), met: /[A-Z]/.test(password) },
   ];
 
   return (
     <div className="flex min-h-screen bg-[#1B1F23]">
+      {/* Language Switcher - top right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#0B3A34]" />
@@ -199,11 +207,11 @@ export default function SignUpPage() {
           </div>
 
           <div className="mb-8">
-            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">Create your account</h3>
+            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
             <p className="mt-2 text-[14px] text-white/30">
-              Already have an account?{' '}
+              {t('auth.hasAccount')}{' '}
               <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
-                Sign in
+                {t('common.signIn')}
               </Link>
             </p>
           </div>
@@ -218,7 +226,7 @@ export default function SignUpPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="mb-2 block text-[13px] font-medium text-white/50">
-                Full name
+                {t('auth.fullName')}
               </label>
               <input
                 id="name"
@@ -233,7 +241,7 @@ export default function SignUpPage() {
 
             <div>
               <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/50">
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <input
                 id="email"
@@ -248,7 +256,7 @@ export default function SignUpPage() {
 
             <div>
               <label htmlFor="password" className="mb-2 block text-[13px] font-medium text-white/50">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <input
@@ -284,7 +292,7 @@ export default function SignUpPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-medium text-white/50">
-                Confirm password
+                {t('auth.confirmPassword')}
               </label>
               <div className="relative">
                 <input
@@ -317,11 +325,11 @@ export default function SignUpPage() {
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating account...
+                  {t('auth.creatingAccount')}
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  Create account
+                  {t('auth.createAccount')}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               )}
@@ -332,19 +340,19 @@ export default function SignUpPage() {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary-400" />
               <div>
-                <p className="text-[13px] font-medium text-white/50">Quick 2-minute setup</p>
+                <p className="text-[13px] font-medium text-white/50">{t('auth.quickSetup')}</p>
                 <p className="text-[12px] text-white/25">
-                  After signup, we&apos;ll help you create your workspace and invite your team
+                  {t('auth.afterSignup')}
                 </p>
               </div>
             </div>
           </div>
 
           <p className="mt-6 text-center text-[12px] text-white/15">
-            By signing up, you agree to our Terms of Service and Privacy Policy
+            {t('auth.termsAgreement')}
           </p>
           <p className="mt-2 text-center text-[12px] text-white/15">
-            &copy; 2026 Onekof &middot; Built for Ethiopia
+            &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
           </p>
         </div>
       </div>
