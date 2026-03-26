@@ -53,7 +53,7 @@ const typeConfig = {
 
 const statusConfig = {
   pending: { color: 'bg-gray-200 text-gray-800', label: 'Pending Review', icon: Clock },
-  'in-review': { color: 'bg-blue-200 text-blue-800', label: t('status.inReview'), icon: FileCheck },
+  'in-review': { color: 'bg-blue-200 text-blue-800', label: 'In Review', icon: FileCheck },
   approved: { color: 'bg-green-200 text-green-800', label: 'Approved', icon: CheckCircle2 },
   rejected: { color: 'bg-red-200 text-red-800', label: 'Rejected', icon: XCircle },
   'revision-needed': { color: 'bg-yellow-200 text-yellow-800', label: 'Needs Revision', icon: AlertCircle }
@@ -61,9 +61,9 @@ const statusConfig = {
 
 const priorityConfig = {
   critical: { color: 'bg-red-600 text-white', label: 'Critical' },
-  high: { color: 'bg-orange-600 text-white', label: t('priority.high') },
-  medium: { color: 'bg-yellow-600 text-white', label: t('priority.medium') },
-  low: { color: 'bg-gray-500 text-white', label: t('priority.low') }
+  high: { color: 'bg-orange-600 text-white', label: 'High' },
+  medium: { color: 'bg-yellow-600 text-white', label: 'Medium' },
+  low: { color: 'bg-gray-500 text-white', label: 'Low' }
 };
 
 export default function IssuesCodePage() {
