@@ -5,10 +5,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Lock, Loader2, CheckCircle2, AlertCircle, Check, X, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 
 function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const token = searchParams.get('token');
 
   const [password, setPassword] = useState('');
@@ -48,10 +51,10 @@ function ResetPasswordContent() {
 
   // Password requirements
   const requirements = [
-    { label: 'At least 8 characters', met: password.length >= 8 },
-    { label: 'Contains uppercase & lowercase', met: /[a-z]/.test(password) && /[A-Z]/.test(password) },
-    { label: 'Contains a number', met: /[0-9]/.test(password) },
-    { label: 'Contains a special character', met: /[^a-zA-Z0-9]/.test(password) },
+    { label: t('auth.atLeast8Chars'), met: password.length >= 8 },
+    { label: t('auth.containsUppercase'), met: /[a-z]/.test(password) && /[A-Z]/.test(password) },
+    { label: t('auth.containsNumber'), met: /[0-9]/.test(password) },
+    { label: t('auth.containsSpecialChar'), met: /[^a-zA-Z0-9]/.test(password) },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,7 +62,7 @@ function ResetPasswordContent() {
 
     if (password !== confirmPassword) {
       setStatus('error');
-      setMessage('Passwords do not match');
+      setMessage(t('auth.passwordsDontMatch'));
       return;
     }
 
@@ -119,6 +122,11 @@ function ResetPasswordContent() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Left side - Branding */}
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0070f3] via-[#0056b3] to-[#003d82] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
@@ -187,11 +195,11 @@ function ResetPasswordContent() {
             className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to sign in
+            {t('auth.backToSignIn')}
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Set new password</h2>
+            <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
             <p className="mt-2 text-sm text-gray-600">
               Your new password must be different from previously used passwords.
             </p>
@@ -252,7 +260,7 @@ function ResetPasswordContent() {
               {/* Password field */}
               <div>
                 <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                  New Password
+                  {t('auth.newPassword')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -281,15 +289,15 @@ function ResetPasswordContent() {
                 {password && (
                   <div className="mt-3 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-gray-600">Password strength:</span>
+                      <span className="text-xs font-medium text-gray-600">{t('auth.passwordStrength')}:</span>
                       <span className={`text-xs font-semibold ${
                         passwordStrength === 'weak' ? 'text-red-600' :
                         passwordStrength === 'medium' ? 'text-yellow-600' :
                         'text-green-600'
                       }`}>
-                        {passwordStrength === 'weak' ? 'Weak' :
-                         passwordStrength === 'medium' ? 'Medium' :
-                         'Strong'}
+                        {passwordStrength === 'weak' ? t('auth.weak') :
+                         passwordStrength === 'medium' ? t('priority.medium') :
+                         t('auth.strong')}
                       </span>
                     </div>
                     <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
@@ -327,7 +335,7 @@ function ResetPasswordContent() {
               {/* Confirm password field */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Confirm New Password
+                  {t('auth.confirmNewPassword')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -353,13 +361,13 @@ function ResetPasswordContent() {
                 {confirmPassword && password !== confirmPassword && (
                   <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
                     <X className="h-3 w-3" />
-                    Passwords do not match
+                    {t('auth.passwordsDontMatch')}
                   </p>
                 )}
                 {confirmPassword && password === confirmPassword && (
                   <p className="mt-2 text-xs text-green-600 flex items-center gap-1">
                     <Check className="h-3 w-3" />
-                    Passwords match
+                    {t('auth.passwordsMatch')}
                   </p>
                 )}
               </div>
@@ -372,17 +380,17 @@ function ResetPasswordContent() {
                 {isLoading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    Resetting Password...
+                    {t('auth.resettingPassword')}
                   </>
                 ) : status === 'success' ? (
                   <>
                     <CheckCircle2 className="h-5 w-5" />
-                    Password Reset!
+                    {t('auth.passwordReset')}
                   </>
                 ) : (
                   <>
                     <Lock className="h-5 w-5" />
-                    Reset Password
+                    {t('auth.resetPassword')}
                   </>
                 )}
               </Button>
