@@ -50,7 +50,7 @@ interface Milestone {
 
 const statusConfig = {
   planning: { color: 'bg-gray-200 text-gray-800', label: 'Planning' },
-  'in-progress': { color: 'bg-blue-200 text-blue-800', label: t('status.inProgress') },
+  'in-progress': { color: 'bg-blue-200 text-blue-800', label: 'In Progress' },
   testing: { color: 'bg-yellow-200 text-yellow-800', label: 'Testing' },
   completed: { color: 'bg-green-200 text-green-800', label: 'Completed' },
   delayed: { color: 'bg-red-200 text-red-800', label: 'Delayed' }

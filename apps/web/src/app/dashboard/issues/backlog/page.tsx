@@ -50,16 +50,16 @@ const typeConfig = {
 
 const priorityConfig = {
   critical: { color: 'bg-red-600 text-white', label: 'Critical' },
-  high: { color: 'bg-orange-600 text-white', label: t('priority.high') },
-  medium: { color: 'bg-yellow-600 text-white', label: t('priority.medium') },
-  low: { color: 'bg-gray-500 text-white', label: t('priority.low') }
+  high: { color: 'bg-orange-600 text-white', label: 'High' },
+  medium: { color: 'bg-yellow-600 text-white', label: 'Medium' },
+  low: { color: 'bg-gray-500 text-white', label: 'Low' }
 };
 
 const statusConfig = {
   planned: { color: 'bg-gray-200 text-gray-800', label: 'Planned' },
   approved: { color: 'bg-blue-200 text-blue-800', label: 'Approved' },
   ready: { color: 'bg-green-200 text-green-800', label: 'Ready' },
-  blocked: { color: 'bg-red-200 text-red-800', label: t('status.blocked') }
+  blocked: { color: 'bg-red-200 text-red-800', label: 'Blocked' }
 };
 
 export default function IssuesBacklogPage() {
