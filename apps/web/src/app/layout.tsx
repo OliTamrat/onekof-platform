@@ -153,9 +153,17 @@ export default function RootLayout({
               font-style: normal;
               font-display: swap;
             }
+            @font-face {
+              font-family: 'Abyssinica SIL';
+              src: url('/fonts/AbyssinicaSIL-Regular.woff2') format('woff2');
+              font-weight: 400;
+              font-style: normal;
+              font-display: swap;
+            }
             :root {
               --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
               --font-body: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+              --font-abyssinica: "Abyssinica SIL";
             }
             body {
               font-family: var(--font-body);

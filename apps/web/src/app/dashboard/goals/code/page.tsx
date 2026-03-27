@@ -22,26 +22,26 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/goals/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/goals/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/goals/code', active: true },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
-];
-
 export default function GoalsCodePage() {
   const { t } = useLanguage();
   const toast = useToast();
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<'github' | 'gitlab' | 'bitbucket' | null>(null);
 
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/goals/summary' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/goals/list' },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/goals/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/goals/code', active: true },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/goals/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/goals/timeline' },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/goals/pages' },
+  ];
+
   const handleConnect = () => {
     if (selectedProvider) {
       console.log('Connecting to:', selectedProvider);
-      toast.info('Connecting', `Redirecting to ${selectedProvider} OAuth flow`);
+      toast.info(t('codeConnect.connecting'), t('codeConnect.redirectingOAuth', { provider: selectedProvider }));
       setShowConnectModal(false);
     }
   };
@@ -55,14 +55,14 @@ export default function GoalsCodePage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Code className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Code</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('tabs.code')}</h1>
             </div>
             <Button
               onClick={() => setShowConnectModal(true)}
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Connect Repository
+              {t('codeConnect.title')}
             </Button>
           </div>
 
@@ -84,23 +84,23 @@ export default function GoalsCodePage() {
             <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-[#282E33] rounded-full flex items-center justify-center mb-4">
               <GitBranch className="h-8 w-8 text-gray-400 dark:text-[#6B7684]" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Connect repositories to track goal progress</h2>
-            <p className="text-gray-600 dark:text-slate-400 mb-6">Link code repositories to automatically track development progress toward your goals.</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.connectReposTrackGoals')}</h2>
+            <p className="text-gray-600 dark:text-slate-400 mb-6">{t('codeConnect.goalsDescription')}</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <GitCommit className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Commit Tracking</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Track commits linked to goal milestones</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.commitTracking')}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('codeConnect.commitTrackingDesc')}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <GitPullRequest className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">PR Progress</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Monitor pull requests for goal deliverables</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.prProgress')}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('codeConnect.prProgressDesc')}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <Target className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Milestone Sync</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Sync code milestones with goal tracking</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.milestoneSync')}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('codeConnect.milestoneSyncDesc')}</p>
               </div>
             </div>
             <Button
@@ -108,7 +108,7 @@ export default function GoalsCodePage() {
               className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Connect Repository
+              {t('codeConnect.title')}
             </Button>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function GoalsCodePage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-md bg-white dark:bg-[#22272B] rounded-lg shadow-xl">
               <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Connect Repository</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('codeConnect.title')}</h2>
                 <Button onClick={() => setShowConnectModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <X className="h-5 w-5" />
                 </Button>
@@ -126,7 +126,7 @@ export default function GoalsCodePage() {
 
               <div className="p-6 space-y-4">
                 <p className="text-sm text-gray-600 dark:text-slate-400">
-                  Choose your code hosting provider to track goal progress
+                  {t('codeConnect.chooseProviderGoals')}
                 </p>
 
                 <div className="space-y-3">
@@ -144,7 +144,7 @@ export default function GoalsCodePage() {
                     <Github className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitHub</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect GitHub repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t('codeConnect.connectGitHubGoals')}</div>
                     </div>
                   </div>
 
@@ -162,7 +162,7 @@ export default function GoalsCodePage() {
                     <GitlabIcon className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect GitLab repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t('codeConnect.connectGitLabGoals')}</div>
                     </div>
                   </div>
 
@@ -180,7 +180,7 @@ export default function GoalsCodePage() {
                     <GitBranch className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">Bitbucket</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect Bitbucket repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t('codeConnect.connectBitbucketGoals')}</div>
                     </div>
                   </div>
                 </div>
@@ -191,14 +191,14 @@ export default function GoalsCodePage() {
                   onClick={() => setShowConnectModal(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   onClick={handleConnect}
                   disabled={!selectedProvider}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Connect
+                  {t('codeConnect.connect')}
                 </Button>
               </div>
             </div>

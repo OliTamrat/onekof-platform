@@ -106,7 +106,7 @@ export default function BudgetSettingsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['budgets'] });
-      toast.success('Budget settings saved successfully');
+      toast.success(t('budgetSettings.settingsSaved'));
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -120,7 +120,7 @@ export default function BudgetSettingsPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Budget Settings"
+        title={t('budgetSettings.title')}
         icon={<Settings className="h-6 w-6" />}
         iconColor="#F59E0B"
         currentTab="settings"
@@ -137,8 +137,8 @@ export default function BudgetSettingsPage() {
         ) : budgets.length === 0 ? (
           <div className="text-center py-16">
             <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Found</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Create a budget in a project first to configure settings.</p>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budgetSettings.noBudgetsFound')}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{t('budgetSettings.noBudgetsFoundDesc')}</p>
           </div>
         ) : (
           <>
@@ -146,7 +146,7 @@ export default function BudgetSettingsPage() {
             {budgets.length > 1 && (
               <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Budget
+                  {t('budgetSettings.selectBudget')}
                 </label>
                 <select
                   value={selectedBudgetId}
@@ -166,47 +166,47 @@ export default function BudgetSettingsPage() {
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <DollarSign className="h-5 w-5 text-[#F59E0B]" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">General Settings</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.generalSettings')}</h2>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Currency
+                    {t('budgetSettings.currency')}
                   </label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                     className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="ETB">ETB - Ethiopian Birr</option>
-                    <option value="USD">USD - US Dollar</option>
-                    <option value="EUR">EUR - Euro</option>
-                    <option value="GBP">GBP - British Pound</option>
+                    <option value="ETB">{t('budgetSettings.etbBirr')}</option>
+                    <option value="USD">{t('budgetSettings.usdDollar')}</option>
+                    <option value="EUR">{t('budgetSettings.eurEuro')}</option>
+                    <option value="GBP">{t('budgetSettings.gbpPound')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Fiscal Year Start Month
+                    {t('budgetSettings.fiscalYearStartMonth')}
                   </label>
                   <select
                     value={fiscalYearStart}
                     onChange={(e) => setFiscalYearStart(e.target.value)}
                     className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="01">January</option>
-                    <option value="02">February</option>
-                    <option value="03">March</option>
-                    <option value="04">April</option>
-                    <option value="05">May</option>
-                    <option value="06">June</option>
-                    <option value="07">July (Ethiopian FY)</option>
-                    <option value="08">August</option>
-                    <option value="09">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
+                    <option value="01">{t('budgetSettings.januaryMonth')}</option>
+                    <option value="02">{t('budgetSettings.februaryMonth')}</option>
+                    <option value="03">{t('budgetSettings.marchMonth')}</option>
+                    <option value="04">{t('budgetSettings.aprilMonth')}</option>
+                    <option value="05">{t('budgetSettings.mayMonth')}</option>
+                    <option value="06">{t('budgetSettings.juneMonth')}</option>
+                    <option value="07">{t('budgetSettings.julyMonth')}</option>
+                    <option value="08">{t('budgetSettings.augustMonth')}</option>
+                    <option value="09">{t('budgetSettings.septemberMonth')}</option>
+                    <option value="10">{t('budgetSettings.octoberMonth')}</option>
+                    <option value="11">{t('budgetSettings.novemberMonth')}</option>
+                    <option value="12">{t('budgetSettings.decemberMonth')}</option>
                   </select>
                 </div>
               </div>
@@ -216,15 +216,15 @@ export default function BudgetSettingsPage() {
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <Bell className="h-5 w-5 text-[#F59E0B]" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.notifications')}</h2>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Enable Budget Alerts</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('budgetSettings.enableBudgetAlerts')}</label>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Receive notifications when budgets approach their limits
+                      {t('budgetSettings.enableBudgetAlertsDesc')}
                     </p>
                   </div>
                   <button
@@ -244,7 +244,7 @@ export default function BudgetSettingsPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Budget Alert Threshold (%)
+                    {t('budgetSettings.budgetAlertThreshold')}
                   </label>
                   <input
                     type="number"
@@ -255,7 +255,7 @@ export default function BudgetSettingsPage() {
                     className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Alert when budget utilization reaches this percentage
+                    {t('budgetSettings.budgetAlertThresholdDesc')}
                   </p>
                 </div>
               </div>
@@ -265,15 +265,15 @@ export default function BudgetSettingsPage() {
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <Shield className="h-5 w-5 text-[#F59E0B]" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Approval Workflow</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.approvalWorkflow')}</h2>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Require Expense Approval</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('budgetSettings.requireExpenseApproval')}</label>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      All expenses must be approved before being processed
+                      {t('budgetSettings.requireExpenseApprovalDesc')}
                     </p>
                   </div>
                   <button
@@ -293,7 +293,7 @@ export default function BudgetSettingsPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Approval Threshold Amount (ETB)
+                    {t('budgetSettings.approvalThresholdAmount')}
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">ETB</span>
@@ -306,7 +306,7 @@ export default function BudgetSettingsPage() {
                     />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Expenses above this amount require higher-level approval
+                    {t('budgetSettings.approvalThresholdAmountDesc')}
                   </p>
                 </div>
               </div>
@@ -324,7 +324,7 @@ export default function BudgetSettingsPage() {
                 ) : (
                   <Save className="h-4 w-4" />
                 )}
-                Save Settings
+                {t('budgetSettings.saveSettings')}
               </Button>
             </div>
           </>

@@ -99,6 +99,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const isSomali = locale === 'so';
   const fontClass = (isAmharic || isTigrinya) ? 'font-ethiopic' : '';
 
+  // Apply Abyssinica SIL font globally for Ge'ez script languages
+  useEffect(() => {
+    if (isAmharic || isTigrinya) {
+      document.body.classList.add('font-ethiopic');
+    } else {
+      document.body.classList.remove('font-ethiopic');
+    }
+  }, [isAmharic, isTigrinya]);
+
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t, isAmharic, isOromo, isTigrinya, isSomali, fontClass }}>
       {children}
