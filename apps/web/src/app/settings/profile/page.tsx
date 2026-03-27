@@ -16,10 +16,12 @@ import {
   Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ProfilePage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -48,7 +50,7 @@ export default function ProfilePage() {
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0EA5E9] border-t-transparent"></div>
-          <p className="text-sm text-gray-600">Loading...</p>
+          <p className="text-sm text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -73,16 +75,16 @@ export default function ProfilePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to update profile');
+        throw new Error(data.error || t('profile.failedToUpdateProfile'));
       }
 
       // Update session with new data
       await update({ name, email });
 
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      setMessage({ type: 'success', text: t('profile.profileUpdated') });
       setIsEditing(false);
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
+      setMessage({ type: 'error', text: error.message || t('profile.failedToUpdateProfile') });
     } finally {
       setIsSaving(false);
     }
@@ -106,7 +108,7 @@ export default function ProfilePage() {
             className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
+            {t('profile.backToDashboard')}
           </Link>
         </div>
       </div>
@@ -114,8 +116,8 @@ export default function ProfilePage() {
       {/* Main Content */}
       <div className="mx-auto max-w-4xl px-6 py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="mt-2 text-gray-600">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('profile.title')}</h1>
+          <p className="mt-2 text-gray-600">{t('profile.subtitle')}</p>
         </div>
 
         {/* Message Alert */}
@@ -140,13 +142,13 @@ export default function ProfilePage() {
           {/* Profile Information Card */}
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{t('profile.profileInformation')}</h2>
               {!isEditing && (
                 <Button
                   onClick={() => setIsEditing(true)}
                   className="rounded-lg bg-[#0EA5E9] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2"
                 >
-                  Edit Profile
+                  {t('profile.editProfile')}
                 </Button>
               )}
             </div>
@@ -166,7 +168,7 @@ export default function ProfilePage() {
               {/* Name Field */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
+                  {t('profile.fullName')}
                 </label>
                 <div className="relative mt-1">
                   <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -187,7 +189,7 @@ export default function ProfilePage() {
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email Address
+                  {t('profile.emailAddress')}
                 </label>
                 <div className="relative mt-1">
                   <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -216,10 +218,10 @@ export default function ProfilePage() {
                     {isSaving ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Saving...
+                        {t('profile.saving')}
                       </>
                     ) : (
-                      'Save Changes'
+                      t('profile.saveChanges')
                     )}
                   </Button>
                   <Button variant="outline"
@@ -227,7 +229,7 @@ export default function ProfilePage() {
                     disabled={isSaving}
                     className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                 </div>
               )}
@@ -236,7 +238,7 @@ export default function ProfilePage() {
 
           {/* Security Card */}
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">Security</h2>
+            <h2 className="mb-4 text-xl font-semibold text-gray-900">{t('profile.security')}</h2>
             <div className="space-y-4">
               <Link
                 href="/settings/change-password"
@@ -247,8 +249,8 @@ export default function ProfilePage() {
                     <Lock className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Change Password</h3>
-                    <p className="text-sm text-gray-600">Update your password to keep your account secure</p>
+                    <h3 className="font-semibold text-gray-900">{t('profile.changePassword')}</h3>
+                    <p className="text-sm text-gray-600">{t('profile.changePasswordDesc')}</p>
                   </div>
                 </div>
               </Link>
@@ -257,7 +259,7 @@ export default function ProfilePage() {
 
           {/* Danger Zone Card */}
           <div className="rounded-lg border border-red-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold text-red-600">Danger Zone</h2>
+            <h2 className="mb-4 text-xl font-semibold text-red-600">{t('profile.dangerZone')}</h2>
             <div className="space-y-4">
               <div
                 role="button"
@@ -271,8 +273,8 @@ export default function ProfilePage() {
                     <LogOut className="h-5 w-5 text-orange-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-gray-900">Sign Out</h3>
-                    <p className="text-sm text-gray-600">Sign out of your account on this device</p>
+                    <h3 className="font-semibold text-gray-900">{t('profile.signOut')}</h3>
+                    <p className="text-sm text-gray-600">{t('profile.signOutDesc')}</p>
                   </div>
                 </div>
               </div>
@@ -287,9 +289,9 @@ export default function ProfilePage() {
                     <Trash2 className="h-5 w-5 text-red-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-red-600">Delete Account</h3>
+                    <h3 className="font-semibold text-red-600">{t('profile.deleteAccount')}</h3>
                     <p className="text-sm text-gray-600">
-                      Permanently delete your account and all associated data
+                      {t('profile.deleteAccountDesc')}
                     </p>
                   </div>
                 </div>

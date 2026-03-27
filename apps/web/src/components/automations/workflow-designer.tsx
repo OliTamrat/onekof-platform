@@ -4,6 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Plus, Trash2, ArrowDown, Zap, Filter, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface WorkflowTrigger {
   id: string;
@@ -64,6 +65,7 @@ interface WorkflowDesignerProps {
 }
 
 export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDesignerProps) {
+  const { t } = useLanguage();
   const [rule, setRule] = React.useState<WorkflowRule>(
     initialRule || { trigger: null, conditions: [], actions: [] }
   );
@@ -109,7 +111,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
       <div className="rounded-lg border-2 border-dashed border-primary-300 bg-primary-50 p-4 dark:border-primary-700 dark:bg-primary-900/20">
         <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary-700 dark:text-primary-400">
           <Zap className="h-4 w-4" />
-          Trigger
+          {t('automation.trigger')}
         </div>
         {rule.trigger ? (
           <div className="flex items-center justify-between rounded-md bg-white p-3 shadow-sm dark:bg-gray-800">
@@ -134,7 +136,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
             className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
             aria-label="Select trigger"
           >
-            <option value="" disabled>Select a trigger...</option>
+            <option value="" disabled>{t('automation.selectTrigger')}</option>
             {TRIGGER_OPTIONS.map((opt) => (
               <option key={opt.type} value={opt.type}>{opt.label}</option>
             ))}
@@ -154,14 +156,14 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
         <div className="rounded-lg border-2 border-dashed border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
           <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-400">
             <Filter className="h-4 w-4" />
-            Conditions (optional)
+            {t('automation.conditions')}
           </div>
           <div className="space-y-2">
             {rule.conditions.map((condition) => (
               <div key={condition.id} className="flex items-center gap-2 rounded-md bg-white p-2 shadow-sm dark:bg-gray-800">
                 <input
                   type="text"
-                  placeholder="Field"
+                  placeholder={t('automation.field')}
                   value={condition.field}
                   onChange={(e) => {
                     setRule((prev) => ({
@@ -193,7 +195,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
                 </select>
                 <input
                   type="text"
-                  placeholder="Value"
+                  placeholder={t('automation.value')}
                   value={condition.value}
                   onChange={(e) => {
                     setRule((prev) => ({
@@ -216,7 +218,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
               onClick={addCondition}
               className="h-auto px-2 py-1 flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
             >
-              <Plus className="h-3 w-3" /> Add condition
+              <Plus className="h-3 w-3" /> {t('automation.addCondition')}
             </Button>
           </div>
         </div>
@@ -254,7 +256,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
               className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
               aria-label="Add action"
             >
-              <option value="" disabled>Add an action...</option>
+              <option value="" disabled>{t('automation.addAction')}</option>
               {ACTION_OPTIONS.map((opt) => (
                 <option key={opt.type} value={opt.type}>{opt.label}</option>
               ))}
@@ -270,7 +272,7 @@ export function WorkflowDesigner({ initialRule, onSave, className }: WorkflowDes
             onClick={() => onSave(rule)}
             className="bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           >
-            Save Automation
+            {t('automation.saveAutomation')}
           </Button>
         </div>
       )}

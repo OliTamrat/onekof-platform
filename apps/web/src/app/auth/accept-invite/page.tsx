@@ -14,6 +14,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface InvitationDetails {
   email: string;
@@ -29,6 +30,7 @@ function AcceptInviteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status: sessionStatus } = useSession();
+  const { t } = useLanguage();
   const token = searchParams.get('token');
 
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);
@@ -42,7 +44,7 @@ function AcceptInviteContent() {
   // Validate token on mount
   useEffect(() => {
     if (!token) {
-      setError('Missing invitation token');
+      setError(t('auth.missingInvitationToken'));
       setLoading(false);
       return;
     }
@@ -53,7 +55,7 @@ function AcceptInviteContent() {
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.error || 'Invalid invitation');
+          setError(data.error || t('auth.invalidInvitation'));
           setLoading(false);
           return;
         }
@@ -61,13 +63,13 @@ function AcceptInviteContent() {
         setInvitation(data.invitation);
         setLoading(false);
       } catch {
-        setError('Failed to validate invitation');
+        setError(t('auth.failedToValidateInvitation'));
         setLoading(false);
       }
     }
 
     validateToken();
-  }, [token]);
+  }, [token, t]);
 
   const handleAccept = async () => {
     if (!token) return;
@@ -89,7 +91,7 @@ function AcceptInviteContent() {
           router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`);
           return;
         }
-        setError(data.error || 'Failed to accept invitation');
+        setError(data.error || t('auth.failedToValidateInvitation'));
         setAccepting(false);
         return;
       }
@@ -98,7 +100,7 @@ function AcceptInviteContent() {
       setResultMessage(data.message);
       setResultOrg(data.organization);
     } catch {
-      setError('Failed to accept invitation');
+      setError(t('auth.failedToValidateInvitation'));
       setAccepting(false);
     }
   };
@@ -108,7 +110,7 @@ function AcceptInviteContent() {
       <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
-          <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">Validating invitation...</p>
+          <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">{t('invite.validating')}</p>
         </div>
       </div>
     );
@@ -121,11 +123,11 @@ function AcceptInviteContent() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
             <XCircle className="h-8 w-8 text-red-500" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Invalid Invitation</h1>
+          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{t('invite.invalidInvitation')}</h1>
           <p className="mb-6 text-sm text-gray-600 dark:text-slate-400">{error}</p>
           <Link href="/auth/signin">
             <Button className="bg-primary-500 hover:bg-primary-600 text-white">
-              Go to Sign In
+              {t('invite.goToSignIn')}
             </Button>
           </Link>
         </div>
@@ -140,13 +142,13 @@ function AcceptInviteContent() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
             <CheckCircle2 className="h-8 w-8 text-green-500" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Welcome!</h1>
+          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{t('invite.welcome')}</h1>
           <p className="mb-6 text-sm text-gray-600 dark:text-slate-400">{resultMessage}</p>
           <Button
             onClick={() => router.push('/dashboard')}
             className="bg-primary-500 hover:bg-primary-600 text-white"
           >
-            Go to Dashboard
+            {t('invite.goToDashboard')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -161,8 +163,8 @@ function AcceptInviteContent() {
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
             <Users className="h-7 w-7 text-white" />
           </div>
-          <h1 className="text-xl font-semibold text-white">You&apos;re Invited!</h1>
-          <p className="mt-1 text-sm text-white/80">Join your team on Onekof</p>
+          <h1 className="text-xl font-semibold text-white">{t('invite.youreInvited')}</h1>
+          <p className="mt-1 text-sm text-white/80">{t('invite.joinTeamOnOnekof')}</p>
         </div>
 
         <div className="p-8">
@@ -170,32 +172,32 @@ function AcceptInviteContent() {
             <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 p-4 text-center">
               <XCircle className="mx-auto mb-2 h-6 w-6 text-red-500" />
               <p className="text-sm font-medium text-red-700 dark:text-red-400">
-                This invitation has expired
+                {t('invite.invitationExpired')}
               </p>
               <p className="mt-1 text-xs text-red-600 dark:text-red-500">
-                Please ask the sender for a new invitation
+                {t('invite.askNewInvitation')}
               </p>
             </div>
           ) : (
             <>
               <div className="mb-6 space-y-3">
                 <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">Organization</span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.organization')}</span>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">{invitation?.organizationName}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">Invited by</span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.invitedBy')}</span>
                   <span className="text-sm text-gray-900 dark:text-white">{invitation?.invitedBy}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">Role</span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.role')}</span>
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary-100 dark:bg-primary-900/20 px-2.5 py-0.5 text-xs font-medium text-primary-700 dark:text-primary-400">
                     <Shield className="h-3 w-3" />
                     {invitation?.role}
                   </span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">Expires</span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.expires')}</span>
                   <span className="inline-flex items-center gap-1 text-xs text-gray-600 dark:text-slate-400">
                     <Clock className="h-3 w-3" />
                     {invitation?.expiresAt ? new Date(invitation.expiresAt).toLocaleDateString() : ''}
@@ -212,14 +214,14 @@ function AcceptInviteContent() {
               {sessionStatus === 'unauthenticated' ? (
                 <div className="space-y-3">
                   <p className="text-center text-sm text-gray-600 dark:text-slate-400">
-                    Sign in or create an account to accept this invitation
+                    {t('invite.signInOrCreate')}
                   </p>
                   <Link
                     href={`/auth/signin?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`}
                     className="block"
                   >
                     <Button className="w-full bg-primary-500 hover:bg-primary-600 text-white">
-                      Sign In to Accept
+                      {t('invite.signInToAccept')}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
@@ -228,7 +230,7 @@ function AcceptInviteContent() {
                     className="block"
                   >
                     <Button variant="outline" className="w-full border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white">
-                      Create Account
+                      {t('invite.createAccount')}
                     </Button>
                   </Link>
                 </div>
@@ -241,11 +243,11 @@ function AcceptInviteContent() {
                   {accepting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Accepting...
+                      {t('invite.accepting')}
                     </>
                   ) : (
                     <>
-                      Accept Invitation
+                      {t('invite.acceptInvitation')}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}

@@ -169,10 +169,10 @@ export function CommandPalette() {
   };
 
   const categoryLabels: Record<string, string> = {
-    action: 'Actions',
-    navigation: 'Navigation',
-    project: 'Projects',
-    recent: 'Recent',
+    action: t('commandPalette.actions'),
+    navigation: t('commandPalette.navigation'),
+    project: t('nav.projects'),
+    recent: t('commandPalette.recent'),
   };
 
   if (!isOpen) return null;
@@ -211,7 +211,7 @@ export function CommandPalette() {
           <div ref={listRef} className="max-h-[360px] overflow-y-auto px-2 py-2">
             {flatItems.length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-                No results found for &ldquo;{query}&rdquo;
+                {t('common.noResults')}
               </div>
             ) : (
               Object.entries(groupedItems).map(([category, items]) => {
@@ -280,15 +280,15 @@ export function CommandPalette() {
               <span className="flex items-center gap-1">
                 <ArrowUp className="h-3 w-3" />
                 <ArrowDown className="h-3 w-3" />
-                Navigate
+                {t('commandPalette.navigate')}
               </span>
               <span className="flex items-center gap-1">
                 <CornerDownLeft className="h-3 w-3" />
-                Select
+                {t('commandPalette.select')}
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="rounded border border-slate-200 bg-slate-100 px-1 text-[10px] dark:border-slate-600 dark:bg-slate-800">ESC</kbd>
-                Close
+                {t('common.close')}
               </span>
             </div>
             <div className="text-[11px] text-slate-400 dark:text-slate-500">
