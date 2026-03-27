@@ -93,14 +93,14 @@ const INITIAL_SETTINGS: OrganizationSettings = {
 };
 
 const SECTION_INFO = {
-  teams: { icon: Users, label: 'Teams', color: '#10B981', description: 'Team management, member tracking, and collaboration' },
-  budget: { icon: DollarSign, label: 'Budget', color: '#F59E0B', description: 'Financial management, expenses, and forecasting' },
-  goals: { icon: Target, label: 'Goals', color: '#8B5CF6', description: 'OKRs, milestones, and goal tracking' },
-  automations: { icon: Zap, label: 'Automations', color: '#EC4899', description: 'Workflows, triggers, and automated processes' },
-  documents: { icon: Sparkles, label: 'AI Documents', color: '#3B82F6', description: 'Document processing with AI features' },
-  docs: { icon: BookOpen, label: 'Docs & Wiki', color: '#06B6D4', description: 'Knowledge base and documentation' },
-  projects: { icon: FileText, label: 'Projects', color: '#1C8C7D', description: 'Project management and tracking' },
-  analytics: { icon: BarChart3, label: 'Analytics', color: '#6366F1', description: 'Data insights and reporting' },
+  teams: { icon: Users, labelKey: 'customization.teams', color: '#10B981', descKey: 'customization.teamsDesc' },
+  budget: { icon: DollarSign, labelKey: 'customization.budget', color: '#F59E0B', descKey: 'customization.budgetDesc' },
+  goals: { icon: Target, labelKey: 'customization.goals', color: '#8B5CF6', descKey: 'customization.goalsDesc' },
+  automations: { icon: Zap, labelKey: 'customization.automations', color: '#EC4899', descKey: 'customization.automationsDesc' },
+  documents: { icon: Sparkles, labelKey: 'customization.aiDocuments', color: '#3B82F6', descKey: 'customization.aiDocumentsDesc' },
+  docs: { icon: BookOpen, labelKey: 'customization.docsWiki', color: '#06B6D4', descKey: 'customization.docsWikiDesc' },
+  projects: { icon: FileText, labelKey: 'customization.projects', color: '#1C8C7D', descKey: 'customization.projectsDesc' },
+  analytics: { icon: BarChart3, labelKey: 'customization.analytics', color: '#6366F1', descKey: 'customization.analyticsDesc' },
 };
 
 export default function DashboardCustomizationPage() {
@@ -150,10 +150,10 @@ export default function DashboardCustomizationPage() {
     setIsSaving(true);
     try {
       await saveToAPI();
-      toast.success('Settings saved', 'Dashboard will reload with new configuration.');
+      toast.success(t("customization.settingsSaved"), t("customization.settingsSavedDesc"));
       window.location.reload(); // Reload to apply new settings
     } catch (error) {
-      toast.error('Save failed', 'Please try again.');
+      toast.error(t("customization.saveFailed"), t("customization.saveFailedDesc"));
     } finally {
       setIsSaving(false);
     }
@@ -182,8 +182,8 @@ export default function DashboardCustomizationPage() {
                   <Settings className="h-5 w-5" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Dashboard Customization</h1>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Configure which features are available for your organization</p>
+                  <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t("customization.title")}</h1>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t("customization.description")}</p>
                 </div>
               </div>
             </div>
@@ -191,13 +191,13 @@ export default function DashboardCustomizationPage() {
               {isLoading && (
                 <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Loading...
+                  {t("customization.loading")}
                 </span>
               )}
               {hasUnsavedChanges && !isLoading && (
                 <span className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
                   <Info className="h-3 w-3" />
-                  Unsaved changes
+                  {t("customization.unsavedChanges")}
                 </span>
               )}
               <Button
@@ -206,7 +206,7 @@ export default function DashboardCustomizationPage() {
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RotateCcw className="h-4 w-4" />
-                Reset
+                {t("customization.reset")}
               </Button>
               <Button
                 onClick={handleSaveSettings}
@@ -218,7 +218,7 @@ export default function DashboardCustomizationPage() {
                 }`}
               >
                 {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                {isSaving ? 'Saving...' : 'Save Changes'}
+                {isSaving ? t("customization.saving") : t("customization.saveChanges")}
               </Button>
             </div>
           </div>
@@ -230,9 +230,9 @@ export default function DashboardCustomizationPage() {
 
             {/* Quick Presets */}
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Quick Start Presets</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("customization.quickStartPresets")}</h2>
               <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-                Apply a pre-configured template based on your organization type
+                {t("customization.quickStartPresetsDesc")}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {presets.map((preset) => (
@@ -271,9 +271,9 @@ export default function DashboardCustomizationPage() {
 
             {/* Dashboard Sections */}
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Dashboard Sections</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("customization.dashboardSections")}</h2>
               <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-                Enable or disable entire sections of your dashboard
+                {t("customization.dashboardSectionsDesc")}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(SECTION_INFO).map(([id, info]) => {
@@ -294,8 +294,8 @@ export default function DashboardCustomizationPage() {
                             <Icon className="h-5 w-5" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">{info.label}</h3>
-                            <p className="text-xs text-gray-600 dark:text-slate-400">{info.description}</p>
+                            <h3 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">{t(info.labelKey)}</h3>
+                            <p className="text-xs text-gray-600 dark:text-slate-400">{t(info.descKey)}</p>
                           </div>
                         </div>
                         <Button
@@ -322,7 +322,7 @@ export default function DashboardCustomizationPage() {
               <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <DollarSign className="h-5 w-5 text-[#F59E0B]" />
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Budget Features</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("customization.budgetFeatures")}</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {Object.entries(settings.features.budget).map(([feature, enabled]) => (
@@ -344,12 +344,12 @@ export default function DashboardCustomizationPage() {
 
             {/* Global Features */}
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Global Features</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t("customization.globalFeatures")}</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-slate-700">
                   <div>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">AI Assistant</div>
-                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Enable AI-powered help and suggestions</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.aiAssistant")}</div>
+                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">{t("customization.aiAssistantDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, aiAssistant: !settings.features.aiAssistant } })}
@@ -362,8 +362,8 @@ export default function DashboardCustomizationPage() {
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-slate-700">
                   <div>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">Advanced Analytics</div>
-                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Detailed insights and data visualization</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.advancedAnalytics")}</div>
+                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">{t("customization.advancedAnalyticsDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, analytics: !settings.features.analytics } })}
@@ -376,8 +376,8 @@ export default function DashboardCustomizationPage() {
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-slate-700">
                   <div>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">Third-party Integrations</div>
-                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Connect with external tools and services</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.thirdPartyIntegrations")}</div>
+                    <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">{t("customization.thirdPartyIntegrationsDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, integrations: !settings.features.integrations } })}

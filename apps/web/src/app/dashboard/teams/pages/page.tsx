@@ -23,55 +23,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages', active: true },
-];
-
-const PAGE_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon }[] = [
-  {
-    id: 'team-charter',
-    name: 'Team Charter',
-    description: 'Define team mission, values, and goals',
-    icon: ClipboardList,
-  },
-  {
-    id: 'team-handbook',
-    name: 'Team Handbook',
-    description: 'Document team processes and best practices',
-    icon: BookOpen,
-  },
-  {
-    id: 'meeting-notes',
-    name: 'Meeting Notes',
-    description: 'Template for team meeting minutes',
-    icon: Pencil,
-  },
-  {
-    id: 'retrospective',
-    name: 'Retrospective',
-    description: 'Sprint or quarterly retrospective template',
-    icon: RotateCcw,
-  },
-  {
-    id: 'team-goals',
-    name: 'Team Goals',
-    description: 'Document quarterly or annual team objectives',
-    icon: Target,
-  },
-  {
-    id: 'team-roster',
-    name: 'Team Roster',
-    description: 'Team member directory with roles and contacts',
-    icon: Users,
-  },
-];
-
 const EXISTING_PAGES = [
   { id: 1, name: 'Engineering Team Charter', team: 'Engineering', lastModified: '2024-03-15', author: 'Alice Johnson' },
   { id: 2, name: 'Q1 2024 Retrospective', team: 'Engineering', lastModified: '2024-03-10', author: 'Bob Smith' },
@@ -82,6 +33,25 @@ const EXISTING_PAGES = [
 export default function TeamsPagesPage() {
   const { t } = useLanguage();
   const [selectedView, setSelectedView] = useState<'templates' | 'pages'>('pages');
+
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/teams/overview' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/teams/list' },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/teams/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/teams/code' },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/teams/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/teams/timeline' },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/teams/pages', active: true },
+  ];
+
+  const PAGE_TEMPLATES: { id: string; nameKey: string; descKey: string; icon: LucideIcon }[] = [
+    { id: 'team-charter', nameKey: 'teamPages.teamCharter', descKey: 'teamPages.teamCharterDesc', icon: ClipboardList },
+    { id: 'team-handbook', nameKey: 'teamPages.teamHandbook', descKey: 'teamPages.teamHandbookDesc', icon: BookOpen },
+    { id: 'meeting-notes', nameKey: 'teamPages.meetingNotes', descKey: 'teamPages.meetingNotesDesc', icon: Pencil },
+    { id: 'retrospective', nameKey: 'teamPages.retrospective', descKey: 'teamPages.retrospectiveDesc', icon: RotateCcw },
+    { id: 'team-goals', nameKey: 'teamPages.teamGoals', descKey: 'teamPages.teamGoalsDesc', icon: Target },
+    { id: 'team-roster', nameKey: 'teamPages.teamRoster', descKey: 'teamPages.teamRosterDesc', icon: Users },
+  ];
 
   return (
     <AppLayout>
@@ -94,11 +64,11 @@ export default function TeamsPagesPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Book className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Team Pages</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('teamPages.title')}</h1>
             </div>
             <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
-              Create Page
+              {t('teamPages.createPage')}
             </Button>
           </div>
 
@@ -135,7 +105,7 @@ export default function TeamsPagesPage() {
                   : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
-              All Pages
+              {t('teamPages.allPages')}
             </Button>
             <Button
               onClick={() => setSelectedView('templates')}
@@ -145,7 +115,7 @@ export default function TeamsPagesPage() {
                   : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
-              Templates
+              {t('teamPages.templates')}
             </Button>
           </div>
         </div>
@@ -155,9 +125,9 @@ export default function TeamsPagesPage() {
           {selectedView === 'templates' ? (
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Page Templates</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('teamPages.pageTemplates')}</h2>
                 <p className="text-gray-600 dark:text-slate-400">
-                  Choose a template to create team documentation and collaboration pages
+                  {t('teamPages.templatesSubtitle')}
                 </p>
               </div>
 
@@ -173,14 +143,14 @@ export default function TeamsPagesPage() {
                       <template.icon className="h-5 w-5 text-primary-500" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      {template.name}
+                      {t(template.nameKey)}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-                      {template.description}
+                      {t(template.descKey)}
                     </p>
                     <div className="flex items-center gap-2 text-sm text-primary-500">
                       <Plus className="h-4 w-4" />
-                      Create {template.name}
+                      {t('teamPages.create', { name: t(template.nameKey) })}
                     </div>
                   </div>
                 ))}
@@ -189,9 +159,9 @@ export default function TeamsPagesPage() {
           ) : (
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Team Pages</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('teamPages.title')}</h2>
                 <p className="text-gray-600 dark:text-slate-400">
-                  Browse and manage team documentation
+                  {t('teamPages.browseAndManage')}
                 </p>
               </div>
 
@@ -200,16 +170,16 @@ export default function TeamsPagesPage() {
                   <thead className="border-b border-gray-200 dark:border-slate-700">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Page
+                        {t('teamPages.page')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Team
+                        {t('teamPages.team')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Author
+                        {t('teamPages.author')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Last Modified
+                        {t('teamPages.lastModified')}
                       </th>
                     </tr>
                   </thead>

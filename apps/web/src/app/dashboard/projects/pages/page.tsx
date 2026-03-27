@@ -36,11 +36,11 @@ export default function ProjectsPagesPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Book className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Pages</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t("projectPages.title")}</h1>
             </div>
             <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
-              Create Page
+              {t("projectPages.createPage")}
             </Button>
           </div>
           <div className="flex items-center gap-1 px-6">
@@ -61,8 +61,8 @@ export default function ProjectsPagesPage() {
             <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-[#282E33] rounded-full flex items-center justify-center mb-4">
               <Book className="h-8 w-8 text-gray-400 dark:text-[#6B7684]" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Project documentation</h2>
-            <p className="text-gray-600 dark:text-slate-400 mb-6">Create pages to document your projects, share knowledge, and keep your team aligned.</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t("projectPages.projectDocumentation")}</h2>
+            <p className="text-gray-600 dark:text-slate-400 mb-6">{t("projectPages.projectDocumentationDesc")}</p>
             <div className="grid grid-cols-1 gap-4 mt-8 max-w-md mx-auto">
               <div className="p-4 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 text-left hover:border-primary-500 cursor-pointer transition-colors">
                 <div className="flex items-start gap-3">
@@ -70,8 +70,8 @@ export default function ProjectsPagesPage() {
                     <File className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Blank Page</h3>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">Start from scratch with a blank canvas</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.blankPage")}</h3>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectPages.blankPageDesc")}</p>
                   </div>
                 </div>
               </div>
@@ -81,8 +81,8 @@ export default function ProjectsPagesPage() {
                     <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Project Brief</h3>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">Document project goals, scope, and deliverables</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.projectBrief")}</h3>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectPages.projectBriefDesc")}</p>
                   </div>
                 </div>
               </div>
@@ -92,15 +92,15 @@ export default function ProjectsPagesPage() {
                     <Folder className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Technical Spec</h3>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">Document technical requirements and architecture</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.technicalSpec")}</h3>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectPages.technicalSpecDesc")}</p>
                   </div>
                 </div>
               </div>
             </div>
             <Button className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
-              Create Your First Page
+              {t("projectPages.createYourFirstPage")}
             </Button>
           </div>
         </div>
