@@ -26,90 +26,90 @@ import {
 import type { TabDefinition } from '@/components/navigation/unified-page-header';
 
 export const DEVELOPMENT_TABS: TabDefinition[] = [
-  { id: 'backlog', label: 'Backlog', icon: ListChecks, href: '/backlog' },
-  { id: 'releases', label: 'Releases', icon: GitBranch, href: '/releases' },
-  { id: 'code', label: 'Code Review', icon: FileText, href: '/code' },
+  { id: 'backlog', label: 'Backlog', labelKey: 'departmentTabs.backlog', icon: ListChecks, href: '/backlog' },
+  { id: 'releases', label: 'Releases', labelKey: 'departmentTabs.releases', icon: GitBranch, href: '/releases' },
+  { id: 'code', label: 'Code Review', labelKey: 'departmentTabs.codeReview', icon: FileText, href: '/code' },
 ];
 
 export const MARKETING_TABS: TabDefinition[] = [
-  { id: 'social', label: 'Social Media', icon: MessageSquare, href: '/social' },
-  { id: 'analytics', label: 'Analytics', icon: TrendingUp, href: '/analytics' },
-  { id: 'campaigns', label: 'Campaigns', icon: Map, href: '/campaigns' },
+  { id: 'social', label: 'Social Media', labelKey: 'departmentTabs.socialMedia', icon: MessageSquare, href: '/social' },
+  { id: 'analytics', label: 'Analytics', labelKey: 'departmentTabs.analytics', icon: TrendingUp, href: '/analytics' },
+  { id: 'campaigns', label: 'Campaigns', labelKey: 'departmentTabs.campaigns', icon: Map, href: '/campaigns' },
 ];
 
 export const OPERATIONS_TABS: TabDefinition[] = [
-  { id: 'incidents', label: 'Incidents', icon: AlertCircle, href: '/incidents' },
-  { id: 'monitoring', label: 'Monitoring', icon: Activity, href: '/monitoring' },
-  { id: 'checklists', label: 'Checklists', icon: CheckCircle2, href: '/checklists' },
+  { id: 'incidents', label: 'Incidents', labelKey: 'departmentTabs.incidents', icon: AlertCircle, href: '/incidents' },
+  { id: 'monitoring', label: 'Monitoring', labelKey: 'departmentTabs.monitoring', icon: Activity, href: '/monitoring' },
+  { id: 'checklists', label: 'Checklists', labelKey: 'departmentTabs.checklists', icon: CheckCircle2, href: '/checklists' },
 ];
 
 export const RESEARCH_TABS: TabDefinition[] = [
-  { id: 'data', label: 'Data', icon: FileSpreadsheet, href: '/data' },
-  { id: 'findings', label: 'Findings', icon: FileText, href: '/findings' },
-  { id: 'plans', label: 'Plans', icon: Map, href: '/plans' },
-  { id: 'materials', label: 'Materials', icon: FileSpreadsheet, href: '/materials' },
-  { id: 'inspections', label: 'Inspections', icon: CheckCircle2, href: '/inspections' },
+  { id: 'data', label: 'Data', labelKey: 'departmentTabs.data', icon: FileSpreadsheet, href: '/data' },
+  { id: 'findings', label: 'Findings', labelKey: 'departmentTabs.findings', icon: FileText, href: '/findings' },
+  { id: 'plans', label: 'Plans', labelKey: 'departmentTabs.plans', icon: Map, href: '/plans' },
+  { id: 'materials', label: 'Materials', labelKey: 'departmentTabs.materials', icon: FileSpreadsheet, href: '/materials' },
+  { id: 'inspections', label: 'Inspections', labelKey: 'departmentTabs.inspections', icon: CheckCircle2, href: '/inspections' },
 ];
 
 export const KNOWLEDGE_TABS: TabDefinition[] = [
-  { id: 'documents', label: 'AI Documents', icon: Sparkles, href: '' },
-  { id: 'automations', label: 'Automation', icon: Zap, href: '/automations' },
-  { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/wiki' },
-  { id: 'docs', label: 'Docs', icon: BookOpen, href: '/docs' },
+  { id: 'documents', label: 'AI Documents', labelKey: 'departmentTabs.aiDocuments', icon: Sparkles, href: '' },
+  { id: 'automations', label: 'Automation', labelKey: 'departmentTabs.automation', icon: Zap, href: '/automations' },
+  { id: 'wiki', label: 'Wiki', labelKey: 'departmentTabs.wiki', icon: BookOpen, href: '/wiki' },
+  { id: 'docs', label: 'Docs', labelKey: 'departmentTabs.docs', icon: BookOpen, href: '/docs' },
 ];
 
 export const BUDGET_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
-  { id: 'expenses', label: 'Expenses', icon: Receipt, href: '/expenses' },
-  { id: 'income', label: 'Income', icon: TrendingUp, href: '/income' },
-  { id: 'forecasting', label: 'Forecasting', icon: BarChart3, href: '/forecasting' },
-  { id: 'reports', label: 'Reports', icon: FileText, href: '/reports' },
-  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+  { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '' },
+  { id: 'expenses', label: 'Expenses', labelKey: 'departmentTabs.expenses', icon: Receipt, href: '/expenses' },
+  { id: 'income', label: 'Income', labelKey: 'departmentTabs.income', icon: TrendingUp, href: '/income' },
+  { id: 'forecasting', label: 'Forecasting', labelKey: 'departmentTabs.forecasting', icon: BarChart3, href: '/forecasting' },
+  { id: 'reports', label: 'Reports', labelKey: 'departmentTabs.reports', icon: FileText, href: '/reports' },
+  { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },
 ];
 
 export const TEAMS_TABS: TabDefinition[] = [
-  { id: 'overview', label: 'Summary', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
-  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
+  { id: 'overview', label: 'Summary', labelKey: 'departmentTabs.overview', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
 ];
 
 export const GOALS_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
-  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
+  { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
 ];
 
 export const DOCUMENTS_TABS: TabDefinition[] = [
-  { id: 'documents', label: 'All Documents', icon: Sparkles, href: '' },
-  { id: 'recent', label: 'Recent', icon: Clock, href: '/recent' },
-  { id: 'shared', label: 'Shared', icon: Users, href: '/shared' },
-  { id: 'templates', label: 'Templates', icon: FileText, href: '/templates' },
-  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+  { id: 'documents', label: 'All Documents', labelKey: 'departmentTabs.allDocuments', icon: Sparkles, href: '' },
+  { id: 'recent', label: 'Recent', labelKey: 'departmentTabs.recent', icon: Clock, href: '/recent' },
+  { id: 'shared', label: 'Shared', labelKey: 'departmentTabs.shared', icon: Users, href: '/shared' },
+  { id: 'templates', label: 'Templates', labelKey: 'departmentTabs.templates', icon: FileText, href: '/templates' },
+  { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },
 ];
 
 export const ISSUES_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/summary' },
-  { id: 'list', label: 'List', icon: ListChecks, href: '' },
-  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
-  { id: 'team', label: 'Team', icon: Users, href: '/team' },
-  { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
+  { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '/summary' },
+  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '' },
+  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
+  { id: 'team', label: 'Team', labelKey: 'departmentTabs.team', icon: Users, href: '/team' },
+  { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },
 ];
 
 export const AUTOMATIONS_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/summary' },
-  { id: 'list', label: 'List', icon: ListChecks, href: '/list' },
-  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', icon: BookMarked, href: '/pages' },
+  { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '/summary' },
+  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
+  { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
+  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
 ];

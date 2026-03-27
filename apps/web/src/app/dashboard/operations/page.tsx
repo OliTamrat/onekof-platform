@@ -11,11 +11,11 @@ export default function OperationsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Operations"
-        description="Monitor operations, manage incidents, and track maintenance checklists"
+        title={t('operationsPage.title')}
+        description={t('operationsPage.description')}
         icon={Activity}
         iconColor="#EF4444"
-        emptyMessage="No operations tasks yet. Create one to get started."
+        emptyMessage={t('emptyStates.noOperations')}
         defaultLabels={['operations']}
         baseHref="/dashboard/operations"
         currentTab="incidents"

@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -28,14 +30,14 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Login failed');
+        setError(data.error || t('errors.loginFailed'));
         setLoading(false);
         return;
       }
 
       router.push('/admin/dashboard');
     } catch {
-      setError('Connection error. Please try again.');
+      setError(t('errors.connectionError'));
       setLoading(false);
     }
   };
@@ -48,8 +50,8 @@ export default function AdminLoginPage() {
           <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg mb-4">
             <Shield className="h-7 w-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Onekof Admin</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Platform Management Console</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('admin.title')}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t('admin.platformConsole')}</p>
         </div>
 
         {/* Login form */}
@@ -64,14 +66,14 @@ export default function AdminLoginPage() {
 
             <div>
               <label htmlFor="username" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                Username
+                {t('admin.username')}
               </label>
               <input
                 id="username"
                 type="text"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                placeholder="Admin username"
+                placeholder={t('admin.usernamePlaceholder')}
                 autoComplete="username"
                 autoFocus
                 required
@@ -81,7 +83,7 @@ export default function AdminLoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <input
@@ -89,7 +91,7 @@ export default function AdminLoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="Admin password"
+                  placeholder={t('admin.passwordPlaceholder')}
                   autoComplete="current-password"
                   required
                   className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
@@ -114,17 +116,17 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  {t('auth.signingIn')}
                 </>
               ) : (
-                'Sign in to Admin'
+                t('admin.signInToAdmin')
               )}
             </Button>
           </form>
         </div>
 
         <p className="text-center text-[11px] text-slate-400 mt-6">
-          This is a restricted area. Unauthorized access is prohibited.
+          {t('admin.restrictedArea')}
         </p>
       </div>
     </div>

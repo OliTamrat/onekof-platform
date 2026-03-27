@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ServiceCheck {
   name: string;
@@ -42,36 +43,6 @@ interface HealthData {
   checkedAt: string;
 }
 
-const STATUS_CONFIG = {
-  operational: {
-    label: 'All Systems Operational',
-    icon: CheckCircle2,
-    color: 'text-emerald-600 dark:text-emerald-400',
-    bg: 'bg-emerald-50 dark:bg-emerald-950/30',
-    border: 'border-emerald-200 dark:border-emerald-800',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    dot: 'bg-emerald-500',
-  },
-  degraded: {
-    label: 'Some Services Degraded',
-    icon: AlertTriangle,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-950/30',
-    border: 'border-amber-200 dark:border-amber-800',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-    dot: 'bg-amber-500',
-  },
-  down: {
-    label: 'System Issues Detected',
-    icon: XCircle,
-    color: 'text-red-600 dark:text-red-400',
-    bg: 'bg-red-50 dark:bg-red-950/30',
-    border: 'border-red-200 dark:border-red-800',
-    iconBg: 'bg-red-100 dark:bg-red-900/40',
-    dot: 'bg-red-500',
-  },
-};
-
 const SERVICE_ICONS: Record<string, typeof Database> = {
   Database: Database,
   'Prisma ORM': HardDrive,
@@ -82,6 +53,38 @@ const SERVICE_ICONS: Record<string, typeof Database> = {
 };
 
 export default function AdminSystemPage() {
+  const { t } = useLanguage();
+
+  const STATUS_CONFIG = {
+    operational: {
+      label: t('admin.allSystemsOperational'),
+      icon: CheckCircle2,
+      color: 'text-emerald-600 dark:text-emerald-400',
+      bg: 'bg-emerald-50 dark:bg-emerald-950/30',
+      border: 'border-emerald-200 dark:border-emerald-800',
+      iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+      dot: 'bg-emerald-500',
+    },
+    degraded: {
+      label: t('admin.someServicesDegraded'),
+      icon: AlertTriangle,
+      color: 'text-amber-600 dark:text-amber-400',
+      bg: 'bg-amber-50 dark:bg-amber-950/30',
+      border: 'border-amber-200 dark:border-amber-800',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
+      dot: 'bg-amber-500',
+    },
+    down: {
+      label: t('admin.systemIssuesDetected'),
+      icon: XCircle,
+      color: 'text-red-600 dark:text-red-400',
+      bg: 'bg-red-50 dark:bg-red-950/30',
+      border: 'border-red-200 dark:border-red-800',
+      iconBg: 'bg-red-100 dark:bg-red-900/40',
+      dot: 'bg-red-500',
+    },
+  };
+
   const { data, isLoading, refetch, isFetching } = useQuery<HealthData>({
     queryKey: ['admin', 'health'],
     queryFn: async () => {
@@ -97,7 +100,7 @@ export default function AdminSystemPage() {
       <div className="flex items-center justify-center h-full min-h-[400px]">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
-          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Running health checks...</p>
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">{t('admin.runningChecks')}</p>
         </div>
       </div>
     );
@@ -108,9 +111,9 @@ export default function AdminSystemPage() {
       <div className="flex items-center justify-center h-full min-h-[400px]">
         <div className="text-center">
           <XCircle className="mx-auto h-8 w-8 text-red-500 mb-3" />
-          <p className="text-sm text-slate-500 dark:text-slate-400">Failed to load health data</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('admin.failedToLoadHealth')}</p>
           <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-3">
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
       </div>
@@ -133,9 +136,9 @@ export default function AdminSystemPage() {
             <Activity className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">System Health</h1>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">{t('admin.systemHealth')}</h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Infrastructure monitoring & status
+              {t('admin.infraMonitoring')}
             </p>
           </div>
         </div>
@@ -147,7 +150,7 @@ export default function AdminSystemPage() {
           className="gap-2"
         >
           <RefreshCw className={cn('h-3.5 w-3.5', isFetching && 'animate-spin')} />
-          {isFetching ? 'Checking...' : 'Refresh'}
+          {isFetching ? t('admin.checking') : t('common.refresh')}
         </Button>
       </div>
 
@@ -160,26 +163,26 @@ export default function AdminSystemPage() {
           <p className={cn('text-sm font-semibold', statusConfig.color)}>{statusConfig.label}</p>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
             <Clock className="h-3 w-3" />
-            Last checked: {new Date(data.checkedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            {t('admin.lastChecked', { time: new Date(data.checkedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) })}
           </p>
         </div>
         <div className="hidden sm:flex items-center gap-4 text-xs">
           {operationalCount > 0 && (
             <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              {operationalCount} operational
+              {t('admin.operational', { count: operationalCount })}
             </span>
           )}
           {degradedCount > 0 && (
             <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
               <span className="h-2 w-2 rounded-full bg-amber-500" />
-              {degradedCount} degraded
+              {t('admin.degraded', { count: degradedCount })}
             </span>
           )}
           {downCount > 0 && (
             <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
               <span className="h-2 w-2 rounded-full bg-red-500" />
-              {downCount} down
+              {t('admin.down', { count: downCount })}
             </span>
           )}
         </div>
@@ -187,7 +190,7 @@ export default function AdminSystemPage() {
 
       {/* Service Checks */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Service Status</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('admin.serviceStatus')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {data.checks.map(check => {
             const checkStatus = STATUS_CONFIG[check.status];
@@ -235,15 +238,15 @@ export default function AdminSystemPage() {
 
       {/* Environment Info */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Environment</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('admin.environment')}</h3>
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm overflow-hidden">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y sm:divide-y-0 divide-slate-100 dark:divide-slate-800">
             {[
-              { label: 'Runtime', value: data.environment.runtime, icon: Cpu },
+              { label: t('admin.runtime'), value: data.environment.runtime, icon: Cpu },
               { label: 'Node.js', value: data.environment.nodeVersion, icon: Server },
-              { label: 'Region', value: data.environment.region, icon: Globe },
-              { label: 'Environment', value: data.environment.environment, icon: Zap },
-              { label: 'Deployment', value: data.environment.deploymentId, icon: HardDrive },
+              { label: t('admin.region'), value: data.environment.region, icon: Globe },
+              { label: t('admin.environment'), value: data.environment.environment, icon: Zap },
+              { label: t('admin.deployment'), value: data.environment.deploymentId, icon: HardDrive },
             ].map(item => (
               <div key={item.label} className="p-4 flex items-center gap-3">
                 <item.icon className="h-4 w-4 text-slate-400 shrink-0" />
@@ -259,31 +262,31 @@ export default function AdminSystemPage() {
 
       {/* Capacity & Scaling */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Capacity & Scaling</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('admin.capacityScaling')}</h3>
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
           {[
             {
-              name: 'Concurrent Users',
+              name: t('admin.concurrentUsers'),
               current: '200-500',
-              limit: 'Serverless tier dependent',
+              limit: t('admin.serverlessTier'),
               icon: Wifi,
               note: 'Add Prisma Accelerate or PgBouncer to scale beyond 500',
               status: 'good' as const,
             },
             {
-              name: 'Database Connections',
-              current: 'Shared pool',
-              limit: 'Provider limit',
+              name: t('admin.databaseConnections'),
+              current: t('admin.sharedPool'),
+              limit: t('admin.providerLimit'),
               icon: Database,
-              note: 'Connection pooling recommended for production scale',
+              note: t('admin.connectionPooling'),
               status: 'warning' as const,
             },
             {
-              name: 'Static Pages',
+              name: t('admin.staticPages'),
               current: '164 pages',
-              limit: 'CDN-served globally',
+              limit: t('admin.cdnServed'),
               icon: HardDrive,
-              note: 'Pre-rendered and cached — excellent performance',
+              note: t('admin.preRendered'),
               status: 'good' as const,
             },
           ].map(item => (
@@ -314,15 +317,15 @@ export default function AdminSystemPage() {
 
       {/* Architecture Stack */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Architecture Stack</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('admin.architectureStack')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { label: 'Framework', value: 'Next.js 14 (App Router)', icon: Server },
-            { label: 'Database', value: 'PostgreSQL + Prisma ORM', icon: Database },
-            { label: 'Auth', value: 'NextAuth.js v4 (JWT)', icon: Shield },
-            { label: 'Hosting', value: 'Vercel Serverless', icon: Globe },
-            { label: 'Styling', value: 'Tailwind CSS + Radix UI', icon: Zap },
-            { label: 'State', value: 'TanStack React Query', icon: Activity },
+            { label: t('admin.framework'), value: 'Next.js 14 (App Router)', icon: Server },
+            { label: t('admin.database'), value: 'PostgreSQL + Prisma ORM', icon: Database },
+            { label: t('admin.authSystem'), value: 'NextAuth.js v4 (JWT)', icon: Shield },
+            { label: t('admin.hosting'), value: 'Vercel Serverless', icon: Globe },
+            { label: t('admin.styling'), value: 'Tailwind CSS + Radix UI', icon: Zap },
+            { label: t('admin.state'), value: 'TanStack React Query', icon: Activity },
           ].map(item => (
             <div key={item.label} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 flex items-center gap-3">
               <div className="rounded-md bg-slate-50 dark:bg-[#1B1F23] p-2">

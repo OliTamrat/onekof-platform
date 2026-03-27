@@ -7,17 +7,18 @@ import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
 
-const errorMessages: Record<string, string> = {
-  Configuration: 'There is a problem with the server configuration. Please contact support if this persists.',
-  AccessDenied: 'You do not have access to this resource.',
-  Verification: 'The verification link may have expired or already been used.',
-  Default: 'An authentication error occurred. Please try again.',
-};
-
 function AuthErrorContent() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
   const error = searchParams.get('error') || 'Default';
+
+  const errorMessages: Record<string, string> = {
+    Configuration: t('auth.configError'),
+    AccessDenied: t('auth.accessDenied'),
+    Verification: t('auth.verificationExpired'),
+    Default: t('auth.genericAuthError'),
+  };
+
   const message = errorMessages[error] || errorMessages.Default;
 
   return (
@@ -30,7 +31,7 @@ function AuthErrorContent() {
           <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
         </div>
         <h1 className="mb-2 text-xl font-semibold text-slate-900 dark:text-white">
-          Authentication Error
+          {t('auth.authError')}
         </h1>
         <p className="mb-2 text-sm font-medium text-slate-500 dark:text-slate-400">
           Error: {error}

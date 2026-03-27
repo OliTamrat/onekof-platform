@@ -34,10 +34,10 @@ export default function ForgotPasswordPage() {
       }
 
       setStatus('success');
-      setMessage('Password reset instructions have been sent to your email');
+      setMessage(t('auth.resetInstructionsSent'));
     } catch (error: any) {
       setStatus('error');
-      setMessage(error.message || 'Something went wrong. Please try again.');
+      setMessage(error.message || t('auth.somethingWentWrongTryAgain'));
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
 
             </h1>
             <p className="text-lg text-white/90">
-              We'll send you instructions to reset your password and get you back on track.
+              {t('auth.resetInstructions')}
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
             <p className="mt-2 text-sm text-gray-600">
-              Enter your email address and we'll send you instructions to reset your password.
+              {t('resetPage.enterEmailInstructions')}
             </p>
           </div>
 
@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
               <div>
                 <p className="text-sm font-medium text-green-800">{message}</p>
                 <p className="mt-1 text-xs text-green-700">
-                  If you don't see it, check your spam folder.
+                  {t('resetPage.checkSpamFolder')}
                 </p>
               </div>
             </div>

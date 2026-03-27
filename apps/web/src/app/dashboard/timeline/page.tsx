@@ -12,7 +12,7 @@ export default function TimelinePage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Timeline"
+        title={t('timeline.title')}
         icon={<GitBranch className="h-6 w-6" />}
         iconColor="#A855F7"
 
@@ -30,9 +30,9 @@ export default function TimelinePage() {
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/20">
               <GitBranch className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
-            <h2 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">Project Timeline</h2>
+            <h2 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">{t('timeline.projectTimeline')}</h2>
             <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-md">
-              Timeline view is coming soon. You will be able to see project phases, track progress, and manage dependencies visually.
+              {t('timeline.comingSoonDesc')}
             </p>
           </div>
         </div>

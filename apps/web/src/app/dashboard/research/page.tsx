@@ -11,11 +11,11 @@ export default function ResearchPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Research"
-        description="Manage research projects, data collection, and findings"
+        title={t('researchPage.title')}
+        description={t('researchPage.description')}
         icon={FileSpreadsheet}
         iconColor="#3B82F6"
-        emptyMessage="No research tasks yet. Create one to get started."
+        emptyMessage={t('emptyStates.noResearch')}
         defaultLabels={['research']}
         baseHref="/dashboard/research"
         currentTab="data"

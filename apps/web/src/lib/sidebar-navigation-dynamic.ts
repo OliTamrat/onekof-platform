@@ -36,6 +36,7 @@ import {
 
 export interface SidebarSubItem {
   name: string;
+  nameKey?: string;
   href: string;
   icon?: LucideIcon;
 }
@@ -43,6 +44,7 @@ export interface SidebarSubItem {
 export interface SidebarSection {
   id: string;
   name: string;
+  nameKey?: string;
   icon: LucideIcon;
   href?: string;
   items: SidebarSubItem[];
@@ -63,6 +65,7 @@ export function getSidebarNavigation(
     {
       id: 'home',
       name: 'Home',
+      nameKey: 'sidebar.home',
       icon: Home,
       href: '/dashboard',
       items: [],
@@ -72,15 +75,16 @@ export function getSidebarNavigation(
     {
       id: 'projects',
       name: 'Projects',
+      nameKey: 'sidebar.projects',
       icon: FolderKanban,
       href: '/dashboard/projects',
       items: [
-        { name: 'All Projects', href: '/dashboard/projects', icon: FolderKanban },
-        { name: 'Issues', href: '/dashboard/issues', icon: ListChecks },
-        { name: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
-        { name: 'Timeline', href: '/dashboard/timeline', icon: Calendar },
-        { name: 'Goals', href: '/dashboard/goals', icon: Target },
-        { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
+        { name: 'All Projects', nameKey: 'sidebar.allProjects', href: '/dashboard/projects', icon: FolderKanban },
+        { name: 'Issues', nameKey: 'sidebar.issues', href: '/dashboard/issues', icon: ListChecks },
+        { name: 'Calendar', nameKey: 'sidebar.calendar', href: '/dashboard/calendar', icon: Calendar },
+        { name: 'Timeline', nameKey: 'sidebar.timeline', href: '/dashboard/timeline', icon: Calendar },
+        { name: 'Goals', nameKey: 'sidebar.goals', href: '/dashboard/goals', icon: Target },
+        { name: 'Reports', nameKey: 'sidebar.reports', href: '/dashboard/reports', icon: BarChart3 },
       ],
     },
 
@@ -88,10 +92,11 @@ export function getSidebarNavigation(
     {
       id: 'teams',
       name: 'Teams',
+      nameKey: 'sidebar.teams',
       icon: Users,
       href: '/dashboard/teams',
       items: [
-        { name: 'Members', href: '/dashboard/members', icon: UserPlus },
+        { name: 'Members', nameKey: 'sidebar.members', href: '/dashboard/members', icon: UserPlus },
       ],
     },
 
@@ -99,6 +104,7 @@ export function getSidebarNavigation(
     {
       id: 'budget',
       name: 'Budget',
+      nameKey: 'sidebar.budget',
       icon: DollarSign,
       href: '/dashboard/budget',
       items: [],
@@ -108,12 +114,13 @@ export function getSidebarNavigation(
     {
       id: 'development',
       name: 'Development',
+      nameKey: 'sidebar.development',
       icon: GitBranch,
       href: '/dashboard/development',
       items: [
-        { name: 'Backlog', href: '/dashboard/development/backlog', icon: ListChecks },
-        { name: 'Releases', href: '/dashboard/development/releases', icon: GitBranch },
-        { name: 'Code Review', href: '/dashboard/development/code', icon: FileText },
+        { name: 'Backlog', nameKey: 'sidebar.backlog', href: '/dashboard/development/backlog', icon: ListChecks },
+        { name: 'Releases', nameKey: 'sidebar.releases', href: '/dashboard/development/releases', icon: GitBranch },
+        { name: 'Code Review', nameKey: 'sidebar.codeReview', href: '/dashboard/development/code', icon: FileText },
       ],
     },
 
@@ -121,12 +128,13 @@ export function getSidebarNavigation(
     {
       id: 'marketing',
       name: 'Marketing',
+      nameKey: 'sidebar.marketing',
       icon: TrendingUp,
       href: '/dashboard/marketing',
       items: [
-        { name: 'Social Media', href: '/dashboard/marketing/social', icon: MessageSquare },
-        { name: 'Analytics', href: '/dashboard/marketing/analytics', icon: TrendingUp },
-        { name: 'Campaigns', href: '/dashboard/marketing/campaigns', icon: Map },
+        { name: 'Social Media', nameKey: 'sidebar.socialMedia', href: '/dashboard/marketing/social', icon: MessageSquare },
+        { name: 'Analytics', nameKey: 'sidebar.analytics', href: '/dashboard/marketing/analytics', icon: TrendingUp },
+        { name: 'Campaigns', nameKey: 'sidebar.campaigns', href: '/dashboard/marketing/campaigns', icon: Map },
       ],
     },
 
@@ -134,12 +142,13 @@ export function getSidebarNavigation(
     {
       id: 'operations',
       name: 'Operations',
+      nameKey: 'sidebar.operations',
       icon: Activity,
       href: '/dashboard/operations',
       items: [
-        { name: 'Incidents', href: '/dashboard/operations/incidents', icon: AlertCircle },
-        { name: 'Monitoring', href: '/dashboard/operations/monitoring', icon: Activity },
-        { name: 'Checklists', href: '/dashboard/operations/checklists', icon: CheckCircle2 },
+        { name: 'Incidents', nameKey: 'sidebar.incidents', href: '/dashboard/operations/incidents', icon: AlertCircle },
+        { name: 'Monitoring', nameKey: 'sidebar.monitoring', href: '/dashboard/operations/monitoring', icon: Activity },
+        { name: 'Checklists', nameKey: 'sidebar.checklists', href: '/dashboard/operations/checklists', icon: CheckCircle2 },
       ],
     },
 
@@ -147,14 +156,15 @@ export function getSidebarNavigation(
     {
       id: 'research',
       name: 'Research',
+      nameKey: 'sidebar.research',
       icon: FileSpreadsheet,
       href: '/dashboard/research',
       items: [
-        { name: 'Data', href: '/dashboard/research/data', icon: FileSpreadsheet },
-        { name: 'Findings', href: '/dashboard/research/findings', icon: FileText },
-        { name: 'Plans', href: '/dashboard/research/plans', icon: Map },
-        { name: 'Materials', href: '/dashboard/research/materials', icon: FileSpreadsheet },
-        { name: 'Inspections', href: '/dashboard/research/inspections', icon: CheckCircle2 },
+        { name: 'Data', nameKey: 'sidebar.data', href: '/dashboard/research/data', icon: FileSpreadsheet },
+        { name: 'Findings', nameKey: 'sidebar.findings', href: '/dashboard/research/findings', icon: FileText },
+        { name: 'Plans', nameKey: 'sidebar.plans', href: '/dashboard/research/plans', icon: Map },
+        { name: 'Materials', nameKey: 'sidebar.materials', href: '/dashboard/research/materials', icon: FileSpreadsheet },
+        { name: 'Inspections', nameKey: 'sidebar.inspections', href: '/dashboard/research/inspections', icon: CheckCircle2 },
       ],
     },
 
@@ -162,14 +172,15 @@ export function getSidebarNavigation(
     {
       id: 'knowledge',
       name: 'Knowledge',
+      nameKey: 'sidebar.knowledge',
       icon: BookOpen,
       href: '/dashboard/documents',
       items: [
-        { name: 'AI Documents', href: '/dashboard/documents', icon: Sparkles },
-        { name: 'Automation', href: '/dashboard/automations', icon: Zap },
-        { name: 'Wiki', href: '/dashboard/wiki', icon: BookOpen },
-        { name: 'Docs', href: '/dashboard/docs', icon: BookOpen },
-        { name: 'Integrations', href: '/dashboard/settings/integrations', icon: Puzzle },
+        { name: 'AI Documents', nameKey: 'sidebar.aiDocuments', href: '/dashboard/documents', icon: Sparkles },
+        { name: 'Automation', nameKey: 'sidebar.automation', href: '/dashboard/automations', icon: Zap },
+        { name: 'Wiki', nameKey: 'sidebar.wiki', href: '/dashboard/wiki', icon: BookOpen },
+        { name: 'Docs', nameKey: 'sidebar.docs', href: '/dashboard/docs', icon: BookOpen },
+        { name: 'Integrations', nameKey: 'sidebar.integrations', href: '/dashboard/settings/integrations', icon: Puzzle },
       ],
     },
   ];

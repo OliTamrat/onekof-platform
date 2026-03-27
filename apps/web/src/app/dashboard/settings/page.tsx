@@ -14,7 +14,7 @@ export default function SettingsPage() {
           </div>
           <h1 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-white">{t("nav.settings")}</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-md">
-            Organization settings and preferences coming soon
+            {t('settings.orgSettings')}
           </p>
         </div>
       </div>

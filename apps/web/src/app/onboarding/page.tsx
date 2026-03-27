@@ -15,74 +15,6 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
-// Organization types with icons and features
-const ORG_TYPES = [
-  {
-    id: 'personal',
-    label: 'Personal Workspace',
-    icon: Users,
-    color: 'teal',
-    features: ['Personal tasks', 'Solo projects', 'Quick setup', 'Upgrade anytime'],
-    description: 'For individual use — manage your own tasks and projects'
-  },
-  {
-    id: 'government',
-    label: 'Government Ministry',
-    icon: Landmark,
-    color: 'blue',
-    features: ['Budget tracking', 'Compliance tools', 'Public procurement', 'Ethiopian calendar'],
-    description: 'For Ethiopian federal and regional government agencies'
-  },
-  {
-    id: 'private',
-    label: 'Private Company',
-    icon: Briefcase,
-    color: 'purple',
-    features: ['Agile workflows', 'Client projects', 'Team collaboration', 'Time tracking'],
-    description: 'For tech companies, startups, and businesses'
-  },
-  {
-    id: 'ngo',
-    label: 'NGO/INGO',
-    icon: HeartHandshake,
-    color: 'emerald',
-    features: ['Grant management', 'Impact tracking', 'Donor reporting', 'Multi-currency'],
-    description: 'For non-profit and international organizations'
-  },
-  {
-    id: 'education',
-    label: 'Educational Institution',
-    icon: GraduationCap,
-    color: 'amber',
-    features: ['Course projects', 'Research tracking', 'Academic calendar', 'Student collaboration'],
-    description: 'For universities, schools, and training centers'
-  },
-  {
-    id: 'construction',
-    label: 'Construction/Engineering',
-    icon: Construction,
-    color: 'orange',
-    features: ['Site management', 'Equipment tracking', 'Safety compliance', 'Progress photos'],
-    description: 'For construction firms and engineering companies'
-  },
-  {
-    id: 'healthcare',
-    label: 'Healthcare',
-    icon: HeartPulse,
-    color: 'red',
-    features: ['Facility management', 'Medical projects', 'Compliance tracking', 'Resource allocation'],
-    description: 'For hospitals, clinics, and health organizations'
-  },
-];
-
-const TEAM_SIZES = [
-  { value: '1-10', label: '1-10 people' },
-  { value: '11-50', label: '11-50 people' },
-  { value: '51-200', label: '51-200 people' },
-  { value: '201-500', label: '201-500 people' },
-  { value: '500+', label: '500+ people' },
-];
-
 
 function OnboardingContent() {
   const router = useRouter();
@@ -91,6 +23,74 @@ function OnboardingContent() {
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Organization types with icons and features
+  const ORG_TYPES = [
+    {
+      id: 'personal',
+      label: t('onboarding.personalWorkspace'),
+      icon: Users,
+      color: 'teal',
+      features: [t('onboarding.personalTasks'), t('onboarding.soloProjects'), t('onboarding.quickSetup'), t('onboarding.upgradeAnytime')],
+      description: t('onboarding.forIndividual')
+    },
+    {
+      id: 'government',
+      label: t('onboarding.govMinistry'),
+      icon: Landmark,
+      color: 'blue',
+      features: [t('onboarding.budgetTracking'), t('onboarding.complianceTools'), t('onboarding.publicProcurement'), t('onboarding.ethiopianCalendar')],
+      description: t('onboarding.forEthGov')
+    },
+    {
+      id: 'private',
+      label: t('onboarding.privateCompany'),
+      icon: Briefcase,
+      color: 'purple',
+      features: [t('onboarding.agileWorkflows'), t('onboarding.clientProjects'), t('onboarding.teamCollaboration'), t('onboarding.timeTracking')],
+      description: t('onboarding.forTechCompanies')
+    },
+    {
+      id: 'ngo',
+      label: t('onboarding.ngoIngo'),
+      icon: HeartHandshake,
+      color: 'emerald',
+      features: [t('onboarding.grantManagement'), t('onboarding.impactTracking'), t('onboarding.donorReporting'), t('onboarding.multiCurrency')],
+      description: t('onboarding.forNonProfit')
+    },
+    {
+      id: 'education',
+      label: t('onboarding.educationalInstitution'),
+      icon: GraduationCap,
+      color: 'amber',
+      features: [t('onboarding.courseProjects'), t('onboarding.researchTracking'), t('onboarding.academicCalendar'), t('onboarding.studentCollaboration')],
+      description: t('onboarding.forUniversities')
+    },
+    {
+      id: 'construction',
+      label: t('onboarding.constructionEngineering'),
+      icon: Construction,
+      color: 'orange',
+      features: [t('onboarding.siteManagement'), t('onboarding.equipmentTracking'), t('onboarding.safetyCompliance'), t('onboarding.progressPhotos')],
+      description: t('onboarding.forConstruction')
+    },
+    {
+      id: 'healthcare',
+      label: t('onboarding.healthcare'),
+      icon: HeartPulse,
+      color: 'red',
+      features: [t('onboarding.facilityManagement'), t('onboarding.medicalProjects'), t('onboarding.complianceTracking'), t('onboarding.resourceAllocation')],
+      description: t('onboarding.forHospitals')
+    },
+  ];
+
+  const TEAM_SIZES = [
+    { value: '1-10', label: t('onboarding.people1to10') },
+    { value: '11-50', label: t('onboarding.people11to50') },
+    { value: '51-200', label: t('onboarding.people51to200') },
+    { value: '201-500', label: t('onboarding.people201to500') },
+    { value: '500+', label: t('onboarding.people500plus') },
+  ];
 
   // CRITICAL: Redirect to main domain if accessing from subdomain
   useEffect(() => {
@@ -293,21 +293,21 @@ function OnboardingContent() {
               </div>
               <div className="text-left">
                 <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
-                <p className="text-xs text-white/60">Enterprise Project Management</p>
+                <p className="text-xs text-white/60">{t('onboardingPage.enterprisePM')}</p>
               </div>
             </div>
 
             {/* Greeting */}
             <div>
               <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
-                {currentStep === 1 && 'What type of workspace do you need?'}
-                {currentStep === 2 && 'Tell us about your organization'}
-                {currentStep === 3 && 'Final step: Create your workspace'}
+                {currentStep === 1 && t('onboardingPage.whatTypeWorkspace')}
+                {currentStep === 2 && t('onboardingPage.tellUsAboutOrg')}
+                {currentStep === 3 && t('onboardingPage.finalStepCreate')}
               </h2>
               <p className="text-white/60">
-                {currentStep === 1 && 'Choose personal for solo use, or select your organization type'}
-                {currentStep === 2 && "We'll use this to personalize your experience"}
-                {currentStep === 3 && 'Your workspace will be ready in seconds'}
+                {currentStep === 1 && t('onboardingPage.choosePersonalOrOrg')}
+                {currentStep === 2 && t('onboardingPage.personalizeExperience')}
+                {currentStep === 3 && t('onboardingPage.readyInSeconds')}
               </p>
             </div>
           </div>
@@ -315,8 +315,8 @@ function OnboardingContent() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-medium text-white/50">Step {currentStep} of {totalSteps}</span>
-              <span className="text-[13px] font-medium text-primary-400">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
+              <span className="text-[13px] font-medium text-white/50">{t('onboardingPage.step')} {currentStep} {t('onboardingPage.of')} {totalSteps}</span>
+              <span className="text-[13px] font-medium text-primary-400">{Math.round((currentStep / totalSteps) * 100)}% {t('onboardingPage.complete')}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-white/[0.06]">
               <div
@@ -373,14 +373,14 @@ function OnboardingContent() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-2">
-                    Organization Name
+                    {t('onboardingPage.organizationName')}
                   </label>
                   <input
                     type="text"
                     value={organizationName}
                     onChange={(e) => setOrganizationName(e.target.value)}
                     className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
-                    placeholder={organizationType === 'government' ? 'e.g., Ministry of Water & Irrigation' : 'Your organization name'}
+                    placeholder={organizationType === 'government' ? t('onboardingPage.govPlaceholder') : t('onboardingPage.orgPlaceholder')}
                   />
                 </div>
 
@@ -388,14 +388,14 @@ function OnboardingContent() {
                 {organizationType === 'government' && (
                   <div>
                     <label className="block text-[13px] font-medium text-white/50 mb-2">
-                      Department/Bureau (Optional)
+                      {t('onboardingPage.departmentBureau')}
                     </label>
                     <input
                       type="text"
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
                       className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
-                      placeholder="e.g., Planning & Budget Bureau"
+                      placeholder={t('onboardingPage.deptPlaceholder')}
                     />
                   </div>
                 )}
@@ -404,27 +404,27 @@ function OnboardingContent() {
                 {organizationType === 'private' && (
                   <div>
                     <label className="block text-[13px] font-medium text-white/50 mb-2">
-                      Industry
+                      {t('onboardingPage.industry')}
                     </label>
                     <select
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
                       className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                     >
-                      <option value="">Select industry</option>
-                      <option value="technology">Technology</option>
-                      <option value="finance">Finance</option>
-                      <option value="retail">Retail</option>
-                      <option value="manufacturing">Manufacturing</option>
-                      <option value="consulting">Consulting</option>
-                      <option value="other">Other</option>
+                      <option value="">{t('onboardingPage.selectIndustry')}</option>
+                      <option value="technology">{t('onboardingPage.technology')}</option>
+                      <option value="finance">{t('onboardingPage.finance')}</option>
+                      <option value="retail">{t('onboardingPage.retail')}</option>
+                      <option value="manufacturing">{t('onboardingPage.manufacturing')}</option>
+                      <option value="consulting">{t('onboardingPage.consulting')}</option>
+                      <option value="other">{t('onboardingPage.other')}</option>
                     </select>
                   </div>
                 )}
 
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-2">
-                    Team Size
+                    {t('onboardingPage.teamSize')}
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {TEAM_SIZES.map((size) => (
@@ -445,7 +445,7 @@ function OnboardingContent() {
 
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-2">
-                    Workspace URL
+                    {t('onboardingPage.workspaceUrl')}
                   </label>
                   <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
                     <input
@@ -459,7 +459,7 @@ function OnboardingContent() {
                   </div>
                   {organizationSlug && (
                     <p className="mt-2 text-xs text-primary-400">
-                      Your workspace: <strong>{organizationSlug}.onekof.com</strong>
+                      {t('onboardingPage.yourWorkspace')} <strong>{organizationSlug}.onekof.com</strong>
                     </p>
                   )}
                 </div>
@@ -471,7 +471,7 @@ function OnboardingContent() {
               <div className="space-y-8">
                 <div>
                   <label className="block text-[13px] font-medium text-white/50 mb-3">
-                    Calendar Preference
+                    {t('onboardingPage.calendarPreference')}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div
@@ -491,8 +491,8 @@ function OnboardingContent() {
                           <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">Ethiopian</div>
-                      <div className="text-xs text-white/60">የኢትዮጵያ ዘመን አቆጣጠር</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.ethiopian')}</div>
+                      <div className="text-xs text-white/60">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u12D8\u1218\u1295 \u12A0\u1246\u1323\u1320\u122D'}</div>
                     </div>
 
                     <div
@@ -512,8 +512,8 @@ function OnboardingContent() {
                           <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">Gregorian</div>
-                      <div className="text-xs text-white/60">International</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.gregorian')}</div>
+                      <div className="text-xs text-white/60">{t('onboardingPage.international')}</div>
                     </div>
 
                     <div
@@ -533,8 +533,8 @@ function OnboardingContent() {
                           <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">Both</div>
-                      <div className="text-xs text-white/60">Show both calendars</div>
+                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.both')}</div>
+                      <div className="text-xs text-white/60">{t('onboardingPage.showBothCalendars')}</div>
                     </div>
                   </div>
                 </div>
@@ -546,16 +546,16 @@ function OnboardingContent() {
                       <Smartphone className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <div className="font-bold text-white">Download Mobile App</div>
-                      <div className="text-sm text-white/60">Manage on the go</div>
+                      <div className="font-bold text-white">{t('onboardingPage.downloadMobileApp')}</div>
+                      <div className="text-sm text-white/60">{t('onboardingPage.manageOnTheGo')}</div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
-                      <span>📱 App Store</span>
+                      <span>App Store</span>
                     </a>
                     <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
-                      <span>📱 Google Play</span>
+                      <span>Google Play</span>
                     </a>
                   </div>
                 </div>
@@ -565,15 +565,15 @@ function OnboardingContent() {
                   <div className="flex items-start gap-2.5 sm:gap-3">
                     <Sparkles className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <p className="font-semibold text-white mb-2">You're all set!</p>
+                      <p className="font-semibold text-white mb-2">{t('onboardingPage.youreAllSet')}</p>
                       <p className="text-sm text-white/60 mb-3">
-                        Based on your selections, we've enabled features for{' '}
-                        <strong className="text-white">{selectedOrgType?.label}</strong> organization.
+                        {t('onboardingPage.basedOnSelections')}{' '}
+                        <strong className="text-white">{selectedOrgType?.label}</strong> {t('onboardingPage.organization')}.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {selectedOrgType?.features.map((feature) => (
                           <span key={feature} className="text-xs bg-white/[0.06] text-primary-300 px-2 py-1 rounded border border-primary-500/30">
-                            ✓ {feature}
+                            {feature}
                           </span>
                         ))}
                       </div>
@@ -592,7 +592,7 @@ function OnboardingContent() {
                 className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#1B1F23] px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
+                <span>{t('onboardingPage.back')}</span>
               </Button>
             )}
 
@@ -607,7 +607,7 @@ function OnboardingContent() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <div className="flex items-center gap-2">
-                  <span>Continue</span>
+                  <span>{t('onboardingPage.continue')}</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </div>
               </Button>
@@ -621,11 +621,11 @@ function OnboardingContent() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Creating workspace...</span>
+                    <span>{t('onboardingPage.creatingWorkspace')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <span>Launch Workspace</span>
+                    <span>{t('onboardingPage.launchWorkspace')}</span>
                     <CheckCircle2 className="h-4 w-4" />
                   </div>
                 )}
@@ -635,7 +635,7 @@ function OnboardingContent() {
 
           {/* Footer */}
           <p className="mt-8 text-center text-xs text-white/50">
-            &copy; 2026 Onekof &middot; Built for Ethiopia
+            &copy; 2026 Onekof &middot; {t('onboardingPage.builtForEthiopia')}
           </p>
         </div>
       </div>

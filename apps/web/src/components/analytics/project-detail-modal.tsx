@@ -18,6 +18,7 @@ import {
   FileText,
   Plus,
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ProjectDetailModalProps {
   open: boolean;
@@ -28,24 +29,25 @@ interface ProjectDetailModalProps {
 }
 
 export function ProjectDetailModal({ open, onClose, project, type, data }: ProjectDetailModalProps) {
+  const { t } = useLanguage();
   if (type === 'metric') {
     return (
-      <SlideoutPanel open={open} onClose={onClose} title={data?.title || 'Metric Details'} size="lg">
+      <SlideoutPanel open={open} onClose={onClose} title={data?.title || t('analytics.metricDetails')} size="lg">
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Metric Overview */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Overview</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('common.overview')}</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{data?.current || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400">Current</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400">{t('analytics.current')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {data?.change >= 0 ? '+' : ''}{data?.change || 0}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400">Change</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400">{t('analytics.change')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{data?.previous || 0}</div>
@@ -56,7 +58,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Daily Breakdown */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daily Breakdown</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.dailyBreakdown')}</h3>
               <div className="space-y-3">
                 {Array.from({ length: 7 }, (_, i) => {
                   const date = new Date();
@@ -88,7 +90,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Top Contributors */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Contributors</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.topContributors')}</h3>
               <div className="space-y-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar'].map((name, index) => (
                   <div key={name} className="flex items-center gap-3">
@@ -98,7 +100,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900 dark:text-white">{name}</div>
                       <div className="text-xs text-gray-500 dark:text-slate-400">
-                        {Math.floor(Math.random() * 20) + 10} contributions
+                        {Math.floor(Math.random() * 20) + 10} {t('analytics.contributions')}
                       </div>
                     </div>
                     <div className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -116,7 +118,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
   if (type === 'project') {
     return (
-      <SlideoutPanel open={open} onClose={onClose} title={project?.name || 'Project Details'} size="xl">
+      <SlideoutPanel open={open} onClose={onClose} title={project?.name || t('analytics.projectDetails')} size="xl">
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Project Stats */}
@@ -157,7 +159,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Recent Activity Timeline */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Activity Timeline</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">{t('analytics.activityTimeline')}</h3>
               <div className="space-y-6">
                 {[
                   { time: '2 hours ago', user: 'Sarah Johnson', action: 'completed task', task: 'User authentication flow', type: 'completed' },
@@ -197,7 +199,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Team Members */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team Members</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('nav.members')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar', 'Emma Davis', 'John Smith', 'Lisa Anderson'].map((name) => (
                   <div key={name} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#1B1F23]">
@@ -222,20 +224,20 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
   if (type === 'activity') {
     return (
-      <SlideoutPanel open={open} onClose={onClose} title={`${data?.month} Activity Details`} size="lg">
+      <SlideoutPanel open={open} onClose={onClose} title={`${data?.month} ${t('analytics.activityDetails')}`} size="lg">
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Month Overview */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Overview</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('common.overview')}</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-4 rounded-lg bg-blue-500/10">
                   <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{data?.created || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Projects Created</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t('analytics.projectsCreated')}</div>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-green-500/10">
                   <div className="text-3xl font-bold text-green-600 dark:text-green-400">{data?.completed || 0}</div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Projects Completed</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t('analytics.projectsCompleted')}</div>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-purple-500/10">
                   <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{data?.total || 0}</div>
@@ -246,7 +248,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Projects Created This Month */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Projects Created</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.projectsCreated')}</h3>
               <div className="space-y-3">
                 {Array.from({ length: data?.created || 0 }, (_, i) => {
                   const creators = ['Sarah Johnson', 'Mike Chen', 'Alex Kumar', 'Emma Davis', 'John Smith'];
@@ -281,7 +283,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Projects Completed This Month */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Projects Completed</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.projectsCompleted')}</h3>
               <div className="space-y-3">
                 {Array.from({ length: data?.completed || 0 }, (_, i) => {
                   const completers = ['Sarah Johnson', 'Mike Chen', 'Alex Kumar', 'Emma Davis'];
@@ -316,7 +318,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Top Contributors */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Contributors This Month</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.topContributorsMonth')}</h3>
               <div className="space-y-3">
                 {['Sarah Johnson', 'Mike Chen', 'Alex Kumar'].map((name, index) => (
                   <div key={name} className="flex items-center gap-3">
@@ -349,7 +351,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                    Great Progress!
+                    {t('analytics.greatProgress')}
                   </h4>
                   <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
                     {data?.month} showed a <span className="font-semibold text-green-600 dark:text-green-400">
@@ -367,7 +369,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
   if (type === 'milestone') {
     return (
-      <SlideoutPanel open={open} onClose={onClose} title={data?.title || 'Milestone Details'} size="lg">
+      <SlideoutPanel open={open} onClose={onClose} title={data?.title || t('analytics.milestoneDetails')} size="lg">
         <SlideoutPanelContent>
           <div className="space-y-6">
             {/* Milestone Info */}
@@ -382,8 +384,8 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
                   <div className="text-lg font-semibold text-gray-900 dark:text-white">{data?.date}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Days Remaining</div>
-                  <div className="text-lg font-semibold text-orange-500">{data?.daysLeft} days</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">{t('analytics.daysRemaining')}</div>
+                  <div className="text-lg font-semibold text-orange-500">{data?.daysLeft} {t('analytics.days')}</div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-600 dark:text-slate-400 mb-2">Progress</div>
@@ -399,7 +401,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
 
             {/* Tasks for this Milestone */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Related Tasks</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('analytics.relatedTasks')}</h3>
               <div className="space-y-2">
                 {[
                   { title: 'Complete UI mockups', status: 'completed', assignee: 'Sarah Johnson' },
@@ -431,7 +433,7 @@ export function ProjectDetailModal({ open, onClose, project, type, data }: Proje
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Potential Risks</h4>
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{t('analytics.potentialRisks')}</h4>
                   <ul className="text-xs text-gray-600 dark:text-slate-400 space-y-1 list-disc list-inside">
                     <li>API dependencies not yet finalized</li>
                     <li>Waiting for design approval on 2 components</li>

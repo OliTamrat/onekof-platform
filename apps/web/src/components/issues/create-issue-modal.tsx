@@ -92,7 +92,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
     e.preventDefault();
 
     if (!title.trim() || !projectId) {
-      toast.warning('Missing fields', 'Please provide a title and select a project');
+      toast.warning(t('errors.missingFields'), t('errors.pleaseProvideTitle'));
       return;
     }
 
@@ -134,7 +134,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Create New Issue
+            {t('commandPalette.createNewIssue')}
           </h2>
           <Button
             variant="ghost"
@@ -154,7 +154,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               {/* Project (Required) */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Project <span className="text-red-500">*</span>
+                  {t('common.project')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={projectId}
@@ -162,7 +162,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
                   required
                 >
-                  <option value="">Select a project</option>
+                  <option value="">{t('common.project')}...</option>
                   {projectsData?.projects?.map((project: any) => (
                     <option key={project.id} value={project.id}>
                       {project.name} ({project.key})
@@ -174,14 +174,14 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               {/* Title (Required) */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Title <span className="text-red-500">*</span>
+                  {t('common.title')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
-                  placeholder="Enter issue title"
+                  placeholder={t('common.title')}
                   required
                 />
               </div>
@@ -189,14 +189,14 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               {/* Description */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Description
+                  {t('common.description')}
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
-                  placeholder="Add a detailed description..."
+                  placeholder={t('tasks.addDescription')}
                 />
               </div>
             </div>
@@ -204,7 +204,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             {/* Type, Status, Priority Row */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Type
+                {t('common.type')}
               </label>
               <select
                 value={type}
@@ -220,48 +220,48 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
 
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Status
+                {t('common.status')}
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
-                <option value="TODO">To Do</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="IN_REVIEW">In Review</option>
-                <option value="DONE">Done</option>
+                <option value="TODO">{t('status.todo')}</option>
+                <option value="IN_PROGRESS">{t('status.inProgress')}</option>
+                <option value="IN_REVIEW">{t('status.inReview')}</option>
+                <option value="DONE">{t('status.done')}</option>
               </select>
             </div>
 
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Priority
+                {t('common.priority')}
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
-                <option value="HIGHEST">⬆️ Highest</option>
-                <option value="HIGH">🔺 High</option>
-                <option value="MEDIUM">➡️ Medium</option>
-                <option value="LOW">🔻 Low</option>
-                <option value="LOWEST">⬇️ Lowest</option>
+                <option value="HIGHEST">⬆️ {t('priority.highest')}</option>
+                <option value="HIGH">🔺 {t('priority.high')}</option>
+                <option value="MEDIUM">➡️ {t('priority.medium')}</option>
+                <option value="LOW">🔻 {t('priority.low')}</option>
+                <option value="LOWEST">⬇️ {t('priority.lowest')}</option>
               </select>
             </div>
 
             {/* Assignee & Team */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Assignee
+                {t('common.assignee')}
               </label>
               <select
                 value={assigneeId}
                 onChange={(e) => setAssigneeId(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
-                <option value="">Unassigned</option>
+                <option value="">{t('common.unassigned')}</option>
                 {membersData?.members?.map((member: any) => (
                   <option key={member.userId} value={member.userId}>
                     {member.user?.name || member.user?.email}
@@ -273,14 +273,14 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             {/* Team Assignment */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Team
+                {t('goals.team')}
               </label>
               <select
                 value={teamId}
                 onChange={(e) => setTeamId(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-slate-700 dark:bg-[#282E33] dark:text-white"
               >
-                <option value="">No team</option>
+                <option value="">{t('common.none')}</option>
                 {teamsData?.teams?.map((team: any) => (
                   <option key={team.id} value={team.id}>
                     {team.icon} {team.name}
@@ -292,7 +292,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             {/* Due Date & Estimate */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Due Date
+                {t('common.dueDate')}
               </label>
               <input
                 type="date"
@@ -304,7 +304,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
 
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Estimate (hours)
+                Estimate
               </label>
               <input
                 type="number"
@@ -319,7 +319,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             {/* Goals Linking */}
             <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Link to Goals/OKRs
+                {t('nav.goals')}
               </label>
               <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-slate-700 dark:bg-[#282E33]">
                 {goalsData?.goals?.length > 0 ? (
@@ -337,7 +337,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                     </label>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-400">No goals available</p>
+                  <p className="text-sm text-gray-400">{t('emptyStates.noGoals')}</p>
                 )}
               </div>
             </div>
@@ -345,7 +345,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             {/* Watchers */}
             <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Watchers (will be notified of updates)
+                Watchers
               </label>
               <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-gray-300 p-3 dark:border-slate-700 dark:bg-[#282E33]">
                 {membersData?.members?.length > 0 ? (
@@ -363,7 +363,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                     </label>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-400">No members available</p>
+                  <p className="text-sm text-gray-400">{t('common.noResults')}</p>
                 )}
               </div>
             </div>
@@ -378,7 +378,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             onClick={onClose}
             className="rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:text-gray-300 dark:hover:bg-[#282E33]"
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -386,7 +386,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
             className="rounded-lg bg-primary-600 text-white hover:bg-primary-700"
           >
             {createIssueMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {createIssueMutation.isPending ? 'Creating...' : 'Create Issue'}
+            {createIssueMutation.isPending ? t('common.creating') : t('nav.createIssue')}
           </Button>
         </div>
       </div>
