@@ -133,24 +133,23 @@ export default function DashboardPage() {
 
   const issues = issuesData?.issues || [];
 
-  // Calculate statistics from real data
+  // Calculate statistics from real data — all-time totals
   const tasksCompleted = issues.filter(
-    (i: any) => i.status === 'DONE' &&
-    new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    (i: any) => i.status === 'DONE'
   ).length;
 
-  const tasksUpdated = issues.filter(
-    (i: any) => new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const tasksInProgress = issues.filter(
+    (i: any) => i.status === 'IN_PROGRESS' || i.status === 'IN_REVIEW'
   ).length;
 
-  const tasksCreated = issues.filter(
-    (i: any) => new Date(i.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const tasksTodo = issues.filter(
+    (i: any) => i.status === 'TODO' || i.status === 'BACKLOG'
   ).length;
 
-  const tasksDueSoon = issues.filter(
+  const tasksOverdue = issues.filter(
     (i: any) => i.dueDate &&
-    new Date(i.dueDate) > new Date() &&
-    new Date(i.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    new Date(i.dueDate) < new Date() &&
+    i.status !== 'DONE'
   ).length;
 
   // Get status counts
@@ -191,41 +190,38 @@ export default function DashboardPage() {
 
   // Handlers for drill-down
   const handleShowCompletedTasks = () => {
-    const completed = issues.filter(
-      (i: any) => i.status === 'DONE' &&
-      new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    );
+    const completed = issues.filter((i: any) => i.status === 'DONE');
     setFilteredTasks(completed);
-    setFilterTitle('Completed Tasks (Last 7 Days)');
+    setFilterTitle(`${t('dashboard.completed')} • ${completed.length}`);
     setIsFilterModalOpen(true);
   };
 
   const handleShowUpdatedTasks = () => {
-    const updated = issues.filter(
-      (i: any) => new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const inProgress = issues.filter(
+      (i: any) => i.status === 'IN_PROGRESS' || i.status === 'IN_REVIEW'
     );
-    setFilteredTasks(updated);
-    setFilterTitle('Updated Tasks (Last 7 Days)');
+    setFilteredTasks(inProgress);
+    setFilterTitle(`${t('status.inProgress')} • ${inProgress.length}`);
     setIsFilterModalOpen(true);
   };
 
   const handleShowCreatedTasks = () => {
-    const created = issues.filter(
-      (i: any) => new Date(i.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const todo = issues.filter(
+      (i: any) => i.status === 'TODO' || i.status === 'BACKLOG'
     );
-    setFilteredTasks(created);
-    setFilterTitle('Created Tasks (Last 7 Days)');
+    setFilteredTasks(todo);
+    setFilterTitle(`${t('status.todo')} • ${todo.length}`);
     setIsFilterModalOpen(true);
   };
 
   const handleShowDueSoonTasks = () => {
-    const dueSoon = issues.filter(
+    const overdue = issues.filter(
       (i: any) => i.dueDate &&
-      new Date(i.dueDate) > new Date() &&
-      new Date(i.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      new Date(i.dueDate) < new Date() &&
+      i.status !== 'DONE'
     );
-    setFilteredTasks(dueSoon);
-    setFilterTitle('Due Soon (Next 7 Days)');
+    setFilteredTasks(overdue);
+    setFilterTitle(`${t('dashboard.dueSoon')} • ${overdue.length}`);
     setIsFilterModalOpen(true);
   };
 
@@ -302,31 +298,31 @@ export default function DashboardPage() {
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={tasksCompleted.toString()}
             label={t('dashboard.completed')}
-            sublabel={t('dashboard.inLast7Days')}
+            sublabel={t('dashboard.totalItems')}
             color="text-green-500 dark:text-green-400"
             onClick={handleShowCompletedTasks}
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
-            value={tasksUpdated.toString()}
-            label={t('dashboard.updated')}
-            sublabel={t('dashboard.inLast7Days')}
+            value={tasksInProgress.toString()}
+            label={t('status.inProgress')}
+            sublabel={t('dashboard.totalItems')}
             color="text-blue-500 dark:text-blue-400"
             onClick={handleShowUpdatedTasks}
           />
           <StatCard
             icon={<Plus className="h-5 w-5" />}
-            value={tasksCreated.toString()}
-            label={t('dashboard.created')}
-            sublabel={t('dashboard.inLast7Days')}
+            value={tasksTodo.toString()}
+            label={t('status.todo')}
+            sublabel={t('dashboard.totalItems')}
             color="text-primary-500 dark:text-primary-400"
             onClick={handleShowCreatedTasks}
           />
           <StatCard
             icon={<Clock className="h-5 w-5" />}
-            value={tasksDueSoon.toString()}
+            value={tasksOverdue.toString()}
             label={t('dashboard.dueSoon')}
-            sublabel={t('dashboard.inNext7Days')}
+            sublabel={t('dashboard.totalItems')}
             color="text-orange-500 dark:text-orange-400"
             onClick={handleShowDueSoonTasks}
           />
