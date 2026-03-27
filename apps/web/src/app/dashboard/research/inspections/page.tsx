@@ -11,11 +11,11 @@ export default function InspectionsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Inspections"
-        description="Schedule and track site inspections and surveys"
+        title={t('departmentTabs.inspections')}
+        description={t('departments.inspectionsDesc')}
         icon={CheckCircle2}
         iconColor="#EF4444"
-        emptyMessage="No inspections scheduled. Create one to start tracking."
+        emptyMessage={t('emptyStates.noInspections')}
         defaultLabels={['research', 'inspection']}
         baseHref="/dashboard/research"
         currentTab="inspections"

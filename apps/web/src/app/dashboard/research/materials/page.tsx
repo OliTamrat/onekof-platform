@@ -11,11 +11,11 @@ export default function MaterialsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Materials"
-        description="Manage research materials and resources"
+        title={t('departmentTabs.materials')}
+        description={t('departments.materialsDesc')}
         icon={FileSpreadsheet}
         iconColor="#F59E0B"
-        emptyMessage="No materials tracked yet. Create one to manage resources."
+        emptyMessage={t('emptyStates.noMaterials')}
         defaultLabels={['research', 'materials']}
         baseHref="/dashboard/research"
         currentTab="materials"

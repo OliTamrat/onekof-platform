@@ -349,11 +349,11 @@ export default function BudgetPage() {
         <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
           <div className="text-center max-w-md p-3 md:p-6">
             <AlertCircle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('budget.sessionLoadingIssue')}</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              The session is taking longer than expected to load.
+              {t('budget.sessionTakingLong')}
             </p>
-            <Button onClick={() => router.push('/auth/signin')}>Go to Sign In</Button>
+            <Button onClick={() => router.push('/auth/signin')}>{t('budget.goToSignIn')}</Button>
           </div>
         </div>
       </AppLayout>
@@ -368,7 +368,7 @@ export default function BudgetPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Budget"
+        title={t('budget.title')}
         icon={<DollarSign className="h-6 w-6" />}
         iconColor="#1C8C7D"
         currentTab="summary"
@@ -392,7 +392,7 @@ export default function BudgetPage() {
                 {budgets[0].creatorName && (
                   <span className="flex items-center gap-1 text-xs text-white/70">
                     <User className="h-3 w-3" />
-                    Owner: <span className="font-medium text-white/90">{budgets[0].creatorName}</span>
+                    {t('budget.owner')}: <span className="font-medium text-white/90">{budgets[0].creatorName}</span>
                   </span>
                 )}
                 {budgets[0].status && (
@@ -409,7 +409,7 @@ export default function BudgetPage() {
             </div>
             <div className="text-right flex-shrink-0">
               <div className="text-2xl md:text-3xl font-bold text-white tabular-nums">{overallUtilization.toFixed(1)}%</div>
-              <div className="text-[11px] md:text-xs text-white/70">utilized</div>
+              <div className="text-[11px] md:text-xs text-white/70">{t('budget.utilized')}</div>
             </div>
           </div>
         </div>
@@ -422,35 +422,35 @@ export default function BudgetPage() {
             <StatCard
               icon={<DollarSign className="h-4 w-4 md:h-5 md:w-5" />}
               value={isLoading ? '...' : `ETB ${formatCompact(totalSpent)}`}
-              label="spent"
-              sublabel={`of ETB ${formatCompact(totalBudget)} allocated`}
+              label={t('budget.spent').toLowerCase()}
+              sublabel={t('budget.allocatedOf').replace('{amount}', formatCompact(totalBudget))}
               iconBg="bg-blue-50 dark:bg-blue-900/20"
               color="text-blue-600 dark:text-blue-400"
-              onClick={() => openSlideout('All Project Expenses', expenses)}
+              onClick={() => openSlideout(t('budget.allProjectExpenses'), expenses)}
             />
             <StatCard
               icon={<CheckCircle2 className="h-4 w-4 md:h-5 md:w-5" />}
               value={isLoading ? '...' : approvedExpenses.length.toString()}
-              label="approved"
-              sublabel="cleared by finance"
+              label={t('budget.approved').toLowerCase()}
+              sublabel={t('budget.clearedByFinance')}
               iconBg="bg-emerald-50 dark:bg-emerald-900/20"
               color="text-emerald-600 dark:text-emerald-400"
-              onClick={() => openSlideout('Approved Expenses', approvedExpenses)}
+              onClick={() => openSlideout(t('budget.approvedExpenses'), approvedExpenses)}
             />
             <StatCard
               icon={<Clock className="h-4 w-4 md:h-5 md:w-5" />}
               value={isLoading ? '...' : pendingExpenses.length.toString()}
-              label="pending"
-              sublabel="awaiting approval"
+              label={t('budget.pending').toLowerCase()}
+              sublabel={t('budget.awaitingApproval')}
               iconBg="bg-amber-50 dark:bg-amber-900/20"
               color="text-amber-600 dark:text-amber-400"
-              onClick={() => openSlideout('Pending Approval', pendingExpenses)}
+              onClick={() => openSlideout(t('budget.pendingApproval'), pendingExpenses)}
             />
             <StatCard
               icon={<TrendingUp className="h-4 w-4 md:h-5 md:w-5" />}
               value={isLoading ? '...' : `ETB ${formatCompact(totalBudget - totalSpent)}`}
-              label="remaining"
-              sublabel={`${categoriesAtRisk} at risk (>80%)`}
+              label={t('budget.remaining').toLowerCase()}
+              sublabel={t('budget.atRiskPercent').replace('{count}', categoriesAtRisk.toString())}
               iconBg="bg-primary-50 dark:bg-primary-900/20"
               color="text-primary-600 dark:text-primary-400"
             />
@@ -471,11 +471,11 @@ export default function BudgetPage() {
                   <Sparkles className="h-3.5 w-3.5 text-white" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold text-slate-900 dark:text-white">
-                  AI Document Analysis
+                  {t('budget.aiDocumentAnalysis')}
                 </h3>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
-                Upload receipts, invoices, or budget docs — AI extracts and categorizes automatically.
+                {t('budget.uploadDescription')}
               </p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
@@ -485,8 +485,8 @@ export default function BudgetPage() {
                 className="gap-1.5 text-xs"
               >
                 <Upload className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Upload</span>
-                <span className="sm:hidden">Upload</span>
+                <span className="hidden sm:inline">{t('common.upload')}</span>
+                <span className="sm:hidden">{t('common.upload')}</span>
               </Button>
             </div>
           </div>
@@ -499,10 +499,10 @@ export default function BudgetPage() {
             {/* Budget Overview Card */}
             <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-slate-700/60">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Budget Overview</h3>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('budget.budgetOverview')}</h3>
                 {hasBudgets && (
                   <span className="text-sm font-medium text-[#1C8C7D] bg-[#1C8C7D]/10 px-2.5 py-1 rounded-lg">
-                    {overallUtilization.toFixed(1)}% utilized
+                    {overallUtilization.toFixed(1)}% {t('budget.utilized')}
                   </span>
                 )}
               </div>
@@ -513,16 +513,16 @@ export default function BudgetPage() {
                 ) : !hasBudgets ? (
                   <div className="text-center py-12">
                     <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Yet</h3>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noBudgetsYet')}</h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                      Create a budget in any project to start tracking expenses, or upload a budget document for AI extraction.
+                      {t('budget.noBudgetsYetDesc')}
                     </p>
                     <Button
                       onClick={() => { setAnalysisType('budget_document'); setIsUploadModalOpen(true); }}
                       className="gap-2"
                     >
                       <Upload className="h-4 w-4" />
-                      Upload Budget Document
+                      {t('budget.uploadBudgetDocument')}
                     </Button>
                   </div>
                 ) : (
@@ -552,7 +552,7 @@ export default function BudgetPage() {
                           <div className="text-2xl font-bold text-slate-900 dark:text-white">
                             {overallUtilization.toFixed(0)}%
                           </div>
-                          <div className="text-sm text-slate-500 dark:text-slate-400">Utilized</div>
+                          <div className="text-sm text-slate-500 dark:text-slate-400">{t('budget.utilized')}</div>
                         </div>
                       </div>
 
@@ -589,7 +589,7 @@ export default function BudgetPage() {
 
                     {/* Category Bars */}
                     <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Category Spending</h3>
+                      <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{t('budget.categorySpending')}</h3>
                       <div className="space-y-2">
                         {categories.map((category) => (
                           <CategoryBar
@@ -608,9 +608,9 @@ export default function BudgetPage() {
                     <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
                       <div className="flex items-center gap-2 mb-4">
                         <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-                        <h3 className="font-semibold text-slate-900 dark:text-white">AI Project & Budget Analysis</h3>
+                        <h3 className="font-semibold text-slate-900 dark:text-white">{t('budget.aiProjectBudgetAnalysis')}</h3>
                         <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[#1C8C7D]/10 text-[#1C8C7D] border border-[#1C8C7D]/20">
-                          AI-Generated
+                          {t('budget.aiGenerated')}
                         </span>
                       </div>
 
@@ -621,7 +621,7 @@ export default function BudgetPage() {
                             <Sparkles className="h-4 w-4 text-white" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Executive Summary</h4>
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('budget.executiveSummary')}</h4>
                             <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                               {budgets.length === 1 ? (
                                 <>The <span className="font-semibold">{budgets[0]?.project?.name || 'project'}</span> has</>
@@ -653,7 +653,7 @@ export default function BudgetPage() {
                             <div className="h-6 w-6 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                               <TrendingUp className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Budget Utilization</h5>
+                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.budgetUtilization')}</h5>
                           </div>
                           <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                             <li className="flex items-start gap-2">
@@ -691,7 +691,7 @@ export default function BudgetPage() {
                             <div className="h-6 w-6 rounded-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                               <DollarSign className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                             </div>
-                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Category Allocation</h5>
+                            <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.categoryAllocation')}</h5>
                           </div>
                           <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                             {categories.slice(0, 3).map(c => (
@@ -720,25 +720,25 @@ export default function BudgetPage() {
                           <div className="h-6 w-6 rounded-md bg-[#1C8C7D] flex items-center justify-center">
                             <Sparkles className="h-3.5 w-3.5 text-white" />
                           </div>
-                          <h5 className="text-sm font-semibold text-slate-900 dark:text-white">AI Recommendations</h5>
+                          <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.aiRecommendations')}</h5>
                         </div>
                         <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
                           {categoriesAtRisk > 0 && (
                             <li className="flex items-start gap-2">
                               <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                              <span><span className="font-medium">Reallocation Needed:</span> {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')} — consider reallocating funds from under-utilized categories.</span>
+                              <span><span className="font-medium">{t('budget.reallocationNeeded')}:</span> {categories.filter(c => c.budget > 0 && (c.spent / c.budget) > 0.8).map(c => c.name).join(', ')} — consider reallocating funds from under-utilized categories.</span>
                             </li>
                           )}
                           {pendingExpenses.length > 0 && (
                             <li className="flex items-start gap-2">
                               <Clock className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                              <span><span className="font-medium">Pending Approvals:</span> {pendingExpenses.length} expense{pendingExpenses.length === 1 ? '' : 's'} (ETB {formatCompact(pendingExpenses.reduce((s: number, e: any) => s + Number(e.amount), 0))}) awaiting approval.</span>
+                              <span><span className="font-medium">{t('budget.pendingApprovals')}:</span> {pendingExpenses.length} expense{pendingExpenses.length === 1 ? '' : 's'} (ETB {formatCompact(pendingExpenses.reduce((s: number, e: any) => s + Number(e.amount), 0))}) awaiting approval.</span>
                             </li>
                           )}
                           {overallUtilization < 50 && totalBudget > 0 && (
                             <li className="flex items-start gap-2">
                               <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span><span className="font-medium">Budget Health:</span> Utilization is at {overallUtilization.toFixed(1)}%. Budget allocation is within healthy limits.</span>
+                              <span><span className="font-medium">{t('budget.budgetHealth')}:</span> Utilization is at {overallUtilization.toFixed(1)}%. Budget allocation is within healthy limits.</span>
                             </li>
                           )}
                         </ul>
@@ -746,8 +746,8 @@ export default function BudgetPage() {
 
                       {/* Report Footer */}
                       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
-                        <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                        <span>Budget Analysis</span>
+                        <span>{t('budget.analysisGeneratedOn').replace('{date}', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))}</span>
+                        <span>{t('budget.budgetAnalysis')}</span>
                       </div>
                     </div>
                   </>
@@ -765,14 +765,14 @@ export default function BudgetPage() {
                 <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                   <Sparkles className="h-3.5 w-3.5 text-[#1C8C7D]" />
                 </div>
-                Quick Actions
+                {t('budget.quickActions')}
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Receipt', icon: Camera, type: 'receipt' as const, bg: 'bg-primary-50 dark:bg-primary-900/20', iconColor: 'text-primary-600 dark:text-primary-400' },
-                  { label: 'Invoice', icon: Receipt, type: 'receipt' as const, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
-                  { label: 'Budget Doc', icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
-                  { label: 'Expense Report', icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
+                  { label: t('budget.receipt'), icon: Camera, type: 'receipt' as const, bg: 'bg-primary-50 dark:bg-primary-900/20', iconColor: 'text-primary-600 dark:text-primary-400' },
+                  { label: t('budget.invoice'), icon: Receipt, type: 'receipt' as const, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
+                  { label: t('budget.budgetDoc'), icon: FileText, type: 'budget_document' as const, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
+                  { label: t('budget.expenseReport'), icon: Download, type: 'expense_report' as const, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
                 ].map((action) => (
                   <div
                     key={action.label}
@@ -794,10 +794,10 @@ export default function BudgetPage() {
             {/* Recent Activity */}
             <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Recent Activity</h3>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.recentActivity')}</h3>
                 <span className="flex items-center gap-1 text-[11px] text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-2 py-0.5 rounded-full">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#1C8C7D] animate-pulse" />
-                  Live
+                  {t('budget.live')}
                 </span>
               </div>
               {isLoading ? (
@@ -807,7 +807,7 @@ export default function BudgetPage() {
               ) : expenses.length === 0 ? (
                 <div className="text-center py-8">
                   <Clock className="h-8 w-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-                  <p className="text-sm text-slate-500">No recent expenses</p>
+                  <p className="text-sm text-slate-500">{t('budget.noRecentExpenses')}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -842,7 +842,7 @@ export default function BudgetPage() {
                         <p className={`text-[11px] font-medium ${
                           expense.status === 'APPROVED' ? 'text-emerald-600 dark:text-emerald-400' :
                           'text-amber-600 dark:text-amber-400'
-                        }`}>{expense.status === 'APPROVED' ? 'Approved' : 'Pending'}</p>
+                        }`}>{expense.status === 'APPROVED' ? t('budget.approved') : t('budget.pending')}</p>
                       </div>
                     </div>
                   ))}
@@ -850,11 +850,11 @@ export default function BudgetPage() {
                     <div
                       role="button"
                       tabIndex={0}
-                      onClick={() => openSlideout('All Expenses', expenses)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openSlideout('All Expenses', expenses); }}
+                      onClick={() => openSlideout(t('budget.allExpenses'), expenses)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openSlideout(t('budget.allExpenses'), expenses); }}
                       className="w-full text-center text-xs font-medium text-[#1C8C7D] hover:text-[#16A085] py-2 mt-1 rounded-lg hover:bg-[#1C8C7D]/5 transition-colors cursor-pointer"
                     >
-                      View all {expenses.length} expenses
+                      {t('budget.viewAllExpenses').replace('{count}', expenses.length.toString())}
                     </div>
                     )}
                   </div>
@@ -868,7 +868,7 @@ export default function BudgetPage() {
                   <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                     <TrendingUp className="h-3.5 w-3.5 text-[#1C8C7D]" />
                   </div>
-                  Financial Summary
+                  {t('budget.financialSummary')}
                 </h3>
                 <div className="space-y-2">
                   {(() => {
@@ -884,11 +884,11 @@ export default function BudgetPage() {
                       : 'N/A';
 
                     return [
-                      { label: 'Remaining Funds', value: `ETB ${formatCompact(totalBudget - totalSpent)}`, icon: DollarSign, bg: 'bg-emerald-50 dark:bg-emerald-900/20', iconColor: 'text-emerald-600 dark:text-emerald-400' },
-                      { label: 'Monthly Burn Rate', value: `ETB ${formatCompact(monthlyBurn)}`, icon: TrendingUp, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
-                      { label: 'Est. Months Remaining', value: monthlyBurn > 0 ? `~${monthsRemaining} months` : 'No data', icon: Clock, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
-                      { label: 'Projected Completion', value: projectedLabel, icon: CheckCircle2, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
-                      { label: 'Total Expenses', value: expenseCount.toString(), icon: Receipt, bg: 'bg-indigo-50 dark:bg-indigo-900/20', iconColor: 'text-indigo-600 dark:text-indigo-400' },
+                      { label: t('budget.remainingFunds'), value: `ETB ${formatCompact(totalBudget - totalSpent)}`, icon: DollarSign, bg: 'bg-emerald-50 dark:bg-emerald-900/20', iconColor: 'text-emerald-600 dark:text-emerald-400' },
+                      { label: t('budget.monthlyBurnRate'), value: `ETB ${formatCompact(monthlyBurn)}`, icon: TrendingUp, bg: 'bg-blue-50 dark:bg-blue-900/20', iconColor: 'text-blue-600 dark:text-blue-400' },
+                      { label: t('budget.estMonthsRemaining'), value: monthlyBurn > 0 ? `~${monthsRemaining} months` : t('budget.noData'), icon: Clock, bg: 'bg-amber-50 dark:bg-amber-900/20', iconColor: 'text-amber-600 dark:text-amber-400' },
+                      { label: t('budget.projectedCompletion'), value: projectedLabel, icon: CheckCircle2, bg: 'bg-purple-50 dark:bg-purple-900/20', iconColor: 'text-purple-600 dark:text-purple-400' },
+                      { label: t('budget.totalExpenses'), value: expenseCount.toString(), icon: Receipt, bg: 'bg-indigo-50 dark:bg-indigo-900/20', iconColor: 'text-indigo-600 dark:text-indigo-400' },
                     ];
                   })().map((item) => (
                     <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
@@ -919,11 +919,11 @@ export default function BudgetPage() {
                 <Sparkles className="h-5 w-5 text-white" />
                 <div>
                   <h2 className="text-lg font-semibold text-white">
-                    {analysisType === 'receipt' && 'Analyze Receipt / Invoice'}
-                    {analysisType === 'budget_document' && 'Analyze Budget Document'}
-                    {analysisType === 'expense_report' && 'Analyze Expense Report'}
+                    {analysisType === 'receipt' && t('budget.analyzeReceiptInvoice')}
+                    {analysisType === 'budget_document' && t('budget.analyzeBudgetDocument')}
+                    {analysisType === 'expense_report' && t('budget.analyzeExpenseReport')}
                   </h2>
-                  <p className="text-sm text-white/80">AI will extract and categorize data automatically</p>
+                  <p className="text-sm text-white/80">{t('budget.aiExtractDesc')}</p>
                 </div>
               </div>
               <Button variant="ghost" onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
@@ -937,12 +937,12 @@ export default function BudgetPage() {
                 <>
                   {/* Analysis Type Selector */}
                   <div className="mb-4">
-                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">Document Type</label>
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">{t('budget.documentType')}</label>
                     <div className="flex gap-2">
                       {[
-                        { value: 'receipt', label: 'Receipt/Invoice', icon: Receipt },
-                        { value: 'budget_document', label: 'Budget Doc', icon: FileText },
-                        { value: 'expense_report', label: 'Expense Report', icon: Download },
+                        { value: 'receipt', label: t('budget.receiptInvoice'), icon: Receipt },
+                        { value: 'budget_document', label: t('budget.budgetDoc'), icon: FileText },
+                        { value: 'expense_report', label: t('budget.expenseReport'), icon: Download },
                       ].map((type) => (
                         <Button
                           key={type.value}
@@ -964,14 +964,14 @@ export default function BudgetPage() {
                   {hasBudgets && (
                     <div className="mb-4">
                       <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
-                        Link to Budget (optional)
+                        {t('budget.linkToBudgetOptional')}
                       </label>
                       <select
                         value={selectedBudgetId}
                         onChange={(e) => setSelectedBudgetId(e.target.value)}
                         className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-sm"
                       >
-                        <option value="">Select a budget...</option>
+                        <option value="">{t('budget.selectBudget')}</option>
                         {budgets.map((b) => (
                           <option key={b.id} value={b.id}>
                             {b.project.name} - ETB {formatCompact(Number(b.totalBudget))}
@@ -1012,17 +1012,17 @@ export default function BudgetPage() {
                           <span className="text-sm font-medium text-slate-900 dark:text-white">{uploadFile.name}</span>
                           <span className="text-xs text-slate-500">({(uploadFile.size / 1024).toFixed(0)} KB)</span>
                         </div>
-                        <p className="text-xs text-slate-500">Click to change file</p>
+                        <p className="text-xs text-slate-500">{t('budget.clickToChangeFile')}</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <Upload className="h-10 w-10 mx-auto text-slate-400" />
                         <div>
                           <p className="text-sm font-medium text-slate-900 dark:text-white">
-                            Drop file here or click to browse
+                            {t('budget.dropFileOrBrowse')}
                           </p>
                           <p className="text-xs text-slate-500 mt-1">
-                            PDF, images (JPG, PNG), Word docs, CSV — max 10MB
+                            {t('budget.fileFormatsExtended')}
                           </p>
                         </div>
                       </div>
@@ -1040,12 +1040,12 @@ export default function BudgetPage() {
                         {analyzeMutation.isPending ? (
                           <>
                             <Loader2 className="h-4 w-4 animate-spin" />
-                            Analyzing with AI...
+                            {t('budget.analyzingWithAI')}
                           </>
                         ) : (
                           <>
                             <Sparkles className="h-4 w-4" />
-                            Analyze Document
+                            {t('budget.analyzeDocument')}
                           </>
                         )}
                       </Button>
@@ -1063,7 +1063,7 @@ export default function BudgetPage() {
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                     <Check className="h-5 w-5 text-green-600" />
                     <span className="text-sm font-medium text-green-800 dark:text-green-300">
-                      Data extracted successfully
+                      {t('budget.dataExtractedSuccessfully')}
                       {extractedData.confidence && ` (${extractedData.confidence}% confidence)`}
                     </span>
                   </div>
@@ -1072,25 +1072,25 @@ export default function BudgetPage() {
                   <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
                     {extractedData.vendor && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Vendor</span>
+                        <span className="text-slate-500">{t('budget.vendor')}</span>
                         <span className="font-medium text-slate-900 dark:text-white">{extractedData.vendor}</span>
                       </div>
                     )}
                     {extractedData.invoiceNumber && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Invoice #</span>
+                        <span className="text-slate-500">{t('budget.invoiceNumber')}</span>
                         <span className="font-medium text-slate-900 dark:text-white">{extractedData.invoiceNumber}</span>
                       </div>
                     )}
                     {extractedData.date && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Date</span>
+                        <span className="text-slate-500">{t('common.date')}</span>
                         <span className="font-medium text-slate-900 dark:text-white">{extractedData.date}</span>
                       </div>
                     )}
                     {(extractedData.total || extractedData.totalBudget) && (
                       <div className="flex justify-between text-sm border-t border-slate-200 dark:border-slate-700 pt-3">
-                        <span className="text-slate-500 font-medium">Total</span>
+                        <span className="text-slate-500 font-medium">{t('common.total')}</span>
                         <span className="text-lg font-bold text-[#1C8C7D]">
                           {extractedData.currency || 'ETB'} {formatCurrency(extractedData.total || extractedData.totalBudget || 0)}
                         </span>
@@ -1222,7 +1222,7 @@ export default function BudgetPage() {
                   className="gap-2"
                 >
                   <RotateCcw className="h-4 w-4" />
-                  Upload Another
+                  {t('budget.newUpload')}
                 </Button>
                 {selectedBudgetId && extractedData.total && (
                   <Button
@@ -1231,9 +1231,9 @@ export default function BudgetPage() {
                     className="flex-1 gap-2"
                   >
                     {createExpenseMutation.isPending ? (
-                      <><Loader2 className="h-4 w-4 animate-spin" /> Creating...</>
+                      <><Loader2 className="h-4 w-4 animate-spin" /> {t('common.creating')}</>
                     ) : (
-                      <><Plus className="h-4 w-4" /> Create Expense from Extraction</>
+                      <><Plus className="h-4 w-4" /> {t('budget.createExpense')}</>
                     )}
                   </Button>
                 )}
@@ -1255,7 +1255,7 @@ export default function BudgetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-white">{slideoutTitle}</h2>
-                  <p className="text-sm text-white/80 mt-1">{slideoutData.length} items</p>
+                  <p className="text-sm text-white/80 mt-1">{slideoutData.length} {t('common.items')}</p>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => setIsActivitySlideoutOpen(false)} className="rounded-md p-2 text-white hover:bg-white/20">
                   <X className="h-5 w-5" />
@@ -1267,7 +1267,7 @@ export default function BudgetPage() {
               {slideoutData.length === 0 ? (
                 <div className="text-center py-12">
                   <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                  <p className="text-slate-600 dark:text-slate-400">No items found</p>
+                  <p className="text-slate-600 dark:text-slate-400">{t('common.noResults')}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
