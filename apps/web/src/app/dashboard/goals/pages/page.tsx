@@ -20,55 +20,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/goals/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/goals/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/goals/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages', active: true },
-];
-
-const PAGE_TEMPLATES: { id: string; name: string; description: string; icon: LucideIcon }[] = [
-  {
-    id: 'okr-framework',
-    name: 'OKR Framework Guide',
-    description: 'Document your OKR methodology and best practices',
-    icon: Book,
-  },
-  {
-    id: 'goal-planning',
-    name: 'Goal Planning',
-    description: 'Template for quarterly and annual planning',
-    icon: Calendar,
-  },
-  {
-    id: 'strategy-doc',
-    name: 'Strategy Document',
-    description: 'Long-term strategic goals and initiatives',
-    icon: Target,
-  },
-  {
-    id: 'okr-review',
-    name: 'OKR Review Notes',
-    description: 'Template for OKR review meetings',
-    icon: Pencil,
-  },
-  {
-    id: 'goal-alignment',
-    name: 'Goal Alignment Map',
-    description: 'Visualize how team goals align with company objectives',
-    icon: Map,
-  },
-  {
-    id: 'success-metrics',
-    name: 'Success Metrics Dashboard',
-    description: 'Track and document key success indicators',
-    icon: BarChart3,
-  },
-];
-
 const EXISTING_PAGES = [
   { id: 1, name: 'Q2 2024 OKR Planning', goal: 'Company-wide', lastModified: '2024-03-15', author: 'Alice Johnson' },
   { id: 2, name: 'Product Roadmap Q2-Q3', goal: 'Product Strategy', lastModified: '2024-03-10', author: 'Bob Smith' },
@@ -79,6 +30,25 @@ const EXISTING_PAGES = [
 export default function GoalsPagesPage() {
   const { t } = useLanguage();
   const [selectedView, setSelectedView] = useState<'templates' | 'pages'>('pages');
+
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/goals/summary' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/goals/list' },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/goals/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/goals/code' },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/goals/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/goals/timeline' },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/goals/pages', active: true },
+  ];
+
+  const PAGE_TEMPLATES: { id: string; nameKey: string; descKey: string; icon: LucideIcon }[] = [
+    { id: 'okr-framework', nameKey: 'goalPages.okrFrameworkGuide', descKey: 'goalPages.okrFrameworkGuideDesc', icon: Book },
+    { id: 'goal-planning', nameKey: 'goalPages.goalPlanning', descKey: 'goalPages.goalPlanningDesc', icon: Calendar },
+    { id: 'strategy-doc', nameKey: 'goalPages.strategyDocument', descKey: 'goalPages.strategyDocumentDesc', icon: Target },
+    { id: 'okr-review', nameKey: 'goalPages.okrReviewNotes', descKey: 'goalPages.okrReviewNotesDesc', icon: Pencil },
+    { id: 'goal-alignment', nameKey: 'goalPages.goalAlignmentMap', descKey: 'goalPages.goalAlignmentMapDesc', icon: Map },
+    { id: 'success-metrics', nameKey: 'goalPages.successMetricsDashboard', descKey: 'goalPages.successMetricsDashboardDesc', icon: BarChart3 },
+  ];
 
   return (
     <AppLayout>
@@ -91,11 +61,11 @@ export default function GoalsPagesPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Book className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goal Pages</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('goalPages.title')}</h1>
             </div>
             <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Plus className="h-4 w-4" />
-              Create Page
+              {t('goalPages.createPage')}
             </Button>
           </div>
 
@@ -132,7 +102,7 @@ export default function GoalsPagesPage() {
                   : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
-              All Pages
+              {t('goalPages.allPages')}
             </Button>
             <Button
               onClick={() => setSelectedView('templates')}
@@ -142,7 +112,7 @@ export default function GoalsPagesPage() {
                   : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
               }`}
             >
-              Templates
+              {t('goalPages.templates')}
             </Button>
           </div>
         </div>
@@ -152,9 +122,9 @@ export default function GoalsPagesPage() {
           {selectedView === 'templates' ? (
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Page Templates</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('goalPages.pageTemplates')}</h2>
                 <p className="text-gray-600 dark:text-slate-400">
-                  Choose a template to create goal planning and strategy documentation
+                  {t('goalPages.templatesSubtitle')}
                 </p>
               </div>
 
@@ -170,14 +140,14 @@ export default function GoalsPagesPage() {
                       <template.icon className="h-5 w-5 text-primary-500" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      {template.name}
+                      {t(template.nameKey)}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-                      {template.description}
+                      {t(template.descKey)}
                     </p>
                     <div className="flex items-center gap-2 text-sm text-primary-500">
                       <Plus className="h-4 w-4" />
-                      Create {template.name}
+                      {t('goalPages.create', { name: t(template.nameKey) })}
                     </div>
                   </div>
                 ))}
@@ -186,9 +156,9 @@ export default function GoalsPagesPage() {
           ) : (
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Goal Pages</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('goalPages.title')}</h2>
                 <p className="text-gray-600 dark:text-slate-400">
-                  Browse and manage goal planning documentation
+                  {t('goalPages.browseAndManage')}
                 </p>
               </div>
 
@@ -197,16 +167,16 @@ export default function GoalsPagesPage() {
                   <thead className="border-b border-gray-200 dark:border-slate-700">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Page
+                        {t('goalPages.page')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Related Goal
+                        {t('goalPages.relatedGoal')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Author
+                        {t('goalPages.author')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Last Modified
+                        {t('goalPages.lastModified')}
                       </th>
                     </tr>
                   </thead>

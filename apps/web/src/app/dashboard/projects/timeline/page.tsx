@@ -15,19 +15,19 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/projects/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline', active: true },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages' },
-];
-
 export default function ProjectsTimelinePage() {
   const { t } = useLanguage();
   const { projects } = useWorkspace();
+
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/projects/summary' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/projects/list' },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/projects/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/projects/code' },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/projects/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/projects/timeline', active: true },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/projects/pages' },
+  ];
 
   const groupedProjects = projects.reduce((acc: Record<string, any[]>, project) => {
     const date = new Date(project.createdAt);
@@ -46,7 +46,7 @@ export default function ProjectsTimelinePage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Clock className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Timeline</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('projectTimeline.title')}</h1>
             </div>
           </div>
           <div className="flex items-center gap-1 px-6">
@@ -76,7 +76,7 @@ export default function ProjectsTimelinePage() {
                     </div>
                     <div className="mb-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{monthYear}</h3>
-                      <p className="text-sm text-gray-600 dark:text-slate-400">{monthProjects.length} {monthProjects.length === 1 ? 'project' : 'projects'}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400">{monthProjects.length} {monthProjects.length === 1 ? t('projectTimeline.project') : t('projectTimeline.projects')}</p>
                     </div>
                     <div className="space-y-3">
                       {monthProjects.map((project) => (
@@ -90,9 +90,9 @@ export default function ProjectsTimelinePage() {
                               <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                                 <span>{project.key}</span>
                                 <span>•</span>
-                                <span>{project._count?.members || 0} members</span>
+                                <span>{project._count?.members || 0} {t('projectTimeline.members')}</span>
                                 <span>•</span>
-                                <span>{project._count?.tasks || 0} tasks</span>
+                                <span>{project._count?.tasks || 0} {t('projectTimeline.tasks')}</span>
                               </div>
                             </div>
                           </div>

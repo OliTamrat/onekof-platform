@@ -35,9 +35,9 @@ export default function IssuesFormsPage() {
         <div className="flex-1 overflow-auto p-6">
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">Forms</h3>
+              <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">{t("teams.forms")}</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
-                This page is under construction and will be available soon.
+                {t("underConstruction.description")}
               </p>
             </div>
           </div>

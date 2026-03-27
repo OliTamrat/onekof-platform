@@ -151,7 +151,7 @@ export default function ProjectsFormsPage() {
                 <FileText className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Project Forms
+                {t("projectForms.title")}
               </h1>
             </div>
           </div>
@@ -183,10 +183,10 @@ export default function ProjectsFormsPage() {
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                Choose a template
+                {t("projectForms.chooseTemplate")}
               </h2>
               <p className="text-gray-600 dark:text-slate-400">
-                Select a template to quickly create standardized project items
+                {t("projectForms.chooseTemplateDesc")}
               </p>
             </div>
 
@@ -210,7 +210,7 @@ export default function ProjectsFormsPage() {
                       {template.description}
                     </p>
                     <div className="text-xs text-gray-500 dark:text-[#6B7684]">
-                      {template.fields.length} fields
+                      {template.fields.length} {t("projectForms.fields")}
                     </div>
                   </div>
                 );
@@ -320,13 +320,13 @@ export default function ProjectsFormsPage() {
                   onClick={() => setSelectedTemplate(null)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   onClick={handleSubmit}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
-                  Create {selectedTemplate.name}
+                  {t("common.create")} {selectedTemplate.name}
                 </Button>
               </div>
             </div>

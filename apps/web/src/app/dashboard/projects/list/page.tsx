@@ -23,22 +23,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list', active: true },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/projects/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages' },
-];
-
 export default function ProjectsListPage() {
   const { t } = useLanguage();
   const router = useRouter();
   const { projects, isLoadingProjects } = useWorkspace();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/projects/summary' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/projects/list', active: true },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/projects/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/projects/code' },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/projects/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/projects/timeline' },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/projects/pages' },
+  ];
 
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
@@ -80,7 +80,7 @@ export default function ProjectsListPage() {
                 <Folder className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Projects
+                {t('projectList.title')}
               </h1>
             </div>
 
@@ -89,7 +89,7 @@ export default function ProjectsListPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Create Project
+              {t('projectList.createProject')}
             </Button>
           </div>
 
@@ -120,7 +120,7 @@ export default function ProjectsListPage() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search projects"
+                placeholder={t('projectList.searchProjects')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
@@ -132,10 +132,10 @@ export default function ProjectsListPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">All Status</option>
-              <option value="ON_TRACK">On Track</option>
-              <option value="AT_RISK">At Risk</option>
-              <option value="OFF_TRACK">Off Track</option>
+              <option value="all">{t('projectList.allStatus')}</option>
+              <option value="ON_TRACK">{t('projectList.onTrack')}</option>
+              <option value="AT_RISK">{t('projectList.atRisk')}</option>
+              <option value="OFF_TRACK">{t('projectList.offTrack')}</option>
             </select>
           </div>
         </div>
@@ -150,16 +150,16 @@ export default function ProjectsListPage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <Folder className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No projects</h3>
+                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('projectList.noProjects')}</h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
-                  {searchQuery ? 'No projects match your search.' : 'Get started by creating a new project.'}
+                  {searchQuery ? t('projectList.noProjectsMatchSearch') : t('projectList.getStarted')}
                 </p>
                 <Button
                   onClick={() => router.push('/dashboard/projects?create=true')}
                   className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"
                 >
                   <Plus className="h-4 w-4" />
-                  Create Project
+                  {t('projectList.createProject')}
                 </Button>
               </div>
             </div>
@@ -169,25 +169,25 @@ export default function ProjectsListPage() {
                 <thead className="bg-gray-50 dark:bg-[#282E33]">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Project
+                      {t('projectList.project')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Key
+                      {t('projectList.key')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Lead
+                      {t('projectList.lead')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Members
+                      {t('projectList.members')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Tasks
+                      {t('projectList.tasks')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Status
+                      {t('projectList.status')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Updated
+                      {t('projectList.updated')}
                     </th>
                   </tr>
                 </thead>
@@ -232,7 +232,7 @@ export default function ProjectsListPage() {
                             {project.lead?.name?.charAt(0) || 'U'}
                           </div>
                           <span className="text-sm text-gray-900 dark:text-white">
-                            {project.lead?.name || 'Unassigned'}
+                            {project.lead?.name || t('common.unassigned')}
                           </span>
                         </div>
                       </td>
@@ -251,7 +251,7 @@ export default function ProjectsListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(project.status || 'ACTIVE')}`}>
-                          {project.status?.replace('_', ' ') || 'Active'}
+                          {project.status?.replace('_', ' ') || t('common.active')}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

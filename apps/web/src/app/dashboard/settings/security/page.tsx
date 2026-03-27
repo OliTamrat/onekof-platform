@@ -48,14 +48,14 @@ export default function SecuritySettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Failed to set up 2FA');
+        setError(data.error || t("securitySettings.failedSetup2FA"));
         return;
       }
 
       setSetupData(data);
       setStep('setup');
     } catch {
-      setError('Network error. Please try again.');
+      setError(t("securitySettings.networkError"));
     } finally {
       setIsLoading(false);
     }
@@ -75,15 +75,15 @@ export default function SecuritySettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Invalid code');
+        setError(data.error || t("securitySettings.invalidCode"));
         return;
       }
 
       setTwoFactorEnabled(true);
       setStep('backup');
-      setSuccess('Two-factor authentication enabled successfully!');
+      setSuccess(t("securitySettings.twoFactorEnabledSuccess"));
     } catch {
-      setError('Network error. Please try again.');
+      setError(t("securitySettings.networkError"));
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +103,7 @@ export default function SecuritySettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Failed to disable 2FA');
+        setError(data.error || t("securitySettings.failedDisable2FA"));
         return;
       }
 
@@ -111,9 +111,9 @@ export default function SecuritySettingsPage() {
       setSetupData(null);
       setStep('idle');
       setDisablePassword('');
-      setSuccess('Two-factor authentication has been disabled.');
+      setSuccess(t("securitySettings.twoFactorDisabledSuccess"));
     } catch {
-      setError('Network error. Please try again.');
+      setError(t("securitySettings.networkError"));
     } finally {
       setIsLoading(false);
     }
@@ -138,10 +138,10 @@ export default function SecuritySettingsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
           <Shield className="h-7 w-7 text-[#1C8C7D]" />
-          Security Settings
+          {t("securitySettings.title")}
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Manage your account security and two-factor authentication.
+          {t("securitySettings.description")}
         </p>
       </div>
 
@@ -176,12 +176,12 @@ export default function SecuritySettingsPage() {
               </div>
               <div>
                 <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Two-Factor Authentication
+                  {t("securitySettings.twoFactorAuth")}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {twoFactorEnabled
-                    ? 'Your account is protected with 2FA'
-                    : 'Add an extra layer of security to your account'}
+                    ? t("securitySettings.accountProtected")
+                    : t("securitySettings.addExtraLayer")}
                 </p>
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function SecuritySettingsPage() {
                 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                 : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
             }`}>
-              {twoFactorEnabled ? 'Enabled' : 'Disabled'}
+              {twoFactorEnabled ? t("securitySettings.enabled") : t("securitySettings.disabled")}
             </span>
           </div>
         </div>
@@ -199,8 +199,7 @@ export default function SecuritySettingsPage() {
           {step === 'idle' && !twoFactorEnabled && (
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Use an authenticator app (like Google Authenticator, Authy, or 1Password) to generate
-                one-time codes for signing in. This protects your account even if your password is compromised.
+                {t("securitySettings.authenticatorDesc")}
               </p>
               <Button
                 onClick={handleSetup}
@@ -208,7 +207,7 @@ export default function SecuritySettingsPage() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors disabled:opacity-50"
               >
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
-                Set Up Two-Factor Authentication
+                {t("securitySettings.setUp2FA")}
               </Button>
             </div>
           )}
@@ -216,14 +215,13 @@ export default function SecuritySettingsPage() {
           {step === 'idle' && twoFactorEnabled && (
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Your account is protected with two-factor authentication. You will need your authenticator
-                app or a backup code to sign in.
+                {t("securitySettings.accountProtectedDesc")}
               </p>
               <Button variant="destructive"
                 onClick={() => setStep('disable')}
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
               >
-                Disable Two-Factor Authentication
+                {t("securitySettings.disable2FA")}
               </Button>
             </div>
           )}
@@ -232,17 +230,17 @@ export default function SecuritySettingsPage() {
             <div className="space-y-6">
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                  Step 1: Scan QR Code
+                  {t("securitySettings.step1ScanQR")}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  Scan this QR code with your authenticator app.
+                  {t("securitySettings.scanQRDesc")}
                 </p>
                 <div className="flex justify-center p-4 bg-white rounded-lg border border-gray-200 dark:border-gray-600 inline-block">
                   <img src={setupData.qrCode} alt="2FA QR Code" className="w-48 h-48" />
                 </div>
                 <div className="mt-3">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                    Or enter this code manually:
+                    {t("securitySettings.orEnterManually")}
                   </p>
                   <code className="block p-2 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono text-gray-900 dark:text-gray-200 select-all">
                     {setupData.secret}
@@ -252,10 +250,10 @@ export default function SecuritySettingsPage() {
 
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                  Step 2: Enter Verification Code
+                  {t("securitySettings.step2EnterCode")}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  Enter the 6-digit code from your authenticator app.
+                  {t("securitySettings.enterCodeDesc")}
                 </p>
                 <div className="flex gap-3">
                   <input
@@ -271,7 +269,7 @@ export default function SecuritySettingsPage() {
                     disabled={isLoading || verificationCode.length < 6}
                     className="px-4 py-2.5 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors disabled:opacity-50"
                   >
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify & Enable'}
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("securitySettings.verifyAndEnable")}
                   </Button>
                 </div>
               </div>
@@ -280,7 +278,7 @@ export default function SecuritySettingsPage() {
                 onClick={() => { setStep('idle'); setSetupData(null); setVerificationCode(''); }}
                 className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
-                Cancel setup
+                {t("securitySettings.cancelSetup")}
               </Button>
             </div>
           )}
@@ -290,11 +288,10 @@ export default function SecuritySettingsPage() {
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                 <h3 className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
-                  Save Your Backup Codes
+                  {t("securitySettings.saveBackupCodes")}
                 </h3>
                 <p className="text-sm text-amber-700 dark:text-amber-400">
-                  These codes can be used to access your account if you lose your authenticator device.
-                  Each code can only be used once. Store them in a safe place.
+                  {t("securitySettings.backupCodesDesc")}
                 </p>
               </div>
 
@@ -321,13 +318,13 @@ export default function SecuritySettingsPage() {
                   className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   {copiedIndex === -1 ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  {copiedIndex === -1 ? 'Copied!' : 'Copy All Codes'}
+                  {copiedIndex === -1 ? t("common.copied") : t("securitySettings.copyAllCodes")}
                 </Button>
                 <Button
                   onClick={() => { setStep('idle'); setSetupData(null); setSuccess(''); }}
                   className="px-4 py-2 bg-[#1C8C7D] text-white rounded-lg text-sm font-medium hover:bg-[#15695E] transition-colors"
                 >
-                  Done
+                  {t("common.done")}
                 </Button>
               </div>
             </div>
@@ -337,13 +334,12 @@ export default function SecuritySettingsPage() {
             <div className="space-y-4">
               <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <p className="text-sm text-red-700 dark:text-red-300">
-                  Disabling two-factor authentication will make your account less secure.
-                  Enter your password to confirm.
+                  {t("securitySettings.disableWarning")}
                 </p>
               </div>
               <div>
                 <label htmlFor="disable-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Confirm Password
+                  {t("securitySettings.confirmPassword")}
                 </label>
                 <input
                   id="disable-password"
@@ -360,13 +356,13 @@ export default function SecuritySettingsPage() {
                   disabled={isLoading || !disablePassword}
                   className="px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
-                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm Disable'}
+                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("securitySettings.confirmDisable")}
                 </Button>
                 <Button
                   onClick={() => { setStep('idle'); setDisablePassword(''); setError(''); }}
                   className="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
               </div>
             </div>

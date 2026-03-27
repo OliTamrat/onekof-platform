@@ -25,10 +25,10 @@ const TAB_ITEMS = [
 ];
 
 const SETTINGS_SECTIONS = [
-  { id: 'general', label: 'General', icon: Settings },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'okrs', label: 'OKR Settings', icon: Target },
-  { id: 'security', label: 'Security', icon: Shield },
+  { id: 'general', labelKey: 'goalSettings.general', icon: Settings },
+  { id: 'notifications', labelKey: 'goalSettings.notifications', icon: Bell },
+  { id: 'okrs', labelKey: 'goalSettings.okrSettings', icon: Target },
+  { id: 'security', labelKey: 'goalSettings.security', icon: Shield },
 ];
 
 export default function GoalsSettingsPage() {
@@ -58,11 +58,11 @@ export default function GoalsSettingsPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Settings className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goal Settings</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t("goalSettings.title")}</h1>
             </div>
             <Button onClick={handleSave} className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Save className="h-4 w-4" />
-              Save Changes
+              {t("goalSettings.saveChanges")}
             </Button>
           </div>
           <div className="flex items-center gap-1 px-6">
@@ -86,7 +86,7 @@ export default function GoalsSettingsPage() {
                 return (
                   <Button key={section.id} onClick={() => setActiveSection(section.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === section.id ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20' : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'}`}>
                     <Icon className="h-4 w-4" />
-                    {section.label}
+                    {t(section.labelKey)}
                   </Button>
                 );
               })}
@@ -98,30 +98,30 @@ export default function GoalsSettingsPage() {
               {activeSection === 'general' && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">General Settings</h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">Configure goal and OKR settings</p>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t("goalSettings.generalSettings")}</h2>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t("goalSettings.generalSettingsDesc")}</p>
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Default Goal Cycle</label>
+                      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">{t("goalSettings.defaultGoalCycle")}</label>
                       <select value={settings.defaultCycle} onChange={(e) => setSettings({ ...settings, defaultCycle: e.target.value })} className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
-                        <option value="MONTHLY">Monthly</option>
-                        <option value="QUARTERLY">Quarterly</option>
-                        <option value="YEARLY">Yearly</option>
+                        <option value="MONTHLY">{t("goalSettings.monthly")}</option>
+                        <option value="QUARTERLY">{t("goalSettings.quarterly")}</option>
+                        <option value="YEARLY">{t("goalSettings.yearly")}</option>
                       </select>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
                       <input type="checkbox" id="autoRollover" checked={settings.autoRollover} onChange={(e) => setSettings({ ...settings, autoRollover: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
-                        <label htmlFor="autoRollover" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Auto-rollover incomplete goals</label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">Automatically carry over incomplete goals to next cycle</p>
+                        <label htmlFor="autoRollover" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.autoRollover")}</label>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t("goalSettings.autoRolloverDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
                       <input type="checkbox" id="requireOwner" checked={settings.requireOwner} onChange={(e) => setSettings({ ...settings, requireOwner: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
-                        <label htmlFor="requireOwner" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Require goal owner</label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">All goals must have an assigned owner</p>
+                        <label htmlFor="requireOwner" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.requireGoalOwner")}</label>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t("goalSettings.requireGoalOwnerDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -131,29 +131,29 @@ export default function GoalsSettingsPage() {
               {activeSection === 'notifications' && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Notification Preferences</h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">Manage goal notifications</p>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t("goalSettings.notificationPreferences")}</h2>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t("goalSettings.notificationPreferencesDesc")}</p>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
                       <input type="checkbox" id="emailNotifications" checked={settings.emailNotifications} onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
-                        <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Email notifications</label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">Receive email updates for goal activity</p>
+                        <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.emailNotifications")}</label>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t("goalSettings.emailNotificationsDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
                       <input type="checkbox" id="notifyOnProgress" checked={settings.notifyOnProgress} onChange={(e) => setSettings({ ...settings, notifyOnProgress: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
-                        <label htmlFor="notifyOnProgress" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Notify on progress updates</label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">Get notified when goal progress is updated</p>
+                        <label htmlFor="notifyOnProgress" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.notifyOnProgress")}</label>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t("goalSettings.notifyOnProgressDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
                       <input type="checkbox" id="weeklyReminders" checked={settings.weeklyReminders} onChange={(e) => setSettings({ ...settings, weeklyReminders: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
-                        <label htmlFor="weeklyReminders" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Weekly goal reminders</label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">Receive weekly reminders to update goal progress</p>
+                        <label htmlFor="weeklyReminders" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.weeklyGoalReminders")}</label>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t("goalSettings.weeklyGoalRemindersDesc")}</p>
                       </div>
                     </div>
                   </div>
