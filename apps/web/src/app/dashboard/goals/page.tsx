@@ -1012,6 +1012,7 @@ interface GoalCardProps {
 }
 
 function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
+  const { t } = useLanguage();
   const getStatusConfig = (status: Goal['status']) => {
     switch (status) {
       case 'NOT_STARTED':

@@ -11,11 +11,11 @@ export default function CodeReviewPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Code Review"
-        description="Review pull requests, leave comments, and approve changes"
+        title={t('departmentTabs.codeReview')}
+        description={t('departments.codeReviewDesc')}
         icon={FileText}
         iconColor="#6366F1"
-        emptyMessage="No code reviews yet. Create one to track review requests."
+        emptyMessage={t('emptyStates.noCodeReviews')}
         defaultLabels={['development', 'code-review']}
         baseHref="/dashboard/development"
         currentTab="code"

@@ -9,6 +9,7 @@ import { AIInsightsPanel } from '@/components/department/ai-insights-panel';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Task {
   id: string;
@@ -57,6 +58,29 @@ const STATUS_BADGE: Record<string, string> = {
 const STATUS_ORDER = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'BLOCKED', 'DONE'];
 const PRIORITY_ORDER = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 
+const translateStatus = (status: string, t: (key: string) => string) => {
+  const map: Record<string, string> = {
+    'TODO': t('status.todo'),
+    'IN_PROGRESS': t('status.inProgress'),
+    'IN_REVIEW': t('status.inReview'),
+    'DONE': t('status.done'),
+    'BLOCKED': t('status.blocked'),
+    'BACKLOG': t('status.backlog'),
+    'CANCELLED': t('status.cancelled'),
+  };
+  return map[status] || status.replace('_', ' ');
+};
+
+const translatePriority = (priority: string, t: (key: string) => string) => {
+  const map: Record<string, string> = {
+    'CRITICAL': t('priority.critical'),
+    'HIGH': t('priority.high'),
+    'MEDIUM': t('priority.medium'),
+    'LOW': t('priority.low'),
+  };
+  return map[priority] || priority;
+};
+
 export function DepartmentTaskList({
   title,
   description,
@@ -70,6 +94,7 @@ export function DepartmentTaskList({
   category = 'general',
   projectId: scopedProjectId,
 }: DepartmentTaskListProps) {
+  const { t } = useLanguage();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -245,7 +270,7 @@ export function DepartmentTaskList({
               type="text"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
-              placeholder="What needs to be done?"
+              placeholder={t('common.whatNeedsDone')}
               autoFocus
               className="flex-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#282E33] px-3 py-1.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
@@ -255,7 +280,7 @@ export function DepartmentTaskList({
               disabled={createMutation.isPending || !newTaskTitle.trim()}
               className="bg-primary-500 text-white hover:bg-primary-600"
             >
-              {createMutation.isPending ? '...' : 'Add'}
+              {createMutation.isPending ? '...' : t('common.add')}
             </Button>
             <Button
               type="button"
@@ -264,7 +289,7 @@ export function DepartmentTaskList({
               onClick={() => { setShowCreateForm(false); setNewTaskTitle(''); }}
               className="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#282E33]"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </form>
         ) : (
@@ -274,7 +299,7 @@ export function DepartmentTaskList({
             className="h-auto px-2 py-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400"
           >
             <Plus className="h-4 w-4" />
-            <span>Create task</span>
+            <span>{t('common.createTask')}</span>
           </Button>
         )}
       </div>
@@ -292,7 +317,7 @@ export function DepartmentTaskList({
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center max-w-sm">
               {search || Object.values(activeFilters).some(v => v.length > 0)
-                ? 'No tasks match your current filters.'
+                ? t('common.noMatchFilters')
                 : emptyMessage}
             </p>
             {!search && !Object.values(activeFilters).some(v => v.length > 0) && (
@@ -303,7 +328,7 @@ export function DepartmentTaskList({
                 className="mt-3 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Create your first task
+                {t('common.createFirstTask')}
               </Button>
             )}
           </div>
@@ -317,7 +342,7 @@ export function DepartmentTaskList({
                   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                     <div className="flex items-center gap-2.5">
                       <span className={cn('rounded-md px-2 py-1 text-[11px] font-bold tracking-wide', STATUS_BADGE[status])}>
-                        {status.replace('_', ' ')}
+                        {translateStatus(status, t)}
                       </span>
                       <span className="text-xs font-semibold text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-full px-2 py-0.5">{statusTasks.length}</span>
                     </div>
@@ -375,9 +400,9 @@ export function DepartmentTaskList({
                       groupBy === 'status' ? STATUS_BADGE[groupKey] || '' : '',
                       groupBy === 'priority' ? PRIORITY_DOT[groupKey] ? `text-${PRIORITY_DOT[groupKey].replace('bg-', '')}` : '' : ''
                     )}>
-                      {groupKey.replace('_', ' ')}
+                      {groupBy === 'status' ? translateStatus(groupKey, t) : groupBy === 'priority' ? translatePriority(groupKey, t) : groupKey.replace('_', ' ')}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">{tasks.length} items</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">{tasks.length} {t('common.items')}</span>
                   </div>
                 )}
 
@@ -406,7 +431,7 @@ export function DepartmentTaskList({
 
                     {/* Status */}
                     <span className={cn('hidden sm:inline rounded-md px-2 py-0.5 text-[10px] font-medium shrink-0', STATUS_BADGE[task.status])}>
-                      {task.status.replace('_', ' ')}
+                      {translateStatus(task.status, t)}
                     </span>
 
                     {/* Due date */}

@@ -11,11 +11,11 @@ export default function DataPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Data"
-        description="Collect and manage research data for feasibility studies"
+        title={t('departmentTabs.data')}
+        description={t('departments.dataDesc')}
         icon={FileSpreadsheet}
         iconColor="#8B5CF6"
-        emptyMessage="No data tasks yet. Create one to start collecting."
+        emptyMessage={t('emptyStates.noDataTasks')}
         defaultLabels={['research', 'data']}
         baseHref="/dashboard/research"
         currentTab="data"
