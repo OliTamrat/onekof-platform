@@ -33,7 +33,7 @@ function generateToken(user: AdminUser): string {
   return `${payloadB64}.${timestamp}.${signature}`;
 }
 
-export function verifyToken(token: string): { username: string; role: string; name: string } | null {
+function verifyToken(token: string): { username: string; role: string; name: string } | null {
   if (!ADMIN_SECRET) return null;
 
   const parts = token.split('.');

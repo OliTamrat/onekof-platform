@@ -12,7 +12,7 @@ export interface AdminIdentity {
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
-function verifyToken(token: string): AdminIdentity | null {
+export function verifyToken(token: string): AdminIdentity | null {
   if (!ADMIN_SECRET) return null;
 
   const parts = token.split('.');
@@ -36,7 +36,11 @@ function verifyToken(token: string): AdminIdentity | null {
   }
 }
 
-export async function requireSuperAdmin(minimumRole: AdminRole = 'VIEWER') {
+type AuthResult =
+  | { authorized: true; admin: AdminIdentity; error: null }
+  | { authorized: false; admin: AdminIdentity | null; error: NextResponse };
+
+export async function requireSuperAdmin(minimumRole: AdminRole = 'VIEWER'): Promise<AuthResult> {
   const cookieStore = cookies();
   const token = cookieStore.get('onekof-admin-token')?.value;
 
