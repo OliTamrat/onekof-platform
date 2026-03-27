@@ -67,11 +67,11 @@ interface Column {
 }
 
 const COLUMNS: Column[] = [
-  { id: 'TODO', title: 'To Do', icon: Circle, color: 'bg-gray-500' },
-  { id: 'IN_PROGRESS', title: 'In Progress', icon: Clock, color: 'bg-blue-500' },
-  { id: 'IN_REVIEW', title: 'In Review', icon: AlertCircle, color: 'bg-purple-500' },
-  { id: 'DONE', title: 'Done', icon: CheckCircle2, color: 'bg-green-500' },
-  { id: 'BLOCKED', title: 'Blocked', icon: XCircle, color: 'bg-red-500' },
+  { id: 'TODO', title: 'status.todo', icon: Circle, color: 'bg-gray-500' },
+  { id: 'IN_PROGRESS', title: 'status.inProgress', icon: Clock, color: 'bg-blue-500' },
+  { id: 'IN_REVIEW', title: 'status.inReview', icon: AlertCircle, color: 'bg-purple-500' },
+  { id: 'DONE', title: 'status.done', icon: CheckCircle2, color: 'bg-green-500' },
+  { id: 'BLOCKED', title: 'status.blocked', icon: XCircle, color: 'bg-red-500' },
 ];
 
 export default function IssuesBoardPage() {
@@ -193,7 +193,7 @@ export default function IssuesBoardPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-slate-500">Please sign in to view the board.</p>
+          <p className="text-slate-500">{t('dashboard.pleaseSignInBoard')}</p>
         </div>
       </AppLayout>
     );
@@ -202,7 +202,7 @@ export default function IssuesBoardPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Board"
+        title={t('tabs.board')}
         icon={<LayoutDashboard className="h-6 w-6" />}
         iconColor="#3B82F6"
         currentTab="board"
@@ -222,7 +222,7 @@ export default function IssuesBoardPage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Loading board...</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.loadingBoard')}</p>
               </div>
             </div>
           ) : (
@@ -242,7 +242,7 @@ export default function IssuesBoardPage() {
                         <div className="flex items-center gap-2">
                           <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                           <h3 className="font-semibold text-slate-900 dark:text-white">
-                            {column.title}
+                            {t(column.title)}
                           </h3>
                           <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-slate-100 dark:bg-[#282E33] px-2 text-xs font-medium text-slate-600 dark:text-slate-400">
                             {columnTasks.length}
@@ -251,7 +251,7 @@ export default function IssuesBoardPage() {
                         <Button variant="ghost" size="icon"
                           onClick={() => setShowCreateModal(true)}
                           className="rounded p-1 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
-                          title="Add task"
+                          title={t('dashboard.addTask')}
                         >
                           <Plus className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                         </Button>
@@ -374,7 +374,7 @@ export default function IssuesBoardPage() {
                             {columnTasks.length === 0 && !snapshot.isDraggingOver && (
                               <div className="flex flex-col items-center justify-center py-8 text-center">
                                 <div className={`mb-2 h-2 w-2 rounded-full ${column.color} opacity-30`} />
-                                <p className="text-xs text-slate-500 dark:text-slate-400">No tasks</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.noTasks')}</p>
                               </div>
                             )}
                           </div>

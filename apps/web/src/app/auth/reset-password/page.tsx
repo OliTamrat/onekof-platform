@@ -26,7 +26,7 @@ function ResetPasswordContent() {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage('Invalid reset link. Please request a new password reset.');
+      setMessage(t('auth.invalidResetLink'));
     }
   }, [token]);
 
@@ -68,7 +68,7 @@ function ResetPasswordContent() {
 
     if (password.length < 8) {
       setStatus('error');
-      setMessage('Password must be at least 8 characters');
+      setMessage(t('auth.passwordMinLength'));
       return;
     }
 
@@ -90,7 +90,7 @@ function ResetPasswordContent() {
       }
 
       setStatus('success');
-      setMessage('Password reset successfully! Redirecting to sign in...');
+      setMessage(t('auth.passwordResetRedirecting'));
 
       // Redirect to signin after 2 seconds
       setTimeout(() => {
@@ -98,7 +98,7 @@ function ResetPasswordContent() {
       }, 2000);
     } catch (error: any) {
       setStatus('error');
-      setMessage(error.message || 'Something went wrong. Please try again.');
+      setMessage(error.message || t('auth.somethingWentWrongTryAgain'));
     } finally {
       setIsLoading(false);
     }
@@ -201,7 +201,7 @@ function ResetPasswordContent() {
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
             <p className="mt-2 text-sm text-gray-600">
-              Your new password must be different from previously used passwords.
+              {t('resetPage.newPasswordDifferent')}
             </p>
           </div>
 
@@ -215,7 +215,7 @@ function ResetPasswordContent() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-green-900">Success!</p>
+                  <p className="font-semibold text-green-900">{t('resetPage.success')}</p>
                   <p className="text-sm text-green-800 mt-1">{message}</p>
                 </div>
               </div>
@@ -231,7 +231,7 @@ function ResetPasswordContent() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-red-900">Error</p>
+                  <p className="font-semibold text-red-900">{t('resetPage.error')}</p>
                   <p className="text-sm text-red-800 mt-1">{message}</p>
                 </div>
               </div>
@@ -244,15 +244,15 @@ function ResetPasswordContent() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                 <AlertCircle className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Invalid Reset Link</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('resetPage.invalidResetLink')}</h3>
               <p className="text-sm text-gray-600 mb-6">
-                This reset link is invalid or has expired. Please request a new one.
+                {t('resetPage.resetLinkExpiredOrInvalid')}
               </p>
               <Link
                 href="/auth/forgot-password"
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0070f3] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#0056b3] transition-colors"
               >
-                Request New Link
+                {t('resetPage.requestNewLink')}
               </Link>
             </div>
           ) : (
@@ -272,7 +272,7 @@ function ResetPasswordContent() {
                     required
                     minLength={8}
                     className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
-                    placeholder="Enter your new password"
+                    placeholder={t('resetPage.enterNewPassword')}
                   />
                   <Button
                     type="button"
@@ -311,7 +311,7 @@ function ResetPasswordContent() {
                 {/* Password requirements */}
                 {password && (
                   <div className="mt-4 space-y-2 rounded-lg bg-gray-50 p-4">
-                    <p className="text-xs font-semibold text-gray-700 mb-2">Password must contain:</p>
+                    <p className="text-xs font-semibold text-gray-700 mb-2">{t('resetPage.passwordMustContain')}</p>
                     {requirements.map((req, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <div className={`flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full transition-colors ${
@@ -346,7 +346,7 @@ function ResetPasswordContent() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
-                    placeholder="Confirm your new password"
+                    placeholder={t('resetPage.confirmNewPassword')}
                   />
                   <Button
                     type="button"
@@ -400,9 +400,9 @@ function ResetPasswordContent() {
                 <div className="flex gap-3">
                   <Lock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-blue-900">Secure Password Reset</p>
+                    <p className="text-xs font-semibold text-blue-900">{t('resetPage.securePasswordReset')}</p>
                     <p className="text-xs text-blue-700 mt-1">
-                      Your password is encrypted and this reset link will expire after one use.
+                      {t('resetPage.passwordEncryptedOneTime')}
                     </p>
                   </div>
                 </div>

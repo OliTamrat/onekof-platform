@@ -248,20 +248,20 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
   // Status options
   const statusOptions = [
-    { value: 'TODO', label: 'To Do', color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
-    { value: 'IN_PROGRESS', label: 'In Progress', color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
-    { value: 'IN_REVIEW', label: 'In Review', color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
-    { value: 'DONE', label: 'Done', color: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' },
-    { value: 'BLOCKED', label: 'Blocked', color: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' },
+    { value: 'TODO', label: t('status.todo'), color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
+    { value: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
+    { value: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
+    { value: 'DONE', label: t('status.done'), color: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' },
+    { value: 'BLOCKED', label: t('status.blocked'), color: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' },
   ];
 
   // Priority options
   const priorityOptions = [
-    { value: 'HIGHEST', label: 'Highest', color: 'text-red-600 dark:text-red-400' },
-    { value: 'HIGH', label: 'High', color: 'text-orange-600 dark:text-orange-400' },
-    { value: 'MEDIUM', label: 'Medium', color: 'text-yellow-600 dark:text-yellow-400' },
-    { value: 'LOW', label: 'Low', color: 'text-green-600 dark:text-green-400' },
-    { value: 'LOWEST', label: 'Lowest', color: 'text-gray-600 dark:text-gray-400' },
+    { value: 'HIGHEST', label: t('priority.highest'), color: 'text-red-600 dark:text-red-400' },
+    { value: 'HIGH', label: t('priority.high'), color: 'text-orange-600 dark:text-orange-400' },
+    { value: 'MEDIUM', label: t('priority.medium'), color: 'text-yellow-600 dark:text-yellow-400' },
+    { value: 'LOW', label: t('priority.low'), color: 'text-green-600 dark:text-green-400' },
+    { value: 'LOWEST', label: t('priority.lowest'), color: 'text-gray-600 dark:text-gray-400' },
   ];
 
   if (!issue) {
@@ -272,7 +272,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           onClick={onClose}
         />
         <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex items-center justify-center">
-          <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
         </div>
       </>
     );
@@ -375,7 +375,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             }`}
           >
             <Info className="h-4 w-4" />
-            <span className="hidden sm:inline">Details</span>
+            <span className="hidden sm:inline">{t('common.details')}</span>
           </Button>
           <Button
             variant="ghost"
@@ -387,7 +387,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             }`}
           >
             <Settings className="h-4 w-4" />
-            <span className="hidden sm:inline">Settings</span>
+            <span className="hidden sm:inline">{t('nav.settings')}</span>
           </Button>
         </div>
       </div>
@@ -425,6 +425,7 @@ function DetailsTab({
   addWatcher: any;
   removeWatcher: any;
 }) {
+  const { t } = useLanguage();
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState(issue.description || '');
   const [commentContent, setCommentContent] = useState('');
@@ -435,11 +436,11 @@ function DetailsTab({
 
   // Status options
   const statusOptions = [
-    { value: 'TODO', label: 'To Do', color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
-    { value: 'IN_PROGRESS', label: 'In Progress', color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
-    { value: 'IN_REVIEW', label: 'In Review', color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
-    { value: 'DONE', label: 'Done', color: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' },
-    { value: 'BLOCKED', label: 'Blocked', color: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' },
+    { value: 'TODO', label: t('status.todo'), color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
+    { value: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
+    { value: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
+    { value: 'DONE', label: t('status.done'), color: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' },
+    { value: 'BLOCKED', label: t('status.blocked'), color: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' },
   ];
 
   const statusColors: Record<string, string> = {
@@ -452,11 +453,11 @@ function DetailsTab({
 
   // Priority options
   const priorityOptions = [
-    { value: 'HIGHEST', label: 'Highest', color: 'text-red-600 dark:text-red-400' },
-    { value: 'HIGH', label: 'High', color: 'text-orange-600 dark:text-orange-400' },
-    { value: 'MEDIUM', label: 'Medium', color: 'text-yellow-600 dark:text-yellow-400' },
-    { value: 'LOW', label: 'Low', color: 'text-green-600 dark:text-green-400' },
-    { value: 'LOWEST', label: 'Lowest', color: 'text-gray-600 dark:text-gray-400' },
+    { value: 'HIGHEST', label: t('priority.highest'), color: 'text-red-600 dark:text-red-400' },
+    { value: 'HIGH', label: t('priority.high'), color: 'text-orange-600 dark:text-orange-400' },
+    { value: 'MEDIUM', label: t('priority.medium'), color: 'text-yellow-600 dark:text-yellow-400' },
+    { value: 'LOW', label: t('priority.low'), color: 'text-green-600 dark:text-green-400' },
+    { value: 'LOWEST', label: t('priority.lowest'), color: 'text-gray-600 dark:text-gray-400' },
   ];
 
   const priorityColors: Record<string, string> = {
@@ -530,13 +531,13 @@ function DetailsTab({
           {/* Description */}
           <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-bold text-gray-900 dark:text-white">Description</h2>
+              <h2 className="text-sm font-bold text-gray-900 dark:text-white">{t('common.description')}</h2>
               <Button
                 variant="ghost"
                 onClick={() => setIsEditingDescription(!isEditingDescription)}
                 className="h-auto px-2 py-1 text-sm text-primary-500 hover:text-primary-600 dark:text-primary-400 font-medium"
               >
-                {isEditingDescription ? 'Cancel' : 'Edit'}
+                {isEditingDescription ? t('common.cancel') : t('common.edit')}
               </Button>
             </div>
 
@@ -546,7 +547,7 @@ function DetailsTab({
                   value={editedDescription}
                   onChange={(e) => setEditedDescription(e.target.value)}
                   className="w-full min-h-[120px] rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
-                  placeholder="Add a description..."
+                  placeholder={t('tasks.addDescription')}
                 />
                 <div className="flex justify-end gap-2">
                   <Button
@@ -555,7 +556,7 @@ function DetailsTab({
                     onClick={() => setIsEditingDescription(false)}
                     className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     size="sm"
@@ -565,7 +566,7 @@ function DetailsTab({
                     }}
                     className="bg-primary-500 text-white hover:bg-primary-600"
                   >
-                    Save
+                    {t('common.save')}
                   </Button>
                 </div>
               </div>
@@ -574,7 +575,7 @@ function DetailsTab({
                 onClick={() => setIsEditingDescription(true)}
                 className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap cursor-pointer hover:bg-gray-50 dark:hover:bg-[#282E33] rounded-md p-2 -mx-2 transition-colors min-h-[40px]"
               >
-                {issue.description || 'Add a description...'}
+                {issue.description || t('tasks.addDescription')}
               </div>
             )}
           </div>
@@ -593,23 +594,23 @@ function DetailsTab({
         <div className="w-full md:w-72 lg:w-80 md:border-l border-t md:border-t-0 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1B1F23] overflow-y-auto">
           {/* Details Header */}
           <div className="flex items-center justify-between px-3 md:px-5 py-3 border-b border-gray-200 dark:border-gray-800">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">Details</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{t('common.details')}</h3>
             <Settings className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           </div>
 
           <div className="px-3 md:px-5 py-3 space-y-4">
             {/* Assignee */}
             <div className="flex items-start gap-3">
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Assignee</span>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.assignee')}</span>
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <User className="h-4 w-4 text-gray-400 shrink-0" />
-                <span className="text-sm text-gray-900 dark:text-white truncate">{issue.assignee?.name || 'Unassigned'}</span>
+                <span className="text-sm text-gray-900 dark:text-white truncate">{issue.assignee?.name || t('common.unassigned')}</span>
               </div>
             </div>
 
             {/* Priority */}
             <div className="flex items-start gap-3">
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Priority</span>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.priority')}</span>
               <div className="relative flex items-center gap-2 flex-1">
                 <Flag className={`h-4 w-4 shrink-0 ${issue.priority ? priorityColors[issue.priority] : 'text-gray-400'}`} />
                 <Button
@@ -656,7 +657,7 @@ function DetailsTab({
 
             {/* Due Date */}
             <div className="flex items-start gap-3">
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">Due date</span>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.dueDate')}</span>
               <div className="flex items-center gap-2 flex-1">
                 <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
                 {isEditingDueDate ? (

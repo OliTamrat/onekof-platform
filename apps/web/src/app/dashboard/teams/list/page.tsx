@@ -20,14 +20,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list', active: true },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
+const TAB_ITEMS: { id: string; labelKey: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
+  { id: 'summary', labelKey: 'tabs.summary', icon: BarChart3, href: '/dashboard/teams/overview' },
+  { id: 'list', labelKey: 'tabs.list', icon: null, href: '/dashboard/teams/list', active: true },
+  { id: 'board', labelKey: 'tabs.board', icon: null, href: '/dashboard/teams/board' },
+  { id: 'code', labelKey: 'tabs.code', icon: Code, href: '/dashboard/teams/code' },
+  { id: 'forms', labelKey: 'teams.forms', icon: FileText, href: '/dashboard/teams/forms' },
+  { id: 'timeline', labelKey: 'tabs.timeline', icon: Clock, href: '/dashboard/teams/timeline' },
+  { id: 'pages', labelKey: 'tabs.pages', icon: Book, href: '/dashboard/teams/pages' },
 ];
 
 // Mock team data
@@ -41,9 +41,9 @@ const TEAMS = [
 ];
 
 const STATUS_OPTIONS = [
-  { value: 'all', label: 'All Status' },
-  { value: 'ACTIVE', label: 'Active' },
-  { value: 'INACTIVE', label: 'Inactive' },
+  { value: 'all', labelKey: 'teams.allStatus' },
+  { value: 'ACTIVE', labelKey: 'status.active' },
+  { value: 'INACTIVE', labelKey: 'status.inactive' },
 ];
 
 export default function TeamsListPage() {
@@ -86,11 +86,11 @@ export default function TeamsListPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Users className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Teams List</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('teams.teamsList')}</h1>
             </div>
             <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Users className="h-4 w-4" />
-              Create Team
+              {t('teams.createTeam')}
             </Button>
           </div>
 
@@ -109,7 +109,7 @@ export default function TeamsListPage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}
@@ -123,7 +123,7 @@ export default function TeamsListPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search teams, leads..."
+                placeholder={t('teams.searchTeams')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -138,7 +138,7 @@ export default function TeamsListPage() {
               >
                 {STATUS_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.labelKey)}
                   </option>
                 ))}
               </select>
@@ -152,22 +152,22 @@ export default function TeamsListPage() {
             <thead className="bg-gray-50 dark:bg-[#22272B] sticky top-0 border-b border-gray-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Team
+                  {t('goals.team')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Lead
+                  {t('teams.lead')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Members
+                  {t('teams.members')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Status
+                  {t('common.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Performance
+                  {t('teams.performance')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Created
+                  {t('teams.created')}
                 </th>
               </tr>
             </thead>
@@ -206,7 +206,7 @@ export default function TeamsListPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(team.status)}`}>
-                      {team.status}
+                      {team.status === 'ACTIVE' ? t('status.active') : t('status.inactive')}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -230,7 +230,7 @@ export default function TeamsListPage() {
 
           {filteredTeams.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-slate-400">No teams found matching your filters</p>
+              <p className="text-gray-500 dark:text-slate-400">{t('teams.noTeamsMatchingFilters')}</p>
             </div>
           )}
         </div>

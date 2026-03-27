@@ -183,7 +183,7 @@ export default function ProjectsPage() {
               {/* All Projects */}
               <div>
                 <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
-                  {favoriteProjects.length > 0 ? 'All Projects' : `Your Projects (${filteredProjects.length})`}
+                  {favoriteProjects.length > 0 ? t('nav.allProjects') : `${t('dashboard.yourProjects')} (${filteredProjects.length})`}
                 </h2>
                 {viewMode === 'grid' ? (
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -234,6 +234,7 @@ export default function ProjectsPage() {
 
 // Project Card Component - Grid View
 function ProjectCard({ project, onClick }: { project: any; onClick: () => void }) {
+  const { t } = useLanguage();
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
@@ -262,7 +263,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
               className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
             >
               <Settings className="mr-2 h-4 w-4" />
-              Manage Members & Teams
+              {t('dashboard.manageMembers')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -291,7 +292,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
       <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400">
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="h-3.5 w-3.5" />
-          <span>{project.taskCount || 0} tasks</span>
+          <span>{project.taskCount || 0} {t('projects.tasks')}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Users className="h-3.5 w-3.5" />
@@ -304,6 +305,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
 
 // Project List Item Component - List View
 function ProjectListItem({ project, onClick }: { project: any; onClick: () => void }) {
+  const { t } = useLanguage();
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
@@ -361,7 +363,7 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
               className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
             >
               <Settings className="mr-2 h-4 w-4" />
-              Manage Members & Teams
+              {t('dashboard.manageMembers')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

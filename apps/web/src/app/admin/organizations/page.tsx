@@ -33,6 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Organization {
   id: string;
@@ -63,16 +64,17 @@ const PLAN_BADGE: Record<string, { style: string; icon: typeof Star }> = {
   ENTERPRISE: { style: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Crown },
 };
 
-const STATUS_CONFIG: Record<string, { dot: string; label: string; icon: typeof CheckCircle2 }> = {
-  ACTIVE: { dot: 'bg-emerald-500', label: 'Active', icon: CheckCircle2 },
-  TRIAL: { dot: 'bg-blue-500', label: 'Trial', icon: Clock },
-  SUSPENDED: { dot: 'bg-red-500', label: 'Suspended', icon: XCircle },
-  CANCELLED: { dot: 'bg-slate-400', label: 'Cancelled', icon: AlertCircle },
+const STATUS_DOTS: Record<string, string> = {
+  ACTIVE: 'bg-emerald-500',
+  TRIAL: 'bg-blue-500',
+  SUSPENDED: 'bg-red-500',
+  CANCELLED: 'bg-slate-400',
 };
 
 export default function AdminOrganizationsPage() {
   const queryClient = useQueryClient();
   const { canWrite } = useAdmin();
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [planFilter, setPlanFilter] = useState('');
@@ -112,6 +114,13 @@ export default function AdminOrganizationsPage() {
   const totalMembers = organizations.reduce((sum, o) => sum + o.memberCount, 0);
   const totalProjects = organizations.reduce((sum, o) => sum + o.projectCount, 0);
 
+  const statusLabels: Record<string, string> = {
+    ACTIVE: t('status.active'),
+    TRIAL: t('status.trial'),
+    SUSPENDED: t('status.suspended'),
+    CANCELLED: t('status.cancelled'),
+  };
+
   return (
     <div className="p-3 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -121,10 +130,10 @@ export default function AdminOrganizationsPage() {
             <Building2 className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Organizations</h1>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">{t('admin.organizations')}</h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Manage all organizations on the platform
-              {pagination && <span> &middot; {pagination.total} total</span>}
+              {t('admin.manageOrganizations')}
+              {pagination && <span> &middot; {pagination.total} {t('common.total').toLowerCase()}</span>}
             </p>
           </div>
         </div>
@@ -135,19 +144,19 @@ export default function AdminOrganizationsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3">
             <p className="text-lg font-bold text-slate-900 dark:text-white">{pagination.total}</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">Total Orgs</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('admin.totalOrgs')}</p>
           </div>
           <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3">
             <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{activeCount}</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">Active (this page)</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('admin.activeThisPage')}</p>
           </div>
           <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3">
             <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{totalMembers}</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">Members (this page)</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('admin.membersThisPage')}</p>
           </div>
           <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3">
             <p className="text-lg font-bold text-primary-600 dark:text-primary-400">{totalProjects}</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">Projects (this page)</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('admin.projectsThisPage')}</p>
           </div>
         </div>
       )}
@@ -158,7 +167,7 @@ export default function AdminOrganizationsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by name or slug..."
+            placeholder={t('admin.searchByNameSlug')}
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
@@ -169,18 +178,18 @@ export default function AdminOrganizationsPage() {
           onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
           className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 focus:border-primary-500 focus:outline-none"
         >
-          <option value="">All Status</option>
-          <option value="ACTIVE">Active</option>
-          <option value="TRIAL">Trial</option>
-          <option value="SUSPENDED">Suspended</option>
-          <option value="CANCELLED">Cancelled</option>
+          <option value="">{t('admin.allStatus')}</option>
+          <option value="ACTIVE">{t('status.active')}</option>
+          <option value="TRIAL">{t('status.trial')}</option>
+          <option value="SUSPENDED">{t('status.suspended')}</option>
+          <option value="CANCELLED">{t('status.cancelled')}</option>
         </select>
         <select
           value={planFilter}
           onChange={e => { setPlanFilter(e.target.value); setPage(1); }}
           className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 focus:border-primary-500 focus:outline-none"
         >
-          <option value="">All Plans</option>
+          <option value="">{t('admin.allPlans')}</option>
           <option value="FREE">Free</option>
           <option value="STARTER">Starter</option>
           <option value="PROFESSIONAL">Professional</option>
@@ -193,15 +202,15 @@ export default function AdminOrganizationsPage() {
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
-            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Loading organizations...</p>
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">{t('admin.loadingOrganizations')}</p>
           </div>
         </div>
       ) : organizations.length === 0 ? (
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-12 text-center">
           <Building2 className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600 mb-3" />
-          <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">No organizations found</p>
+          <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">{t('admin.noOrganizationsFound')}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            {search || statusFilter || planFilter ? 'Try adjusting your filters' : 'Organizations will appear here as users sign up'}
+            {search || statusFilter || planFilter ? t('admin.tryAdjustingFilters') : t('admin.orgsWillAppear')}
           </p>
         </div>
       ) : (
@@ -210,20 +219,20 @@ export default function AdminOrganizationsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#1B1F23]">
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Organization</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plan</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="text-center px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Members</th>
-                  <th className="text-center px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Projects</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Created</th>
-                  <th className="text-right px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('admin.organization')}</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('admin.plan')}</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('common.status')}</th>
+                  <th className="text-center px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('teams.members')}</th>
+                  <th className="text-center px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('nav.projects')}</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('dashboard.created')}</th>
+                  <th className="text-right px-4 py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('admin.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {organizations.map(org => {
                   const planInfo = PLAN_BADGE[org.plan] || PLAN_BADGE.FREE;
                   const PlanIcon = planInfo.icon;
-                  const statusInfo = STATUS_CONFIG[org.status] || STATUS_CONFIG.ACTIVE;
+                  const statusDot = STATUS_DOTS[org.status] || STATUS_DOTS.ACTIVE;
                   const memberPct = Math.min((org.memberCount / org.maxMembers) * 100, 100);
                   const projectPct = Math.min((org.projectCount / org.maxProjects) * 100, 100);
                   return (
@@ -247,8 +256,8 @@ export default function AdminOrganizationsPage() {
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <span className={cn('h-2 w-2 rounded-full shrink-0', statusInfo.dot)} />
-                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{statusInfo.label}</span>
+                          <span className={cn('h-2 w-2 rounded-full shrink-0', statusDot)} />
+                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{statusLabels[org.status] || org.status}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3.5">
@@ -289,7 +298,7 @@ export default function AdminOrganizationsPage() {
                       </td>
                       <td className="px-4 py-3.5 text-right">
                         {!canWrite ? (
-                          <span className="text-[10px] text-slate-400 italic">View only</span>
+                          <span className="text-[10px] text-slate-400 italic">{t('admin.viewOnly')}</span>
                         ) : (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -298,15 +307,15 @@ export default function AdminOrganizationsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuLabel className="text-[11px]">Change Status</DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-[11px]">{t('admin.changeStatus')}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => updateMutation.mutate({ id: org.id, status: 'ACTIVE' })} disabled={org.status === 'ACTIVE'}>
-                              <span className="h-2 w-2 rounded-full bg-emerald-500 mr-2" />Activate
+                              <span className="h-2 w-2 rounded-full bg-emerald-500 mr-2" />{t('admin.activate')}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => updateMutation.mutate({ id: org.id, status: 'SUSPENDED' })} disabled={org.status === 'SUSPENDED'}>
-                              <span className="h-2 w-2 rounded-full bg-red-500 mr-2" />Suspend
+                              <span className="h-2 w-2 rounded-full bg-red-500 mr-2" />{t('admin.suspend')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuLabel className="text-[11px]">Change Plan</DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-[11px]">{t('admin.changePlan')}</DropdownMenuLabel>
                             {['FREE', 'STARTER', 'PROFESSIONAL', 'ENTERPRISE'].map(plan => (
                               <DropdownMenuItem key={plan} onClick={() => updateMutation.mutate({ id: org.id, plan })} disabled={org.plan === plan}>
                                 {plan}
@@ -315,7 +324,7 @@ export default function AdminOrganizationsPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
                               <a href={`https://${org.slug}.onekof.com/dashboard`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                                <ExternalLink className="h-3.5 w-3.5" />View Dashboard
+                                <ExternalLink className="h-3.5 w-3.5" />{t('admin.viewDashboard')}
                               </a>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -333,14 +342,14 @@ export default function AdminOrganizationsPage() {
           {pagination && pagination.totalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#1B1F23]">
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Showing {(pagination.page - 1) * pagination.limit + 1}–{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
+                {t('common.showing')} {(pagination.page - 1) * pagination.limit + 1}–{Math.min(pagination.page * pagination.limit, pagination.total)} {t('common.of')} {pagination.total}
               </p>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={() => setPage(p => p - 1)} disabled={page === 1}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400 min-w-[80px] text-center">
-                  Page {pagination.page} of {pagination.totalPages}
+                  {t('common.page')} {pagination.page} {t('common.of')} {pagination.totalPages}
                 </span>
                 <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={page >= pagination.totalPages}>
                   <ChevronRight className="h-4 w-4" />

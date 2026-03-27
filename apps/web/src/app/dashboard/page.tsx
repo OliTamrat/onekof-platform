@@ -111,15 +111,15 @@ export default function DashboardPage() {
           <div className="mb-4 text-yellow-500">
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.sessionLoadingIssue')}</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            The session is taking longer than expected to load. This might be a configuration issue.
+            {t('dashboard.sessionLoadingDesc')}
           </p>
           <Button
             onClick={() => router.push('/auth/signin')}
             className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
           >
-            Go to Sign In
+            {t('dashboard.goToSignIn')}
           </Button>
         </div>
       </div>
@@ -430,7 +430,7 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">To Do</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.todo")}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
                   </div>
@@ -469,7 +469,7 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">Done</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.done")}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
                   </div>
@@ -529,11 +529,11 @@ export default function DashboardPage() {
                     {t('dashboard.typesOfWork')}
                   </h2>
                   <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
-                    View all items
+                    {t('dashboard.viewAllItems')}
                   </a>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Get a breakdown of work items by their types.
+                  {t('dashboard.statusDescription')}
                 </p>
                 <div className="space-y-2">
                   {totalIssues > 0 ? (
@@ -544,7 +544,7 @@ export default function DashboardPage() {
                       <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
                     </>
                   ) : (
-                    <p className="text-sm text-slate-400">No work items yet</p>
+                    <p className="text-sm text-slate-400">{t('common.noData')}</p>
                   )}
                 </div>
               </div>
@@ -556,14 +556,14 @@ export default function DashboardPage() {
                 <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Favorite Projects
+                    {t('nav.starred')}
                   </h2>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push('/dashboard/projects')}
                   >
-                    View all
+                    {t('common.viewAll')}
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -760,7 +760,7 @@ export default function DashboardPage() {
                           <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                             <div className="flex items-center gap-1">
                               <User className="h-3 w-3" />
-                              <span>{task.assignee?.name || 'Unassigned'}</span>
+                              <span>{task.assignee?.name || t('common.unassigned')}</span>
                             </div>
                             {task.updatedAt && (
                               <div className="flex items-center gap-1">
@@ -803,7 +803,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="text-center py-12">
                   <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                  <p className="text-gray-600 dark:text-gray-400">No tasks found</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('dashboard.noTasks')}</p>
                 </div>
               )}
             </div>
@@ -848,6 +848,7 @@ function StatCard({
   color: string;
   onClick?: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div
       role="button"
@@ -868,7 +869,7 @@ function StatCard({
             {icon}
           </div>
           <div className="text-[10px] md:text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-semibold hidden sm:flex items-center gap-1 group-hover:gap-2 transition-all">
-            <span>Details</span>
+            <span>{t('dashboard.details')}</span>
             <span className="group-hover:translate-x-0.5 transition-transform">→</span>
           </div>
         </div>

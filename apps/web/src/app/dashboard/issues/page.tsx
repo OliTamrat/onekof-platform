@@ -49,10 +49,10 @@ interface Issue {
 
 // Status columns configuration
 const STATUS_COLUMNS = [
-  { id: 'TODO', label: 'TO DO' },
-  { id: 'IN_PROGRESS', label: 'IN PROGRESS' },
-  { id: 'IN_REVIEW', label: 'IN REVIEW' },
-  { id: 'DONE', label: 'DONE' },
+  { id: 'TODO', labelKey: 'status.todo' },
+  { id: 'IN_PROGRESS', labelKey: 'status.inProgress' },
+  { id: 'IN_REVIEW', labelKey: 'status.inReview' },
+  { id: 'DONE', labelKey: 'status.done' },
 ];
 
 export default function IssuesPage() {
@@ -218,7 +218,7 @@ export default function IssuesPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Issues"
+        title={t('nav.issues')}
         icon={<ListChecks className="h-6 w-6" />}
         iconColor="#8B5CF6"
 
@@ -239,7 +239,7 @@ export default function IssuesPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">Loading issues...</div>
+              <div className="text-gray-600 dark:text-slate-400">{t('dashboard.loadingIssues')}</div>
             </div>
           ) : (
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -252,7 +252,7 @@ export default function IssuesPage() {
                     {/* Column Header */}
                     <div className="mb-3 flex items-center gap-2 px-1">
                       <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-slate-400">
-                        {column.label}
+                        {t(column.labelKey)}
                       </h3>
                       <span className="rounded-sm bg-gray-200 dark:bg-slate-700 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-slate-400">
                         {issuesByStatus[column.id]?.length || 0}
@@ -292,7 +292,7 @@ export default function IssuesPage() {
                             className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
-                            Create
+                            {t('common.create')}
                           </Button>
                       </div>
                     )}

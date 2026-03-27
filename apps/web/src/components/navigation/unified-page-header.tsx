@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Breadcrumb {
   label: string;
@@ -45,6 +46,7 @@ interface Breadcrumb {
 export interface TabDefinition {
   id: string;
   label: string;
+  labelKey?: string;
   icon: LucideIcon;
   href: string;
 }
@@ -116,6 +118,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 };
 
 function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; baseHref: string; activeTab: string }) {
+  const { t } = useLanguage();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = React.useState(tabs.length);
 
@@ -160,7 +163,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
             )}
           >
             <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
-            <span>{tab.label}</span>
+            <span>{tab.labelKey ? t(tab.labelKey) : tab.label}</span>
           </Link>
         );
       })}
@@ -198,7 +201,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
                     )}
                   >
                     <Icon className="h-4 w-4" />
-                    <span>{tab.label}</span>
+                    <span>{tab.labelKey ? t(tab.labelKey) : tab.label}</span>
                   </Link>
                 </DropdownMenuItem>
               );
@@ -238,6 +241,7 @@ export function UnifiedPageHeader({
   taskCounts,
 }: UnifiedPageHeaderProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
   const [internalSearch, setInternalSearch] = useState('');
 
   const searchVal = externalSearch ?? internalSearch;
@@ -307,9 +311,9 @@ export function UnifiedPageHeader({
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">{taskCounts.filtered}</span>
               {taskCounts.filtered !== taskCounts.total && (
-                <span>of {taskCounts.total}</span>
+                <span>{t('common.of')} {taskCounts.total}</span>
               )}
-              <span>items</span>
+              <span>{t('dashboard.totalItems').toLowerCase()}</span>
             </div>
           )}
         </div>
@@ -331,7 +335,7 @@ export function UnifiedPageHeader({
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('common.searchPlaceholder')}
                 value={searchVal}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
@@ -367,7 +371,7 @@ export function UnifiedPageHeader({
                     title="Filter"
                   >
                     <Filter className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    <span className="hidden md:inline">Filter</span>
+                    <span className="hidden md:inline">{t('common.filter')}</span>
                     {totalActiveFilters > 0 && (
                       <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary-500 px-1 text-[10px] font-bold text-white">
                         {totalActiveFilters}
@@ -376,7 +380,7 @@ export function UnifiedPageHeader({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-64">
-                  <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('common.status')}</DropdownMenuLabel>
                   {STATUS_OPTIONS.map(status => {
                     const isSelected = (activeFilters.status || []).includes(status);
                     return (
@@ -395,7 +399,7 @@ export function UnifiedPageHeader({
                     );
                   })}
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel>Filter by Priority</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('common.priority')}</DropdownMenuLabel>
                   {PRIORITY_OPTIONS.map(priority => {
                     const isSelected = (activeFilters.priority || []).includes(priority);
                     return (
@@ -424,7 +428,7 @@ export function UnifiedPageHeader({
                         className="text-red-600 dark:text-red-400 cursor-pointer"
                       >
                         <X className="h-3.5 w-3.5 mr-2" />
-                        Clear all filters
+                        {t('common.clearAll')}
                       </DropdownMenuItem>
                     </>
                   )}
@@ -449,7 +453,7 @@ export function UnifiedPageHeader({
                   >
                     <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">
-                      {groupBy !== 'none' ? `By ${groupBy}` : 'Group'}
+                      {groupBy !== 'none' ? groupBy.charAt(0).toUpperCase() + groupBy.slice(1) : t('common.filter')}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -483,7 +487,7 @@ export function UnifiedPageHeader({
                 title="AI Insights"
               >
                 <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="hidden md:inline">Insights</span>
+                <span className="hidden md:inline">{t('nav.analytics')}</span>
               </Button>
             )}
 
@@ -499,7 +503,7 @@ export function UnifiedPageHeader({
                   >
                     <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">
-                      {viewMode === 'list' ? 'List' : viewMode === 'board' ? 'Board' : 'Compact'}
+                      {viewMode === 'list' ? t('tabs.list') : viewMode === 'board' ? t('tabs.board') : t('common.view')}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -553,7 +557,7 @@ export function UnifiedPageHeader({
               }}
               className="h-auto text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 ml-1 px-1 py-0.5"
             >
-              Clear all
+              {t('common.clearAll')}
             </Button>
           </div>
         )}

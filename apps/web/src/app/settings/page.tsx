@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/language-context';
 
 /**
  * Settings Page - Redirect to Dashboard Settings
@@ -11,6 +12,7 @@ import { useRouter } from 'next/navigation';
  */
 export default function SettingsPage() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Redirect to dashboard settings
@@ -21,7 +23,7 @@ export default function SettingsPage() {
     <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
       <div className="text-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-500 border-r-transparent"></div>
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Redirecting to settings...</p>
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">{t('settings.redirecting')}</p>
       </div>
     </div>
   );

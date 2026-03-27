@@ -82,7 +82,7 @@ export default function CalendarPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-slate-500">Please sign in to view the calendar.</p>
+          <p className="text-slate-500">{t('dashboard.pleaseSignIn')}</p>
         </div>
       </AppLayout>
     );
@@ -91,7 +91,7 @@ export default function CalendarPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Calendar"
+        title={t('calendar.title')}
         icon={<CalendarIcon className="h-6 w-6" />}
         iconColor="#EC4899"
         currentTab="calendar"
@@ -108,7 +108,7 @@ export default function CalendarPage() {
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Loading calendar...</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('dashboard.loadingCalendar')}</p>
             </div>
           </div>
         ) : (

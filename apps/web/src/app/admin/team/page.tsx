@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface TeamMember {
   username: string;
@@ -23,38 +24,39 @@ interface TeamMember {
   role: 'OWNER' | 'ADMIN' | 'VIEWER';
 }
 
-const ROLE_CONFIG = {
-  OWNER: {
-    label: 'Owner',
-    description: 'Full access — manage admins, orgs, users, and system settings',
-    icon: Crown,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-900/20',
-    border: 'border-amber-200 dark:border-amber-800',
-    gradient: 'from-amber-500 to-orange-500',
-  },
-  ADMIN: {
-    label: 'Admin',
-    description: 'Can manage organizations and users, but cannot manage admin team',
-    icon: ShieldCheck,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-900/20',
-    border: 'border-purple-200 dark:border-purple-800',
-    gradient: 'from-purple-500 to-indigo-500',
-  },
-  VIEWER: {
-    label: 'Viewer',
-    description: 'Read-only access to dashboard, organizations, and user data',
-    icon: Eye,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    border: 'border-blue-200 dark:border-blue-800',
-    gradient: 'from-blue-500 to-cyan-500',
-  },
-};
-
 export default function AdminTeamPage() {
   const [copied, setCopied] = useState(false);
+  const { t } = useLanguage();
+
+  const ROLE_CONFIG = {
+    OWNER: {
+      label: t('admin.ownerRole'),
+      description: t('admin.ownerRoleDesc'),
+      icon: Crown,
+      color: 'text-amber-600 dark:text-amber-400',
+      bg: 'bg-amber-50 dark:bg-amber-900/20',
+      border: 'border-amber-200 dark:border-amber-800',
+      gradient: 'from-amber-500 to-orange-500',
+    },
+    ADMIN: {
+      label: t('admin.adminRole'),
+      description: t('admin.adminRoleDesc'),
+      icon: ShieldCheck,
+      color: 'text-purple-600 dark:text-purple-400',
+      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      border: 'border-purple-200 dark:border-purple-800',
+      gradient: 'from-purple-500 to-indigo-500',
+    },
+    VIEWER: {
+      label: t('admin.viewerRole'),
+      description: t('admin.viewerRoleDesc'),
+      icon: Eye,
+      color: 'text-blue-600 dark:text-blue-400',
+      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      border: 'border-blue-200 dark:border-blue-800',
+      gradient: 'from-blue-500 to-cyan-500',
+    },
+  };
 
   const { data, isLoading } = useQuery<{ team: TeamMember[] }>({
     queryKey: ['admin', 'team'],
@@ -91,9 +93,9 @@ export default function AdminTeamPage() {
           <UsersRound className="h-5 w-5 text-white" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Admin Team</h1>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">{t('admin.adminTeam')}</h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Manage who has access to the admin dashboard &middot; {team.length} member{team.length !== 1 ? 's' : ''}
+            {t('admin.manageAdminAccess')} &middot; {team.length} {team.length !== 1 ? t('admin.membersCount', { count: team.length }).replace(`${team.length} `, '') : t('admin.memberCount', { count: team.length }).replace(`${team.length} `, '')}
           </p>
         </div>
       </div>
@@ -120,19 +122,19 @@ export default function AdminTeamPage() {
 
       {/* Current team */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Current Team Members</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('admin.currentTeamMembers')}</h3>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary-500" />
-              <p className="mt-2 text-xs text-slate-400">Loading team...</p>
+              <p className="mt-2 text-xs text-slate-400">{t('admin.loadingTeam')}</p>
             </div>
           </div>
         ) : team.length === 0 ? (
           <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
             <UsersRound className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-            <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">No admin users configured</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Add admin users via the ADMIN_USERS environment variable</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">{t('admin.noAdminUsers')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('admin.addAdminUsersDesc')}</p>
           </div>
         ) : (
           <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
@@ -167,19 +169,18 @@ export default function AdminTeamPage() {
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
-              How to add or remove admin users
+              {t('admin.howToAddAdmins')}
             </h4>
             <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed mb-4">
-              Admin users are managed via the <code className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_USERS</code> environment variable in Vercel.
-              Update the JSON array to add, remove, or change roles, then redeploy.
+              {t('admin.adminUsersExplanation')}
             </p>
 
             <div className="rounded-lg bg-white dark:bg-[#1B1F23] border border-blue-200 dark:border-blue-800 overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-[#22272B] border-b border-blue-200 dark:border-blue-800">
-                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Example ADMIN_USERS value</span>
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('admin.exampleValue')}</span>
                 <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 px-2 text-xs gap-1.5">
                   {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? 'Copied' : 'Copy'}
+                  {copied ? t('common.copied') : t('common.copy')}
                 </Button>
               </div>
               <pre className="p-3 text-[11px] text-slate-700 dark:text-slate-300 overflow-x-auto font-mono leading-relaxed">
@@ -188,13 +189,13 @@ export default function AdminTeamPage() {
             </div>
 
             <div className="mt-4 space-y-1.5">
-              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">Steps:</p>
+              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">{t('admin.steps')}</p>
               <ol className="text-[11px] text-blue-700 dark:text-blue-400 space-y-1 list-decimal pl-4">
-                <li>Go to <strong>Vercel &rarr; Project Settings &rarr; Environment Variables</strong></li>
-                <li>Edit the <code className="font-mono bg-blue-100 dark:bg-blue-900/40 px-1 rounded">ADMIN_USERS</code> variable</li>
-                <li>Update the JSON array (add/remove users, change roles)</li>
-                <li>Use strong, unique passwords for each admin</li>
-                <li>Redeploy for changes to take effect</li>
+                <li>{t('admin.step1')}</li>
+                <li>{t('admin.step2')}</li>
+                <li>{t('admin.step3')}</li>
+                <li>{t('admin.step4')}</li>
+                <li>{t('admin.step5')}</li>
               </ol>
             </div>
           </div>

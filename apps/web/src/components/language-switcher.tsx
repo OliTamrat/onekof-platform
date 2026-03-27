@@ -5,7 +5,7 @@ import { Globe } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,7 +26,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        aria-label="Change language"
+        aria-label={t('common.changeLanguage')}
       >
         <Globe className="h-4 w-4" />
         {!compact && (

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Activity {
   id: string;
@@ -83,12 +84,12 @@ const actionIcons: Record<string, any> = {
   MOVED: GitBranch,
 };
 
-const FILTER_TABS = [
-  { key: undefined as string | undefined, label: 'All' },
-  { key: 'TASK', label: 'Task' },
-  { key: 'PROJECT', label: 'Project' },
-  { key: 'GOAL', label: 'Goal' },
-  { key: 'COMMENT', label: 'Comment' },
+const FILTER_TAB_KEYS = [
+  { key: undefined as string | undefined, labelKey: 'filter.all' },
+  { key: 'TASK', labelKey: 'filter.task' },
+  { key: 'PROJECT', labelKey: 'filter.project' },
+  { key: 'GOAL', labelKey: 'filter.goal' },
+  { key: 'COMMENT', labelKey: 'filter.comment' },
 ];
 
 export function ActivityTimeline({
@@ -98,6 +99,7 @@ export function ActivityTimeline({
   limit = 50,
   showFilters = true,
 }: ActivityTimelineProps) {
+  const { t } = useLanguage();
   const [selectedEntityType, setSelectedEntityType] = useState<string | undefined>(entityType);
   const [offset, setOffset] = useState(0);
 
@@ -130,7 +132,7 @@ export function ActivityTimeline({
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500">Loading activity timeline...</p>
+          <p className="text-sm text-slate-500">{t('activity.loadingTimeline')}</p>
         </div>
       </div>
     );
@@ -141,7 +143,7 @@ export function ActivityTimeline({
       <div className="flex flex-col items-center justify-center py-12 gap-3">
         <div className="flex items-center gap-2 text-red-600">
           <AlertCircle className="h-5 w-5" />
-          <span>Failed to load activities</span>
+          <span>{t('activity.failedToLoad')}</span>
         </div>
         {selectedEntityType && (
           <Button
@@ -150,7 +152,7 @@ export function ActivityTimeline({
             className="flex items-center gap-1.5 text-sm text-primary-500"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Show all activity
+            {t('activity.showAll')}
           </Button>
         )}
       </div>
@@ -162,9 +164,9 @@ export function ActivityTimeline({
       {/* Filters */}
       {showFilters && (
         <div className="flex items-center gap-2 pb-4 border-b border-slate-200 dark:border-slate-700">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Filter by:</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('filter.filterBy')}</span>
           <div className="flex gap-1.5 flex-wrap">
-            {FILTER_TABS.map((tab) => (
+            {FILTER_TAB_KEYS.map((tab) => (
               <Button
                 key={tab.key ?? 'all'}
                 variant={selectedEntityType === tab.key ? 'default' : 'secondary'}
@@ -172,7 +174,7 @@ export function ActivityTimeline({
                 onClick={() => handleFilterChange(tab.key)}
                 className="h-auto px-3 py-1.5 text-xs"
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </Button>
             ))}
           </div>
@@ -194,13 +196,13 @@ export function ActivityTimeline({
           </div>
           <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
             {selectedEntityType
-              ? `No ${selectedEntityType.toLowerCase()} activity yet`
-              : 'No activity yet'}
+              ? t('activity.noActivity')
+              : t('activity.noActivity')}
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[250px]">
             {selectedEntityType
-              ? `No ${selectedEntityType.toLowerCase()}-related activity has been recorded. Try a different filter.`
-              : 'Activity will appear here as team members work on tasks, projects, and goals.'}
+              ? t('activity.noFilteredActivityDesc').replace('{type}', selectedEntityType.toLowerCase())
+              : t('activity.activityWillAppear')}
           </p>
           {selectedEntityType && (
             <Button
@@ -210,7 +212,7 @@ export function ActivityTimeline({
               className="mt-3 text-xs text-primary-500 hover:bg-primary-500/5"
             >
               <ArrowLeft className="h-3 w-3" />
-              Show all activity
+              {t('activity.showAll')}
             </Button>
           )}
         </div>
@@ -336,11 +338,11 @@ export function ActivityTimeline({
                 onClick={() => setOffset(Math.max(0, offset - limit))}
                 disabled={offset === 0}
               >
-                Previous
+                {t('common.previous')}
               </Button>
 
               <span className="text-sm text-slate-500 dark:text-slate-400">
-                Showing {offset + 1} - {Math.min(offset + activities.length, pagination.total)} of{' '}
+                {t('common.showing')} {offset + 1} - {Math.min(offset + activities.length, pagination.total)} {t('common.of')}{' '}
                 {pagination.total}
               </span>
 
@@ -350,7 +352,7 @@ export function ActivityTimeline({
                 onClick={() => setOffset(offset + limit)}
                 disabled={!pagination.hasMore}
               >
-                Next
+                {t('common.next')}
               </Button>
             </div>
           )}

@@ -35,87 +35,99 @@ interface WikiCategory {
   articles: { title: string; excerpt: string; updatedAt: string }[];
 }
 
-const WIKI_CATEGORIES: WikiCategory[] = [
+interface WikiCategoryConfig {
+  id: string;
+  nameKey: string;
+  descKey: string;
+  icon: typeof BookOpen;
+  color: string;
+  bg: string;
+  pageCount: number;
+  articles: { titleKey: string; excerptKey: string; updatedAt: string }[];
+}
+
+// Wiki categories use translation keys - resolved at render time via t()
+const WIKI_CATEGORIES_CONFIG = [
   {
     id: 'getting-started',
-    name: 'Getting Started',
-    description: 'Onboarding guides and first steps for new team members',
+    nameKey: 'wiki.gettingStarted',
+    descKey: '',
     icon: Rocket,
     color: 'text-blue-600 dark:text-blue-400',
     bg: 'bg-blue-50 dark:bg-blue-900/20',
     pageCount: 5,
     articles: [
-      { title: 'Welcome to Onekof', excerpt: 'Learn how to navigate the platform and get productive quickly.', updatedAt: '2 days ago' },
-      { title: 'Setting Up Your Workspace', excerpt: 'Configure your organization, invite members, and customize settings.', updatedAt: '1 week ago' },
-      { title: 'Creating Your First Project', excerpt: 'Step-by-step guide to creating and managing projects.', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.welcomeToOnekof', excerptKey: 'wiki.welcomeDesc', updatedAt: '2 days ago' },
+      { titleKey: 'wiki.settingUpWorkspace', excerptKey: 'wiki.settingUpDesc', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.creatingFirstProject', excerptKey: 'wiki.creatingFirstDesc', updatedAt: '1 week ago' },
     ],
   },
   {
     id: 'project-management',
-    name: 'Project Management',
-    description: 'Best practices for managing tasks, sprints, and deliverables',
+    nameKey: 'wiki.projectManagement',
+    descKey: '',
     icon: BookMarked,
     color: 'text-purple-600 dark:text-purple-400',
     bg: 'bg-purple-50 dark:bg-purple-900/20',
     pageCount: 8,
     articles: [
-      { title: 'Task Workflows & Statuses', excerpt: 'Understanding TODO, In Progress, In Review, Done, and Blocked statuses.', updatedAt: '3 days ago' },
-      { title: 'Board View vs List View', excerpt: 'Choose the right view for your workflow and team size.', updatedAt: '5 days ago' },
-      { title: 'Priority Levels Guide', excerpt: 'When to use Critical, High, Medium, and Low priorities.', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.taskWorkflows', excerptKey: 'wiki.taskWorkflowsDesc', updatedAt: '3 days ago' },
+      { titleKey: 'wiki.boardVsList', excerptKey: 'wiki.boardVsListDesc', updatedAt: '5 days ago' },
+      { titleKey: 'wiki.priorityGuide', excerptKey: 'wiki.priorityGuideDesc', updatedAt: '1 week ago' },
     ],
   },
   {
     id: 'team-collaboration',
-    name: 'Team Collaboration',
-    description: 'How to work effectively with your team members',
+    nameKey: 'wiki.teamCollaboration',
+    descKey: '',
     icon: Users,
     color: 'text-primary-600 dark:text-primary-400',
     bg: 'bg-primary-50 dark:bg-primary-900/20',
     pageCount: 6,
     articles: [
-      { title: 'Inviting Team Members', excerpt: 'How to invite users, assign roles, and manage permissions.', updatedAt: '1 day ago' },
-      { title: 'Comments & @Mentions', excerpt: 'Collaborate on tasks using comments and mention team members.', updatedAt: '4 days ago' },
-      { title: 'Team Roles & Permissions', excerpt: 'Understanding Owner, Admin, and Member roles.', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.invitingMembers', excerptKey: 'wiki.invitingMembersDesc', updatedAt: '1 day ago' },
+      { titleKey: 'wiki.commentsMentions', excerptKey: 'wiki.commentsMentionsDesc', updatedAt: '4 days ago' },
+      { titleKey: 'wiki.teamRoles', excerptKey: 'wiki.teamRolesDesc', updatedAt: '1 week ago' },
     ],
   },
   {
     id: 'tips-tricks',
-    name: 'Tips & Best Practices',
-    description: 'Power user tips to maximize your productivity',
+    nameKey: 'wiki.tipsBestPractices',
+    descKey: '',
     icon: Lightbulb,
     color: 'text-amber-600 dark:text-amber-400',
     bg: 'bg-amber-50 dark:bg-amber-900/20',
     pageCount: 4,
     articles: [
-      { title: 'Keyboard Shortcuts', excerpt: 'Speed up your workflow with essential keyboard shortcuts.', updatedAt: '2 days ago' },
-      { title: 'Dashboard Customization', excerpt: 'Tailor your dashboard layout and widgets to your needs.', updatedAt: '3 days ago' },
-      { title: 'Automation Rules', excerpt: 'Set up automated workflows to reduce manual work.', updatedAt: '5 days ago' },
+      { titleKey: 'wiki.keyboardShortcuts', excerptKey: 'wiki.keyboardShortcutsDesc', updatedAt: '2 days ago' },
+      { titleKey: 'wiki.dashboardCustomization', excerptKey: 'wiki.dashboardCustomizationDesc', updatedAt: '3 days ago' },
+      { titleKey: 'wiki.automationRules', excerptKey: 'wiki.automationRulesDesc', updatedAt: '5 days ago' },
     ],
   },
   {
     id: 'security',
-    name: 'Security & Compliance',
-    description: 'Data protection, access control, and security best practices',
+    nameKey: 'wiki.securityCompliance',
+    descKey: '',
     icon: Shield,
     color: 'text-red-600 dark:text-red-400',
     bg: 'bg-red-50 dark:bg-red-900/20',
     pageCount: 3,
     articles: [
-      { title: 'Two-Factor Authentication', excerpt: 'Enable 2FA for enhanced account security.', updatedAt: '1 week ago' },
-      { title: 'Data Privacy & Encryption', excerpt: 'How Onekof protects your organization data.', updatedAt: '2 weeks ago' },
+      { titleKey: 'wiki.twoFactorAuth', excerptKey: 'wiki.twoFactorAuthDesc', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.dataPrivacy', excerptKey: 'wiki.dataPrivacyDesc', updatedAt: '2 weeks ago' },
     ],
   },
   {
     id: 'admin',
-    name: 'Administration',
-    description: 'Organization settings, billing, and admin controls',
+    nameKey: 'wiki.administration',
+    descKey: '',
     icon: Wrench,
     color: 'text-slate-600 dark:text-slate-400',
     bg: 'bg-slate-100 dark:bg-slate-800',
     pageCount: 4,
     articles: [
-      { title: 'Organization Settings', excerpt: 'Manage your organization name, plan, and preferences.', updatedAt: '3 days ago' },
-      { title: 'Billing & Subscription', excerpt: 'View your plan, manage billing, and upgrade.', updatedAt: '1 week ago' },
+      { titleKey: 'wiki.orgSettings', excerptKey: 'wiki.orgSettingsDesc', updatedAt: '3 days ago' },
+      { titleKey: 'wiki.billingSubscription', excerptKey: 'wiki.billingSubscriptionDesc', updatedAt: '1 week ago' },
     ],
   },
 ];
@@ -124,6 +136,22 @@ export default function WikiPage() {
   const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Resolve translation keys to actual strings
+  const WIKI_CATEGORIES: WikiCategory[] = WIKI_CATEGORIES_CONFIG.map(c => ({
+    id: c.id,
+    name: t(c.nameKey),
+    description: c.descKey ? t(c.descKey) : '',
+    icon: c.icon,
+    color: c.color,
+    bg: c.bg,
+    pageCount: c.pageCount,
+    articles: c.articles.map(a => ({
+      title: t(a.titleKey),
+      excerpt: t(a.excerptKey),
+      updatedAt: a.updatedAt,
+    })),
+  }));
 
   const totalPages = WIKI_CATEGORIES.reduce((sum, c) => sum + c.pageCount, 0);
   const filteredCategories = search
@@ -149,15 +177,15 @@ export default function WikiPage() {
                 <BookOpen className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Knowledge Base</h1>
+                <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('wiki.title')}</h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {totalPages} articles across {WIKI_CATEGORIES.length} categories
+                  {totalPages} {t('wiki.articlesAcross')} {WIKI_CATEGORIES.length} {t('wiki.categories')}
                 </p>
               </div>
             </div>
             <Button size="sm" className="gap-1.5">
               <Plus className="h-3.5 w-3.5" />
-              New Article
+              {t('wiki.newArticle')}
             </Button>
           </div>
 
@@ -166,7 +194,7 @@ export default function WikiPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search articles, guides, and documentation..."
+              placeholder={t('wiki.searchArticles')}
               value={search}
               onChange={e => { setSearch(e.target.value); setSelectedCategory(null); }}
               className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
@@ -184,7 +212,7 @@ export default function WikiPage() {
                 className="flex items-center gap-1.5 text-sm text-primary-600 dark:text-primary-400 hover:underline mb-4"
               >
                 <ArrowRight className="h-3.5 w-3.5 rotate-180" />
-                Back to all categories
+                {t('wiki.backToCategories')}
               </Button>
 
               <div className="flex items-center gap-3 mb-6">
@@ -230,21 +258,21 @@ export default function WikiPage() {
                   <FileText className="h-4 w-4 text-blue-500" />
                   <div>
                     <p className="text-lg font-bold text-slate-900 dark:text-white">{totalPages}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Total Articles</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.totalArticles')}</p>
                   </div>
                 </div>
                 <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
                   <FolderOpen className="h-4 w-4 text-purple-500" />
                   <div>
                     <p className="text-lg font-bold text-slate-900 dark:text-white">{WIKI_CATEGORIES.length}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Categories</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.categories')}</p>
                   </div>
                 </div>
                 <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
                   <TrendingUp className="h-4 w-4 text-primary-500" />
                   <div>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">Active</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Updated recently</p>
+                    <p className="text-lg font-bold text-slate-900 dark:text-white">{t('common.active')}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.updatedRecently')}</p>
                   </div>
                 </div>
               </div>
@@ -289,7 +317,7 @@ export default function WikiPage() {
               {filteredCategories.length === 0 && (
                 <div className="text-center py-12">
                   <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-                  <p className="text-sm text-slate-500 dark:text-slate-400">No articles found for "{search}"</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('emptyStates.noArticles')} "{search}"</p>
                 </div>
               )}
             </div>

@@ -90,13 +90,14 @@ const INITIAL_FORM_DATA: FormData = {
 // Step definitions
 // ---------------------------------------------------------------------------
 
-const STEPS = [
-  { id: 1, title: 'Basics', icon: FolderKanban, description: 'Name, key & type' },
-  { id: 2, title: 'Organization', icon: Building2, description: 'Department & compliance' },
-  { id: 3, title: 'Team', icon: Users, description: 'Ownership & members' },
-  { id: 4, title: 'Timeline', icon: Calendar, description: 'Schedule & priority' },
-  { id: 5, title: 'Appearance', icon: Palette, description: 'Workflow & branding' },
-  { id: 6, title: 'Review', icon: Eye, description: 'Confirm & create' },
+// Step definitions - titles/descriptions use translation keys resolved in render
+const STEPS_META = [
+  { id: 1, titleKey: 'createProject.basics', icon: FolderKanban, descKey: 'createProject.nameKeyType' },
+  { id: 2, titleKey: 'createProject.organization', icon: Building2, descKey: 'createProject.deptCompliance' },
+  { id: 3, titleKey: 'createProject.team', icon: Users, descKey: 'createProject.ownershipMembers' },
+  { id: 4, titleKey: 'createProject.timeline', icon: Calendar, descKey: 'createProject.schedulePriority' },
+  { id: 5, titleKey: 'createProject.appearance', icon: Palette, descKey: 'createProject.workflowBranding' },
+  { id: 6, titleKey: 'createProject.review', icon: Eye, descKey: 'createProject.confirmCreate' },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -122,6 +123,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   const { currentOrganization, refreshProjects } = useWorkspace();
   const { t } = useLanguage();
 
+  const STEPS = STEPS_META.map(s => ({ ...s, title: t(s.titleKey), description: t(s.descKey) }));
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -181,14 +183,14 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   const validateStep = useCallback((step: number): string | null => {
     switch (step) {
       case 1:
-        if (!formData.name.trim()) return 'Project name is required';
-        if (!formData.key.trim()) return 'Project key is required';
-        if (!/^[A-Z0-9]+$/.test(formData.key)) return 'Key must contain only uppercase letters and numbers';
-        if (formData.key.length < 2) return 'Key must be at least 2 characters';
+        if (!formData.name.trim()) return t('projects.nameRequired');
+        if (!formData.key.trim()) return t('projects.keyRequired');
+        if (!/^[A-Z0-9]+$/.test(formData.key)) return t('projects.keyFormat');
+        if (formData.key.length < 2) return t('projects.keyMinLength');
         return null;
       case 4:
         if (formData.startDate && formData.dueDate && formData.startDate > formData.dueDate)
-          return 'Due date must be after start date';
+          return t('projects.dueDateAfterStart');
         return null;
       default:
         return null;
@@ -214,7 +216,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
 
   const handleSubmit = async () => {
     if (!currentOrganization) {
-      setError('No workspace selected');
+      setError(t('projects.noWorkspaceSelected'));
       return;
     }
 
@@ -271,7 +273,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     <div className="space-y-4">
       <div>
         <label className={labelClass}>
-          Project Name <span className="text-red-500">*</span>
+          {t('projects.projectName')} <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -287,7 +289,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>
-            Project Key <span className="text-red-500">*</span>
+            {t('projects.projectKey')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -302,7 +304,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
 
         <div>
-          <label className={labelClass}>Project Type</label>
+          <label className={labelClass}>{t('projects.projectType')}</label>
           <select
             value={formData.projectType}
             onChange={(e) => update('projectType', e.target.value)}
@@ -316,9 +318,9 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       </div>
 
       <div>
-        <label className={labelClass}>Description</label>
+        <label className={labelClass}>{t('common.description')}</label>
         <textarea
-          placeholder="Describe goals, objectives, and key deliverables..."
+          placeholder={t('projects.describeGoals')}
           value={formData.description}
           onChange={(e) => update('description', e.target.value)}
           rows={4}
@@ -348,7 +350,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>Department</label>
+          <label className={labelClass}>{t('projects.department')}</label>
           <input
             type="text"
             placeholder="e.g., Engineering, Finance, HR"
@@ -358,7 +360,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
           />
         </div>
         <div>
-          <label className={labelClass}>Category / Program</label>
+          <label className={labelClass}>{t('projects.categoryProgram')}</label>
           <input
             type="text"
             placeholder="e.g., Digital Transformation, R&D"
@@ -372,15 +374,15 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       <div>
         <label className={labelClass}>
           <span className="flex items-center gap-1.5">
-            <Building2 className="h-3.5 w-3.5" /> Entity Type
+            <Building2 className="h-3.5 w-3.5" /> {t('projects.entityType')}
           </span>
         </label>
         <div className="grid grid-cols-2 gap-2">
           {([
-            { value: 'INTERNAL', label: 'Internal', desc: 'Within your organization' },
-            { value: 'EXTERNAL', label: 'External', desc: 'Client or vendor project' },
-            { value: 'JOINT_VENTURE', label: 'Joint Venture', desc: 'Partnership with another org' },
-            { value: 'GOVERNMENT', label: 'Government', desc: 'Government-contracted' },
+            { value: 'INTERNAL', label: 'Internal', desc: t('projects.withinOrg') },
+            { value: 'EXTERNAL', label: 'External', desc: t('projects.clientVendor') },
+            { value: 'JOINT_VENTURE', label: 'Joint Venture', desc: t('projects.partnership') },
+            { value: 'GOVERNMENT', label: 'Government', desc: t('projects.governmentContracted') },
           ] as const).map((entity) => (
             <label key={entity.value} className={cardClass(formData.entityType === entity.value)}>
               <input
@@ -404,7 +406,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         <div>
           <label className={labelClass}>
             <span className="flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5" /> Visibility
+              <Shield className="h-3.5 w-3.5" /> {t('projects.visibility')}
             </span>
           </label>
           <select
@@ -412,17 +414,17 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             onChange={(e) => update('visibility', e.target.value)}
             className={inputClass}
           >
-            <option value="PUBLIC">Public - All org members</option>
-            <option value="INTERNAL">Internal - Project members & admins</option>
-            <option value="PRIVATE">Private - Explicit members only</option>
-            <option value="CONFIDENTIAL">Confidential - Restricted with audit</option>
+            <option value="PUBLIC">{t('projects.publicAll')}</option>
+            <option value="INTERNAL">{t('projects.internalMembers')}</option>
+            <option value="PRIVATE">{t('projects.privateExplicit')}</option>
+            <option value="CONFIDENTIAL">{t('projects.confidentialRestricted')}</option>
           </select>
         </div>
 
         <div>
           <label className={labelClass}>
             <span className="flex items-center gap-1.5">
-              <AlertTriangle className="h-3.5 w-3.5" /> Risk Level
+              <AlertTriangle className="h-3.5 w-3.5" /> {t('projects.riskLevel')}
             </span>
           </label>
           <select
@@ -430,18 +432,18 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             onChange={(e) => update('riskLevel', e.target.value)}
             className={inputClass}
           >
-            <option value="NOT_ASSESSED">Not Assessed</option>
-            <option value="LOW">Low</option>
-            <option value="MODERATE">Moderate</option>
-            <option value="HIGH">High</option>
-            <option value="CRITICAL">Critical</option>
+            <option value="NOT_ASSESSED">{t('projects.notAssessed')}</option>
+            <option value="LOW">{t('priority.low')}</option>
+            <option value="MODERATE">{t('projects.moderate')}</option>
+            <option value="HIGH">{t('priority.high')}</option>
+            <option value="CRITICAL">{t('priority.critical')}</option>
           </select>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>Budget Code</label>
+          <label className={labelClass}>{t('projects.budgetCode')}</label>
           <input
             type="text"
             placeholder="e.g., FY26-ENG-001"
@@ -449,11 +451,11 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             onChange={(e) => update('budgetCode', e.target.value)}
             className={inputClass}
           />
-          <p className={helpClass}>Financial tracking code for this project</p>
+          <p className={helpClass}>{t('projects.financialTrackingCode')}</p>
         </div>
 
         <div>
-          <label className={labelClass}>Tags</label>
+          <label className={labelClass}>{t('common.tags')}</label>
           <input
             type="text"
             placeholder="e.g., urgent, q1-2026, client-acme"
@@ -461,7 +463,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             onChange={(e) => update('tags', e.target.value)}
             className={inputClass}
           />
-          <p className={helpClass}>Comma-separated labels</p>
+          <p className={helpClass}>{t('projects.commaSeparatedLabels')}</p>
         </div>
       </div>
     </div>
@@ -471,13 +473,13 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>Project Owner</label>
+          <label className={labelClass}>{t('projects.projectOwner')}</label>
           <select
             value={formData.ownerId}
             onChange={(e) => update('ownerId', e.target.value)}
             className={inputClass}
           >
-            <option value="">Same as creator</option>
+            <option value="">{t('projects.sameAsCreator')}</option>
             {orgMembers.map((member) => (
               <option key={member.userId} value={member.userId}>
                 {member.name || member.email}
@@ -485,29 +487,29 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               </option>
             ))}
           </select>
-          <p className={helpClass}>Executive sponsor or budget holder</p>
+          <p className={helpClass}>{t('projects.executiveSponsor')}</p>
         </div>
 
         <div>
-          <label className={labelClass}>Project Lead</label>
+          <label className={labelClass}>{t('projects.projectLead')}</label>
           <select
             value={formData.leadId}
             onChange={(e) => update('leadId', e.target.value)}
             className={inputClass}
           >
-            <option value="">Unassigned</option>
+            <option value="">{t('common.unassigned')}</option>
             {orgMembers.map((member) => (
               <option key={member.userId} value={member.userId}>
                 {member.name || member.email}
               </option>
             ))}
           </select>
-          <p className={helpClass}>Day-to-day project manager</p>
+          <p className={helpClass}>{t('projects.dayToDay')}</p>
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>Default Assignee</label>
+        <label className={labelClass}>{t('projects.defaultAssignee')}</label>
         <select
           value={formData.defaultAssignee}
           onChange={(e) => update('defaultAssignee', e.target.value)}
@@ -521,13 +523,13 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             </option>
           ))}
         </select>
-        <p className={helpClass}>New issues are automatically assigned to this person</p>
+        <p className={helpClass}>{t('projects.autoAssigned')}</p>
       </div>
 
       <div>
         <label className={labelClass}>Teams</label>
         {orgTeams.length === 0 ? (
-          <p className="text-sm text-slate-400 dark:text-slate-500 py-2">No teams available</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 py-2">{t('projects.noTeamsAvailable')}</p>
         ) : (
           <div className="max-h-[200px] overflow-y-auto rounded-md border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
             {orgTeams.map((team) => {
@@ -568,7 +570,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   const renderStep4 = () => (
     <div className="space-y-4">
       <div>
-        <label className={labelClass}>Priority</label>
+        <label className={labelClass}>{t('common.priority')}</label>
         <div className="grid grid-cols-5 gap-2">
           {([
             { value: 'CRITICAL', label: 'Critical', color: 'bg-red-500' },
@@ -595,7 +597,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       </div>
 
       <div>
-        <label className={labelClass}>Project Timeline</label>
+        <label className={labelClass}>{t('projects.projectTimeline')}</label>
         <DateRangePicker
           startDate={formData.startDate}
           endDate={formData.dueDate}
@@ -619,12 +621,12 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
   const renderStep5 = () => (
     <div className="space-y-4">
       <div>
-        <label className={labelClass}>Workflow Template</label>
+        <label className={labelClass}>{t('projects.workflowTemplate')}</label>
         <div className="space-y-2">
           {[
-            { value: 'KANBAN', name: 'Kanban', desc: 'Continuous flow: To Do, In Progress, Done' },
-            { value: 'SCRUM', name: 'Scrum', desc: 'Sprint-based development with backlog grooming' },
-            { value: 'CUSTOM', name: 'Custom', desc: 'Build your own workflow from scratch' },
+            { value: 'KANBAN', name: 'Kanban', desc: t('projects.continuousFlow') },
+            { value: 'SCRUM', name: 'Scrum', desc: t('projects.sprintBased') },
+            { value: 'CUSTOM', name: 'Custom', desc: t('projects.customWorkflow') },
           ].map((t) => (
             <label key={t.value} className={cardClass(formData.template === t.value)}>
               <input
@@ -654,7 +656,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         </div>
 
         <div>
-          <label className={labelClass}>Color</label>
+          <label className={labelClass}>{t('projects.color')}</label>
           <div className="flex gap-2">
             <input
               type="color"
@@ -729,7 +731,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
       <div className="space-y-3">
         <div className="rounded-lg border border-primary-200 dark:border-primary-500/30 bg-primary-50 dark:bg-primary-500/5 p-3">
           <p className="text-sm text-primary-700 dark:text-primary-400">
-            Review your project configuration below. Click <strong>Create Project</strong> to finalize.
+            {t('projects.reviewConfig')}
           </p>
         </div>
 
@@ -771,7 +773,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     <SlideoutPanel
       open={open}
       onClose={() => onOpenChange(false)}
-      title="Create New Project"
+      title={t('projects.createNewProject')}
       size="lg"
       headerActions={<FolderKanban className="h-5 w-5 text-primary-500" />}
       showFooter
@@ -786,7 +788,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                 disabled={isSubmitting}
                 className="gap-1.5"
               >
-                <ChevronLeft className="h-4 w-4" /> Back
+                <ChevronLeft className="h-4 w-4" /> {t('common.back')}
               </Button>
             )}
           </div>
@@ -797,7 +799,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             {currentStep < 6 ? (
               <Button
@@ -805,7 +807,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                 disabled={!canProceed}
                 className="bg-primary-500 hover:bg-primary-600 text-white gap-1.5"
               >
-                Next <ChevronRight className="h-4 w-4" />
+                {t('common.next')} <ChevronRight className="h-4 w-4" />
               </Button>
             ) : (
               <Button
@@ -814,7 +816,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                 className="bg-primary-500 hover:bg-primary-600 text-white gap-1.5"
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                {isSubmitting ? 'Creating...' : 'Create Project'}
+                {isSubmitting ? t('common.creating') : t('nav.createProject')}
               </Button>
             )}
           </div>

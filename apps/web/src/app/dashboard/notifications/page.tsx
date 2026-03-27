@@ -21,11 +21,11 @@ export default function NotificationsPage() {
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
   // Mock notifications data
-  const [notifications] = useState<Notification[]>([
+  const notifications: Notification[] = [
     {
       id: '1',
       type: 'mention',
-      title: 'You were mentioned in a comment',
+      title: t('notifications.mentionedInComment'),
       message: 'John mentioned you in "Water Dam Project" discussion',
       timestamp: '2 hours ago',
       read: false,
@@ -34,7 +34,7 @@ export default function NotificationsPage() {
     {
       id: '2',
       type: 'success',
-      title: 'Budget approved',
+      title: t('notifications.budgetApproved'),
       message: 'Your budget request for Q1 2026 has been approved',
       timestamp: '5 hours ago',
       read: false,
@@ -43,7 +43,7 @@ export default function NotificationsPage() {
     {
       id: '3',
       type: 'info',
-      title: 'Team member added',
+      title: t('notifications.teamMemberAdded'),
       message: 'Sarah Johnson joined your team',
       timestamp: '1 day ago',
       read: true,
@@ -52,7 +52,7 @@ export default function NotificationsPage() {
     {
       id: '4',
       type: 'warning',
-      title: 'Deadline approaching',
+      title: t('notifications.deadlineApproaching'),
       message: 'Project milestone due in 3 days',
       timestamp: '1 day ago',
       read: true,
@@ -61,13 +61,13 @@ export default function NotificationsPage() {
     {
       id: '5',
       type: 'info',
-      title: 'System update',
-      message: 'New features have been added to the platform',
+      title: t('notifications.systemUpdate'),
+      message: t('notifications.newFeaturesAdded'),
       timestamp: '2 days ago',
       read: true,
       category: 'system',
     },
-  ]);
+  ];
 
   const getIcon = (type: Notification['type']) => {
     switch (type) {
@@ -117,9 +117,9 @@ export default function NotificationsPage() {
                 )}
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h1>
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t('notifications.title')}</h1>
                 <p className="text-sm text-gray-600 dark:text-slate-400">
-                  {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
+                  {unreadCount > 0 ? `${unreadCount} ${t('notifications.unread').toLowerCase()}` : t('emptyStates.allCaughtUp')}
                 </p>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
               >
-                All
+                {t('common.all')}
               </Button>
               <Button
                 onClick={() => setFilter('unread')}
@@ -144,7 +144,7 @@ export default function NotificationsPage() {
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
               >
-                Unread ({unreadCount})
+                {t('notifications.unread')} ({unreadCount})
               </Button>
             </div>
           </div>
@@ -156,7 +156,7 @@ export default function NotificationsPage() {
             {filteredNotifications.length === 0 ? (
               <div className="text-center py-12">
                 <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">No notifications to display</p>
+                <p className="text-gray-600 dark:text-gray-400">{t('emptyStates.noNotifications')}</p>
               </div>
             ) : (
               filteredNotifications.map((notification) => (
