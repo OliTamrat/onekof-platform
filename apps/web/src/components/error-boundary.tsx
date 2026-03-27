@@ -4,6 +4,7 @@ import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -94,92 +95,93 @@ export class ErrorBoundary extends React.Component<
 
       // Default error UI
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-          <div className="max-w-md w-full">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-              {/* Error Icon */}
-              <div className="flex justify-center mb-6">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-                  <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
-                </div>
-              </div>
-
-              {/* Error Title */}
-              <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-                Something went wrong
-              </h1>
-
-              {/* Error Description */}
-              <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
-                We apologize for the inconvenience. An unexpected error has occurred.
-              </p>
-
-              {/* Error Details (Development Only) */}
-              {process.env.NODE_ENV === 'development' && this.state.error && (
-                <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
-                  <p className="text-sm font-mono text-red-600 dark:text-red-400 break-all">
-                    {this.state.error.toString()}
-                  </p>
-                  {this.state.errorInfo && (
-                    <details className="mt-2">
-                      <summary className="cursor-pointer text-sm text-gray-600 dark:text-gray-400">
-                        Component Stack
-                      </summary>
-                      <pre className="mt-2 text-xs text-gray-600 dark:text-gray-400 overflow-auto max-h-40">
-                        {this.state.errorInfo.componentStack}
-                      </pre>
-                    </details>
-                  )}
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button
-                  onClick={this.handleReset}
-                  className="w-full"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Try Again
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  onClick={this.handleReload}
-                  className="w-full"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Reload Page
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  onClick={this.handleGoHome}
-                  className="w-full"
-                >
-                  <Home className="h-4 w-4" />
-                  Go to Homepage
-                </Button>
-              </div>
-
-              {/* Support Link */}
-              <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                If this problem persists, please{' '}
-                <a
-                  href="mailto:support@onekof.com"
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  contact support
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
+        <ErrorFallbackUI
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          onReset={this.handleReset}
+          onReload={this.handleReload}
+          onGoHome={this.handleGoHome}
+        />
       );
     }
 
     return this.props.children;
   }
+}
+
+/**
+ * Functional error fallback UI that can use hooks (useLanguage).
+ */
+function ErrorFallbackUI({
+  error,
+  errorInfo,
+  onReset,
+  onReload,
+  onGoHome,
+}: {
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+  onReset: () => void;
+  onReload: () => void;
+  onGoHome: () => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="max-w-md w-full">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+          <div className="flex justify-center mb-6">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+              <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
+            {t('errors.somethingWentWrong')}
+          </h1>
+          <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
+            {t('errors.weApologize')}
+          </p>
+          {process.env.NODE_ENV === 'development' && error && (
+            <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm font-mono text-red-600 dark:text-red-400 break-all">
+                {error.toString()}
+              </p>
+              {errorInfo && (
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-sm text-gray-600 dark:text-gray-400">
+                    {t('errors.componentStack')}
+                  </summary>
+                  <pre className="mt-2 text-xs text-gray-600 dark:text-gray-400 overflow-auto max-h-40">
+                    {errorInfo.componentStack}
+                  </pre>
+                </details>
+              )}
+            </div>
+          )}
+          <div className="space-y-3">
+            <Button onClick={onReset} className="w-full">
+              <RefreshCw className="h-4 w-4" />
+              {t('errors.tryAgain')}
+            </Button>
+            <Button variant="secondary" onClick={onReload} className="w-full">
+              <RefreshCw className="h-4 w-4" />
+              {t('errors.reloadPage')}
+            </Button>
+            <Button variant="secondary" onClick={onGoHome} className="w-full">
+              <Home className="h-4 w-4" />
+              {t('errors.goToHomepage')}
+            </Button>
+          </div>
+          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+            {t('errors.ifProblemPersists')}{' '}
+            <a href="mailto:support@onekof.com" className="text-blue-600 dark:text-blue-400 hover:underline">
+              {t('errors.contactSupport')}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /**

@@ -5,31 +5,33 @@ import { useRouter } from 'next/navigation';
 import { X, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Shortcut {
   keys: string[];
-  description: string;
+  descriptionKey: string;
   category: string;
 }
 
 const shortcuts: Shortcut[] = [
   // Global
-  { keys: ['Ctrl', 'K'], description: 'Open command palette', category: 'Global' },
-  { keys: ['?'], description: 'Show keyboard shortcuts', category: 'Global' },
-  { keys: ['G', 'H'], description: 'Go to Home', category: 'Global' },
-  { keys: ['G', 'P'], description: 'Go to Projects', category: 'Global' },
-  { keys: ['G', 'I'], description: 'Go to Issues', category: 'Global' },
-  { keys: ['G', 'B'], description: 'Go to Budget', category: 'Global' },
-  { keys: ['G', 'T'], description: 'Go to Teams', category: 'Global' },
-  { keys: ['G', 'O'], description: 'Go to Goals', category: 'Global' },
+  { keys: ['Ctrl', 'K'], descriptionKey: 'keyboardShortcuts.openCommandPalette', category: 'keyboardShortcuts.global' },
+  { keys: ['?'], descriptionKey: 'keyboardShortcuts.showShortcuts', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'H'], descriptionKey: 'keyboardShortcuts.goToHome', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'P'], descriptionKey: 'keyboardShortcuts.goToProjects', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'I'], descriptionKey: 'keyboardShortcuts.goToIssues', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'B'], descriptionKey: 'keyboardShortcuts.goToBudget', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'T'], descriptionKey: 'keyboardShortcuts.goToTeams', category: 'keyboardShortcuts.global' },
+  { keys: ['G', 'O'], descriptionKey: 'keyboardShortcuts.goToGoals', category: 'keyboardShortcuts.global' },
   // Actions
-  { keys: ['C'], description: 'Create new issue', category: 'Actions' },
-  { keys: ['N', 'P'], description: 'New project', category: 'Actions' },
-  { keys: ['/'], description: 'Focus search', category: 'Actions' },
-  { keys: ['Esc'], description: 'Close modal / cancel', category: 'Actions' },
+  { keys: ['C'], descriptionKey: 'keyboardShortcuts.createNewIssue', category: 'keyboardShortcuts.actions' },
+  { keys: ['N', 'P'], descriptionKey: 'keyboardShortcuts.newProject', category: 'keyboardShortcuts.actions' },
+  { keys: ['/'], descriptionKey: 'keyboardShortcuts.focusSearch', category: 'keyboardShortcuts.actions' },
+  { keys: ['Esc'], descriptionKey: 'keyboardShortcuts.closeModal', category: 'keyboardShortcuts.actions' },
 ];
 
 export function KeyboardShortcutsModal() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -74,7 +76,7 @@ export function KeyboardShortcutsModal() {
             <div className="flex items-center gap-2.5">
               <Keyboard className="h-5 w-5 text-primary-500" />
               <h2 className="text-base font-semibold text-slate-900 dark:text-white">
-                Keyboard Shortcuts
+                {t('keyboardShortcuts.title')}
               </h2>
             </div>
             <Button
@@ -92,7 +94,7 @@ export function KeyboardShortcutsModal() {
             {Object.entries(grouped).map(([category, items]) => (
               <div key={category} className="mb-5 last:mb-0">
                 <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  {category}
+                  {t(category)}
                 </h3>
                 <div className="space-y-1">
                   {items.map((shortcut, i) => (
@@ -101,7 +103,7 @@ export function KeyboardShortcutsModal() {
                       className="flex items-center justify-between rounded-lg px-2 py-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
                     >
                       <span className="text-sm text-slate-700 dark:text-slate-300">
-                        {shortcut.description}
+                        {t(shortcut.descriptionKey)}
                       </span>
                       <div className="flex items-center gap-1">
                         {shortcut.keys.map((key, ki) => (
@@ -125,7 +127,7 @@ export function KeyboardShortcutsModal() {
           {/* Footer */}
           <div className="border-t border-slate-200 px-5 py-3 dark:border-slate-700">
             <p className="text-center text-[11px] text-slate-400 dark:text-slate-500">
-              Press <kbd className="rounded border border-slate-200 bg-slate-100 px-1 text-[10px] dark:border-slate-600 dark:bg-slate-800">?</kbd> to toggle this dialog
+              {t('keyboardShortcuts.pressToToggle')}
             </p>
           </div>
         </div>

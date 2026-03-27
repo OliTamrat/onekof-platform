@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { getSidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation-dynamic';
 import { useWorkspace } from '@/contexts/workspace-context';
+import { useLanguage } from '@/contexts/language-context';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
 
 interface CollapsibleSidebarProps {
@@ -17,6 +18,7 @@ interface CollapsibleSidebarProps {
 export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
   const pathname = usePathname();
   const { currentOrganization } = useWorkspace();
+  const { t } = useLanguage();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'projects', // Projects expanded by default
   ]);
@@ -79,7 +81,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="flex-1 text-left">{section.name}</span>
+                <span className="flex-1 text-left">{section.nameKey ? t(section.nameKey) : section.name}</span>
                 {section.items.length > 0 && (
                   <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">
                     {section.items.length}
@@ -103,7 +105,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="flex-1">{section.name}</span>
+                <span className="flex-1">{section.nameKey ? t(section.nameKey) : section.name}</span>
               </Link>
             )}
 
@@ -124,7 +126,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                       )}
                     >
                       {ItemIcon && <ItemIcon className="h-3.5 w-3.5 shrink-0" />}
-                      <span>{item.name}</span>
+                      <span>{item.nameKey ? t(item.nameKey) : item.name}</span>
                     </Link>
                   );
                 })}

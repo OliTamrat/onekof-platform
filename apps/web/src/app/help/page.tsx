@@ -2,8 +2,11 @@
 
 import { AppLayout } from '@/components/layouts/app-layout';
 import { HelpCircle, BookOpen, Video, MessageCircle, Mail, ExternalLink } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function HelpPage() {
+  const { t } = useLanguage();
+
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
@@ -14,8 +17,8 @@ export default function HelpPage() {
               <HelpCircle className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Help & Support</h1>
-              <p className="text-sm text-gray-600 dark:text-slate-400">Get help using Onekof platform</p>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t('help.title')}</h1>
+              <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -33,8 +36,8 @@ export default function HelpPage() {
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">Documentation</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Browse our comprehensive guides and tutorials</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">{t('help.documentation')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.documentationDesc')}</p>
                 </div>
               </a>
 
@@ -46,8 +49,8 @@ export default function HelpPage() {
                   <Video className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">Video Tutorials</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Watch step-by-step video guides</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">{t('help.videoTutorials')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.videoTutorialsDesc')}</p>
                 </div>
               </a>
 
@@ -59,8 +62,8 @@ export default function HelpPage() {
                   <MessageCircle className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">Community Forum</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Ask questions and share knowledge</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">{t('help.communityForum')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.communityForumDesc')}</p>
                 </div>
               </a>
 
@@ -72,53 +75,53 @@ export default function HelpPage() {
                   <Mail className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">Contact Support</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Email us at support@onekof.com</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-1">{t('help.contactSupport')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.contactSupportDesc')}</p>
                 </div>
               </a>
             </div>
 
             {/* FAQs */}
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('help.faq')}</h2>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">How do I create a new project?</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Navigate to the Projects page and click the "Create Project" button. Fill in the project details and select your preferred template.</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">{t('help.faqCreateProject')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.faqCreateProjectAnswer')}</p>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">How do I invite team members?</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Go to Settings  Team Members and click "Invite Member". Enter their email address and assign a role.</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">{t('help.faqInviteMembers')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.faqInviteMembersAnswer')}</p>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">How do I customize my dashboard?</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Admins can customize dashboard features by going to Settings  Customization. You can enable/disable sections and features based on your organization's needs.</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">{t('help.faqCustomizeDashboard')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.faqCustomizeDashboardAnswer')}</p>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">How do I export data?</h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Most pages have an export button in the toolbar. Click it to download data in CSV or Excel format.</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-2">{t('help.faqExportData')}</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{t('help.faqExportDataAnswer')}</p>
                 </div>
               </div>
             </div>
 
             {/* Resources */}
             <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Additional Resources</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('help.additionalResources')}</h2>
               <div className="space-y-3">
                 <a href="#" className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md transition-colors">
-                  <span className="text-sm text-gray-900 dark:text-white">Getting Started Guide</span>
+                  <span className="text-sm text-gray-900 dark:text-white">{t('help.gettingStartedGuide')}</span>
                   <ExternalLink className="h-4 w-4 text-gray-400" />
                 </a>
                 <a href="#" className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md transition-colors">
-                  <span className="text-sm text-gray-900 dark:text-white">API Documentation</span>
+                  <span className="text-sm text-gray-900 dark:text-white">{t('help.apiDocumentation')}</span>
                   <ExternalLink className="h-4 w-4 text-gray-400" />
                 </a>
                 <a href="#" className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md transition-colors">
-                  <span className="text-sm text-gray-900 dark:text-white">Keyboard Shortcuts</span>
+                  <span className="text-sm text-gray-900 dark:text-white">{t('keyboardShortcuts.title')}</span>
                   <ExternalLink className="h-4 w-4 text-gray-400" />
                 </a>
                 <a href="#" className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md transition-colors">
-                  <span className="text-sm text-gray-900 dark:text-white">Release Notes</span>
+                  <span className="text-sm text-gray-900 dark:text-white">{t('help.releaseNotes')}</span>
                   <ExternalLink className="h-4 w-4 text-gray-400" />
                 </a>
               </div>

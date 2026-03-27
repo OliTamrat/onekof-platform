@@ -31,14 +31,14 @@ export default function DocumentsAllPage() {
 
   return (
     <AppLayout>
-      <UnifiedPageHeader title="All Documents" icon={<Sparkles className="h-6 w-6" />} iconColor="#3B82F6" currentTab="all" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
+      <UnifiedPageHeader title={t('documents.title')} icon={<Sparkles className="h-6 w-6" />} iconColor="#3B82F6" currentTab="all" baseHref="/dashboard/documents" showTabs customTabs={DOCUMENTS_TABS} />
       <div className="p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" placeholder="Search documents..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <input type="text" placeholder={t('documents.searchDocuments')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
-          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"><Sparkles className="h-4 w-4" />New Document</Button>
+          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"><Sparkles className="h-4 w-4" />{t('documents.newDocument')}</Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredDocs.map((doc) => (
@@ -60,15 +60,15 @@ export default function DocumentsAllPage() {
           ))}
         </div>
       </div>
-      <SlideoutPanel isOpen={isSlideoutOpen} onClose={() => setIsSlideoutOpen(false)} title={selectedDoc?.title || 'Document Details'}>
+      <SlideoutPanel isOpen={isSlideoutOpen} onClose={() => setIsSlideoutOpen(false)} title={selectedDoc?.title || t('documents.documentDetails')}>
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Document Information">
+          <SlideoutPanelSection title={t('documents.documentInformation')}>
             <div className="space-y-4">
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.type}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Created By</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.createdBy}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Created Date</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.createdAt}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Size</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.size}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label><div className="flex flex-wrap gap-1 mt-2">{selectedDoc?.tags.map((tag: string, i: number) => (<span key={i} className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">{tag}</span>))}</div></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.type')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.type}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.createdBy')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.createdBy}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.createdDate')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.createdAt}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.size')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedDoc?.size}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.tags')}</label><div className="flex flex-wrap gap-1 mt-2">{selectedDoc?.tags.map((tag: string, i: number) => (<span key={i} className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">{tag}</span>))}</div></div>
             </div>
           </SlideoutPanelSection>
         </SlideoutPanelContent>

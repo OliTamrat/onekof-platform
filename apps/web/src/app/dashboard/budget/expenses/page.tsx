@@ -232,7 +232,7 @@ export default function BudgetExpensesPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Expenses"
+        title={t('budget.expenses')}
         icon={<DollarSign className="h-6 w-6" />}
         iconColor="#F59E0B"
         currentTab="expenses"
@@ -249,7 +249,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                 <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Total</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('common.total')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
               {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
@@ -260,7 +260,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Approved</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('budget.approved')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-emerald-600 dark:text-emerald-400">
               {isLoading ? '...' : approvedCount}
@@ -271,7 +271,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Pending</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('budget.pending')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-amber-600 dark:text-amber-400">
               {isLoading ? '...' : pendingCount}
@@ -280,7 +280,7 @@ export default function BudgetExpensesPage() {
           <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-[#1C8C7D]/5 to-[#16A085]/5 dark:from-[#1C8C7D]/10 dark:to-[#16A085]/10 border border-[#1C8C7D]/20 p-3 md:p-4 flex items-center justify-center">
             <Button size="sm" onClick={() => setIsUploadModalOpen(true)} className="w-full gap-2">
               <Sparkles className="h-4 w-4" />
-              AI Upload
+              {t('budget.aiUpload')}
             </Button>
           </div>
         </div>
@@ -293,7 +293,7 @@ export default function BudgetExpensesPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search expenses by description, vendor, category..."
+                  placeholder={t('budget.searchExpenses')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -310,7 +310,7 @@ export default function BudgetExpensesPage() {
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    {s === 'all' ? 'All' : s.charAt(0) + s.slice(1).toLowerCase()}
+                    {s === 'all' ? t('common.all') : s === 'PENDING' ? t('budget.pending') : s === 'APPROVED' ? t('budget.approved') : s === 'REJECTED' ? t('budget.rejected') : t('status.paid')}
                   </Button>
                 ))}
               </div>
@@ -326,15 +326,15 @@ export default function BudgetExpensesPage() {
         ) : filteredExpenses.length === 0 ? (
           <div className="text-center py-16">
             <Receipt className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Expenses Found</h3>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noExpensesFound')}</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
               {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your search or filters.'
-                : 'Upload a receipt or create an expense to get started.'}
+                ? t('budget.tryAdjustingFilters')
+                : t('budget.uploadReceiptGetStarted')}
             </p>
             <Button onClick={() => setIsUploadModalOpen(true)} className="gap-2">
               <Upload className="h-4 w-4" />
-              Upload Receipt
+              {t('budget.uploadReceipt')}
             </Button>
           </div>
         ) : (
@@ -396,35 +396,35 @@ export default function BudgetExpensesPage() {
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title="Expense Details"
+        title={t('budget.expenseDetails')}
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Expense Information">
+          <SlideoutPanelSection title={t('budget.expenseInformation')}>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.description')}</label>
                 <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense?.description}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Amount</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('budget.amount')}</label>
                 <p className="text-lg font-bold text-slate-900 dark:text-white mt-1">
                   {selectedExpense?.currency || 'ETB'} {formatCurrency(Number(selectedExpense?.amount || 0))}
                 </p>
               </div>
               {selectedExpense?.category?.name && (
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.category')}</label>
                   <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense.category.name}</p>
                 </div>
               )}
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Date</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.date')}</label>
                 <p className="text-sm text-slate-900 dark:text-white mt-1">
                   {selectedExpense?.transactionDate ? new Date(selectedExpense.transactionDate).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.status')}</label>
                 <p className="text-sm mt-1">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedExpense?.status || '')}`}>
                     {selectedExpense?.status}
@@ -433,25 +433,25 @@ export default function BudgetExpensesPage() {
               </div>
               {selectedExpense?.vendor && (
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Vendor</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('budget.vendor')}</label>
                   <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense.vendor}</p>
                 </div>
               )}
               {selectedExpense?.invoiceNumber && (
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Invoice #</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('budget.invoiceNumber')}</label>
                   <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense.invoiceNumber}</p>
                 </div>
               )}
               {selectedExpense?.budget?.project?.name && (
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Project</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.project')}</label>
                   <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense.budget.project.name}</p>
                 </div>
               )}
               {selectedExpense?.notes && (
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('common.notes')}</label>
                   <p className="text-sm text-slate-900 dark:text-white mt-1">{selectedExpense.notes}</p>
                 </div>
               )}
@@ -460,7 +460,7 @@ export default function BudgetExpensesPage() {
 
           {/* Approve / Reject Actions — only for PENDING expenses */}
           {selectedExpense?.status === 'PENDING' && (
-            <SlideoutPanelSection title="Actions">
+            <SlideoutPanelSection title={t('common.actions')}>
               <div className="space-y-3">
                 {!showRejectForm ? (
                   <div className="flex gap-3">
@@ -470,7 +470,7 @@ export default function BudgetExpensesPage() {
                       className="flex-1 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
                     >
                       {approvalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                      Approve
+                      {t('common.approve')}
                     </Button>
                     <Button
                       variant="outline"
@@ -478,7 +478,7 @@ export default function BudgetExpensesPage() {
                       className="flex-1 gap-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
                     >
                       <X className="h-4 w-4" />
-                      Reject
+                      {t('common.reject')}
                     </Button>
                   </div>
                 ) : (
@@ -486,7 +486,7 @@ export default function BudgetExpensesPage() {
                     <textarea
                       value={rejectionReason}
                       onChange={(e) => setRejectionReason(e.target.value)}
-                      placeholder="Reason for rejection (required)..."
+                      placeholder={t('budget.reasonForRejection')}
                       className="w-full p-3 text-sm border border-red-200 dark:border-red-800 rounded-lg bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                       rows={3}
                     />
@@ -497,10 +497,10 @@ export default function BudgetExpensesPage() {
                         className="flex-1 gap-2 bg-red-600 hover:bg-red-700 text-white"
                       >
                         {approvalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />}
-                        Confirm Rejection
+                        {t('budget.confirmRejection')}
                       </Button>
                       <Button variant="outline" onClick={() => { setShowRejectForm(false); setRejectionReason(''); }} className="gap-2">
-                        Cancel
+                        {t('common.cancel')}
                       </Button>
                     </div>
                     {approvalMutation.isError && (
@@ -517,19 +517,19 @@ export default function BudgetExpensesPage() {
 
           {/* Show approval result for already-processed expenses */}
           {selectedExpense?.status === 'APPROVED' && (
-            <SlideoutPanelSection title="Approval Status">
+            <SlideoutPanelSection title={t('budget.approvalStatus')}>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                 <CheckCircle2 className="h-5 w-5 text-green-600" />
-                <span className="text-sm font-medium text-green-800 dark:text-green-300">Approved</span>
+                <span className="text-sm font-medium text-green-800 dark:text-green-300">{t('budget.approved')}</span>
               </div>
             </SlideoutPanelSection>
           )}
           {selectedExpense?.status === 'REJECTED' && (
-            <SlideoutPanelSection title="Rejection Status">
+            <SlideoutPanelSection title={t('budget.rejectionStatus')}>
               <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
                 <div className="flex items-center gap-2 mb-1">
                   <AlertCircle className="h-5 w-5 text-red-600" />
-                  <span className="text-sm font-medium text-red-800 dark:text-red-300">Rejected</span>
+                  <span className="text-sm font-medium text-red-800 dark:text-red-300">{t('budget.rejected')}</span>
                 </div>
               </div>
             </SlideoutPanelSection>
@@ -545,7 +545,7 @@ export default function BudgetExpensesPage() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-white" />
-                <h2 className="text-lg font-semibold text-white">AI Receipt Analysis</h2>
+                <h2 className="text-lg font-semibold text-white">{t('budget.aiReceiptAnalysis')}</h2>
               </div>
               <Button variant="ghost" onClick={() => { setIsUploadModalOpen(false); resetUpload(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
                 <X className="h-5 w-5" />
@@ -557,13 +557,13 @@ export default function BudgetExpensesPage() {
                 <>
                   {budgets.length > 0 && (
                     <div className="mb-4">
-                      <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">Link to Budget</label>
+                      <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">{t('budget.linkToBudget')}</label>
                       <select
                         value={selectedBudgetId}
                         onChange={(e) => setSelectedBudgetId(e.target.value)}
                         className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-sm"
                       >
-                        <option value="">Select a budget...</option>
+                        <option value="">{t('budget.selectBudget')}</option>
                         {budgets.map((b: any) => (
                           <option key={b.id} value={b.id}>{b.project.name}</option>
                         ))}
@@ -592,15 +592,15 @@ export default function BudgetExpensesPage() {
                     ) : (
                       <div className="space-y-3">
                         <Upload className="h-10 w-10 mx-auto text-slate-400" />
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">Drop receipt here or click to browse</p>
-                        <p className="text-xs text-slate-500">PDF, images, Word docs — max 10MB</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">{t('budget.dropReceiptHere')}</p>
+                        <p className="text-xs text-slate-500">{t('budget.fileFormats')}</p>
                       </div>
                     )}
                   </div>
 
                   {uploadFile && (
                     <Button onClick={handleAnalyze} disabled={analyzeMutation.isPending} className="w-full mt-4 gap-2">
-                      {analyzeMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Analyze with AI</>}
+                      {analyzeMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('common.analyzing')}</> : <><Sparkles className="h-4 w-4" /> {t('budget.analyzeWithAI')}</>}
                     </Button>
                   )}
                   {analyzeMutation.isError && <p className="mt-2 text-sm text-red-600">{analyzeMutation.error.message}</p>}
@@ -610,17 +610,17 @@ export default function BudgetExpensesPage() {
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                     <Check className="h-5 w-5 text-green-600" />
                     <span className="text-sm font-medium text-green-800 dark:text-green-300">
-                      Extracted ({extractedData.confidence}% confidence)
+                      {t('budget.extracted')} ({extractedData.confidence}% {t('budget.confidence')})
                     </span>
                   </div>
 
                   <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-2">
-                    {extractedData.vendor && <div className="flex justify-between text-sm"><span className="text-slate-500">Vendor</span><span className="font-medium">{extractedData.vendor}</span></div>}
-                    {extractedData.date && <div className="flex justify-between text-sm"><span className="text-slate-500">Date</span><span className="font-medium">{extractedData.date}</span></div>}
-                    {extractedData.invoiceNumber && <div className="flex justify-between text-sm"><span className="text-slate-500">Invoice #</span><span className="font-medium">{extractedData.invoiceNumber}</span></div>}
+                    {extractedData.vendor && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('budget.vendor')}</span><span className="font-medium">{extractedData.vendor}</span></div>}
+                    {extractedData.date && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('common.date')}</span><span className="font-medium">{extractedData.date}</span></div>}
+                    {extractedData.invoiceNumber && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('budget.invoiceNumber')}</span><span className="font-medium">{extractedData.invoiceNumber}</span></div>}
                     {extractedData.total && (
                       <div className="flex justify-between text-sm border-t pt-2 mt-2">
-                        <span className="font-medium text-slate-500">Total</span>
+                        <span className="font-medium text-slate-500">{t('common.total')}</span>
                         <span className="text-lg font-bold text-[#1C8C7D]">{extractedData.currency || 'ETB'} {formatCurrency(extractedData.total)}</span>
                       </div>
                     )}
@@ -628,7 +628,7 @@ export default function BudgetExpensesPage() {
 
                   {extractedData.lineItems?.length > 0 && (
                     <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Line Items</h4>
+                      <h4 className="text-sm font-semibold">{t('budget.lineItems')}</h4>
                       {extractedData.lineItems.map((item: any, idx: number) => (
                         <div key={idx} className="flex justify-between p-2 rounded bg-slate-50 dark:bg-slate-800/50 text-sm">
                           <span>{item.description}</span>
@@ -644,11 +644,11 @@ export default function BudgetExpensesPage() {
             {extractedData && (
               <div className="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex gap-3">
                 <Button variant="outline" onClick={resetUpload} className="gap-2">
-                  <RotateCcw className="h-4 w-4" /> New Upload
+                  <RotateCcw className="h-4 w-4" /> {t('budget.newUpload')}
                 </Button>
                 {selectedBudgetId && extractedData.total && (
                   <Button onClick={handleCreateExpense} disabled={createExpenseMutation.isPending} className="flex-1 gap-2">
-                    {createExpenseMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating...</> : <><Plus className="h-4 w-4" /> Create Expense</>}
+                    {createExpenseMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('common.creating')}</> : <><Plus className="h-4 w-4" /> {t('budget.createExpense')}</>}
                   </Button>
                 )}
               </div>

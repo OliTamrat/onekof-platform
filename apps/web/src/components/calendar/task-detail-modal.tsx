@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import type { CalendarTask } from './dual-calendar';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface TaskDetailModalProps {
   task: CalendarTask;
@@ -32,6 +33,7 @@ interface TaskDetailModalProps {
 }
 
 export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetailModalProps) {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -120,7 +122,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
   };
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this task?')) {
+    if (confirm(t('errors.areYouSureDelete'))) {
       deleteMutation.mutate();
     }
   };
@@ -139,7 +141,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {isEditing ? 'Edit Task' : task.key}
+                {isEditing ? t('tasks.editTask') : task.key}
               </h2>
               <p className="text-xs text-gray-500 dark:text-[#6B7684]">{task.project.name}</p>
             </div>
@@ -152,14 +154,14 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                   onClick={() => setIsEditing(true)}
                   className="rounded-lg text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]"
                 >
-                  Edit
+                  {t('common.edit')}
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleDelete}
                   className="rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  title="Delete task"
+                  title={t('tasks.deleteTask')}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -181,7 +183,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
-              Title
+              {t('common.title')}
             </label>
             {isEditing ? (
               <input
@@ -200,7 +202,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <AlignLeft className="h-4 w-4" />
-              Description
+              {t('common.description')}
             </label>
             {isEditing ? (
               <textarea
@@ -208,11 +210,11 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
                 className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="Add a description..."
+                placeholder={t('tasks.addDescription')}
               />
             ) : (
               <p className="text-gray-600 dark:text-slate-400">
-                {task.description || 'No description'}
+                {task.description || t('common.noDescription')}
               </p>
             )}
           </div>
@@ -221,7 +223,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
-                Status
+                {t('common.status')}
               </label>
               {isEditing ? (
                 <select
@@ -229,11 +231,11 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                   className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
-                  <option value="TODO">To Do</option>
-                  <option value="IN_PROGRESS">In Progress</option>
-                  <option value="IN_REVIEW">In Review</option>
-                  <option value="DONE">Done</option>
-                  <option value="BLOCKED">Blocked</option>
+                  <option value="TODO">{t('status.todo')}</option>
+                  <option value="IN_PROGRESS">{t('status.inProgress')}</option>
+                  <option value="IN_REVIEW">{t('status.inReview')}</option>
+                  <option value="DONE">{t('status.done')}</option>
+                  <option value="BLOCKED">{t('status.blocked')}</option>
                 </select>
               ) : (
                 <span className="inline-flex rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400">
@@ -245,7 +247,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Flag className="h-4 w-4" />
-                Priority
+                {t('common.priority')}
               </label>
               {isEditing ? (
                 <select
@@ -253,10 +255,10 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
                   className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 >
-                  <option value="CRITICAL">Critical</option>
-                  <option value="HIGH">High</option>
-                  <option value="MEDIUM">Medium</option>
-                  <option value="LOW">Low</option>
+                  <option value="CRITICAL">{t('priority.critical')}</option>
+                  <option value="HIGH">{t('priority.high')}</option>
+                  <option value="MEDIUM">{t('priority.medium')}</option>
+                  <option value="LOW">{t('priority.low')}</option>
                 </select>
               ) : (
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
@@ -276,7 +278,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Start Date
+                {t('common.startDate')}
               </label>
               {isEditing ? (
                 <div className="space-y-2">
@@ -295,7 +297,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 </div>
               ) : (
                 <p className="text-gray-900 dark:text-white">
-                  {task.startDate ? new Date(task.startDate).toLocaleString() : 'Not set'}
+                  {task.startDate ? new Date(task.startDate).toLocaleString() : t('common.notSet')}
                 </p>
               )}
             </div>
@@ -303,7 +305,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                Due Date
+                {t('common.dueDate')}
               </label>
               {isEditing ? (
                 <div className="space-y-2">
@@ -322,7 +324,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 </div>
               ) : (
                 <p className="text-gray-900 dark:text-white">
-                  {task.dueDate ? new Date(task.dueDate).toLocaleString() : 'Not set'}
+                  {task.dueDate ? new Date(task.dueDate).toLocaleString() : t('common.notSet')}
                 </p>
               )}
             </div>
@@ -332,7 +334,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <User className="h-4 w-4" />
-              Assignee
+              {t('common.assignee')}
             </label>
             {isEditing ? (
               <select
@@ -340,7 +342,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
                 className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
-                <option value="">Unassigned</option>
+                <option value="">{t('common.unassigned')}</option>
                 {members.map((member: any) => (
                   <option key={member.id} value={member.id}>
                     {member.name}
@@ -359,7 +361,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 <span className="text-gray-900 dark:text-white">{task.assignee.name}</span>
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-[#6B7684]">Unassigned</p>
+              <p className="text-gray-500 dark:text-[#6B7684]">{t('common.unassigned')}</p>
             )}
           </div>
 
@@ -367,14 +369,14 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
               <Tag className="h-4 w-4" />
-              Tags
+              {t('common.tags')}
             </label>
             {isEditing ? (
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                placeholder="Enter tags separated by commas"
+                placeholder={t('tasks.enterTags')}
                 className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               />
             ) : task.tags && task.tags.length > 0 ? (
@@ -389,7 +391,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-[#6B7684]">No tags</p>
+              <p className="text-gray-500 dark:text-[#6B7684]">{t('tasks.noTags')}</p>
             )}
           </div>
 
@@ -398,18 +400,18 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2 flex items-center gap-2">
                 <Bell className="h-4 w-4" />
-                Reminder
+                {t('calendar.reminder')}
               </label>
               <select
                 value={formData.reminder}
                 onChange={(e) => setFormData({ ...formData, reminder: e.target.value })}
                 className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               >
-                <option value="none">No reminder</option>
-                <option value="15min">15 minutes before</option>
-                <option value="1hour">1 hour before</option>
-                <option value="1day">1 day before</option>
-                <option value="daily">Daily at 9 AM</option>
+                <option value="none">{t('calendar.noReminder')}</option>
+                <option value="15min">{t('calendar.minutes15Before')}</option>
+                <option value="1hour">{t('calendar.hour1Before')}</option>
+                <option value="1day">{t('calendar.day1Before')}</option>
+                <option value="daily">{t('calendar.dailyAt9')}</option>
               </select>
             </div>
           )}
@@ -423,7 +425,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 onClick={() => setIsEditing(false)}
                 className="rounded-lg text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 type="submit"
@@ -431,7 +433,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 className="rounded-lg bg-primary-500 text-white hover:bg-primary-600"
               >
                 <Save className="h-4 w-4" />
-                {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+                {updateMutation.isPending ? t('common.saving') : t('tasks.saveChanges')}
               </Button>
             </div>
           )}

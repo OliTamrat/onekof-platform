@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface QuickAddEventModalProps {
   date: Date;
@@ -22,6 +23,7 @@ interface QuickAddEventModalProps {
 }
 
 export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventModalProps) {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     title: '',
@@ -108,7 +110,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
     <SlideoutPanel
       open
       onClose={onClose}
-      title="Create Event"
+      title={t('calendar.createEvent')}
       size="sm"
       headerActions={<Plus className="h-5 w-5 text-primary-500" />}
       showFooter
@@ -120,7 +122,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             onClick={onClose}
             className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#282E33]"
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
@@ -129,7 +131,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             className="bg-primary-500 text-white hover:bg-primary-600 shadow-sm"
           >
             <Plus className="h-4 w-4" />
-            {createMutation.isPending ? 'Creating...' : 'Create Event'}
+            {createMutation.isPending ? t('common.creating') : t('calendar.createEvent')}
           </Button>
         </div>
       }
@@ -142,7 +144,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
               type="text"
               value={formData.title}
               onChange={(e) => update('title', e.target.value)}
-              placeholder="Event title"
+              placeholder={t('calendar.eventTitle')}
               className="w-full border-0 bg-transparent px-0 py-1 text-lg font-semibold text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-0"
               required
               autoFocus
@@ -155,31 +157,31 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <div>
               <label className={labelClass}>
                 <Flag className="h-3 w-3" />
-                Priority
+                {t('common.priority')}
               </label>
               <select
                 value={formData.priority}
                 onChange={(e) => update('priority', e.target.value)}
                 className={inputClass}
               >
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-                <option value="CRITICAL">Critical</option>
+                <option value="LOW">{t('priority.low')}</option>
+                <option value="MEDIUM">{t('priority.medium')}</option>
+                <option value="HIGH">{t('priority.high')}</option>
+                <option value="CRITICAL">{t('priority.critical')}</option>
               </select>
             </div>
 
             <div>
               <label className={labelClass}>
                 <User className="h-3 w-3" />
-                Assignee
+                {t('common.assignee')}
               </label>
               <select
                 value={formData.assigneeId}
                 onChange={(e) => update('assigneeId', e.target.value)}
                 className={inputClass}
               >
-                <option value="">Unassigned</option>
+                <option value="">{t('common.unassigned')}</option>
                 {members.map((member: { id: string; name: string }) => (
                   <option key={member.id} value={member.id}>{member.name}</option>
                 ))}
@@ -192,7 +194,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <div>
               <label className={labelClass}>
                 <Calendar className="h-3 w-3" />
-                Start
+                {t('calendar.start')}
               </label>
               <div className="space-y-1.5">
                 <input
@@ -213,7 +215,7 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
             <div>
               <label className={labelClass}>
                 <Clock className="h-3 w-3" />
-                Due
+                {t('calendar.due')}
               </label>
               <div className="space-y-1.5">
                 <input
@@ -237,13 +239,13 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
           <div>
             <label className={labelClass}>
               <AlignLeft className="h-3 w-3" />
-              Description
+              {t('common.description')}
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => update('description', e.target.value)}
               rows={3}
-              placeholder="Add details about this event..."
+              placeholder={t('calendar.addDetails')}
               className={inputClass}
             />
           </div>
@@ -252,13 +254,13 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
           <div>
             <label className={labelClass}>
               <Tag className="h-3 w-3" />
-              Tags
+              {t('common.tags')}
             </label>
             <input
               type="text"
               value={formData.tags}
               onChange={(e) => update('tags', e.target.value)}
-              placeholder="meeting, urgent, planning (comma-separated)"
+              placeholder={t('calendar.tagsPlaceholder')}
               className={inputClass}
             />
           </div>
@@ -267,18 +269,18 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
           <div>
             <label className={labelClass}>
               <Bell className="h-3 w-3" />
-              Reminder
+              {t('calendar.reminder')}
             </label>
             <select
               value={formData.reminder}
               onChange={(e) => update('reminder', e.target.value)}
               className={inputClass}
             >
-              <option value="none">No reminder</option>
-              <option value="15min">15 minutes before</option>
-              <option value="1hour">1 hour before</option>
-              <option value="1day">1 day before</option>
-              <option value="daily">Daily at 9 AM</option>
+              <option value="none">{t('calendar.noReminder')}</option>
+              <option value="15min">{t('calendar.minutes15Before')}</option>
+              <option value="1hour">{t('calendar.hour1Before')}</option>
+              <option value="1day">{t('calendar.day1Before')}</option>
+              <option value="daily">{t('calendar.dailyAt9')}</option>
             </select>
           </div>
         </form>

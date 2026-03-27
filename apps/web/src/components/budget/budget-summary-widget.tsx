@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/language-context';
 
 interface BudgetUtilization {
   totalBudget: number;
@@ -112,6 +113,7 @@ export function BudgetSummaryWidget({
   compact = false,
   showAlerts = true,
 }: BudgetSummaryWidgetProps) {
+  const { t } = useLanguage();
   const { data, isLoading, error } = useQuery({
     queryKey: ['budget', projectId],
     queryFn: async () => {
@@ -146,8 +148,8 @@ export function BudgetSummaryWidget({
             <DollarSign className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">Project Budget</h3>
-            <p className="text-sm text-slate-500">Loading budget data...</p>
+            <h3 className="font-semibold text-lg">{t('budget.projectBudget')}</h3>
+            <p className="text-sm text-slate-500">{t('budget.loadingBudgetData')}</p>
           </div>
         </div>
         <div className="flex items-center justify-center py-8">
@@ -167,8 +169,8 @@ export function BudgetSummaryWidget({
               <Shield className="h-6 w-6 text-slate-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Project Budget</h3>
-              <p className="text-sm text-slate-500">Restricted access</p>
+              <h3 className="font-semibold text-lg">{t('budget.projectBudget')}</h3>
+              <p className="text-sm text-slate-500">{t('budget.restrictedAccess')}</p>
             </div>
           </div>
           <div className="flex flex-col items-center justify-center py-8 text-center">
@@ -176,7 +178,7 @@ export function BudgetSummaryWidget({
               <Shield className="h-8 w-8 text-slate-400" />
             </div>
             <p className="text-sm text-slate-500">
-              You don't have permission to view budget information for this project.
+              {t('budget.noPermissionBudget')}
             </p>
           </div>
         </div>
@@ -191,8 +193,8 @@ export function BudgetSummaryWidget({
               <DollarSign className="h-6 w-6 text-slate-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Project Budget</h3>
-              <p className="text-sm text-slate-500">No budget configured</p>
+              <h3 className="font-semibold text-lg">{t('budget.projectBudget')}</h3>
+              <p className="text-sm text-slate-500">{t('budget.noBudgetConfigured')}</p>
             </div>
           </div>
           <div className="flex flex-col items-center justify-center py-8 text-center">
@@ -200,7 +202,7 @@ export function BudgetSummaryWidget({
               <DollarSign className="h-8 w-8 text-slate-400" />
             </div>
             <p className="text-sm text-slate-500 mb-4">
-              This project doesn't have a budget set up yet.
+              {t('budget.noBudgetConfiguredDesc')}
             </p>
           </div>
         </div>
@@ -211,7 +213,7 @@ export function BudgetSummaryWidget({
       <div className="rounded-lg border bg-white dark:bg-[#22272B] p-6">
         <div className="flex items-center gap-2 text-red-600">
           <AlertCircle className="h-5 w-5" />
-          <span className="text-sm">Failed to load budget</span>
+          <span className="text-sm">{t('budget.failedToLoadBudget')}</span>
         </div>
       </div>
     );
@@ -234,13 +236,13 @@ export function BudgetSummaryWidget({
             <DollarSign className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">Project Budget</h3>
-            <p className="text-sm text-slate-500">Budget is active</p>
+            <h3 className="font-semibold text-lg">{t('budget.projectBudget')}</h3>
+            <p className="text-sm text-slate-500">{t('common.active')}</p>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <p className="text-sm text-slate-500">
-            Limited budget information available at your access level.
+            {t('budget.limitedBudgetInfo')}
           </p>
         </div>
       </div>
@@ -269,8 +271,8 @@ export function BudgetSummaryWidget({
               <DollarSign className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg text-white">Project Budget</h3>
-              <p className="text-sm text-white/80">Real-time financial tracking</p>
+              <h3 className="font-semibold text-lg text-white">{t('budget.projectBudget')}</h3>
+              <p className="text-sm text-white/80">{t('budget.realTimeTracking')}</p>
             </div>
           </div>
           <div className={`px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-2`}>
@@ -312,7 +314,7 @@ export function BudgetSummaryWidget({
               <span className="text-4xl font-bold text-white">
                 {utilization.percentageUsed.toFixed(1)}%
               </span>
-              <span className="text-sm text-white/80 mt-1">utilized</span>
+              <span className="text-sm text-white/80 mt-1">{t('budget.utilized')}</span>
             </div>
           </div>
         </div>
@@ -322,7 +324,7 @@ export function BudgetSummaryWidget({
       <div className="p-6 space-y-4">
         {/* Total Budget */}
         <div className="flex items-center justify-between pb-3 border-b">
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Budget</span>
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('budget.totalBudget')}</span>
           <span className="text-lg font-bold">
             {formatCurrency(utilization.totalBudget)} <span className="text-sm font-normal text-slate-500">{budget.currency}</span>
           </span>
@@ -332,7 +334,7 @@ export function BudgetSummaryWidget({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-red-500"></div>
-            <span className="text-sm text-slate-600 dark:text-slate-400">Spent</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">{t('budget.spent')}</span>
           </div>
           <span className="font-semibold text-red-600 dark:text-red-400">
             {formatCurrency(utilization.spent)} <span className="text-xs font-normal">{budget.currency}</span>
@@ -343,7 +345,7 @@ export function BudgetSummaryWidget({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-            <span className="text-sm text-slate-600 dark:text-slate-400">Committed</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">{t('budget.committed')}</span>
           </div>
           <span className="font-semibold text-yellow-600 dark:text-yellow-400">
             {formatCurrency(utilization.committed)} <span className="text-xs font-normal">{budget.currency}</span>
@@ -354,7 +356,7 @@ export function BudgetSummaryWidget({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            <span className="text-sm text-slate-600 dark:text-slate-400">Available</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">{t('budget.available')}</span>
           </div>
           <span className="font-semibold text-green-600 dark:text-green-400">
             {formatCurrency(utilization.available)} <span className="text-xs font-normal">{budget.currency}</span>
@@ -366,19 +368,19 @@ export function BudgetSummaryWidget({
           <div className="pt-3 border-t">
             <div className="flex items-center gap-2 mb-2">
               <Zap className="h-4 w-4 text-[#1C8C7D]" />
-              <span className="text-sm font-medium">Burn Rate</span>
+              <span className="text-sm font-medium">{t('budget.burnRate')}</span>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/50">
-                <p className="text-xs text-slate-500 mb-1">Daily</p>
+                <p className="text-xs text-slate-500 mb-1">{t('budget.daily')}</p>
                 <p className="text-sm font-semibold">{formatCurrency(burnRate.dailyBurnRate)}</p>
               </div>
               <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/50">
-                <p className="text-xs text-slate-500 mb-1">Weekly</p>
+                <p className="text-xs text-slate-500 mb-1">{t('budget.weekly')}</p>
                 <p className="text-sm font-semibold">{formatCurrency(burnRate.weeklyBurnRate)}</p>
               </div>
               <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/50">
-                <p className="text-xs text-slate-500 mb-1">Monthly</p>
+                <p className="text-xs text-slate-500 mb-1">{t('budget.monthly')}</p>
                 <p className="text-sm font-semibold">{formatCurrency(burnRate.monthlyBurnRate)}</p>
               </div>
             </div>
@@ -390,7 +392,7 @@ export function BudgetSummaryWidget({
           <div className="pt-3 border-t">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="h-4 w-4 text-[#1C8C7D]" />
-              <span className="text-sm font-medium">Budget Forecast</span>
+              <span className="text-sm font-medium">{t('budget.budgetForecast')}</span>
             </div>
             <div className="p-3 rounded-lg bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50">
               <div className="flex items-start gap-2 mb-2">
@@ -400,7 +402,7 @@ export function BudgetSummaryWidget({
               {forecast.daysRemaining > 0 && (
                 <div className="flex items-center gap-2 text-xs text-slate-500 mt-2">
                   <Clock className="h-3.5 w-3.5" />
-                  <span>~{forecast.daysRemaining} days remaining at current burn rate</span>
+                  <span>{t('budget.daysRemaining').replace('{days}', String(forecast.daysRemaining))}</span>
                 </div>
               )}
             </div>
@@ -450,7 +452,7 @@ export function BudgetSummaryWidget({
             href={`/for-organizations/projects/${projectId}/budget`}
             className="flex items-center gap-1 text-[#1C8C7D] hover:underline font-medium transition-colors"
           >
-            View Details
+            {t('common.viewDetails')}
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>

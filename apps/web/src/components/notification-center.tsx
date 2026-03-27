@@ -174,7 +174,7 @@ export function NotificationCenter() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-              Notifications
+              {t('notifications.title')}
             </h3>
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
@@ -185,7 +185,7 @@ export function NotificationCenter() {
                   className="flex items-center gap-1 h-auto px-2 py-1 text-xs text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
                 >
                   <CheckCheck className="h-3.5 w-3.5" />
-                  Mark all read
+                  {t('common.done')}
                 </Button>
               )}
             </div>
@@ -203,7 +203,7 @@ export function NotificationCenter() {
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'
               )}
             >
-              All
+              {t('common.all')}
             </Button>
             <Button
               variant="ghost"
@@ -215,7 +215,7 @@ export function NotificationCenter() {
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white'
               )}
             >
-              Unread
+              {t('notifications.unread')}
               {unreadCount > 0 && (
                 <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600 dark:bg-red-900/30 dark:text-red-400">
                   {unreadCount}
@@ -230,10 +230,10 @@ export function NotificationCenter() {
               <div className="px-4 py-12 text-center">
                 <Bell className="mx-auto mb-3 h-8 w-8 text-slate-300 dark:text-slate-600" />
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                  {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
+                  {filter === 'unread' ? t('emptyStates.noNotifications') : t('emptyStates.noNotifications')}
                 </p>
                 <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                  {filter === 'unread' ? 'You\'re all caught up!' : 'We\'ll notify you when something happens.'}
+                  {filter === 'unread' ? t('emptyStates.allCaughtUp') : t('emptyStates.allCaughtUp')}
                 </p>
               </div>
             ) : (
@@ -311,7 +311,7 @@ export function NotificationCenter() {
               }}
               className="w-full h-auto rounded-lg py-1.5 text-center text-xs font-medium text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
             >
-              View all notifications
+              {t('common.viewAll')} {t('notifications.title').toLowerCase()}
             </Button>
           </div>
         </div>

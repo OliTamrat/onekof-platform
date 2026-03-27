@@ -21,53 +21,53 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
   const { t } = useLanguage();
   const plans = [
     {
-      name: 'Free',
+      name: t('pricing.free'),
       price: '$0',
-      period: 'per user / month',
-      description: 'For individuals or teams getting started',
+      period: t('pricing.perUserMonth'),
+      description: t('pricing.forTeamsGettingStarted'),
       features: [
-        'Up to 10 users',
-        'Basic project management',
-        'Ethiopian calendar & 4 languages',
-        'Community support',
+        t('pricing.upTo10Users'),
+        t('pricing.basicPM'),
+        t('pricing.ethCalendarLanguages'),
+        t('pricing.communitySupport'),
       ],
       recommended: false,
-      cta: 'Select Free',
+      cta: t('pricing.selectFree'),
       ctaVariant: 'outline' as const,
       icon: '📦',
     },
     {
-      name: 'Standard',
+      name: t('pricing.standard'),
       price: '$5',
-      period: 'per user / month',
-      description: 'For small & growing teams needing better control',
+      period: t('pricing.perUserMonth'),
+      description: t('pricing.forSmallGrowing'),
       features: [
-        'Unlimited users',
-        'Advanced project management',
-        'Project & user permissions',
-        'Advanced reporting & analytics',
-        'Priority support',
+        t('pricing.unlimitedUsers'),
+        t('pricing.advancedPM'),
+        t('pricing.projectUserPermissions'),
+        t('pricing.advancedReporting'),
+        t('pricing.prioritySupport'),
       ],
       recommended: true,
-      cta: 'Buy Standard',
+      cta: t('pricing.buyStandard'),
       ctaVariant: 'default' as const,
       icon: '🚀',
     },
     {
-      name: 'Premium',
+      name: t('pricing.premium'),
       price: '$10',
-      period: 'per user / month',
-      description: 'For teams needing AI-powered productivity',
+      period: t('pricing.perUserMonth'),
+      description: t('pricing.forAIPoweredTeams'),
       badge: trialEndsDate ? `${getDaysLeft(trialEndsDate)} DAYS LEFT` : undefined,
       features: [
-        'AI-powered task generation & summaries',
-        'Advanced planning & automation',
-        '24/7 priority support',
-        'Advanced admin controls & insights',
-        'Unlimited storage & integrations',
+        t('pricing.aiTaskGeneration'),
+        t('pricing.advancedPlanning'),
+        t('pricing.support247'),
+        t('pricing.advancedAdmin'),
+        t('pricing.unlimitedStorage'),
       ],
       recommended: false,
-      cta: 'Add payment',
+      cta: t('pricing.addPayment'),
       ctaVariant: 'outline' as const,
       icon: '👑',
     },
@@ -102,10 +102,10 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
                       {t('pricing.premiumTrialActive')}
                     </p>
                     <p className="text-sm text-slate-700 dark:text-slate-300">
-                      Your trial ends on <strong className="text-primary-600 dark:text-primary-400">{trialEndsDate}</strong>.
-                      Choose a plan to continue enjoying all features.{' '}
+                      {t('pricing.trialEndsOn')} <strong className="text-primary-600 dark:text-primary-400">{trialEndsDate}</strong>.
+                      {t('pricing.choosePlanContinue')}{' '}
                       <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 font-medium hover:underline">
-                        Learn more →
+                        {t('common.learnMore')} →
                       </a>
                     </p>
                   </div>
@@ -176,7 +176,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
                   {/* Features */}
                   <div className="mb-6">
                     <p className="text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-slate-400 mb-3">
-                      {plan.name === 'Free' ? 'What\'s included' : 'Everything in ' + (plans[plans.indexOf(plan) - 1]?.name || 'Free') + ', plus'}
+                      {plans.indexOf(plan) === 0 ? t('pricing.whatsIncluded') : t('pricing.everythingInPlus').replace('{plan}', plans[plans.indexOf(plan) - 1]?.name || '')}
                     </p>
                     <ul className="space-y-3">
                       {plan.features.map((feature, idx) => (
@@ -216,18 +216,18 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
             <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-400">
               <Users className="h-4 w-4" />
               <span>
-                Need more than 100 users?{' '}
+                {t('pricing.needMore100Users')}{' '}
                 <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 font-semibold hover:underline">
-                  Explore Enterprise
+                  {t('pricing.exploreEnterprise')}
                 </a>
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-400">
               <MessageSquare className="h-4 w-4" />
               <span>
-                Questions?{' '}
+                {t('pricing.questions')}{' '}
                 <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 font-semibold hover:underline">
-                  Contact sales
+                  {t('pricing.contactSales')}
                 </a>
               </span>
             </div>

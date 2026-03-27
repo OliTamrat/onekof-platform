@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, AlertCircle, Loader2, Mail, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const token = searchParams.get('token');
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -21,9 +23,9 @@ function VerifyEmailContent() {
       verifyEmail(token);
     } else {
       setStatus('error');
-      setMessage('Invalid verification link. Please check your email for the correct link.');
+      setMessage(t('auth.invalidVerificationLink'));
     }
-  }, [token]);
+  }, [token, t]);
 
   const verifyEmail = async (verificationToken: string) => {
     try {
@@ -31,11 +33,11 @@ function VerifyEmailContent() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to verify email');
+        throw new Error(data.error || t('auth.failedToVerifyEmail'));
       }
 
       setStatus('success');
-      setMessage('Email verified successfully! Redirecting to dashboard...');
+      setMessage(t('auth.emailVerifiedRedirecting'));
 
       // Redirect to signin after 3 seconds
       setTimeout(() => {
@@ -43,7 +45,7 @@ function VerifyEmailContent() {
       }, 3000);
     } catch (error: any) {
       setStatus('error');
-      setMessage(error.message || 'Failed to verify email. Please try again.');
+      setMessage(error.message || t('auth.failedToVerifyEmailRetry'));
     }
   };
 
@@ -61,12 +63,12 @@ function VerifyEmailContent() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send verification email');
+        throw new Error(data.error || t('auth.failedToSendVerification'));
       }
 
-      setMessage('Verification email sent! Please check your inbox.');
+      setMessage(t('auth.verificationEmailSent'));
     } catch (error: any) {
-      setMessage(error.message || 'Failed to send verification email');
+      setMessage(error.message || t('auth.failedToSendVerification'));
     } finally {
       setIsResending(false);
     }
@@ -90,38 +92,38 @@ function VerifyEmailContent() {
             <h1 className="text-4xl font-bold leading-tight text-white">
               {status === 'success' ? (
                 <>
-                  Welcome to Onekof!
+                  {t('auth.welcomeToOnekof')}
                   <br />
-                  Your Email is Verified
+                  {t('auth.yourEmailVerified')}
                 </>
               ) : (
                 <>
-                  Verify Your Email
+                  {t('auth.verifyYourEmail')}
                   <br />
-                  Almost There!
+                  {t('verifyEmail.almostThere')}
                 </>
               )}
             </h1>
             <p className="text-lg text-white/90">
               {status === 'success'
-                ? 'You can now access all features of Onekof.'
-                : 'Just one more step to get started with Onekof.'}
+                ? t('verifyEmail.canAccessAllFeatures')
+                : t('verifyEmail.oneMoreStep')}
             </p>
           </div>
 
           <div className="flex items-center gap-3 rounded-lg bg-white/10 p-4 backdrop-blur-sm">
             <Mail className="h-8 w-8 text-white" />
             <div>
-              <div className="font-semibold text-white">Check your inbox</div>
+              <div className="font-semibold text-white">{t('verifyEmail.checkYourInbox')}</div>
               <div className="text-sm text-white/70">
-                We've sent you a verification link
+                {t('verifyEmail.sentVerificationLink')}
               </div>
             </div>
           </div>
         </div>
 
         <div className="text-sm text-white/70">
-          © 2026 Onekof. Built with ❤️ in Ethiopia 🇪🇹
+          &copy; {t('auth.copyright')}
         </div>
       </div>
 
@@ -138,14 +140,14 @@ function VerifyEmailContent() {
 
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">
-              {status === 'loading' && 'Verifying your email...'}
-              {status === 'success' && 'Email verified!'}
-              {status === 'error' && 'Verification failed'}
+              {status === 'loading' && t('verifyEmail.verifyingYourEmail')}
+              {status === 'success' && t('verifyEmail.emailVerified')}
+              {status === 'error' && t('verifyEmail.verificationFailed')}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              {status === 'loading' && 'Please wait while we verify your email address.'}
-              {status === 'success' && 'Your account has been successfully verified.'}
-              {status === 'error' && 'We couldn\'t verify your email address.'}
+              {status === 'loading' && t('verifyEmail.pleaseWaitVerifying')}
+              {status === 'success' && t('verifyEmail.accountVerified')}
+              {status === 'error' && t('verifyEmail.couldNotVerify')}
             </p>
           </div>
 
@@ -154,7 +156,7 @@ function VerifyEmailContent() {
             {status === 'loading' && (
               <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-8">
                 <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0EA5E9]" />
-                <p className="text-sm text-gray-600">Verifying your email address...</p>
+                <p className="text-sm text-gray-600">{t('verifyEmail.verifyingEmailAddress')}</p>
               </div>
             )}
 
@@ -168,7 +170,7 @@ function VerifyEmailContent() {
                   href="/auth/signin"
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2"
                 >
-                  Continue to Sign In
+                  {t('auth.continueToSignIn')}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -181,7 +183,7 @@ function VerifyEmailContent() {
                   <div>
                     <p className="text-sm font-medium text-red-800">{message}</p>
                     <p className="mt-1 text-xs text-red-700">
-                      The link may have expired or already been used.
+                      {t('verifyEmail.linkExpiredOrUsed')}
                     </p>
                   </div>
                 </div>
@@ -189,12 +191,12 @@ function VerifyEmailContent() {
                 {/* Resend verification form */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
                   <h3 className="mb-4 text-sm font-semibold text-gray-900">
-                    Request a new verification link
+                    {t('verifyEmail.requestNewLink')}
                   </h3>
                   <form onSubmit={handleResendVerification} className="space-y-3">
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email address
+                        {t('verifyEmail.emailAddress')}
                       </label>
                       <div className="relative mt-1">
                         <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -217,10 +219,10 @@ function VerifyEmailContent() {
                       {isResending ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          Sending...
+                          {t('verifyEmail.sending')}
                         </>
                       ) : (
-                        'Resend Verification Email'
+                        t('verifyEmail.resendVerificationEmail')
                       )}
                     </Button>
                   </form>
@@ -231,7 +233,7 @@ function VerifyEmailContent() {
                     href="/auth/signin"
                     className="text-sm font-medium text-[#0EA5E9] hover:text-[#0284C7]"
                   >
-                    Back to Sign In
+                    {t('auth.backToSignIn')}
                   </Link>
                 </div>
               </div>
@@ -281,7 +283,7 @@ function VerifyEmailLoading() {
         </div>
 
         <div className="text-sm text-white/70">
-          © 2026 Onekof. Built with ❤️ in Ethiopia 🇪🇹
+          &copy; 2026 Onekof. Built with love in Ethiopia
         </div>
       </div>
 

@@ -21,14 +21,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/goals/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/goals/list', active: true },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/goals/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/goals/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/goals/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/goals/pages' },
+const TAB_ITEMS: { id: string; labelKey: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
+  { id: 'summary', labelKey: 'tabs.summary', icon: BarChart3, href: '/dashboard/goals/summary' },
+  { id: 'list', labelKey: 'tabs.list', icon: null, href: '/dashboard/goals/list', active: true },
+  { id: 'board', labelKey: 'tabs.board', icon: null, href: '/dashboard/goals/board' },
+  { id: 'code', labelKey: 'tabs.code', icon: Code, href: '/dashboard/goals/code' },
+  { id: 'forms', labelKey: 'teams.forms', icon: FileText, href: '/dashboard/goals/forms' },
+  { id: 'timeline', labelKey: 'tabs.timeline', icon: Clock, href: '/dashboard/goals/timeline' },
+  { id: 'pages', labelKey: 'tabs.pages', icon: Book, href: '/dashboard/goals/pages' },
 ];
 
 // Mock goals data
@@ -42,10 +42,10 @@ const GOALS = [
 ];
 
 const STATUS_OPTIONS = [
-  { value: 'all', label: 'All Status' },
-  { value: 'ON_TRACK', label: 'On Track' },
-  { value: 'AT_RISK', label: 'At Risk' },
-  { value: 'BEHIND', label: 'Behind' },
+  { value: 'all', labelKey: 'goals.allStatus' },
+  { value: 'ON_TRACK', labelKey: 'goals.onTrack' },
+  { value: 'AT_RISK', labelKey: 'goals.atRisk' },
+  { value: 'BEHIND', labelKey: 'goals.behind' },
 ];
 
 export default function GoalsListPage() {
@@ -91,11 +91,11 @@ export default function GoalsListPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Target className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Goals List</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('goals.goalsList')}</h1>
             </div>
             <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600">
               <Target className="h-4 w-4" />
-              Create Goal
+              {t('goals.createGoal')}
             </Button>
           </div>
 
@@ -114,7 +114,7 @@ export default function GoalsListPage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}
@@ -128,7 +128,7 @@ export default function GoalsListPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search goals, owners, teams..."
+                placeholder={t('goals.searchGoals')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -143,7 +143,7 @@ export default function GoalsListPage() {
               >
                 {STATUS_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.labelKey)}
                   </option>
                 ))}
               </select>
@@ -157,25 +157,25 @@ export default function GoalsListPage() {
             <thead className="bg-gray-50 dark:bg-[#22272B] sticky top-0 border-b border-gray-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Goal
+                  {t('goals.goal')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Owner
+                  {t('goals.owner')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Team
+                  {t('goals.team')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Progress
+                  {t('goals.progress')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Status
+                  {t('goals.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Due Date
+                  {t('goals.dueDate')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Cycle
+                  {t('goals.cycle')}
                 </th>
               </tr>
             </thead>
@@ -230,7 +230,7 @@ export default function GoalsListPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(goal.status)}`}>
-                      {goal.status.replace('_', ' ')}
+                      {goal.status === 'ON_TRACK' ? t('goals.onTrack') : goal.status === 'AT_RISK' ? t('goals.atRisk') : goal.status === 'BEHIND' ? t('goals.behind') : goal.status.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -251,7 +251,7 @@ export default function GoalsListPage() {
 
           {filteredGoals.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-slate-400">No goals found matching your filters</p>
+              <p className="text-gray-500 dark:text-slate-400">{t('goals.noGoalsMatchingFilters')}</p>
             </div>
           )}
         </div>
