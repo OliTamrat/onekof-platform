@@ -11,11 +11,11 @@ export default function IncidentsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Incidents"
-        description="Report, track, and resolve operational issues quickly"
+        title={t('departmentTabs.incidents')}
+        description={t('departments.incidentsDesc')}
         icon={AlertCircle}
         iconColor="#EF4444"
-        emptyMessage="No incidents reported. Create one to track an issue."
+        emptyMessage={t('emptyStates.noIncidents')}
         defaultLabels={['operations', 'incident']}
         baseHref="/dashboard/operations"
         currentTab="incidents"

@@ -11,11 +11,11 @@ export default function AnalyticsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Marketing Analytics"
-        description="Track KPIs, measure ROI, and analyze campaign performance"
+        title={t('departmentTabs.analytics')}
+        description={t('departments.analyticsDesc')}
         icon={TrendingUp}
         iconColor="#F97316"
-        emptyMessage="No analytics tasks yet. Create one to start tracking metrics."
+        emptyMessage={t('emptyStates.noAnalytics')}
         defaultLabels={['marketing', 'analytics']}
         baseHref="/dashboard/marketing"
         currentTab="analytics"

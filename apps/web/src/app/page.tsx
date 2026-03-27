@@ -93,94 +93,26 @@ function Counter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: 
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-/* ─── Data ─── */
-const showcaseTabs = [
-  {
-    id: 'budget',
-    label: 'Budget Builder',
-    icon: Wallet,
-    tagline: 'ETB-native financial tracking',
-    title: 'All-in-one Budget Builder',
-    desc: 'Track every Birr across projects. Create budgets, manage expenses, approve payments, and generate financial reports — all natively in Ethiopian Birr.',
-    features: ['Create & track budgets in ETB', 'Expense approvals with role-based workflow', 'Real-time spending vs. budget comparison', 'Export financial reports for stakeholders'],
-  },
-  {
-    id: 'ai-docs',
-    label: 'AI Documents',
-    icon: Brain,
-    tagline: 'Intelligent document processing',
-    title: 'AI-Powered Document Processor',
-    desc: 'Upload contracts, proposals, or reports and let AI extract key data, summarize content, flag risks, and auto-link to relevant project tasks.',
-    features: ['Auto-extract key terms & deadlines', 'Summarize lengthy documents in seconds', 'Flag contractual risks & obligations', 'Auto-link documents to project tasks'],
-  },
-  {
-    id: 'calendar',
-    label: 'Ethiopian Calendar',
-    icon: Calendar,
-    tagline: 'Plan in your own calendar',
-    title: 'Native Ethiopian Calendar',
-    desc: 'The only project management tool with a true Ethiopian calendar. Plan sprints in Meskerem, set deadlines in Pagume, track holidays, and toggle Gregorian seamlessly.',
-    features: ['Full 13-month Ethiopian calendar', 'Holiday markers & cultural events', 'Sprint planning with Ethiopian dates', 'Seamless Gregorian ↔ Ethiopian toggle'],
-  },
-  {
-    id: 'language',
-    label: 'Multi-language',
-    icon: Languages,
-    tagline: '4 Ethiopian languages built in',
-    title: 'Multilingual Interface',
-    desc: 'Every label, button, notification, and report is available in Amharic, Afaan Oromoo, Tigrinya, and English. Human-translated, not machine-generated.',
-    features: ['Full Amharic (አማርኛ) interface', 'Full Afaan Oromoo interface', 'Full Tigrinya (ትግርኛ) interface', 'Per-user language preferences'],
-  },
-];
-
-const plans = [
-  {
-    name: 'Free',
-    desc: 'For small teams getting started',
-    price: 0,
-    yearlyPrice: 0,
-    features: ['Up to 10 users', '3 projects', 'Kanban & list views', 'Ethiopian calendar', '4 languages', 'Basic reports'],
-    cta: 'Get started free',
-    highlighted: false,
-  },
-  {
-    name: 'Pro',
-    desc: 'For growing teams that need more',
-    price: 2500,
-    yearlyPrice: 1999,
-    features: ['Unlimited users', 'Unlimited projects', 'All views + Timeline', 'Automations & workflows', 'Budget tracking (ETB)', 'Goals & OKRs', 'AI Document Processor', 'Advanced analytics', 'Priority support'],
-    cta: 'Start 14-day free trial',
-    highlighted: true,
-  },
-  {
-    name: 'Enterprise',
-    desc: 'For large organizations',
-    price: null,
-    yearlyPrice: null,
-    features: ['Everything in Pro', 'SSO & SAML', 'Advanced security & audit logs', 'Custom integrations', 'Dedicated account manager', 'SLA guarantee', 'On-premise deployment', 'Custom training & onboarding'],
-    cta: 'Contact sales',
-    highlighted: false,
-  },
-];
+/* ─── Data (static parts only — translated labels are inside component) ─── */
 
 /* ─── Sub-components for product showcases ─── */
-function BudgetMockup() {
+function BudgetMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-[13px] font-medium text-white/70">Project Budget — Q2 2017 E.C.</h4>
-        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">On Track</span>
+        <h4 className="text-[13px] font-medium text-white/70">{t('landing.mockup.projectBudget')}</h4>
+        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">{t('landing.mockup.onTrack')}</span>
       </div>
       <div className="space-y-3">
         {[
-          { label: 'Development', spent: 245000, budget: 400000, pct: 61 },
-          { label: 'Design & UX', spent: 85000, budget: 120000, pct: 71 },
-          { label: 'Infrastructure', spent: 32000, budget: 80000, pct: 40 },
-          { label: 'Marketing', spent: 15000, budget: 50000, pct: 30 },
+          { key: 'landing.mockup.development', spent: 245000, budget: 400000, pct: 61 },
+          { key: 'landing.mockup.designUx', spent: 85000, budget: 120000, pct: 71 },
+          { key: 'landing.mockup.infrastructure', spent: 32000, budget: 80000, pct: 40 },
+          { key: 'landing.mockup.marketing', spent: 15000, budget: 50000, pct: 30 },
         ].map((item) => (
-          <div key={item.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+          <div key={item.key} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[12px] font-medium text-white/60">{item.label}</span>
+              <span className="text-[12px] font-medium text-white/60">{t(item.key)}</span>
               <span className="text-[11px] text-white/50">
                 {item.spent.toLocaleString()} / {item.budget.toLocaleString()} ETB
               </span>
@@ -198,11 +130,11 @@ function BudgetMockup() {
       </div>
       <div className="flex items-center justify-between rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
         <div>
-          <p className="text-[11px] text-white/60">Total Spent</p>
+          <p className="text-[11px] text-white/60">{t('landing.mockup.totalSpent')}</p>
           <p className="text-[16px] font-semibold text-white">377,000 ETB</p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] text-white/60">Remaining</p>
+          <p className="text-[11px] text-white/60">{t('landing.mockup.remaining')}</p>
           <p className="text-[16px] font-semibold text-emerald-400">273,000 ETB</p>
         </div>
       </div>
@@ -210,7 +142,7 @@ function BudgetMockup() {
   );
 }
 
-function AIDocsMockup() {
+function AIDocsMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
@@ -219,32 +151,32 @@ function AIDocsMockup() {
         </div>
         <div className="flex-1">
           <p className="text-[12px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
-          <p className="text-[11px] text-white/50">Uploaded 2 minutes ago • 24 pages</p>
+          <p className="text-[11px] text-white/50">{t('landing.mockup.uploadedAgo')}</p>
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-primary-500/10 px-2 py-1">
           <Sparkles className="h-3 w-3 text-primary-400" />
-          <span className="text-[10px] font-medium text-primary-400">Processing</span>
+          <span className="text-[10px] font-medium text-primary-400">{t('landing.mockup.processing')}</span>
         </div>
       </div>
       <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
           <Wand2 className="h-3.5 w-3.5 text-primary-400" />
-          <span className="text-[12px] font-medium text-white/60">AI Summary</span>
+          <span className="text-[12px] font-medium text-white/60">{t('landing.mockup.aiSummary')}</span>
         </div>
         <p className="text-[12px] leading-relaxed text-white/60">
-          Service agreement for cloud infrastructure (Deadline: Sene 15, 2017). Key: 24-month term, auto-renewal, 2.4M ETB annual value. 3 risk flags identified.
+          {t('landing.mockup.aiSummaryText')}
         </p>
       </div>
       <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
         {[
-          { label: 'Deadlines', value: '4', icon: Clock },
-          { label: 'Risk Flags', value: '3', icon: Shield },
-          { label: 'Tasks Linked', value: '7', icon: ListChecks },
+          { key: 'landing.mockup.deadlines', value: '4', icon: Clock },
+          { key: 'landing.mockup.riskFlags', value: '3', icon: Shield },
+          { key: 'landing.mockup.tasksLinked', value: '7', icon: ListChecks },
         ].map((item) => (
-          <div key={item.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2 text-center sm:p-2.5">
+          <div key={item.key} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2 text-center sm:p-2.5">
             <item.icon className="mx-auto mb-1 h-3.5 w-3.5 text-white/50" />
             <p className="text-[14px] font-semibold text-white/70">{item.value}</p>
-            <p className="text-[10px] text-white/50">{item.label}</p>
+            <p className="text-[10px] text-white/50">{t(item.key)}</p>
           </div>
         ))}
       </div>
@@ -252,7 +184,7 @@ function AIDocsMockup() {
   );
 }
 
-function CalendarMockup() {
+function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -309,7 +241,7 @@ function CalendarMockup() {
   );
 }
 
-function LanguageMockup() {
+function LanguageMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -331,13 +263,13 @@ function LanguageMockup() {
               <p className="text-[11px] text-white/50">{item.sample}</p>
             </div>
             {i === 0 && (
-              <span className="rounded-full bg-primary-500/20 px-2 py-0.5 text-[10px] font-medium text-primary-400">Active</span>
+              <span className="rounded-full bg-primary-500/20 px-2 py-0.5 text-[10px] font-medium text-primary-400">{t('landing.mockup.active')}</span>
             )}
           </div>
         ))}
       </div>
       <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-        <p className="mb-2 text-[11px] font-medium text-white/60">UI Preview — አማርኛ</p>
+        <p className="mb-2 text-[11px] font-medium text-white/60">{t('landing.mockup.uiPreview')}</p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <LayoutDashboard className="h-3.5 w-3.5 text-white/50" />
@@ -366,8 +298,77 @@ export default function HomePage() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('yearly');
   const [heroTyped, setHeroTyped] = useState('');
 
-  const heroWords = ['ship faster', 'track budgets', 'plan sprints', 'collaborate'];
+  const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
+
+  const showcaseTabs = [
+    {
+      id: 'budget',
+      label: t('landing.showcase.budget.label'),
+      icon: Wallet,
+      tagline: t('landing.showcase.budget.tagline'),
+      title: t('landing.showcase.budget.title'),
+      desc: t('landing.showcase.budget.desc'),
+      features: [t('landing.showcase.budget.feature1'), t('landing.showcase.budget.feature2'), t('landing.showcase.budget.feature3'), t('landing.showcase.budget.feature4')],
+    },
+    {
+      id: 'ai-docs',
+      label: t('landing.showcase.aiDocs.label'),
+      icon: Brain,
+      tagline: t('landing.showcase.aiDocs.tagline'),
+      title: t('landing.showcase.aiDocs.title'),
+      desc: t('landing.showcase.aiDocs.desc'),
+      features: [t('landing.showcase.aiDocs.feature1'), t('landing.showcase.aiDocs.feature2'), t('landing.showcase.aiDocs.feature3'), t('landing.showcase.aiDocs.feature4')],
+    },
+    {
+      id: 'calendar',
+      label: t('landing.showcase.calendar.label'),
+      icon: Calendar,
+      tagline: t('landing.showcase.calendar.tagline'),
+      title: t('landing.showcase.calendar.title'),
+      desc: t('landing.showcase.calendar.desc'),
+      features: [t('landing.showcase.calendar.feature1'), t('landing.showcase.calendar.feature2'), t('landing.showcase.calendar.feature3'), t('landing.showcase.calendar.feature4')],
+    },
+    {
+      id: 'language',
+      label: t('landing.showcase.language.label'),
+      icon: Languages,
+      tagline: t('landing.showcase.language.tagline'),
+      title: t('landing.showcase.language.title'),
+      desc: t('landing.showcase.language.desc'),
+      features: [t('landing.showcase.language.feature1'), t('landing.showcase.language.feature2'), t('landing.showcase.language.feature3'), t('landing.showcase.language.feature4')],
+    },
+  ];
+
+  const plans = [
+    {
+      name: t('landing.pricing.free.name'),
+      desc: t('landing.pricing.free.desc'),
+      price: 0,
+      yearlyPrice: 0,
+      features: [t('landing.pricing.free.feature1'), t('landing.pricing.free.feature2'), t('landing.pricing.free.feature3'), t('landing.pricing.free.feature4'), t('landing.pricing.free.feature5'), t('landing.pricing.free.feature6')],
+      cta: t('landing.pricing.free.cta'),
+      highlighted: false,
+    },
+    {
+      name: t('landing.pricing.pro.name'),
+      desc: t('landing.pricing.pro.desc'),
+      price: 2500,
+      yearlyPrice: 1999,
+      features: [t('landing.pricing.pro.feature1'), t('landing.pricing.pro.feature2'), t('landing.pricing.pro.feature3'), t('landing.pricing.pro.feature4'), t('landing.pricing.pro.feature5'), t('landing.pricing.pro.feature6'), t('landing.pricing.pro.feature7'), t('landing.pricing.pro.feature8'), t('landing.pricing.pro.feature9')],
+      cta: t('landing.pricing.pro.cta'),
+      highlighted: true,
+    },
+    {
+      name: t('landing.pricing.enterprise.name'),
+      desc: t('landing.pricing.enterprise.desc'),
+      price: null,
+      yearlyPrice: null,
+      features: [t('landing.pricing.enterprise.feature1'), t('landing.pricing.enterprise.feature2'), t('landing.pricing.enterprise.feature3'), t('landing.pricing.enterprise.feature4'), t('landing.pricing.enterprise.feature5'), t('landing.pricing.enterprise.feature6'), t('landing.pricing.enterprise.feature7'), t('landing.pricing.enterprise.feature8')],
+      cta: t('landing.pricing.enterprise.cta'),
+      highlighted: false,
+    },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -394,18 +395,18 @@ export default function HomePage() {
   }, [heroWordIndex]);
 
   useEffect(() => {
-    const timer = setInterval(() => setActiveShowcase((t) => (t + 1) % showcaseTabs.length), 8000);
+    const timer = setInterval(() => setActiveShowcase((prev) => (prev + 1) % showcaseTabs.length), 8000);
     return () => clearInterval(timer);
   }, []);
 
   const navLinks = [
-    { label: 'Features', href: '#features' },
-    { label: 'Product', href: '#product' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'About', href: '#about' },
+    { label: t('landing.nav.features'), href: '#features' },
+    { label: t('landing.nav.product'), href: '#product' },
+    { label: t('landing.nav.pricing'), href: '#pricing' },
+    { label: t('landing.nav.about'), href: '#about' },
   ];
 
-  const showcaseMockups = [<BudgetMockup />, <AIDocsMockup />, <CalendarMockup />, <LanguageMockup />];
+  const showcaseMockups = [<BudgetMockup t={t} />, <AIDocsMockup t={t} />, <CalendarMockup t={t} />, <LanguageMockup t={t} />];
 
   return (
     <div className="min-h-screen bg-[#1B1F23] font-sans antialiased text-white selection:bg-primary-500/20">
@@ -511,14 +512,14 @@ export default function HomePage() {
                 <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
                 <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
               </div>
-              <span className="text-[13px] text-white/50">The #1 project management platform built for Ethiopia</span>
+              <span className="text-[13px] text-white/50">{t('landing.hero.badge')}</span>
               <ArrowRight className="h-3 w-3 text-white/50" />
             </div>
           </Reveal>
 
           <Reveal delay={100}>
             <h1 className="mx-auto max-w-4xl font-display text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
-              One platform to
+              {t('landing.hero.headingPrefix')}
               <br />
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-200 bg-clip-text text-transparent">
@@ -542,7 +543,7 @@ export default function HomePage() {
                 className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-7 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98]"
               >
                 <span className="relative z-10 flex items-center gap-2.5">
-                  Get started — it&apos;s free
+                  {t('landing.hero.getStartedFree')}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -552,14 +553,14 @@ export default function HomePage() {
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
               >
                 <Play className="h-3.5 w-3.5 text-primary-400" />
-                Watch demo
+                {t('landing.hero.watchDemo')}
               </a>
             </div>
           </Reveal>
 
           <Reveal delay={400}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-              {['Free forever for small teams', 'No credit card required', 'Setup in 2 minutes'].map((text) => (
+              {[t('landing.hero.freeForever'), t('landing.hero.noCreditCard'), t('landing.hero.setupMinutes')].map((text) => (
                 <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/50">
                   <Check className="h-3.5 w-3.5 text-white/40" />
                   {text}
@@ -630,10 +631,10 @@ export default function HomePage() {
                     </div>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5">
                       {[
-                        { label: 'Board', active: true },
-                        { label: 'List', active: false },
-                        { label: 'Timeline', active: false },
-                        { label: 'Calendar', active: false },
+                        { label: t('landing.preview.board'), active: true },
+                        { label: t('landing.preview.list'), active: false },
+                        { label: t('landing.preview.timeline'), active: false },
+                        { label: t('landing.preview.calendar'), active: false },
                       ].map((v) => (
                         <div
                           key={v.label}
@@ -650,10 +651,10 @@ export default function HomePage() {
                   {/* Stats row */}
                   <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
                     {[
-                      { label: 'Total Tasks', value: '34', color: 'text-white/70' },
-                      { label: 'In Progress', value: '8', color: 'text-primary-400' },
-                      { label: 'Completed', value: '18', color: 'text-emerald-400' },
-                      { label: 'Budget Used', value: '58%', color: 'text-amber-400' },
+                      { label: t('landing.preview.totalTasks'), value: '34', color: 'text-white/70' },
+                      { label: t('landing.preview.inProgress'), value: '8', color: 'text-primary-400' },
+                      { label: t('landing.preview.completed'), value: '18', color: 'text-emerald-400' },
+                      { label: t('landing.preview.budgetUsed'), value: '58%', color: 'text-amber-400' },
                     ].map((s) => (
                       <div key={s.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
                         <p className="text-[10px] text-white/50">{s.label}</p>
@@ -665,18 +666,18 @@ export default function HomePage() {
                   {/* Kanban */}
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[
-                      { label: 'Backlog', count: 5, dot: 'bg-white/20', cards: [
+                      { label: t('landing.preview.backlog'), count: 5, dot: 'bg-white/20', cards: [
                         { title: 'Setup CI/CD pipeline', tag: 'DevOps', priority: 'medium' },
                         { title: 'Design system tokens', tag: 'Design', priority: 'low' },
                       ]},
-                      { label: 'In Progress', count: 3, dot: 'bg-primary-500', cards: [
+                      { label: t('landing.preview.inProgress'), count: 3, dot: 'bg-primary-500', cards: [
                         { title: 'User auth flow', tag: 'Backend', priority: 'high' },
                         { title: 'Dashboard widgets', tag: 'Frontend', priority: 'medium' },
                       ]},
-                      { label: 'In Review', count: 2, dot: 'bg-amber-500', cards: [
+                      { label: t('landing.preview.inReview'), count: 2, dot: 'bg-amber-500', cards: [
                         { title: 'Budget module UI', tag: 'Frontend', priority: 'high' },
                       ]},
-                      { label: 'Done', count: 8, dot: 'bg-emerald-500', cards: [
+                      { label: t('landing.preview.done'), count: 8, dot: 'bg-emerald-500', cards: [
                         { title: 'DB schema migration', tag: 'Backend', priority: 'high' },
                         { title: 'Login & signup pages', tag: 'Frontend', priority: 'high' },
                       ]},
@@ -713,7 +714,7 @@ export default function HomePage() {
       {/* ═══ TRUSTED BY ═══ */}
       <section className="border-y border-white/[0.06] py-14">
         <div className="mx-auto max-w-6xl px-6">
-          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/40">Trusted by teams across Ethiopia</p>
+          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/40">{t('landing.trustedBy')}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-14">
             {[
               'TechEth Solutions', 'Addis Development', 'BuildEth Construction',
@@ -732,15 +733,14 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-20">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Why Onekof</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.whyOnekof.label')}</p>
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
-                Foreign tools weren&apos;t built for you.
+                {t('landing.whyOnekof.heading1')}
                 <br />
-                <span className="text-white/55">We are.</span>
+                <span className="text-white/55">{t('landing.whyOnekof.heading2')}</span>
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/50">
-                Jira doesn&apos;t know about Pagume. Asana doesn&apos;t speak Amharic.
-                Trello can&apos;t track ETB. Onekof does all of this — and more.
+                {t('landing.whyOnekof.subtitle')}
               </p>
             </div>
           </Reveal>
@@ -749,38 +749,38 @@ export default function HomePage() {
             {[
               {
                 icon: Calendar,
-                title: 'Ethiopian Calendar',
-                desc: 'Native 13-month calendar with holidays, Amharic month names, and sprint planning.',
+                title: t('landing.whyOnekof.ethiopianCalendar'),
+                desc: t('landing.whyOnekof.ethiopianCalendarDesc'),
                 gradient: 'from-primary-500/20 to-primary-700/20',
               },
               {
                 icon: Languages,
-                title: '4 Languages Built In',
-                desc: 'Amharic, Afaan Oromoo, Tigrinya, and English. Human-translated, not machine-generated.',
+                title: t('landing.whyOnekof.fourLanguages'),
+                desc: t('landing.whyOnekof.fourLanguagesDesc'),
                 gradient: 'from-violet-500/20 to-pink-500/20',
               },
               {
                 icon: Wallet,
-                title: 'ETB Budget Tracking',
-                desc: 'Track every Birr. Create budgets, approve expenses, and generate financial reports.',
+                title: t('landing.whyOnekof.etbBudgetTracking'),
+                desc: t('landing.whyOnekof.etbBudgetTrackingDesc'),
                 gradient: 'from-emerald-500/20 to-teal-500/20',
               },
               {
                 icon: Brain,
-                title: 'AI Document Processor',
-                desc: 'Upload contracts & proposals. AI extracts deadlines, flags risks, links to tasks.',
+                title: t('landing.whyOnekof.aiDocProcessor'),
+                desc: t('landing.whyOnekof.aiDocProcessorDesc'),
                 gradient: 'from-amber-500/20 to-orange-500/20',
               },
               {
                 icon: Workflow,
-                title: 'Custom Workflows',
-                desc: 'Automation builder for Ethiopian organizations — government, private, NGO, construction.',
+                title: t('landing.whyOnekof.customWorkflows'),
+                desc: t('landing.whyOnekof.customWorkflowsDesc'),
                 gradient: 'from-cyan-500/20 to-blue-500/20',
               },
               {
                 icon: Shield,
-                title: 'Enterprise Security',
-                desc: 'RBAC, 2FA, audit logs, session management, and SOC 2 ready infrastructure.',
+                title: t('landing.whyOnekof.enterpriseSecurity'),
+                desc: t('landing.whyOnekof.enterpriseSecurityDesc'),
                 gradient: 'from-slate-500/20 to-gray-500/20',
               },
             ].map((feature, i) => (
@@ -806,12 +806,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Product</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.showcase.label')}</p>
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
-                See the real Onekof experience
+                {t('landing.showcase.heading')}
               </h2>
               <p className="mt-4 text-[16px] text-white/50">
-                Not mockups — these are real features powering Ethiopian teams today.
+                {t('landing.showcase.subtitle')}
               </p>
             </div>
           </Reveal>
@@ -875,7 +875,7 @@ export default function HomePage() {
                     href="/auth/signup"
                     className="group inline-flex items-center gap-2 text-[14px] font-medium text-primary-400 transition-colors hover:text-primary-300"
                   >
-                    Try it free
+                    {t('landing.showcase.tryItFree')}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </div>
@@ -896,26 +896,26 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Features</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.features.label')}</p>
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                Everything your team needs.
+                {t('landing.features.heading1')}
                 <br />
-                <span className="text-white/55">Nothing it doesn&apos;t.</span>
+                <span className="text-white/55">{t('landing.features.heading2')}</span>
               </h2>
             </div>
           </Reveal>
 
           <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Kanban, title: 'Kanban Boards', desc: 'Drag-and-drop task management with custom columns, WIP limits, and swimlanes.' },
-              { icon: GanttChart, title: 'Timeline & Gantt', desc: 'Visualize project schedules, dependencies, and critical paths across teams.' },
-              { icon: ListChecks, title: 'List & Table Views', desc: 'Spreadsheet-style task management with filters, groups, and bulk actions.' },
-              { icon: Target, title: 'Goals & OKRs', desc: 'Set objectives, track key results, and align every project to org goals.' },
-              { icon: Workflow, title: 'Automations', desc: 'Build if-then workflows: auto-assign, notify, update statuses on events.' },
-              { icon: BarChart3, title: 'Analytics & Reports', desc: 'Velocity, burndown, team performance, and custom dashboards with live data.' },
-              { icon: Zap, title: 'Real-time Collaboration', desc: 'Live cursors, instant updates, real-time comments, and push notifications.' },
-              { icon: FileText, title: 'Documents & Wiki', desc: 'Rich-text docs, knowledge base, and file management within projects.' },
-              { icon: Shield, title: 'Enterprise Security', desc: 'RBAC, 2FA, SSO, session management, audit logs. SOC 2 ready.' },
+              { icon: Kanban, title: t('landing.features.kanban'), desc: t('landing.features.kanbanDesc') },
+              { icon: GanttChart, title: t('landing.features.timeline'), desc: t('landing.features.timelineDesc') },
+              { icon: ListChecks, title: t('landing.features.listTable'), desc: t('landing.features.listTableDesc') },
+              { icon: Target, title: t('landing.features.goals'), desc: t('landing.features.goalsDesc') },
+              { icon: Workflow, title: t('landing.features.automations'), desc: t('landing.features.automationsDesc') },
+              { icon: BarChart3, title: t('landing.features.analytics'), desc: t('landing.features.analyticsDesc') },
+              { icon: Zap, title: t('landing.features.realtime'), desc: t('landing.features.realtimeDesc') },
+              { icon: FileText, title: t('landing.features.docsWiki'), desc: t('landing.features.docsWikiDesc') },
+              { icon: Shield, title: t('landing.features.security'), desc: t('landing.features.securityDesc') },
             ].map((feature, i) => (
               <Reveal key={feature.title} delay={i * 40}>
                 <div className="group border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7">
@@ -934,10 +934,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-2 divide-x divide-white/[0.06] lg:grid-cols-4">
             {[
-              { value: 500, suffix: '+', label: 'Teams onboarded', icon: Building2 },
-              { value: 40, suffix: '%', label: 'Faster delivery', icon: TrendingUp },
-              { value: 99, suffix: '.9%', label: 'Platform uptime', icon: Timer },
-              { value: 4, suffix: '', label: 'Languages supported', icon: Globe },
+              { value: 500, suffix: '+', label: t('landing.stats.teamsOnboarded'), icon: Building2 },
+              { value: 40, suffix: '%', label: t('landing.stats.fasterDelivery'), icon: TrendingUp },
+              { value: 99, suffix: '.9%', label: t('landing.stats.platformUptime'), icon: Timer },
+              { value: 4, suffix: '', label: t('landing.stats.languagesSupported'), icon: Globe },
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
@@ -958,11 +958,11 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-16">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Testimonials</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.testimonials.label')}</p>
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                Loved by teams who&apos;ve
+                {t('landing.testimonials.heading1')}
                 <br />
-                <span className="text-white/55">tried everything else</span>
+                <span className="text-white/55">{t('landing.testimonials.heading2')}</span>
               </h2>
             </div>
           </Reveal>
@@ -1005,8 +1005,8 @@ export default function HomePage() {
                 role: 'HR Director, NileTech Systems',
                 gradient: 'from-rose-500 to-pink-500',
               },
-            ].map((t, i) => (
-              <Reveal key={t.name} delay={i * 60}>
+            ].map((testimonial, i) => (
+              <Reveal key={testimonial.name} delay={i * 60}>
                 <div className="group h-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
                   <div className="mb-4 flex gap-1">
                     {Array.from({ length: 5 }).map((_, j) => (
@@ -1014,15 +1014,15 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="mb-6 text-[14px] leading-relaxed text-white/60">
-                    &ldquo;{t.quote}&rdquo;
+                    &ldquo;{testimonial.quote}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${t.gradient} text-[11px] font-bold text-white shadow-sm`}>
-                      {t.name.split(' ').map(n => n[0]).join('')}
+                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
+                      {testimonial.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <p className="text-[13px] font-medium text-white/70">{t.name}</p>
-                      <p className="text-[12px] text-white/50">{t.role}</p>
+                      <p className="text-[13px] font-medium text-white/70">{testimonial.name}</p>
+                      <p className="text-[12px] text-white/50">{testimonial.role}</p>
                     </div>
                   </div>
                 </div>
@@ -1037,12 +1037,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">Pricing</p>
+              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.pricing.label')}</p>
               <h2 className="mb-4 font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                Simple pricing in Ethiopian Birr
+                {t('landing.pricing.heading')}
               </h2>
               <p className="text-[16px] text-white/50">
-                Start free. Upgrade when you&apos;re ready. Pay in ETB — no forex hassle.
+                {t('landing.pricing.subtitle')}
               </p>
 
               <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1">
@@ -1052,7 +1052,7 @@ export default function HomePage() {
                     billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
-                  Monthly
+                  {t('landing.pricing.monthly')}
                 </Button>
                 <Button
                   onClick={() => setBilling('yearly')}
@@ -1060,8 +1060,8 @@ export default function HomePage() {
                     billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
                   }`}
                 >
-                  Yearly
-                  {billing !== 'yearly' && <span className="ml-1.5 text-[11px] font-semibold text-emerald-400">Save 20%</span>}
+                  {t('landing.pricing.yearly')}
+                  {billing !== 'yearly' && <span className="ml-1.5 text-[11px] font-semibold text-emerald-400">{t('landing.pricing.save20')}</span>}
                 </Button>
               </div>
             </div>
@@ -1081,7 +1081,7 @@ export default function HomePage() {
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                       <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 px-3.5 py-1 text-[11px] font-medium shadow-xl">
                         <Crown className="h-3 w-3" />
-                        Most Popular
+                        {t('landing.pricing.mostPopular')}
                       </div>
                     </div>
                   )}
@@ -1097,18 +1097,18 @@ export default function HomePage() {
                         <span className="font-display text-4xl font-semibold tracking-tight">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
-                        <span className="text-[13px] text-white/50">ETB/user/mo</span>
+                        <span className="text-[13px] text-white/50">{t('landing.pricing.etbPerUserMo')}</span>
                       </div>
                     ) : (
-                      <div className="font-display text-4xl font-semibold tracking-tight">Custom</div>
+                      <div className="font-display text-4xl font-semibold tracking-tight">{t('landing.pricing.custom')}</div>
                     )}
                     {plan.price === 0 && (
-                      <p className="mt-1.5 text-[12px] text-white/40">Free forever, no card needed</p>
+                      <p className="mt-1.5 text-[12px] text-white/40">{t('landing.pricing.freeForeverNoCard')}</p>
                     )}
                   </div>
 
                   <Link
-                    href={plan.name === 'Enterprise' ? '#contact' : '/auth/signup'}
+                    href={plan.price === null ? '#contact' : '/auth/signup'}
                     className={`mb-7 block rounded-xl py-3 text-center text-[13px] font-medium transition-all duration-300 ${
                       plan.highlighted
                         ? 'bg-gradient-to-r from-primary-500 to-primary-700 text-white shadow-xl hover:shadow-xl hover:brightness-110'
@@ -1138,20 +1138,20 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <h3 className="mb-8 text-center font-display text-xl font-semibold tracking-[-0.03em] sm:mb-12 sm:text-2xl">
-              Why teams switch to Onekof
+              {t('landing.comparison.heading')}
             </h3>
           </Reveal>
 
           <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
             {[
-              { from: 'Jira', reasons: ['No Ethiopian calendar support', 'English-only interface', 'Overly complex for most teams', 'No ETB budget tracking'] },
-              { from: 'Trello', reasons: ['No budget or expense tracking', 'Limited reporting & analytics', 'No workflow automation', 'No document processing'] },
-              { from: 'Spreadsheets', reasons: ['No real-time collaboration', 'No task dependencies', 'Manual status tracking', 'No security or audit logs'] },
+              { from: 'Jira', reasons: [t('landing.comparison.jira.reason1'), t('landing.comparison.jira.reason2'), t('landing.comparison.jira.reason3'), t('landing.comparison.jira.reason4')] },
+              { from: 'Trello', reasons: [t('landing.comparison.trello.reason1'), t('landing.comparison.trello.reason2'), t('landing.comparison.trello.reason3'), t('landing.comparison.trello.reason4')] },
+              { from: t('landing.comparison.spreadsheets.name'), reasons: [t('landing.comparison.spreadsheets.reason1'), t('landing.comparison.spreadsheets.reason2'), t('landing.comparison.spreadsheets.reason3'), t('landing.comparison.spreadsheets.reason4')] },
             ].map((item, i) => (
               <Reveal key={item.from} delay={i * 80}>
                 <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
                   <p className="mb-5 text-[14px] font-medium">
-                    Switching from <span className="text-primary-400">{item.from}</span>?
+                    {t('landing.comparison.switchingFrom')} <span className="text-primary-400">{item.from}</span>?
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
@@ -1164,7 +1164,7 @@ export default function HomePage() {
                   <div className="mt-5 border-t border-white/[0.06] pt-5">
                     <p className="flex items-center gap-2 text-[13px] font-medium text-emerald-400">
                       <Check className="h-4 w-4" />
-                      Onekof handles all of this
+                      {t('landing.comparison.onekofHandlesAll')}
                     </p>
                   </div>
                 </div>
@@ -1183,16 +1183,15 @@ export default function HomePage() {
           <Reveal>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
               <Sparkles className="h-3.5 w-3.5 text-primary-400" />
-              <span className="text-[13px] text-white/60">Join 500+ Ethiopian teams</span>
+              <span className="text-[13px] text-white/60">{t('landing.cta.badge')}</span>
             </div>
             <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-              Ready to transform how
+              {t('landing.cta.heading1')}
               <br />
-              your team works?
+              {t('landing.cta.heading2')}
             </h2>
             <p className="mt-5 text-[17px] leading-relaxed text-white/50">
-              Start for free today. No credit card. No foreign currency.
-              Just the tools your team actually needs.
+              {t('landing.cta.subtitle')}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -1200,7 +1199,7 @@ export default function HomePage() {
                 className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-6 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
               >
                 <span className="relative z-10 flex items-center gap-2.5">
-                  Get started — it&apos;s free
+                  {t('landing.cta.getStartedFree')}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </Link>
@@ -1208,7 +1207,7 @@ export default function HomePage() {
                 href="mailto:hello@onekof.com"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/60 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
               >
-                Talk to sales
+                {t('landing.cta.talkToSales')}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </a>
             </div>
@@ -1228,8 +1227,7 @@ export default function HomePage() {
                 <span className="text-[15px] font-semibold">Onekof</span>
               </div>
               <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/50">
-                Modern project management built for Ethiopian teams. Native calendar,
-                local languages, ETB budgets, and workflows designed for how you actually work.
+                {t('landing.footer.description')}
               </p>
               <div className="mt-6 flex gap-3">
                 {[
@@ -1249,9 +1247,9 @@ export default function HomePage() {
             </div>
 
             {[
-              { title: 'Product', links: ['Features', 'Pricing', 'Integrations', 'Changelog', 'Roadmap'] },
-              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press', 'Contact'] },
-              { title: 'Resources', links: ['Documentation', 'Help Center', 'API Reference', 'Community', 'Status'] },
+              { title: t('landing.footer.productCol'), links: [t('landing.footer.footerLinks.features'), t('landing.footer.footerLinks.pricing'), t('landing.footer.footerLinks.integrations'), t('landing.footer.footerLinks.changelog'), t('landing.footer.footerLinks.roadmap')] },
+              { title: t('landing.footer.companyCol'), links: [t('landing.footer.footerLinks.about'), t('landing.footer.footerLinks.blog'), t('landing.footer.footerLinks.careers'), t('landing.footer.footerLinks.press'), t('landing.footer.footerLinks.contact')] },
+              { title: t('landing.footer.resourcesCol'), links: [t('landing.footer.footerLinks.documentation'), t('landing.footer.footerLinks.helpCenter'), t('landing.footer.footerLinks.apiReference'), t('landing.footer.footerLinks.community'), t('landing.footer.footerLinks.status')] },
             ].map((col) => (
               <div key={col.title}>
                 <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40">{col.title}</h4>
@@ -1268,10 +1266,10 @@ export default function HomePage() {
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
             <p className="text-[12px] text-white/40">
-              &copy; {new Date().getFullYear()} Onekof. All rights reserved.
+              &copy; {new Date().getFullYear()} Onekof. {t('landing.footer.allRightsReserved')}
             </p>
             <div className="flex gap-6">
-              {['Privacy', 'Terms', 'Cookies'].map((link) => (
+              {[t('landing.footer.privacy'), t('landing.footer.terms'), t('landing.footer.cookies')].map((link) => (
                 <a key={link} href="#" className="text-[12px] text-white/40 transition-colors hover:text-white/50">{link}</a>
               ))}
             </div>

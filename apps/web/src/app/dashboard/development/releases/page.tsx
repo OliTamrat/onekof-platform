@@ -11,11 +11,11 @@ export default function ReleasesPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Releases"
-        description="Track versions, deployment status, and release notes"
+        title={t('departmentTabs.releases')}
+        description={t('departments.releasesDesc')}
         icon={GitBranch}
         iconColor="#A855F7"
-        emptyMessage="No releases yet. Create one to track deployments."
+        emptyMessage={t('emptyStates.noReleases')}
         defaultLabels={['development', 'release']}
         baseHref="/dashboard/development"
         currentTab="releases"

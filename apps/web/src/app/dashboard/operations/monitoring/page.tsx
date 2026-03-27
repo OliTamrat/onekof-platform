@@ -11,11 +11,11 @@ export default function MonitoringPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Monitoring"
-        description="Track system metrics, uptime, and performance indicators"
+        title={t('departmentTabs.monitoring')}
+        description={t('departments.monitoringDesc')}
         icon={Activity}
         iconColor="#06B6D4"
-        emptyMessage="No monitoring tasks yet. Create one to start tracking."
+        emptyMessage={t('emptyStates.noMonitoring')}
         defaultLabels={['operations', 'monitoring']}
         baseHref="/dashboard/operations"
         currentTab="monitoring"
