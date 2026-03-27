@@ -11,11 +11,11 @@ export default function FindingsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Findings"
-        description="Document research findings and insights"
+        title={t('departmentTabs.findings')}
+        description={t('departments.findingsDesc')}
         icon={FileText}
         iconColor="#3B82F6"
-        emptyMessage="No findings yet. Create one to document insights."
+        emptyMessage={t('emptyStates.noFindings')}
         defaultLabels={['research', 'findings']}
         baseHref="/dashboard/research"
         currentTab="findings"

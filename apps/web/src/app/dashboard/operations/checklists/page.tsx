@@ -11,11 +11,11 @@ export default function ChecklistsPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Checklists"
-        description="Create, assign, and track routine maintenance tasks"
+        title={t('departmentTabs.checklists')}
+        description={t('departments.checklistsDesc')}
         icon={CheckCircle2}
         iconColor="#10B981"
-        emptyMessage="No checklists yet. Create one to track routine tasks."
+        emptyMessage={t('emptyStates.noChecklists')}
         defaultLabels={['operations', 'checklist']}
         baseHref="/dashboard/operations"
         currentTab="checklists"

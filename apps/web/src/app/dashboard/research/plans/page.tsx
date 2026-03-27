@@ -11,11 +11,11 @@ export default function PlansPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Plans"
-        description="Develop and track research plans and methodologies"
+        title={t('departmentTabs.plans')}
+        description={t('departments.plansDesc')}
         icon={Map}
         iconColor="#10B981"
-        emptyMessage="No research plans yet. Create one to get started."
+        emptyMessage={t('emptyStates.noResearchPlans')}
         defaultLabels={['research', 'plan']}
         baseHref="/dashboard/research"
         currentTab="plans"

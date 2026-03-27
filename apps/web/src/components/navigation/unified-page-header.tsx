@@ -85,18 +85,18 @@ interface UnifiedPageHeaderProps {
 }
 
 const DEFAULT_NAV_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', icon: List, href: '/list' },
-  { id: 'board', label: 'Board', icon: LayoutDashboard, href: '/board' },
-  { id: 'calendar', label: 'Calendar', icon: Calendar, href: '/calendar' },
-  { id: 'timeline', label: 'Timeline', icon: GitBranch, href: '/timeline' },
-  { id: 'team', label: 'Team', icon: Users, href: '/team' },
-  { id: 'goals', label: 'Goals', icon: Target, href: '/goals' },
-  { id: 'budget', label: 'Budget', icon: DollarSign, href: '/budget' },
-  { id: 'documents', label: 'Docs', icon: FileText, href: '/documents' },
-  { id: 'automation', label: 'Automation', icon: Zap, href: '/automation' },
-  { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/wiki' },
-  { id: 'settings', label: 'Settings', icon: SettingsIcon, href: '/settings' },
+  { id: 'summary', label: 'Summary', labelKey: 'tabs.summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', labelKey: 'tabs.list', icon: List, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'tabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'calendar', label: 'Calendar', labelKey: 'tabs.calendar', icon: Calendar, href: '/calendar' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'tabs.timeline', icon: GitBranch, href: '/timeline' },
+  { id: 'team', label: 'Team', labelKey: 'tabs.team', icon: Users, href: '/team' },
+  { id: 'goals', label: 'Goals', labelKey: 'tabs.goals', icon: Target, href: '/goals' },
+  { id: 'budget', label: 'Budget', labelKey: 'tabs.budget', icon: DollarSign, href: '/budget' },
+  { id: 'documents', label: 'Docs', labelKey: 'tabs.docs', icon: FileText, href: '/documents' },
+  { id: 'automation', label: 'Automation', labelKey: 'tabs.automation', icon: Zap, href: '/automation' },
+  { id: 'wiki', label: 'Wiki', labelKey: 'tabs.wiki', icon: BookOpen, href: '/wiki' },
+  { id: 'settings', label: 'Settings', labelKey: 'tabs.settings', icon: SettingsIcon, href: '/settings' },
 ];
 
 const STATUS_OPTIONS = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'];
@@ -181,7 +181,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
               )}
             >
               <MoreHorizontal className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
-              <span>More</span>
+              <span>{t('common.more')}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
@@ -212,6 +212,29 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
     </div>
   );
 }
+
+const translateStatus = (status: string, t: (key: string) => string) => {
+  const map: Record<string, string> = {
+    'TODO': t('status.todo'),
+    'IN_PROGRESS': t('status.inProgress'),
+    'IN_REVIEW': t('status.inReview'),
+    'DONE': t('status.done'),
+    'BLOCKED': t('status.blocked'),
+    'BACKLOG': t('status.backlog'),
+    'CANCELLED': t('status.cancelled'),
+  };
+  return map[status] || status.replace('_', ' ');
+};
+
+const translatePriority = (priority: string, t: (key: string) => string) => {
+  const map: Record<string, string> = {
+    'CRITICAL': t('priority.critical'),
+    'HIGH': t('priority.high'),
+    'MEDIUM': t('priority.medium'),
+    'LOW': t('priority.low'),
+  };
+  return map[priority] || priority;
+};
 
 export function UnifiedPageHeader({
   title,
@@ -391,7 +414,7 @@ export function UnifiedPageHeader({
                       >
                         <div className="flex items-center gap-2">
                           <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-medium', STATUS_COLORS[status])}>
-                            {status.replace('_', ' ')}
+                            {translateStatus(status, t)}
                           </span>
                         </div>
                         {isSelected && <Check className="h-4 w-4 text-primary-500" />}
@@ -410,7 +433,7 @@ export function UnifiedPageHeader({
                       >
                         <div className="flex items-center gap-2">
                           <span className={cn('rounded px-1.5 py-0.5 text-[10px] font-medium', PRIORITY_COLORS[priority])}>
-                            {priority}
+                            {translatePriority(priority, t)}
                           </span>
                         </div>
                         {isSelected && <Check className="h-4 w-4 text-primary-500" />}
@@ -453,7 +476,7 @@ export function UnifiedPageHeader({
                   >
                     <LayoutGrid className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">
-                      {groupBy !== 'none' ? groupBy.charAt(0).toUpperCase() + groupBy.slice(1) : t('common.filter')}
+                      {groupBy !== 'none' ? (groupBy === 'status' ? t('common.status') : t('common.priority')) : t('common.filter')}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -464,7 +487,7 @@ export function UnifiedPageHeader({
                       onClick={() => onGroupByChange?.(field)}
                       className="flex items-center justify-between cursor-pointer"
                     >
-                      <span>{field === 'none' ? 'No grouping' : field.charAt(0).toUpperCase() + field.slice(1)}</span>
+                      <span>{field === 'none' ? t('common.noGrouping') : field === 'status' ? t('common.status') : t('common.priority')}</span>
                       {groupBy === field && <Check className="h-4 w-4 text-primary-500" />}
                     </DropdownMenuItem>
                   ))}
@@ -509,9 +532,9 @@ export function UnifiedPageHeader({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44">
                   {([
-                    { id: 'list' as ViewMode, label: 'List View', icon: List },
-                    { id: 'board' as ViewMode, label: 'Board View', icon: LayoutDashboard },
-                    { id: 'compact' as ViewMode, label: 'Compact View', icon: BarChart3 },
+                    { id: 'list' as ViewMode, label: t('common.listView'), icon: List },
+                    { id: 'board' as ViewMode, label: t('common.boardView'), icon: LayoutDashboard },
+                    { id: 'compact' as ViewMode, label: t('common.compactView'), icon: BarChart3 },
                   ]).map(v => (
                     <DropdownMenuItem
                       key={v.id}
@@ -543,7 +566,7 @@ export function UnifiedPageHeader({
                   onClick={() => toggleFilter(field as FilterField, value)}
                   className="h-auto rounded-full border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-950/30 px-2 py-0.5 text-[11px] text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/40"
                 >
-                  <span className="capitalize">{field}:</span> {value.replace('_', ' ')}
+                  <span className="capitalize">{field === 'status' ? t('common.status') : field === 'priority' ? t('common.priority') : field}:</span> {field === 'status' ? translateStatus(value, t) : field === 'priority' ? translatePriority(value, t) : value.replace('_', ' ')}
                   <X className="h-3 w-3 ml-0.5" />
                 </Button>
               ))
