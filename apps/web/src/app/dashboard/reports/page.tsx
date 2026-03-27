@@ -86,7 +86,7 @@ export default function ReportsAndAnalyticsPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Reports"
+        title={t("reports.title")}
         icon={<BarChart3 className="h-6 w-6" />}
         iconColor="#3B82F6"
         currentTab="summary"
@@ -99,7 +99,7 @@ export default function ReportsAndAnalyticsPage() {
         <div className="flex h-64 items-center justify-center bg-white dark:bg-[#1B1F23]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">Loading analytics...</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t("reports.loadingAnalytics")}</p>
           </div>
         </div>
       ) : (
@@ -109,23 +109,23 @@ export default function ReportsAndAnalyticsPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               <MetricCard
                 icon={<FolderKanban className="h-5 w-5" />}
-                label="Active Projects"
+                label={t("reports.activeProjects")}
                 value={stats?.activeProjects || 0}
-                subtitle={`${stats?.totalProjects || 0} total`}
+                subtitle={`${stats?.totalProjects || 0} ${t("reports.totalLabel")}`}
                 color="text-blue-600 dark:text-blue-400"
                 bgColor="bg-blue-50 dark:bg-blue-900/20"
               />
               <MetricCard
                 icon={<CheckCircle2 className="h-5 w-5" />}
-                label="Task Completion"
+                label={t("reports.taskCompletion")}
                 value={`${taskCompletionRate}%`}
-                subtitle={`${stats?.taskStats?.completed || 0} of ${stats?.taskStats?.total || 0} tasks`}
+                subtitle={`${stats?.taskStats?.completed || 0} of ${stats?.taskStats?.total || 0} ${t("reports.tasks")}`}
                 color="text-green-600 dark:text-green-400"
                 bgColor="bg-green-50 dark:bg-green-900/20"
               />
               <MetricCard
                 icon={<Target className="h-5 w-5" />}
-                label="Goals Progress"
+                label={t("reports.goalsProgress")}
                 value={`${Math.round(goalStats?.avgProgress || 0)}%`}
                 subtitle={`${goalStats?.completed || 0} of ${goalStats?.total || 0} completed`}
                 color="text-purple-600 dark:text-purple-400"
@@ -133,9 +133,9 @@ export default function ReportsAndAnalyticsPage() {
               />
               <MetricCard
                 icon={<Users className="h-5 w-5" />}
-                label="Teams"
+                label={t("reports.teams")}
                 value={teamStats?.totalTeams || 0}
-                subtitle={`${teamStats?.totalMembers || 0} members`}
+                subtitle={`${teamStats?.totalMembers || 0} ${t("reports.members")}`}
                 color="text-orange-600 dark:text-orange-400"
                 bgColor="bg-orange-50 dark:bg-orange-900/20"
               />
@@ -150,7 +150,7 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Project Activity (Last 6 Months)</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.projectActivity")}</h3>
                   </div>
                   <div className="space-y-3">
                     {stats.monthlyTrend.map((month: any) => {
@@ -180,8 +180,8 @@ export default function ReportsAndAnalyticsPage() {
                     })}
                   </div>
                   <div className="flex items-center gap-4 mt-3 text-xs text-slate-500 dark:text-slate-400">
-                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-500" /> Created</span>
-                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-500" /> Completed</span>
+                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-500" /> {t("reports.created")}</span>
+                    <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-500" /> {t("reports.completed")}</span>
                   </div>
                 </div>
               )}
@@ -191,7 +191,7 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Top Projects by Completion</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.topProjectsByCompletion")}</h3>
                   </div>
                   <div className="space-y-3">
                     {stats.topProjects.map((project: any) => (
@@ -211,7 +211,7 @@ export default function ReportsAndAnalyticsPage() {
                             />
                           </div>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            {project.tasksCompleted}/{project.totalTasks} tasks · {project.memberCount} members
+                            {project.tasksCompleted}/{project.totalTasks} {t("reports.tasks")} · {project.memberCount} {t("reports.members")}
                           </p>
                         </div>
                       </div>
@@ -225,19 +225,19 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-orange-200 dark:border-orange-900/40 bg-orange-50/50 dark:bg-orange-900/10 p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-3">
                     <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Attention Required</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.attentionRequired")}</h3>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     {stats?.atRiskProjects > 0 && (
                       <div>
                         <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats?.atRiskProjects}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">projects at risk</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{t("reports.projectsAtRisk")}</p>
                       </div>
                     )}
                     {(stats?.taskStats?.overdue || 0) > 0 && (
                       <div>
                         <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats?.taskStats?.overdue}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">overdue tasks</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{t("reports.overdueTasks")}</p>
                       </div>
                     )}
                   </div>
@@ -248,9 +248,9 @@ export default function ReportsAndAnalyticsPage() {
               {!stats?.totalProjects && (
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
                   <BarChart3 className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Data Yet</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t("reports.noDataYet")}</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Create projects and tasks to see analytics and reports here.
+                    {t("reports.noDataYetDesc")}
                   </p>
                 </div>
               )}
@@ -263,7 +263,7 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Upcoming Milestones</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.upcomingMilestones")}</h3>
                   </div>
                   <div className="space-y-3">
                     {stats.upcomingMilestones.map((milestone: any) => (
@@ -277,7 +277,7 @@ export default function ReportsAndAnalyticsPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{milestone.title}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{milestone.project} · {milestone.daysLeft}d left</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{milestone.project} · {milestone.daysLeft}{t("reports.daysLeft")}</p>
                         </div>
                       </div>
                     ))}
@@ -290,7 +290,7 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Top Contributors</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.topContributors")}</h3>
                   </div>
                   <div className="space-y-3">
                     {teamStats.topContributors.slice(0, 5).map((contributor: any, i: number) => (
@@ -300,7 +300,7 @@ export default function ReportsAndAnalyticsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{contributor.name || contributor.email}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{contributor.activityCount || contributor.contributions || 0} contributions</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{contributor.activityCount || contributor.contributions || 0} {t("reports.contributions")}</p>
                         </div>
                       </div>
                     ))}
@@ -313,15 +313,15 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Target className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">Goals Overview</h3>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t("reports.goalsOverview")}</h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">Total Goals</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{t("reports.totalGoals")}</span>
                       <span className="text-sm font-semibold text-slate-900 dark:text-white">{goalStats.total}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">Completed</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{t("reports.completed")}</span>
                       <span className="text-sm font-semibold text-green-600 dark:text-green-400">{goalStats.completed}</span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -334,7 +334,7 @@ export default function ReportsAndAnalyticsPage() {
                         style={{ width: `${goalStats.avgProgress}%` }}
                       />
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 text-center">{Math.round(goalStats.avgProgress)}% average progress</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 text-center">{Math.round(goalStats.avgProgress)}% {t("reports.averageProgress")}</p>
                   </div>
                 </div>
               )}

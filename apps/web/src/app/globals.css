@@ -60,9 +60,12 @@
   }
 }
 
-/* Ethiopian font support */
-.font-ethiopic {
-  font-family: var(--font-abyssinica), 'Noto Sans Ethiopic', 'Nyala', sans-serif;
+/* Ethiopian font support — Abyssinica SIL for Ge'ez script (Amharic, Tigrinya) */
+.font-ethiopic,
+.font-ethiopic *,
+.font-ethiopic h1, .font-ethiopic h2, .font-ethiopic h3, .font-ethiopic h4, .font-ethiopic h5, .font-ethiopic h6,
+.font-ethiopic button, .font-ethiopic input, .font-ethiopic select, .font-ethiopic textarea {
+  font-family: var(--font-abyssinica), 'Noto Sans Ethiopic', 'Nyala', sans-serif !important;
 }
 
 /* Glass effects */

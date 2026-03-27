@@ -136,7 +136,7 @@ export default function ProjectsSummaryPage() {
                   <BarChart3 className="h-6 w-6" />
                 </div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                  Projects Overview
+                  {t("projectsSummary.title")}
                 </h1>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function ProjectsSummaryPage() {
                 ))}
               </div>
               <div className="text-center py-12 text-gray-500 dark:text-slate-400">
-                Loading analytics data...
+                {t("projectsSummary.loadingAnalyticsData")}
               </div>
             </div>
           </div>
@@ -202,9 +202,9 @@ export default function ProjectsSummaryPage() {
                 onChange={(e) => setTimeRange(e.target.value as 'week' | 'month' | 'quarter')}
                 className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="quarter">Last 90 Days</option>
+                <option value="week">{t("projectsSummary.last7Days")}</option>
+                <option value="month">{t("projectsSummary.last30Days")}</option>
+                <option value="quarter">{t("projectsSummary.last90Days")}</option>
               </select>
               <Link
                 href="/dashboard/projects"
@@ -243,7 +243,7 @@ export default function ProjectsSummaryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Total Projects */}
               <MetricCard
-                title="Total Projects"
+                title={t("projectsSummary.totalProjects")}
                 value={totalProjects}
                 change={totalProjectsChange}
                 changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
@@ -254,7 +254,7 @@ export default function ProjectsSummaryPage() {
                   open: true,
                   type: 'metric',
                   data: {
-                    title: 'Total Projects',
+                    title: t("projectsSummary.totalProjects"),
                     current: totalProjects,
                     previous: totalProjects - Math.ceil(totalProjects * (totalProjectsChange / 100)),
                     change: totalProjectsChange
@@ -264,7 +264,7 @@ export default function ProjectsSummaryPage() {
 
               {/* Active Projects */}
               <MetricCard
-                title="Active Projects"
+                title={t("projectsSummary.activeProjects")}
                 value={activeProjects}
                 change={activeProjectsChange}
                 changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
@@ -275,7 +275,7 @@ export default function ProjectsSummaryPage() {
                   open: true,
                   type: 'metric',
                   data: {
-                    title: 'Active Projects',
+                    title: t("projectsSummary.activeProjects"),
                     current: activeProjects,
                     previous: activeProjects - Math.ceil(activeProjects * (activeProjectsChange / 100)),
                     change: activeProjectsChange
@@ -285,7 +285,7 @@ export default function ProjectsSummaryPage() {
 
               {/* Completed */}
               <MetricCard
-                title="Completed"
+                title={t("projectsSummary.completed")}
                 value={completedProjects}
                 change={completedProjectsChange}
                 changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
@@ -296,7 +296,7 @@ export default function ProjectsSummaryPage() {
                   open: true,
                   type: 'metric',
                   data: {
-                    title: 'Completed Projects',
+                    title: t("projectsSummary.completed"),
                     current: completedProjects,
                     previous: completedProjects - Math.ceil(completedProjects * (completedProjectsChange / 100)),
                     change: completedProjectsChange
@@ -306,7 +306,7 @@ export default function ProjectsSummaryPage() {
 
               {/* At Risk */}
               <MetricCard
-                title="At Risk"
+                title={t("projectsSummary.atRisk")}
                 value={atRiskProjects}
                 change={atRiskProjectsChange}
                 changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
@@ -317,7 +317,7 @@ export default function ProjectsSummaryPage() {
                   open: true,
                   type: 'metric',
                   data: {
-                    title: 'At Risk Projects',
+                    title: t("projectsSummary.atRisk"),
                     current: atRiskProjects,
                     previous: atRiskProjects + Math.ceil(Math.abs(atRiskProjects * (atRiskProjectsChange / 100))),
                     change: atRiskProjectsChange
@@ -333,7 +333,7 @@ export default function ProjectsSummaryPage() {
                 {/* Project Health Distribution */}
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Project Health</h3>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t("projectsSummary.projectHealth")}</h3>
                     <div className="flex gap-2">
                       {(['week', 'month', 'quarter'] as const).map((range) => (
                         <Button
@@ -354,7 +354,7 @@ export default function ProjectsSummaryPage() {
                   <div className="space-y-4">
                     {/* On Track */}
                     <HealthBar
-                      label="On Track"
+                      label={t("projectsSummary.onTrack")}
                       count={projectsByStatus.onTrack}
                       total={totalProjects}
                       color="bg-green-500"
@@ -363,7 +363,7 @@ export default function ProjectsSummaryPage() {
 
                     {/* At Risk */}
                     <HealthBar
-                      label="At Risk"
+                      label={t("projectsSummary.atRisk")}
                       count={projectsByStatus.atRisk}
                       total={totalProjects}
                       color="bg-orange-500"
@@ -372,7 +372,7 @@ export default function ProjectsSummaryPage() {
 
                     {/* Off Track */}
                     <HealthBar
-                      label="Off Track"
+                      label={t("projectsSummary.offTrack")}
                       count={projectsByStatus.offTrack}
                       total={totalProjects}
                       color="bg-red-500"
@@ -383,7 +383,7 @@ export default function ProjectsSummaryPage() {
 
                 {/* Project Trends Chart */}
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Project Trends</h3>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t("projectsSummary.projectTrends")}</h3>
 
                   <div className="flex items-end justify-between h-64 gap-4">
                     {monthlyTrend.map((data: { month: string; created: number; completed: number }, index: number) => (
@@ -430,11 +430,11 @@ export default function ProjectsSummaryPage() {
                   <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-primary-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">Created</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">{t("projectsSummary.created")}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">Completed</span>
+                      <span className="text-xs text-gray-600 dark:text-slate-400">{t("projectsSummary.completedLegend")}</span>
                     </div>
                   </div>
                 </div>
@@ -442,12 +442,12 @@ export default function ProjectsSummaryPage() {
                 {/* Top Performing Projects */}
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Top Performing Projects</h3>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t("projectsSummary.topPerformingProjects")}</h3>
                     <Link
                       href="/dashboard/projects"
                       className="text-sm font-medium text-primary-500 hover:text-primary-600 flex items-center gap-1"
                     >
-                      View All <ArrowRight className="h-4 w-4" />
+                      {t("projectsSummary.viewAll")} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
 
@@ -487,7 +487,7 @@ export default function ProjectsSummaryPage() {
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {project.tasksCompleted}/{project.totalTasks}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-slate-400">tasks</div>
+                          <div className="text-xs text-gray-500 dark:text-slate-400">{t("projectsSummary.tasks")}</div>
                         </div>
                       </div>
                     ))}
@@ -501,7 +501,7 @@ export default function ProjectsSummaryPage() {
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Target className="h-5 w-5 text-primary-500" />
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Upcoming Milestones</h3>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t("projectsSummary.upcomingMilestones")}</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -526,7 +526,7 @@ export default function ProjectsSummaryPage() {
                             <div className="flex items-center gap-2 text-xs">
                               <Calendar className="h-3 w-3 text-gray-400" />
                               <span className="text-gray-600 dark:text-slate-400">{milestone.date}</span>
-                              <span className="text-orange-500">• {milestone.daysLeft} days left</span>
+                              <span className="text-orange-500">• {milestone.daysLeft} {t("projectsSummary.daysLeft")}</span>
                             </div>
                           </div>
                         </div>
@@ -539,7 +539,7 @@ export default function ProjectsSummaryPage() {
                 <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Zap className="h-5 w-5 text-primary-500" />
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t("projectsSummary.recentActivity")}</h3>
                   </div>
 
                   <div className="space-y-4">
@@ -576,7 +576,7 @@ export default function ProjectsSummaryPage() {
                     </div>
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                        Performance Insight
+                        {t("projectsSummary.performanceInsight")}
                       </h4>
                       <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
                         Your team completed <span className="font-semibold text-green-600 dark:text-green-400">15% more projects</span> this month compared to last month. Keep up the great work!

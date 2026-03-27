@@ -61,7 +61,7 @@ export default function ProjectsCodePage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Connect Repository
+              {t("projectCode.connectRepository")}
             </Button>
           </div>
 
@@ -83,23 +83,23 @@ export default function ProjectsCodePage() {
             <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-[#282E33] rounded-full flex items-center justify-center mb-4">
               <GitBranch className="h-8 w-8 text-gray-400 dark:text-[#6B7684]" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Connect your code repository</h2>
-            <p className="text-gray-600 dark:text-slate-400 mb-6">Link repositories to track commits, PRs, and branches alongside your projects.</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t("projectCode.connectYourCodeRepo")}</h2>
+            <p className="text-gray-600 dark:text-slate-400 mb-6">{t("projectCode.connectYourCodeRepoDesc")}</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <GitCommit className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Commits</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Track code commits linked to projects</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t("projectCode.commits")}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectCode.commitsDesc")}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <GitPullRequest className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Pull Requests</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Monitor PRs and code reviews</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t("projectCode.pullRequests")}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectCode.pullRequestsDesc")}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                 <GitBranch className="h-8 w-8 text-primary-500 mb-3" />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Branches</h3>
-                <p className="text-sm text-gray-600 dark:text-slate-400">View active feature branches</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t("projectCode.branches")}</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t("projectCode.branchesDesc")}</p>
               </div>
             </div>
             <Button
@@ -107,7 +107,7 @@ export default function ProjectsCodePage() {
               className="mt-8 flex items-center gap-2 mx-auto rounded-md bg-primary-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Connect Repository
+              {t("projectCode.connectRepository")}
             </Button>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function ProjectsCodePage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-md bg-white dark:bg-[#22272B] rounded-lg shadow-xl">
               <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Connect Repository</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t("projectCode.connectRepository")}</h2>
                 <Button onClick={() => setShowConnectModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <X className="h-5 w-5" />
                 </Button>
@@ -125,7 +125,7 @@ export default function ProjectsCodePage() {
 
               <div className="p-6 space-y-4">
                 <p className="text-sm text-gray-600 dark:text-slate-400">
-                  Choose your code hosting provider to connect repositories
+                  {t("projectCode.chooseProvider")}
                 </p>
 
                 <div className="space-y-3">
@@ -143,7 +143,7 @@ export default function ProjectsCodePage() {
                     <Github className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitHub</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect your GitHub repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t("projectCode.connectGitHub")}</div>
                     </div>
                   </div>
 
@@ -161,7 +161,7 @@ export default function ProjectsCodePage() {
                     <GitlabIcon className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect your GitLab repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t("projectCode.connectGitLab")}</div>
                     </div>
                   </div>
 
@@ -179,7 +179,7 @@ export default function ProjectsCodePage() {
                     <GitBranch className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">Bitbucket</div>
-                      <div className="text-xs text-gray-600 dark:text-slate-400">Connect your Bitbucket repositories</div>
+                      <div className="text-xs text-gray-600 dark:text-slate-400">{t("projectCode.connectBitbucket")}</div>
                     </div>
                   </div>
                 </div>
@@ -190,14 +190,14 @@ export default function ProjectsCodePage() {
                   onClick={() => setShowConnectModal(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   onClick={handleConnect}
                   disabled={!selectedProvider}
                   className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Connect
+                  {t("projectCode.connect")}
                 </Button>
               </div>
             </div>

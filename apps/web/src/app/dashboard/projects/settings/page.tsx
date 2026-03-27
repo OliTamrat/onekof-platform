@@ -31,11 +31,11 @@ const TAB_ITEMS = [
 ];
 
 const SETTINGS_SECTIONS = [
-  { id: 'general', label: 'General', icon: Settings },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'members', label: 'Members & Permissions', icon: Users },
-  { id: 'workflows', label: 'Workflows', icon: Workflow },
-  { id: 'security', label: 'Security', icon: Shield },
+  { id: 'general', labelKey: 'projectSettings.general', icon: Settings },
+  { id: 'notifications', labelKey: 'projectSettings.notifications', icon: Bell },
+  { id: 'members', labelKey: 'projectSettings.membersPermissions', icon: Users },
+  { id: 'workflows', labelKey: 'projectSettings.workflows', icon: Workflow },
+  { id: 'security', labelKey: 'projectSettings.security', icon: Shield },
 ];
 
 export default function ProjectsSettingsPage() {
@@ -71,7 +71,7 @@ export default function ProjectsSettingsPage() {
                 <Settings className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Project Settings
+                {t("projectSettings.title")}
               </h1>
             </div>
 
@@ -80,7 +80,7 @@ export default function ProjectsSettingsPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Save className="h-4 w-4" />
-              Save Changes
+              {t("projectSettings.saveChanges")}
             </Button>
           </div>
 
@@ -120,7 +120,7 @@ export default function ProjectsSettingsPage() {
                     }`}
                   >
                     <Icon className="h-4 w-4" />
-                    {section.label}
+                    {t(section.labelKey)}
                   </Button>
                 );
               })}
@@ -134,26 +134,26 @@ export default function ProjectsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                      General Settings
+                      {t("projectSettings.generalSettings")}
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Configure default project settings and behavior
+                      {t("projectSettings.generalSettingsDesc")}
                     </p>
                   </div>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Default Project Status
+                        {t("projectSettings.defaultProjectStatus")}
                       </label>
                       <select
                         value={settings.defaultStatus}
                         onChange={(e) => setSettings({ ...settings, defaultStatus: e.target.value })}
                         className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       >
-                        <option value="PLANNING">Planning</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="ON_HOLD">On Hold</option>
+                        <option value="PLANNING">{t("projectSettings.planning")}</option>
+                        <option value="ACTIVE">{t("projectSettings.active")}</option>
+                        <option value="ON_HOLD">{t("projectSettings.onHold")}</option>
                       </select>
                     </div>
 
@@ -167,10 +167,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="autoArchive" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Auto-archive completed projects
+                          {t("projectSettings.autoArchive")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Automatically archive projects 30 days after completion
+                          {t("projectSettings.autoArchiveDesc")}
                         </p>
                       </div>
                     </div>
@@ -185,10 +185,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="requireApproval" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Require approval for project creation
+                          {t("projectSettings.requireApproval")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          New projects must be approved by an admin before becoming active
+                          {t("projectSettings.requireApprovalDesc")}
                         </p>
                       </div>
                     </div>
@@ -200,10 +200,10 @@ export default function ProjectsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                      Notification Preferences
+                      {t("projectSettings.notificationPreferences")}
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Manage how and when you receive project notifications
+                      {t("projectSettings.notificationPreferencesDesc")}
                     </p>
                   </div>
 
@@ -218,10 +218,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Email notifications
+                          {t("projectSettings.emailNotifications")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Receive email updates for project activity
+                          {t("projectSettings.emailNotificationsDesc")}
                         </p>
                       </div>
                     </div>
@@ -236,10 +236,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="notifyOnMention" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Notify when mentioned
+                          {t("projectSettings.notifyWhenMentioned")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Get notified when someone mentions you in a comment
+                          {t("projectSettings.notifyWhenMentionedDesc")}
                         </p>
                       </div>
                     </div>
@@ -254,10 +254,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="notifyOnAssignment" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Notify on assignment
+                          {t("projectSettings.notifyOnAssignment")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Get notified when assigned to a project or task
+                          {t("projectSettings.notifyOnAssignmentDesc")}
                         </p>
                       </div>
                     </div>
@@ -272,10 +272,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="weeklyDigest" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Weekly project digest
+                          {t("projectSettings.weeklyProjectDigest")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Receive a weekly summary of project activity
+                          {t("projectSettings.weeklyProjectDigestDesc")}
                         </p>
                       </div>
                     </div>
@@ -287,16 +287,16 @@ export default function ProjectsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                      Members & Permissions
+                      {t("projectSettings.membersPermissions")}
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Manage access control and permissions
+                      {t("projectSettings.membersPermissionsDesc")}
                     </p>
                   </div>
 
                   <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Member management and role-based access control settings coming soon...
+                      {t("projectSettings.membersComingSoon")}
                     </p>
                   </div>
                 </div>
@@ -306,16 +306,16 @@ export default function ProjectsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                      Workflows
+                      {t("projectSettings.workflows")}
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Customize project workflows and statuses
+                      {t("projectSettings.workflowsDesc")}
                     </p>
                   </div>
 
                   <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Workflow customization coming soon...
+                      {t("projectSettings.workflowsComingSoon")}
                     </p>
                   </div>
                 </div>
@@ -325,10 +325,10 @@ export default function ProjectsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                      Security
+                      {t("projectSettings.security")}
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      Security and privacy settings
+                      {t("projectSettings.securityDesc")}
                     </p>
                   </div>
 
@@ -343,10 +343,10 @@ export default function ProjectsSettingsPage() {
                       />
                       <div className="flex-1">
                         <label htmlFor="allowGuestAccess" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                          Allow guest access
+                          {t("projectSettings.allowGuestAccess")}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                          Enable external users to view projects with read-only access
+                          {t("projectSettings.allowGuestAccessDesc")}
                         </p>
                       </div>
                     </div>
