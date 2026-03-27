@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { motion, useScroll, useTransform, AnimatePresence, useInView as fmUseInView, useMotionValue, useSpring } from 'framer-motion';
 
 import {
   ArrowRight,
@@ -43,55 +44,51 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
 
 /* ─── Hooks ─── */
-function useInView(threshold = 0.12) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setInView(true); obs.unobserve(el); } },
-      { threshold }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, inView };
-}
 
 function Reveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, inView } = useInView(0.08);
   return (
-    <div
-      ref={ref}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.7, delay: delay / 1000, ease: [0.16, 1, 0.3, 1] }}
       className={className}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'none' : 'translateY(28px)',
-        transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
-      }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
-function Counter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
-  const [count, setCount] = useState(0);
-  const { ref, inView } = useInView(0.3);
+function Counter({ end, suffix = '', duration = 2 }: { end: number; suffix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = fmUseInView(ref, { once: true });
+  const motionVal = useMotionValue(0);
+  const spring = useSpring(motionVal, { duration: duration * 1000, bounce: 0 });
+
   useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const step = Math.ceil(end / (duration / 16));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(start);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, end, duration]);
-  return <span ref={ref}>{count}{suffix}</span>;
+    if (isInView) motionVal.set(end);
+  }, [isInView, end, motionVal]);
+
+  useEffect(() => {
+    const unsubscribe = spring.on('change', (v) => {
+      if (ref.current) ref.current.textContent = Math.round(v) + suffix;
+    });
+    return unsubscribe;
+  }, [spring, suffix]);
+
+  return <span ref={ref}>0{suffix}</span>;
 }
+
+/* ─── Animation Variants ─── */
+const heroStagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } }
+};
+
+const heroChild = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
 
 /* ─── Data (static parts only — translated labels are inside component) ─── */
 
@@ -301,6 +298,9 @@ export default function HomePage() {
   const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
 
+  const { scrollYProgress } = useScroll();
+  const ctaY = useTransform(scrollYProgress, [0.8, 1], [50, 0]);
+
   const showcaseTabs = [
     {
       id: 'budget',
@@ -411,7 +411,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#1B1F23] font-sans antialiased text-white selection:bg-primary-500/20">
       {/* ═══ NAVBAR ═══ */}
-      <nav
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 30 }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
             ? 'border-b border-white/[0.06] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150'
@@ -463,30 +466,38 @@ export default function HomePage() {
         </div>
 
         {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="animate-in slide-in-from-top border-t border-white/[0.06] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden">
-            <div className="space-y-1 px-6 py-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block rounded-lg py-2.5 text-[15px] text-white/50 transition-colors hover:text-white"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
-                <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">{t('common.signIn')}</Link>
-                <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
-                  {t('common.getStarted')}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="border-t border-white/[0.06] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden overflow-hidden"
+            >
+              <div className="space-y-1 px-6 py-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-lg py-2.5 text-[15px] text-white/50 transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+                <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
+                  <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">{t('common.signIn')}</Link>
+                  <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
+                    {t('common.getStarted')}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
-      </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
       {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden">
@@ -506,72 +517,82 @@ export default function HomePage() {
         </div>
 
         <div className="relative mx-auto max-w-5xl px-6 pb-20 pt-32 text-center sm:pt-40 lg:pt-48">
-          <Reveal>
-            <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 backdrop-blur-sm transition-all hover:border-white/[0.12] hover:bg-white/[0.05]">
-              <div className="relative h-2 w-2">
-                <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
-                <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={heroStagger}
+          >
+            <motion.div variants={heroChild}>
+              <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 backdrop-blur-sm transition-all hover:border-white/[0.12] hover:bg-white/[0.05]">
+                <div className="relative h-2 w-2">
+                  <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
+                  <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
+                </div>
+                <span className="text-[13px] text-white/50">{t('landing.hero.badge')}</span>
+                <ArrowRight className="h-3 w-3 text-white/50" />
               </div>
-              <span className="text-[13px] text-white/50">{t('landing.hero.badge')}</span>
-              <ArrowRight className="h-3 w-3 text-white/50" />
-            </div>
-          </Reveal>
+            </motion.div>
 
-          <Reveal delay={100}>
-            <h1 className="mx-auto max-w-4xl font-display text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
-              {t('landing.hero.headingPrefix')}
-              <br />
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-200 bg-clip-text text-transparent">
-                  {heroTyped}
+            <motion.div variants={heroChild}>
+              <h1 className="mx-auto max-w-4xl font-display text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
+                {t('landing.hero.headingPrefix')}
+                <br />
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-200 bg-clip-text text-transparent">
+                    {heroTyped}
+                  </span>
+                  <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
                 </span>
-                <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
-              </span>
-            </h1>
-          </Reveal>
+              </h1>
+            </motion.div>
 
-          <Reveal delay={200}>
-            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/55 sm:text-[18px]">
-              {t('auth.projectsDescription')}
-            </p>
-          </Reveal>
+            <motion.div variants={heroChild}>
+              <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/55 sm:text-[18px]">
+                {t('auth.projectsDescription')}
+              </p>
+            </motion.div>
 
-          <Reveal delay={300}>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href="/auth/signup"
-                className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-7 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98]"
-              >
-                <span className="relative z-10 flex items-center gap-2.5">
-                  {t('landing.hero.getStartedFree')}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 transition-opacity group-hover:opacity-100" />
-              </Link>
-              <a
-                href="#product"
-                className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
-              >
-                <Play className="h-3.5 w-3.5 text-primary-400" />
-                {t('landing.hero.watchDemo')}
-              </a>
-            </div>
-          </Reveal>
+            <motion.div variants={heroChild}>
+              <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link
+                  href="/auth/signup"
+                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-7 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98]"
+                >
+                  <span className="relative z-10 flex items-center gap-2.5">
+                    {t('landing.hero.getStartedFree')}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 transition-opacity group-hover:opacity-100" />
+                </Link>
+                <a
+                  href="#product"
+                  className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
+                >
+                  <Play className="h-3.5 w-3.5 text-primary-400" />
+                  {t('landing.hero.watchDemo')}
+                </a>
+              </div>
+            </motion.div>
 
-          <Reveal delay={400}>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-              {[t('landing.hero.freeForever'), t('landing.hero.noCreditCard'), t('landing.hero.setupMinutes')].map((text) => (
-                <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/50">
-                  <Check className="h-3.5 w-3.5 text-white/40" />
-                  {text}
-                </span>
-              ))}
-            </div>
-          </Reveal>
+            <motion.div variants={heroChild}>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+                {[t('landing.hero.freeForever'), t('landing.hero.noCreditCard'), t('landing.hero.setupMinutes')].map((text) => (
+                  <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/50">
+                    <Check className="h-3.5 w-3.5 text-white/40" />
+                    {text}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* ─── Dashboard Preview ─── */}
-        <Reveal delay={500}>
+        <motion.div
+          initial={{ opacity: 0, y: 60, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="relative mx-auto max-w-6xl px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.08] via-primary-700/[0.04] to-transparent blur-3xl" />
             <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#22272B]/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
@@ -708,7 +729,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </Reveal>
+        </motion.div>
       </section>
 
       {/* ═══ TRUSTED BY ═══ */}
@@ -783,8 +804,15 @@ export default function HomePage() {
                 desc: t('landing.whyOnekof.enterpriseSecurityDesc'),
                 gradient: 'from-slate-500/20 to-gray-500/20',
               },
-            ].map((feature, i) => (
-              <Reveal key={feature.title} delay={i * 80}>
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              >
                 <div className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04] sm:p-7">
                   <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
                   <div className="relative">
@@ -795,7 +823,7 @@ export default function HomePage() {
                     <p className="text-[14px] leading-relaxed text-white/50">{feature.desc}</p>
                   </div>
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -851,40 +879,58 @@ export default function HomePage() {
 
               {/* Content */}
               <div className="grid items-start gap-6 sm:gap-8 lg:grid-cols-2">
-                <div className="order-2 lg:order-1">
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-3 py-1">
-                    <span className="text-[11px] font-medium text-primary-400">{showcaseTabs[activeShowcase].tagline}</span>
-                  </div>
-                  <h3 className="mb-3 font-display text-2xl font-semibold tracking-[-0.03em] sm:text-[1.75rem]">
-                    {showcaseTabs[activeShowcase].title}
-                  </h3>
-                  <p className="mb-6 text-[15px] leading-relaxed text-white/55">
-                    {showcaseTabs[activeShowcase].desc}
-                  </p>
-                  <ul className="mb-8 space-y-3">
-                    {showcaseTabs[activeShowcase].features.map((f) => (
-                      <li key={f} className="flex items-start gap-3 text-[14px] text-white/45">
-                        <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
-                          <Check className="h-3 w-3 text-primary-400" />
-                        </div>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/auth/signup"
-                    className="group inline-flex items-center gap-2 text-[14px] font-medium text-primary-400 transition-colors hover:text-primary-300"
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`text-${activeShowcase}`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                    className="order-2 lg:order-1"
                   >
-                    {t('landing.showcase.tryItFree')}
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                </div>
+                    <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-3 py-1">
+                      <span className="text-[11px] font-medium text-primary-400">{showcaseTabs[activeShowcase].tagline}</span>
+                    </div>
+                    <h3 className="mb-3 font-display text-2xl font-semibold tracking-[-0.03em] sm:text-[1.75rem]">
+                      {showcaseTabs[activeShowcase].title}
+                    </h3>
+                    <p className="mb-6 text-[15px] leading-relaxed text-white/55">
+                      {showcaseTabs[activeShowcase].desc}
+                    </p>
+                    <ul className="mb-8 space-y-3">
+                      {showcaseTabs[activeShowcase].features.map((f) => (
+                        <li key={f} className="flex items-start gap-3 text-[14px] text-white/45">
+                          <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
+                            <Check className="h-3 w-3 text-primary-400" />
+                          </div>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href="/auth/signup"
+                      className="group inline-flex items-center gap-2 text-[14px] font-medium text-primary-400 transition-colors hover:text-primary-300"
+                    >
+                      {t('landing.showcase.tryItFree')}
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  </motion.div>
+                </AnimatePresence>
 
-                <div className="order-1 lg:order-2">
-                  <div className="rounded-2xl border border-white/[0.08] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
-                    {showcaseMockups[activeShowcase]}
-                  </div>
-                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`mockup-${activeShowcase}`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                    className="order-1 lg:order-2"
+                  >
+                    <div className="rounded-2xl border border-white/[0.08] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
+                      {showcaseMockups[activeShowcase]}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </Reveal>
@@ -916,14 +962,22 @@ export default function HomePage() {
               { icon: Zap, title: t('landing.features.realtime'), desc: t('landing.features.realtimeDesc') },
               { icon: FileText, title: t('landing.features.docsWiki'), desc: t('landing.features.docsWikiDesc') },
               { icon: Shield, title: t('landing.features.security'), desc: t('landing.features.securityDesc') },
-            ].map((feature, i) => (
-              <Reveal key={feature.title} delay={i * 40}>
-                <div className="group border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7">
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08, duration: 0.5 }}
+                whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
+                className="group"
+              >
+                <div className="border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7 h-full">
                   <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-primary-400" />
                   <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
                   <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -938,8 +992,14 @@ export default function HomePage() {
               { value: 40, suffix: '%', label: t('landing.stats.fasterDelivery'), icon: TrendingUp },
               { value: 99, suffix: '.9%', label: t('landing.stats.platformUptime'), icon: Timer },
               { value: 4, suffix: '', label: t('landing.stats.languagesSupported'), icon: Globe },
-            ].map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 100}>
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20, delay: index * 0.15 }}
+              >
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
                   <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-primary-400/50" />
                   <div className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -947,7 +1007,7 @@ export default function HomePage() {
                   </div>
                   <p className="mt-2 text-[13px] text-white/50">{stat.label}</p>
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -1007,25 +1067,30 @@ export default function HomePage() {
               },
             ].map((testimonial, i) => (
               <Reveal key={testimonial.name} delay={i * 60}>
-                <div className="group h-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
-                  <div className="mb-4 flex gap-1">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
-                    ))}
-                  </div>
-                  <p className="mb-6 text-[14px] leading-relaxed text-white/60">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
+                <motion.div
+                  whileHover={{ scale: 1.03, rotate: 0.5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <div className="group h-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
+                    <div className="mb-4 flex gap-1">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-[13px] font-medium text-white/70">{testimonial.name}</p>
-                      <p className="text-[12px] text-white/50">{testimonial.role}</p>
+                    <p className="mb-6 text-[14px] leading-relaxed text-white/60">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
+                        {testimonial.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-medium text-white/70">{testimonial.name}</p>
+                        <p className="text-[12px] text-white/50">{testimonial.role}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Reveal>
             ))}
           </div>
@@ -1069,7 +1134,17 @@ export default function HomePage() {
 
           <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-3">
             {plans.map((plan, i) => (
-              <Reveal key={plan.name} delay={i * 80}>
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 40, scale: plan.highlighted ? 0.9 : 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={plan.highlighted
+                  ? { type: 'spring', stiffness: 200, delay: 0.2 }
+                  : { duration: 0.6, delay: i * 0.1 }
+                }
+                whileHover={{ y: -10 }}
+              >
                 <div
                   className={`relative h-full rounded-2xl border p-5 transition-all duration-500 sm:p-7 ${
                     plan.highlighted
@@ -1127,7 +1202,7 @@ export default function HomePage() {
                     ))}
                   </ul>
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -1176,9 +1251,9 @@ export default function HomePage() {
 
       {/* ═══ FINAL CTA ═══ */}
       <section className="relative overflow-hidden py-20 sm:py-32 lg:py-40">
-        <div className="pointer-events-none absolute inset-0">
+        <motion.div className="pointer-events-none absolute inset-0" style={{ y: ctaY }}>
           <div className="absolute left-1/2 top-1/2 h-[400px] w-[500px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1),transparent_70%)] sm:h-[600px] sm:w-[800px]" />
-        </div>
+        </motion.div>
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
           <Reveal>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
