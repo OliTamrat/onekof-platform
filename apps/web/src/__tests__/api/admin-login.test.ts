@@ -165,14 +165,14 @@ describe('verifyToken', () => {
   it('returns null when ADMIN_SECRET is not set', async () => {
     delete process.env.ADMIN_SECRET;
 
-    const { verifyToken } = await import('@/app/api/admin/login/route');
+    const { verifyToken } = await import('@/lib/security/superadmin');
     expect(verifyToken('any.token.here')).toBeNull();
   });
 
   it('returns null for malformed tokens', async () => {
     process.env.ADMIN_SECRET = 'test-secret-for-unit-tests-only';
 
-    const { verifyToken } = await import('@/app/api/admin/login/route');
+    const { verifyToken } = await import('@/lib/security/superadmin');
     expect(verifyToken('')).toBeNull();
     expect(verifyToken('only-one-part')).toBeNull();
     expect(verifyToken('two.parts')).toBeNull();
@@ -189,7 +189,7 @@ describe('verifyToken', () => {
       .update(`${payload}.${expiredTimestamp}`)
       .digest('base64url');
 
-    const { verifyToken } = await import('@/app/api/admin/login/route');
+    const { verifyToken } = await import('@/lib/security/superadmin');
     expect(verifyToken(`${payload}.${expiredTimestamp}.${sig}`)).toBeNull();
   });
 
@@ -199,7 +199,7 @@ describe('verifyToken', () => {
     const payload = Buffer.from(JSON.stringify({ username: 'admin', role: 'OWNER', name: 'Admin' })).toString('base64url');
     const timestamp = Date.now().toString();
 
-    const { verifyToken } = await import('@/app/api/admin/login/route');
+    const { verifyToken } = await import('@/lib/security/superadmin');
     expect(verifyToken(`${payload}.${timestamp}.invalid-signature`)).toBeNull();
   });
 
@@ -208,7 +208,8 @@ describe('verifyToken', () => {
     process.env.ADMIN_USERS = TEST_ADMIN_USERS;
 
     // Do a login to get a real token, then verify it
-    const { POST, verifyToken } = await import('@/app/api/admin/login/route');
+    const { POST } = await import('@/app/api/admin/login/route');
+    const { verifyToken } = await import('@/lib/security/superadmin');
     const req = createRequest({ username: 'admin', password: 'test-pass-123' });
     const res = await POST(req);
 
