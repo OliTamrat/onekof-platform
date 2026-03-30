@@ -34,9 +34,9 @@ export default function DocsWikiPage() {
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" placeholder="Search wiki..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <input type="text" placeholder={t('wiki.searchWiki')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
-          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"><BookOpen className="h-4 w-4" />New Page</Button>
+          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"><BookOpen className="h-4 w-4" />{t('wiki.newPage')}</Button>
         </div>
         <div className="space-y-3">
           {filteredPages.map((page) => (
@@ -61,11 +61,11 @@ export default function DocsWikiPage() {
       </div>
       <SlideoutPanel isOpen={isSlideoutOpen} onClose={() => setIsSlideoutOpen(false)} title={selectedPage?.title || 'Wiki Page'}>
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Page Information">
+          <SlideoutPanelSection title={t('wiki.pageInformation')}>
             <div className="space-y-4">
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Category</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.category}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Author</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.author}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Updated</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.lastUpdated}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.category')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.category}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.createdBy')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.author}</p></div>
+              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.lastUpdated')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.lastUpdated}</p></div>
               <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Views</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.views}</p></div>
             </div>
           </SlideoutPanelSection>

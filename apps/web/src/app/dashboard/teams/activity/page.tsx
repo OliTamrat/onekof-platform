@@ -23,16 +23,6 @@ import {
 } from '@/components/ui/slideout-panel';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/teams/overview' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/teams/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/teams/board' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/teams/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/teams/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/teams/pages' },
-];
-
 // Mock activity data
 const ACTIVITIES = [
   { id: 1, type: 'member_joined', teamName: 'Engineering', user: 'John Smith', description: 'joined the team', time: '2 hours ago', icon: UserPlus, color: 'text-blue-500' },
@@ -50,6 +40,16 @@ export default function TeamsActivityPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedActivity, setSelectedActivity] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
+
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/teams/overview' },
+    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/teams/list' },
+    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/teams/board' },
+    { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/teams/code' },
+    { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/teams/forms' },
+    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/teams/timeline' },
+    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/teams/pages' },
+  ];
 
   const filteredActivities = ACTIVITIES.filter((activity) =>
     activity.teamName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,7 +73,7 @@ export default function TeamsActivityPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#10B981] text-white font-semibold">
                 <Activity className="h-5 w-5" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Team Activity</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('teams.teamActivity')}</h1>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ export default function TeamsActivityPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search activity..."
+                placeholder={t('teams.searchActivity')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -154,29 +154,29 @@ export default function TeamsActivityPage() {
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title="Activity Details"
+        title={t('teams.activityDetails')}
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Activity Information">
+          <SlideoutPanelSection title={t('teams.activityInformation')}>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">User</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.name')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedActivity?.user}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.team')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedActivity?.teamName}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Action</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.actions')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedActivity?.description}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.date')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedActivity?.time}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.type')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1 capitalize">{selectedActivity?.type.replace('_', ' ')}</p>
               </div>
             </div>

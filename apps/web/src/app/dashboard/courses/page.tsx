@@ -1,7 +1,6 @@
 'use client';
 
-import {  GraduationCap
-} from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 export default function CoursesPage() {
@@ -13,9 +12,9 @@ export default function CoursesPage() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
             <GraduationCap className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
-          <h1 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-white">Courses</h1>
+          <h1 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-white">{t('coursesPage.title')}</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-md">
-            Course management features are coming soon
+            {t('coursesPage.description')}
           </p>
         </div>
       </div>

@@ -138,6 +138,7 @@
     "settings": "Settings",
     "notifications": "Notifications",
     "viewAllProjects": "View all projects →",
+    "backToHomepage": "Return to Homepage",
     "searchPlaceholder": "Search or jump to...",
     "createNew": "+ Create",
     "calendar": "Calendar",
@@ -421,7 +422,11 @@
     "constructionEng": "Construction / Engineering",
     "constructionEngDesc": "Construction and engineering projects",
     "customProject": "Custom Project",
-    "customProjectDesc": "Fully customizable project type"
+    "customProjectDesc": "Fully customizable project type",
+    "projectsBoard": "Projects Board",
+    "createProject": "Create Project",
+    "searchProjects": "Search projects...",
+    "planning": "Planning"
   },
   "budget": {
     "title": "Budget",
@@ -574,7 +579,11 @@
     "created": "Created",
     "noTeamsMatchingFilters": "No teams found matching your filters",
     "code": "Code",
-    "forms": "Forms"
+    "forms": "Forms",
+    "teamActivity": "Team Activity",
+    "searchActivity": "Search activity...",
+    "activityDetails": "Activity Details",
+    "activityInformation": "Activity Information"
   },
   "goals": {
     "title": "Goals",
@@ -600,7 +609,22 @@
     "cycle": "Cycle",
     "noGoalsMatchingFilters": "No goals found matching your filters",
     "goalsBoard": "Goals Board",
-    "noGoalsBoard": "No goals"
+    "noGoalsBoard": "No goals",
+    "activeGoals": "Active Goals",
+    "completedGoals": "Completed Goals",
+    "exceededTarget": "Exceeded Target",
+    "thisQuarter": "This Quarter",
+    "searchActiveGoals": "Search active goals...",
+    "searchCompletedGoals": "Search completed goals...",
+    "goalDetails": "Goal Details",
+    "goalInformation": "Goal Information",
+    "completionDetails": "Completion Details",
+    "goalAchievement": "Goal Achievement",
+    "completedDate": "Completed Date",
+    "duration": "Duration",
+    "keyResultsCompleted": "Key Results Completed",
+    "overallProgress": "Overall Progress",
+    "achievement": "Achievement"
   },
   "settings": {
     "title": "Settings",
@@ -777,7 +801,46 @@
     "noResearchPlans": "No research plans yet. Create one to get started.",
     "noMaterials": "No materials tracked yet. Create one to manage resources.",
     "noInspections": "No inspections scheduled. Create one to start tracking.",
-    "noArticles": "No articles found for"
+    "noArticles": "No articles found for",
+    "noCompliance": "Compliance module",
+    "noComplianceDesc": "Track regulatory requirements, audit trails, and compliance documentation. Configure your compliance framework to get started.",
+    "configureCompliance": "Configure Compliance",
+    "noMedical": "Medical records",
+    "noMedicalDesc": "Manage patient records, appointments, and medical documentation. Set up your medical workspace to begin.",
+    "setupMedical": "Set Up Medical",
+    "noProcurement": "No procurement records",
+    "noProcurementDesc": "Track purchase orders, vendor management, and procurement workflows in one place.",
+    "createPO": "Create PO",
+    "noSafety": "Safety management",
+    "noSafetyDesc": "Monitor safety incidents, inspections, and compliance reports. Set up your safety program.",
+    "configureSafety": "Configure Safety",
+    "noEquipment": "No equipment tracked",
+    "noEquipmentDesc": "Track equipment inventory, maintenance schedules, and utilization across your organization.",
+    "addEquipment": "Add Equipment",
+    "noFacilities": "No facilities registered",
+    "noFacilitiesDesc": "Manage buildings, rooms, and facility maintenance in one central location.",
+    "addFacility": "Add Facility",
+    "noSites": "No sites configured",
+    "noSitesDesc": "Track project sites, locations, and geographic data for field operations.",
+    "addSite": "Add Site",
+    "noResources": "No resources allocated",
+    "noResourcesDesc": "Manage resource allocation, capacity planning, and utilization tracking.",
+    "addResource": "Add Resource",
+    "noGrants": "No grants tracked",
+    "noGrantsDesc": "Track grant applications, funding sources, and disbursement schedules.",
+    "addGrant": "Add Grant",
+    "noImpact": "Impact tracking",
+    "noImpactDesc": "Measure and report on project impact, outcomes, and key performance indicators.",
+    "configureMetrics": "Configure Metrics",
+    "noPatients": "No patients registered",
+    "noPatientsDesc": "Add your first patient record to start managing medical information and appointments.",
+    "addPatient": "Add Patient",
+    "noCourses": "No courses available",
+    "noCoursesDesc": "Course management features are coming soon.",
+    "nothingHereYet": "Nothing here yet",
+    "getStartedDefault": "Get started by creating your first item.",
+    "noDevelopment": "No development tasks yet. Create one to track your work.",
+    "noMarketing": "No marketing tasks yet. Create one to get started."
   },
   "pricing": {
     "choosePlan": "Choose your plan",
@@ -1167,7 +1230,10 @@
     "orgSettings": "Organization Settings",
     "orgSettingsDesc": "Manage your organization name, plan, and preferences.",
     "billingSubscription": "Billing & Subscription",
-    "billingSubscriptionDesc": "View your plan, manage billing, and upgrade."
+    "billingSubscriptionDesc": "View your plan, manage billing, and upgrade.",
+    "searchWiki": "Search wiki...",
+    "newPage": "New Page",
+    "pageInformation": "Page Information"
   },
   "calendar": {
     "title": "Calendar",
@@ -2201,5 +2267,55 @@
   "underConstruction": {
     "title": "Under Construction",
     "description": "This page is under construction and will be available soon."
+  },
+  "compliancePage": {
+    "title": "Compliance",
+    "description": "Track regulatory requirements and audit documentation"
+  },
+  "procurementPage": {
+    "title": "Procurement",
+    "description": "Manage purchase orders, vendors, and procurement workflows"
+  },
+  "equipmentPage": {
+    "title": "Equipment",
+    "description": "Track equipment inventory, maintenance, and utilization"
+  },
+  "facilitiesPage": {
+    "title": "Facilities",
+    "description": "Manage buildings, rooms, and facility maintenance"
+  },
+  "grantsPage": {
+    "title": "Grants",
+    "description": "Track grant applications, funding sources, and disbursements"
+  },
+  "impactPage": {
+    "title": "Impact Measurement",
+    "description": "Measure and report on project outcomes and KPIs"
+  },
+  "safetyPage": {
+    "title": "Safety Management",
+    "description": "Monitor safety incidents, inspections, and compliance"
+  },
+  "coursesPage": {
+    "title": "Courses",
+    "description": "Course management features are coming soon"
+  },
+  "sitesPage": {
+    "title": "Sites",
+    "description": "Track project sites and geographic operations"
+  },
+  "patientsPage": {
+    "title": "Patients",
+    "description": "Track patient records and medical history"
+  },
+  "resourcesPage": {
+    "title": "Resources",
+    "description": "Manage resource allocation and capacity planning"
+  },
+  "issuesList": {
+    "loadingIssues": "Loading issues...",
+    "noIssues": "No issues",
+    "getStarted": "Get started by creating a new issue.",
+    "noMatchSearch": "No issues match your search."
   }
 }

@@ -11,7 +11,7 @@ import { PricingModal } from '@/components/pricing-modal';
 import { CommandPalette } from '@/components/command-palette';
 import { NotificationCenter } from '@/components/notification-center';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { useLanguage } from '@/contexts/language-context';
+import { useLanguage, LOCALE_NAMES, LOCALE_FLAGS, type Locale } from '@/contexts/language-context';
 import { KeyboardShortcutsModal, useKeyboardShortcuts } from '@/components/keyboard-shortcuts';
 import { CollapsibleSidebar } from './collapsible-sidebar';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,8 @@ import {
   Moon,
   Sun,
   Monitor,
+  Globe,
+  ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconRenderer } from '@/components/ui/icon-renderer';
@@ -70,7 +72,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { currentOrganization, organizations, projects, currentProject, switchOrganization, setCurrentProject } = useWorkspace();
-  const { t } = useLanguage();
+  const { t, locale, setLocale } = useLanguage();
   useKeyboardShortcuts();
 
   const [isProjectsExpanded, setIsProjectsExpanded] = React.useState(true);
@@ -264,15 +266,30 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 <span className="text-purple-600 dark:text-purple-400 font-medium">{t('nav.seePlans')}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/settings")}>
-                <SettingsIcon className="mr-2 h-4 w-4" />
-                {t('nav.settings')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push("/help")}>
-                <HelpCircle className="mr-2 h-4 w-4" />
-                {t('nav.help')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {/* Language Switcher - Mobile */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Globe className="mr-2 h-4 w-4" />
+                  <span>{t('settings.language')}</span>
+                  <span className="ml-auto text-xs text-slate-500">{LOCALE_FLAGS[locale]}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {(['en', 'am', 'om', 'ti', 'so'] as Locale[]).map((l) => (
+                    <DropdownMenuItem
+                      key={l}
+                      onClick={() => setLocale(l)}
+                      className={locale === l ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : ''}
+                    >
+                      <span className="mr-2 w-6 text-xs font-semibold">{LOCALE_FLAGS[l]}</span>
+                      <span className={(l === 'am' || l === 'ti') ? 'font-ethiopic' : ''}>
+                        {LOCALE_NAMES[l]}
+                      </span>
+                      {locale === l && <span className="ml-auto text-[#1C8C7D]">&#10003;</span>}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              {/* Theme Switcher */}
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -294,6 +311,21 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/settings")}>
+                <SettingsIcon className="mr-2 h-4 w-4" />
+                {t('nav.settings')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/help")}>
+                <HelpCircle className="mr-2 h-4 w-4" />
+                {t('nav.help')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {/* Return to Homepage */}
+              <DropdownMenuItem onClick={() => router.push("/")}>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                {t('nav.backToHomepage')}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

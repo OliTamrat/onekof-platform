@@ -138,6 +138,7 @@
     "settings": "Qindaa'ina",
     "notifications": "Beeksisa",
     "viewAllProjects": "Pirojektota hundaa ilaali →",
+    "backToHomepage": "Gara Fuula Jalqabaatti Deebi'i",
     "searchPlaceholder": "Barbaadi ykn utaali gara...",
     "createNew": "+ Uumi",
     "calendar": "Kaaleendarii",
@@ -421,7 +422,11 @@
     "constructionEng": "Ijaarsaa / Injinariingii",
     "constructionEngDesc": "Pirojektota ijaarsaa fi injinariingiif",
     "customProject": "Pirojektii Maamila",
-    "customProjectDesc": "Gosa pirojektii guutummaatti maamila"
+    "customProjectDesc": "Gosa pirojektii guutummaatti maamila",
+    "projectsBoard": "Gabatee Pirojektii",
+    "createProject": "Pirojektii Uumi",
+    "searchProjects": "Pirojektii barbaadi...",
+    "planning": "Karoora"
   },
   "budget": {
     "title": "Baajeta",
@@ -574,7 +579,11 @@
     "created": "Uumame",
     "noTeamsMatchingFilters": "Calaloo keessaniin gareen hin argamne",
     "code": "Koodii",
-    "forms": "Unkaawwan"
+    "forms": "Unkaawwan",
+    "teamActivity": "Sochii Garee",
+    "searchActivity": "Sochii barbaadi...",
+    "activityDetails": "Ibsa Sochii",
+    "activityInformation": "Odeeffannoo Sochii"
   },
   "goals": {
     "title": "Galmoota",
@@ -600,7 +609,22 @@
     "cycle": "Marsaa",
     "noGoalsMatchingFilters": "Calaloo keessaniin galmni hin argamne",
     "goalsBoard": "Boordii Galmootaa",
-    "noGoalsBoard": "Galmni hin jiru"
+    "noGoalsBoard": "Galmni hin jiru",
+    "activeGoals": "Galmoota Hojii Irra Jiran",
+    "completedGoals": "Galmoota Xumuraman",
+    "exceededTarget": "Kaayyoo Darbee",
+    "thisQuarter": "Kurmaana Kana",
+    "searchActiveGoals": "Galmoota hojii irra jiran barbaadi...",
+    "searchCompletedGoals": "Galmoota xumuraman barbaadi...",
+    "goalDetails": "Ibsa Galmoo",
+    "goalInformation": "Odeeffannoo Galmoo",
+    "completionDetails": "Ibsa Xumura",
+    "goalAchievement": "Fiixaan Ba'iinsa Galmoo",
+    "completedDate": "Guyyaa Xumura",
+    "duration": "Turtii",
+    "keyResultsCompleted": "Bu'aawwan Ijoo Xumuraman",
+    "overallProgress": "Adeemsa Waliigalaa",
+    "achievement": "Fiixaan Ba'iinsa"
   },
   "settings": {
     "title": "Qindaa'ina",
@@ -777,7 +801,46 @@
     "noResearchPlans": "Karoora qorannoo hanga ammaatti hin jiru. Jalqabuuf tokko uumaa.",
     "noMaterials": "Meeshaaleen hanga ammaatti hin hordofamne. Qabeenya bulchuuf tokko uumaa.",
     "noInspections": "Sakatta'iinsi hin sagantaa'in. Hordofuuf tokko uumaa.",
-    "noArticles": "Barreeffamni hin argamne"
+    "noArticles": "Barreeffamni hin argamne",
+    "noCompliance": "Mooojulii hordoffii",
+    "noComplianceDesc": "Ulaagaalee to'annoo, tarree oddeetii fi sanadoota hordoffii hordofi.",
+    "configureCompliance": "Hordoffii Qindeessi",
+    "noMedical": "Galmee yaalaa",
+    "noMedicalDesc": "Galmee dhukkubsataa, beellama fi sanadoota yaalaa bulchi.",
+    "setupMedical": "Yaalaa Qindeessi",
+    "noProcurement": "Galmeen bittaa hin jiru",
+    "noProcurementDesc": "Ajaja bittaa, bulchiinsa dhiyeessituu fi adeemsa bittaa bakka tokkotti hordofi.",
+    "createPO": "Ajaja Bittaa Uumi",
+    "noSafety": "Bulchiinsa nageenyaa",
+    "noSafetyDesc": "Balaa nageenyaa, sakatta'iinsa fi gabaasa hordoffii hordofi.",
+    "configureSafety": "Nageenyaa Qindeessi",
+    "noEquipment": "Meeshaan hordofame hin jiru",
+    "noEquipmentDesc": "Herrega meeshaa, sagantaa suphaa fi itti fayyadama hordofi.",
+    "addEquipment": "Meeshaa Dabali",
+    "noFacilities": "Dhaabbanni galmaa'e hin jiru",
+    "noFacilitiesDesc": "Gamoo, kutaa fi suphaa dhaabbataa bakka tokkoo giddu-galeessaatti bulchi.",
+    "addFacility": "Dhaabbata Dabali",
+    "noSites": "Bakki qindaa'e hin jiru",
+    "noSitesDesc": "Bakka pirojektii, iddoo fi daataa jiyoogiraafii hojii dirreef hordofi.",
+    "addSite": "Bakka Dabali",
+    "noResources": "Qabeenya ramadame hin jiru",
+    "noResourcesDesc": "Ramaddii qabeenyaa, karoora dandeettii fi hordoffii itti fayyadama bulchi.",
+    "addResource": "Qabeenya Dabali",
+    "noGrants": "Deeggarsi hordofame hin jiru",
+    "noGrantsDesc": "Iyyannoo deeggarsa, madda maallaqaa fi sagantaa raabsaa hordofi.",
+    "addGrant": "Deeggarsa Dabali",
+    "noImpact": "Hordoffii dhiibbaa",
+    "noImpactDesc": "Dhiibbaa pirojektii, bu'aa fi agarsiistuuwwan raawwii ijoo irratti safaruufi gabaasi.",
+    "configureMetrics": "Safartuu Qindeessi",
+    "noPatients": "Dhukkubsataan galmaa'e hin jiru",
+    "noPatientsDesc": "Odeeffannoo yaalaa fi beellama bulchuuf galmee dhukkubsataa jalqabaa dabali.",
+    "addPatient": "Dhukkubsataa Dabali",
+    "noCourses": "Barnooti hin jiru",
+    "noCoursesDesc": "Amaloota bulchiinsa barnootaa dhiyootti ni dhufu.",
+    "nothingHereYet": "Hanga ammaatti homtuu hin jiru",
+    "getStartedDefault": "Wanta jalqabaa kee uumuudhaan eegali.",
+    "noDevelopment": "Hanga ammaatti hojii misooma hin jiru. Hojii kee hordofuuf tokko uumi.",
+    "noMarketing": "Hanga ammaatti hojii gabaa hin jiru. Eegaluuf tokko uumi."
   },
   "pricing": {
     "choosePlan": "Karoora filadhaa",
@@ -1173,7 +1236,10 @@
     "orgSettings": "Qindaa'ina Dhaabbataa",
     "orgSettingsDesc": "Maqaa dhaabbataa, karoora fi filannoo keessan bulchaa.",
     "billingSubscription": "Kaffaltii fi Maallaqa",
-    "billingSubscriptionDesc": "Karoora keessan ilaalaa, kaffaltii bulchaa, ol guddiisaa."
+    "billingSubscriptionDesc": "Karoora keessan ilaalaa, kaffaltii bulchaa, ol guddiisaa.",
+    "searchWiki": "Wiikii barbaadi...",
+    "newPage": "Fuula Haaraa",
+    "pageInformation": "Odeeffannoo Fuulaa"
   },
   "calendar": {
     "title": "Kaaleendarii",
@@ -2207,5 +2273,55 @@
   "underConstruction": {
     "title": "Ijaarsa Irra",
     "description": "Fuulli kun ijaarsa irra jira, dhiyootti ni argama."
+  },
+  "compliancePage": {
+    "title": "Hordoffii",
+    "description": "Ulaagaalee to'annoo fi sanadoota oddeetii hordofi"
+  },
+  "procurementPage": {
+    "title": "Bittaa",
+    "description": "Ajaja bittaa, dhiyeessituu fi adeemsa bittaa bulchi"
+  },
+  "equipmentPage": {
+    "title": "Meeshaalee",
+    "description": "Herrega meeshaa, suphaa fi itti fayyadama hordofi"
+  },
+  "facilitiesPage": {
+    "title": "Dhaabbileen",
+    "description": "Gamoo, kutaa fi suphaa dhaabbataa bulchi"
+  },
+  "grantsPage": {
+    "title": "Deeggarsa",
+    "description": "Iyyannoo deeggarsa, madda maallaqaa fi raabsaa hordofi"
+  },
+  "impactPage": {
+    "title": "Safara Dhiibbaa",
+    "description": "Bu'aa pirojektii fi KPIs irratti safari fi gabaasi"
+  },
+  "safetyPage": {
+    "title": "Bulchiinsa Nageenyaa",
+    "description": "Balaa nageenyaa, sakatta'iinsa fi hordoffii hordofi"
+  },
+  "coursesPage": {
+    "title": "Barnoota",
+    "description": "Amaloota bulchiinsa barnootaa dhiyootti ni dhufu"
+  },
+  "sitesPage": {
+    "title": "Bakkeewwan",
+    "description": "Bakka pirojektii fi hojii jiyoogiraafii hordofi"
+  },
+  "patientsPage": {
+    "title": "Dhukkubsattoota",
+    "description": "Galmee dhukkubsataa fi seenaa yaalaa hordofi"
+  },
+  "resourcesPage": {
+    "title": "Qabeenyaa",
+    "description": "Ramaddii qabeenyaa fi karoora dandeettii bulchi"
+  },
+  "issuesList": {
+    "loadingIssues": "Dhimmoota fe'aa jira...",
+    "noIssues": "Dhimmootni hin jiran",
+    "getStarted": "Dhimma haaraa uumuudhaan eegali.",
+    "noMatchSearch": "Barbaachaa kee waliin kan walsimatu hin jiru."
   }
 }
