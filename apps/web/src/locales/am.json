@@ -138,6 +138,7 @@
     "settings": "ቅንብሮች",
     "notifications": "ማሳወቂያዎች",
     "viewAllProjects": "ሁሉንም ፕሮጀክቶች ይመልከቱ →",
+    "backToHomepage": "ወደ መነሻ ገጽ ተመለስ",
     "searchPlaceholder": "ፈልግ ወይም ዝለል ወደ...",
     "createNew": "+ ፍጠር",
     "calendar": "ቀን መቁጠሪያ",
@@ -421,7 +422,11 @@
     "constructionEng": "ግንባታ / ኢንጂነሪንግ",
     "constructionEngDesc": "የግንባታ እና ኢንጂነሪንግ ፕሮጀክቶች",
     "customProject": "ብጁ ፕሮጀክት",
-    "customProjectDesc": "ሙሉ በሙሉ ሊበጅ የሚችል የፕሮጀክት ዓይነት"
+    "customProjectDesc": "ሙሉ በሙሉ ሊበጅ የሚችል የፕሮጀክት ዓይነት",
+    "projectsBoard": "የፕሮጀክቶች ሰሌዳ",
+    "createProject": "ፕሮጀክት ፍጠር",
+    "searchProjects": "ፕሮጀክቶችን ይፈልጉ...",
+    "planning": "ዕቅድ"
   },
   "budget": {
     "title": "በጀት",
@@ -574,7 +579,11 @@
     "created": "የተፈጠረ",
     "noTeamsMatchingFilters": "ከማጣሪያዎችዎ ጋር የሚዛመድ ቡድን አልተገኘም",
     "code": "ኮድ",
-    "forms": "ቅጾች"
+    "forms": "ቅጾች",
+    "teamActivity": "የቡድን እንቅስቃሴ",
+    "searchActivity": "እንቅስቃሴ ይፈልጉ...",
+    "activityDetails": "የእንቅስቃሴ ዝርዝሮች",
+    "activityInformation": "የእንቅስቃሴ መረጃ"
   },
   "goals": {
     "title": "ግቦች",
@@ -600,7 +609,22 @@
     "cycle": "ዑደት",
     "noGoalsMatchingFilters": "ከማጣሪያዎችዎ ጋር የሚዛመድ ግብ አልተገኘም",
     "goalsBoard": "የግቦች ቦርድ",
-    "noGoalsBoard": "ግብ የለም"
+    "noGoalsBoard": "ግብ የለም",
+    "activeGoals": "ንቁ ግቦች",
+    "completedGoals": "የተጠናቀቁ ግቦች",
+    "exceededTarget": "ዒላማ ያለፉ",
+    "thisQuarter": "ይህ ሩብ ዓመት",
+    "searchActiveGoals": "ንቁ ግቦችን ይፈልጉ...",
+    "searchCompletedGoals": "የተጠናቀቁ ግቦችን ይፈልጉ...",
+    "goalDetails": "የግብ ዝርዝሮች",
+    "goalInformation": "የግብ መረጃ",
+    "completionDetails": "የማጠናቀቂያ ዝርዝሮች",
+    "goalAchievement": "የግብ ስኬት",
+    "completedDate": "የተጠናቀቀበት ቀን",
+    "duration": "ቆይታ",
+    "keyResultsCompleted": "የተጠናቀቁ ቁልፍ ውጤቶች",
+    "overallProgress": "አጠቃላይ ሂደት",
+    "achievement": "ስኬት"
   },
   "settings": {
     "title": "ቅንብሮች",
@@ -777,7 +801,46 @@
     "noResearchPlans": "እስካሁን የምርምር ዕቅድ የለም። ለመጀመር አንድ ይፍጠሩ።",
     "noMaterials": "እስካሁን የተከታተለ ቁሳቁስ የለም። ሀብቶችን ለማስተዳደር አንድ ይፍጠሩ።",
     "noInspections": "የታቀደ ምርመራ የለም። ለመከታተል አንድ ይፍጠሩ።",
-    "noArticles": "ለ ምንም ጽሑፍ አልተገኘም"
+    "noArticles": "ለ ምንም ጽሑፍ አልተገኘም",
+    "noCompliance": "የተገዢነት ሞጁል",
+    "noComplianceDesc": "የቁጥጥር መስፈርቶችን፣ የኦዲት ዱካዎችን እና የተገዢነት ሰነዶችን ይከታተሉ።",
+    "configureCompliance": "ተገዢነትን ያዋቅሩ",
+    "noMedical": "የሕክምና መዝገቦች",
+    "noMedicalDesc": "የታካሚ መዝገቦችን፣ ቀጠሮዎችን እና የሕክምና ሰነዶችን ያስተዳድሩ።",
+    "setupMedical": "ሕክምና ያዋቅሩ",
+    "noProcurement": "የግዥ መዝገቦች የሉም",
+    "noProcurementDesc": "የግዥ ትዕዛዞችን፣ የአቅራቢ አስተዳደርን እና የግዥ ሂደቶችን በአንድ ቦታ ይከታተሉ።",
+    "createPO": "የግዥ ትዕዛዝ ፍጠር",
+    "noSafety": "የደህንነት አስተዳደር",
+    "noSafetyDesc": "የደህንነት ክስተቶችን፣ ፍተሻዎችን እና የተገዢነት ሪፖርቶችን ይከታተሉ።",
+    "configureSafety": "ደህንነትን ያዋቅሩ",
+    "noEquipment": "የተከታተለ መሳሪያ የለም",
+    "noEquipmentDesc": "የመሳሪያ ቆጠራን፣ የጥገና መርሐ ግብሮችን እና አጠቃቀምን ይከታተሉ።",
+    "addEquipment": "መሳሪያ ያክሉ",
+    "noFacilities": "የተመዘገበ ተቋም የለም",
+    "noFacilitiesDesc": "ህንፃዎችን፣ ክፍሎችን እና የተቋም ጥገናን በአንድ ማዕከላዊ ቦታ ያስተዳድሩ።",
+    "addFacility": "ተቋም ያክሉ",
+    "noSites": "የተዋቀረ ቦታ የለም",
+    "noSitesDesc": "የፕሮጀክት ቦታዎችን፣ አካባቢዎችን እና ለመስክ ስራዎች ጂኦግራፊያዊ መረጃ ይከታተሉ።",
+    "addSite": "ቦታ ያክሉ",
+    "noResources": "የተመደበ ሀብት የለም",
+    "noResourcesDesc": "የሀብት ምደባ፣ የአቅም ዕቅድ እና የአጠቃቀም ክትትልን ያስተዳድሩ።",
+    "addResource": "ሀብት ያክሉ",
+    "noGrants": "የተከታተለ ድጋፍ የለም",
+    "noGrantsDesc": "የድጋፍ ማመልከቻዎችን፣ የገንዘብ ምንጮችን እና የስርጭት መርሐ ግብሮችን ይከታተሉ።",
+    "addGrant": "ድጋፍ ያክሉ",
+    "noImpact": "የተፅዕኖ ክትትል",
+    "noImpactDesc": "በፕሮጀክት ተፅዕኖ፣ ውጤቶች እና ዋና የአፈፃፀም አመልካቾች ላይ ይለኩ እና ያሳውቁ።",
+    "configureMetrics": "መለኪያዎችን ያዋቅሩ",
+    "noPatients": "የተመዘገበ ታካሚ የለም",
+    "noPatientsDesc": "የሕክምና መረጃ እና ቀጠሮዎችን ለማስተዳደር የመጀመሪያ ታካሚ መዝገብ ያክሉ።",
+    "addPatient": "ታካሚ ያክሉ",
+    "noCourses": "ምንም ትምህርቶች የሉም",
+    "noCoursesDesc": "የትምህርት አስተዳደር ባህሪያት በቅርቡ ይመጣሉ።",
+    "nothingHereYet": "እስካሁን ምንም የለም",
+    "getStartedDefault": "የመጀመሪያ ንጥልዎን በመፍጠር ይጀምሩ።",
+    "noDevelopment": "እስካሁን የልማት ተግባራት የሉም። ስራዎን ለመከታተል አንድ ይፍጠሩ።",
+    "noMarketing": "እስካሁን የግብይት ተግባራት የሉም። ለመጀመር አንድ ይፍጠሩ።"
   },
   "pricing": {
     "choosePlan": "ዕቅድ ይምረጡ",
@@ -1167,7 +1230,10 @@
     "orgSettings": "የድርጅት ቅንብሮች",
     "orgSettingsDesc": "የድርጅትዎን ስም፣ ዕቅድ እና ምርጫዎች ያስተዳድሩ።",
     "billingSubscription": "ክፍያ እና ደንበኝነት",
-    "billingSubscriptionDesc": "ዕቅድዎን ይመልከቱ፣ ክፍያን ያስተዳድሩ እና ያሻሽሉ።"
+    "billingSubscriptionDesc": "ዕቅድዎን ይመልከቱ፣ ክፍያን ያስተዳድሩ እና ያሻሽሉ።",
+    "searchWiki": "ዊኪ ይፈልጉ...",
+    "newPage": "አዲስ ገጽ",
+    "pageInformation": "የገጽ መረጃ"
   },
   "calendar": {
     "title": "ቀን መቁጠሪያ",
@@ -1337,6 +1403,50 @@
   "medicalPage": {
     "title": "የሕክምና አገልግሎቶች",
     "description": "የሕክምና አገልግሎቶችን፣ መሣሪያዎችን እና የታካሚ ክብካቤን ያስተዳድሩ"
+  },
+  "compliancePage": {
+    "title": "ተገዢነት",
+    "description": "የቁጥጥር መስፈርቶችን እና የኦዲት ሰነዶችን ይከታተሉ"
+  },
+  "procurementPage": {
+    "title": "ግዥ",
+    "description": "የግዥ ትዕዛዞችን፣ አቅራቢዎችን እና የግዥ ሂደቶችን ያስተዳድሩ"
+  },
+  "equipmentPage": {
+    "title": "መሳሪያዎች",
+    "description": "የመሳሪያ ቆጠራ፣ ጥገና እና አጠቃቀምን ይከታተሉ"
+  },
+  "facilitiesPage": {
+    "title": "ተቋማት",
+    "description": "ህንፃዎችን፣ ክፍሎችን እና የተቋም ጥገናን ያስተዳድሩ"
+  },
+  "grantsPage": {
+    "title": "ድጋፎች",
+    "description": "የድጋፍ ማመልከቻዎችን፣ የገንዘብ ምንጮችን እና ስርጭቶችን ይከታተሉ"
+  },
+  "impactPage": {
+    "title": "የተፅዕኖ ልኬት",
+    "description": "በፕሮጀክት ውጤቶች እና KPIs ላይ ይለኩ እና ያሳውቁ"
+  },
+  "safetyPage": {
+    "title": "የደህንነት አስተዳደር",
+    "description": "የደህንነት ክስተቶችን፣ ፍተሻዎችን እና ተገዢነትን ይከታተሉ"
+  },
+  "coursesPage": {
+    "title": "ትምህርቶች",
+    "description": "የትምህርት አስተዳደር ባህሪያት በቅርቡ ይመጣሉ"
+  },
+  "sitesPage": {
+    "title": "ቦታዎች",
+    "description": "የፕሮጀክት ቦታዎችን እና ጂኦግራፊያዊ ስራዎችን ይከታተሉ"
+  },
+  "patientsPage": {
+    "title": "ታካሚዎች",
+    "description": "የታካሚ መዝገቦችን እና የሕክምና ታሪክን ይከታተሉ"
+  },
+  "resourcesPage": {
+    "title": "ሀብቶች",
+    "description": "የሀብት ምደባ እና የአቅም ዕቅድን ያስተዳድሩ"
   },
   "timeline": {
     "title": "የጊዜ ሰሌዳ",
@@ -2197,6 +2307,12 @@
     "emailNotificationsDesc": "ለቡድን እንቅስቃሴ የኢሜይል ዝመናዎችን ይቀበሉ",
     "notifyOnInvite": "በቡድን ግብዣ ላይ ያሳውቁ",
     "notifyOnInviteDesc": "ወደ ቡድን ሲጋበዙ ማሳወቂያ ይቀበሉ"
+  },
+  "issuesList": {
+    "loadingIssues": "ጉዳዮችን በመጫን ላይ...",
+    "noIssues": "ጉዳዮች የሉም",
+    "getStarted": "አዲስ ጉዳይ በመፍጠር ይጀምሩ።",
+    "noMatchSearch": "ከፍለጋዎ ጋር የሚዛመድ ጉዳይ የለም።"
   },
   "underConstruction": {
     "title": "በግንባታ ላይ",

@@ -69,7 +69,7 @@ export default function GoalsActivePage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Active Goals"
+        title={t('goals.activeGoals')}
         icon={<Target className="h-6 w-6" />}
         iconColor="#8B5CF6"
         currentTab="active"
@@ -82,23 +82,23 @@ export default function GoalsActivePage() {
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Active Goals</div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.activeGoals')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredGoals.length}</div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">On Track</div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.onTrack')}</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
               {filteredGoals.filter(g => g.status === 'ON_TRACK').length}
             </div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">At Risk</div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.atRisk')}</div>
             <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
               {filteredGoals.filter(g => g.status === 'AT_RISK').length}
             </div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Behind</div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.behind')}</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
               {filteredGoals.filter(g => g.status === 'BEHIND').length}
             </div>
@@ -111,7 +111,7 @@ export default function GoalsActivePage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search active goals..."
+              placeholder={t('goals.searchActiveGoals')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -143,7 +143,7 @@ export default function GoalsActivePage() {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400">
-                  <span>Progress</span>
+                  <span>{t('goals.progress')}</span>
                   <span className="font-medium">{goal.progress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
@@ -165,7 +165,7 @@ export default function GoalsActivePage() {
                 </div>
                 <div className="text-xs text-gray-600 dark:text-slate-400">
                   <Flag className="h-3 w-3 inline mr-1" />
-                  {goal.completedResults}/{goal.keyResults} Key Results
+                  {goal.completedResults}/{goal.keyResults} {t('goals.keyResults')}
                 </div>
               </div>
             </div>
@@ -177,13 +177,13 @@ export default function GoalsActivePage() {
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title={selectedGoal?.title || 'Goal Details'}
+        title={selectedGoal?.title || t('goals.goalDetails')}
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Goal Information">
+          <SlideoutPanelSection title={t('goals.goalInformation')}>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.status')}</label>
                 <p className="text-sm mt-1">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedGoal?.status)}`}>
                     {selectedGoal?.status.replace('_', ' ')}
@@ -191,7 +191,7 @@ export default function GoalsActivePage() {
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Priority</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.priority')}</label>
                 <p className="text-sm mt-1">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(selectedGoal?.priority)}`}>
                     {selectedGoal?.priority}
@@ -199,10 +199,10 @@ export default function GoalsActivePage() {
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.progress')}</label>
                 <div className="mt-2">
                   <div className="flex items-center justify-between text-xs text-gray-600 dark:text-slate-400 mb-1">
-                    <span>Overall Progress</span>
+                    <span>{t('goals.overallProgress')}</span>
                     <span className="font-medium">{selectedGoal?.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
@@ -214,19 +214,19 @@ export default function GoalsActivePage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.team')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.team}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Owner</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.owner')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.owner}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Due Date</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.dueDate')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.dueDate}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Key Results</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.keyResults')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">
                   {selectedGoal?.completedResults} of {selectedGoal?.keyResults} completed
                 </p>

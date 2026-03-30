@@ -138,6 +138,7 @@
     "settings": "Dejinta",
     "notifications": "Ogeysiisyada",
     "viewAllProjects": "Dhammaan mashruucyada arag →",
+    "backToHomepage": "Ku noqo Bogga Hore",
     "searchPlaceholder": "Raadi ama u bood...",
     "createNew": "+ Samee",
     "calendar": "Kalandarka",
@@ -421,7 +422,11 @@
     "constructionEng": "Dhismo / Injineernimo",
     "constructionEngDesc": "Mashruucyada dhismaha iyo injineernimada",
     "customProject": "Mashruuc gaar ah",
-    "customProjectDesc": "Mashruuc si buuxda loo habeyn karo"
+    "customProjectDesc": "Mashruuc si buuxda loo habeyn karo",
+    "projectsBoard": "Guudka Mashruucyada",
+    "createProject": "Mashruuc Samee",
+    "searchProjects": "Mashruucyada raadi...",
+    "planning": "Qorsheyn"
   },
   "budget": {
     "title": "Miisaaniyad",
@@ -574,7 +579,11 @@
     "created": "La sameeyey",
     "noTeamsMatchingFilters": "Koox la helin shaandhayaashaada",
     "code": "Koodh",
-    "forms": "Foomamka"
+    "forms": "Foomamka",
+    "teamActivity": "Dhaqdhaqaaqa Kooxda",
+    "searchActivity": "Dhaqdhaqaaqa raadi...",
+    "activityDetails": "Faahfaahinta Dhaqdhaqaaqa",
+    "activityInformation": "Macluumaadka Dhaqdhaqaaqa"
   },
   "goals": {
     "title": "Hadafyada",
@@ -600,7 +609,22 @@
     "cycle": "Wareega",
     "noGoalsMatchingFilters": "Hadaf la helin shaandhayaashaada",
     "goalsBoard": "Sambalka hadafyada",
-    "noGoalsBoard": "Hadaf ma jiro"
+    "noGoalsBoard": "Hadaf ma jiro",
+    "activeGoals": "Hadafyada Firfircoon",
+    "completedGoals": "Hadafyada La Dhammeeyey",
+    "exceededTarget": "Hadafka Ka Dhaafay",
+    "thisQuarter": "Rubucan",
+    "searchActiveGoals": "Hadafyada firfircoon raadi...",
+    "searchCompletedGoals": "Hadafyada la dhammeeyey raadi...",
+    "goalDetails": "Faahfaahinta Hadafka",
+    "goalInformation": "Macluumaadka Hadafka",
+    "completionDetails": "Faahfaahinta Dhamaystirka",
+    "goalAchievement": "Guusha Hadafka",
+    "completedDate": "Taariikhda La Dhammeeyey",
+    "duration": "Muddada",
+    "keyResultsCompleted": "Natiijooyinka Muhiimka Ah Ee La Dhammeeyey",
+    "overallProgress": "Horumarka Guud",
+    "achievement": "Guul"
   },
   "settings": {
     "title": "Dejinta",
@@ -777,7 +801,46 @@
     "noResearchPlans": "Weli qorshe cilmi baadhis ma jiro. Mid samee si aad u bilowdo.",
     "noMaterials": "Weli agab la raadraacin. Mid samee si aad kheyraadka u maamusho.",
     "noInspections": "Weli kormeer la qorsheeyin. Mid samee si aad raadraacidda u bilowdo.",
-    "noArticles": "Maqaal lama helin"
+    "noArticles": "Maqaal lama helin",
+    "noCompliance": "Qaybta waafaqsanaan",
+    "noComplianceDesc": "Shuruudaha xeerarka, raadadka baadhitaanka iyo dukumentiyada waafaqsanaan la soco.",
+    "configureCompliance": "Waafaqsanaan Habee",
+    "noMedical": "Diiwaanka caafimaad",
+    "noMedicalDesc": "Diiwaanka bukaan-socodka, ballanaha iyo dukumentiyada caafimaad maamul.",
+    "setupMedical": "Caafimaad Habee",
+    "noProcurement": "Diiwaano iibsasho ma jiraan",
+    "noProcurementDesc": "Dalbadaha iibsashada, maamulka bixiyeyaasha iyo habka iibsashada meel kaliya ku la soco.",
+    "createPO": "Dalabad Iibsi Samee",
+    "noSafety": "Maamulka badbaadada",
+    "noSafetyDesc": "Dhacdooyinka badbaadada, baadhitaannada iyo warbixinaha waafaqsanaan la soco.",
+    "configureSafety": "Badbaadada Habee",
+    "noEquipment": "Qalab la soo socdo ma jiro",
+    "noEquipmentDesc": "Liiska qalabka, jadwalka dayactirka iyo isticmaalka la soco.",
+    "addEquipment": "Qalab Kudar",
+    "noFacilities": "Xarun la diiwaan geliyay ma jirto",
+    "noFacilitiesDesc": "Dhismayaasha, qolalka iyo dayactirka xarunta meel dhexe ku maamul.",
+    "addFacility": "Xarun Kudar",
+    "noSites": "Goob la habeeyey ma jirto",
+    "noSitesDesc": "Goobaha mashruuca, meelaha iyo xogta juquraafiga ee howlaha goobta la soco.",
+    "addSite": "Goob Kudar",
+    "noResources": "Kheyraad la qoondeeyay ma jiro",
+    "noResourcesDesc": "Qoondeynta kheyraadka, qorsheynta awoodda iyo la socodka isticmaalka maamul.",
+    "addResource": "Kheyraad Kudar",
+    "noGrants": "Deeq la soo socdo ma jiro",
+    "noGrantsDesc": "Codsiyada deeqda, ilaha dhaqaalaha iyo jadwalka qaybinta la soco.",
+    "addGrant": "Deeq Kudar",
+    "noImpact": "La socodka saamaynta",
+    "noImpactDesc": "Saamaynta mashruuca, natiijooyinka iyo tilmaamayaasha muhiimka ah ee waxqabadka ku cabbir oo ka warbixin.",
+    "configureMetrics": "Cabbirrada Habee",
+    "noPatients": "Bukaan-socod la diiwaan geliyay ma jiro",
+    "noPatientsDesc": "Xogta caafimaad iyo ballanta maamulidda diiwaanka bukaan-socodka koowaad kudar.",
+    "addPatient": "Bukaan-socod Kudar",
+    "noCourses": "Koorsoyin ma jiraan",
+    "noCoursesDesc": "Astaamaha maamulka koorsada dhowaan waa imanayaan.",
+    "nothingHereYet": "Wali waxba halkan kuma jiraan",
+    "getStartedDefault": "Shayga koowaad adigoo sameynaya bilow.",
+    "noDevelopment": "Wali howlo horumarineed ma jiraan. Mid samee si aad shaqadaada u la socoto.",
+    "noMarketing": "Wali howlo suuq-geyn ma jiraan. Mid samee si aad u bilowdo."
   },
   "pricing": {
     "choosePlan": "Qorshahaaga dooro",
@@ -1167,7 +1230,10 @@
     "orgSettings": "Dejinta hay'adda",
     "orgSettingsDesc": "Maamul magaca hay'addaada, qorshaha, iyo doorashooyinka.",
     "billingSubscription": "Biilasha & isdiiwaangelinta",
-    "billingSubscriptionDesc": "Arag qorshahaaga, maamul biilasha, iyo kor u qaad."
+    "billingSubscriptionDesc": "Arag qorshahaaga, maamul biilasha, iyo kor u qaad.",
+    "searchWiki": "Wiki raadi...",
+    "newPage": "Bog Cusub",
+    "pageInformation": "Macluumaadka Bogga"
   },
   "calendar": {
     "title": "Kalandar",
@@ -1337,6 +1403,50 @@
   "medicalPage": {
     "title": "Adeegyada caafimaadka",
     "description": "Maamul adeegyada caafimaadka, qalabka, iyo daryeelka bukaanadda"
+  },
+  "compliancePage": {
+    "title": "Waafaqsanaan",
+    "description": "Shuruudaha xeerarka iyo dukumentiyada baadhitaanka la soco"
+  },
+  "procurementPage": {
+    "title": "Iibsasho",
+    "description": "Dalbadaha iibsashada, bixiyeyaasha iyo habka iibsashada maamul"
+  },
+  "equipmentPage": {
+    "title": "Qalabka",
+    "description": "Liiska qalabka, dayactirka iyo isticmaalka la soco"
+  },
+  "facilitiesPage": {
+    "title": "Xaruumaha",
+    "description": "Dhismayaasha, qolalka iyo dayactirka xarunta maamul"
+  },
+  "grantsPage": {
+    "title": "Deeqaha",
+    "description": "Codsiyada deeqda, ilaha dhaqaalaha iyo qaybinta la soco"
+  },
+  "impactPage": {
+    "title": "Cabbirka Saamaynta",
+    "description": "Natiijooyinka mashruuca iyo KPIs ku cabbir oo ka warbixin"
+  },
+  "safetyPage": {
+    "title": "Maamulka Badbaadada",
+    "description": "Dhacdooyinka badbaadada, baadhitaannada iyo waafaqsanaan la soco"
+  },
+  "coursesPage": {
+    "title": "Koorsooyin",
+    "description": "Astaamaha maamulka koorsada dhowaan waa imanayaan"
+  },
+  "sitesPage": {
+    "title": "Goobaha",
+    "description": "Goobaha mashruuca iyo howlaha juquraafiga la soco"
+  },
+  "patientsPage": {
+    "title": "Bukaan-socodka",
+    "description": "Diiwaanka bukaan-socodka iyo taariikhda caafimaad la soco"
+  },
+  "resourcesPage": {
+    "title": "Kheyraadka",
+    "description": "Qoondeynta kheyraadka iyo qorsheynta awoodda maamul"
   },
   "timeline": {
     "title": "Jadwalka waqtiga",
@@ -2201,5 +2311,11 @@
   "underConstruction": {
     "title": "Waa la Dhisayaa",
     "description": "Boggan waa la dhisayaa waxaana loo heli doonaa dhowaan."
+  },
+  "issuesList": {
+    "loadingIssues": "Arrimaha soo raraya...",
+    "noIssues": "Arrimo ma jiraan",
+    "getStarted": "Arrin cusub samee si aad u bilowdo.",
+    "noMatchSearch": "Raadintaada la waafaqsan arrimo ma jiraan."
   }
 }
