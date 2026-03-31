@@ -11,11 +11,11 @@ export default function DevelopmentPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Development"
-        description="Manage technical development, releases, and code reviews"
+        title={t('departments.development')}
+        description={t('departments.developmentDesc')}
         icon={GitBranch}
         iconColor="#22C55E"
-        emptyMessage="No development tasks yet. Create one to track your work."
+        emptyMessage={t('emptyStates.noDevelopment')}
         defaultLabels={['development']}
         baseHref="/dashboard/development"
         currentTab="backlog"

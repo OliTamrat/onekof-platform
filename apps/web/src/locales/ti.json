@@ -138,6 +138,7 @@
     "settings": "ቅጥዒታት",
     "notifications": "ሓበሬታታት",
     "viewAllProjects": "ኩሎም ፕሮጀክትታት ርአ →",
+    "backToHomepage": "ናብ መበገሲ ገጽ ተመለስ",
     "searchPlaceholder": "ድለ ወይ ዝለል ናብ...",
     "createNew": "+ ፍጠር",
     "calendar": "ዓውደ-ኣዋርሕ",
@@ -421,7 +422,11 @@
     "constructionEng": "ህንጻ / ኢንጂነሪንግ",
     "constructionEngDesc": "ናይ ህንጻን ኢንጂነሪንግን ፕሮጀክትታት",
     "customProject": "ብሕታዊ ፕሮጀክት",
-    "customProjectDesc": "ምሉእ ብምሉእ ክትቅይሮ ዝኽእል ናይ ፕሮጀክት ዓይነት"
+    "customProjectDesc": "ምሉእ ብምሉእ ክትቅይሮ ዝኽእል ናይ ፕሮጀክት ዓይነት",
+    "projectsBoard": "ሰሌዳ ፕሮጀክትታት",
+    "createProject": "ፕሮጀክት ፍጠር",
+    "searchProjects": "ፕሮጀክትታት ድለዩ...",
+    "planning": "ዕቅዲ"
   },
   "budget": {
     "title": "በጀት",
@@ -574,7 +579,11 @@
     "created": "ዝተፈጥረ",
     "noTeamsMatchingFilters": "ብጸሪኻ ዝሰማማዕ ጋንታ ኣይተረኽበን",
     "code": "ኮድ",
-    "forms": "ቅጥዒታት"
+    "forms": "ቅጥዒታት",
+    "teamActivity": "ንጥፈት ጋንታ",
+    "searchActivity": "ንጥፈት ድለዩ...",
+    "activityDetails": "ዝርዝር ንጥፈት",
+    "activityInformation": "ሓበሬታ ንጥፈት"
   },
   "goals": {
     "title": "ዕላማታት",
@@ -600,7 +609,22 @@
     "cycle": "ዙር",
     "noGoalsMatchingFilters": "ብጸሪኻ ዝሰማማዕ ዕላማ ኣይተረኽበን",
     "goalsBoard": "ናይ ዕላማ ሰሌዳ",
-    "noGoalsBoard": "ዕላማታት የለን"
+    "noGoalsBoard": "ዕላማታት የለን",
+    "activeGoals": "ንጡፋት ዕላማታት",
+    "completedGoals": "ዝተዛዘሙ ዕላማታት",
+    "exceededTarget": "ዕላማ ዝሓለፉ",
+    "thisQuarter": "እዚ ርብዒ ዓመት",
+    "searchActiveGoals": "ንጡፋት ዕላማታት ድለዩ...",
+    "searchCompletedGoals": "ዝተዛዘሙ ዕላማታት ድለዩ...",
+    "goalDetails": "ዝርዝር ዕላማ",
+    "goalInformation": "ሓበሬታ ዕላማ",
+    "completionDetails": "ዝርዝር ምዝዛም",
+    "goalAchievement": "ስኬት ዕላማ",
+    "completedDate": "ዝተዛዘመሉ ዕለት",
+    "duration": "ግዜ",
+    "keyResultsCompleted": "ዝተዛዘሙ ቀንዲ ውጽኢታት",
+    "overallProgress": "ሓፈሻዊ ምንቅስቓስ",
+    "achievement": "ስኬት"
   },
   "settings": {
     "title": "ቅጥዒታት",
@@ -777,7 +801,46 @@
     "noResearchPlans": "ክሳብ ሕጂ ናይ ምርምር ውጥን የለን። ንምጅማር ሓደ ፍጠር።",
     "noMaterials": "ክሳብ ሕጂ ዝተኸታተሉ ኣቑሑት የለን። ጸጋታት ንምኣመሓዳር ሓደ ፍጠር።",
     "noInspections": "ዝተመደበ ምርመራ የለን። ንምክትታል ሓደ ፍጠር።",
-    "noArticles": "ንዝረኸቡ ጽሑፋት የለን"
+    "noArticles": "ንዝረኸቡ ጽሑፋት የለን",
+    "noCompliance": "ሞጁል ምእዛዝ",
+    "noComplianceDesc": "ናይ ቁጽጽር ረቛሒታት፣ ናይ ኦዲት ዱካታት ከምኡ'ውን ናይ ምእዛዝ ሰነዳት ተኸታተሉ።",
+    "configureCompliance": "ምእዛዝ ኣዋድዱ",
+    "noMedical": "ናይ ሕክምና መዛግብቲ",
+    "noMedicalDesc": "ናይ ሕሙም መዛግብቲ፣ ቆጸራታት ከምኡ'ውን ናይ ሕክምና ሰነዳት ኣመሓድሩ።",
+    "setupMedical": "ሕክምና ኣዋድዱ",
+    "noProcurement": "ናይ ግዝኢ መዝገብ የለን",
+    "noProcurementDesc": "ናይ ግዝኢ ትእዛዛት፣ ናይ ኣቕረብቲ ምሕደራ ከምኡ'ውን ናይ ግዝኢ ኣገባብ ኣብ ሓደ ቦታ ተኸታተሉ።",
+    "createPO": "ናይ ግዝኢ ትእዛዝ ፍጠር",
+    "noSafety": "ምሕደራ ድሕነት",
+    "noSafetyDesc": "ናይ ድሕነት ፍጻመታት፣ መርመራታት ከምኡ'ውን ናይ ምእዛዝ ጸብጻባት ተኸታተሉ።",
+    "configureSafety": "ድሕነት ኣዋድዱ",
+    "noEquipment": "ዝተኸታተለ መሳርሒ የለን",
+    "noEquipmentDesc": "ናይ መሳርሒ ቆጸራ፣ ናይ ጽገና መደባት ከምኡ'ውን ኣጠቓቕማ ተኸታተሉ።",
+    "addEquipment": "መሳርሒ ወስኹ",
+    "noFacilities": "ዝተመዝገበ ትካል የለን",
+    "noFacilitiesDesc": "ህንጻታት፣ ክፍልታት ከምኡ'ውን ናይ ትካል ጽገና ኣብ ሓደ ማእከላይ ቦታ ኣመሓድሩ።",
+    "addFacility": "ትካል ወስኹ",
+    "noSites": "ዝተዋደደ ቦታ የለን",
+    "noSitesDesc": "ናይ ፕሮጀክት ቦታታት፣ ኣከባቢታት ከምኡ'ውን ናይ ሜዳ ስራሕ ጂኦግራፊያዊ ሓበሬታ ተኸታተሉ።",
+    "addSite": "ቦታ ወስኹ",
+    "noResources": "ዝተመደበ ጸጋ የለን",
+    "noResourcesDesc": "ናይ ጸጋ ምምዳብ፣ ናይ ዓቕሚ ዕቅዲ ከምኡ'ውን ናይ ኣጠቓቕማ ክትትል ኣመሓድሩ።",
+    "addResource": "ጸጋ ወስኹ",
+    "noGrants": "ዝተኸታተለ ሓገዝ የለን",
+    "noGrantsDesc": "ናይ ሓገዝ ምልክታታት፣ ናይ ገንዘብ ምንጭታት ከምኡ'ውን ናይ ምዝርጋሕ መደባት ተኸታተሉ።",
+    "addGrant": "ሓገዝ ወስኹ",
+    "noImpact": "ክትትል ጽልዋ",
+    "noImpactDesc": "ኣብ ጽልዋ ፕሮጀክት፣ ውጽኢታት ከምኡ'ውን ቀንዲ ኣመልከቲ ኣፈጻጽማ ልኸዩ ከምኡ'ውን ሓብሩ።",
+    "configureMetrics": "መለክዒታት ኣዋድዱ",
+    "noPatients": "ዝተመዝገበ ሕሙም የለን",
+    "noPatientsDesc": "ናይ ሕክምና ሓበሬታ ከምኡ'ውን ቆጸራታት ንምምሕዳር ናይ መጀመርታ ሕሙም መዝገብ ወስኹ።",
+    "addPatient": "ሕሙም ወስኹ",
+    "noCourses": "ኮርሳት የለዉን",
+    "noCoursesDesc": "ናይ ኮርስ ምሕደራ ባህርያት ቀረባ ግዜ ክመጽእ እዩ።",
+    "nothingHereYet": "ክሳብ ሕጂ ዋላ ሓደ የለን",
+    "getStartedDefault": "ናይ መጀመርታ ንጥልኹም ብምፍጣር ጀምሩ።",
+    "noDevelopment": "ክሳብ ሕጂ ናይ ልምዓት ስራሕ የለን። ስራሕኩም ንምክትታል ሓደ ፍጠሩ።",
+    "noMarketing": "ክሳብ ሕጂ ናይ ዕዳጋ ስራሕ የለን። ንምጅማር ሓደ ፍጠሩ።"
   },
   "pricing": {
     "choosePlan": "ውጥንኻ ምረጽ",
@@ -1173,7 +1236,10 @@
     "orgSettings": "ናይ ትካል ቅጥዒታት",
     "orgSettingsDesc": "ናይ ትካልካ ስም፣ ውጥንን ምርጫታትን ኣመሓድር።",
     "billingSubscription": "ክፍሊትን ምዝገባን",
-    "billingSubscriptionDesc": "ውጥንካ ርአ፣ ክፍሊት ኣመሓድርን ኣዕብይን።"
+    "billingSubscriptionDesc": "ውጥንካ ርአ፣ ክፍሊት ኣመሓድርን ኣዕብይን።",
+    "searchWiki": "ዊኪ ድለዩ...",
+    "newPage": "ሓድሽ ገጽ",
+    "pageInformation": "ሓበሬታ ገጽ"
   },
   "calendar": {
     "title": "ዓውደ-ኣዋርሕ",
@@ -1343,6 +1409,50 @@
   "medicalPage": {
     "title": "ናይ ሕክምና ኣገልግሎታት",
     "description": "ናይ ሕክምና ኣገልግሎታት፣ መሳርሒታትን ክንክን ሕሙማትን ኣመሓድር"
+  },
+  "compliancePage": {
+    "title": "ምእዛዝ",
+    "description": "ናይ ቁጽጽር ረቛሒታት ከምኡ'ውን ናይ ኦዲት ሰነዳት ተኸታተሉ"
+  },
+  "procurementPage": {
+    "title": "ግዝኢ",
+    "description": "ናይ ግዝኢ ትእዛዛት፣ ኣቕረብቲ ከምኡ'ውን ናይ ግዝኢ ኣገባብ ኣመሓድሩ"
+  },
+  "equipmentPage": {
+    "title": "መሳርሒታት",
+    "description": "ናይ መሳርሒ ቆጸራ፣ ጽገና ከምኡ'ውን ኣጠቓቕማ ተኸታተሉ"
+  },
+  "facilitiesPage": {
+    "title": "ትካላት",
+    "description": "ህንጻታት፣ ክፍልታት ከምኡ'ውን ናይ ትካል ጽገና ኣመሓድሩ"
+  },
+  "grantsPage": {
+    "title": "ሓገዛት",
+    "description": "ናይ ሓገዝ ምልክታታት፣ ናይ ገንዘብ ምንጭታት ከምኡ'ውን ምዝርጋሕ ተኸታተሉ"
+  },
+  "impactPage": {
+    "title": "ልኬት ጽልዋ",
+    "description": "ኣብ ውጽኢታት ፕሮጀክት ከምኡ'ውን KPIs ልኸዩ ከምኡ'ውን ሓብሩ"
+  },
+  "safetyPage": {
+    "title": "ምሕደራ ድሕነት",
+    "description": "ናይ ድሕነት ፍጻመታት፣ መርመራታት ከምኡ'ውን ምእዛዝ ተኸታተሉ"
+  },
+  "coursesPage": {
+    "title": "ኮርሳት",
+    "description": "ናይ ኮርስ ምሕደራ ባህርያት ቀረባ ግዜ ክመጽእ እዩ"
+  },
+  "sitesPage": {
+    "title": "ቦታታት",
+    "description": "ናይ ፕሮጀክት ቦታታት ከምኡ'ውን ጂኦግራፊያዊ ስራሕ ተኸታተሉ"
+  },
+  "patientsPage": {
+    "title": "ሕሙማት",
+    "description": "ናይ ሕሙም መዛግብቲ ከምኡ'ውን ናይ ሕክምና ታሪኽ ተኸታተሉ"
+  },
+  "resourcesPage": {
+    "title": "ጸጋታት",
+    "description": "ናይ ጸጋ ምምዳብ ከምኡ'ውን ናይ ዓቕሚ ዕቅዲ ኣመሓድሩ"
   },
   "timeline": {
     "title": "ናይ ግዜ ሰሌዳ",
@@ -2207,5 +2317,11 @@
   "underConstruction": {
     "title": "ኣብ ህንጸት ኣሎ",
     "description": "እዚ ገጽ ኣብ ህንጸት ኣሎ ኣብ ቀረባ ክቐርብ እዩ።"
+  },
+  "issuesList": {
+    "loadingIssues": "ጉዳያት ይጽዕን ኣሎ...",
+    "noIssues": "ጉዳያት የለዉን",
+    "getStarted": "ሓድሽ ጉዳይ ብምፍጣር ጀምሩ።",
+    "noMatchSearch": "ምስ ድልየትኩም ዝሰማማዕ ጉዳይ የለን።"
   }
 }

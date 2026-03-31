@@ -54,7 +54,7 @@ export default function GoalsCompletedPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Completed Goals"
+        title={t('goals.completedGoals')}
         icon={<CheckCircle2 className="h-6 w-6" />}
         iconColor="#10B981"
         currentTab="completed"
@@ -69,14 +69,14 @@ export default function GoalsCompletedPage() {
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">Completed Goals</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.completedGoals')}</div>
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{filteredGoals.length}</div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">Exceeded Target</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.exceededTarget')}</div>
             </div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {filteredGoals.filter(g => g.achievement > 100).length}
@@ -85,7 +85,7 @@ export default function GoalsCompletedPage() {
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-5 w-5 text-[#3B82F6]" />
-              <div className="text-sm text-gray-600 dark:text-slate-400">This Quarter</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">{t('goals.thisQuarter')}</div>
             </div>
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{filteredGoals.length}</div>
           </div>
@@ -97,7 +97,7 @@ export default function GoalsCompletedPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search completed goals..."
+              placeholder={t('goals.searchCompletedGoals')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -129,17 +129,17 @@ export default function GoalsCompletedPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
-                      Completed: {goal.completedDate}
+                      {t('goals.completedDate')}: {goal.completedDate}
                     </span>
-                    <span>Duration: {goal.duration}</span>
-                    <span>Key Results: {goal.keyResults}</span>
+                    <span>{t('goals.duration')}: {goal.duration}</span>
+                    <span>{t('goals.keyResults')}: {goal.keyResults}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className={`text-2xl font-bold ${getAchievementColor(goal.achievement)}`}>
                     {goal.achievement}%
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400">Achievement</div>
+                  <div className="text-xs text-gray-600 dark:text-slate-400">{t('goals.achievement')}</div>
                 </div>
               </div>
             </div>
@@ -151,10 +151,10 @@ export default function GoalsCompletedPage() {
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title={selectedGoal?.title || 'Goal Details'}
+        title={selectedGoal?.title || t('goals.goalDetails')}
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Completion Details">
+          <SlideoutPanelSection title={t('goals.completionDetails')}>
             <div className="space-y-4">
               <div className="flex items-center justify-center p-6 bg-green-50 dark:bg-green-900/10 rounded-lg">
                 <div className="text-center">
@@ -162,28 +162,28 @@ export default function GoalsCompletedPage() {
                   <div className={`text-4xl font-bold ${getAchievementColor(selectedGoal?.achievement)}`}>
                     {selectedGoal?.achievement}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">Goal Achievement</div>
+                  <div className="text-sm text-gray-600 dark:text-slate-400 mt-1">{t('goals.goalAchievement')}</div>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Team</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.team')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.team}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Owner</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.owner')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.owner}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Completed Date</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.completedDate')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.completedDate}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.duration')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.duration}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Key Results Completed</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.keyResultsCompleted')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedGoal?.keyResults}</p>
               </div>
             </div>
