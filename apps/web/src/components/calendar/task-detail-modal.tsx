@@ -128,31 +128,42 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-[#22272B] rounded-lg shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-[2px]">
+      <div className="relative w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden bg-white dark:bg-[#22272B] rounded-t-2xl sm:rounded-xl shadow-2xl border border-transparent sm:border-slate-200/80 dark:sm:border-white/[0.08]">
+        {/* Mobile drag handle */}
+        <div className="flex justify-center pt-3 pb-0 sm:hidden" aria-hidden="true">
+          <div className="h-1 w-10 rounded-full bg-slate-300 dark:bg-slate-600" />
+        </div>
+
+        {/* Project color accent bar */}
+        <div
+          className="hidden sm:block h-[3px] w-full"
+          style={{ background: `linear-gradient(to right, ${task.project.color || '#1C8C7D'}, ${task.project.color || '#1C8C7D'}80)` }}
+        />
+
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4">
-          <div className="flex items-center gap-3">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 dark:border-slate-700/50 bg-white dark:bg-[#22272B] px-4 sm:px-5 py-3 sm:py-4">
+          <div className="flex items-center gap-3 min-w-0">
             <div
-              className="h-10 w-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: `${task.project.color}20` }}
+              className="h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: `${task.project.color}15` }}
             >
-              <Calendar className="h-5 w-5" style={{ color: task.project.color }} />
+              <Calendar className="h-4 w-4" style={{ color: task.project.color }} />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
                 {isEditing ? t('tasks.editTask') : task.key}
               </h2>
-              <p className="text-xs text-gray-500 dark:text-[#6B7684]">{task.project.name}</p>
+              <p className="text-xs text-gray-500 dark:text-[#6B7684] truncate">{task.project.name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {!isEditing && (
               <>
                 <Button
                   variant="ghost"
                   onClick={() => setIsEditing(true)}
-                  className="rounded-lg text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]"
+                  className="h-9 rounded-lg text-sm text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] active:scale-95 transition-all"
                 >
                   {t('common.edit')}
                 </Button>
@@ -160,7 +171,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                   variant="ghost"
                   size="icon"
                   onClick={handleDelete}
-                  className="rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="h-9 w-9 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 active:scale-95 transition-all"
                   title={t('tasks.deleteTask')}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -171,15 +182,15 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="rounded-lg hover:bg-gray-100 dark:hover:bg-[#282E33]"
+              className="h-9 w-9 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-[#282E33] active:scale-95 transition-all"
             >
-              <X className="h-5 w-5 text-gray-600 dark:text-slate-400" />
+              <X className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-80px)] p-4 sm:p-6 space-y-5">
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
@@ -190,7 +201,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                 required
               />
             ) : (
@@ -209,7 +220,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
-                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                 placeholder={t('tasks.addDescription')}
               />
             ) : (
@@ -229,7 +240,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                 >
                   <option value="TODO">{t('status.todo')}</option>
                   <option value="IN_PROGRESS">{t('status.inProgress')}</option>
@@ -253,7 +264,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                 >
                   <option value="CRITICAL">{t('priority.critical')}</option>
                   <option value="HIGH">{t('priority.high')}</option>
@@ -286,13 +297,13 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                   />
                   <input
                     type="time"
                     value={formData.startTime}
                     onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                   />
                 </div>
               ) : (
@@ -313,13 +324,13 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                     type="date"
                     value={formData.dueDate}
                     onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                   />
                   <input
                     type="time"
                     value={formData.dueTime}
                     onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
                   />
                 </div>
               ) : (
@@ -340,7 +351,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               <select
                 value={formData.assigneeId}
                 onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
               >
                 <option value="">{t('common.unassigned')}</option>
                 {members.map((member: any) => (
@@ -377,7 +388,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 placeholder={t('tasks.enterTags')}
-                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
               />
             ) : task.tags && task.tags.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -405,7 +416,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               <select
                 value={formData.reminder}
                 onChange={(e) => setFormData({ ...formData, reminder: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
               >
                 <option value="none">{t('calendar.noReminder')}</option>
                 <option value="15min">{t('calendar.minutes15Before')}</option>
@@ -430,7 +441,7 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               <Button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="rounded-lg bg-primary-500 text-white hover:bg-primary-600"
+                className="rounded-lg bg-[#1C8C7D] text-white hover:bg-[#167A6E] gap-2"
               >
                 <Save className="h-4 w-4" />
                 {updateMutation.isPending ? t('common.saving') : t('tasks.saveChanges')}

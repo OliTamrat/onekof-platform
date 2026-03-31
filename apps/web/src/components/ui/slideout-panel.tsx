@@ -31,6 +31,24 @@ export function SlideoutPanel({
   className,
 }: SlideoutPanelProps) {
   const isVisible = open ?? isOpen ?? false;
+  const [isRendered, setIsRendered] = React.useState(false);
+  const [isAnimating, setIsAnimating] = React.useState(false);
+
+  // Handle mount/unmount with animation
+  React.useEffect(() => {
+    if (isVisible) {
+      setIsRendered(true);
+      // Trigger animation on next frame
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setIsAnimating(true));
+      });
+      return;
+    }
+    setIsAnimating(false);
+    const timer = setTimeout(() => setIsRendered(false), 300);
+    return () => clearTimeout(timer);
+  }, [isVisible]);
+
   // Handle escape key
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -41,7 +59,6 @@ export function SlideoutPanel({
 
     if (isVisible) {
       document.addEventListener('keydown', handleEscape);
-      // Prevent body scroll when panel is open
       document.body.style.overflow = 'hidden';
     }
 
@@ -64,7 +81,7 @@ export function SlideoutPanel({
     }
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  if (!isRendered) return null;
 
   const sizeClasses = {
     sm: 'max-w-[calc(100%-2rem)] sm:max-w-md',
@@ -93,35 +110,42 @@ export function SlideoutPanel({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-stretch justify-end"
       role="dialog"
       aria-modal="true"
       aria-label={title || 'Panel'}
       onKeyDown={handleKeyDown}
     >
-      {/* Overlay - clicking closes panel */}
+      {/* Overlay with fade animation */}
       <div
-        className="absolute inset-0"
+        className={cn(
+          'absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300',
+          isAnimating ? 'opacity-100' : 'opacity-0'
+        )}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Panel */}
+      {/* Panel with slide animation */}
       <div
         ref={panelRef}
         className={cn(
-          'relative flex h-full w-full flex-col bg-white dark:bg-[#282E33] shadow-2xl',
+          'relative flex h-full w-full flex-col bg-white dark:bg-[#282E33] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+          isAnimating ? 'translate-x-0' : 'translate-x-full',
           sizeClasses[size],
           className
         )}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Teal accent top bar */}
+        <div className="h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60 flex-shrink-0" />
+
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
             {headerActions}
             {title && (
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">{title}</h2>
             )}
           </div>
 
@@ -129,7 +153,7 @@ export function SlideoutPanel({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-8 w-8 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+            className="h-9 w-9 flex-shrink-0 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
             aria-label="Close panel"
           >
             <X className="h-5 w-5" />
@@ -143,7 +167,7 @@ export function SlideoutPanel({
 
         {/* Footer */}
         {showFooter && footer && (
-          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-3 sm:py-4">
+          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0">
             {footer}
           </div>
         )}
