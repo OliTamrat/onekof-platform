@@ -11,8 +11,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
-          'SF Pro Text',
-          'SF Pro Display',
+          'var(--font-inter)',
           'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -20,7 +19,7 @@ const config: Config = {
           'sans-serif',
         ],
         display: [
-          'SF Pro Display',
+          'var(--font-inter)',
           'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
