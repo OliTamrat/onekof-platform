@@ -6,7 +6,7 @@ import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 
 // Default settings (Business preset)
 const DEFAULT_SETTINGS: OrganizationSettings = {
-  enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'projects', 'issues'],
+  enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'projects', 'issues', 'calendar', 'timeline', 'analytics'],
   features: {
     budget: {
       expenses: true,

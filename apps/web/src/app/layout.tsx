@@ -1,7 +1,15 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
+
+// Inter — cross-platform professional font, SF Pro equivalent for non-Apple devices
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -64,7 +72,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -91,69 +99,6 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{
           __html: `
             @font-face {
-              font-family: 'SF Pro Display';
-              src: local('SF Pro Display'), local('SFProDisplay-Regular'), local('.SFNSDisplay');
-              font-weight: 400;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Display';
-              src: local('SF Pro Display Medium'), local('SFProDisplay-Medium');
-              font-weight: 500;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Display';
-              src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
-              font-weight: 600;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Display';
-              src: local('SF Pro Display Bold'), local('SFProDisplay-Bold');
-              font-weight: 700;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Display';
-              src: local('SF Pro Display Heavy'), local('SFProDisplay-Heavy');
-              font-weight: 800;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Text';
-              src: local('SF Pro Text'), local('SFProText-Regular'), local('.SFNSText');
-              font-weight: 400;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Text';
-              src: local('SF Pro Text Medium'), local('SFProText-Medium');
-              font-weight: 500;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Text';
-              src: local('SF Pro Text Semibold'), local('SFProText-Semibold');
-              font-weight: 600;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
-              font-family: 'SF Pro Text';
-              src: local('SF Pro Text Bold'), local('SFProText-Bold');
-              font-weight: 700;
-              font-style: normal;
-              font-display: swap;
-            }
-            @font-face {
               font-family: 'Abyssinica SIL';
               src: url('/fonts/AbyssinicaSIL-Regular.woff2') format('woff2');
               font-weight: 400;
@@ -161,28 +106,12 @@ export default function RootLayout({
               font-display: swap;
             }
             :root {
-              --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-              --font-body: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
               --font-abyssinica: "Abyssinica SIL";
-            }
-            body {
-              font-family: var(--font-body);
-              -webkit-font-smoothing: antialiased;
-              -moz-osx-font-smoothing: grayscale;
-              text-rendering: optimizeLegibility;
-              font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-            }
-            h1, h2, h3, h4, h5, h6 {
-              font-family: var(--font-display);
-              letter-spacing: -0.03em;
-            }
-            button, input, select, textarea {
-              font-family: var(--font-body);
             }
           `
         }} />
       </head>
-      <body className={cn('min-h-screen bg-white dark:bg-[#1B1F23] antialiased')}>
+      <body className={cn('min-h-screen bg-white dark:bg-[#1B1F23] antialiased', inter.className)}>
         <Providers>{children}</Providers>
       </body>
     </html>
