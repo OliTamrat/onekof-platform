@@ -20,7 +20,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -37,13 +37,38 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-slate-200 bg-white p-4 sm:p-6 shadow-lg duration-200 max-h-[85vh] overflow-y-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-xl dark:border-white/[0.08] dark:bg-[#282E33]',
+        // Base layout
+        'fixed z-50 grid gap-0 border shadow-2xl duration-300 overflow-hidden',
+        // Colors & borders
+        'border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[#282E33]',
+        // Mobile: bottom sheet style
+        'inset-x-0 bottom-0 rounded-t-2xl max-h-[92vh]',
+        // Mobile: slide up from bottom
+        'data-[state=open]:animate-in data-[state=closed]:animate-out',
+        'data-[state=open]:slide-in-from-bottom-full data-[state=open]:fade-in-0',
+        'data-[state=closed]:slide-out-to-bottom-full data-[state=closed]:fade-out-0',
+        // Desktop: centered dialog with zoom animation
+        'sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-xl sm:max-h-[85vh] sm:w-[calc(100%-2rem)] sm:max-w-lg',
+        'sm:data-[state=open]:slide-in-from-bottom-0 sm:data-[state=open]:zoom-in-[0.97]',
+        'sm:data-[state=closed]:slide-out-to-bottom-0 sm:data-[state=closed]:zoom-out-[0.97]',
         className
       )}
       {...props}
     >
-      {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-slate-100 data-[state=open]:text-slate-500 dark:ring-offset-[#1B1F23] dark:focus:ring-primary-400 dark:data-[state=open]:bg-white/[0.06] dark:data-[state=open]:text-slate-400">
+      {/* Mobile drag handle indicator */}
+      <div className="flex justify-center pt-3 pb-0 sm:hidden" aria-hidden="true">
+        <div className="h-1 w-10 rounded-full bg-slate-300 dark:bg-slate-600" />
+      </div>
+
+      {/* Teal accent top border — desktop only */}
+      <div className="hidden sm:block h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60" />
+
+      {/* Content wrapper with proper scrolling */}
+      <div className="overflow-y-auto max-h-[calc(92vh-2rem)] sm:max-h-[calc(85vh-2rem)] p-4 sm:p-6">
+        {children}
+      </div>
+
+      <DialogPrimitive.Close className="absolute right-3 top-3 sm:right-4 sm:top-4 h-8 w-8 sm:h-7 sm:w-7 flex items-center justify-center rounded-lg sm:rounded-md text-slate-400 transition-all hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] focus:ring-offset-2 active:scale-95 dark:text-slate-500 dark:hover:text-white dark:hover:bg-white/[0.08] dark:ring-offset-[#282E33]">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -72,7 +97,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      'flex flex-col-reverse gap-2 pt-4 sm:flex-row sm:justify-end sm:gap-2',
       className
     )}
     {...props}
