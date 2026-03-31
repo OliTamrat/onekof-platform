@@ -27,7 +27,7 @@ import { useLanguage } from '@/contexts/language-context';
 
 // Mock current organization settings (replace with real data from API/context)
 const INITIAL_SETTINGS: OrganizationSettings = {
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'analytics', 'automations'],
   features: {
     budget: {
       expenses: true,
