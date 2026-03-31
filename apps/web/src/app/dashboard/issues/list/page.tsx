@@ -136,15 +136,15 @@ export default function IssuesListPage() {
         <div className="flex-1 overflow-auto px-3 md:px-6 py-3 md:py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">Loading issues...</div>
+              <div className="text-gray-600 dark:text-slate-400">{t('issuesList.loadingIssues')}</div>
             </div>
           ) : filteredIssues.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <CheckSquare className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No issues</h3>
+                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('issuesList.noIssues')}</h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
-                  {searchQuery ? 'No issues match your search.' : 'Get started by creating a new issue.'}
+                  {searchQuery ? t('issuesList.noMatchSearch') : t('issuesList.getStarted')}
                 </p>
               </div>
             </div>
@@ -158,22 +158,22 @@ export default function IssuesListPage() {
                       Key
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Title
+                      {t('common.title')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Type
+                      {t('common.type')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Status
+                      {t('common.status')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Priority
+                      {t('common.priority')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Assignee
+                      {t('common.assignee')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Due Date
+                      {t('common.dueDate')}
                     </th>
                   </tr>
                 </thead>
@@ -230,7 +230,7 @@ export default function IssuesListPage() {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-400 dark:text-[#6B7684]">Unassigned</span>
+                          <span className="text-sm text-gray-400 dark:text-[#6B7684]">{t('common.unassigned')}</span>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

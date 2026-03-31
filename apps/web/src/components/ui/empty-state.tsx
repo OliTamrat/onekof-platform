@@ -1,6 +1,9 @@
+'use client';
+
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 import {
   FolderKanban,
   ListChecks,
@@ -24,148 +27,127 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-// Preset configurations for all module types
-const presets: Record<
-  string,
-  { icon: LucideIcon; title: string; description: string; actionLabel?: string }
-> = {
+const getPresets = (
+  t: (key: string) => string
+): Record<string, { icon: LucideIcon; title: string; description: string; actionLabel?: string }> => ({
   projects: {
     icon: FolderKanban,
-    title: 'No projects yet',
-    description:
-      'Projects help you organize work into manageable streams. Create your first project to start tracking tasks, budgets, and timelines.',
-    actionLabel: 'Create Project',
+    title: t('emptyStates.noProjects'),
+    description: t('emptyStates.noProjectsDesc'),
+    actionLabel: t('emptyStates.createProject'),
   },
   issues: {
     icon: ListChecks,
-    title: 'No issues found',
-    description:
-      'Issues are the building blocks of your workflow. Create tasks, bugs, stories, and epics to track progress.',
-    actionLabel: 'Create Issue',
+    title: t('emptyStates.noIssues'),
+    description: t('emptyStates.noIssuesDesc'),
+    actionLabel: t('emptyStates.createIssue'),
   },
   teams: {
     icon: Users,
-    title: 'No teams created',
-    description:
-      'Teams help you organize people by function or department. Build your first team to improve collaboration.',
-    actionLabel: 'Create Team',
+    title: t('emptyStates.noTeams'),
+    description: t('emptyStates.noTeamsDesc'),
+    actionLabel: t('emptyStates.createTeam'),
   },
   goals: {
     icon: Target,
-    title: 'No goals set',
-    description:
-      'Goals and OKRs keep everyone aligned on what matters. Set objectives and track key results across your organization.',
-    actionLabel: 'Set a Goal',
+    title: t('emptyStates.noGoals'),
+    description: t('emptyStates.noGoalsDesc'),
+    actionLabel: t('emptyStates.setGoal'),
   },
   automations: {
     icon: Zap,
-    title: 'No automations configured',
-    description:
-      'Automate repetitive work with rules. Set triggers and actions to streamline your workflows.',
-    actionLabel: 'Create Automation',
+    title: t('emptyStates.noAutomations'),
+    description: t('emptyStates.noAutomationsDesc'),
+    actionLabel: t('emptyStates.createAutomation'),
   },
   documents: {
     icon: FileText,
-    title: 'No documents uploaded',
-    description:
-      'Upload invoices, contracts, or proposals and let AI extract budget items and milestones automatically.',
-    actionLabel: 'Upload Document',
+    title: t('emptyStates.noDocuments'),
+    description: t('emptyStates.noDocumentsDesc'),
+    actionLabel: t('emptyStates.uploadDocument'),
   },
   docs: {
     icon: BookOpen,
-    title: 'No documentation yet',
-    description:
-      'Build your knowledge base with wiki pages, guides, and internal documentation for your team.',
-    actionLabel: 'Create Page',
+    title: t('emptyStates.noDocs'),
+    description: t('emptyStates.noDocsDesc'),
+    actionLabel: t('emptyStates.createPage'),
   },
   budget: {
     icon: BarChart3,
-    title: 'No budget configured',
-    description:
-      'Track expenses, allocations, and forecasts. Set up your budget to monitor financial health across projects.',
-    actionLabel: 'Set Up Budget',
+    title: t('emptyStates.noBudget'),
+    description: t('emptyStates.noBudgetDesc'),
+    actionLabel: t('emptyStates.setupBudget'),
   },
   calendar: {
     icon: Calendar,
-    title: 'No events scheduled',
-    description:
-      'Your calendar shows task deadlines, milestones, and team events. Create items with due dates to see them here.',
+    title: t('emptyStates.noEvents'),
+    description: t('emptyStates.noEventsDesc'),
   },
   compliance: {
     icon: Shield,
-    title: 'Compliance module',
-    description:
-      'Track regulatory requirements, audit trails, and compliance documentation. Configure your compliance framework to get started.',
-    actionLabel: 'Configure Compliance',
+    title: t('emptyStates.noCompliance'),
+    description: t('emptyStates.noComplianceDesc'),
+    actionLabel: t('emptyStates.configureCompliance'),
   },
   medical: {
     icon: Stethoscope,
-    title: 'Medical records',
-    description:
-      'Manage patient records, appointments, and medical documentation. Set up your medical workspace to begin.',
-    actionLabel: 'Set Up Medical',
+    title: t('emptyStates.noMedical'),
+    description: t('emptyStates.noMedicalDesc'),
+    actionLabel: t('emptyStates.setupMedical'),
   },
   procurement: {
     icon: ShoppingCart,
-    title: 'No procurement records',
-    description:
-      'Track purchase orders, vendor management, and procurement workflows in one place.',
-    actionLabel: 'Create PO',
+    title: t('emptyStates.noProcurement'),
+    description: t('emptyStates.noProcurementDesc'),
+    actionLabel: t('emptyStates.createPO'),
   },
   safety: {
     icon: AlertTriangle,
-    title: 'Safety management',
-    description:
-      'Monitor safety incidents, inspections, and compliance reports. Set up your safety program.',
-    actionLabel: 'Configure Safety',
+    title: t('emptyStates.noSafety'),
+    description: t('emptyStates.noSafetyDesc'),
+    actionLabel: t('emptyStates.configureSafety'),
   },
   equipment: {
     icon: HardHat,
-    title: 'No equipment tracked',
-    description:
-      'Track equipment inventory, maintenance schedules, and utilization across your organization.',
-    actionLabel: 'Add Equipment',
+    title: t('emptyStates.noEquipment'),
+    description: t('emptyStates.noEquipmentDesc'),
+    actionLabel: t('emptyStates.addEquipment'),
   },
   facilities: {
     icon: Building,
-    title: 'No facilities registered',
-    description:
-      'Manage buildings, rooms, and facility maintenance in one central location.',
-    actionLabel: 'Add Facility',
+    title: t('emptyStates.noFacilities'),
+    description: t('emptyStates.noFacilitiesDesc'),
+    actionLabel: t('emptyStates.addFacility'),
   },
   sites: {
     icon: MapPin,
-    title: 'No sites configured',
-    description:
-      'Track project sites, locations, and geographic data for field operations.',
-    actionLabel: 'Add Site',
+    title: t('emptyStates.noSites'),
+    description: t('emptyStates.noSitesDesc'),
+    actionLabel: t('emptyStates.addSite'),
   },
   resources: {
     icon: Package,
-    title: 'No resources allocated',
-    description:
-      'Manage resource allocation, capacity planning, and utilization tracking.',
-    actionLabel: 'Add Resource',
+    title: t('emptyStates.noResources'),
+    description: t('emptyStates.noResourcesDesc'),
+    actionLabel: t('emptyStates.addResource'),
   },
   grants: {
     icon: Award,
-    title: 'No grants tracked',
-    description:
-      'Track grant applications, funding sources, and disbursement schedules.',
-    actionLabel: 'Add Grant',
+    title: t('emptyStates.noGrants'),
+    description: t('emptyStates.noGrantsDesc'),
+    actionLabel: t('emptyStates.addGrant'),
   },
   impact: {
     icon: TrendingUp,
-    title: 'Impact tracking',
-    description:
-      'Measure and report on project impact, outcomes, and key performance indicators.',
-    actionLabel: 'Configure Metrics',
+    title: t('emptyStates.noImpact'),
+    description: t('emptyStates.noImpactDesc'),
+    actionLabel: t('emptyStates.configureMetrics'),
   },
-};
+});
 
 interface EmptyStateProps {
   /** Use a preset configuration by module name */
-  preset?: keyof typeof presets;
+  preset?: string;
   /** Custom icon (overrides preset) */
   icon?: LucideIcon;
   /** Custom title (overrides preset) */
@@ -192,10 +174,13 @@ export function EmptyState({
   className,
   compact = false,
 }: EmptyStateProps) {
+  const { t } = useLanguage();
+  const presets = getPresets(t);
+
   const config = preset ? presets[preset] : null;
   const Icon = customIcon || config?.icon || FileText;
-  const title = customTitle || config?.title || 'Nothing here yet';
-  const description = customDescription || config?.description || 'Get started by creating your first item.';
+  const title = customTitle || config?.title || t('emptyStates.nothingHereYet');
+  const description = customDescription || config?.description || t('emptyStates.getStartedDefault');
   const actionLabel = customActionLabel || config?.actionLabel;
 
   return (

@@ -11,11 +11,11 @@ export default function MarketingPage() {
   return (
     <AppLayout>
       <DepartmentTaskList
-        title="Marketing"
-        description="Manage public relations, stakeholder engagement, and communications"
+        title={t('departments.marketing')}
+        description={t('departments.marketingDesc')}
         icon={TrendingUp}
         iconColor="#F97316"
-        emptyMessage="No marketing tasks yet. Create one to get started."
+        emptyMessage={t('emptyStates.noMarketing')}
         defaultLabels={['marketing']}
         baseHref="/dashboard/marketing"
         currentTab="social"
