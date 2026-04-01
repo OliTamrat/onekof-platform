@@ -245,84 +245,24 @@ export default function IssuesTimelinePage() {
             </div>
           ) : (
             <div className="max-w-7xl mx-auto space-y-6">
-              {/* Summary Stats - Clickable Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Button variant="outline"
-                  onClick={() => projects.length > 0 && setSelectedProject(projects[0])}
-                  className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {projects.length}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-[#6B7684]">Total Projects</p>
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    const onTrack = projects.find(p => p.status === 'ON_TRACK');
-                    if (onTrack) setSelectedProject(onTrack);
-                  }}
-                  className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-green-500 dark:hover:border-green-500 hover:shadow-lg transition-all cursor-pointer text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {projects.filter(p => p.status === 'ON_TRACK').length}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-[#6B7684]">On Track</p>
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    const atRisk = projects.find(p => p.status === 'AT_RISK' || p.status === 'DELAYED');
-                    if (atRisk) setSelectedProject(atRisk);
-                  }}
-                  className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-orange-500 dark:hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                      <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {projects.filter(p => p.status === 'AT_RISK' || p.status === 'DELAYED').length}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-[#6B7684]">At Risk/Delayed</p>
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    const completed = projects.find(p => p.status === 'COMPLETED');
-                    if (completed) setSelectedProject(completed);
-                  }}
-                  className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-purple-500 dark:hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                      <CheckCircle2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {projects.filter(p => p.status === 'COMPLETED').length}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-[#6B7684]">Completed</p>
-                    </div>
-                  </div>
-                </Button>
+              {/* Summary Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">Total Projects</div>
+                  <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{projects.length}</div>
+                </div>
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">On Track</div>
+                  <div className="text-xl font-bold text-green-600 dark:text-green-400 mt-0.5">{projects.filter(p => p.status === 'ON_TRACK').length}</div>
+                </div>
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">At Risk / Delayed</div>
+                  <div className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-0.5">{projects.filter(p => p.status === 'AT_RISK' || p.status === 'DELAYED').length}</div>
+                </div>
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">Completed</div>
+                  <div className="text-xl font-bold text-[#1C8C7D] mt-0.5">{projects.filter(p => p.status === 'COMPLETED').length}</div>
+                </div>
               </div>
 
               {/* Project Timeline Cards */}
