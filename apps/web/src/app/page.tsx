@@ -107,10 +107,10 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
           { key: 'landing.mockup.infrastructure', spent: 32000, budget: 80000, pct: 40 },
           { key: 'landing.mockup.marketing', spent: 15000, budget: 50000, pct: 30 },
         ].map((item) => (
-          <div key={item.key} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+          <div key={item.key} className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[12px] font-medium text-white/60">{t(item.key)}</span>
-              <span className="text-[11px] text-white/50">
+              <span className="text-[12px] font-medium text-white/80">{t(item.key)}</span>
+              <span className="text-[11px] text-white/70">
                 {item.spent.toLocaleString()} / {item.budget.toLocaleString()} ETB
               </span>
             </div>
@@ -127,11 +127,11 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
       </div>
       <div className="flex items-center justify-between rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
         <div>
-          <p className="text-[11px] text-white/60">{t('landing.mockup.totalSpent')}</p>
+          <p className="text-[11px] text-white/80">{t('landing.mockup.totalSpent')}</p>
           <p className="text-[16px] font-semibold text-white">377,000 ETB</p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] text-white/60">{t('landing.mockup.remaining')}</p>
+          <p className="text-[11px] text-white/80">{t('landing.mockup.remaining')}</p>
           <p className="text-[16px] font-semibold text-emerald-400">273,000 ETB</p>
         </div>
       </div>
@@ -142,25 +142,25 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
 function AIDocsMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+      <div className="flex items-center gap-3 rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
           <FileText className="h-5 w-5 text-purple-400" />
         </div>
         <div className="flex-1">
           <p className="text-[12px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
-          <p className="text-[11px] text-white/50">{t('landing.mockup.uploadedAgo')}</p>
+          <p className="text-[11px] text-white/70">{t('landing.mockup.uploadedAgo')}</p>
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-primary-500/10 px-2 py-1">
           <Sparkles className="h-3 w-3 text-primary-400" />
           <span className="text-[10px] font-medium text-primary-400">{t('landing.mockup.processing')}</span>
         </div>
       </div>
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+      <div className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
           <Wand2 className="h-3.5 w-3.5 text-primary-400" />
-          <span className="text-[12px] font-medium text-white/60">{t('landing.mockup.aiSummary')}</span>
+          <span className="text-[12px] font-medium text-white/80">{t('landing.mockup.aiSummary')}</span>
         </div>
-        <p className="text-[12px] leading-relaxed text-white/60">
+        <p className="text-[12px] leading-relaxed text-white/80">
           {t('landing.mockup.aiSummaryText')}
         </p>
       </div>
@@ -170,10 +170,10 @@ function AIDocsMockup({ t }: { t: (key: string) => string }) {
           { key: 'landing.mockup.riskFlags', value: '3', icon: Shield },
           { key: 'landing.mockup.tasksLinked', value: '7', icon: ListChecks },
         ].map((item) => (
-          <div key={item.key} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2 text-center sm:p-2.5">
-            <item.icon className="mx-auto mb-1 h-3.5 w-3.5 text-white/50" />
+          <div key={item.key} className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-2 text-center sm:p-2.5">
+            <item.icon className="mx-auto mb-1 h-3.5 w-3.5 text-white/70" />
             <p className="text-[14px] font-semibold text-white/70">{item.value}</p>
-            <p className="text-[10px] text-white/50">{t(item.key)}</p>
+            <p className="text-[10px] text-white/70">{t(item.key)}</p>
           </div>
         ))}
       </div>
@@ -187,17 +187,17 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
       <div className="flex items-center justify-between">
         <span className="text-[14px] font-medium text-white/70">መጋቢት 2017</span>
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
+          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/70 transition-colors hover:bg-white/[0.05]">
             <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.05]">
+          <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/70 transition-colors hover:bg-white/[0.05]">
             <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
       <div className="grid grid-cols-7 gap-0.5">
         {['ሰ', 'ማ', 'ረ', 'ሐ', 'አ', 'ቅ', 'እ'].map((d) => (
-          <div key={d} className="py-2 text-center text-[11px] font-medium text-white/40">{d}</div>
+          <div key={d} className="py-2 text-center text-[11px] font-medium text-white/70">{d}</div>
         ))}
         {Array.from({ length: 30 }, (_, i) => {
           const isToday = i === 5;
@@ -211,7 +211,7 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
                 isToday ? 'bg-primary-600 font-semibold text-white shadow-lg' :
                 isDeadline ? 'bg-red-500/10 font-medium text-red-400' :
                 isHoliday ? 'bg-amber-500/10 font-medium text-amber-400' :
-                'text-white/60 hover:bg-white/[0.04]'
+                'text-white/80 hover:bg-white/[0.04]'
               }`}
             >
               {i + 1}
@@ -251,13 +251,13 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
           <div
             key={item.lang}
             className={`flex items-center gap-3 rounded-lg border p-3 transition-all ${
-              i === 0 ? 'border-primary-500/20 bg-primary-500/[0.06]' : 'border-white/[0.06] bg-white/[0.02]'
+              i === 0 ? 'border-primary-500/20 bg-primary-500/[0.06]' : 'border-white/[0.12] bg-white/[0.02]'
             }`}
           >
             <span className="text-lg">{item.flag}</span>
             <div className="flex-1">
               <p className="text-[12px] font-medium text-white/70">{item.lang}</p>
-              <p className="text-[11px] text-white/50">{item.sample}</p>
+              <p className="text-[11px] text-white/70">{item.sample}</p>
             </div>
             {i === 0 && (
               <span className="rounded-full bg-primary-500/20 px-2 py-0.5 text-[10px] font-medium text-primary-400">{t('landing.mockup.active')}</span>
@@ -265,20 +265,20 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
           </div>
         ))}
       </div>
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-        <p className="mb-2 text-[11px] font-medium text-white/60">{t('landing.mockup.uiPreview')}</p>
+      <div className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
+        <p className="mb-2 text-[11px] font-medium text-white/80">{t('landing.mockup.uiPreview')}</p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
-            <LayoutDashboard className="h-3.5 w-3.5 text-white/50" />
-            <span className="text-[12px] text-white/50">ዳሽቦርድ</span>
+            <LayoutDashboard className="h-3.5 w-3.5 text-white/70" />
+            <span className="text-[12px] text-white/70">ዳሽቦርድ</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-primary-500/10 px-3 py-2">
             <Kanban className="h-3.5 w-3.5 text-primary-400" />
             <span className="text-[12px] font-medium text-primary-400">ፕሮጀክቶች</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
-            <Calendar className="h-3.5 w-3.5 text-white/50" />
-            <span className="text-[12px] text-white/50">የኢትዮጵያ ቀን መቁጠሪያ</span>
+            <Calendar className="h-3.5 w-3.5 text-white/70" />
+            <span className="text-[12px] text-white/70">የኢትዮጵያ ቀን መቁጠሪያ</span>
           </div>
         </div>
       </div>
@@ -417,7 +417,7 @@ export default function HomePage() {
         transition={{ type: 'spring', stiffness: 200, damping: 30 }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'border-b border-white/[0.06] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150'
+            ? 'border-b border-white/[0.12] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150'
             : 'bg-transparent'
         }`}
       >
@@ -434,7 +434,7 @@ export default function HomePage() {
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-all hover:bg-white/[0.04] hover:text-white/80"
+                className="rounded-lg px-3.5 py-2 text-[13px] text-white/80 transition-all hover:bg-white/[0.04] hover:text-white/80"
               >
                 {link.label}
               </a>
@@ -445,7 +445,7 @@ export default function HomePage() {
             <LanguageSwitcher />
             <Link
               href="/auth/signin"
-              className="rounded-lg px-3.5 py-2 text-[13px] text-white/60 transition-colors hover:text-white/80"
+              className="rounded-lg px-3.5 py-2 text-[13px] text-white/80 transition-colors hover:text-white/80"
             >
               {t('common.signIn')}
             </Link>
@@ -461,7 +461,7 @@ export default function HomePage() {
           </div>
 
           <Button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" aria-label="Toggle menu">
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 text-white/60" />}
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 text-white/80" />}
           </Button>
         </div>
 
@@ -473,7 +473,7 @@ export default function HomePage() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="border-t border-white/[0.06] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden overflow-hidden"
+              className="border-t border-white/[0.12] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden overflow-hidden"
             >
               <div className="space-y-1 px-6 py-4">
                 {navLinks.map((link) => (
@@ -481,13 +481,13 @@ export default function HomePage() {
                     key={link.label}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg py-2.5 text-[15px] text-white/50 transition-colors hover:text-white"
+                    className="block rounded-lg py-2.5 text-[15px] text-white/70 transition-colors hover:text-white"
                   >
                     {link.label}
                   </a>
                 ))}
-                <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4">
-                  <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/50">{t('common.signIn')}</Link>
+                <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.12] pt-4">
+                  <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/70">{t('common.signIn')}</Link>
                   <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
                     {t('common.getStarted')}
                     <ArrowRight className="h-4 w-4" />
@@ -523,13 +523,13 @@ export default function HomePage() {
             variants={heroStagger}
           >
             <motion.div variants={heroChild}>
-              <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 backdrop-blur-sm transition-all hover:border-white/[0.12] hover:bg-white/[0.05]">
+              <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/[0.15] bg-white/[0.03] px-4 py-2 backdrop-blur-sm transition-all hover:border-white/[0.12] hover:bg-white/[0.05]">
                 <div className="relative h-2 w-2">
                   <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
                   <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
                 </div>
-                <span className="text-[13px] text-white/50">{t('landing.hero.badge')}</span>
-                <ArrowRight className="h-3 w-3 text-white/50" />
+                <span className="text-[13px] text-white/70">{t('landing.hero.badge')}</span>
+                <ArrowRight className="h-3 w-3 text-white/70" />
               </div>
             </motion.div>
 
@@ -547,7 +547,7 @@ export default function HomePage() {
             </motion.div>
 
             <motion.div variants={heroChild}>
-              <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/55 sm:text-[18px]">
+              <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/75 sm:text-[18px]">
                 {t('auth.projectsDescription')}
               </p>
             </motion.div>
@@ -566,7 +566,7 @@ export default function HomePage() {
                 </Link>
                 <a
                   href="#product"
-                  className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
+                  className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
                 >
                   <Play className="h-3.5 w-3.5 text-primary-400" />
                   {t('landing.hero.watchDemo')}
@@ -577,8 +577,8 @@ export default function HomePage() {
             <motion.div variants={heroChild}>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
                 {[t('landing.hero.freeForever'), t('landing.hero.noCreditCard'), t('landing.hero.setupMinutes')].map((text) => (
-                  <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/50">
-                    <Check className="h-3.5 w-3.5 text-white/40" />
+                  <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/70">
+                    <Check className="h-3.5 w-3.5 text-white/70" />
                     {text}
                   </span>
                 ))}
@@ -595,15 +595,15 @@ export default function HomePage() {
         >
           <div className="relative mx-auto max-w-6xl px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.08] via-primary-700/[0.04] to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#22272B]/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.15] bg-[#22272B]/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
               {/* Browser Chrome */}
-              <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#22272B]/80 px-4 py-3">
+              <div className="flex items-center gap-2 border-b border-white/[0.12] bg-[#22272B]/80 px-4 py-3">
                 <div className="flex gap-1.5">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/80" />
                 </div>
-                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/40 sm:w-72">
+                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/70 sm:w-72">
                   <Shield className="mr-1.5 h-3 w-3" />
                   app.onekof.com/projects/sprint-14
                 </div>
@@ -612,12 +612,12 @@ export default function HomePage() {
               {/* Dashboard Content */}
               <div className="flex min-h-[460px] sm:min-h-[520px]">
                 {/* Sidebar */}
-                <div className="hidden w-56 border-r border-white/[0.06] bg-[#1B1F23]/60 p-4 lg:block">
+                <div className="hidden w-56 border-r border-white/[0.12] bg-[#1B1F23]/60 p-4 lg:block">
                   <div className="mb-6 flex items-center gap-2.5">
                     <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-[10px] font-bold shadow-sm">T</div>
                     <div>
                       <span className="text-[12px] font-medium text-white/70">TechEth</span>
-                      <p className="text-[10px] text-white/50">Professional</p>
+                      <p className="text-[10px] text-white/70">Professional</p>
                     </div>
                   </div>
                   {[
@@ -634,7 +634,7 @@ export default function HomePage() {
                       className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-colors ${
                         item.active
                           ? 'bg-primary-500/10 font-medium text-primary-400'
-                          : 'text-white/50 hover:bg-white/[0.03] hover:text-white/50'
+                          : 'text-white/70 hover:bg-white/[0.03] hover:text-white/70'
                       }`}
                     >
                       <item.icon className="h-3.5 w-3.5" />
@@ -648,7 +648,7 @@ export default function HomePage() {
                   <div className="mb-5 flex items-center justify-between">
                     <div>
                       <h3 className="text-[14px] font-medium text-white/80">Sprint 14 — Website Redesign</h3>
-                      <p className="mt-0.5 text-[11px] text-white/50">መጋቢት 1 – 15, 2017 E.C.</p>
+                      <p className="mt-0.5 text-[11px] text-white/70">መጋቢት 1 – 15, 2017 E.C.</p>
                     </div>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5">
                       {[
@@ -660,7 +660,7 @@ export default function HomePage() {
                         <div
                           key={v.label}
                           className={`rounded-lg px-2 py-1 text-[10px] transition-colors sm:px-3 sm:py-1.5 sm:text-[11px] ${
-                            v.active ? 'bg-white/[0.08] font-medium text-white/70' : 'text-white/40 hover:bg-white/[0.04]'
+                            v.active ? 'bg-white/[0.08] font-medium text-white/70' : 'text-white/70 hover:bg-white/[0.04]'
                           }`}
                         >
                           {v.label}
@@ -677,8 +677,8 @@ export default function HomePage() {
                       { label: t('landing.preview.completed'), value: '18', color: 'text-emerald-400' },
                       { label: t('landing.preview.budgetUsed'), value: '58%', color: 'text-amber-400' },
                     ].map((s) => (
-                      <div key={s.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                        <p className="text-[10px] text-white/50">{s.label}</p>
+                      <div key={s.label} className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
+                        <p className="text-[10px] text-white/70">{s.label}</p>
                         <p className={`text-[16px] font-semibold ${s.color}`}>{s.value}</p>
                       </div>
                     ))}
@@ -706,15 +706,15 @@ export default function HomePage() {
                       <div key={col.label}>
                         <div className="mb-2.5 flex items-center gap-2">
                           <div className={`h-2 w-2 rounded-full ${col.dot}`} />
-                          <span className="text-[11px] font-medium text-white/60">{col.label}</span>
-                          <span className="ml-auto text-[10px] text-white/40">{col.count}</span>
+                          <span className="text-[11px] font-medium text-white/80">{col.label}</span>
+                          <span className="ml-auto text-[10px] text-white/70">{col.count}</span>
                         </div>
                         <div className="space-y-2">
                           {col.cards.map((card) => (
-                            <div key={card.title} className="rounded-lg border border-white/[0.06] bg-white/[0.025] p-3 transition-all hover:border-white/[0.1] hover:bg-white/[0.04]">
-                              <p className="text-[11px] leading-snug text-white/60">{card.title}</p>
+                            <div key={card.title} className="rounded-lg border border-white/[0.12] bg-white/[0.025] p-3 transition-all hover:border-white/[0.2] hover:bg-white/[0.04]">
+                              <p className="text-[11px] leading-snug text-white/80">{card.title}</p>
                               <div className="mt-2.5 flex items-center justify-between">
-                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/50">{card.tag}</span>
+                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/70">{card.tag}</span>
                                 <div className={`h-1.5 w-1.5 rounded-full ${
                                   card.priority === 'high' ? 'bg-red-400' : card.priority === 'medium' ? 'bg-amber-400' : 'bg-white/20'
                                 }`} />
@@ -733,9 +733,9 @@ export default function HomePage() {
       </section>
 
       {/* ═══ TRUSTED BY ═══ */}
-      <section className="border-y border-white/[0.06] py-14">
+      <section className="border-y border-white/[0.12] py-14">
         <div className="mx-auto max-w-6xl px-6">
-          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/40">{t('landing.trustedBy')}</p>
+          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/70">{t('landing.trustedBy')}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-14">
             {[
               'TechEth Solutions', 'Addis Development', 'BuildEth Construction',
@@ -758,9 +758,9 @@ export default function HomePage() {
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
                 {t('landing.whyOnekof.heading1')}
                 <br />
-                <span className="text-white/55">{t('landing.whyOnekof.heading2')}</span>
+                <span className="text-white/75">{t('landing.whyOnekof.heading2')}</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/50">
+              <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/70">
                 {t('landing.whyOnekof.subtitle')}
               </p>
             </div>
@@ -813,14 +813,14 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
-                <div className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04] sm:p-7">
+                <div className="group relative overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.02] p-5 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04] sm:p-7">
                   <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
                   <div className="relative">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors group-hover:border-primary-500/20 group-hover:bg-primary-500/10">
-                      <feature.icon className="h-5 w-5 text-white/60 transition-colors group-hover:text-primary-400" />
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.15] bg-white/[0.04] transition-colors group-hover:border-primary-500/20 group-hover:bg-primary-500/10">
+                      <feature.icon className="h-5 w-5 text-white/80 transition-colors group-hover:text-primary-400" />
                     </div>
                     <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                    <p className="text-[14px] leading-relaxed text-white/50">{feature.desc}</p>
+                    <p className="text-[14px] leading-relaxed text-white/70">{feature.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -830,7 +830,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ PRODUCT SHOWCASE — Interactive Tabs ═══ */}
-      <section id="product" className="border-y border-white/[0.06] py-16 sm:py-28 lg:py-36">
+      <section id="product" className="border-y border-white/[0.12] py-16 sm:py-28 lg:py-36">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
@@ -838,7 +838,7 @@ export default function HomePage() {
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
                 {t('landing.showcase.heading')}
               </h2>
-              <p className="mt-4 text-[16px] text-white/50">
+              <p className="mt-4 text-[16px] text-white/70">
                 {t('landing.showcase.subtitle')}
               </p>
             </div>
@@ -855,10 +855,10 @@ export default function HomePage() {
                     className={`group flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium transition-all duration-300 sm:gap-2 sm:px-5 sm:py-3 sm:text-[13px] ${
                       activeShowcase === i
                         ? 'bg-white/[0.08] text-white shadow-lg shadow-primary-500/5 ring-1 ring-white/[0.1]'
-                        : 'text-white/50 hover:bg-white/[0.04] hover:text-white/50'
+                        : 'text-white/70 hover:bg-white/[0.04] hover:text-white/70'
                     }`}
                   >
-                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-primary-400' : 'text-white/40'}`} />
+                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-primary-400' : 'text-white/70'}`} />
                     {tab.label}
                   </Button>
                 ))}
@@ -894,12 +894,12 @@ export default function HomePage() {
                     <h3 className="mb-3 font-display text-2xl font-semibold tracking-[-0.03em] sm:text-[1.75rem]">
                       {showcaseTabs[activeShowcase].title}
                     </h3>
-                    <p className="mb-6 text-[15px] leading-relaxed text-white/55">
+                    <p className="mb-6 text-[15px] leading-relaxed text-white/75">
                       {showcaseTabs[activeShowcase].desc}
                     </p>
                     <ul className="mb-8 space-y-3">
                       {showcaseTabs[activeShowcase].features.map((f) => (
-                        <li key={f} className="flex items-start gap-3 text-[14px] text-white/45">
+                        <li key={f} className="flex items-start gap-3 text-[14px] text-white/70">
                           <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
                             <Check className="h-3 w-3 text-primary-400" />
                           </div>
@@ -926,7 +926,7 @@ export default function HomePage() {
                     transition={{ duration: 0.4, ease: 'easeInOut' }}
                     className="order-1 lg:order-2"
                   >
-                    <div className="rounded-2xl border border-white/[0.08] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
+                    <div className="rounded-2xl border border-white/[0.15] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
                       {showcaseMockups[activeShowcase]}
                     </div>
                   </motion.div>
@@ -946,12 +946,12 @@ export default function HomePage() {
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 {t('landing.features.heading1')}
                 <br />
-                <span className="text-white/55">{t('landing.features.heading2')}</span>
+                <span className="text-white/75">{t('landing.features.heading2')}</span>
               </h2>
             </div>
           </Reveal>
 
-          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Kanban, title: t('landing.features.kanban'), desc: t('landing.features.kanbanDesc') },
               { icon: GanttChart, title: t('landing.features.timeline'), desc: t('landing.features.timelineDesc') },
@@ -973,9 +973,9 @@ export default function HomePage() {
                 className="group"
               >
                 <div className="border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7 h-full">
-                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-primary-400" />
+                  <feature.icon className="mb-4 h-5 w-5 text-white/70 transition-colors duration-300 group-hover:text-primary-400" />
                   <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
+                  <p className="text-[13px] leading-relaxed text-white/70">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -984,7 +984,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ STATS ═══ */}
-      <section className="border-y border-white/[0.06]">
+      <section className="border-y border-white/[0.12]">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-2 divide-x divide-white/[0.06] lg:grid-cols-4">
             {[
@@ -1001,11 +1001,11 @@ export default function HomePage() {
                 transition={{ type: 'spring', stiffness: 200, damping: 20, delay: index * 0.15 }}
               >
                 <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
-                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/40 transition-colors group-hover:text-primary-400/50" />
+                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/70 transition-colors group-hover:text-primary-400/50" />
                   <div className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="mt-2 text-[13px] text-white/50">{stat.label}</p>
+                  <p className="mt-2 text-[13px] text-white/70">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
@@ -1022,7 +1022,7 @@ export default function HomePage() {
               <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 {t('landing.testimonials.heading1')}
                 <br />
-                <span className="text-white/55">{t('landing.testimonials.heading2')}</span>
+                <span className="text-white/75">{t('landing.testimonials.heading2')}</span>
               </h2>
             </div>
           </Reveal>
@@ -1071,13 +1071,13 @@ export default function HomePage() {
                   whileHover={{ scale: 1.03, rotate: 0.5 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <div className="group h-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
+                  <div className="group h-full rounded-2xl border border-white/[0.12] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04]">
                     <div className="mb-4 flex gap-1">
                       {Array.from({ length: 5 }).map((_, j) => (
                         <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
                       ))}
                     </div>
-                    <p className="mb-6 text-[14px] leading-relaxed text-white/60">
+                    <p className="mb-6 text-[14px] leading-relaxed text-white/80">
                       &ldquo;{testimonial.quote}&rdquo;
                     </p>
                     <div className="flex items-center gap-3">
@@ -1086,7 +1086,7 @@ export default function HomePage() {
                       </div>
                       <div>
                         <p className="text-[13px] font-medium text-white/70">{testimonial.name}</p>
-                        <p className="text-[12px] text-white/50">{testimonial.role}</p>
+                        <p className="text-[12px] text-white/70">{testimonial.role}</p>
                       </div>
                     </div>
                   </div>
@@ -1098,7 +1098,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ PRICING ═══ */}
-      <section id="pricing" className="border-t border-white/[0.06] py-16 sm:py-28 lg:py-36">
+      <section id="pricing" className="border-t border-white/[0.12] py-16 sm:py-28 lg:py-36">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
@@ -1106,15 +1106,15 @@ export default function HomePage() {
               <h2 className="mb-4 font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
                 {t('landing.pricing.heading')}
               </h2>
-              <p className="text-[16px] text-white/50">
+              <p className="text-[16px] text-white/70">
                 {t('landing.pricing.subtitle')}
               </p>
 
-              <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1">
+              <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.15] bg-white/[0.03] p-1">
                 <Button
                   onClick={() => setBilling('monthly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
+                    billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/75 hover:text-white/80'
                   }`}
                 >
                   {t('landing.pricing.monthly')}
@@ -1122,7 +1122,7 @@ export default function HomePage() {
                 <Button
                   onClick={() => setBilling('yearly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/55 hover:text-white/60'
+                    billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/75 hover:text-white/80'
                   }`}
                 >
                   {t('landing.pricing.yearly')}
@@ -1149,7 +1149,7 @@ export default function HomePage() {
                   className={`relative h-full rounded-2xl border p-5 transition-all duration-500 sm:p-7 ${
                     plan.highlighted
                       ? 'border-primary-500/30 bg-gradient-to-b from-primary-500/[0.08] to-transparent shadow-xl'
-                      : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1] hover:bg-white/[0.04]'
+                      : 'border-white/[0.12] bg-white/[0.02] hover:border-white/[0.2] hover:bg-white/[0.04]'
                   }`}
                 >
                   {plan.highlighted && (
@@ -1163,7 +1163,7 @@ export default function HomePage() {
 
                   <div className="mb-5">
                     <h3 className="text-[16px] font-medium">{plan.name}</h3>
-                    <p className="mt-1 text-[13px] text-white/50">{plan.desc}</p>
+                    <p className="mt-1 text-[13px] text-white/70">{plan.desc}</p>
                   </div>
 
                   <div className="mb-6">
@@ -1172,13 +1172,13 @@ export default function HomePage() {
                         <span className="font-display text-4xl font-semibold tracking-tight">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
-                        <span className="text-[13px] text-white/50">{t('landing.pricing.etbPerUserMo')}</span>
+                        <span className="text-[13px] text-white/70">{t('landing.pricing.etbPerUserMo')}</span>
                       </div>
                     ) : (
                       <div className="font-display text-4xl font-semibold tracking-tight">{t('landing.pricing.custom')}</div>
                     )}
                     {plan.price === 0 && (
-                      <p className="mt-1.5 text-[12px] text-white/40">{t('landing.pricing.freeForeverNoCard')}</p>
+                      <p className="mt-1.5 text-[12px] text-white/70">{t('landing.pricing.freeForeverNoCard')}</p>
                     )}
                   </div>
 
@@ -1187,7 +1187,7 @@ export default function HomePage() {
                     className={`mb-7 block rounded-xl py-3 text-center text-[13px] font-medium transition-all duration-300 ${
                       plan.highlighted
                         ? 'bg-gradient-to-r from-primary-500 to-primary-700 text-white shadow-xl hover:shadow-xl hover:brightness-110'
-                        : 'border border-white/[0.1] text-white/50 hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white'
+                        : 'border border-white/[0.1] text-white/70 hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white'
                     }`}
                   >
                     {plan.cta}
@@ -1195,7 +1195,7 @@ export default function HomePage() {
 
                   <ul className="space-y-3">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/55">
+                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/75">
                         <Check className="h-3.5 w-3.5 flex-shrink-0 text-primary-400/50" />
                         {f}
                       </li>
@@ -1209,7 +1209,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ COMPARISON ═══ */}
-      <section className="border-y border-white/[0.06] py-16 sm:py-24">
+      <section className="border-y border-white/[0.12] py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <h3 className="mb-8 text-center font-display text-xl font-semibold tracking-[-0.03em] sm:mb-12 sm:text-2xl">
@@ -1224,19 +1224,19 @@ export default function HomePage() {
               { from: t('landing.comparison.spreadsheets.name'), reasons: [t('landing.comparison.spreadsheets.reason1'), t('landing.comparison.spreadsheets.reason2'), t('landing.comparison.spreadsheets.reason3'), t('landing.comparison.spreadsheets.reason4')] },
             ].map((item, i) => (
               <Reveal key={item.from} delay={i * 80}>
-                <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.04]">
+                <div className="group rounded-2xl border border-white/[0.12] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04]">
                   <p className="mb-5 text-[14px] font-medium">
                     {t('landing.comparison.switchingFrom')} <span className="text-primary-400">{item.from}</span>?
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
-                      <li key={r} className="flex items-center gap-2.5 text-[13px] text-white/50">
+                      <li key={r} className="flex items-center gap-2.5 text-[13px] text-white/70">
                         <X className="h-3.5 w-3.5 flex-shrink-0 text-red-400/40" />
                         {r}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-5 border-t border-white/[0.06] pt-5">
+                  <div className="mt-5 border-t border-white/[0.12] pt-5">
                     <p className="flex items-center gap-2 text-[13px] font-medium text-emerald-400">
                       <Check className="h-4 w-4" />
                       {t('landing.comparison.onekofHandlesAll')}
@@ -1256,16 +1256,16 @@ export default function HomePage() {
         </motion.div>
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
           <Reveal>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.15] bg-white/[0.03] px-4 py-2">
               <Sparkles className="h-3.5 w-3.5 text-primary-400" />
-              <span className="text-[13px] text-white/60">{t('landing.cta.badge')}</span>
+              <span className="text-[13px] text-white/80">{t('landing.cta.badge')}</span>
             </div>
             <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-5xl">
               {t('landing.cta.heading1')}
               <br />
               {t('landing.cta.heading2')}
             </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-white/50">
+            <p className="mt-5 text-[17px] leading-relaxed text-white/70">
               {t('landing.cta.subtitle')}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -1280,7 +1280,7 @@ export default function HomePage() {
               </Link>
               <a
                 href="mailto:hello@onekof.com"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/60 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/80 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
               >
                 {t('landing.cta.talkToSales')}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -1291,7 +1291,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-white/[0.06]">
+      <footer className="border-t border-white/[0.12]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
@@ -1301,7 +1301,7 @@ export default function HomePage() {
                 </div>
                 <span className="text-[15px] font-semibold">Onekof</span>
               </div>
-              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/50">
+              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
                 {t('landing.footer.description')}
               </p>
               <div className="mt-6 flex gap-3">
@@ -1313,7 +1313,7 @@ export default function HomePage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] text-[11px] font-bold text-white/70 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
                   >
                     {social.letter}
                   </a>
@@ -1327,11 +1327,11 @@ export default function HomePage() {
               { title: t('landing.footer.resourcesCol'), links: [t('landing.footer.footerLinks.documentation'), t('landing.footer.footerLinks.helpCenter'), t('landing.footer.footerLinks.apiReference'), t('landing.footer.footerLinks.community'), t('landing.footer.footerLinks.status')] },
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/40">{col.title}</h4>
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/70">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a href="#" className="text-[13px] text-white/50 transition-colors hover:text-white/50">{link}</a>
+                      <a href="#" className="text-[13px] text-white/70 transition-colors hover:text-white/70">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -1339,13 +1339,13 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-            <p className="text-[12px] text-white/40">
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.12] pt-8 sm:flex-row">
+            <p className="text-[12px] text-white/70">
               &copy; {new Date().getFullYear()} Onekof. {t('landing.footer.allRightsReserved')}
             </p>
             <div className="flex gap-6">
               {[t('landing.footer.privacy'), t('landing.footer.terms'), t('landing.footer.cookies')].map((link) => (
-                <a key={link} href="#" className="text-[12px] text-white/40 transition-colors hover:text-white/50">{link}</a>
+                <a key={link} href="#" className="text-[12px] text-white/70 transition-colors hover:text-white/70">{link}</a>
               ))}
             </div>
           </div>
