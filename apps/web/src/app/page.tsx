@@ -813,7 +813,7 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
-                <div className="group relative overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.02] p-5 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04] sm:p-7">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] p-5 transition-all duration-500 hover:border-primary-500/40 hover:bg-white/[0.06] sm:p-7">
                   <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
                   <div className="relative">
                     <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.15] bg-white/[0.04] transition-colors group-hover:border-primary-500/20 group-hover:bg-primary-500/10">

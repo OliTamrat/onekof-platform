@@ -512,7 +512,9 @@ export default function DashboardPage() {
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
                   {t('dashboard.recentActivityDescription')}
                 </p>
-                <ActivityTimeline limit={20} showFilters={true} />
+                <div className="max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
+                  <ActivityTimeline limit={10} showFilters={true} />
+                </div>
               </div>
             </div>
 
