@@ -7,19 +7,19 @@ import {
   Plus,
   FileText,
   Clock,
-  Star,
   Users,
   FolderOpen,
   ArrowRight,
-  Sparkles,
-  TrendingUp,
+  Rocket,
   BookMarked,
   Lightbulb,
   Shield,
-  Rocket,
   Wrench,
+  type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { KNOWLEDGE_TABS } from '@/config/department-tabs';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
@@ -27,109 +27,42 @@ import { useLanguage } from '@/contexts/language-context';
 interface WikiCategory {
   id: string;
   name: string;
-  description: string;
-  icon: typeof BookOpen;
+  icon: LucideIcon;
   color: string;
-  bg: string;
+  iconBg: string;
   pageCount: number;
-  articles: { title: string; excerpt: string; updatedAt: string }[];
+  articles: { title: string; updatedAt: string }[];
 }
 
-interface WikiCategoryConfig {
-  id: string;
-  nameKey: string;
-  descKey: string;
-  icon: typeof BookOpen;
-  color: string;
-  bg: string;
-  pageCount: number;
-  articles: { titleKey: string; excerptKey: string; updatedAt: string }[];
-}
-
-// Wiki categories use translation keys - resolved at render time via t()
-const WIKI_CATEGORIES_CONFIG = [
-  {
-    id: 'getting-started',
-    nameKey: 'wiki.gettingStarted',
-    descKey: '',
-    icon: Rocket,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    pageCount: 5,
-    articles: [
-      { titleKey: 'wiki.welcomeToOnekof', excerptKey: 'wiki.welcomeDesc', updatedAt: '2 days ago' },
-      { titleKey: 'wiki.settingUpWorkspace', excerptKey: 'wiki.settingUpDesc', updatedAt: '1 week ago' },
-      { titleKey: 'wiki.creatingFirstProject', excerptKey: 'wiki.creatingFirstDesc', updatedAt: '1 week ago' },
-    ],
-  },
-  {
-    id: 'project-management',
-    nameKey: 'wiki.projectManagement',
-    descKey: '',
-    icon: BookMarked,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-900/20',
-    pageCount: 8,
-    articles: [
-      { titleKey: 'wiki.taskWorkflows', excerptKey: 'wiki.taskWorkflowsDesc', updatedAt: '3 days ago' },
-      { titleKey: 'wiki.boardVsList', excerptKey: 'wiki.boardVsListDesc', updatedAt: '5 days ago' },
-      { titleKey: 'wiki.priorityGuide', excerptKey: 'wiki.priorityGuideDesc', updatedAt: '1 week ago' },
-    ],
-  },
-  {
-    id: 'team-collaboration',
-    nameKey: 'wiki.teamCollaboration',
-    descKey: '',
-    icon: Users,
-    color: 'text-primary-600 dark:text-primary-400',
-    bg: 'bg-primary-50 dark:bg-primary-900/20',
-    pageCount: 6,
-    articles: [
-      { titleKey: 'wiki.invitingMembers', excerptKey: 'wiki.invitingMembersDesc', updatedAt: '1 day ago' },
-      { titleKey: 'wiki.commentsMentions', excerptKey: 'wiki.commentsMentionsDesc', updatedAt: '4 days ago' },
-      { titleKey: 'wiki.teamRoles', excerptKey: 'wiki.teamRolesDesc', updatedAt: '1 week ago' },
-    ],
-  },
-  {
-    id: 'tips-tricks',
-    nameKey: 'wiki.tipsBestPractices',
-    descKey: '',
-    icon: Lightbulb,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-900/20',
-    pageCount: 4,
-    articles: [
-      { titleKey: 'wiki.keyboardShortcuts', excerptKey: 'wiki.keyboardShortcutsDesc', updatedAt: '2 days ago' },
-      { titleKey: 'wiki.dashboardCustomization', excerptKey: 'wiki.dashboardCustomizationDesc', updatedAt: '3 days ago' },
-      { titleKey: 'wiki.automationRules', excerptKey: 'wiki.automationRulesDesc', updatedAt: '5 days ago' },
-    ],
-  },
-  {
-    id: 'security',
-    nameKey: 'wiki.securityCompliance',
-    descKey: '',
-    icon: Shield,
-    color: 'text-red-600 dark:text-red-400',
-    bg: 'bg-red-50 dark:bg-red-900/20',
-    pageCount: 3,
-    articles: [
-      { titleKey: 'wiki.twoFactorAuth', excerptKey: 'wiki.twoFactorAuthDesc', updatedAt: '1 week ago' },
-      { titleKey: 'wiki.dataPrivacy', excerptKey: 'wiki.dataPrivacyDesc', updatedAt: '2 weeks ago' },
-    ],
-  },
-  {
-    id: 'admin',
-    nameKey: 'wiki.administration',
-    descKey: '',
-    icon: Wrench,
-    color: 'text-slate-600 dark:text-slate-400',
-    bg: 'bg-slate-100 dark:bg-slate-800',
-    pageCount: 4,
-    articles: [
-      { titleKey: 'wiki.orgSettings', excerptKey: 'wiki.orgSettingsDesc', updatedAt: '3 days ago' },
-      { titleKey: 'wiki.billingSubscription', excerptKey: 'wiki.billingSubscriptionDesc', updatedAt: '1 week ago' },
-    ],
-  },
+// Category configs with translation keys
+const CATEGORY_CONFIGS = [
+  { id: 'getting-started', nameKey: 'wiki.gettingStarted', icon: Rocket, color: 'text-blue-600 dark:text-blue-400', iconBg: 'bg-blue-100 dark:bg-blue-900/30', pageCount: 5, articles: [
+    { titleKey: 'wiki.welcomeToOnekof', updatedAt: '2d' },
+    { titleKey: 'wiki.settingUpWorkspace', updatedAt: '1w' },
+    { titleKey: 'wiki.creatingFirstProject', updatedAt: '1w' },
+  ]},
+  { id: 'project-management', nameKey: 'wiki.projectManagement', icon: BookMarked, color: 'text-purple-600 dark:text-purple-400', iconBg: 'bg-purple-100 dark:bg-purple-900/30', pageCount: 8, articles: [
+    { titleKey: 'wiki.taskWorkflows', updatedAt: '3d' },
+    { titleKey: 'wiki.boardVsList', updatedAt: '5d' },
+    { titleKey: 'wiki.priorityGuide', updatedAt: '1w' },
+  ]},
+  { id: 'team-collaboration', nameKey: 'wiki.teamCollaboration', icon: Users, color: 'text-[#1C8C7D]', iconBg: 'bg-[#1C8C7D]/10', pageCount: 6, articles: [
+    { titleKey: 'wiki.invitingMembers', updatedAt: '1d' },
+    { titleKey: 'wiki.commentsMentions', updatedAt: '4d' },
+    { titleKey: 'wiki.teamRoles', updatedAt: '1w' },
+  ]},
+  { id: 'tips-tricks', nameKey: 'wiki.tipsBestPractices', icon: Lightbulb, color: 'text-amber-600 dark:text-amber-400', iconBg: 'bg-amber-100 dark:bg-amber-900/30', pageCount: 4, articles: [
+    { titleKey: 'wiki.keyboardShortcuts', updatedAt: '2d' },
+    { titleKey: 'wiki.dashboardCustomization', updatedAt: '3d' },
+  ]},
+  { id: 'security', nameKey: 'wiki.securityCompliance', icon: Shield, color: 'text-red-600 dark:text-red-400', iconBg: 'bg-red-100 dark:bg-red-900/30', pageCount: 3, articles: [
+    { titleKey: 'wiki.twoFactorAuth', updatedAt: '1w' },
+    { titleKey: 'wiki.dataPrivacy', updatedAt: '2w' },
+  ]},
+  { id: 'admin', nameKey: 'wiki.administration', icon: Wrench, color: 'text-slate-600 dark:text-slate-400', iconBg: 'bg-slate-100 dark:bg-slate-800', pageCount: 4, articles: [
+    { titleKey: 'wiki.orgSettings', updatedAt: '3d' },
+    { titleKey: 'wiki.billingSubscription', updatedAt: '1w' },
+  ]},
 ];
 
 export default function WikiPage() {
@@ -137,187 +70,176 @@ export default function WikiPage() {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Resolve translation keys to actual strings
-  const WIKI_CATEGORIES: WikiCategory[] = WIKI_CATEGORIES_CONFIG.map(c => ({
+  // Resolve translations
+  const categories: WikiCategory[] = CATEGORY_CONFIGS.map(c => ({
     id: c.id,
     name: t(c.nameKey),
-    description: c.descKey ? t(c.descKey) : '',
     icon: c.icon,
     color: c.color,
-    bg: c.bg,
+    iconBg: c.iconBg,
     pageCount: c.pageCount,
-    articles: c.articles.map(a => ({
-      title: t(a.titleKey),
-      excerpt: t(a.excerptKey),
-      updatedAt: a.updatedAt,
-    })),
+    articles: c.articles.map(a => ({ title: t(a.titleKey), updatedAt: a.updatedAt })),
   }));
 
-  const totalPages = WIKI_CATEGORIES.reduce((sum, c) => sum + c.pageCount, 0);
+  const totalArticles = categories.reduce((sum, c) => sum + c.pageCount, 0);
   const filteredCategories = search
-    ? WIKI_CATEGORIES.filter(c =>
+    ? categories.filter(c =>
         c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.description.toLowerCase().includes(search.toLowerCase()) ||
         c.articles.some(a => a.title.toLowerCase().includes(search.toLowerCase()))
       )
-    : WIKI_CATEGORIES;
+    : categories;
 
-  const activeCategory = selectedCategory
-    ? WIKI_CATEGORIES.find(c => c.id === selectedCategory)
-    : null;
+  const activeCategory = selectedCategory ? categories.find(c => c.id === selectedCategory) : null;
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
-        {/* Header */}
-        <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                <BookOpen className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('wiki.title')}</h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {totalPages} {t('wiki.articlesAcross')} {WIKI_CATEGORIES.length} {t('wiki.categories')}
-                </p>
-              </div>
-            </div>
-            <Button size="sm" className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" />
-              {t('wiki.newArticle')}
-            </Button>
-          </div>
+      <UnifiedPageHeader
+        title={t('wiki.title')}
+        icon={<BookOpen className="h-6 w-6" />}
+        iconColor="#06B6D4"
+        currentTab="wiki"
+        baseHref="/dashboard"
+        customTabs={KNOWLEDGE_TABS}
+        showTabs
+      />
 
-          {/* Search */}
-          <div className="relative max-w-lg">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder={t('wiki.searchArticles')}
-              value={search}
-              onChange={e => { setSearch(e.target.value); setSelectedCategory(null); }}
-              className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-            />
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Search + Action Bar */}
+        <div className="border-b border-gray-200 dark:border-slate-700/50 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder={t('wiki.searchArticles')}
+                value={search}
+                onChange={e => { setSearch(e.target.value); setSelectedCategory(null); }}
+                className="w-full h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D] transition-colors"
+              />
+            </div>
+            <Button
+              size="sm"
+              className="gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white rounded-lg h-9"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t('wiki.newArticle')}</span>
+            </Button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {activeCategory ? (
             /* Category detail view */
             <div className="max-w-4xl mx-auto">
-              <Button variant="link"
+              <button
                 onClick={() => setSelectedCategory(null)}
-                className="flex items-center gap-1.5 text-sm text-primary-600 dark:text-primary-400 hover:underline mb-4"
+                className="flex items-center gap-1.5 text-sm font-medium text-[#1C8C7D] hover:text-[#167A6E] mb-4 transition-colors"
               >
                 <ArrowRight className="h-3.5 w-3.5 rotate-180" />
                 {t('wiki.backToCategories')}
-              </Button>
+              </button>
 
               <div className="flex items-center gap-3 mb-6">
-                <div className={cn('rounded-xl p-3', activeCategory.bg)}>
-                  <activeCategory.icon className={cn('h-6 w-6', activeCategory.color)} />
+                <div className={cn('rounded-xl h-11 w-11 flex items-center justify-center', activeCategory.iconBg)}>
+                  <activeCategory.icon className={cn('h-5 w-5', activeCategory.color)} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{activeCategory.name}</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{activeCategory.description}</p>
+                  <h2 className="text-base font-semibold text-gray-900 dark:text-white">{activeCategory.name}</h2>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">{activeCategory.pageCount} articles</p>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
                 {activeCategory.articles.map((article, idx) => (
                   <div
                     key={idx}
-                    className="group rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all cursor-pointer"
+                    className={cn(
+                      'group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors',
+                      idx !== activeCategory.articles.length - 1 && 'border-b border-gray-100 dark:border-slate-700/50'
+                    )}
                   >
-                    <div className="flex items-start gap-3">
-                      <FileText className="h-5 w-5 text-slate-400 mt-0.5 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                          {article.title}
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{article.excerpt}</p>
-                        <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          Updated {article.updatedAt}
-                        </p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-primary-500 transition-colors shrink-0 mt-1" />
-                    </div>
+                    <FileText className="h-4 w-4 text-gray-400 shrink-0" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors flex-1 truncate">
+                      {article.title}
+                    </span>
+                    <span className="text-xs text-gray-400 dark:text-slate-500 shrink-0 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {article.updatedAt}
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5 text-gray-300 dark:text-slate-600 group-hover:text-[#1C8C7D] transition-colors shrink-0" />
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            /* Categories grid */
+            /* Categories overview */
             <div className="max-w-5xl mx-auto">
-              {/* Quick stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-blue-500" />
-                  <div>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">{totalPages}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.totalArticles')}</p>
-                  </div>
+              {/* Stats row — consistent with other pages */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">{t('wiki.totalArticles')}</div>
+                  <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{totalArticles}</div>
                 </div>
-                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
-                  <FolderOpen className="h-4 w-4 text-purple-500" />
-                  <div>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">{WIKI_CATEGORIES.length}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.categories')}</p>
-                  </div>
+                <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">{t('wiki.categories')}</div>
+                  <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{categories.length}</div>
                 </div>
-                <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-3 flex items-center gap-3">
-                  <TrendingUp className="h-4 w-4 text-primary-500" />
-                  <div>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">{t('common.active')}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('wiki.updatedRecently')}</p>
-                  </div>
+                <div className="hidden md:block bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="text-xs text-gray-500 dark:text-slate-400">{t('wiki.updatedRecently')}</div>
+                  <div className="text-xl font-bold text-[#1C8C7D] mt-0.5">{t('common.active')}</div>
                 </div>
               </div>
 
-              {/* Category grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredCategories.map(category => (
-                  <Button variant="outline"
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className="group text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md transition-all"
-                  >
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className={cn('rounded-lg p-2.5 shrink-0', category.bg)}>
-                        <category.icon className={cn('h-5 w-5', category.color)} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                          {category.name}
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{category.description}</p>
-                      </div>
-                      <span className="text-xs text-slate-400 shrink-0">{category.pageCount} articles</span>
-                    </div>
-
-                    {/* Preview articles */}
-                    <div className="space-y-1.5 pl-[52px]">
-                      {category.articles.slice(0, 2).map((article, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <FileText className="h-3 w-3 text-slate-400 shrink-0" />
-                          <span className="text-xs text-slate-600 dark:text-slate-400 truncate">{article.title}</span>
-                        </div>
-                      ))}
-                      {category.articles.length > 2 && (
-                        <span className="text-[11px] text-primary-500 pl-5">+{category.articles.length - 2} more</span>
+              {/* Category list — clean table-like layout matching Issues/Projects pattern */}
+              <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+                {filteredCategories.map((category, idx) => {
+                  const Icon = category.icon;
+                  return (
+                    <div
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={cn(
+                        'group flex items-center gap-4 px-4 md:px-5 py-4 hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors',
+                        idx !== filteredCategories.length - 1 && 'border-b border-gray-100 dark:border-slate-700/50'
                       )}
+                    >
+                      {/* Icon */}
+                      <div className={cn('rounded-lg h-10 w-10 flex items-center justify-center shrink-0', category.iconBg)}>
+                        <Icon className={cn('h-5 w-5', category.color)} />
+                      </div>
+
+                      {/* Name + preview articles */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors">
+                            {category.name}
+                          </h3>
+                          <span className="text-xs text-gray-400 dark:text-slate-500">{category.pageCount} articles</span>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1">
+                          {category.articles.slice(0, 2).map((article, aIdx) => (
+                            <span key={aIdx} className="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[180px]">
+                              {article.title}
+                            </span>
+                          ))}
+                          {category.articles.length > 2 && (
+                            <span className="text-xs text-[#1C8C7D]">+{category.articles.length - 2} more</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Arrow */}
+                      <ArrowRight className="h-4 w-4 text-gray-300 dark:text-slate-600 group-hover:text-[#1C8C7D] transition-colors shrink-0" />
                     </div>
-                  </Button>
-                ))}
+                  );
+                })}
               </div>
 
               {filteredCategories.length === 0 && (
-                <div className="text-center py-12">
-                  <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('emptyStates.noArticles')} "{search}"</p>
+                <div className="text-center py-16">
+                  <Search className="mx-auto h-8 w-8 text-gray-300 dark:text-slate-600 mb-3" />
+                  <p className="text-sm text-gray-500 dark:text-slate-400">{t('emptyStates.noArticles')} &ldquo;{search}&rdquo;</p>
                 </div>
               )}
             </div>
