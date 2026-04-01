@@ -159,8 +159,9 @@ export function DepartmentTaskList({
   const allTasks = useMemo(() => {
     const tasks = issuesData?.issues || [];
     if (defaultLabels.length === 0) return tasks;
+    // Only show issues that have at least one matching label
     return tasks.filter(t =>
-      !t.labels || t.labels.length === 0 ||
+      t.labels && t.labels.length > 0 &&
       t.labels.some(l => defaultLabels.includes(l))
     );
   }, [issuesData, defaultLabels]);
