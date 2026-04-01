@@ -7,9 +7,12 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import {
   CheckSquare,
-  Calendar
+  Calendar,
+  Plus
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
+import { Button } from '@/components/ui/button';
+import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 
 interface Issue {
   id: string;
@@ -132,6 +135,25 @@ export default function IssuesListPage() {
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
 
+        {/* Toolbar: search + create button */}
+        <div className="flex items-center justify-between px-3 md:px-6 py-2 border-b border-gray-200 dark:border-slate-700">
+          <input
+            type="text"
+            placeholder={t('issuesList.searchIssues')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-64 px-3 py-1.5 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]"
+          />
+          <Button
+            onClick={() => setShowCreateModal(true)}
+            size="sm"
+            className="gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white rounded-lg h-8"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('issuesList.createIssue')}
+          </Button>
+        </div>
+
         {/* Issues Table */}
         <div className="flex-1 overflow-auto px-3 md:px-6 py-3 md:py-4">
           {isLoading ? (
@@ -252,6 +274,10 @@ export default function IssuesListPage() {
           )}
         </div>
       </div>
+
+      {showCreateModal && (
+        <CreateIssueModal onClose={() => setShowCreateModal(false)} />
+      )}
     </AppLayout>
   );
 }

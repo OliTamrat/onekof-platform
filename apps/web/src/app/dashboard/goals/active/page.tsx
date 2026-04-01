@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { GOALS_TABS } from '@/config/department-tabs';
@@ -11,13 +12,15 @@ import {
   Clock,
   TrendingUp,
   Users,
-  AlertCircle
+  AlertCircle,
+  Plus
 } from 'lucide-react';
 import {
   SlideoutPanel,
   SlideoutPanelContent,
   SlideoutPanelSection,
 } from '@/components/ui/slideout-panel';
+import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
 // Mock active goals data
@@ -32,6 +35,7 @@ const ACTIVE_GOALS = [
 
 export default function GoalsActivePage() {
   const { t } = useLanguage();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoal, setSelectedGoal] = useState<any | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
@@ -77,6 +81,19 @@ export default function GoalsActivePage() {
         customTabs={GOALS_TABS}
         showTabs
       />
+
+      {/* Action bar */}
+      <div className="flex items-center justify-between px-3 md:px-6 py-2 border-b border-gray-200 dark:border-slate-700">
+        <div />
+        <Button
+          onClick={() => router.push('/dashboard/goals?create=true')}
+          size="sm"
+          className="gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white rounded-lg h-8"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          {t('goals.createGoal')}
+        </Button>
+      </div>
 
       <div className="p-3 md:p-6">
         {/* Summary Stats */}
