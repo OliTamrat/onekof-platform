@@ -8,7 +8,6 @@ import {
   FileText,
   Clock,
   Users,
-  FolderOpen,
   ArrowRight,
   Rocket,
   BookMarked,
@@ -131,7 +130,7 @@ export default function WikiPage() {
         <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {activeCategory ? (
             /* Category detail view */
-            <div className="max-w-4xl mx-auto">
+            <div>
               <button
                 onClick={() => setSelectedCategory(null)}
                 className="flex items-center gap-1.5 text-sm font-medium text-[#1C8C7D] hover:text-[#167A6E] mb-4 transition-colors"
@@ -174,9 +173,9 @@ export default function WikiPage() {
             </div>
           ) : (
             /* Categories overview */
-            <div className="max-w-5xl mx-auto">
+            <div className="space-y-4">
               {/* Stats row — consistent with other pages */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
                   <div className="text-xs text-gray-500 dark:text-slate-400">{t('wiki.totalArticles')}</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{totalArticles}</div>
