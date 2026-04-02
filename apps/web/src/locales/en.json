@@ -117,7 +117,8 @@
     "createTask": "Create task",
     "whatNeedsDone": "What needs to be done?",
     "noMatchFilters": "No tasks match your current filters.",
-    "createFirstTask": "Create your first task"
+    "createFirstTask": "Create your first task",
+    "pages": "pages"
   },
   "nav": {
     "home": "Home",
@@ -840,7 +841,12 @@
     "nothingHereYet": "Nothing here yet",
     "getStartedDefault": "Get started by creating your first item.",
     "noDevelopment": "No development tasks yet. Create one to track your work.",
-    "noMarketing": "No marketing tasks yet. Create one to get started."
+    "noMarketing": "No marketing tasks yet. Create one to get started.",
+    "noSpaces": "No spaces yet",
+    "noSpacesDesc": "Create your first space to start building your knowledge base.",
+    "noSpacesSearch": "No spaces found",
+    "noSpacesSearchDesc": "Try adjusting your search or create a new space.",
+    "createSpace": "Create Space"
   },
   "pricing": {
     "choosePlan": "Choose your plan",
