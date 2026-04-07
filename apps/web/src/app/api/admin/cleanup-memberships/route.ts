@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
-
-const ADMIN_EMAIL = 'admin@ministryofwater.et';
 
 /**
  * GET /api/admin/cleanup-memberships
@@ -14,11 +11,8 @@ const ADMIN_EMAIL = 'admin@ministryofwater.et';
  */
 export async function GET(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireSuperAdmin('ADMIN');
+    if (!auth.authorized) return auth.error;
 
     const users = await prisma.user.findMany({
       where: {
@@ -56,11 +50,8 @@ export async function GET(_request: NextRequest) {
  */
 export async function POST(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireSuperAdmin('ADMIN');
+    if (!auth.authorized) return auth.error;
 
     const ministryUser = await prisma.user.findUnique({
       where: { email: 'admin@ministryofwater.et' },

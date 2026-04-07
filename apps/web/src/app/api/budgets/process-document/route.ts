@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    // Validate file size (max 10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: 'File too large. Maximum size is 10MB.' },
+        { status: 400 }
+      );
+    }
+
     if (!projectId) {
       return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
     }
@@ -234,6 +243,7 @@ export async function PUT(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: { organizations: { select: { organizationId: true } } },
     });
 
     if (!user) {
@@ -248,6 +258,16 @@ export async function PUT(request: NextRequest) {
         { error: 'Missing required fields' },
         { status: 400 }
       );
+    }
+
+    // Verify project belongs to user's organization
+    const userOrgIds = user.organizations.map((m: { organizationId: string }) => m.organizationId);
+    const project = await prisma.project.findFirst({
+      where: { id: projectId, organizationId: { in: userOrgIds } },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
     // Create budget from extracted data

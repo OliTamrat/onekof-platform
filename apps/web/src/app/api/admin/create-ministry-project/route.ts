@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -13,13 +12,8 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    const ALLOWED_ADMIN_EMAILS = ['admin@ministryofwater.et', 'sifanbone@gmail.com'];
-
-    if (!session?.user?.email || !ALLOWED_ADMIN_EMAILS.includes(session.user.email)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireSuperAdmin('ADMIN');
+    if (!auth.authorized) return auth.error;
 
     logger.info('Creating Ministry of Water and Irrigation');
 
@@ -55,13 +49,18 @@ export async function POST(_request: NextRequest) {
       logger.info('Created organization', { name: ministry.name });
     }
 
-    // 2. Create or find admin user
-    let adminUser = await prisma.user.findUnique({
-      where: { email: session.user.email }
+    // 2. Find admin user — use ministry org owner or first available admin
+    let adminUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: 'admin@ministryofwater.et' },
+          { organizations: { some: { role: 'OWNER' } } },
+        ],
+      },
     });
 
     if (!adminUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'No admin user found' }, { status: 404 });
     }
 
     // 3. Add user to organization if not already member

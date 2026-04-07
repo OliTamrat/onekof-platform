@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma, type ExpenseType, type ExpenseStatus, type PaymentStatus, type Currency } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -12,20 +11,25 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const auth = await requireSuperAdmin('ADMIN');
+    if (!auth.authorized) return auth.error;
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    logger.info('Creating sample expenses for Jira Water Dam & Irrigation project', { admin: auth.admin.username });
 
-    logger.info('Creating sample expenses for Jira Water Dam & Irrigation project');
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+    // Find first OWNER user in the ministry org to attribute expenses
+    const user = await prisma.user.findFirst({
+      where: {
+        organizations: {
+          some: {
+            role: 'OWNER',
+            organization: { slug: 'ministry-water-irrigation' },
+          },
+        },
+      },
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'No owner user found for ministry org' }, { status: 404 });
     }
 
     // Find the Jira Water Dam project
