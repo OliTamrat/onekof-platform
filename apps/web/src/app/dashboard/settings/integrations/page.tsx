@@ -19,7 +19,6 @@ import {
   AlertCircle,
   RefreshCw,
   Bell,
-  BellOff,
   Unplug,
   GitBranch,
   GitPullRequest,
@@ -170,13 +169,13 @@ type IntegrationCategory = 'communication' | 'development' | 'productivity' | 'a
 interface Integration {
   id: string;
   name: string;
-  description: string;
+  descriptionKey: string;
   logo: React.FC<{ className?: string }>;
   category: IntegrationCategory;
   status: IntegrationStatusType;
   popular?: boolean;
-  features: string[];
-  setupSteps: string[];
+  featureKeys: string[];
+  setupStepKeys: string[];
   docsUrl: string;
   provider?: 'slack' | 'github' | 'google' | 'microsoft-teams' | 'webhooks' | 'email' | 'google-calendar' | 'jira';
 }
@@ -185,8 +184,8 @@ interface ConnectionData {
   id: string;
   status: string;
   externalAccountName: string | null;
-  configuration: any;
-  metadata: any;
+  configuration: Record<string, unknown>;
+  metadata: Record<string, unknown>;
   connectedAt: string;
 }
 
@@ -196,7 +195,7 @@ interface IntegrationEvent {
   type: string;
   direction: string;
   status: string;
-  payload: any;
+  payload: Record<string, unknown>;
   createdAt: string;
 }
 
@@ -206,132 +205,125 @@ const INTEGRATIONS: Integration[] = [
   {
     id: 'slack',
     name: 'Slack',
-    description: 'Send task notifications, daily standups, and project updates directly to Slack channels.',
+    descriptionKey: 'integrationSlackDesc',
     logo: SlackLogo,
     category: 'communication',
     status: 'available',
     popular: true,
     provider: 'slack',
-    features: ['Task notifications in channels', 'Channel mapping per project', 'Slash commands (/onekof)', 'Daily standup digests'],
-    setupSteps: ['Click "Connect Slack" to authorize', 'Select a default notification channel', 'Configure which events trigger notifications', 'Optionally map channels to specific projects'],
+    featureKeys: ['featureSlack1', 'featureSlack2', 'featureSlack3', 'featureSlack4'],
+    setupStepKeys: ['setupSlack1', 'setupSlack2', 'setupSlack3', 'setupSlack4'],
     docsUrl: '#',
   },
   {
     id: 'github',
     name: 'GitHub',
-    description: 'Link pull requests to tasks, auto-update task status on merge, and track code changes.',
+    descriptionKey: 'integrationGithubDesc',
     logo: GitHubLogo,
     category: 'development',
     status: 'available',
     popular: true,
     provider: 'github',
-    features: ['PR ↔ task linking', 'Auto status on merge', 'Branch tracking per task', 'Code review sync'],
-    setupSteps: ['Click "Connect GitHub" to authorize', 'Select repositories to sync', 'Configure auto-linking rules', 'Set up webhook for real-time updates'],
+    featureKeys: ['featureGithub1', 'featureGithub2', 'featureGithub3', 'featureGithub4'],
+    setupStepKeys: ['setupGithub1', 'setupGithub2', 'setupGithub3', 'setupGithub4'],
     docsUrl: '#',
   },
   {
     id: 'google-workspace',
     name: 'Google Workspace',
-    description: 'Sync with Google Calendar, Drive, and Gmail for seamless productivity.',
+    descriptionKey: 'integrationGoogleWorkspaceDesc',
     logo: GoogleLogo,
     category: 'productivity',
     status: 'available',
     popular: true,
     provider: 'google',
-    features: ['Calendar ↔ deadline sync', 'Drive file attachments', 'Gmail notifications', 'Google Meet links on tasks'],
-    setupSteps: ['Click "Connect Google" to sign in', 'Grant calendar and drive permissions', 'Select calendars to sync', 'Choose sync direction (one-way or two-way)'],
+    featureKeys: ['featureGoogle1', 'featureGoogle2', 'featureGoogle3', 'featureGoogle4'],
+    setupStepKeys: ['setupGoogle1', 'setupGoogle2', 'setupGoogle3', 'setupGoogle4'],
     docsUrl: '#',
   },
   {
     id: 'microsoft-teams',
     name: 'Microsoft Teams',
-    description: 'Collaborate through Teams notifications, tab integration, and meeting scheduling.',
+    descriptionKey: 'integrationMicrosoftTeamsDesc',
     logo: TeamsLogo,
     category: 'communication',
     status: 'available',
     provider: 'microsoft-teams',
-    features: ['Chat notifications', 'Meeting scheduling', 'Teams tab integration', 'Bot commands'],
-    setupSteps: ['Click "Connect Teams" to sign in with Microsoft', 'Select a team and channel', 'Configure which events trigger notifications', 'Optionally map channels to specific projects'],
+    featureKeys: ['featureTeams1', 'featureTeams2', 'featureTeams3', 'featureTeams4'],
+    setupStepKeys: ['setupTeams1', 'setupTeams2', 'setupTeams3', 'setupTeams4'],
     docsUrl: '#',
   },
   {
     id: 'jira',
     name: 'Jira Import',
-    description: 'Import existing projects, issues, and workflows from Jira into Onekof.',
+    descriptionKey: 'integrationJiraDesc',
     logo: JiraLogo,
     category: 'productivity',
     status: 'available',
     provider: 'jira',
-    features: ['Full project import', 'Issue & subtask migration', 'Status & workflow mapping', 'User matching'],
-    setupSteps: ['Click "Connect Jira" to authorize with Atlassian', 'Select projects to import', 'Map statuses & fields', 'Review and confirm import'],
+    featureKeys: ['featureJira1', 'featureJira2', 'featureJira3', 'featureJira4'],
+    setupStepKeys: ['setupJira1', 'setupJira2', 'setupJira3', 'setupJira4'],
     docsUrl: '#',
   },
   {
     id: 'webhooks',
     name: 'Webhooks',
-    description: 'Send real-time event data to any external service via HTTP webhooks.',
+    descriptionKey: 'integrationWebhooksDesc',
     logo: WebhookLogo,
     category: 'development',
     status: 'available',
     provider: 'webhooks',
-    features: ['Custom event triggers', 'Retry with backoff', 'Payload templates', 'Delivery logs & debugging'],
-    setupSteps: ['Click "Enable Webhooks" to activate', 'Add a webhook endpoint URL', 'Select events to subscribe', 'Test and activate'],
+    featureKeys: ['featureWebhooks1', 'featureWebhooks2', 'featureWebhooks3', 'featureWebhooks4'],
+    setupStepKeys: ['setupWebhooks1', 'setupWebhooks2', 'setupWebhooks3', 'setupWebhooks4'],
     docsUrl: '#',
   },
   {
     id: 'google-calendar',
     name: 'Google Calendar',
-    description: 'Sync task deadlines and milestones with Google Calendar for scheduling.',
+    descriptionKey: 'integrationGoogleCalendarDesc',
     logo: GoogleCalendarLogo,
     category: 'productivity',
     status: 'available',
     provider: 'google-calendar',
-    features: ['Due date → calendar event', 'Milestone sync', 'Two-way updates', 'Team calendar view'],
-    setupSteps: ['Click "Connect Google Calendar" to sign in', 'Select calendars to sync', 'Choose sync direction', 'Set default reminders'],
+    featureKeys: ['featureGoogleCalendar1', 'featureGoogleCalendar2', 'featureGoogleCalendar3', 'featureGoogleCalendar4'],
+    setupStepKeys: ['setupGoogleCalendar1', 'setupGoogleCalendar2', 'setupGoogleCalendar3', 'setupGoogleCalendar4'],
     docsUrl: '#',
   },
   {
     id: 'email',
     name: 'Email Notifications',
-    description: 'Configure email digests, assignment alerts, and comment notifications.',
+    descriptionKey: 'integrationEmailDesc',
     logo: EmailLogo,
     category: 'communication',
     status: 'available',
     provider: 'email',
-    features: ['Daily/weekly digest', 'Assignment alerts', 'Comment reply notifications', 'Custom filter rules'],
-    setupSteps: ['Click "Enable Email Notifications" to activate', 'Choose notification types', 'Set digest frequency', 'Add recipient overrides'],
+    featureKeys: ['featureEmail1', 'featureEmail2', 'featureEmail3', 'featureEmail4'],
+    setupStepKeys: ['setupEmail1', 'setupEmail2', 'setupEmail3', 'setupEmail4'],
     docsUrl: '#',
   },
   {
     id: 'analytics',
     name: 'Advanced Analytics',
-    description: 'Export project data to BI tools like Tableau or Power BI for reporting.',
+    descriptionKey: 'integrationAnalyticsDesc',
     logo: AnalyticsLogo,
     category: 'analytics',
     status: 'coming_soon',
-    features: ['CSV/JSON data export', 'Custom report builder', 'REST API access', 'Embeddable dashboards'],
-    setupSteps: ['Enable analytics module', 'Configure data sources', 'Build report templates', 'Set up scheduled exports'],
+    featureKeys: ['featureAnalytics1', 'featureAnalytics2', 'featureAnalytics3', 'featureAnalytics4'],
+    setupStepKeys: ['setupAnalytics1', 'setupAnalytics2', 'setupAnalytics3', 'setupAnalytics4'],
     docsUrl: '#',
   },
   {
     id: 'notion',
     name: 'Notion',
-    description: 'Sync documents and pages between Onekof and Notion workspaces.',
+    descriptionKey: 'integrationNotionDesc',
     logo: NotionLogo,
     category: 'productivity',
     status: 'coming_soon',
-    features: ['Page ↔ task sync', 'Database import', 'Two-way linking', 'Template import'],
-    setupSteps: ['Connect Notion workspace', 'Select databases to sync', 'Map fields', 'Enable auto-sync'],
+    featureKeys: ['featureNotion1', 'featureNotion2', 'featureNotion3', 'featureNotion4'],
+    setupStepKeys: ['setupNotion1', 'setupNotion2', 'setupNotion3', 'setupNotion4'],
     docsUrl: '#',
   },
 ];
-
-const CATEGORY_LABELS: Record<IntegrationCategory, string> = {
-  communication: 'Communication',
-  development: 'Development',
-  productivity: 'Productivity',
-  analytics: 'Analytics',
-};
 
 // ─── Page Component ────────────────────────────────────────────────────────────
 
@@ -375,14 +367,15 @@ export default function IntegrationsPage() {
     const error = params.get('error');
 
     if (connected) {
-      setToast({ message: `${connected.charAt(0).toUpperCase() + connected.slice(1)} connected successfully!`, type: 'success' });
+      const name = connected.charAt(0).toUpperCase() + connected.slice(1);
+      setToast({ message: t('integrationsPage.toastConnectedSuccess').replace('{name}', name), type: 'success' });
       window.history.replaceState({}, '', window.location.pathname);
       fetchConnections();
     } else if (error) {
-      setToast({ message: `Connection error: ${error}`, type: 'error' });
+      setToast({ message: t('integrationsPage.toastConnectionError').replace('{error}', error), type: 'error' });
       window.history.replaceState({}, '', window.location.pathname);
     }
-  }, [fetchConnections]);
+  }, [fetchConnections, t]);
 
   useEffect(() => {
     if (toast) {
@@ -403,14 +396,14 @@ export default function IntegrationsPage() {
       const url = data.url;
       // Direct activation integrations (webhooks, email) return relative URLs
       if (url.startsWith('/')) {
-        setToast({ message: `${integration.name} enabled successfully!`, type: 'success' });
+        setToast({ message: t('integrationsPage.toastEnabledSuccess').replace('{name}', integration.name), type: 'success' });
         setConnecting(null);
         await fetchConnections();
       } else {
         window.location.href = url;
       }
-    } catch (err) {
-      setToast({ message: `Failed to connect ${integration.name}`, type: 'error' });
+    } catch {
+      setToast({ message: t('integrationsPage.toastConnectFailed').replace('{name}', integration.name), type: 'error' });
       setConnecting(null);
     }
   };
@@ -422,11 +415,11 @@ export default function IntegrationsPage() {
     try {
       const res = await fetch(`/api/integrations/${integration.provider}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to disconnect');
-      setToast({ message: `${integration.name} disconnected`, type: 'success' });
+      setToast({ message: t('integrationsPage.toastDisconnected').replace('{name}', integration.name), type: 'success' });
       await fetchConnections();
       if (selected?.id === integration.id) setSelected(null);
     } catch {
-      setToast({ message: `Failed to disconnect ${integration.name}`, type: 'error' });
+      setToast({ message: t('integrationsPage.toastDisconnectFailed').replace('{name}', integration.name), type: 'error' });
     } finally {
       setDisconnecting(null);
     }
@@ -441,9 +434,10 @@ export default function IntegrationsPage() {
   });
 
   const filtered = integrationsWithStatus.filter(i => {
+    const description = t(`integrationsPage.${i.descriptionKey}`);
     const matchesSearch = !search ||
       i.name.toLowerCase().includes(search.toLowerCase()) ||
-      i.description.toLowerCase().includes(search.toLowerCase());
+      description.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || i.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
@@ -454,6 +448,14 @@ export default function IntegrationsPage() {
   const comingSoon = filtered.filter(i => i.status === 'coming_soon');
 
   const connectedCount = Object.keys(connections).length;
+
+  const categoryFilterLabels: Record<IntegrationCategory | 'all', string> = {
+    all: t('integrationsPage.filterAll'),
+    communication: t('integrationsPage.filterCommunication'),
+    development: t('integrationsPage.filterDevelopment'),
+    productivity: t('integrationsPage.filterProductivity'),
+    analytics: t('integrationsPage.filterAnalytics'),
+  };
 
   return (
     <AppLayout>
@@ -487,18 +489,24 @@ export default function IntegrationsPage() {
                   <Puzzle className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Integrations</h1>
+                  <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('integrationsPage.title')}</h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {connectedCount > 0 && <span className="text-primary-500 font-medium">{connectedCount} connected</span>}
+                    {connectedCount > 0 && (
+                      <span className="text-primary-500 font-medium">
+                        {t('integrationsPage.connectedCount').replace('{count}', String(connectedCount))}
+                      </span>
+                    )}
                     {connectedCount > 0 && ' · '}
-                    {INTEGRATIONS.filter(i => i.provider).length} available · {INTEGRATIONS.filter(i => i.status === 'coming_soon').length} coming soon
+                    {t('integrationsPage.availableCount').replace('{count}', String(INTEGRATIONS.filter(i => i.provider).length))}
+                    {' · '}
+                    {t('integrationsPage.comingSoonCount').replace('{count}', String(INTEGRATIONS.filter(i => i.status === 'coming_soon').length))}
                   </p>
                 </div>
               </div>
               {connectedCount > 0 && (
                 <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => fetchConnections()}>
                   <RefreshCw className="h-3.5 w-3.5" />
-                  Refresh
+                  {t('integrationsPage.refresh')}
                 </Button>
               )}
             </div>
@@ -509,14 +517,14 @@ export default function IntegrationsPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search integrations..."
+                  placeholder={t('integrationsPage.searchPlaceholder')}
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
               <div className="flex gap-1.5 flex-wrap">
-                {(['all', ...Object.keys(CATEGORY_LABELS)] as (IntegrationCategory | 'all')[]).map(key => (
+                {(['all', 'communication', 'development', 'productivity', 'analytics'] as (IntegrationCategory | 'all')[]).map(key => (
                   <Button
                     key={key}
                     onClick={() => setCategoryFilter(key)}
@@ -527,7 +535,7 @@ export default function IntegrationsPage() {
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                     )}
                   >
-                    {key === 'all' ? 'All' : CATEGORY_LABELS[key]}
+                    {categoryFilterLabels[key]}
                   </Button>
                 ))}
               </div>
@@ -539,13 +547,13 @@ export default function IntegrationsPage() {
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="h-6 w-6 animate-spin text-primary-500" />
-                <span className="ml-2 text-sm text-slate-500">Loading integrations...</span>
+                <span className="ml-2 text-sm text-slate-500">{t('integrationsPage.loadingIntegrations')}</span>
               </div>
             ) : (
               <>
                 {connectedList.length > 0 && (
                   <IntegrationSection
-                    title="Connected"
+                    title={t('integrationsPage.sectionConnected')}
                     icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
                     integrations={connectedList}
                     selected={selected}
@@ -556,7 +564,7 @@ export default function IntegrationsPage() {
 
                 {popular.length > 0 && (
                   <IntegrationSection
-                    title="Popular"
+                    title={t('integrationsPage.sectionPopular')}
                     icon={<Star className="h-4 w-4 text-amber-500" />}
                     integrations={popular}
                     selected={selected}
@@ -567,7 +575,7 @@ export default function IntegrationsPage() {
 
                 {available.length > 0 && (
                   <IntegrationSection
-                    title="Available"
+                    title={t('integrationsPage.sectionAvailable')}
                     icon={<Zap className="h-4 w-4 text-primary-500" />}
                     integrations={available}
                     selected={selected}
@@ -578,7 +586,7 @@ export default function IntegrationsPage() {
 
                 {comingSoon.length > 0 && (
                   <IntegrationSection
-                    title="Coming Soon"
+                    title={t('integrationsPage.sectionComingSoon')}
                     icon={<Clock className="h-4 w-4 text-slate-400" />}
                     integrations={comingSoon}
                     selected={selected}
@@ -590,7 +598,9 @@ export default function IntegrationsPage() {
                 {filtered.length === 0 && (
                   <div className="text-center py-16">
                     <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-                    <p className="text-sm text-slate-500 dark:text-slate-400">No integrations match &quot;{search}&quot;</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      {t('integrationsPage.noMatch').replace('{search}', search)}
+                    </p>
                   </div>
                 )}
 
@@ -602,19 +612,20 @@ export default function IntegrationsPage() {
                         <Shield className="h-6 w-6 text-slate-600 dark:text-slate-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Build Custom Integrations</h3>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
+                          {t('integrationsPage.buildCustomTitle')}
+                        </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
-                          Use the Onekof API to build custom integrations with your internal tools.
-                          Full REST API with webhooks, event subscriptions, and OAuth 2.0 authentication.
+                          {t('integrationsPage.buildCustomDesc')}
                         </p>
                         <div className="flex items-center gap-3">
                           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                             <FileText className="h-3.5 w-3.5" />
-                            API Documentation
+                            {t('integrationsPage.apiDocumentation')}
                           </Button>
                           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                             <Zap className="h-3.5 w-3.5" />
-                            Webhook Guide
+                            {t('integrationsPage.webhookGuide')}
                           </Button>
                         </div>
                       </div>
@@ -701,6 +712,7 @@ function IntegrationCard({
   onSelect: () => void;
   connection?: ConnectionData;
 }) {
+  const { t } = useLanguage();
   const isComingSoon = integration.status === 'coming_soon';
   const isConnected = !!connection;
   const Logo = integration.logo;
@@ -742,7 +754,7 @@ function IntegrationCard({
             <div className="flex items-center gap-1.5">
               <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
                 <CheckCircle2 className="h-3 w-3" />
-                Connected
+                {t('integrationsPage.statusConnected')}
               </span>
               {connection.externalAccountName && (
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[120px]">
@@ -753,12 +765,12 @@ function IntegrationCard({
           ) : isComingSoon ? (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">
               <Clock className="h-3 w-3" />
-              Coming Soon
+              {t('integrationsPage.statusComingSoon')}
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
               <Zap className="h-3 w-3" />
-              Ready to connect
+              {t('integrationsPage.statusReadyToConnect')}
             </span>
           )}
         </div>
@@ -769,17 +781,17 @@ function IntegrationCard({
       </div>
 
       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3 line-clamp-2">
-        {integration.description}
+        {t(`integrationsPage.${integration.descriptionKey}`)}
       </p>
 
       <div className="flex flex-wrap gap-1.5 overflow-hidden">
-        {integration.features.slice(0, 2).map(feature => (
-          <span key={feature} className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded truncate max-w-[160px]">
-            {feature}
+        {integration.featureKeys.slice(0, 2).map(key => (
+          <span key={key} className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded truncate max-w-[160px]">
+            {t(`integrationsPage.${key}`)}
           </span>
         ))}
-        {integration.features.length > 2 && (
-          <span className="text-[10px] text-slate-400 dark:text-slate-500 shrink-0">+{integration.features.length - 2}</span>
+        {integration.featureKeys.length > 2 && (
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 shrink-0">+{integration.featureKeys.length - 2}</span>
         )}
       </div>
     </button>
@@ -809,6 +821,7 @@ function IntegrationDetailPanel({
   disconnecting: boolean;
   onConfigUpdate: () => void;
 }) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'overview' | 'config' | 'activity'>('overview');
   const isComingSoon = integration.status === 'coming_soon';
   const isConnected = !!connection;
@@ -865,7 +878,7 @@ function IntegrationDetailPanel({
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
             )}
           >
-            Overview
+            {t('integrationsPage.tabOverview')}
           </Button>
           {isConnected && (
             <>
@@ -878,7 +891,7 @@ function IntegrationDetailPanel({
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                 )}
               >
-                Configure
+                {t('integrationsPage.tabConfigure')}
               </Button>
               <Button
                 onClick={() => setActiveTab('activity')}
@@ -889,7 +902,7 @@ function IntegrationDetailPanel({
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                 )}
               >
-                Activity
+                {t('integrationsPage.tabActivity')}
               </Button>
             </>
           )}
@@ -903,7 +916,7 @@ function IntegrationDetailPanel({
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
               )}
             >
-              Setup Guide
+              {t('integrationsPage.tabSetupGuide')}
             </Button>
           )}
         </div>
@@ -929,7 +942,7 @@ function IntegrationDetailPanel({
         {isComingSoon ? (
           <Button variant="secondary" className="w-full gap-2 text-sm" disabled>
             <Clock className="h-4 w-4" />
-            Coming Soon
+            {t('integrationsPage.statusComingSoon')}
           </Button>
         ) : isConnected ? (
           <div className="flex gap-2">
@@ -940,11 +953,11 @@ function IntegrationDetailPanel({
               disabled={disconnecting}
             >
               {disconnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unplug className="h-4 w-4" />}
-              Disconnect
+              {t('integrationsPage.disconnect')}
             </Button>
             <Button variant="outline" className="flex-1 gap-2 text-sm">
               <ExternalLink className="h-4 w-4" />
-              Documentation
+              {t('integrationsPage.documentation')}
             </Button>
           </div>
         ) : (
@@ -959,11 +972,13 @@ function IntegrationDetailPanel({
               ) : (
                 <ArrowRight className="h-4 w-4" />
               )}
-              {connecting ? 'Connecting...' : `Connect ${integration.name}`}
+              {connecting
+                ? t('integrationsPage.connecting')
+                : t('integrationsPage.connect').replace('{name}', integration.name)}
             </Button>
             <Button variant="outline" className="w-full gap-2 text-sm">
               <ExternalLink className="h-4 w-4" />
-              View Documentation
+              {t('integrationsPage.viewDocumentation')}
             </Button>
           </>
         )}
@@ -975,6 +990,8 @@ function IntegrationDetailPanel({
 // ─── Overview Tab ──────────────────────────────────────────────────────────────
 
 function OverviewTab({ integration, connection }: { integration: Integration; connection?: ConnectionData }) {
+  const { t } = useLanguage();
+
   return (
     <div className="space-y-6">
       {/* Connection info */}
@@ -982,21 +999,23 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
         <div className="rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-4">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Connected</span>
+            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+              {t('integrationsPage.statusConnected')}
+            </span>
           </div>
           <div className="space-y-1.5 text-xs text-emerald-600 dark:text-emerald-400">
             {connection.externalAccountName && (
               <div className="flex justify-between">
-                <span>Account</span>
+                <span>{t('integrationsPage.overviewAccountLabel')}</span>
                 <span className="font-medium">{connection.externalAccountName}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span>Connected</span>
+              <span>{t('integrationsPage.overviewConnectedLabel')}</span>
               <span className="font-medium">{new Date(connection.connectedAt).toLocaleDateString()}</span>
             </div>
             <div className="flex justify-between">
-              <span>Status</span>
+              <span>{t('integrationsPage.overviewStatusLabel')}</span>
               <span className="font-medium capitalize">{connection.status}</span>
             </div>
           </div>
@@ -1005,18 +1024,20 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
 
       <div>
         <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-          {integration.description}
+          {t(`integrationsPage.${integration.descriptionKey}`)}
         </p>
       </div>
 
       {/* Features */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Features</h3>
+        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+          {t('integrationsPage.overviewFeaturesTitle')}
+        </h3>
         <div className="space-y-2">
-          {integration.features.map((feature, i) => (
+          {integration.featureKeys.map((key, i) => (
             <div key={i} className="flex items-center gap-2.5 py-2 px-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
               <CheckCircle2 className="h-4 w-4 text-primary-500 shrink-0" />
-              <span className="text-sm text-slate-700 dark:text-slate-300">{feature}</span>
+              <span className="text-sm text-slate-700 dark:text-slate-300">{t(`integrationsPage.${key}`)}</span>
             </div>
           ))}
         </div>
@@ -1025,17 +1046,23 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
       {/* Status */}
       {!connection && (
         <div>
-          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Status</h3>
+          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+            {t('integrationsPage.overviewStatusTitle')}
+          </h3>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
             {integration.status === 'coming_soon' ? (
               <>
                 <div className="h-2.5 w-2.5 rounded-full bg-slate-400 animate-pulse" />
-                <span className="text-sm text-slate-600 dark:text-slate-400">In development — available soon</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400">
+                  {t('integrationsPage.statusInDevelopment')}
+                </span>
               </>
             ) : (
               <>
                 <div className="h-2.5 w-2.5 rounded-full bg-primary-500" />
-                <span className="text-sm text-slate-600 dark:text-slate-400">Ready to connect</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400">
+                  {t('integrationsPage.statusReadyToConnect')}
+                </span>
               </>
             )}
           </div>
@@ -1048,17 +1075,21 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
 // ─── Setup Guide Tab ───────────────────────────────────────────────────────────
 
 function SetupGuideTab({ integration, isComingSoon }: { integration: Integration; isComingSoon: boolean }) {
+  const { t } = useLanguage();
+
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Setup Steps</h3>
+        <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+          {t('integrationsPage.setupStepsTitle')}
+        </h3>
         <div className="space-y-3">
-          {integration.setupSteps.map((step, i) => (
+          {integration.setupStepKeys.map((key, i) => (
             <div key={i} className="flex items-start gap-3">
               <div className="h-6 w-6 rounded-full bg-primary-500/10 dark:bg-primary-500/20 flex items-center justify-center shrink-0 mt-0.5">
                 <span className="text-xs font-bold text-primary-600 dark:text-primary-400">{i + 1}</span>
               </div>
-              <p className="text-sm text-slate-700 dark:text-slate-300">{step}</p>
+              <p className="text-sm text-slate-700 dark:text-slate-300">{t(`integrationsPage.${key}`)}</p>
             </div>
           ))}
         </div>
@@ -1067,7 +1098,9 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
       {/* Environment variables needed */}
       {integration.provider && (
         <div>
-          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Required Configuration</h3>
+          <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+            {t('integrationsPage.setupRequiredConfig')}
+          </h3>
           <div className="rounded-lg bg-slate-900 dark:bg-[#1B1F23] p-4 text-xs font-mono space-y-1">
             {integration.provider === 'slack' && (
               <>
@@ -1101,7 +1134,7 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
         <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
           <Settings2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            This integration is under development
+            {t('integrationsPage.setupUnderDevelopment')}
           </p>
         </div>
       )}
@@ -1120,6 +1153,7 @@ function ConfigTab({
   connection?: ConnectionData;
   onUpdate: () => void;
 }) {
+  const { t } = useLanguage();
   const [saving, setSaving] = useState(false);
 
   if (!connection || !integration.provider) return null;
@@ -1158,25 +1192,25 @@ function ConfigTab({
         <>
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-              Workspace
+              {t('integrationsPage.configWorkspace')}
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Team</span>
-                <span className="font-medium text-slate-900 dark:text-white">{config.teamName}</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configTeam')}</span>
+                <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).teamName as string}</span>
               </div>
-              {config.defaultChannelName && (
+              {!!(config as Record<string, unknown>).defaultChannelName && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-400">Default channel</span>
+                  <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configDefaultChannel')}</span>
                   <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1">
-                    <Hash className="h-3 w-3" />{config.defaultChannelName}
+                    <Hash className="h-3 w-3" />{(config as Record<string, unknown>).defaultChannelName as string}
                   </span>
                 </div>
               )}
-              {config.channels?.length > 0 && (
+              {Array.isArray((config as Record<string, unknown>).channels) && ((config as Record<string, unknown>).channels as unknown[]).length > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-400">Available channels</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{config.channels.length}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configAvailableChannels')}</span>
+                  <span className="font-medium text-slate-900 dark:text-white">{((config as Record<string, unknown>).channels as unknown[]).length}</span>
                 </div>
               )}
             </div>
@@ -1185,22 +1219,22 @@ function ConfigTab({
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
               <Bell className="h-3.5 w-3.5" />
-              Notification Rules
+              {t('integrationsPage.configNotificationRules')}
             </h3>
             <div className="space-y-1">
               {([
-                { key: 'taskCreated', label: 'Task created', icon: Sparkles },
-                { key: 'taskCompleted', label: 'Task completed', icon: CheckCircle2 },
-                { key: 'taskAssigned', label: 'Task assigned', icon: UserCheck },
-                { key: 'commentAdded', label: 'Comment added', icon: MessageSquare },
-                { key: 'projectUpdated', label: 'Project updated', icon: Rocket },
-                { key: 'dailyDigest', label: 'Daily digest', icon: ClipboardList },
-              ] as { key: string; label: string; icon: LucideIcon }[]).map(item => (
+                { key: 'taskCreated', labelKey: 'slackNotifTaskCreated', icon: Sparkles },
+                { key: 'taskCompleted', labelKey: 'slackNotifTaskCompleted', icon: CheckCircle2 },
+                { key: 'taskAssigned', labelKey: 'slackNotifTaskAssigned', icon: UserCheck },
+                { key: 'commentAdded', labelKey: 'slackNotifCommentAdded', icon: MessageSquare },
+                { key: 'projectUpdated', labelKey: 'slackNotifProjectUpdated', icon: Rocket },
+                { key: 'dailyDigest', labelKey: 'slackNotifDailyDigest', icon: ClipboardList },
+              ] as { key: string; labelKey: string; icon: LucideIcon }[]).map(item => (
                 <ToggleRow
                   key={item.key}
-                  label={item.label}
+                  label={t(`integrationsPage.${item.labelKey}`)}
                   icon={<item.icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />}
-                  enabled={config.notifications?.[item.key] ?? false}
+                  enabled={(config as Record<string, Record<string, boolean>>).notifications?.[item.key] ?? false}
                   onChange={v => handleToggle(`notifications.${item.key}`, v)}
                   disabled={saving}
                 />
@@ -1215,23 +1249,25 @@ function ConfigTab({
         <>
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-              Account
+              {t('integrationsPage.configAccount')}
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Account</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configAccount')}</span>
                 <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
                   <GitBranch className="h-3 w-3" />
-                  {config.accountLogin}
+                  {(config as Record<string, unknown>).accountLogin as string}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Type</span>
-                <span className="font-medium text-slate-900 dark:text-white">{config.accountType}</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configType')}</span>
+                <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).accountType as string}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Repositories</span>
-                <span className="font-medium text-slate-900 dark:text-white">{config.repositories?.length || 0}</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configRepositories')}</span>
+                <span className="font-medium text-slate-900 dark:text-white">
+                  {Array.isArray((config as Record<string, unknown>).repositories) ? ((config as Record<string, unknown>).repositories as unknown[]).length : 0}
+                </span>
               </div>
             </div>
           </div>
@@ -1239,33 +1275,33 @@ function ConfigTab({
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
               <GitPullRequest className="h-3.5 w-3.5" />
-              Automation
+              {t('integrationsPage.configAutomation')}
             </h3>
             <div className="space-y-1">
               <ToggleRow
-                label="Auto-link PRs to tasks"
-                description="Match task keys (e.g., PROJ-123) in PR titles and descriptions"
-                enabled={config.autoLinkPRs ?? true}
+                label={t('integrationsPage.githubAutoLinkLabel')}
+                description={t('integrationsPage.githubAutoLinkDesc')}
+                enabled={(config as Record<string, boolean>).autoLinkPRs ?? true}
                 onChange={v => handleToggle('autoLinkPRs', v)}
                 disabled={saving}
               />
               <ToggleRow
-                label="Auto-close on merge"
-                description="Mark linked tasks as done when PR is merged"
-                enabled={config.autoCloseOnMerge ?? true}
+                label={t('integrationsPage.githubAutoCloseLabel')}
+                description={t('integrationsPage.githubAutoCloseDesc')}
+                enabled={(config as Record<string, boolean>).autoCloseOnMerge ?? true}
                 onChange={v => handleToggle('autoCloseOnMerge', v)}
                 disabled={saving}
               />
             </div>
           </div>
 
-          {config.repositories?.length > 0 && (
+          {Array.isArray((config as Record<string, unknown>).repositories) && ((config as Record<string, unknown>).repositories as unknown[]).length > 0 && (
             <div>
               <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Repositories ({config.repositories.length})
+                {t('integrationsPage.configRepositories')} ({((config as Record<string, unknown>).repositories as unknown[]).length})
               </h3>
               <div className="space-y-1 max-h-48 overflow-y-auto">
-                {config.repositories.slice(0, 20).map((repo: any) => (
+                {(((config as Record<string, unknown>).repositories as Array<{ id: string; fullName: string; private: boolean }>)).slice(0, 20).map(repo => (
                   <div key={repo.id} className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-slate-50 dark:bg-[#1B1F23] text-sm">
                     <GitBranch className="h-3 w-3 text-slate-400 shrink-0" />
                     <span className="text-slate-700 dark:text-slate-300 truncate">{repo.fullName}</span>
@@ -1285,16 +1321,18 @@ function ConfigTab({
         <>
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-              Account
+              {t('integrationsPage.configAccount')}
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#1B1F23] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Email</span>
-                <span className="font-medium text-slate-900 dark:text-white">{config.email}</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configEmail')}</span>
+                <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).email as string}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Sync direction</span>
-                <span className="font-medium text-slate-900 dark:text-white capitalize">{config.syncDirection?.replace('_', '-')}</span>
+                <span className="text-slate-600 dark:text-slate-400">{t('integrationsPage.configSyncDirection')}</span>
+                <span className="font-medium text-slate-900 dark:text-white capitalize">
+                  {((config as Record<string, unknown>).syncDirection as string)?.replace('_', '-')}
+                </span>
               </div>
             </div>
           </div>
@@ -1302,21 +1340,21 @@ function ConfigTab({
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
               <Settings2 className="h-3.5 w-3.5" />
-              Sync Settings
+              {t('integrationsPage.configSyncSettings')}
             </h3>
             <div className="space-y-1">
               <ToggleRow
-                label="Calendar sync"
-                description="Sync task deadlines to Google Calendar"
-                enabled={config.calendarSync ?? true}
+                label={t('integrationsPage.googleCalendarSyncLabel')}
+                description={t('integrationsPage.googleCalendarSyncDesc')}
+                enabled={(config as Record<string, boolean>).calendarSync ?? true}
                 onChange={v => handleToggle('calendarSync', v)}
                 disabled={saving}
                 icon={<Calendar className="h-3.5 w-3.5 text-blue-500" />}
               />
               <ToggleRow
-                label="Drive sync"
-                description="Attach Google Drive files to tasks"
-                enabled={config.driveSync ?? true}
+                label={t('integrationsPage.googleDriveSyncLabel')}
+                description={t('integrationsPage.googleDriveSyncDesc')}
+                enabled={(config as Record<string, boolean>).driveSync ?? true}
                 onChange={v => handleToggle('driveSync', v)}
                 disabled={saving}
                 icon={<HardDrive className="h-3.5 w-3.5 text-green-500" />}
@@ -1324,13 +1362,13 @@ function ConfigTab({
             </div>
           </div>
 
-          {config.selectedCalendars?.length > 0 && (
+          {Array.isArray((config as Record<string, unknown>).selectedCalendars) && ((config as Record<string, unknown>).selectedCalendars as unknown[]).length > 0 && (
             <div>
               <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Calendars ({config.selectedCalendars.length})
+                {t('integrationsPage.configCalendars')} ({((config as Record<string, unknown>).selectedCalendars as unknown[]).length})
               </h3>
               <div className="space-y-1">
-                {config.selectedCalendars.map((cal: any) => (
+                {(((config as Record<string, unknown>).selectedCalendars as Array<{ id: string; summary: string; primary: boolean }>)).map(cal => (
                   <div key={cal.id} className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-slate-50 dark:bg-[#1B1F23] text-sm">
                     <Calendar className="h-3 w-3 text-blue-500 shrink-0" />
                     <span className="text-slate-700 dark:text-slate-300 truncate">{cal.summary}</span>
@@ -1351,12 +1389,14 @@ function ConfigTab({
 // ─── Activity Tab ──────────────────────────────────────────────────────────────
 
 function ActivityTab({ events }: { events: IntegrationEvent[] }) {
+  const { t } = useLanguage();
+
   if (events.length === 0) {
     return (
       <div className="text-center py-12">
         <Activity className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-        <p className="text-sm text-slate-500 dark:text-slate-400">No activity yet</p>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Events will appear here as the integration is used</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('integrationsPage.activityNoEvents')}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('integrationsPage.activityNoEventsDesc')}</p>
       </div>
     );
   }
@@ -1364,7 +1404,7 @@ function ActivityTab({ events }: { events: IntegrationEvent[] }) {
   return (
     <div className="space-y-2">
       <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-        Recent Events
+        {t('integrationsPage.activityRecentEvents')}
       </h3>
       {events.map(event => (
         <div key={event.id} className="flex items-start gap-3 py-2 px-3 rounded-lg bg-slate-50 dark:bg-[#1B1F23]">
@@ -1377,7 +1417,10 @@ function ActivityTab({ events }: { events: IntegrationEvent[] }) {
               {event.type}
             </p>
             <p className="text-[10px] text-slate-400">
-              {event.direction === 'inbound' ? '← Received' : '→ Sent'} · {new Date(event.createdAt).toLocaleString()}
+              {event.direction === 'inbound'
+                ? `\u2190 ${t('integrationsPage.activityReceived')}`
+                : `\u2192 ${t('integrationsPage.activitySent')}`}
+              {' · '}{new Date(event.createdAt).toLocaleString()}
             </p>
           </div>
           <span className={cn(

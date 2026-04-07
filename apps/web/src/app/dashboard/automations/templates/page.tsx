@@ -7,10 +7,8 @@ import { useWorkspace } from '@/contexts/workspace-context';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  Plus,
   Search,
   Zap,
-  TrendingUp,
   Clock,
   CheckCircle2,
   Star,
@@ -45,15 +43,6 @@ import {
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS = [
-  { id: 'list', label: 'All Automations', icon: List, href: '/dashboard/automations' },
-  { id: 'templates', label: 'Templates', icon: LayoutTemplate, href: '/dashboard/automations/templates' },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/dashboard/automations/analytics' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-];
-
 interface AutomationTemplate {
   id: string;
   name: string;
@@ -82,6 +71,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   DollarSign,
   Archive,
   MessageSquare,
+  Sparkles,
   Zap,
 };
 
@@ -98,7 +88,15 @@ export default function TemplatesPage() {
   const [templateToActivate, setTemplateToActivate] = useState<AutomationTemplate | null>(null);
   const queryClient = useQueryClient();
 
-  // Fetch templates
+  const TAB_ITEMS = [
+    { id: 'list', label: t('automations.templatesAllAutomations'), icon: List, href: '/dashboard/automations' },
+    { id: 'templates', label: t('automations.templatesTabTemplates'), icon: LayoutTemplate, href: '/dashboard/automations/templates' },
+    { id: 'analytics', label: t('automations.templatesTabAnalytics'), icon: BarChart3, href: '/dashboard/automations/analytics' },
+    { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
+    { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
+    { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+  ];
+
   const { data: templatesData, isLoading } = useQuery({
     queryKey: ['automation-templates', selectedCategory],
     queryFn: async () => {
@@ -106,19 +104,15 @@ export default function TemplatesPage() {
       if (selectedCategory !== 'all') {
         params.append('category', selectedCategory);
       }
-
       const res = await fetch(`/api/automations/templates?${params}`);
       if (!res.ok) throw new Error('Failed to fetch templates');
       return res.json();
     },
   });
 
-  // Activate template mutation
   const activateTemplateMutation = useMutation({
     mutationFn: async (template: AutomationTemplate) => {
       if (!currentOrganization?.id) throw new Error('No organization selected');
-
-      console.log('Activating template:', template.name, 'for org:', currentOrganization.id);
 
       const res = await fetch('/api/automations', {
         method: 'POST',
@@ -143,31 +137,24 @@ export default function TemplatesPage() {
 
       if (!res.ok) {
         const error = await res.json().catch(() => ({ error: 'Failed to activate template' }));
-        console.error('Activation error:', error);
         throw new Error(error.error || 'Failed to activate template');
       }
 
-      const result = await res.json();
-      console.log('Template activated successfully:', result);
-      return result;
+      return res.json();
     },
     onSuccess: () => {
-      console.log('Activation successful, redirecting...');
       queryClient.invalidateQueries({ queryKey: ['automations'] });
       setIsDetailDialogOpen(false);
       setIsConfirmDialogOpen(false);
       setSelectedTemplate(null);
       setTemplateToActivate(null);
-      // Redirect to automations page to see the new automation
       router.push('/dashboard/automations');
     },
     onError: (error: Error) => {
-      console.error('Failed to activate template:', error.message);
       toast.error('Activation failed', error.message);
     },
   });
 
-  // Filter templates
   const filteredTemplates = templatesData?.templates?.filter((template: AutomationTemplate) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -178,12 +165,12 @@ export default function TemplatesPage() {
     );
   }) || [];
 
-  const categories = ['all', ...(templatesData?.categories || [])];
+  const categories = [t('common.all'), ...(templatesData?.categories || [])];
 
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        {/* Jira-style Header Section */}
+        {/* Header Section */}
         <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
           {/* Header Title and Actions */}
           <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
@@ -192,9 +179,9 @@ export default function TemplatesPage() {
                 <LayoutTemplate className="h-6 w-6" />
               </div>
               <div>
-                <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automation Templates</h1>
+                <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.templatesTitle')}</h1>
                 <p className="text-xs text-gray-600 dark:text-slate-400">
-                  Pre-built automations ready to activate
+                  {t('automations.templatesSubtitle')}
                 </p>
               </div>
             </div>
@@ -204,7 +191,7 @@ export default function TemplatesPage() {
               className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
             >
               <List className="h-4 w-4" />
-              View My Automations
+              {t('automations.templatesViewMy')}
             </Link>
           </div>
 
@@ -235,7 +222,7 @@ export default function TemplatesPage() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search templates..."
+                placeholder={t('automations.templatesSearchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
@@ -244,20 +231,24 @@ export default function TemplatesPage() {
 
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-gray-600 dark:text-slate-400" />
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={cn(
-                    'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
-                    selectedCategory === category
-                      ? 'bg-primary-500 text-white'
-                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
-                  )}
-                >
-                  {category}
-                </Button>
-              ))}
+              {categories.map((category, idx) => {
+                const isAll = idx === 0;
+                const key = isAll ? 'all' : category;
+                return (
+                  <Button
+                    key={key}
+                    onClick={() => setSelectedCategory(isAll ? 'all' : category)}
+                    className={cn(
+                      'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
+                      selectedCategory === (isAll ? 'all' : category)
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
+                    )}
+                  >
+                    {category}
+                  </Button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -268,7 +259,7 @@ export default function TemplatesPage() {
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Loading templates...</p>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('automations.templatesLoadingTemplates')}</p>
               </div>
             </div>
           ) : filteredTemplates.length > 0 ? (
@@ -277,6 +268,8 @@ export default function TemplatesPage() {
                 <TemplateCard
                   key={template.id}
                   template={template}
+                  activateLabel={t('automations.templatesActivate')}
+                  popularityLabel={t('automations.templatesPopularity')}
                   onClick={() => {
                     setSelectedTemplate(template);
                     setIsDetailDialogOpen(true);
@@ -292,10 +285,10 @@ export default function TemplatesPage() {
             <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
               <LayoutTemplate className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
-                No templates found
+                {t('automations.templatesNoTemplates')}
               </p>
               <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
-                Try adjusting your search or filters
+                {t('automations.templatesNoTemplatesDesc')}
               </p>
             </div>
           )}
@@ -335,21 +328,21 @@ export default function TemplatesPage() {
                   <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Star className="h-4 w-4 text-amber-500" />
-                      <h3 className="text-xs font-semibold text-white">Popularity</h3>
+                      <h3 className="text-xs font-semibold text-white">{t('automations.templatesPopularity')}</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.popularity}%</p>
                   </div>
                   <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Clock className="h-4 w-4 text-green-500" />
-                      <h3 className="text-xs font-semibold text-white">Time Saved</h3>
+                      <h3 className="text-xs font-semibold text-white">{t('automations.templatesTimeSaved')}</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.estimatedTimeSaved}h/week</p>
                   </div>
                   <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
                     <div className="flex items-center gap-2 mb-1">
                       <Zap className="h-4 w-4 text-purple-500" />
-                      <h3 className="text-xs font-semibold text-white">Run Mode</h3>
+                      <h3 className="text-xs font-semibold text-white">{t('automations.templatesRunMode')}</h3>
                     </div>
                     <p className="text-sm font-medium text-white capitalize">{selectedTemplate.runMode}</p>
                   </div>
@@ -358,10 +351,8 @@ export default function TemplatesPage() {
                 {/* Trigger */}
                 <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                   <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold">
-                      1
-                    </span>
-                    When: Trigger Event
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold">1</span>
+                    {t('automations.templatesWhen')}
                   </h3>
                   <div className="ml-8">
                     <p className="text-sm text-slate-400">
@@ -376,10 +367,8 @@ export default function TemplatesPage() {
                 {selectedTemplate.conditions && selectedTemplate.conditions.length > 0 && (
                   <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
-                        2
-                      </span>
-                      If: Conditions
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">2</span>
+                      {t('automations.templatesIf')}
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.conditions.map((condition: any, index: number) => (
@@ -397,10 +386,8 @@ export default function TemplatesPage() {
                 {selectedTemplate.actions && selectedTemplate.actions.length > 0 && (
                   <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400 text-xs font-bold">
-                        3
-                      </span>
-                      Then: Actions
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400 text-xs font-bold">3</span>
+                      {t('automations.templatesThen')}
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.actions.map((action: any, index: number) => (
@@ -424,7 +411,7 @@ export default function TemplatesPage() {
                   onClick={() => setIsDetailDialogOpen(false)}
                   className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -435,7 +422,7 @@ export default function TemplatesPage() {
                   className="bg-primary-500 hover:bg-primary-600 text-white"
                 >
                   <Zap className="mr-2 h-4 w-4" />
-                  Activate Template
+                  {t('automations.templatesActivateTemplate')}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -451,10 +438,10 @@ export default function TemplatesPage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
                     <Zap className="h-5 w-5 text-blue-400" />
                   </div>
-                  Activate Automation?
+                  {t('automations.templatesActivateConfirmTitle')}
                 </DialogTitle>
                 <DialogDescription className="text-sm text-slate-400">
-                  Are you sure you want to activate "{templateToActivate.name}"? This automation will start running immediately.
+                  {t('automations.templatesActivateConfirmDesc').replace('{name}', templateToActivate.name)}
                 </DialogDescription>
               </DialogHeader>
 
@@ -501,7 +488,7 @@ export default function TemplatesPage() {
                   disabled={activateTemplateMutation.isPending}
                   className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -515,12 +502,12 @@ export default function TemplatesPage() {
                   {activateTemplateMutation.isPending ? (
                     <>
                       <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                      Activating...
+                      {t('automations.templatesActivating')}
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Yes, Activate
+                      {t('automations.templatesYesActivate')}
                     </>
                   )}
                 </Button>
@@ -536,17 +523,17 @@ export default function TemplatesPage() {
 // Template Card Component
 interface TemplateCardProps {
   template: AutomationTemplate;
+  activateLabel: string;
+  popularityLabel: string;
   onClick: () => void;
   onActivate: (template: AutomationTemplate) => void;
 }
 
-function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
+function TemplateCard({ template, activateLabel, onClick, onActivate }: TemplateCardProps) {
   const IconComponent = ICON_MAP[template.icon] || Zap;
 
   return (
-    <div
-      className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] transition-all hover:border-primary-500 hover:shadow-lg"
-    >
+    <div className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] transition-all hover:border-primary-500 hover:shadow-lg">
       <div className="p-3" onClick={onClick}>
         {/* Header */}
         <div className="flex items-start gap-2 mb-2">
@@ -592,7 +579,7 @@ function TemplateCard({ template, onClick, onActivate }: TemplateCardProps) {
           className="w-full flex items-center justify-center gap-1.5 rounded-md bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 transition-colors"
         >
           <Zap className="h-3.5 w-3.5" />
-          Activate
+          {activateLabel}
         </Button>
       </div>
     </div>

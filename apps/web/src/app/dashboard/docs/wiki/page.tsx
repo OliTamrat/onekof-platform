@@ -1,72 +1,213 @@
 'use client';
 
-import { useState } from 'react';
+import * as React from 'react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
-import { BookOpen, Search, FileText, Calendar, User } from 'lucide-react';
+import { BookOpen, Search, FileText, Calendar, AlertCircle } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import Link from 'next/link';
 
-const WIKI_PAGES = [
-  { id: 1, title: 'Getting Started Guide', category: 'Guides', author: 'Admin', lastUpdated: '2024-03-15', views: 234 },
-  { id: 2, title: 'API Documentation', category: 'Technical', author: 'Engineering Team', lastUpdated: '2024-03-10', views: 456 },
-  { id: 3, title: 'Team Processes', category: 'Processes', author: 'HR Team', lastUpdated: '2024-03-08', views: 123 },
-  { id: 4, title: 'Product Roadmap', category: 'Product', author: 'Product Team', lastUpdated: '2024-03-05', views: 345 },
-  { id: 5, title: 'Security Guidelines', category: 'Security', author: 'Security Team', lastUpdated: '2024-03-01', views: 189 },
-];
+interface WikiCategory {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  _count: { articles: number };
+}
+
+interface WikiArticle {
+  id: string;
+  title: string;
+  slug: string;
+  status: string;
+  updatedAt: string;
+  viewCount: number;
+  excerpt: string | null;
+  category: { id: string; name: string; color: string } | null;
+}
+
+interface ArticlesResponse {
+  articles: WikiArticle[];
+  total: number;
+}
 
 export default function DocsWikiPage() {
   const { t } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPage, setSelectedPage] = useState<any | null>(null);
-  const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [articles, setArticles] = React.useState<WikiArticle[]>([]);
+  const [categories, setCategories] = React.useState<WikiCategory[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = React.useState<WikiArticle | null>(null);
+  const [isSlideoutOpen, setIsSlideoutOpen] = React.useState(false);
 
-  const filteredPages = WIKI_PAGES.filter((page) =>
-    page.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    page.category.toLowerCase().includes(searchQuery.toLowerCase())
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const [artRes, catRes] = await Promise.all([
+          fetch('/api/wiki/articles?status=all&limit=100'),
+          fetch('/api/wiki/categories'),
+        ]);
+        if (!artRes.ok || !catRes.ok) throw new Error('Failed to fetch');
+        const artData: ArticlesResponse = await artRes.json();
+        const catData: WikiCategory[] = await catRes.json();
+        setArticles(artData.articles);
+        setCategories(catData);
+      } catch {
+        setError(t('docs.failedToLoad'));
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [t]);
+
+  const filtered = articles.filter(
+    (a) =>
+      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (a.category?.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  function openSlideout(article: WikiArticle) {
+    setSelectedArticle(article);
+    setIsSlideoutOpen(true);
+  }
 
   return (
     <AppLayout>
-      <UnifiedPageHeader title="Wiki" icon={<BookOpen className="h-6 w-6" />} iconColor="#06B6D4" currentTab="wiki" baseHref="/dashboard/docs" />
+      <UnifiedPageHeader
+        title={t('nav.wiki')}
+        icon={<BookOpen className="h-6 w-6" />}
+        iconColor="#06B6D4"
+        currentTab="wiki"
+        baseHref="/dashboard/docs"
+      />
       <div className="p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" placeholder={t('wiki.searchWiki')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <input
+              type="text"
+              placeholder={t('wiki.searchWiki')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
           </div>
-          <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"><BookOpen className="h-4 w-4" />{t('wiki.newPage')}</Button>
+          <Link href="/dashboard/docs/pages/new">
+            <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
+              <BookOpen className="h-4 w-4" />
+              {t('wiki.newPage')}
+            </Button>
+          </Link>
         </div>
-        <div className="space-y-3">
-          {filteredPages.map((page) => (
-            <div key={page.id} onClick={() => { setSelectedPage(page); setIsSlideoutOpen(true); }} className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
-              <div className="flex items-start gap-3">
-                <FileText className="h-5 w-5 text-[#06B6D4]" />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{page.title}</h3>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400">{page.category}</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1"><User className="h-3 w-3" />{page.author}</span>
-                    <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />Updated {page.lastUpdated}</span>
-                    <span>{page.views} views</span>
+
+        {loading && (
+          <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+            {t('common.loading')}
+          </div>
+        )}
+
+        {error && (
+          <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 py-6">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && filtered.length === 0 && (
+          <div className="text-center py-12">
+            <FileText className="h-12 w-12 text-gray-300 dark:text-slate-700 mx-auto mb-4" />
+            <p className="text-sm text-gray-500 dark:text-slate-400">{t('common.noResults')}</p>
+          </div>
+        )}
+
+        {!loading && !error && filtered.length > 0 && (
+          <div className="space-y-3">
+            {filtered.map((article) => (
+              <div
+                key={article.id}
+                onClick={() => openSlideout(article)}
+                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              >
+                <div className="flex items-start gap-3">
+                  <FileText className="h-5 w-5 text-[#06B6D4] mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {article.title}
+                      </h3>
+                      {article.category && (
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400 shrink-0">
+                          {article.category.name}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {t('common.lastUpdated')} {new Date(article.updatedAt).toLocaleDateString()}
+                      </span>
+                      {(article.viewCount ?? 0) > 0 && (
+                        <span>
+                          {article.viewCount} {t('wiki.views')}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
-      <SlideoutPanel isOpen={isSlideoutOpen} onClose={() => setIsSlideoutOpen(false)} title={selectedPage?.title || 'Wiki Page'}>
+
+      <SlideoutPanel
+        isOpen={isSlideoutOpen}
+        onClose={() => setIsSlideoutOpen(false)}
+        title={selectedArticle?.title ?? t('nav.wikiPage')}
+      >
         <SlideoutPanelContent>
           <SlideoutPanelSection title={t('wiki.pageInformation')}>
             <div className="space-y-4">
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.category')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.category}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.createdBy')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.author}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.lastUpdated')}</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.lastUpdated}</p></div>
-              <div><label className="text-sm font-medium text-gray-700 dark:text-gray-300">Views</label><p className="text-sm text-gray-900 dark:text-white mt-1">{selectedPage?.views}</p></div>
+              {selectedArticle?.category && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {t('common.category')}
+                  </label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">
+                    {selectedArticle.category.name}
+                  </p>
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('common.lastUpdated')}
+                </label>
+                <p className="text-sm text-gray-900 dark:text-white mt-1">
+                  {selectedArticle ? new Date(selectedArticle.updatedAt).toLocaleDateString() : '—'}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('wiki.views')}
+                </label>
+                <p className="text-sm text-gray-900 dark:text-white mt-1">
+                  {selectedArticle?.viewCount ?? 0}
+                </p>
+              </div>
+              {selectedArticle && (
+                <Link
+                  href={`/dashboard/docs/pages/${selectedArticle.id}`}
+                  className="inline-flex items-center gap-2 mt-2 text-sm font-medium text-[#1C8C7D] hover:underline"
+                >
+                  {t('common.viewDetails')}
+                </Link>
+              )}
             </div>
           </SlideoutPanelSection>
         </SlideoutPanelContent>

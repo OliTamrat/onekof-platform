@@ -15,13 +15,13 @@ import {
 import { useLanguage } from '@/contexts/language-context';
 
 const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
-  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code', active: true },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+  { id: 'summary', labelKey: 'automations.tabSummary', icon: BarChart3, href: '/dashboard/automations/summary' },
+  { id: 'list', labelKey: 'automations.tabList', icon: List, href: '/dashboard/automations/list' },
+  { id: 'board', labelKey: 'automations.tabBoard', icon: null, href: '/dashboard/automations' },
+  { id: 'code', labelKey: 'automations.tabCode', icon: Code, href: '/dashboard/automations/code', active: true },
+  { id: 'forms', labelKey: 'automations.tabForms', icon: FileText, href: '/dashboard/automations/forms' },
+  { id: 'timeline', labelKey: 'automations.tabTimeline', icon: Clock, href: '/dashboard/automations/timeline' },
+  { id: 'pages', labelKey: 'automations.tabPages', icon: Book, href: '/dashboard/automations/pages' },
 ];
 
 export default function AutomationsCodePage() {
@@ -37,7 +37,7 @@ export default function AutomationsCodePage() {
                 <Code className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Automations Code
+                {t('automations.codeTitle')}
               </h1>
             </div>
 
@@ -46,7 +46,7 @@ export default function AutomationsCodePage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Create
+              {t('automations.create')}
             </Link>
           </div>
 
@@ -65,7 +65,7 @@ export default function AutomationsCodePage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}
@@ -78,10 +78,10 @@ export default function AutomationsCodePage() {
             <div className="text-center py-20">
               <Code className="mx-auto h-16 w-16 text-gray-300 dark:text-slate-700" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-                Automation Code Editor
+                {t('automations.codeTitle')}
               </h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-                Write and edit automation code directly - coming soon!
+                {t('automations.codeDesc')} — {t('automations.comingSoon')}
               </p>
             </div>
           </div>

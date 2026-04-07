@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  TrendingUp,
   DollarSign,
   Calendar,
   Eye,
@@ -103,7 +102,7 @@ export default function DocumentsPage() {
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="AI Documents"
+        title={t('documents.aiTitle')}
         icon={<Sparkles className="h-6 w-6" />}
         iconColor="#1C8C7D"
         currentTab="documents"
@@ -133,7 +132,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Total Documents</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.totalDocuments')}</p>
               </div>
             </div>
           </div>
@@ -147,7 +146,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'COMPLETED').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Processed</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.processed')}</p>
               </div>
             </div>
           </div>
@@ -161,7 +160,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'PROCESSING').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Processing</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.processing')}</p>
               </div>
             </div>
           </div>
@@ -175,7 +174,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.reduce((sum, d) => sum + (d.budgetItems || 0), 0)}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Budget Items Extracted</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.budgetItemsExtracted')}</p>
               </div>
             </div>
           </div>
@@ -185,10 +184,10 @@ export default function DocumentsPage() {
         <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
           <div className="p-6 border-b border-slate-200 dark:border-slate-800">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-              Your Documents
+              {t('documents.yourDocuments')}
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              All uploaded documents with AI analysis results
+              {t('documents.yourDocumentsDesc')}
             </p>
           </div>
 
@@ -201,7 +200,7 @@ export default function DocumentsPage() {
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
                 <p className="text-slate-600 dark:text-slate-400">
-                  No documents yet. Upload your first document to get started!
+                  {t('documents.noDocuments')}
                 </p>
               </div>
             ) : (
@@ -256,7 +255,7 @@ export default function DocumentsPage() {
                             <div className="flex items-center gap-1 px-2 py-1 rounded bg-[#1C8C7D]/10 border border-[#1C8C7D]/20">
                               <Sparkles className="h-3 w-3 text-[#1C8C7D]" />
                               <span className="text-xs font-medium text-[#1C8C7D]">
-                                {(doc.aiConfidence * 100).toFixed(0)}% confidence
+                                {(doc.aiConfidence * 100).toFixed(0)}{t('documents.confidence')}
                               </span>
                             </div>
                           )}
@@ -275,31 +274,31 @@ export default function DocumentsPage() {
                             {doc.budgetItems > 0 && (
                               <div className="flex items-center gap-1">
                                 <DollarSign className="h-3.5 w-3.5" />
-                                <span>{doc.budgetItems} budget items</span>
+                                <span>{doc.budgetItems} {t('documents.budgetItems')}</span>
                               </div>
                             )}
                             {doc.milestones > 0 && (
                               <div className="flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5" />
-                                <span>{doc.milestones} milestones</span>
+                                <span>{doc.milestones} {t('documents.milestones')}</span>
                               </div>
                             )}
                             <div className="flex items-center gap-1 ml-auto">
                               <Eye className="h-3.5 w-3.5 text-[#1C8C7D]" />
-                              <span className="text-[#1C8C7D] font-medium">View details</span>
+                              <span className="text-[#1C8C7D] font-medium">{t('documents.viewDetails')}</span>
                             </div>
                           </div>
                         )}
 
                         {doc.status === 'PROCESSING' && (
                           <p className="text-xs text-orange-600 dark:text-orange-400">
-                            AI is analyzing this document...
+                            {t('documents.analyzing')}
                           </p>
                         )}
 
                         {doc.status === 'FAILED' && (
                           <p className="text-xs text-red-600 dark:text-red-400">
-                            Processing failed. Please try uploading again.
+                            {t('documents.processingFailed')}
                           </p>
                         )}
                       </div>

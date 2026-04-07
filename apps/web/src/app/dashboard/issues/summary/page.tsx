@@ -120,15 +120,17 @@ export default function IssuesSummaryPage() {
           <div className="mb-4 text-yellow-500">
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+            {t("dashboard.sessionLoadingIssue")}
+          </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            The session is taking longer than expected to load. This might be a configuration issue.
+            {t("dashboard.sessionLoadingDesc")}
           </p>
           <Button
             onClick={() => router.push('/auth/signin')}
             className="px-4 py-2 bg-[#1C8C7D] text-white rounded-md hover:bg-[#156B60]"
           >
-            Go to Sign In
+            {t("dashboard.goToSignIn")}
           </Button>
         </div>
       </div>
@@ -205,7 +207,7 @@ export default function IssuesSummaryPage() {
       new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     );
     setFilteredTasks(completed);
-    setFilterTitle('Completed Tasks (Last 7 Days)');
+    setFilterTitle(t('issuesSummary.filterCompletedTitle'));
     setIsFilterModalOpen(true);
   };
 
@@ -214,7 +216,7 @@ export default function IssuesSummaryPage() {
       (i: any) => new Date(i.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     );
     setFilteredTasks(updated);
-    setFilterTitle('Updated Tasks (Last 7 Days)');
+    setFilterTitle(t('issuesSummary.filterUpdatedTitle'));
     setIsFilterModalOpen(true);
   };
 
@@ -223,7 +225,7 @@ export default function IssuesSummaryPage() {
       (i: any) => new Date(i.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     );
     setFilteredTasks(created);
-    setFilterTitle('Created Tasks (Last 7 Days)');
+    setFilterTitle(t('issuesSummary.filterCreatedTitle'));
     setIsFilterModalOpen(true);
   };
 
@@ -234,7 +236,7 @@ export default function IssuesSummaryPage() {
       new Date(i.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     );
     setFilteredTasks(dueSoon);
-    setFilterTitle('Due Soon (Next 7 Days)');
+    setFilterTitle(t('issuesSummary.filterDueSoonTitle'));
     setIsFilterModalOpen(true);
   };
 
@@ -263,13 +265,13 @@ export default function IssuesSummaryPage() {
     const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
     // Build AI insights subtitle
-    let insights = [];
-    if (overdue > 0) insights.push(`${overdue} overdue`);
-    if (unassigned > 0) insights.push(`${unassigned} unassigned`);
-    if (highPriority > 0) insights.push(`${highPriority} high priority`);
-    if (avgAge > 0) insights.push(`avg ${avgAge}d old`);
+    const insights = [];
+    if (overdue > 0) insights.push(`${overdue} ${t('issuesSummary.overdue')}`);
+    if (unassigned > 0) insights.push(`${unassigned} ${t('issuesSummary.unassigned')}`);
+    if (highPriority > 0) insights.push(`${highPriority} ${t('issuesSummary.highPriority')}`);
+    if (avgAge > 0) insights.push(t('issuesSummary.avgDaysOld').replace('{{days}}', String(avgAge)));
 
-    const subtitle = insights.length > 0 ? insights.join(' • ') : `${totalTasks} tasks in ${statusLabel.toLowerCase()} status`;
+    const subtitle = insights.length > 0 ? insights.join(' • ') : `${totalTasks} ${t('issuesSummary.taskPlural')} in ${statusLabel.toLowerCase()} status`;
 
     setFilteredTasks(filtered);
     setFilterTitle(`${statusLabel} Tasks • ${totalTasks}`);
@@ -279,14 +281,14 @@ export default function IssuesSummaryPage() {
   const handleShowAllStatusOverview = () => {
     // Show all tasks grouped by status
     setFilteredTasks(issues);
-    setFilterTitle(`Status Overview • ${totalIssues} Total Tasks`);
+    setFilterTitle(t('issuesSummary.statusOverviewTotal').replace('{{count}}', String(totalIssues)));
     setIsFilterModalOpen(true);
   };
 
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Summary"
+        title={t('issuesSummary.title')}
         icon={<TrendingUp className="h-6 w-6" />}
         iconColor="#10B981"
         currentTab="summary"
@@ -308,32 +310,32 @@ export default function IssuesSummaryPage() {
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
             value={tasksCompleted.toString()}
-            label="completed"
-            sublabel="in the last 7 days"
+            label={t('dashboard.completed')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-green-500 dark:text-green-400"
             onClick={handleShowCompletedTasks}
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
             value={tasksUpdated.toString()}
-            label="updated"
-            sublabel="in the last 7 days"
+            label={t('dashboard.updated')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-blue-500 dark:text-blue-400"
             onClick={handleShowUpdatedTasks}
           />
           <StatCard
             icon={<Plus className="h-5 w-5" />}
             value={tasksCreated.toString()}
-            label="created"
-            sublabel="in the last 7 days"
+            label={t('dashboard.created')}
+            sublabel={t('dashboard.inLast7Days')}
             color="text-primary-500 dark:text-primary-400"
             onClick={handleShowCreatedTasks}
           />
           <StatCard
             icon={<Clock className="h-5 w-5" />}
             value={tasksDueSoon.toString()}
-            label="due soon"
-            sublabel="in the next 7 days"
+            label={t('dashboard.dueSoon')}
+            sublabel={t('dashboard.inNext7Days')}
             color="text-orange-500 dark:text-orange-400"
             onClick={handleShowDueSoonTasks}
           />
@@ -357,14 +359,14 @@ export default function IssuesSummaryPage() {
               <div className="relative z-10">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Status overview
+                  {t('dashboard.statusOverview')}
                 </h2>
                 <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">
-                  Click to view details →
+                  {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
               <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
-                Get a snapshot of the status of your work items. Click anywhere to drill down.
+                {t('dashboard.statusDescription')}
               </p>
 
               {/* Donut Chart - Responsive Layout */}
@@ -422,7 +424,7 @@ export default function IssuesSummaryPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">Total items</div>
+                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
                   </div>
                 </div>
 
@@ -431,21 +433,21 @@ export default function IssuesSummaryPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', t('status.todo')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', t('status.todo')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">To Do</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t('status.todo')}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
                   </div>
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', t('status.inProgress')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', t('status.inProgress')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -457,8 +459,8 @@ export default function IssuesSummaryPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', t('status.inReview')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', t('status.inReview')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -470,13 +472,13 @@ export default function IssuesSummaryPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', t('status.done')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', t('status.done')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">Done</span>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t('status.done')}</span>
                     </div>
                     <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
                   </div>
@@ -486,17 +488,17 @@ export default function IssuesSummaryPage() {
               {/* Priority Breakdown */}
               <div className="mt-8">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900 dark:text-white">Priority breakdown</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Get a holistic view of how work is being prioritized.
+                  {t('dashboard.priorityDescription')}
                 </p>
                 <div className="space-y-2">
-                  <PriorityBar label="Highest" value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
-                  <PriorityBar label="High" value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
-                  <PriorityBar label="Medium" value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
-                  <PriorityBar label="Low" value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
-                  <PriorityBar label="Lowest" value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
+                  <PriorityBar label={t('priority.highest')} value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
+                  <PriorityBar label={t('priority.high')} value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
+                  <PriorityBar label={t('priority.medium')} value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
+                  <PriorityBar label={t('priority.low')} value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
+                  <PriorityBar label={t('priority.lowest')} value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
                 </div>
               </div>
               </div>
@@ -511,17 +513,17 @@ export default function IssuesSummaryPage() {
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Recent activity
+                    {t('dashboard.recentActivity')}
                   </h2>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
                       <Sparkles className="h-3.5 w-3.5" />
-                      <span>AI-Powered</span>
+                      <span>{t('dashboard.aiPowered')}</span>
                     </div>
                   </div>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Stay up to date with what's happening across your organization.
+                  {t('dashboard.recentActivityDescription')}
                 </p>
                 <ActivityTimeline limit={20} showFilters={true} />
               </div>
@@ -533,25 +535,25 @@ export default function IssuesSummaryPage() {
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Types of work
+                    {t('dashboard.typesOfWork')}
                   </h2>
                   <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
-                    View all items
+                    {t('dashboard.viewAllItems')}
                   </a>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  Get a breakdown of work items by their types.
+                  {t('issuesSummary.typesOfWorkDesc')}
                 </p>
                 <div className="space-y-2">
                   {totalIssues > 0 ? (
                     <>
-                      <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
-                      <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
-                      <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
-                      <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
+                      <TypeBar label={t('issuesSummary.typeTask')} percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
+                      <TypeBar label={t('issuesSummary.typeStory')} percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
+                      <TypeBar label={t('issuesSummary.typeBug')} percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
+                      <TypeBar label={t('issuesSummary.typeEpic')} percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
                     </>
                   ) : (
-                    <p className="text-sm text-slate-400">No work items yet</p>
+                    <p className="text-sm text-slate-400">{t('issuesSummary.noWorkItems')}</p>
                   )}
                 </div>
               </div>
@@ -563,14 +565,14 @@ export default function IssuesSummaryPage() {
                 <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Favorite Projects
+                    {t('issuesSummary.favoriteProjects')}
                   </h2>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push('/dashboard/projects')}
                   >
-                    View all
+                    {t('issuesSummary.viewAll')}
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -646,7 +648,9 @@ export default function IssuesSummaryPage() {
                 <div>
                   <h2 className="text-xl font-bold text-white">{filterTitle}</h2>
                   <p className="text-sm text-white/80 mt-1">
-                    {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'} found
+                    {filteredTasks.length}{' '}
+                    {filteredTasks.length === 1 ? t('issuesSummary.taskSingular') : t('issuesSummary.taskPlural')}{' '}
+                    {t('issuesSummary.tasksFound')}
                   </p>
                 </div>
                 <Button variant="ghost" size="icon"
@@ -679,13 +683,14 @@ export default function IssuesSummaryPage() {
                   <div className="flex items-center gap-6 text-sm">
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-                      <span className="font-medium text-slate-700 dark:text-slate-300">AI Insights:</span>
+                      <span className="font-medium text-slate-700 dark:text-slate-300">{t('issuesSummary.aiInsights')}</span>
                     </div>
                     {overdue > 0 && (
                       <div className="flex items-center gap-1">
                         <AlertCircle className="h-3.5 w-3.5 text-red-500" />
                         <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span> overdue
+                          <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span>{' '}
+                          {t('issuesSummary.overdue')}
                         </span>
                       </div>
                     )}
@@ -693,7 +698,8 @@ export default function IssuesSummaryPage() {
                       <div className="flex items-center gap-1">
                         <User className="h-3.5 w-3.5 text-orange-500" />
                         <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span> unassigned
+                          <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span>{' '}
+                          {t('issuesSummary.unassigned')}
                         </span>
                       </div>
                     )}
@@ -701,7 +707,8 @@ export default function IssuesSummaryPage() {
                       <div className="flex items-center gap-1">
                         <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
                         <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span> high priority
+                          <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span>{' '}
+                          {t('issuesSummary.highPriority')}
                         </span>
                       </div>
                     )}
@@ -709,7 +716,7 @@ export default function IssuesSummaryPage() {
                       <div className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-blue-500" />
                         <span className="text-slate-600 dark:text-slate-400">
-                          avg <span className="font-semibold text-blue-600 dark:text-blue-400">{avgAge}d</span> old
+                          {t('issuesSummary.avgDaysOld').replace('{{days}}', String(avgAge))}
                         </span>
                       </div>
                     )}
@@ -717,7 +724,8 @@ export default function IssuesSummaryPage() {
                       <div className="flex items-center gap-1">
                         <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
                         <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span> assigned
+                          <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span>{' '}
+                          {t('issuesSummary.assigned')}
                         </span>
                       </div>
                     )}
@@ -775,13 +783,14 @@ export default function IssuesSummaryPage() {
                           <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                             <div className="flex items-center gap-1">
                               <User className="h-3 w-3" />
-                              <span>{task.assignee?.name || 'Unassigned'}</span>
+                              <span>{task.assignee?.name || t('common.unassigned')}</span>
                             </div>
                             {task.updatedAt && (
                               <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 <span>
-                                  Updated {new Date(task.updatedAt).toLocaleDateString('en-US', {
+                                  {t('issuesSummary.updatedPrefix')}{' '}
+                                  {new Date(task.updatedAt).toLocaleDateString('en-US', {
                                     month: 'short',
                                     day: 'numeric',
                                     hour: '2-digit',
@@ -793,7 +802,7 @@ export default function IssuesSummaryPage() {
                             {task.reporter && (
                               <div className="flex items-center gap-1">
                                 <Sparkles className="h-3 w-3" />
-                                <span>Created by {task.reporter.name}</span>
+                                <span>{t('issuesSummary.createdByPrefix')} {task.reporter.name}</span>
                               </div>
                             )}
                           </div>
@@ -818,7 +827,7 @@ export default function IssuesSummaryPage() {
               ) : (
                 <div className="text-center py-12">
                   <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                  <p className="text-gray-600 dark:text-gray-400">No tasks found</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('issuesSummary.noTasksFound')}</p>
                 </div>
               )}
             </div>
@@ -863,6 +872,8 @@ function StatCard({
   color: string;
   onClick?: () => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div
       role="button"
@@ -883,7 +894,7 @@ function StatCard({
             {icon}
           </div>
           <div className="text-[10px] md:text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-semibold hidden sm:flex items-center gap-1 group-hover:gap-2 transition-all">
-            <span>Details</span>
+            <span>{t('common.details')}</span>
             <span className="group-hover:translate-x-0.5 transition-transform">→</span>
           </div>
         </div>

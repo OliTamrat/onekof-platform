@@ -23,17 +23,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-// Tab navigation items
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
-  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list', active: true },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-];
-
 interface Automation {
   id: string;
   name: string;
@@ -59,7 +48,16 @@ export default function AutomationsListPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
-  // Fetch automations
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('automations.title'), icon: BarChart3, href: '/dashboard/automations/summary' },
+    { id: 'list', label: t('common.viewAll'), icon: List, href: '/dashboard/automations/list', active: true },
+    { id: 'board', label: t('common.overview'), icon: null, href: '/dashboard/automations' },
+    { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
+    { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
+    { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
+    { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+  ];
+
   const { data: automationsData, isLoading } = useQuery({
     queryKey: ['automations', currentOrganization?.id],
     queryFn: async () => {
@@ -71,7 +69,6 @@ export default function AutomationsListPage() {
     enabled: !!currentOrganization?.id,
   });
 
-  // Toggle automation
   const toggleMutation = useMutation({
     mutationFn: async ({ id, isEnabled }: { id: string; isEnabled: boolean }) => {
       const res = await fetch(`/api/automations/${id}`, {
@@ -89,7 +86,6 @@ export default function AutomationsListPage() {
 
   const automations = automationsData?.automations || [];
 
-  // Filter automations based on search
   const filteredAutomations = automations.filter((automation: Automation) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -119,11 +115,6 @@ export default function AutomationsListPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
   return (
     <AppLayout>
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
@@ -136,7 +127,7 @@ export default function AutomationsListPage() {
                 <Zap className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Automations
+                {t('automations.title')}
               </h1>
             </div>
 
@@ -145,7 +136,7 @@ export default function AutomationsListPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Create
+              {t('common.create')}
             </Link>
           </div>
 
@@ -176,7 +167,7 @@ export default function AutomationsListPage() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search automations"
+                placeholder={t('automations.searchAutomations')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
@@ -185,7 +176,7 @@ export default function AutomationsListPage() {
 
             <Button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-[#282E33] px-3 py-1.5 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700">
               <Filter className="h-4 w-4" />
-              Filter
+              {t('common.filter')}
             </Button>
           </div>
         </div>
@@ -194,15 +185,17 @@ export default function AutomationsListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">Loading automations...</div>
+              <div className="text-gray-600 dark:text-slate-400">{t('automations.loading')}</div>
             </div>
           ) : filteredAutomations.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <Zap className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No automations</h3>
+                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  {t('automations.noAutomations')}
+                </h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
-                  {searchQuery ? 'No automations match your search.' : 'Get started by creating a new automation.'}
+                  {searchQuery ? t('automations.noAutomationsMatch') : t('automations.getStartedCreate')}
                 </p>
               </div>
             </div>
@@ -212,28 +205,28 @@ export default function AutomationsListPage() {
                 <thead className="bg-gray-50 dark:bg-[#282E33]">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Name
+                      {t('automations.colName')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Entity Type
+                      {t('automations.colEntityType')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Trigger
+                      {t('automations.colTrigger')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Scope
+                      {t('automations.colScope')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Executions
+                      {t('automations.colExecutions')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Success Rate
+                      {t('automations.colSuccessRate')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Status
+                      {t('automations.colStatus')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                      Actions
+                      {t('automations.colActions')}
                     </th>
                   </tr>
                 </thead>
@@ -297,7 +290,7 @@ export default function AutomationsListPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(automation.isEnabled)}`}>
-                            {automation.isEnabled ? 'Active' : 'Inactive'}
+                            {automation.isEnabled ? t('automations.active') : t('automations.inactive')}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -308,7 +301,7 @@ export default function AutomationsListPage() {
                                 ? 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
                                 : 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/10'
                             }`}
-                            title={automation.isEnabled ? 'Disable' : 'Enable'}
+                            title={automation.isEnabled ? t('common.disable') : t('common.enable')}
                           >
                             {automation.isEnabled ? <PowerOff className="h-3 w-3" /> : <Power className="h-3 w-3" />}
                           </Button>

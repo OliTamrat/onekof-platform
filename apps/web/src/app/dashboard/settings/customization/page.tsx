@@ -246,16 +246,16 @@ export default function DashboardCustomizationPage() {
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-sm text-gray-900 dark:text-white">{preset.name}</h3>
+                      <h3 className="font-semibold text-sm text-gray-900 dark:text-white">{t(preset.nameKey)}</h3>
                       {selectedPreset === preset.name && (
                         <CheckCircle2 className="h-4 w-4 text-primary-500" />
                       )}
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-2">{preset.description}</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-2">{t(preset.descriptionKey)}</p>
                     <div className="mt-3 flex flex-wrap gap-1">
                       {preset.enabledSections.slice(0, 3).map(section => (
                         <span key={section} className="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
-                          {section}
+                          {t('customization.' + section)}
                         </span>
                       ))}
                       {preset.enabledSections.length > 3 && (
@@ -327,7 +327,7 @@ export default function DashboardCustomizationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {Object.entries(settings.features.budget).map(([feature, enabled]) => (
                     <div key={feature} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-slate-700">
-                      <span className="text-sm text-gray-900 dark:text-white capitalize">{feature.replace(/([A-Z])/g, ' $1').trim()}</span>
+                      <span className="text-sm text-gray-900 dark:text-white">{t('customization.budgetFeature.' + feature)}</span>
                       <Button
                         onClick={() => toggleFeature('budget', feature)}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${

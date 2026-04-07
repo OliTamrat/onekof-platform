@@ -8,6 +8,7 @@
 import { useState, useCallback } from 'react';
 import { Upload, FileText, Sparkles, AlertCircle, CheckCircle2, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 interface DocumentUploadProps {
   projectId?: string;
@@ -20,6 +21,7 @@ export function DocumentUpload({
   budgetId,
   onUploadComplete,
 }: DocumentUploadProps) {
+  const { t } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -156,28 +158,28 @@ export function DocumentUpload({
 
           {/* Title */}
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-            Upload Documents for AI Analysis
+            {t('documents.upload.title')}
           </h3>
 
           {/* Description */}
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-            Drag and drop files here, or click to browse
+            {t('documents.upload.dragDrop')}
           </p>
 
           {/* File Types */}
           <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Invoices</span>
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Receipts</span>
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Contracts</span>
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Proposals</span>
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">RFPs</span>
-            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Reports</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.invoices')}</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.receipts')}</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.contracts')}</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.proposals')}</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.rfps')}</span>
+            <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">{t('documents.upload.reports')}</span>
           </div>
 
           {/* Browse Button */}
           <label className="inline-flex items-center gap-2 px-6 py-3 bg-[#1C8C7D] text-white rounded-lg font-medium cursor-pointer hover:bg-[#156B60] transition-colors">
             <FileText className="h-4 w-4" />
-            Browse Files
+            {t('documents.upload.browseFiles')}
             <input
               type="file"
               multiple
@@ -189,7 +191,7 @@ export function DocumentUpload({
 
           {/* Supported Formats */}
           <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-            Supported: PDF, DOC, DOCX, JPG, PNG (Max 10MB)
+            {t('documents.upload.supportedFormats')}
           </p>
         </div>
       </div>
@@ -199,7 +201,7 @@ export function DocumentUpload({
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
-              Files to Upload ({files.length})
+              {t('documents.upload.filesToUpload').replace('{count}', String(files.length))}
             </h4>
             {!uploading && (
               <Button
@@ -207,7 +209,7 @@ export function DocumentUpload({
                 onClick={() => setFiles([])}
                 className="h-auto px-2 py-1 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               >
-                Clear all
+                {t('documents.upload.clearAll')}
               </Button>
             )}
           </div>
@@ -249,10 +251,10 @@ export function DocumentUpload({
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       {formatFileSize(file.size)}
                       {status === 'processing' && (
-                        <span className="ml-2 text-[#1C8C7D]">• AI processing...</span>
+                        <span className="ml-2 text-[#1C8C7D]">• {t('documents.upload.aiProcessing')}</span>
                       )}
                       {status === 'success' && (
-                        <span className="ml-2 text-green-600 dark:text-green-400">• Complete</span>
+                        <span className="ml-2 text-green-600 dark:text-green-400">• {t('documents.upload.complete')}</span>
                       )}
                       {error && (
                         <span className="ml-2 text-red-600 dark:text-red-400">• {error}</span>
@@ -285,7 +287,7 @@ export function DocumentUpload({
           className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1C8C7D] to-[#16A085] text-white rounded-lg font-medium hover:from-[#156B60] hover:to-[#128A75] transition-all duration-200"
         >
           <Sparkles className="h-4 w-4" />
-          Upload & Process with AI
+          {t('documents.upload.uploadProcess')}
         </Button>
       )}
 
@@ -296,10 +298,10 @@ export function DocumentUpload({
             <Loader2 className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                AI Processing in Progress
+                {t('documents.upload.processingTitle')}
               </p>
               <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                AI is analyzing your documents for key insights, budget items, and milestones...
+                {t('documents.upload.processingDesc')}
               </p>
             </div>
           </div>

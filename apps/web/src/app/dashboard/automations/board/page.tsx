@@ -15,14 +15,14 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
-  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations', active: true },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+const TAB_ITEMS: { id: string; labelKey: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
+  { id: 'summary', labelKey: 'automations.tabSummary', icon: BarChart3, href: '/dashboard/automations/summary' },
+  { id: 'list', labelKey: 'automations.tabList', icon: List, href: '/dashboard/automations/list' },
+  { id: 'board', labelKey: 'automations.tabBoard', icon: null, href: '/dashboard/automations', active: true },
+  { id: 'code', labelKey: 'automations.tabCode', icon: Code, href: '/dashboard/automations/code' },
+  { id: 'forms', labelKey: 'automations.tabForms', icon: FileText, href: '/dashboard/automations/forms' },
+  { id: 'timeline', labelKey: 'automations.tabTimeline', icon: Clock, href: '/dashboard/automations/timeline' },
+  { id: 'pages', labelKey: 'automations.tabPages', icon: Book, href: '/dashboard/automations/pages' },
 ];
 
 export default function AutomationsBoardPage() {
@@ -38,7 +38,7 @@ export default function AutomationsBoardPage() {
                 <Zap className="h-6 w-6" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Automations Board
+                {t('automations.boardTitle')}
               </h1>
             </div>
 
@@ -47,7 +47,7 @@ export default function AutomationsBoardPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Create
+              {t('automations.create')}
             </Link>
           </div>
 
@@ -66,7 +66,7 @@ export default function AutomationsBoardPage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}
@@ -79,10 +79,10 @@ export default function AutomationsBoardPage() {
             <div className="text-center py-20">
               <Zap className="mx-auto h-16 w-16 text-gray-300 dark:text-slate-700" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-                Automations Board View
+                {t('automations.boardTitle')}
               </h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-                Visualize your automations in a Kanban board layout - coming soon!
+                {t('automations.boardDesc')} — {t('automations.comingSoon')}
               </p>
             </div>
           </div>

@@ -125,6 +125,8 @@ export interface OrganizationSettings {
 export interface OrganizationPreset {
   name: string;
   description: string;
+  nameKey: string;
+  descriptionKey: string;
   enabledSections: DashboardSectionId[];
   features: OrganizationFeatures;
   recommendedFor: OrganizationType[];

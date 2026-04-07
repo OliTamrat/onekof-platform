@@ -223,15 +223,15 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
       <div className="space-y-1.5">
         <div className="flex items-center gap-2 rounded-md bg-primary-500/8 border border-primary-500/10 px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
-          <span className="text-[11px] text-primary-300">Sprint 14 Review — መጋ 6</span>
+          <span className="text-[11px] text-primary-300">{_t('landing.mockup.calendarEvent1')}</span>
         </div>
         <div className="flex items-center gap-2 rounded-md bg-red-500/8 border border-red-500/10 px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
-          <span className="text-[11px] text-red-300">API v2 Deadline — መጋ 15</span>
+          <span className="text-[11px] text-red-300">{_t('landing.mockup.calendarEvent2')}</span>
         </div>
         <div className="flex items-center gap-2 rounded-md bg-amber-500/8 border border-amber-500/10 px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-          <span className="text-[11px] text-amber-300">Adwa Victory Day — መጋ 23</span>
+          <span className="text-[11px] text-amber-300">{_t('landing.mockup.calendarEvent3')}</span>
         </div>
       </div>
     </div>
@@ -688,19 +688,19 @@ export default function HomePage() {
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[
                       { label: t('landing.preview.backlog'), count: 5, dot: 'bg-white/20', cards: [
-                        { title: 'Setup CI/CD pipeline', tag: 'DevOps', priority: 'medium' },
-                        { title: 'Design system tokens', tag: 'Design', priority: 'low' },
+                        { title: t('landing.preview.card1'), tag: t('landing.preview.tagDevOps'), priority: 'medium' },
+                        { title: t('landing.preview.card2'), tag: t('landing.preview.tagDesign'), priority: 'low' },
                       ]},
                       { label: t('landing.preview.inProgress'), count: 3, dot: 'bg-primary-500', cards: [
-                        { title: 'User auth flow', tag: 'Backend', priority: 'high' },
-                        { title: 'Dashboard widgets', tag: 'Frontend', priority: 'medium' },
+                        { title: t('landing.preview.card3'), tag: t('landing.preview.tagBackend'), priority: 'high' },
+                        { title: t('landing.preview.card4'), tag: t('landing.preview.tagFrontend'), priority: 'medium' },
                       ]},
                       { label: t('landing.preview.inReview'), count: 2, dot: 'bg-amber-500', cards: [
-                        { title: 'Budget module UI', tag: 'Frontend', priority: 'high' },
+                        { title: t('landing.preview.card5'), tag: t('landing.preview.tagFrontend'), priority: 'high' },
                       ]},
                       { label: t('landing.preview.done'), count: 8, dot: 'bg-emerald-500', cards: [
-                        { title: 'DB schema migration', tag: 'Backend', priority: 'high' },
-                        { title: 'Login & signup pages', tag: 'Frontend', priority: 'high' },
+                        { title: t('landing.preview.card6'), tag: t('landing.preview.tagBackend'), priority: 'high' },
+                        { title: t('landing.preview.card7'), tag: t('landing.preview.tagFrontend'), priority: 'high' },
                       ]},
                     ].map((col) => (
                       <div key={col.label}>
@@ -1030,39 +1030,39 @@ export default function HomePage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                quote: "We tried Jira, Trello, and Asana. None understood Ethiopian workflows. Onekof's calendar integration alone saved us hours every week.",
-                name: 'Abebe Kebede',
-                role: 'CTO, TechEth Solutions',
+                quote: t('landing.testimonials.quote1'),
+                name: t('landing.testimonials.name1'),
+                role: t('landing.testimonials.role1'),
                 gradient: 'from-primary-500 to-primary-700',
               },
               {
-                quote: "Finally, a PM tool our entire team can use — including those most comfortable in Amharic. The language support isn't an afterthought, it's core to the product.",
-                name: 'Tigist Haile',
-                role: 'Project Manager, Addis Development',
+                quote: t('landing.testimonials.quote2'),
+                name: t('landing.testimonials.name2'),
+                role: t('landing.testimonials.role2'),
                 gradient: 'from-purple-500 to-pink-500',
               },
               {
-                quote: "The budget tracking in ETB with approval workflows eliminated our spreadsheet chaos. Real-time visibility into every project's financial health.",
-                name: 'Dawit Tesfaye',
-                role: 'Finance Director, BuildEth',
+                quote: t('landing.testimonials.quote3'),
+                name: t('landing.testimonials.name3'),
+                role: t('landing.testimonials.role3'),
                 gradient: 'from-emerald-500 to-teal-500',
               },
               {
-                quote: "The AI document processor changed how we handle procurement. It extracts deadlines and flags risks from contracts automatically — saving us days of manual work.",
-                name: 'Sara Mengistu',
-                role: 'Operations Lead, EthioCloud',
+                quote: t('landing.testimonials.quote4'),
+                name: t('landing.testimonials.name4'),
+                role: t('landing.testimonials.role4'),
                 gradient: 'from-amber-500 to-orange-500',
               },
               {
-                quote: "As a government ministry, we needed Ethiopian calendar support and Amharic interface. Onekof is the only tool that treats these as first-class features, not plugins.",
-                name: 'Yohannes Bekele',
-                role: 'IT Director, Ministry of Innovation',
+                quote: t('landing.testimonials.quote5'),
+                name: t('landing.testimonials.name5'),
+                role: t('landing.testimonials.role5'),
                 gradient: 'from-cyan-500 to-blue-500',
               },
               {
-                quote: "We onboarded 200+ team members in a week. The guided onboarding flow made it effortless — everyone was productive from day one, regardless of their language preference.",
-                name: 'Hanna Tadesse',
-                role: 'HR Director, NileTech Systems',
+                quote: t('landing.testimonials.quote6'),
+                name: t('landing.testimonials.name6'),
+                role: t('landing.testimonials.role6'),
                 gradient: 'from-rose-500 to-pink-500',
               },
             ].map((testimonial, i) => (

@@ -46,14 +46,14 @@ import {
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary' },
-  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations', active: true },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+const TAB_ITEMS: { id: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
+  { id: 'summary', icon: BarChart3, href: '/dashboard/automations/summary' },
+  { id: 'list', icon: List, href: '/dashboard/automations/list' },
+  { id: 'board', icon: null, href: '/dashboard/automations', active: true },
+  { id: 'code', icon: Code, href: '/dashboard/automations/code' },
+  { id: 'forms', icon: FileText, href: '/dashboard/automations/forms' },
+  { id: 'timeline', icon: Clock, href: '/dashboard/automations/timeline' },
+  { id: 'pages', icon: Book, href: '/dashboard/automations/pages' },
 ];
 
 interface AutomationRule {
@@ -183,10 +183,10 @@ export default function AutomationsPage() {
   };
 
   const filters = [
-    { value: 'all' as const, label: 'All', count: statistics.total },
-    { value: 'enabled' as const, label: 'Active', count: statistics.enabled },
-    { value: 'disabled' as const, label: 'Inactive', count: statistics.disabled },
-    { value: 'ai' as const, label: 'AI Generated', count: statistics.aiGenerated },
+    { value: 'all' as const, label: t('automations.filterAll'), count: statistics.total },
+    { value: 'enabled' as const, label: t('automations.filterActive'), count: statistics.enabled },
+    { value: 'disabled' as const, label: t('automations.filterInactive'), count: statistics.disabled },
+    { value: 'ai' as const, label: t('automations.filterAiGenerated'), count: statistics.aiGenerated },
   ];
 
   return (
@@ -201,8 +201,8 @@ export default function AutomationsPage() {
                 <Zap className="h-6 w-6" />
               </div>
               <div>
-                <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automation Hub</h1>
-                <p className="text-xs text-gray-600 dark:text-slate-400">Automate workflows and boost productivity</p>
+                <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.title')}</h1>
+                <p className="text-xs text-gray-600 dark:text-slate-400">{t('automations.subtitle')}</p>
               </div>
             </div>
 
@@ -211,7 +211,7 @@ export default function AutomationsPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Create Automation
+              {t('automations.createAutomation')}
             </Link>
           </div>
 
@@ -230,7 +230,7 @@ export default function AutomationsPage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(`projectsBoard.tabs.${tab.id}`)}
                 </Link>
               );
             })}
@@ -242,7 +242,7 @@ export default function AutomationsPage() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search automations..."
+                placeholder={t('automations.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
@@ -272,28 +272,28 @@ export default function AutomationsPage() {
         <div className="grid grid-cols-2 gap-3 p-3 md:p-6 md:grid-cols-2 lg:grid-cols-4 md:gap-4">
           <StatsCard
             icon={Activity}
-            label="Total Automations"
+            label={t('automations.totalAutomations')}
             value={statistics.total}
             iconColor="text-purple-500"
             iconBg="bg-purple-500/10"
           />
           <StatsCard
             icon={TrendingUp}
-            label="Total Executions"
+            label={t('automations.totalExecutions')}
             value={statistics.totalExecutions.toLocaleString()}
             iconColor="text-blue-500"
             iconBg="bg-blue-500/10"
           />
           <StatsCard
             icon={Clock}
-            label="Time Saved"
+            label={t('automations.timeSaved')}
             value={`${statistics.totalTimeSaved}h`}
             iconColor="text-green-500"
             iconBg="bg-green-500/10"
           />
           <StatsCard
             icon={Sparkles}
-            label="AI Generated"
+            label={t('automations.aiGenerated')}
             value={statistics.aiGenerated}
             iconColor="text-amber-500"
             iconBg="bg-amber-500/10"
@@ -306,7 +306,7 @@ export default function AutomationsPage() {
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">Loading automations...</p>
+                <p className="text-sm text-gray-600 dark:text-slate-400">{t('automations.loading')}</p>
               </div>
             </div>
           ) : filteredAutomations.length > 0 ? (
@@ -323,7 +323,7 @@ export default function AutomationsPage() {
                     toggleAutomationMutation.mutate({ automationId: id, isEnabled });
                   }}
                   onDelete={(id) => {
-                    if (confirm('Are you sure you want to delete this automation?')) {
+                    if (confirm(t('automations.confirmDelete'))) {
                       deleteAutomationMutation.mutate(id);
                     }
                   }}
@@ -334,17 +334,17 @@ export default function AutomationsPage() {
             <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
               <Zap className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
-                No automations found
+                {t('automations.noAutomations')}
               </p>
               <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
-                Create your first automation to streamline your workflows
+                {t('automations.noAutomationsDesc')}
               </p>
               <Link
                 href="/dashboard/automations/create"
                 className="mt-4 flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
-                Create Automation
+                {t('automations.createAutomation')}
               </Link>
             </div>
           )}
@@ -368,7 +368,7 @@ export default function AutomationsPage() {
 
               <div className="py-4 space-y-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-white mb-2">Description</h3>
+                  <h3 className="text-sm font-semibold text-white mb-2">{t('automations.description')}</h3>
                   <p className="text-sm text-slate-400">
                     {selectedAutomation.description || 'No description provided'}
                   </p>
@@ -376,22 +376,22 @@ export default function AutomationsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-2">Trigger</h3>
+                    <h3 className="text-sm font-semibold text-white mb-2">{t('automations.trigger')}</h3>
                     <p className="text-sm text-slate-400">{selectedAutomation.triggerEvent}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-2">Entity Type</h3>
+                    <h3 className="text-sm font-semibold text-white mb-2">{t('automations.entityType')}</h3>
                     <p className="text-sm text-slate-400">{selectedAutomation.entityType}</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-2">Executions</h3>
+                    <h3 className="text-sm font-semibold text-white mb-2">{t('automations.executions')}</h3>
                     <p className="text-2xl font-bold text-white">{selectedAutomation.executionCount}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-2">Success Rate</h3>
+                    <h3 className="text-sm font-semibold text-white mb-2">{t('automations.successRate')}</h3>
                     <p className="text-2xl font-bold text-green-500">
                       {selectedAutomation.executionCount > 0
                         ? Math.round((selectedAutomation.successCount / selectedAutomation.executionCount) * 100)
@@ -399,7 +399,7 @@ export default function AutomationsPage() {
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-2">Avg Time</h3>
+                    <h3 className="text-sm font-semibold text-white mb-2">{t('automations.avgTime')}</h3>
                     <p className="text-2xl font-bold text-white">
                       {selectedAutomation.avgExecutionMs ? `${selectedAutomation.avgExecutionMs.toFixed(0)}ms` : 'N/A'}
                     </p>
@@ -448,6 +448,7 @@ interface AutomationCardProps {
 }
 
 function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationCardProps) {
+  const { t } = useLanguage();
   const successRate = automation.executionCount > 0
     ? Math.round((automation.successCount / automation.executionCount) * 100)
     : 0;
@@ -487,11 +488,11 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
           <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400 mt-2">
             <span className="flex items-center gap-1">
               <Activity className="h-3 w-3" />
-              {automation.executionCount} runs
+              {automation.executionCount} {t('automations.runs')}
             </span>
             <span className="flex items-center gap-1">
               <CheckCircle2 className="h-3 w-3 text-green-500" />
-              {successRate}% success
+              {successRate}% {t('automations.success')}
             </span>
             {automation.lastExecutedAt && (
               <span className="flex items-center gap-1">
@@ -518,17 +519,17 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 ? 'bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20'
                 : 'bg-gray-200 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
             )}
-            title={automation.isEnabled ? 'Disable automation' : 'Enable automation'}
+            title={automation.isEnabled ? t('automations.disableAutomation') : t('automations.enableAutomation')}
           >
             {automation.isEnabled ? (
               <>
                 <Power className="h-3 w-3" />
-                <span>Active</span>
+                <span>{t('automations.active')}</span>
               </>
             ) : (
               <>
                 <PowerOff className="h-3 w-3" />
-                <span>Inactive</span>
+                <span>{t('automations.inactive')}</span>
               </>
             )}
           </Button>
@@ -551,7 +552,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <Settings className="mr-2 h-4 w-4" />
-                View Details
+                {t('automations.viewDetails')}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -561,7 +562,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <History className="mr-2 h-4 w-4" />
-                View History
+                {t('automations.viewHistory')}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
@@ -571,7 +572,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 className="text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 <XCircle className="mr-2 h-4 w-4" />
-                Delete
+                {t('common.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

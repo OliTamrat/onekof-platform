@@ -1729,6 +1729,66 @@ model PasswordHistory {
 }
 
 // ============================================================================
+// KNOWLEDGE BASE / WIKI
+// ============================================================================
+
+model WikiCategory {
+  id String @id @default(cuid())
+
+  organizationId String @map("organization_id")
+
+  name        String
+  slug        String
+  description String?
+  icon        String  @default("BookOpen") // Lucide icon name
+  color       String  @default("#3B82F6")
+  sortOrder   Int     @default(0) @map("sort_order")
+
+  createdBy String   @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  articles WikiArticle[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@map("wiki_categories")
+  @@schema("public")
+}
+
+model WikiArticle {
+  id String @id @default(cuid())
+
+  organizationId String @map("organization_id")
+
+  categoryId String?       @map("category_id")
+  category   WikiCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  title   String
+  slug    String
+  content String @default("") // Rich text / Markdown content
+  excerpt String? // Short preview text
+
+  status String @default("draft") // "draft", "published", "archived"
+
+  // Metadata
+  createdBy String   @map("created_by")
+  updatedBy String?  @map("updated_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Optional: track views
+  viewCount Int @default(0) @map("view_count")
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, status])
+  @@index([categoryId])
+  @@index([createdBy])
+  @@map("wiki_articles")
+  @@schema("public")
+}
+
+// ============================================================================
 // TENANT SCHEMAS (created dynamically per organization)
 // ============================================================================
 

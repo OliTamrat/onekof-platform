@@ -57,6 +57,8 @@ const MINISTRY_FEATURES: OrganizationFeatures = {
 export const MINISTRY_PRESET: OrganizationPreset = {
   name: 'Ministry / Government',
   description: 'Full-featured dashboard for government ministries with public budget transparency, procurement tracking, and compliance features.',
+  nameKey: 'customization.presetMinistryName',
+  descriptionKey: 'customization.presetMinistryDesc',
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'timeline', 'calendar', 'issues', 'analytics'],
   features: MINISTRY_FEATURES,
   recommendedFor: ['ministry', 'government'],
@@ -114,6 +116,8 @@ const NGO_FEATURES: OrganizationFeatures = {
 export const NGO_PRESET: OrganizationPreset = {
   name: 'NGO / Non-Profit',
   description: 'Optimized for non-profits with grant tracking, donation management, and impact reporting.',
+  nameKey: 'customization.presetNgoName',
+  descriptionKey: 'customization.presetNgoDesc',
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'impact', 'timeline', 'calendar', 'issues', 'analytics'],
   features: NGO_FEATURES,
   recommendedFor: ['ngo'],
@@ -176,6 +180,8 @@ const BUSINESS_FEATURES: OrganizationFeatures = {
 export const BUSINESS_PRESET: OrganizationPreset = {
   name: 'Business / Startup',
   description: 'Full-featured dashboard with automation, AI assistance, revenue tracking, and advanced analytics.',
+  nameKey: 'customization.presetBusinessName',
+  descriptionKey: 'customization.presetBusinessDesc',
   enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'analytics', 'projects', 'issues', 'calendar', 'timeline'],
   features: BUSINESS_FEATURES,
   recommendedFor: ['business', 'startup'],
@@ -233,6 +239,8 @@ const EDUCATION_FEATURES: OrganizationFeatures = {
 export const EDUCATION_PRESET: OrganizationPreset = {
   name: 'Education',
   description: 'Simplified dashboard for educational institutions with grant tracking and document management.',
+  nameKey: 'customization.presetEducationName',
+  descriptionKey: 'customization.presetEducationDesc',
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline'],
   features: EDUCATION_FEATURES,
   recommendedFor: ['education'],

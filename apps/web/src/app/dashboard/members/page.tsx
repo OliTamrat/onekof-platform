@@ -161,9 +161,9 @@ export default function MembersPage() {
                 <Users className="h-5 w-5 text-primary-500" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Members</h1>
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t('membersPage.title')}</h1>
                 <p className="text-xs text-gray-600 dark:text-slate-400">
-                  {members.length} {members.length === 1 ? 'member' : 'members'}
+                  {members.length} {members.length === 1 ? t('membersPage.member') : t('membersPage.memberPlural')}
                   {pendingInvitations.length > 0 && ` · ${pendingInvitations.length} pending`}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function MembersPage() {
               className="bg-primary-500 hover:bg-primary-600 text-white"
             >
               <UserPlus className="mr-2 h-4 w-4" />
-              Invite Member
+              {t('membersPage.inviteMember')}
             </Button>
           </div>
 
@@ -183,7 +183,7 @@ export default function MembersPage() {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search members by name or email..."
+              placeholder={t('membersPage.searchPlaceholder')}
               className="pl-9 bg-gray-50 dark:bg-[#1B1F23] border-gray-200 dark:border-slate-700"
             />
           </div>
@@ -195,10 +195,10 @@ export default function MembersPage() {
             <div className="rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/10 p-4">
               <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <Send className="h-4 w-4 text-primary-500" />
-                Invite by Email
+                {t('membersPage.inviteByEmail')}
               </h3>
               <p className="mb-3 text-xs text-gray-600 dark:text-slate-400">
-                Invite anyone to your organization — they don&apos;t need an existing account. An invitation email will be sent with a link to join.
+                {t('membersPage.inviteDesc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Input
@@ -214,9 +214,9 @@ export default function MembersPage() {
                   onChange={(e) => setInviteRole(e.target.value as any)}
                   className="h-10 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 text-sm text-gray-900 dark:text-white"
                 >
-                  <option value="MEMBER">Member</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="GUEST">Guest</option>
+                  <option value="MEMBER">{t('membersPage.roleMember')}</option>
+                  <option value="ADMIN">{t('membersPage.roleAdmin')}</option>
+                  <option value="GUEST">{t('membersPage.roleGuest')}</option>
                 </select>
                 <Button
                   onClick={handleInvite}
@@ -228,7 +228,7 @@ export default function MembersPage() {
                   ) : (
                     <>
                       <Send className="mr-1 h-4 w-4" />
-                      Send
+                      {t('membersPage.send')}
                     </>
                   )}
                 </Button>
@@ -242,7 +242,7 @@ export default function MembersPage() {
               {inviteMutation.isSuccess && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
                   <CheckCircle2 className="h-4 w-4" />
-                  Invitation sent successfully!
+                  {t('membersPage.inviteSuccess')}
                 </div>
               )}
             </div>
@@ -253,7 +253,7 @@ export default function MembersPage() {
             <div>
               <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400 flex items-center gap-2">
                 <Clock className="h-3.5 w-3.5" />
-                Pending Invitations ({pendingInvitations.length})
+                {t('membersPage.pendingInvitations')} ({pendingInvitations.length})
               </h2>
               <div className="space-y-2">
                 {pendingInvitations.map((inv) => (
@@ -282,7 +282,7 @@ export default function MembersPage() {
                         onClick={() => revokeMutation.mutate(inv.id)}
                         disabled={revokeMutation.isPending}
                         className="h-8 w-8 hover:bg-red-50 dark:hover:bg-red-900/10"
-                        title="Revoke invitation"
+                        title={t('membersPage.revokeInvitation')}
                       >
                         <X className="h-4 w-4 text-red-500" />
                       </Button>
@@ -302,13 +302,13 @@ export default function MembersPage() {
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="h-12 w-12 text-gray-300 dark:text-slate-700 mb-3" />
               <p className="text-sm text-gray-600 dark:text-slate-400">
-                {searchQuery ? 'No members match your search' : 'No members yet'}
+                {searchQuery ? t('membersPage.noMembersSearch') : t('membersPage.noMembers')}
               </p>
             </div>
           ) : (
             <div>
               <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">
-                Active Members ({filteredMembers.length})
+                {t('membersPage.activeMembers')} ({filteredMembers.length})
               </h2>
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
                 <div className="overflow-x-auto">
@@ -316,16 +316,16 @@ export default function MembersPage() {
                   <thead className="bg-gray-50 dark:bg-[#1B1F23] border-b border-gray-200 dark:border-slate-700">
                     <tr>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Member
+                        {t('membersPage.colMember')}
                       </th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                        Role
+                        {t('membersPage.colRole')}
                       </th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">
-                        Budget Access
+                        {t('membersPage.colBudgetAccess')}
                       </th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">
-                        Joined
+                        {t('membersPage.colJoined')}
                       </th>
                     </tr>
                   </thead>
@@ -349,7 +349,7 @@ export default function MembersPage() {
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                {member.name || 'Unknown'}
+                                {member.name || t('membersPage.unknown')}
                               </p>
                               <p className="text-xs text-gray-500 dark:text-slate-400 truncate">
                                 {member.email}
@@ -364,7 +364,7 @@ export default function MembersPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-slate-400 hidden sm:table-cell">
-                          {member.budgetAccess?.replace(/_/g, ' ') || 'No Access'}
+                          {member.budgetAccess?.replace(/_/g, ' ') || t('membersPage.noAccess')}
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
                           <span className="text-xs text-gray-500 dark:text-slate-400">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   BookOpen,
   Search,
@@ -14,6 +14,7 @@ import {
   Lightbulb,
   Shield,
   Wrench,
+  Loader2,
   type LucideIcon,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -22,6 +23,7 @@ import { KNOWLEDGE_TABS } from '@/config/department-tabs';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { useRouter } from 'next/navigation';
 
 interface WikiCategory {
   id: string;
@@ -66,10 +68,44 @@ const CATEGORY_CONFIGS = [
 
 export default function WikiPage() {
   const { t } = useLanguage();
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [apiArticles, setApiArticles] = useState<any[]>([]);
+  const [apiLoaded, setApiLoaded] = useState(false);
+  const [creating, setCreating] = useState(false);
 
-  // Resolve translations
+  // Fetch real articles from API
+  useEffect(() => {
+    fetch('/api/wiki/articles?status=all&limit=100')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.articles?.length > 0) {
+          setApiArticles(data.articles);
+        }
+        setApiLoaded(true);
+      })
+      .catch(() => setApiLoaded(true));
+  }, []);
+
+  const handleCreateArticle = async () => {
+    setCreating(true);
+    try {
+      const res = await fetch('/api/wiki/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: t('wiki.untitledArticle'), content: '', status: 'draft' }),
+      });
+      if (res.ok) {
+        const article = await res.json();
+        router.push(`/dashboard/docs/pages/${article.id}`);
+        return;
+      }
+    } catch { /* fallback below */ }
+    setCreating(false);
+  };
+
+  // Resolve translations — use mock data as fallback
   const categories: WikiCategory[] = CATEGORY_CONFIGS.map(c => ({
     id: c.id,
     name: t(c.nameKey),
@@ -118,9 +154,11 @@ export default function WikiPage() {
             </div>
             <Button
               size="sm"
+              onClick={handleCreateArticle}
+              disabled={creating}
               className="gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white rounded-lg h-9"
             >
-              <Plus className="h-3.5 w-3.5" />
+              {creating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
               <span className="hidden sm:inline">{t('wiki.newArticle')}</span>
             </Button>
           </div>
@@ -150,6 +188,30 @@ export default function WikiPage() {
               </div>
 
               <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+                {/* Show real API articles for this category if available */}
+                {apiArticles.filter(a => a.category?.slug === activeCategory.id || a.category?.name === activeCategory.name).map((article, idx, arr) => (
+                  <div
+                    key={article.id}
+                    onClick={() => router.push(`/dashboard/docs/pages/${article.id}`)}
+                    className={cn(
+                      'group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors',
+                      (idx !== arr.length - 1 || activeCategory.articles.length > 0) && 'border-b border-gray-100 dark:border-slate-700/50'
+                    )}
+                  >
+                    <FileText className="h-4 w-4 text-[#1C8C7D] shrink-0" />
+                    <span className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors flex-1 truncate">
+                      {article.title}
+                    </span>
+                    <span className={cn(
+                      'rounded-full px-2 py-0.5 text-[10px] font-medium shrink-0',
+                      article.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                    )}>
+                      {article.status === 'published' ? t('wiki.published') : t('wiki.draft')}
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5 text-gray-300 dark:text-slate-600 group-hover:text-[#1C8C7D] transition-colors shrink-0" />
+                  </div>
+                ))}
+                {/* Mock articles (placeholder until real data exists) */}
                 {activeCategory.articles.map((article, idx) => (
                   <div
                     key={idx}
@@ -174,6 +236,47 @@ export default function WikiPage() {
           ) : (
             /* Categories overview */
             <div className="space-y-4">
+              {/* Real articles from API */}
+              {apiArticles.length > 0 && (
+                <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700/50">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">
+                      {t('wiki.yourArticles')}
+                    </h3>
+                  </div>
+                  {apiArticles.slice(0, 5).map((article, idx) => (
+                    <div
+                      key={article.id}
+                      onClick={() => router.push(`/dashboard/docs/pages/${article.id}`)}
+                      className={cn(
+                        'group flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors',
+                        idx !== Math.min(apiArticles.length, 5) - 1 && 'border-b border-gray-100 dark:border-slate-700/50'
+                      )}
+                    >
+                      <FileText className="h-4 w-4 text-[#1C8C7D] shrink-0" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors flex-1 truncate">
+                        {article.title}
+                      </span>
+                      {article.category && (
+                        <span
+                          className="rounded-md px-2 py-0.5 text-[10px] font-medium shrink-0"
+                          style={{ backgroundColor: article.category.color + '20', color: article.category.color }}
+                        >
+                          {article.category.name}
+                        </span>
+                      )}
+                      <span className={cn(
+                        'rounded-full px-2 py-0.5 text-[10px] font-medium shrink-0',
+                        article.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                      )}>
+                        {article.status === 'published' ? t('wiki.published') : t('wiki.draft')}
+                      </span>
+                      <ArrowRight className="h-3.5 w-3.5 text-gray-300 dark:text-slate-600 group-hover:text-[#1C8C7D] transition-colors shrink-0" />
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Stats row — consistent with other pages */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">

@@ -34,73 +34,77 @@ import { IconPicker } from '@/components/ui/icon-picker';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/language-context';
 
-// Entity Types
-const ENTITY_TYPES = [
-  { value: 'PROJECT', label: 'Project', description: 'Trigger on project events' },
-  { value: 'TASK', label: 'Task', description: 'Trigger on task events' },
-  { value: 'ISSUE', label: 'Issue', description: 'Trigger on issue events' },
-  { value: 'GOAL', label: 'Goal', description: 'Trigger on goal events' },
-  { value: 'KEY_RESULT', label: 'Key Result', description: 'Trigger on key result events' },
-  { value: 'TEAM', label: 'Team', description: 'Trigger on team events' },
-  { value: 'TEAM_MEMBER', label: 'Team Member', description: 'Trigger on team member events' },
-  { value: 'MILESTONE', label: 'Milestone', description: 'Trigger on milestone events' },
-];
+function getEntityTypes(t: (key: string) => string) {
+  return [
+    { value: 'PROJECT', label: t('automationsCreate.entityTypes.project'), description: 'Trigger on project events' },
+    { value: 'TASK', label: t('automationsCreate.entityTypes.task'), description: 'Trigger on task events' },
+    { value: 'ISSUE', label: t('automationsCreate.entityTypes.issue'), description: 'Trigger on issue events' },
+    { value: 'GOAL', label: t('automationsCreate.entityTypes.goal'), description: 'Trigger on goal events' },
+    { value: 'KEY_RESULT', label: t('automationsCreate.entityTypes.keyResult'), description: 'Trigger on key result events' },
+    { value: 'TEAM', label: t('automationsCreate.entityTypes.team'), description: 'Trigger on team events' },
+    { value: 'TEAM_MEMBER', label: t('automationsCreate.entityTypes.teamMember'), description: 'Trigger on team member events' },
+    { value: 'MILESTONE', label: t('automationsCreate.entityTypes.milestone'), description: 'Trigger on milestone events' },
+  ];
+}
 
-// Trigger Events by Entity Type
-const TRIGGER_EVENTS: Record<string, Array<{ value: string; label: string }>> = {
-  PROJECT: [
-    { value: 'CREATED', label: 'Project created' },
-    { value: 'UPDATED', label: 'Project updated' },
-    { value: 'STATUS_CHANGED', label: 'Status changed' },
-    { value: 'ARCHIVED', label: 'Project archived' },
-    { value: 'BUDGET_THRESHOLD_REACHED', label: 'Budget threshold reached' },
-  ],
-  TASK: [
-    { value: 'CREATED', label: 'Task created' },
-    { value: 'UPDATED', label: 'Task updated' },
-    { value: 'STATUS_CHANGED', label: 'Status changed' },
-    { value: 'ASSIGNED', label: 'Task assigned' },
-    { value: 'PRIORITY_CHANGED', label: 'Priority changed' },
-    { value: 'DUE_DATE_APPROACHING', label: 'Due date approaching' },
-    { value: 'DUE_DATE_PASSED', label: 'Due date passed' },
-    { value: 'COMPLETED', label: 'Task completed' },
-    { value: 'COMMENTED', label: 'Comment added' },
-  ],
-  GOAL: [
-    { value: 'CREATED', label: 'Goal created' },
-    { value: 'UPDATED', label: 'Goal updated' },
-    { value: 'STATUS_CHANGED', label: 'Status changed' },
-    { value: 'PROGRESS_THRESHOLD_REACHED', label: 'Progress threshold reached' },
-    { value: 'COMPLETED', label: 'Goal completed' },
-  ],
-  TEAM_MEMBER: [
-    { value: 'MEMBER_ADDED', label: 'Member added to team' },
-    { value: 'MEMBER_REMOVED', label: 'Member removed from team' },
-  ],
-};
+function getTriggerEvents(t: (key: string) => string): Record<string, Array<{ value: string; label: string }>> {
+  return {
+    PROJECT: [
+      { value: 'CREATED', label: t('automationsCreate.triggers.projectCreated') },
+      { value: 'UPDATED', label: t('automationsCreate.triggers.projectUpdated') },
+      { value: 'STATUS_CHANGED', label: t('automationsCreate.triggers.statusChanged') },
+      { value: 'ARCHIVED', label: t('automationsCreate.triggers.projectArchived') },
+      { value: 'BUDGET_THRESHOLD_REACHED', label: t('automationsCreate.triggers.budgetThreshold') },
+    ],
+    TASK: [
+      { value: 'CREATED', label: t('automationsCreate.triggers.taskCreated') },
+      { value: 'UPDATED', label: t('automationsCreate.triggers.taskUpdated') },
+      { value: 'STATUS_CHANGED', label: t('automationsCreate.triggers.statusChanged') },
+      { value: 'ASSIGNED', label: t('automationsCreate.triggers.taskAssigned') },
+      { value: 'PRIORITY_CHANGED', label: t('automationsCreate.triggers.priorityChanged') },
+      { value: 'DUE_DATE_APPROACHING', label: t('automationsCreate.triggers.dueDateApproaching') },
+      { value: 'DUE_DATE_PASSED', label: t('automationsCreate.triggers.dueDatePassed') },
+      { value: 'COMPLETED', label: t('automationsCreate.triggers.taskCompleted') },
+      { value: 'COMMENTED', label: t('automationsCreate.triggers.commentAdded') },
+    ],
+    GOAL: [
+      { value: 'CREATED', label: t('automationsCreate.triggers.goalCreated') },
+      { value: 'UPDATED', label: t('automationsCreate.triggers.goalUpdated') },
+      { value: 'STATUS_CHANGED', label: t('automationsCreate.triggers.statusChanged') },
+      { value: 'PROGRESS_THRESHOLD_REACHED', label: t('automationsCreate.triggers.progressThreshold') },
+      { value: 'COMPLETED', label: t('automationsCreate.triggers.goalCompleted') },
+    ],
+    TEAM_MEMBER: [
+      { value: 'MEMBER_ADDED', label: t('automationsCreate.triggers.memberAdded') },
+      { value: 'MEMBER_REMOVED', label: t('automationsCreate.triggers.memberRemoved') },
+    ],
+  };
+}
 
-// Operators
-const OPERATORS = [
-  { value: 'equals', label: 'equals', description: 'Field equals value' },
-  { value: 'not_equals', label: 'does not equal', description: 'Field does not equal value' },
-  { value: 'contains', label: 'contains', description: 'Field contains text' },
-  { value: 'greater_than', label: 'is greater than', description: 'Number comparison' },
-  { value: 'less_than', label: 'is less than', description: 'Number comparison' },
-  { value: 'is_empty', label: 'is empty', description: 'Field has no value' },
-  { value: 'is_not_empty', label: 'is not empty', description: 'Field has a value' },
-];
+function getOperators(t: (key: string) => string) {
+  return [
+    { value: 'equals', label: t('automationsCreate.operators.equals'), description: 'Field equals value' },
+    { value: 'not_equals', label: t('automationsCreate.operators.notEquals'), description: 'Field does not equal value' },
+    { value: 'contains', label: t('automationsCreate.operators.contains'), description: 'Field contains text' },
+    { value: 'greater_than', label: t('automationsCreate.operators.greaterThan'), description: 'Number comparison' },
+    { value: 'less_than', label: t('automationsCreate.operators.lessThan'), description: 'Number comparison' },
+    { value: 'is_empty', label: t('automationsCreate.operators.isEmpty'), description: 'Field has no value' },
+    { value: 'is_not_empty', label: t('automationsCreate.operators.isNotEmpty'), description: 'Field has a value' },
+  ];
+}
 
-// Action Types
-const ACTION_TYPES: { value: string; label: string; description: string; icon: LucideIcon }[] = [
-  { value: 'assign_to_user', label: 'Assign to user', description: 'Assign task/project to a user', icon: UserCheck },
-  { value: 'change_status', label: 'Change status', description: 'Update the status field', icon: RotateCcw },
-  { value: 'add_comment', label: 'Add comment', description: 'Post an automated comment', icon: MessageSquare },
-  { value: 'send_notification', label: 'Send notification', description: 'Notify users or teams', icon: Bell },
-  { value: 'update_field', label: 'Update field', description: 'Change a specific field value', icon: Pencil },
-  { value: 'create_task', label: 'Create task', description: 'Create a new task', icon: Plus },
-  { value: 'update_goal_progress', label: 'Update goal progress', description: 'Recalculate goal progress', icon: Target },
-  { value: 'archive_project', label: 'Archive project', description: 'Move project to archive', icon: Archive },
-];
+function getActionTypes(t: (key: string) => string): { value: string; label: string; description: string; icon: LucideIcon }[] {
+  return [
+    { value: 'assign_to_user', label: t('automationsCreate.actions.assignUser'), description: 'Assign task/project to a user', icon: UserCheck },
+    { value: 'change_status', label: t('automationsCreate.actions.changeStatus'), description: 'Update the status field', icon: RotateCcw },
+    { value: 'add_comment', label: t('automationsCreate.actions.addComment'), description: 'Post an automated comment', icon: MessageSquare },
+    { value: 'send_notification', label: t('automationsCreate.actions.sendNotification'), description: 'Notify users or teams', icon: Bell },
+    { value: 'update_field', label: t('automationsCreate.actions.updateField'), description: 'Change a specific field value', icon: Pencil },
+    { value: 'create_task', label: t('automationsCreate.actions.createTask'), description: 'Create a new task', icon: Plus },
+    { value: 'update_goal_progress', label: t('automationsCreate.actions.updateGoalProgress'), description: 'Recalculate goal progress', icon: Target },
+    { value: 'archive_project', label: t('automationsCreate.actions.archiveProject'), description: 'Move project to archive', icon: Archive },
+  ];
+}
 
 interface Condition {
   id: string;
@@ -120,6 +124,11 @@ export default function CreateAutomationPage() {
   const { currentOrganization } = useWorkspace();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const ENTITY_TYPES = getEntityTypes(t);
+  const TRIGGER_EVENTS = getTriggerEvents(t);
+  const OPERATORS = getOperators(t);
+  const ACTION_TYPES = getActionTypes(t);
 
   // Form state
   const [step, setStep] = useState(1);

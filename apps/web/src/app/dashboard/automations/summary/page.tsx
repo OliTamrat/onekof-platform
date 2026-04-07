@@ -21,28 +21,25 @@ import {
   Power,
   Sparkles
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/language-context';
-
-const TAB_ITEMS = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/automations/summary', active: true },
-  { id: 'list', label: 'List', icon: List, href: '/dashboard/automations/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/automations' },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
-];
 
 export default function AutomationsSummaryPage() {
   const { t } = useLanguage();
   const { currentOrganization } = useWorkspace();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('month');
-  const [loading, setLoading] = useState(true);
-  const [analytics, setAnalytics] = useState<any>(null);
 
-  // Fetch automations data
-  const { data: automationsData } = useQuery({
+  const TAB_ITEMS = [
+    { id: 'summary', label: t('common.summary'), icon: BarChart3, href: '/dashboard/automations/summary', active: true },
+    { id: 'list', label: t('common.viewAll'), icon: List, href: '/dashboard/automations/list' },
+    { id: 'board', label: t('common.overview'), icon: null, href: '/dashboard/automations' },
+    { id: 'code', label: 'Code', icon: Code, href: '/dashboard/automations/code' },
+    { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/automations/forms' },
+    { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/automations/timeline' },
+    { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/automations/pages' },
+  ];
+
+  const { data: automationsData, isLoading } = useQuery({
     queryKey: ['automations', currentOrganization?.id],
     queryFn: async () => {
       if (!currentOrganization?.id) return { automations: [] };
@@ -53,27 +50,9 @@ export default function AutomationsSummaryPage() {
     enabled: !!currentOrganization?.id,
   });
 
-  useEffect(() => {
-    // Simulate loading analytics
-    const loadAnalytics = async () => {
-      try {
-        setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setAnalytics(automationsData);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (automationsData) {
-      loadAnalytics();
-    }
-  }, [automationsData, timeRange]);
-
   const automations = automationsData?.automations || [];
   const totalAutomations = automations.length;
   const enabledAutomations = automations.filter((a: any) => a.isEnabled).length;
-  const disabledAutomations = automations.filter((a: any) => !a.isEnabled).length;
   const aiGeneratedAutomations = automations.filter((a: any) => a.aiGenerated).length;
 
   const totalExecutions = automations.reduce((sum: number, a: any) => sum + (a.executionCount || 0), 0);
@@ -81,7 +60,6 @@ export default function AutomationsSummaryPage() {
   const totalFailures = automations.reduce((sum: number, a: any) => sum + (a.failureCount || 0), 0);
   const totalTimeSaved = automations.reduce((sum: number, a: any) => sum + (a.estimatedSavedHours || 0), 0);
 
-  // Automation breakdown by entity
   const automationsByEntity = {
     issue: automations.filter((a: any) => a.entityType === 'ISSUE').length,
     project: automations.filter((a: any) => a.entityType === 'PROJECT').length,
@@ -89,14 +67,19 @@ export default function AutomationsSummaryPage() {
     comment: automations.filter((a: any) => a.entityType === 'COMMENT').length,
   };
 
-  // Automation breakdown by scope
   const automationsByScope = {
     organization: automations.filter((a: any) => a.scope === 'ORGANIZATION').length,
     project: automations.filter((a: any) => a.scope === 'PROJECT').length,
     personal: automations.filter((a: any) => a.scope === 'PERSONAL').length,
   };
 
-  if (loading) {
+  const changeLabel = `${t('automations.summaryVsLast')} ${
+    timeRange === 'week' ? t('automations.summaryWeek') :
+    timeRange === 'month' ? t('automations.summaryMonth') :
+    t('automations.summaryQuarter')
+  }`;
+
+  if (isLoading) {
     return (
       <AppLayout>
         <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
@@ -106,7 +89,7 @@ export default function AutomationsSummaryPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                   <BarChart3 className="h-6 w-6" />
                 </div>
-                <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automations Overview</h1>
+                <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.summaryOverview')}</h1>
               </div>
             </div>
             <div className="flex items-center gap-1 px-6">
@@ -141,7 +124,7 @@ export default function AutomationsSummaryPage() {
                 ))}
               </div>
               <div className="text-center py-12 text-gray-500 dark:text-slate-400">
-                Loading automations analytics...
+                {t('automations.summaryLoadingAnalytics')}
               </div>
             </div>
           </div>
@@ -160,7 +143,7 @@ export default function AutomationsSummaryPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <BarChart3 className="h-6 w-6" />
               </div>
-              <h1 className="text-base font-semibold text-gray-900 dark:text-white">Automations Overview</h1>
+              <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.summaryOverview')}</h1>
             </div>
 
             <div className="flex items-center gap-3">
@@ -169,16 +152,16 @@ export default function AutomationsSummaryPage() {
                 onChange={(e) => setTimeRange(e.target.value as 'week' | 'month' | 'quarter')}
                 className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="quarter">Last 90 Days</option>
+                <option value="week">{t('automations.summaryLast7Days')}</option>
+                <option value="month">{t('automations.summaryLast30Days')}</option>
+                <option value="quarter">{t('automations.summaryLast90Days')}</option>
               </select>
               <Link
                 href="/dashboard/automations/create"
                 className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
-                Create Automation
+                {t('automations.summaryCreateAutomation')}
               </Link>
             </div>
           </div>
@@ -211,40 +194,37 @@ export default function AutomationsSummaryPage() {
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard
-                title="Total Automations"
+                title={t('automations.totalAutomations')}
                 value={totalAutomations}
                 change={8}
-                changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
+                changeLabel={changeLabel}
                 icon={Zap}
                 iconColor="bg-purple-500"
                 trend="up"
               />
-
               <MetricCard
-                title="Active Automations"
+                title={t('automations.summaryActiveAutomations')}
                 value={enabledAutomations}
                 change={5}
-                changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
+                changeLabel={changeLabel}
                 icon={Power}
                 iconColor="bg-green-500"
                 trend="up"
               />
-
               <MetricCard
-                title="Total Executions"
+                title={t('automations.totalExecutions')}
                 value={totalExecutions}
                 change={15}
-                changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
+                changeLabel={changeLabel}
                 icon={Activity}
                 iconColor="bg-blue-500"
                 trend="up"
               />
-
               <MetricCard
-                title="Time Saved (Hours)"
+                title={t('automations.summaryTimeSavedHours')}
                 value={totalTimeSaved.toFixed(1)}
                 change={12}
-                changeLabel={`vs last ${timeRange === 'week' ? 'week' : timeRange === 'month' ? 'month' : 'quarter'}`}
+                changeLabel={changeLabel}
                 icon={Clock}
                 iconColor="bg-amber-500"
                 trend="up"
@@ -255,46 +235,46 @@ export default function AutomationsSummaryPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Automations by Entity */}
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Automations by Entity</h3>
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryByEntity')}</h3>
                 <div className="space-y-4">
-                  <AutomationTypeBar label="Issues" count={automationsByEntity.issue} total={totalAutomations} color="bg-blue-500" />
-                  <AutomationTypeBar label="Projects" count={automationsByEntity.project} total={totalAutomations} color="bg-purple-500" />
-                  <AutomationTypeBar label="Tasks" count={automationsByEntity.task} total={totalAutomations} color="bg-green-500" />
-                  <AutomationTypeBar label="Comments" count={automationsByEntity.comment} total={totalAutomations} color="bg-amber-500" />
+                  <AutomationTypeBar label={t('automations.summaryIssues')} count={automationsByEntity.issue} total={totalAutomations} color="bg-blue-500" />
+                  <AutomationTypeBar label={t('automations.summaryProjects')} count={automationsByEntity.project} total={totalAutomations} color="bg-purple-500" />
+                  <AutomationTypeBar label={t('automations.summaryTasks')} count={automationsByEntity.task} total={totalAutomations} color="bg-green-500" />
+                  <AutomationTypeBar label={t('automations.summaryComments')} count={automationsByEntity.comment} total={totalAutomations} color="bg-amber-500" />
                 </div>
               </div>
 
               {/* Automations by Scope */}
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Automations by Scope</h3>
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryByScope')}</h3>
                 <div className="space-y-4">
-                  <StatusBar label="Organization" count={automationsByScope.organization} total={totalAutomations} color="bg-indigo-500" />
-                  <StatusBar label="Project" count={automationsByScope.project} total={totalAutomations} color="bg-blue-500" />
-                  <StatusBar label="Personal" count={automationsByScope.personal} total={totalAutomations} color="bg-primary-500" />
+                  <StatusBar label={t('automations.summaryOrganization')} count={automationsByScope.organization} total={totalAutomations} color="bg-indigo-500" />
+                  <StatusBar label={t('automations.summaryProjects')} count={automationsByScope.project} total={totalAutomations} color="bg-blue-500" />
+                  <StatusBar label={t('automations.summaryPersonal')} count={automationsByScope.personal} total={totalAutomations} color="bg-primary-500" />
                 </div>
               </div>
 
               {/* Execution Stats */}
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Execution Statistics</h3>
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryExecutionStats')}</h3>
                 <div className="space-y-4">
-                  <ExecutionBar label="Successful" count={totalSuccesses} total={totalExecutions} color="bg-green-500" icon={CheckCircle2} />
-                  <ExecutionBar label="Failed" count={totalFailures} total={totalExecutions} color="bg-red-500" icon={AlertCircle} />
+                  <ExecutionBar label={t('automations.summarySuccessful')} count={totalSuccesses} total={totalExecutions} color="bg-green-500" icon={CheckCircle2} />
+                  <ExecutionBar label={t('automations.summaryFailed')} count={totalFailures} total={totalExecutions} color="bg-red-500" icon={AlertCircle} />
                 </div>
               </div>
 
               {/* AI-Generated Automations */}
               <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">AI Assistance</h3>
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryAiAssistance')}</h3>
                 <div className="flex items-center justify-center h-40">
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-3">
                       <Sparkles className="h-12 w-12 text-amber-500" />
                     </div>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{aiGeneratedAutomations}</p>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">AI-Generated Automations</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{t('automations.summaryAiGeneratedCount')}</p>
                     <p className="text-xs text-gray-500 dark:text-[#6B7684] mt-2">
-                      {totalAutomations > 0 ? Math.round((aiGeneratedAutomations / totalAutomations) * 100) : 0}% of total
+                      {totalAutomations > 0 ? Math.round((aiGeneratedAutomations / totalAutomations) * 100) : 0}{t('automations.summaryOfTotal')}
                     </p>
                   </div>
                 </div>
@@ -303,11 +283,11 @@ export default function AutomationsSummaryPage() {
 
             {/* Recent Automations */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Recent Automations</h3>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryRecent')}</h3>
               <div className="space-y-3">
                 {automations.length === 0 ? (
                   <div className="text-center py-8 text-gray-500 dark:text-slate-400">
-                    No automations yet. Create your first automation to get started!
+                    {t('automations.summaryNoAutomationsYet')}
                   </div>
                 ) : (
                   automations.slice(0, 5).map((automation: any) => (
@@ -321,7 +301,7 @@ export default function AutomationsSummaryPage() {
                           {automation.aiGenerated && <Sparkles className="h-3 w-3 text-amber-500" />}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-                          {automation.entityType} • {automation.executionCount} runs
+                          {automation.entityType} • {automation.executionCount} {t('automations.runs')}
                         </div>
                       </div>
                       <div className={`px-2 py-1 rounded text-xs font-medium ${
@@ -329,7 +309,7 @@ export default function AutomationsSummaryPage() {
                           ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400'
                           : 'bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400'
                       }`}>
-                        {automation.isEnabled ? 'Active' : 'Inactive'}
+                        {automation.isEnabled ? t('automations.active') : t('automations.inactive')}
                       </div>
                     </div>
                   ))
@@ -349,7 +329,7 @@ interface MetricCardProps {
   value: number | string;
   change: number;
   changeLabel: string;
-  icon: any;
+  icon: React.ElementType;
   iconColor: string;
   trend: 'up' | 'down';
 }
@@ -377,7 +357,6 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   );
 }
 
-// Automation Type Bar Component
 function AutomationTypeBar({ label, count, total, color }: { label: string; count: number; total: number; color: string }) {
   const percentage = total > 0 ? (count / total) * 100 : 0;
 
@@ -388,16 +367,12 @@ function AutomationTypeBar({ label, count, total, color }: { label: string; coun
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
       <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${color} transition-all duration-300`}
-          style={{ width: `${percentage}%` }}
-        />
+        <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );
 }
 
-// Status Bar Component
 function StatusBar({ label, count, total, color }: { label: string; count: number; total: number; color: string }) {
   const percentage = total > 0 ? (count / total) * 100 : 0;
 
@@ -408,17 +383,13 @@ function StatusBar({ label, count, total, color }: { label: string; count: numbe
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
       <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${color} transition-all duration-300`}
-          style={{ width: `${percentage}%` }}
-        />
+        <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );
 }
 
-// Execution Bar Component
-function ExecutionBar({ label, count, total, color, icon: Icon }: { label: string; count: number; total: number; color: string; icon: any }) {
+function ExecutionBar({ label, count, total, color, icon: Icon }: { label: string; count: number; total: number; color: string; icon: React.ElementType }) {
   const percentage = total > 0 ? (count / total) * 100 : 0;
 
   return (
@@ -431,10 +402,7 @@ function ExecutionBar({ label, count, total, color, icon: Icon }: { label: strin
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
       <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${color} transition-all duration-300`}
-          style={{ width: `${percentage}%` }}
-        />
+        <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );

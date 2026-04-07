@@ -21,21 +21,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-const TAB_ITEMS: { id: string; label: string; icon: LucideIcon | null; href: string; active?: boolean }[] = [
-  { id: 'summary', label: 'Summary', icon: BarChart3, href: '/dashboard/projects/summary' },
-  { id: 'list', label: 'List', icon: null, href: '/dashboard/projects/list' },
-  { id: 'board', label: 'Board', icon: null, href: '/dashboard/projects/board', active: true },
-  { id: 'code', label: 'Code', icon: Code, href: '/dashboard/projects/code' },
-  { id: 'forms', label: 'Forms', icon: FileText, href: '/dashboard/projects/forms' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/projects/timeline' },
-  { id: 'pages', label: 'Pages', icon: Book, href: '/dashboard/projects/pages' },
+// Tab and status configs - labels resolved in component using t()
+const TAB_CONFIGS = [
+  { id: 'summary', labelKey: 'projectsBoard.tabs.summary', icon: BarChart3, href: '/dashboard/projects/summary' },
+  { id: 'list', labelKey: 'projectsBoard.tabs.list', icon: null, href: '/dashboard/projects/list' },
+  { id: 'board', labelKey: 'projectsBoard.tabs.board', icon: null, href: '/dashboard/projects/board', active: true },
+  { id: 'code', labelKey: 'projectsBoard.tabs.code', icon: Code, href: '/dashboard/projects/code' },
+  { id: 'forms', labelKey: 'projectsBoard.tabs.forms', icon: FileText, href: '/dashboard/projects/forms' },
+  { id: 'timeline', labelKey: 'projectsBoard.tabs.timeline', icon: Clock, href: '/dashboard/projects/timeline' },
+  { id: 'pages', labelKey: 'projectsBoard.tabs.pages', icon: Book, href: '/dashboard/projects/pages' },
 ];
 
-const STATUS_COLUMNS = [
-  { id: 'PLANNING', label: 'PLANNING', color: 'border-gray-300 dark:border-slate-700' },
-  { id: 'ACTIVE', label: 'ACTIVE', color: 'border-blue-300 dark:border-blue-900' },
-  { id: 'ON_HOLD', label: 'ON HOLD', color: 'border-yellow-300 dark:border-yellow-900' },
-  { id: 'COMPLETED', label: 'COMPLETED', color: 'border-green-300 dark:border-green-900' },
+const STATUS_CONFIGS = [
+  { id: 'PLANNING', labelKey: 'projectsBoard.status.planning', color: 'border-gray-300 dark:border-slate-700' },
+  { id: 'ACTIVE', labelKey: 'projectsBoard.status.active', color: 'border-blue-300 dark:border-blue-900' },
+  { id: 'ON_HOLD', labelKey: 'projectsBoard.status.onHold', color: 'border-yellow-300 dark:border-yellow-900' },
+  { id: 'COMPLETED', labelKey: 'projectsBoard.status.completed', color: 'border-green-300 dark:border-green-900' },
 ];
 
 export default function ProjectsBoardPage() {
@@ -68,7 +69,7 @@ export default function ProjectsBoardPage() {
                 <Folder className="h-5 w-5" />
               </div>
               <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                Projects Board
+                {t('projectsBoard.title')}
               </h1>
             </div>
 
@@ -77,13 +78,13 @@ export default function ProjectsBoardPage() {
               className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-primary-600"
             >
               <Plus className="h-4 w-4" />
-              Create Project
+              {t('projectsBoard.createProject')}
             </Button>
           </div>
 
           {/* Navigation Tabs */}
           <div className="flex items-center gap-1 px-6">
-            {TAB_ITEMS.map((tab) => {
+            {TAB_CONFIGS.map((tab) => {
               const Icon = tab.icon;
               return (
                 <Link
@@ -96,7 +97,7 @@ export default function ProjectsBoardPage() {
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}
@@ -108,7 +109,7 @@ export default function ProjectsBoardPage() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
               <input
                 type="text"
-                placeholder="Search projects"
+                placeholder={t('projectsBoard.searchProjects')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
@@ -125,12 +126,12 @@ export default function ProjectsBoardPage() {
             </div>
           ) : (
             <div className="flex h-full gap-4">
-              {STATUS_COLUMNS.map((column) => (
+              {STATUS_CONFIGS.map((column) => (
                 <div key={column.id} className="flex w-80 flex-shrink-0 flex-col">
                   {/* Column Header */}
                   <div className="mb-3 flex items-center gap-2 px-1">
                     <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-slate-400">
-                      {column.label}
+                      {t(column.labelKey)}
                     </h3>
                     <span className="rounded-sm bg-gray-200 dark:bg-slate-700 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-slate-400">
                       {projectsByStatus[column.id]?.length || 0}
@@ -180,11 +181,11 @@ export default function ProjectsBoardPage() {
                           <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
                             <div className="flex items-center gap-1">
                               <Users className="h-3.5 w-3.5" />
-                              <span>{project._count?.members || 0} members</span>
+                              <span>{project._count?.members || 0} {t('projectsBoard.members')}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Folder className="h-3.5 w-3.5" />
-                              <span>{project._count?.tasks || 0} tasks</span>
+                              <span>{project._count?.tasks || 0} {t('projectsBoard.tasks')}</span>
                             </div>
                           </div>
 
@@ -209,7 +210,7 @@ export default function ProjectsBoardPage() {
                       className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                       <Plus className="h-4 w-4" />
-                      Add Project
+                      {t('projectsBoard.addProject')}
                     </Button>
                   </div>
                 </div>

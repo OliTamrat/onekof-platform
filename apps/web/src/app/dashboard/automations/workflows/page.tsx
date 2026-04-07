@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import {
@@ -20,45 +22,115 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-// Mock workflows data
-const WORKFLOWS = [
-  { id: 1, name: 'New Task Assignment', description: 'Automatically assign tasks to team members based on workload', status: 'ACTIVE', triggers: 3, actions: 5, lastRun: '2 hours ago', executions: 156 },
-  { id: 2, name: 'Budget Approval', description: 'Route budget requests through approval chain', status: 'ACTIVE', triggers: 2, actions: 4, lastRun: '5 hours ago', executions: 89 },
-  { id: 3, name: 'Project Status Update', description: 'Send weekly project status updates to stakeholders', status: 'ACTIVE', triggers: 1, actions: 3, lastRun: '1 day ago', executions: 234 },
-  { id: 4, name: 'Goal Milestone Alert', description: 'Notify team when goal milestones are reached', status: 'PAUSED', triggers: 2, actions: 2, lastRun: '3 days ago', executions: 67 },
-  { id: 5, name: 'New Member Onboarding', description: 'Automate new team member onboarding process', status: 'ACTIVE', triggers: 1, actions: 8, lastRun: '2 days ago', executions: 45 },
-  { id: 6, name: 'Expense Report Generation', description: 'Generate monthly expense reports automatically', status: 'ACTIVE', triggers: 1, actions: 4, lastRun: '1 week ago', executions: 12 },
-];
+interface Automation {
+  id: string;
+  name: string;
+  description?: string;
+  entityType: string;
+  triggerEvent: string;
+  isEnabled: boolean;
+  executionCount: number;
+  successCount: number;
+  failureCount: number;
+  lastExecutedAt?: string;
+  scope: string;
+  actions?: unknown[];
+  conditions?: unknown[];
+}
+
+interface WorkflowRecord {
+  id: string;
+  name: string;
+  description: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  triggerCount: number;
+  actionCount: number;
+  lastRun: string;
+  executions: number;
+  rawAutomation: Automation;
+}
+
+function buildWorkflowRecords(automations: Automation[]): WorkflowRecord[] {
+  return automations.map((a) => {
+    const lastRun = a.lastExecutedAt
+      ? new Date(a.lastExecutedAt).toLocaleString()
+      : '—';
+
+    const actionCount = Array.isArray(a.actions) ? a.actions.length : 1;
+    const conditionCount = Array.isArray(a.conditions) ? a.conditions.length : 0;
+
+    return {
+      id: a.id,
+      name: a.name,
+      description: a.description || `${a.entityType} → ${a.triggerEvent}`,
+      status: a.isEnabled ? 'ACTIVE' : 'INACTIVE',
+      triggerCount: conditionCount + 1,
+      actionCount,
+      lastRun,
+      executions: a.executionCount,
+      rawAutomation: a,
+    };
+  });
+}
 
 export default function AutomationsWorkflowsPage() {
   const { t } = useLanguage();
+  const { currentOrganization } = useWorkspace();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);
+  const [selectedWorkflow, setSelectedWorkflow] = useState<WorkflowRecord | null>(null);
   const [isSlideoutOpen, setIsSlideoutOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  const filteredWorkflows = WORKFLOWS.filter((workflow) =>
+  const { data: automationsData, isLoading } = useQuery({
+    queryKey: ['automations', currentOrganization?.id],
+    queryFn: async () => {
+      if (!currentOrganization?.id) return { automations: [] };
+      const res = await fetch(`/api/automations?organizationId=${currentOrganization.id}`);
+      if (!res.ok) throw new Error('Failed to fetch automations');
+      return res.json();
+    },
+    enabled: !!currentOrganization?.id,
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: async ({ id, isEnabled }: { id: string; isEnabled: boolean }) => {
+      const res = await fetch(`/api/automations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isEnabled: !isEnabled }),
+      });
+      if (!res.ok) throw new Error('Failed to toggle automation');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['automations'] });
+    },
+  });
+
+  const automations: Automation[] = automationsData?.automations || [];
+  const workflows = buildWorkflowRecords(automations);
+
+  const filteredWorkflows = workflows.filter((workflow) =>
     workflow.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     workflow.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const totalActive = filteredWorkflows.filter((w) => w.status === 'ACTIVE').length;
+  const totalInactive = filteredWorkflows.filter((w) => w.status === 'INACTIVE').length;
+  const totalExecutions = filteredWorkflows.reduce((sum, w) => sum + w.executions, 0);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'PAUSED': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
       case 'INACTIVE': return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const handleWorkflowClick = (workflow: any) => {
-    setSelectedWorkflow(workflow);
-    setIsSlideoutOpen(true);
-  };
-
   return (
     <AppLayout>
       <UnifiedPageHeader
-        title="Workflows"
+        title={t('automations.workflowsTitle')}
         icon={<Zap className="h-6 w-6" />}
         iconColor="#EC4899"
         currentTab="workflows"
@@ -69,26 +141,20 @@ export default function AutomationsWorkflowsPage() {
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Total Workflows</div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.workflowsTotalWorkflows')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredWorkflows.length}</div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Active</div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-              {filteredWorkflows.filter(w => w.status === 'ACTIVE').length}
-            </div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.workflowsActive')}</div>
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{totalActive}</div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Paused</div>
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
-              {filteredWorkflows.filter(w => w.status === 'PAUSED').length}
-            </div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.inactive')}</div>
+            <div className="text-2xl font-bold text-gray-600 dark:text-slate-400 mt-1">{totalInactive}</div>
           </div>
           <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">Total Executions</div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-              {filteredWorkflows.reduce((sum, w) => sum + w.executions, 0)}
-            </div>
+            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.workflowsTotalExecutions')}</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{totalExecutions}</div>
           </div>
         </div>
 
@@ -98,7 +164,7 @@ export default function AutomationsWorkflowsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search workflows..."
+              placeholder={t('automations.workflowsSearchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -106,89 +172,105 @@ export default function AutomationsWorkflowsPage() {
           </div>
           <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
             <Zap className="h-4 w-4" />
-            Create Workflow
+            {t('automations.workflowsCreate')}
           </Button>
         </div>
 
         {/* Workflows List */}
-        <div className="space-y-3">
-          {filteredWorkflows.map((workflow) => (
-            <div
-              key={workflow.id}
-              onClick={() => handleWorkflowClick(workflow)}
-              className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Zap className="h-5 w-5 text-[#EC4899]" />
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{workflow.name}</h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(workflow.status)}`}>
-                      {workflow.status}
-                    </span>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-600 dark:text-slate-400">{t('automations.loading')}</div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredWorkflows.map((workflow) => (
+              <div
+                key={workflow.id}
+                onClick={() => { setSelectedWorkflow(workflow); setIsSlideoutOpen(true); }}
+                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Zap className="h-5 w-5 text-[#EC4899]" />
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{workflow.name}</h3>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(workflow.status)}`}>
+                        {workflow.status === 'ACTIVE' ? t('automations.active') : t('automations.inactive')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">{workflow.description}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <GitBranch className="h-3 w-3" />
+                        {workflow.triggerCount} {t('automations.workflowsTriggers')}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        {workflow.actionCount} {t('automations.workflowsActions')}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {t('automations.workflowsLastRun')} {workflow.lastRun}
+                      </span>
+                      <span>{workflow.executions} {t('automations.workflowsExecutions')}</span>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">{workflow.description}</p>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <GitBranch className="h-3 w-3" />
-                      {workflow.triggers} Triggers
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
-                      {workflow.actions} Actions
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      Last run: {workflow.lastRun}
-                    </span>
-                    <span>{workflow.executions} executions</span>
-                  </div>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMutation.mutate({ id: workflow.id, isEnabled: workflow.rawAutomation.isEnabled });
+                    }}
+                    className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700"
+                  >
+                    {workflow.status === 'ACTIVE' ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    {workflow.status === 'ACTIVE' ? t('automations.workflowsPause') : t('automations.workflowsResume')}
+                  </Button>
                 </div>
-                <Button className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
-                  {workflow.status === 'ACTIVE' ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                  {workflow.status === 'ACTIVE' ? 'Pause' : 'Resume'}
-                </Button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Slideout Panel for Workflow Details */}
+      {/* Slideout Panel */}
       <SlideoutPanel
         isOpen={isSlideoutOpen}
         onClose={() => setIsSlideoutOpen(false)}
-        title={selectedWorkflow?.name || 'Workflow Details'}
+        title={selectedWorkflow?.name || t('automations.workflowsDetails')}
       >
         <SlideoutPanelContent>
-          <SlideoutPanelSection title="Workflow Information">
+          <SlideoutPanelSection title={t('automations.workflowsInfo')}>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.description')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedWorkflow?.description}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.status')}</label>
                 <p className="text-sm mt-1">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedWorkflow?.status)}`}>
-                    {selectedWorkflow?.status}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedWorkflow?.status ?? '')}`}>
+                    {selectedWorkflow?.status === 'ACTIVE' ? t('automations.active') : t('automations.inactive')}
                   </span>
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Triggers</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedWorkflow?.triggers} configured</p>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('automations.workflowsTriggers')}</label>
+                <p className="text-sm text-gray-900 dark:text-white mt-1">
+                  {selectedWorkflow?.triggerCount} {t('automations.workflowsConfigured')}
+                </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Actions</label>
-                <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedWorkflow?.actions} configured</p>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('automations.workflowsActions')}</label>
+                <p className="text-sm text-gray-900 dark:text-white mt-1">
+                  {selectedWorkflow?.actionCount} {t('automations.workflowsConfigured')}
+                </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Execution</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('automations.workflowsLastExecution')}</label>
                 <p className="text-sm text-gray-900 dark:text-white mt-1">{selectedWorkflow?.lastRun}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Executions</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('automations.workflowsTotalExecutions')}</label>
                 <p className="text-lg font-bold text-gray-900 dark:text-white mt-1">{selectedWorkflow?.executions}</p>
               </div>
             </div>
