@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { AUTOMATIONS_TABS } from '@/config/department-tabs';
 
 interface Automation {
   id: string;
@@ -135,6 +136,8 @@ export default function AutomationsWorkflowsPage() {
         iconColor="#EC4899"
         currentTab="workflows"
         baseHref="/dashboard/automations"
+        customTabs={AUTOMATIONS_TABS}
+        showTabs
       />
 
       <div className="p-6">

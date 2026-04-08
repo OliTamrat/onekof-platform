@@ -22,6 +22,10 @@ import {
   Target,
   Users,
   Settings,
+  History,
+  Workflow,
+  Radio,
+  LayoutTemplate,
 } from 'lucide-react';
 import type { TabDefinition } from '@/components/navigation/unified-page-header';
 
@@ -108,8 +112,11 @@ export const AUTOMATIONS_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '/summary' },
   { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
   { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'workflows', label: 'Workflows', labelKey: 'departmentTabs.workflows', icon: Workflow, href: '/workflows' },
+  { id: 'triggers', label: 'Triggers', labelKey: 'departmentTabs.triggers', icon: Radio, href: '/triggers' },
+  { id: 'templates', label: 'Templates', labelKey: 'departmentTabs.templates', icon: LayoutTemplate, href: '/templates' },
+  { id: 'history', label: 'History', labelKey: 'departmentTabs.history', icon: History, href: '/history' },
   { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
   { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
+  { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },
 ];

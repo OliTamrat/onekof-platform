@@ -7,6 +7,7 @@ import { Search, FileText, AlertCircle, Folders, Clock } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 import Link from 'next/link';
 import { useDebounce } from '@/hooks/use-debounce';
+import { KNOWLEDGE_TABS } from '@/config/department-tabs';
 
 interface WikiArticle {
   id: string;
@@ -68,7 +69,9 @@ export default function DocsSearchPage() {
         icon={<Search className="h-6 w-6" />}
         iconColor="#06B6D4"
         currentTab="search"
-        baseHref="/dashboard/docs"
+        baseHref="/dashboard"
+        customTabs={KNOWLEDGE_TABS}
+        showTabs
       />
       <div className="p-6">
         <div className="max-w-2xl mx-auto">

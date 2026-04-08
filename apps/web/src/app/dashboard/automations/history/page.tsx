@@ -8,6 +8,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Clock, Search, CheckCircle2, XCircle, AlertCircle, Zap } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { useLanguage } from '@/contexts/language-context';
+import { AUTOMATIONS_TABS } from '@/config/department-tabs';
 
 interface Automation {
   id: string;
@@ -112,6 +113,8 @@ export default function AutomationsHistoryPage() {
         iconColor="#EC4899"
         currentTab="history"
         baseHref="/dashboard/automations"
+        customTabs={AUTOMATIONS_TABS}
+        showTabs
       />
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

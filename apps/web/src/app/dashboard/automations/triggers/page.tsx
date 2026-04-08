@@ -9,6 +9,7 @@ import { Activity, Search, Clock, Zap } from 'lucide-react';
 import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { AUTOMATIONS_TABS } from '@/config/department-tabs';
 
 interface Automation {
   id: string;
@@ -97,6 +98,8 @@ export default function AutomationsTriggersPage() {
         iconColor="#EC4899"
         currentTab="triggers"
         baseHref="/dashboard/automations"
+        customTabs={AUTOMATIONS_TABS}
+        showTabs
       />
       <div className="p-6">
         <div className="flex items-center gap-4 mb-6">
