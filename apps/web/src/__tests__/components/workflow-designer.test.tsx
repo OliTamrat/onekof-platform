@@ -1,22 +1,27 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { WorkflowDesigner } from '@/components/automations/workflow-designer';
+import { LanguageProvider } from '@/contexts/language-context';
+
+function renderWithLanguage(ui: React.ReactElement) {
+  return render(<LanguageProvider>{ui}</LanguageProvider>);
+}
 
 describe('WorkflowDesigner', () => {
   it('renders trigger selector initially', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     expect(screen.getByText('Trigger')).toBeInTheDocument();
     expect(screen.getByLabelText('Select trigger')).toBeInTheDocument();
   });
 
   it('does not show conditions or actions before selecting trigger', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     expect(screen.queryByText('Conditions (optional)')).not.toBeInTheDocument();
     expect(screen.queryByText('Actions')).not.toBeInTheDocument();
   });
 
   it('shows conditions and actions after selecting a trigger', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     const triggerSelect = screen.getByLabelText('Select trigger');
     fireEvent.change(triggerSelect, { target: { value: 'CREATED' } });
 
@@ -26,7 +31,7 @@ describe('WorkflowDesigner', () => {
   });
 
   it('can add and remove conditions', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
 
     fireEvent.click(screen.getByText('Add condition'));
@@ -41,7 +46,7 @@ describe('WorkflowDesigner', () => {
   });
 
   it('can add actions from dropdown', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'STATUS_CHANGED' } });
 
     const actionSelect = screen.getByLabelText('Add action');
@@ -51,7 +56,7 @@ describe('WorkflowDesigner', () => {
   });
 
   it('can remove actions', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
     fireEvent.change(screen.getByLabelText('Add action'), { target: { value: 'CHANGE_STATUS' } });
 
@@ -61,7 +66,7 @@ describe('WorkflowDesigner', () => {
   });
 
   it('can remove a trigger', () => {
-    render(<WorkflowDesigner />);
+    renderWithLanguage(<WorkflowDesigner />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
     // Trigger is set - remove button should be visible
     expect(screen.getByLabelText('Remove trigger')).toBeInTheDocument();
@@ -74,7 +79,7 @@ describe('WorkflowDesigner', () => {
 
   it('shows save button when trigger + action exist', () => {
     const onSave = vi.fn();
-    render(<WorkflowDesigner onSave={onSave} />);
+    renderWithLanguage(<WorkflowDesigner onSave={onSave} />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
 
     // No save before action
@@ -96,7 +101,7 @@ describe('WorkflowDesigner', () => {
       conditions: [],
       actions: [{ id: '2', type: 'SEND_NOTIFICATION', label: 'Send notification', config: {} }],
     };
-    render(<WorkflowDesigner initialRule={initialRule} />);
+    renderWithLanguage(<WorkflowDesigner initialRule={initialRule} />);
     expect(screen.getByText('When completed')).toBeInTheDocument();
     // The action is loaded - verify by the remove button and trigger label
     expect(screen.getByLabelText('Remove trigger')).toBeInTheDocument();
