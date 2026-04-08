@@ -8,6 +8,7 @@ import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/com
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import Link from 'next/link';
+import { KNOWLEDGE_TABS } from '@/config/department-tabs';
 
 interface WikiCategory {
   id: string;
@@ -84,7 +85,9 @@ export default function DocsWikiPage() {
         icon={<BookOpen className="h-6 w-6" />}
         iconColor="#06B6D4"
         currentTab="wiki"
-        baseHref="/dashboard/docs"
+        baseHref="/dashboard"
+        customTabs={KNOWLEDGE_TABS}
+        showTabs
       />
       <div className="p-6">
         <div className="flex items-center gap-4 mb-6">

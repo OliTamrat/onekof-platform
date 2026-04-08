@@ -6,6 +6,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { Settings, Save, Bell, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { AUTOMATIONS_TABS } from '@/config/department-tabs';
 
 export default function AutomationsSettingsPage() {
   const { t } = useLanguage();
@@ -22,6 +23,8 @@ export default function AutomationsSettingsPage() {
         iconColor="#EC4899"
         currentTab="settings"
         baseHref="/dashboard/automations"
+        customTabs={AUTOMATIONS_TABS}
+        showTabs
       />
       <div className="p-6 max-w-4xl">
         {/* Notifications Section */}

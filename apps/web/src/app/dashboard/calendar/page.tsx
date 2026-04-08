@@ -96,6 +96,7 @@ export default function CalendarPage() {
         iconColor="#EC4899"
         currentTab="calendar"
         baseHref="/dashboard/calendar"
+        showTabs={false}
         showSearch
         showFilters
         showGroupBy

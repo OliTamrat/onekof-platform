@@ -91,6 +91,7 @@ export default function ReportsAndAnalyticsPage() {
         iconColor="#3B82F6"
         currentTab="summary"
         baseHref="/dashboard/reports"
+        showTabs={false}
         showSearch
         showFilters
       />

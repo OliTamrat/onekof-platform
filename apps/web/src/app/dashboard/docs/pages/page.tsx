@@ -6,6 +6,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { FileText, Search, AlertCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 import Link from 'next/link';
+import { KNOWLEDGE_TABS } from '@/config/department-tabs';
 
 interface WikiArticle {
   id: string;
@@ -59,7 +60,9 @@ export default function DocsPagesPage() {
         icon={<FileText className="h-6 w-6" />}
         iconColor="#06B6D4"
         currentTab="pages"
-        baseHref="/dashboard/docs"
+        baseHref="/dashboard"
+        customTabs={KNOWLEDGE_TABS}
+        showTabs
       />
       <div className="p-6">
         <div className="mb-6">
