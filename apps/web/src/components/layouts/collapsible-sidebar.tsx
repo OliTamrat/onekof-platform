@@ -17,11 +17,16 @@ interface CollapsibleSidebarProps {
 
 export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
   const pathname = usePathname();
-  const { currentOrganization } = useWorkspace();
+  const { currentOrganization, projects } = useWorkspace();
   const { t } = useLanguage();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'projects', // Projects expanded by default
   ]);
+
+  // Detect active project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
 
   // Try to get settings, but don't fail if context isn't available
   let settings;
@@ -96,7 +101,14 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
             ) : (
               // Single link (no collapse)
               <Link
-                href={section.href!}
+                href={(() => {
+                  if (!scopedProjectId || !section.href) return section.href!;
+                  const sectionRouteMap: Record<string, string> = {
+                    '/dashboard/budget': `/projects/${scopedProjectId}/budget`,
+                    '/dashboard/teams': `/projects/${scopedProjectId}/team`,
+                  };
+                  return sectionRouteMap[section.href] || section.href;
+                })()}
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive(section.href!)
@@ -114,10 +126,24 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
               <div className="mt-1 space-y-1 pl-8">
                 {section.items.map((item) => {
                   const ItemIcon = item.icon;
+                  // When a project is scoped, redirect relevant links to project-specific pages
+                  let scopedHref = item.href;
+                  if (scopedProjectId) {
+                    const projectRouteMap: Record<string, string> = {
+                      '/dashboard/issues': `/dashboard/issues?projectId=${scopedProjectId}`,
+                      '/dashboard/calendar': `/projects/${scopedProjectId}/calendar`,
+                      '/dashboard/timeline': `/projects/${scopedProjectId}/timeline`,
+                      '/dashboard/goals': `/projects/${scopedProjectId}/goals`,
+                      '/dashboard/budget': `/projects/${scopedProjectId}/budget`,
+                      '/dashboard/teams': `/projects/${scopedProjectId}/team`,
+                      '/dashboard/members': `/projects/${scopedProjectId}/team`,
+                    };
+                    scopedHref = projectRouteMap[item.href] || item.href;
+                  }
                   return (
                     <Link
                       key={item.href}
-                      href={item.href}
+                      href={scopedHref}
                       className={cn(
                         'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         isActive(item.href)
