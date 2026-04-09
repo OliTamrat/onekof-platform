@@ -226,7 +226,9 @@
     "loadingBoard": "Loading board...",
     "pleaseSignInBoard": "Please sign in to view the board.",
     "noTasks": "No tasks",
-    "addTask": "Add task"
+    "addTask": "Add task",
+    "allProjects": "All Projects",
+    "filterByProject": "Filter by project"
   },
   "status": {
     "todo": "To Do",

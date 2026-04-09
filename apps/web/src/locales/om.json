@@ -226,7 +226,9 @@
     "loadingBoard": "Boordii fe'aa jira...",
     "pleaseSignInBoard": "Boordii ilaaluuf maaloo seenaa.",
     "noTasks": "Hojiin hin jiru",
-    "addTask": "Hojii dabali"
+    "addTask": "Hojii dabali",
+    "allProjects": "Pirojektota Hundaa",
+    "filterByProject": "Filter by project"
   },
   "status": {
     "todo": "Kan Hojjetamu",

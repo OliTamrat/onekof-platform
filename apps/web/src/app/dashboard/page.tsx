@@ -336,7 +336,7 @@ export default function DashboardPage() {
                     {selectedProject.name}
                   </span>
                 ) : (
-                  <span>{t('dashboard.allProjects') || 'All Projects'}</span>
+                  <span>{t('nav.allProjects')}</span>
                 )}
                 <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
               </button>
@@ -352,7 +352,7 @@ export default function DashboardPage() {
                       }`}
                     >
                       <Folder className="h-4 w-4 text-slate-400" />
-                      {t('dashboard.allProjects') || 'All Projects'}
+                      {t('nav.allProjects')}
                     </button>
                     <div className="border-t border-slate-100 dark:border-slate-700/50" />
                     {projects.map((project) => (
@@ -610,7 +610,7 @@ export default function DashboardPage() {
                   {t('dashboard.recentActivityDescription')}
                 </p>
                 <div className="max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
-                  <ActivityTimeline limit={10} showFilters={true} />
+                  <ActivityTimeline limit={10} showFilters={true} projectId={selectedProjectId || undefined} />
                 </div>
               </div>
             </div>

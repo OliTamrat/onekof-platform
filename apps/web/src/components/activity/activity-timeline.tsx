@@ -49,6 +49,7 @@ interface ActivityTimelineProps {
   entityType?: string;
   entityId?: string;
   userId?: string;
+  projectId?: string;
   limit?: number;
   showFilters?: boolean;
 }
@@ -96,6 +97,7 @@ export function ActivityTimeline({
   entityType,
   entityId,
   userId,
+  projectId,
   limit = 50,
   showFilters = true,
 }: ActivityTimelineProps) {
@@ -104,12 +106,13 @@ export function ActivityTimeline({
   const [offset, setOffset] = useState(0);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['activities', { entityType: selectedEntityType, entityId, userId, limit, offset }],
+    queryKey: ['activities', { entityType: selectedEntityType, entityId, userId, projectId, limit, offset }],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedEntityType) params.append('entityType', selectedEntityType);
       if (entityId) params.append('entityId', entityId);
       if (userId) params.append('userId', userId);
+      if (projectId) params.append('projectId', projectId);
       params.append('limit', limit.toString());
       params.append('offset', offset.toString());
 
