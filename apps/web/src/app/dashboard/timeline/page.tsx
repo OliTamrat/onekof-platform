@@ -7,7 +7,13 @@ export default function TimelinePage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/dashboard/issues/timeline');
+    const projectId = typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('projectId')
+      : null;
+    const url = projectId
+      ? `/dashboard/issues/timeline?projectId=${projectId}`
+      : '/dashboard/issues/timeline';
+    router.replace(url);
   }, [router]);
 
   return null;

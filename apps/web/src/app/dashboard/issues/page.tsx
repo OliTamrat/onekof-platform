@@ -58,7 +58,12 @@ const STATUS_COLUMNS = [
 export default function IssuesPage() {
   const { t } = useLanguage();
   const toast = useToast();
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('projectId');
+    }
+    return null;
+  });
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);

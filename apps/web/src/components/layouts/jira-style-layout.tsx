@@ -97,16 +97,23 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const scopedProject = scopedProjectId ? projects.find(p => p.id === scopedProjectId) : null;
 
   // Dashboard navigation (when not in a project)
+  // When a project is scoped, append ?projectId to keep the filter active across pages
+  const addScope = (href: string) => {
+    if (!scopedProjectId || !href.startsWith('/dashboard')) return href;
+    const separator = href.includes('?') ? '&' : '?';
+    return `${href}${separator}projectId=${scopedProjectId}`;
+  };
+
   const dashboardNav = [
-    { name: t('nav.home'), href: scopedProjectId ? `/dashboard?projectId=${scopedProjectId}` : '/dashboard', icon: Home },
+    { name: t('nav.home'), href: addScope('/dashboard'), icon: Home },
     { name: t('nav.projects'), href: '/dashboard/projects', icon: FolderKanban },
-    { name: t('nav.issues'), href: scopedProjectId ? `/dashboard/issues?projectId=${scopedProjectId}` : '/dashboard/issues', icon: ListChecks },
-    { name: t('nav.budget'), href: scopedProjectId ? `/projects/${scopedProjectId}/budget` : '/dashboard/budget', icon: BarChart3 },
-    { name: t('nav.aiDocuments'), href: '/dashboard/documents', icon: Sparkles },
-    { name: t('nav.teams'), href: scopedProjectId ? `/projects/${scopedProjectId}/team` : '/dashboard/teams', icon: Users },
-    { name: t('nav.goals'), href: scopedProjectId ? `/projects/${scopedProjectId}/goals` : '/dashboard/goals', icon: Target },
-    { name: t('nav.automation'), href: '/dashboard/automations', icon: Zap },
-    { name: t('nav.docs'), href: '/dashboard/docs', icon: BookOpen },
+    { name: t('nav.issues'), href: addScope('/dashboard/issues'), icon: ListChecks },
+    { name: t('nav.budget'), href: addScope('/dashboard/budget'), icon: BarChart3 },
+    { name: t('nav.aiDocuments'), href: addScope('/dashboard/documents'), icon: Sparkles },
+    { name: t('nav.teams'), href: addScope('/dashboard/teams'), icon: Users },
+    { name: t('nav.goals'), href: addScope('/dashboard/goals'), icon: Target },
+    { name: t('nav.automation'), href: addScope('/dashboard/automations'), icon: Zap },
+    { name: t('nav.docs'), href: addScope('/dashboard/docs'), icon: BookOpen },
     { name: t('nav.starred'), href: '/dashboard/starred', icon: Star },
   ];
 

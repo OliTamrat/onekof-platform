@@ -108,6 +108,11 @@ export default function BudgetPage() {
   const { currentOrganization } = useWorkspace();
   const [loadingTimeout, setLoadingTimeout] = useState(false);
 
+  // Read project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+
   // UI state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isActivitySlideoutOpen, setIsActivitySlideoutOpen] = useState(false);
@@ -136,11 +141,12 @@ export default function BudgetPage() {
     return undefined;
   }, [status]);
 
-  // Fetch all budgets for the organization
+  // Fetch budgets (scoped by project if filter is active)
+  const budgetsUrl = scopedProjectId ? `/api/budgets?projectId=${scopedProjectId}` : '/api/budgets';
   const { data: budgetsData, isLoading: budgetsLoading } = useQuery({
-    queryKey: ['budgets', 'org'],
+    queryKey: ['budgets', 'org', scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/budgets');
+      const res = await fetch(budgetsUrl);
       if (!res.ok) throw new Error('Failed to fetch budgets');
       return res.json();
     },

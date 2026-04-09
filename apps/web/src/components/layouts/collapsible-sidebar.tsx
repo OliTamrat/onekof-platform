@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ChevronRight, ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { getSidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation-dynamic';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { useLanguage } from '@/contexts/language-context';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
+import { IconRenderer } from '@/components/ui/icon-renderer';
 
 interface CollapsibleSidebarProps {
   className?: string;
@@ -23,10 +24,28 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
     'projects', // Projects expanded by default
   ]);
 
+  const router = useRouter();
+
   // Detect active project scope from URL
-  const scopedProjectId = typeof window !== 'undefined'
-    ? new URLSearchParams(window.location.search).get('projectId')
-    : null;
+  const [scopedProjectId, setScopedProjectId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('projectId');
+    }
+    return null;
+  });
+  const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
+  const scopedProject = scopedProjectId ? projects.find(p => p.id === scopedProjectId) : null;
+
+  const selectProject = (projectId: string | null) => {
+    setScopedProjectId(projectId);
+    setIsProjectSelectorOpen(false);
+    // Navigate to dashboard with the filter
+    if (projectId) {
+      router.push(`/dashboard?projectId=${projectId}`);
+    } else {
+      router.push('/dashboard');
+    }
+  };
 
   // Try to get settings, but don't fail if context isn't available
   let settings;
@@ -103,11 +122,11 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
               <Link
                 href={(() => {
                   if (!scopedProjectId || !section.href) return section.href!;
-                  const sectionRouteMap: Record<string, string> = {
-                    '/dashboard/budget': `/projects/${scopedProjectId}/budget`,
-                    '/dashboard/teams': `/projects/${scopedProjectId}/team`,
-                  };
-                  return sectionRouteMap[section.href] || section.href;
+                  if (section.href.startsWith('/dashboard/')) {
+                    const separator = section.href.includes('?') ? '&' : '?';
+                    return `${section.href}${separator}projectId=${scopedProjectId}`;
+                  }
+                  return section.href;
                 })()}
                 className={cn(
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
@@ -124,21 +143,75 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
             {/* Sub-items (when expanded) */}
             {hasSubItems && isExpanded && (
               <div className="mt-1 space-y-1 pl-8">
-                {section.items.map((item) => {
+                {/* Project Selector — replaces "All Projects" link in the projects section */}
+                {section.id === 'projects' && projects.length > 0 && (
+                  <div className="relative mb-1">
+                    <button
+                      onClick={() => setIsProjectSelectorOpen(!isProjectSelectorOpen)}
+                      className={cn(
+                        'flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
+                        scopedProjectId
+                          ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                      )}
+                    >
+                      {scopedProject ? (
+                        <>
+                          <span className="h-3 w-3 rounded shrink-0" style={{ backgroundColor: scopedProject.color || '#3B82F6' }} />
+                          <span className="flex-1 text-left truncate">{scopedProject.name}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="flex-1 text-left">{t('nav.allProjects')}</span>
+                        </>
+                      )}
+                      <ChevronDown className="h-3 w-3 shrink-0" />
+                    </button>
+                    {isProjectSelectorOpen && (
+                      <>
+                        <div className="fixed inset-0 z-30" onClick={() => setIsProjectSelectorOpen(false)} />
+                        <div className="absolute left-0 top-full mt-1 z-40 w-56 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+                          <button
+                            onClick={() => selectProject(null)}
+                            className={cn(
+                              'w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
+                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-600 dark:text-slate-400'
+                            )}
+                          >
+                            {!scopedProjectId && <Check className="h-3 w-3 shrink-0" />}
+                            <span className={!scopedProjectId ? '' : 'pl-5'}>{t('nav.allProjects')}</span>
+                          </button>
+                          <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                          {projects.map((project) => (
+                            <button
+                              key={project.id}
+                              onClick={() => selectProject(project.id)}
+                              className={cn(
+                                'w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
+                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-600 dark:text-slate-400'
+                              )}
+                            >
+                              {scopedProjectId === project.id && <Check className="h-3 w-3 shrink-0" />}
+                              <span
+                                className={cn('h-3 w-3 rounded shrink-0', scopedProjectId === project.id ? '' : 'ml-5')}
+                                style={{ backgroundColor: project.color || '#3B82F6' }}
+                              />
+                              <span className="truncate">{project.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {section.items.filter(item => !(section.id === 'projects' && item.href === '/dashboard/projects')).map((item) => {
                   const ItemIcon = item.icon;
-                  // When a project is scoped, redirect relevant links to project-specific pages
+                  // When a project is scoped, append ?projectId to dashboard page links
                   let scopedHref = item.href;
-                  if (scopedProjectId) {
-                    const projectRouteMap: Record<string, string> = {
-                      '/dashboard/issues': `/dashboard/issues?projectId=${scopedProjectId}`,
-                      '/dashboard/calendar': `/projects/${scopedProjectId}/calendar`,
-                      '/dashboard/timeline': `/projects/${scopedProjectId}/timeline`,
-                      '/dashboard/goals': `/projects/${scopedProjectId}/goals`,
-                      '/dashboard/budget': `/projects/${scopedProjectId}/budget`,
-                      '/dashboard/teams': `/projects/${scopedProjectId}/team`,
-                      '/dashboard/members': `/projects/${scopedProjectId}/team`,
-                    };
-                    scopedHref = projectRouteMap[item.href] || item.href;
+                  if (scopedProjectId && item.href.startsWith('/dashboard/')) {
+                    const separator = item.href.includes('?') ? '&' : '?';
+                    scopedHref = `${item.href}${separator}projectId=${scopedProjectId}`;
                   }
                   return (
                     <Link
