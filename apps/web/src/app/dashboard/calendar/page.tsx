@@ -41,6 +41,11 @@ export default function CalendarPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);
 
+  // Read project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+
   const { data: projectsData } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
@@ -53,10 +58,11 @@ export default function CalendarPage() {
 
   const currentProject = projectsData?.projects?.[0];
 
+  const issuesUrl = scopedProjectId ? `/api/issues?projectId=${scopedProjectId}` : '/api/issues';
   const { data: issuesData, isLoading } = useQuery<{ issues?: Issue[] }>({
-    queryKey: ['issues', 'calendar'],
+    queryKey: ['issues', 'calendar', scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/issues');
+      const res = await fetch(issuesUrl);
       if (!res.ok) throw new Error('Failed to fetch issues');
       return res.json();
     },
