@@ -226,7 +226,9 @@
     "loadingBoard": "ቦርድ በመጫን ላይ...",
     "pleaseSignInBoard": "ቦርዱን ለማየት እባክዎ ይግቡ።",
     "noTasks": "ተግባር የለም",
-    "addTask": "ተግባር ጨምር"
+    "addTask": "ተግባር ጨምር",
+    "allProjects": "ሁሉም ፕሮጀክቶች",
+    "filterByProject": "Filter by project"
   },
   "status": {
     "todo": "የሚሠራ",

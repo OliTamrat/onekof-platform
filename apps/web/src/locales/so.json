@@ -226,7 +226,9 @@
     "loadingBoard": "Sambalka waa la soo rarayaa...",
     "pleaseSignInBoard": "Fadlan soo gal si aad sambalka u aragto.",
     "noTasks": "Hawl ma jirto",
-    "addTask": "Hawl ku dar"
+    "addTask": "Hawl ku dar",
+    "allProjects": "Dhammaan mashruucyada",
+    "filterByProject": "Filter by project"
   },
   "status": {
     "todo": "La qaban doono",

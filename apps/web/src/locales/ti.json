@@ -226,7 +226,9 @@
     "loadingBoard": "ሰሌዳ ይጸዓን ኣሎ...",
     "pleaseSignInBoard": "ሰሌዳ ንምርኣይ በጃኻ እቶ።",
     "noTasks": "ተግባራት የለን",
-    "addTask": "ተግባር ወስኽ"
+    "addTask": "ተግባር ወስኽ",
+    "allProjects": "ኩሎም ፕሮጀክትታት",
+    "filterByProject": "Filter by project"
   },
   "status": {
     "todo": "ዝግበር",
