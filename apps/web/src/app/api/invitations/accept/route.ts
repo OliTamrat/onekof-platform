@@ -71,21 +71,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if invitation email matches the signed-in user
-    const currentUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { email: true },
-    });
-
-    if (currentUser?.email?.toLowerCase() !== matchedInvitation.email.toLowerCase()) {
-      return NextResponse.json(
-        {
-          error: `This invitation was sent to ${matchedInvitation.email}. Please sign in with that email address to accept it.`,
-          expectedEmail: matchedInvitation.email,
-        },
-        { status: 403 }
-      );
-    }
+    // Any authenticated user with a valid token can accept
+    // The token is the security — no email match required
 
     // Check if already a member
     const existingMembership = await prisma.organizationMember.findUnique({
