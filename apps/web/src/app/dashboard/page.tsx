@@ -23,7 +23,9 @@ import {
   Folder,
   Briefcase,
   X,
-  User
+  User,
+  ChevronDown,
+  Filter,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -33,6 +35,28 @@ export default function DashboardPage() {
   const { t, fontClass } = useLanguage();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+
+  // Project filter — read from URL, default to "all"
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('projectId');
+    }
+    return null;
+  });
+  const selectedProject = selectedProjectId ? projects.find(p => p.id === selectedProjectId) : null;
+
+  const setProjectFilter = (projectId: string | null) => {
+    setSelectedProjectId(projectId);
+    const url = new URL(window.location.href);
+    if (projectId) {
+      url.searchParams.set('projectId', projectId);
+    } else {
+      url.searchParams.delete('projectId');
+    }
+    router.replace(url.pathname + url.search, { scroll: false });
+    setIsProjectDropdownOpen(false);
+  };
 
   // INNOVATION: Lightning-fast drill-down modal state
   const [selectedIssue, setSelectedIssue] = useState<any | null>(null);
@@ -62,10 +86,11 @@ export default function DashboardPage() {
   }, [status]);
 
   // Fetch dashboard statistics
+  const statsUrl = selectedProjectId ? `/api/dashboard/stats?projectId=${selectedProjectId}` : '/api/dashboard/stats';
   const { data: stats, isLoading: statsLoading, error: statsError } = useQuery({
-    queryKey: ['dashboard-stats'],
+    queryKey: ['dashboard-stats', selectedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/dashboard/stats');
+      const res = await fetch(statsUrl);
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(`Stats API ${res.status}: ${text}`);
@@ -76,11 +101,12 @@ export default function DashboardPage() {
     retry: 1,
   });
 
-  // Fetch recent issues
+  // Fetch recent issues (filtered by project when selected)
+  const issuesUrl = selectedProjectId ? `/api/issues?projectId=${selectedProjectId}` : '/api/issues';
   const { data: issuesData, error: issuesError } = useQuery({
-    queryKey: ['issues'],
+    queryKey: ['issues', selectedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/issues');
+      const res = await fetch(issuesUrl);
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(`Issues API ${res.status}: ${text}`);
@@ -289,6 +315,77 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Project Filter */}
+        {projects.length > 1 && (
+          <div className="mb-4 flex items-center gap-3">
+            <div className="relative">
+              <button
+                onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
+                className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-[#1C8C7D] transition-colors"
+              >
+                <Filter className="h-3.5 w-3.5 text-slate-400" />
+                {selectedProject ? (
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="h-3 w-3 rounded shrink-0"
+                      style={{ backgroundColor: selectedProject.color || '#3B82F6' }}
+                    />
+                    {selectedProject.name}
+                  </span>
+                ) : (
+                  <span>{t('dashboard.allProjects') || 'All Projects'}</span>
+                )}
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+              </button>
+
+              {isProjectDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setIsProjectDropdownOpen(false)} />
+                  <div className="absolute left-0 top-full mt-1 z-40 w-72 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+                    <button
+                      onClick={() => setProjectFilter(null)}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors ${
+                        !selectedProjectId ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      <Folder className="h-4 w-4 text-slate-400" />
+                      {t('dashboard.allProjects') || 'All Projects'}
+                    </button>
+                    <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                    {projects.map((project) => (
+                      <button
+                        key={project.id}
+                        onClick={() => setProjectFilter(project.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors ${
+                          selectedProjectId === project.id ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        <span
+                          className="h-4 w-4 rounded flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: project.color || '#3B82F6' }}
+                        >
+                          {project.key?.slice(0, 2)}
+                        </span>
+                        <span className="truncate">{project.name}</span>
+                        <span className="ml-auto text-xs text-slate-400">{project.key}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            {selectedProject && (
+              <button
+                onClick={() => setProjectFilter(null)}
+                className="flex items-center gap-1 text-xs text-slate-500 hover:text-[#1C8C7D] transition-colors"
+              >
+                <X className="h-3 w-3" />
+                Clear filter
+              </button>
+            )}
           </div>
         )}
 
