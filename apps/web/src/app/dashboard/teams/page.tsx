@@ -82,7 +82,12 @@ interface Team {
 export default function TeamsPage() {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('create') === 'team';
+    }
+    return false;
+  });
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isManageTeamOpen, setIsManageTeamOpen] = useState(false);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);

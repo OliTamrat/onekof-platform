@@ -46,6 +46,7 @@ import {
   FileText,
   Folders,
   Users,
+  UserPlus,
   Target,
   HelpCircle,
   Menu,
@@ -221,6 +222,15 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               <DropdownMenuItem onClick={() => router.push("/dashboard/docs?create=page")}>
                 <FileText className="mr-2 h-4 w-4" />
                 {t('nav.wikiPage')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/dashboard/teams?create=team")}>
+                <Users className="mr-2 h-4 w-4" />
+                {t('teams.newTeam')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/members?invite=true")}>
+                <UserPlus className="mr-2 h-4 w-4" />
+                {t('members.inviteMember')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
