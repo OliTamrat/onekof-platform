@@ -275,6 +275,29 @@ export default function TeamsPage() {
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Action Bar */}
+        <div className="border-b border-gray-200 dark:border-slate-700/50 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder={t('common.searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D] transition-colors"
+              />
+            </div>
+            <Button
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white rounded-lg h-9"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t('teams.newTeam')}</span>
+            </Button>
+          </div>
+        </div>
+
         {/* Teams Content */}
         <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {isLoading ? (
