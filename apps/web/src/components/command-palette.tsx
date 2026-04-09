@@ -78,7 +78,7 @@ export function CommandPalette() {
     label: project.name,
     description: `${project.key} · ${project.template}`,
     icon: FolderKanban,
-    action: () => router.push(`/dashboard/project/${project.id}`),
+    action: () => router.push(`/projects/${project.id}`),
     category: 'project' as const,
     keywords: [project.key.toLowerCase(), project.name.toLowerCase()],
   }));
