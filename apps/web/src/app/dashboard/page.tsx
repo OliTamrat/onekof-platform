@@ -366,7 +366,7 @@ export default function DashboardPage() {
                     <div
                       key={project.id}
                       className="group flex flex-col rounded-xl border border-slate-200/50 dark:border-slate-700/50 bg-white dark:bg-[#22272B] shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 overflow-hidden cursor-pointer"
-                      onClick={() => router.push(`/dashboard/projects/${project.key}`)}
+                      onClick={() => router.push(`/projects/${project.id}`)}
                     >
                       {/* Card header */}
                       <div className="flex items-start gap-3 p-4 pb-3">
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                             className="h-7 gap-1 text-xs text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
                             onClick={(e) => {
                               e.stopPropagation();
-                              router.push(`/dashboard/projects/${project.key}`);
+                              router.push(`/projects/${project.id}`);
                             }}
                           >
                             <Plus className="h-3.5 w-3.5" />
@@ -466,7 +466,7 @@ export default function DashboardPage() {
                               className="h-7 gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/dashboard/projects/${project.key}/board`);
+                                router.push(`/projects/${project.id}/board`);
                               }}
                             >
                               <LayoutGrid className="h-3.5 w-3.5" />
@@ -478,7 +478,7 @@ export default function DashboardPage() {
                               className="h-7 gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/dashboard/projects/${project.key}/list`);
+                                router.push(`/projects/${project.id}/list`);
                               }}
                             >
                               <List className="h-3.5 w-3.5" />
@@ -579,7 +579,7 @@ export default function DashboardPage() {
                   {favoriteProjects.map(project => (
                     <div
                       key={project.id}
-                      onClick={() => router.push(`/dashboard/projects/${project.key}`)}
+                      onClick={() => router.push(`/projects/${project.id}`)}
                       className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                     >
                       <div

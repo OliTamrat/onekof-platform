@@ -335,10 +335,10 @@ function OnboardingContent() {
                   {ORG_TYPES.map((type) => {
                     const Icon = type.icon;
                     return (
-                      <Button
+                      <button
                         key={type.id}
                         onClick={() => setOrganizationType(type.id)}
-                        className={`relative rounded-xl border p-4 text-left transition-all ${
+                        className={`relative rounded-xl border p-4 text-left transition-all h-auto flex flex-col items-start ${
                           organizationType === type.id
                             ? 'border-primary-500 bg-primary-500/10 shadow-lg shadow-primary-500/20'
                             : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:shadow-md'
@@ -361,7 +361,7 @@ function OnboardingContent() {
                             </span>
                           ))}
                         </div>
-                      </Button>
+                      </button>
                     );
                   })}
                 </div>
