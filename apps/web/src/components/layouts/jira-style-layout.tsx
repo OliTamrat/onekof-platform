@@ -90,15 +90,21 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const isInProject = pathname?.includes('/project/');
   const isActive = (href: string) => pathname === href;
 
+  // Detect project scope from dashboard URL
+  const scopedProjectId = typeof window !== 'undefined' && pathname === '/dashboard'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+  const scopedProject = scopedProjectId ? projects.find(p => p.id === scopedProjectId) : null;
+
   // Dashboard navigation (when not in a project)
   const dashboardNav = [
-    { name: t('nav.home'), href: '/dashboard', icon: Home },
+    { name: t('nav.home'), href: scopedProjectId ? `/dashboard?projectId=${scopedProjectId}` : '/dashboard', icon: Home },
     { name: t('nav.projects'), href: '/dashboard/projects', icon: FolderKanban },
-    { name: t('nav.issues'), href: '/dashboard/issues', icon: ListChecks },
-    { name: t('nav.budget'), href: '/dashboard/budget', icon: BarChart3 },
+    { name: t('nav.issues'), href: scopedProjectId ? `/dashboard/issues?projectId=${scopedProjectId}` : '/dashboard/issues', icon: ListChecks },
+    { name: t('nav.budget'), href: scopedProjectId ? `/projects/${scopedProjectId}/budget` : '/dashboard/budget', icon: BarChart3 },
     { name: t('nav.aiDocuments'), href: '/dashboard/documents', icon: Sparkles },
-    { name: t('nav.teams'), href: '/dashboard/teams', icon: Users },
-    { name: t('nav.goals'), href: '/dashboard/goals', icon: Target },
+    { name: t('nav.teams'), href: scopedProjectId ? `/projects/${scopedProjectId}/team` : '/dashboard/teams', icon: Users },
+    { name: t('nav.goals'), href: scopedProjectId ? `/projects/${scopedProjectId}/goals` : '/dashboard/goals', icon: Target },
     { name: t('nav.automation'), href: '/dashboard/automations', icon: Zap },
     { name: t('nav.docs'), href: '/dashboard/docs', icon: BookOpen },
     { name: t('nav.starred'), href: '/dashboard/starred', icon: Star },
@@ -416,6 +422,28 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Collapsible Sidebar Navigation - 7 Core Categories */}
           <CollapsibleSidebar />
 
+          {/* Project Scope Indicator */}
+          {scopedProject && !isInProject && (
+            <div className="mx-3 mt-2 mb-1 rounded-lg border border-[#1C8C7D]/30 bg-[#1C8C7D]/10 p-2.5">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div
+                  className="flex h-6 w-6 items-center justify-center rounded text-[10px] font-bold text-white shrink-0"
+                  style={{ backgroundColor: scopedProject.color || '#3B82F6' }}
+                >
+                  {scopedProject.key?.slice(0, 2)}
+                </div>
+                <span className="text-xs font-semibold text-[#1C8C7D] truncate flex-1">{scopedProject.name}</span>
+              </div>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 hover:text-[#1C8C7D] transition-colors"
+              >
+                <X className="h-3 w-3" />
+                {t('nav.viewAllProjects')}
+              </Link>
+            </div>
+          )}
+
           {/* Collapsible Projects Section - Only in Dashboard */}
           {!isInProject && (
             <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
@@ -440,7 +468,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                       {favoriteProjects.map((project) => (
                         <Link
                           key={project.id}
-                          href={`/dashboard/projects?projectId=${project.id}`}
+                          href={`/dashboard?projectId=${project.id}`}
                           className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 group"
                         >
                           <div
@@ -459,7 +487,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   {recentProjects.map((project) => (
                     <Link
                       key={project.id}
-                      href={`/dashboard/projects?projectId=${project.id}`}
+                      href={`/dashboard?projectId=${project.id}`}
                       className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     >
                       <div
