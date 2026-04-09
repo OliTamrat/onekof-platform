@@ -155,8 +155,16 @@ export default function DashboardPage() {
     i.status !== 'DONE'
   ).length;
 
-  // Type counts (for sidebar)
+  // Status counts (for donut chart)
   const totalIssues = issues.length;
+  const statusCounts = {
+    TODO: issues.filter((i: any) => i.status === 'TODO').length,
+    IN_PROGRESS: issues.filter((i: any) => i.status === 'IN_PROGRESS').length,
+    IN_REVIEW: issues.filter((i: any) => i.status === 'IN_REVIEW').length,
+    DONE: issues.filter((i: any) => i.status === 'DONE').length,
+  };
+
+  // Type counts (for sidebar)
   const typeCounts = {
     TASK: issues.filter((i: any) => i.type === 'TASK').length,
     STORY: issues.filter((i: any) => i.type === 'STORY').length,
@@ -230,6 +238,12 @@ export default function DashboardPage() {
     setIsFilterModalOpen(true);
   };
 
+  const handleShowAllStatusOverview = () => {
+    setFilteredTasks(issues);
+    setFilterTitle(`Status Overview • ${totalIssues} Total Tasks`);
+    setIsFilterModalOpen(true);
+  };
+
   const apiError = statsError || issuesError;
 
   return (
@@ -288,10 +302,86 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Main content — projects + sidebar */}
+        {/* Main content — status overview + projects + sidebar */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Projects Section */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Status Overview — Donut Chart */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleShowAllStatusOverview}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShowAllStatusOverview(); }}
+              className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative z-10">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    {t('dashboard.statusOverview')}
+                  </h2>
+                  <div className="text-xs text-[#1C8C7D] font-medium">
+                    {t('dashboard.clickToViewDetails')}
+                  </div>
+                </div>
+                <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+                  {t('dashboard.statusDescription')}
+                </p>
+
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                  {/* Donut Chart */}
+                  <div className="relative h-40 w-40 md:h-48 md:w-48 shrink-0">
+                    <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth="15" />
+                      {totalIssues > 0 && (
+                        <>
+                          <circle cx="50" cy="50" r="35" fill="none" stroke="#22C55E" strokeWidth="15"
+                            strokeDasharray={`${(statusCounts.TODO / totalIssues) * 220} 220`} strokeDashoffset="0" />
+                          <circle cx="50" cy="50" r="35" fill="none" stroke="#3B82F6" strokeWidth="15"
+                            strokeDasharray={`${(statusCounts.IN_PROGRESS / totalIssues) * 220} 220`}
+                            strokeDashoffset={-((statusCounts.TODO / totalIssues) * 220)} />
+                          <circle cx="50" cy="50" r="35" fill="none" stroke="#F59E0B" strokeWidth="15"
+                            strokeDasharray={`${(statusCounts.IN_REVIEW / totalIssues) * 220} 220`}
+                            strokeDashoffset={-(((statusCounts.TODO + statusCounts.IN_PROGRESS) / totalIssues) * 220)} />
+                        </>
+                      )}
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
+                      <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex-1 w-full space-y-2 md:space-y-3">
+                    {[
+                      { key: 'TODO', label: t('status.todo'), color: 'bg-green-500', count: statusCounts.TODO },
+                      { key: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-500', count: statusCounts.IN_PROGRESS },
+                      { key: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-500', count: statusCounts.IN_REVIEW },
+                      { key: 'DONE', label: t('status.done'), color: 'bg-emerald-500', count: statusCounts.DONE },
+                    ].map((item) => (
+                      <div
+                        key={item.key}
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); handleShowStatusTasks(item.key, item.label); }}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks(item.key, item.label); } }}
+                        className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                          <div className={`h-3 w-3 md:h-3.5 md:w-3.5 rounded-full ${item.color} shrink-0`} />
+                          <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{item.label}</span>
+                        </div>
+                        <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Your Projects */}
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                 Your Projects
