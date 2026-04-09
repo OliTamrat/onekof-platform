@@ -562,6 +562,7 @@ enum ProjectRole {
   ADMIN
   MEMBER
   VIEWER
+  CONTRACTOR
 
   @@schema("public")
 }

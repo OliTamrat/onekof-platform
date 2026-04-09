@@ -67,6 +67,7 @@ interface FormData {
   leadId: string;
   defaultAssignee: string;
   teamIds: string[];
+  memberIds: { userId: string; role: string }[];
   // Step 4: Timeline & Priority
   priority: ProjectPriority;
   startDate: string;
@@ -81,7 +82,7 @@ const INITIAL_FORM_DATA: FormData = {
   name: '', key: '', description: '', projectType: 'SOFTWARE',
   department: '', category: '', entityType: 'INTERNAL', visibility: 'INTERNAL',
   riskLevel: 'NOT_ASSESSED', budgetCode: '', tags: '',
-  ownerId: '', leadId: '', defaultAssignee: '', teamIds: [],
+  ownerId: '', leadId: '', defaultAssignee: '', teamIds: [], memberIds: [],
   priority: 'MEDIUM', startDate: '', dueDate: '',
   template: 'KANBAN', icon: 'Briefcase', color: '#1C8C7D',
 };
@@ -175,7 +176,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
     }));
   }, [generateKey]);
 
-  const update = useCallback((field: keyof FormData, value: string | string[]) => {
+  const update = useCallback((field: keyof FormData, value: string | string[] | { userId: string; role: string }[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
@@ -562,6 +563,68 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
               );
             })}
           </div>
+        )}
+      </div>
+
+      <div>
+        <label className={labelClass}>{t('projects.projectMembers') || 'Project Members'}</label>
+        <p className={helpClass}>{t('projects.selectMembersDesc') || 'Select organization members to add to this project'}</p>
+        {orgMembers.length === 0 ? (
+          <p className="text-sm text-slate-400 dark:text-slate-500 py-2">No members available</p>
+        ) : (
+          <div className="max-h-[240px] overflow-y-auto rounded-md border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700 mt-2">
+            {orgMembers.map((member) => {
+              const existing = formData.memberIds.find(m => m.userId === member.userId);
+              const isSelected = !!existing;
+              return (
+                <div
+                  key={member.userId}
+                  className={`flex items-center gap-3 px-3 py-2.5 transition-colors ${
+                    isSelected
+                      ? 'bg-primary-500/5 dark:bg-primary-500/10'
+                      : 'hover:bg-slate-50 dark:hover:bg-[#22272B]'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => {
+                      if (isSelected) {
+                        update('memberIds', formData.memberIds.filter(m => m.userId !== member.userId));
+                      } else {
+                        update('memberIds', [...formData.memberIds, { userId: member.userId, role: 'MEMBER' }]);
+                      }
+                    }}
+                    className="h-4 w-4 rounded text-primary-500 focus:ring-primary-500 border-slate-300 dark:border-slate-600"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{member.name || member.email}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{member.email}</p>
+                  </div>
+                  {isSelected && (
+                    <select
+                      value={existing.role}
+                      onChange={(e) => {
+                        update('memberIds', formData.memberIds.map(m =>
+                          m.userId === member.userId ? { ...m, role: e.target.value } : m
+                        ));
+                      }}
+                      className="text-xs rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-slate-700 dark:text-slate-300 px-2 py-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <option value="ADMIN">Admin</option>
+                      <option value="MEMBER">Member</option>
+                      <option value="VIEWER">Viewer</option>
+                      <option value="CONTRACTOR">Contractor</option>
+                    </select>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {formData.memberIds.length > 0 && (
+          <p className="mt-2 text-xs text-[#1C8C7D]">{formData.memberIds.length} member{formData.memberIds.length !== 1 ? 's' : ''} selected</p>
         )}
       </div>
     </div>

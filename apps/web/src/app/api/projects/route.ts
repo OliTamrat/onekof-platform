@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
     const {
       name, description, key, color, icon,
       template, projectType, priority, leadId, ownerId, defaultAssignee,
-      startDate, dueDate, teamIds,
+      startDate, dueDate, teamIds, memberIds,
       // Enterprise fields
       department, category, entityType, visibility, riskLevel,
       budgetCode, tags,
@@ -250,6 +250,21 @@ export async function POST(request: NextRequest) {
           teamId,
           addedBy: user.id,
         })),
+        skipDuplicates: true,
+      });
+    }
+
+    // Add individual members to project if provided
+    if (memberIds && Array.isArray(memberIds) && memberIds.length > 0) {
+      await prisma.projectMember.createMany({
+        data: memberIds
+          .filter((m: { userId: string }) => m.userId !== user.id) // skip creator (already added)
+          .map((m: { userId: string; role?: string }) => ({
+            projectId: project.id,
+            userId: m.userId,
+            role: (m.role || 'MEMBER') as any,
+            addedBy: user.id,
+          })),
         skipDuplicates: true,
       });
     }
