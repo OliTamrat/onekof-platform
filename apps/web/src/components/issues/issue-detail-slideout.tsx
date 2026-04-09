@@ -426,6 +426,8 @@ function DetailsTab({
   removeWatcher: any;
 }) {
   const { t } = useLanguage();
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(issue.title);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState(issue.description || '');
   const [commentContent, setCommentContent] = useState('');
@@ -477,9 +479,39 @@ function DetailsTab({
     <div>
       {/* Title + Status Bar */}
       <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-3">
-          {issue.title}
-        </h1>
+        {isEditingTitle ? (
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onBlur={() => {
+              if (editedTitle.trim() && editedTitle !== issue.title) {
+                updateIssue.mutate({ title: editedTitle.trim() });
+                flashSaved();
+              }
+              setIsEditingTitle(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                (e.target as HTMLInputElement).blur();
+              }
+              if (e.key === 'Escape') {
+                setEditedTitle(issue.title);
+                setIsEditingTitle(false);
+              }
+            }}
+            autoFocus
+            className="w-full text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-3 bg-transparent border-b-2 border-[#1C8C7D] outline-none"
+          />
+        ) : (
+          <h1
+            className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-3 cursor-pointer hover:text-[#1C8C7D] transition-colors"
+            onClick={() => { setEditedTitle(issue.title); setIsEditingTitle(true); }}
+            title={t('common.clickToEdit')}
+          >
+            {issue.title}
+          </h1>
+        )}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Status Badge */}
           <div className="relative">
