@@ -23,10 +23,7 @@ import {
   Folder,
   Briefcase,
   X,
-  User,
-  Users,
-  LayoutGrid,
-  List,
+  User
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -136,7 +133,7 @@ export default function DashboardPage() {
 
   const issues = issuesData?.issues || [];
 
-  // Calculate global statistics from real data — all-time totals
+  // Calculate statistics from real data — all-time totals
   const tasksCompleted = issues.filter(
     (i: any) => i.status === 'DONE'
   ).length;
@@ -155,8 +152,7 @@ export default function DashboardPage() {
     i.status !== 'DONE'
   ).length;
 
-  // Status counts (for donut chart)
-  const totalIssues = issues.length;
+  // Get status counts
   const statusCounts = {
     TODO: issues.filter((i: any) => i.status === 'TODO').length,
     IN_PROGRESS: issues.filter((i: any) => i.status === 'IN_PROGRESS').length,
@@ -164,7 +160,16 @@ export default function DashboardPage() {
     DONE: issues.filter((i: any) => i.status === 'DONE').length,
   };
 
-  // Type counts (for sidebar)
+  // Priority counts
+  const priorityCounts = {
+    HIGHEST: issues.filter((i: any) => i.priority === 'HIGHEST').length,
+    HIGH: issues.filter((i: any) => i.priority === 'HIGH').length,
+    MEDIUM: issues.filter((i: any) => i.priority === 'MEDIUM').length,
+    LOW: issues.filter((i: any) => i.priority === 'LOW').length,
+    LOWEST: issues.filter((i: any) => i.priority === 'LOWEST').length,
+  };
+
+  // Type counts
   const typeCounts = {
     TASK: issues.filter((i: any) => i.type === 'TASK').length,
     STORY: issues.filter((i: any) => i.type === 'STORY').length,
@@ -172,8 +177,16 @@ export default function DashboardPage() {
     EPIC: issues.filter((i: any) => i.type === 'EPIC').length,
   };
 
+  const totalIssues = issues.length;
+  const maxPriority = Math.max(...Object.values(priorityCounts), 1);
+
   // Get favorite projects
   const favoriteProjects = projects.filter(p => p.isFavorite).slice(0, 3);
+
+  // Recent activity (last 5 updated issues)
+  const recentActivity = issues
+    .sort((a: Record<string, any>, b: Record<string, any>) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, 5);
 
   // Handlers for drill-down
   const handleShowCompletedTasks = () => {
@@ -214,31 +227,44 @@ export default function DashboardPage() {
 
   const handleShowStatusTasks = (status: string, statusLabel: string) => {
     const filtered = issues.filter((i: any) => i.status === status);
+
+    // AI-Powered Analytics: Calculate metrics for this status
     const totalTasks = filtered.length;
     const withAssignee = filtered.filter((i: any) => i.assignee).length;
     const unassigned = totalTasks - withAssignee;
+
+    // Priority breakdown
     const highPriority = filtered.filter((i: any) => i.priority === 'HIGHEST' || i.priority === 'HIGH').length;
+    const mediumPriority = filtered.filter((i: any) => i.priority === 'MEDIUM').length;
+    const lowPriority = filtered.filter((i: any) => i.priority === 'LOW' || i.priority === 'LOWEST').length;
+
+    // Overdue tasks (tasks with due date in the past)
     const overdue = filtered.filter((i: any) => i.dueDate && new Date(i.dueDate) < new Date()).length;
+
+    // Average age of tasks in this status
     const now = new Date().getTime();
     const ages = filtered.map((i: any) => {
       const updated = new Date(i.updatedAt).getTime();
-      return (now - updated) / (1000 * 60 * 60 * 24);
+      return (now - updated) / (1000 * 60 * 60 * 24); // days
     });
     const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
+
+    // Build AI insights subtitle
+    let insights = [];
+    if (overdue > 0) insights.push(`${overdue} overdue`);
+    if (unassigned > 0) insights.push(`${unassigned} unassigned`);
+    if (highPriority > 0) insights.push(`${highPriority} high priority`);
+    if (avgAge > 0) insights.push(`avg ${avgAge}d old`);
+
+    const subtitle = insights.length > 0 ? insights.join(' • ') : `${totalTasks} tasks in ${statusLabel.toLowerCase()} status`;
 
     setFilteredTasks(filtered);
     setFilterTitle(`${statusLabel} Tasks • ${totalTasks}`);
     setIsFilterModalOpen(true);
   };
 
-  const handleShowProjectTasks = (projectId: string, projectName: string) => {
-    const filtered = issues.filter((i: any) => i.project?.id === projectId);
-    setFilteredTasks(filtered);
-    setFilterTitle(`${projectName} • ${filtered.length} tasks`);
-    setIsFilterModalOpen(true);
-  };
-
   const handleShowAllStatusOverview = () => {
+    // Show all tasks grouped by status
     setFilteredTasks(issues);
     setFilterTitle(`Status Overview • ${totalIssues} Total Tasks`);
     setIsFilterModalOpen(true);
@@ -259,14 +285,14 @@ export default function DashboardPage() {
                   {t('dashboard.failedToLoad')}
                 </p>
                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                  {(apiError as Error).message}. {t('dashboard.tryRefreshing')}
+                  {apiError.message}. {t('dashboard.tryRefreshing')}
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Stats Cards — global totals summary */}
+        {/* Stats Cards - Beautiful 2x2 grid on mobile */}
         <div className="mb-6 grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
           <StatCard
             icon={<CheckCircle2 className="h-5 w-5" />}
@@ -302,12 +328,10 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Main content — status overview + projects + sidebar */}
+        {/* Main Grid */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
-
-            {/* Status Overview — Donut Chart */}
+          {/* Status Overview */}
+          <div className="lg:col-span-2">
             <div
               role="button"
               tabIndex={0}
@@ -315,299 +339,174 @@ export default function DashboardPage() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShowAllStatusOverview(); }}
               className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* 3D depth effect */}
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
               <div className="relative z-10">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    {t('dashboard.statusOverview')}
-                  </h2>
-                  <div className="text-xs text-[#1C8C7D] font-medium">
-                    {t('dashboard.clickToViewDetails')}
-                  </div>
-                </div>
-                <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
-                  {t('dashboard.statusDescription')}
-                </p>
-
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-                  {/* Donut Chart */}
-                  <div className="relative h-40 w-40 md:h-48 md:w-48 shrink-0">
-                    <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth="15" />
-                      {totalIssues > 0 && (
-                        <>
-                          <circle cx="50" cy="50" r="35" fill="none" stroke="#22C55E" strokeWidth="15"
-                            strokeDasharray={`${(statusCounts.TODO / totalIssues) * 220} 220`} strokeDashoffset="0" />
-                          <circle cx="50" cy="50" r="35" fill="none" stroke="#3B82F6" strokeWidth="15"
-                            strokeDasharray={`${(statusCounts.IN_PROGRESS / totalIssues) * 220} 220`}
-                            strokeDashoffset={-((statusCounts.TODO / totalIssues) * 220)} />
-                          <circle cx="50" cy="50" r="35" fill="none" stroke="#F59E0B" strokeWidth="15"
-                            strokeDasharray={`${(statusCounts.IN_REVIEW / totalIssues) * 220} 220`}
-                            strokeDashoffset={-(((statusCounts.TODO + statusCounts.IN_PROGRESS) / totalIssues) * 220)} />
-                        </>
-                      )}
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                      <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
-                    </div>
-                  </div>
-
-                  {/* Legend */}
-                  <div className="flex-1 w-full space-y-2 md:space-y-3">
-                    {[
-                      { key: 'TODO', label: t('status.todo'), color: 'bg-green-500', count: statusCounts.TODO },
-                      { key: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-500', count: statusCounts.IN_PROGRESS },
-                      { key: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-500', count: statusCounts.IN_REVIEW },
-                      { key: 'DONE', label: t('status.done'), color: 'bg-emerald-500', count: statusCounts.DONE },
-                    ].map((item) => (
-                      <div
-                        key={item.key}
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); handleShowStatusTasks(item.key, item.label); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks(item.key, item.label); } }}
-                        className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                          <div className={`h-3 w-3 md:h-3.5 md:w-3.5 rounded-full ${item.color} shrink-0`} />
-                          <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{item.label}</span>
-                        </div>
-                        <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{item.count}</span>
-                      </div>
-                    ))}
-                  </div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  {t('dashboard.statusOverview')}
+                </h2>
+                <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">
+                  {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
-            </div>
+              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+                {t('dashboard.statusDescription')}
+              </p>
 
-            {/* Your Projects */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                Your Projects
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsCreateModalOpen(true)}
-                className="gap-1.5 text-[#1C8C7D] hover:text-[#156B60] hover:bg-[#1C8C7D]/10"
-              >
-                <Plus className="h-4 w-4" />
-                New Project
-              </Button>
-            </div>
+              {/* Donut Chart - Responsive Layout */}
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                <div className="relative h-40 w-40 md:h-48 md:w-48 shrink-0">
+                  <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
+                    {/* Background circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="35"
+                      fill="none"
+                      stroke="currentColor"
+                      className="text-slate-200 dark:text-slate-700"
+                      strokeWidth="15"
+                    />
+                    {/* Segments based on real data */}
+                    {totalIssues > 0 && (
+                      <>
+                        {/* TODO segment */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="35"
+                          fill="none"
+                          stroke="#22C55E"
+                          strokeWidth="15"
+                          strokeDasharray={`${(statusCounts.TODO / totalIssues) * 220} 220`}
+                          strokeDashoffset="0"
+                        />
+                        {/* IN_PROGRESS segment */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="35"
+                          fill="none"
+                          stroke="#3B82F6"
+                          strokeWidth="15"
+                          strokeDasharray={`${(statusCounts.IN_PROGRESS / totalIssues) * 220} 220`}
+                          strokeDashoffset={-((statusCounts.TODO / totalIssues) * 220)}
+                        />
+                        {/* IN_REVIEW segment */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="35"
+                          fill="none"
+                          stroke="#F59E0B"
+                          strokeWidth="15"
+                          strokeDasharray={`${(statusCounts.IN_REVIEW / totalIssues) * 220} 220`}
+                          strokeDashoffset={-(((statusCounts.TODO + statusCounts.IN_PROGRESS) / totalIssues) * 220)}
+                        />
+                      </>
+                    )}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
+                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
+                  </div>
+                </div>
 
-            {isLoadingProjects ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-                {[1, 2, 3].map(n => (
+                {/* Legend - Properly aligned */}
+                <div className="flex-1 w-full space-y-2 md:space-y-3">
                   <div
-                    key={n}
-                    className="h-48 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800"
-                  />
-                ))}
-              </div>
-            ) : projects.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-[#22272B] p-10 text-center">
-                <Folder className="mx-auto mb-3 h-10 w-10 text-slate-400" />
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  No projects yet
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                  Create your first project to start tracking work
-                </p>
-                <Button
-                  size="sm"
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className="bg-[#1C8C7D] hover:bg-[#156B60] text-white"
-                >
-                  <Plus className="mr-1.5 h-4 w-4" />
-                  Create Project
-                </Button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {projects.map(project => {
-                  const projectIssues = issues.filter(
-                    (i: any) => i.project?.id === project.id
-                  );
-                  const todoCount = projectIssues.filter(
-                    (i: any) => i.status === 'TODO' || i.status === 'BACKLOG'
-                  ).length;
-                  const inProgressCount = projectIssues.filter(
-                    (i: any) => i.status === 'IN_PROGRESS' || i.status === 'IN_REVIEW'
-                  ).length;
-                  const doneCount = projectIssues.filter(
-                    (i: any) => i.status === 'DONE'
-                  ).length;
-                  const totalCount = projectIssues.length;
-                  const openCount = todoCount + inProgressCount;
-                  const progress =
-                    totalCount > 0
-                      ? Math.round((doneCount / totalCount) * 100)
-                      : 0;
-
-                  const memberCount =
-                    project._count?.members ?? project.taskCount ?? 0;
-
-                  const projectColor = project.color || '#3B82F6';
-                  const iconLabel = project.key.slice(0, 2).toUpperCase();
-
-                  return (
-                    <div
-                      key={project.id}
-                      className="group flex flex-col rounded-xl border border-slate-200/50 dark:border-slate-700/50 bg-white dark:bg-[#22272B] shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 overflow-hidden cursor-pointer"
-                      onClick={() => router.push(`/projects/${project.id}`)}
-                    >
-                      {/* Card header */}
-                      <div className="flex items-start gap-3 p-4 pb-3">
-                        <div
-                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-xs font-bold text-white"
-                          style={{ backgroundColor: projectColor }}
-                        >
-                          {iconLabel}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors">
-                            {project.name}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {project.key}
-                          </p>
-                        </div>
-                        {project.isFavorite && (
-                          <Star className="h-4 w-4 shrink-0 fill-yellow-400 text-yellow-400" />
-                        )}
-                      </div>
-
-                      {/* Status bar */}
-                      <div className="px-4 pb-3">
-                        {totalCount > 0 ? (
-                          <>
-                            <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
-                              <div
-                                className="bg-slate-400 dark:bg-slate-500 transition-all"
-                                style={{ width: `${(todoCount / totalCount) * 100}%` }}
-                                title={`To Do: ${todoCount}`}
-                              />
-                              <div
-                                className="bg-blue-500 transition-all"
-                                style={{ width: `${(inProgressCount / totalCount) * 100}%` }}
-                                title={`In Progress / In Review: ${inProgressCount}`}
-                              />
-                              <div
-                                className="bg-[#1C8C7D] transition-all"
-                                style={{ width: `${(doneCount / totalCount) * 100}%` }}
-                                title={`Done: ${doneCount}`}
-                              />
-                            </div>
-                            <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                              <span>{totalCount} tasks</span>
-                              <span>{progress}% done</span>
-                            </div>
-                          </>
-                        ) : (
-                          <p className="text-xs text-slate-400 dark:text-slate-500 italic">
-                            No tasks yet
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Stats row */}
-                      <div className="border-t border-slate-100 dark:border-slate-700/60 px-4 py-2.5 flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                        <span className="flex items-center gap-1">
-                          <div className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-500" />
-                          {todoCount} open
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <div className="h-2 w-2 rounded-full bg-blue-500" />
-                          {inProgressCount} active
-                        </span>
-                        {project._count?.members !== undefined && (
-                          <span className="ml-auto flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {project._count.members}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Quick action buttons */}
-                      <div
-                        className="border-t border-slate-100 dark:border-slate-700/60 px-3 py-2 flex items-center gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {totalCount === 0 ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 gap-1 text-xs text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(`/projects/${project.id}`);
-                            }}
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                            Create Issue
-                          </Button>
-                        ) : (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/projects/${project.id}/board`);
-                              }}
-                            >
-                              <LayoutGrid className="h-3.5 w-3.5" />
-                              Board
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-[#1C8C7D] hover:bg-[#1C8C7D]/10"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/projects/${project.id}/list`);
-                              }}
-                            >
-                              <List className="h-3.5 w-3.5" />
-                              List
-                            </Button>
-                          </>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="ml-auto h-7 gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleShowProjectTasks(project.id, project.name);
-                          }}
-                        >
-                          <MoreHorizontal className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.todo")}</span>
                     </div>
-                  );
-                })}
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-blue-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inProgress")}</span>
+                    </div>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-yellow-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inReview")}</span>
+                    </div>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
+                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.done")}</span>
+                    </div>
+                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
+                  </div>
+                </div>
               </div>
-            )}
+
+              {/* Priority Breakdown */}
+              <div className="mt-8">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
+                </div>
+                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                  {t('dashboard.priorityDescription')}
+                </p>
+                <div className="space-y-2">
+                  <PriorityBar label={t('priority.highest')} value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
+                  <PriorityBar label={t('priority.high')} value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
+                  <PriorityBar label={t('priority.medium')} value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
+                  <PriorityBar label={t('priority.low')} value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
+                  <PriorityBar label={t('priority.lowest')} value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
+                </div>
+              </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Recent Activity */}
+            {/* Recent Activity - AI-Powered Timeline */}
             <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10" />
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                     {t('dashboard.recentActivity')}
                   </h2>
-                  <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span>{t('dashboard.aiPowered')}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>{t('dashboard.aiPowered')}</span>
+                    </div>
                   </div>
                 </div>
                 <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
@@ -621,7 +520,7 @@ export default function DashboardPage() {
 
             {/* Types of Work */}
             <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10" />
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -652,7 +551,7 @@ export default function DashboardPage() {
             {/* Favorite Projects */}
             {favoriteProjects.length > 0 && (
               <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
-                <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10" />
+                <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                     {t('nav.starred')}
@@ -669,14 +568,14 @@ export default function DashboardPage() {
                   {favoriteProjects.map(project => (
                     <div
                       key={project.id}
-                      onClick={() => router.push(`/projects/${project.id}`)}
+                      onClick={() => router.push(`/dashboard/projects/${project.key}`)}
                       className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                     >
                       <div
-                        className="flex h-8 w-8 items-center justify-center rounded text-xs font-bold text-white shrink-0"
+                        className="flex h-8 w-8 items-center justify-center rounded text-sm"
                         style={{ backgroundColor: project.color || '#3B82F6' }}
                       >
-                        {project.key.slice(0, 2).toUpperCase()}
+                        <Folder className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
@@ -686,7 +585,7 @@ export default function DashboardPage() {
                           {project.key}
                         </p>
                       </div>
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 shrink-0" />
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     </div>
                   ))}
                 </div>
@@ -702,7 +601,7 @@ export default function DashboardPage() {
         onOpenChange={setIsCreateModalOpen}
       />
 
-      {/* Lightning-fast drill-down slide-out */}
+      {/* INNOVATION: Lightning-fast drill-down slide-out - Opens in < 50ms */}
       {selectedIssue && (
         <IssueDetailSlideout
           issue={selectedIssue}
@@ -713,14 +612,16 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Drill-Down Modal */}
+      {/* INNOVATION: Beautiful Drill-Down Modal with AI Analytics */}
       {isFilterModalOpen && (
         <>
+          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
             onClick={() => setIsFilterModalOpen(false)}
           />
 
+          {/* Modal */}
           <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[95vw] md:w-full max-w-4xl max-h-[85vh] bg-white dark:bg-[#1B1F23] rounded-lg shadow-2xl overflow-hidden animate-scale-in">
             {/* Header */}
             <div className="border-b border-gray-200 dark:border-gray-800 px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
@@ -740,16 +641,19 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* AI Analytics Bar */}
+            {/* AI-Powered Analytics Bar */}
             {filteredTasks.length > 0 && (() => {
+              // Calculate analytics in real-time
               const withAssignee = filteredTasks.filter((i: any) => i.assignee).length;
               const unassigned = filteredTasks.length - withAssignee;
               const overdue = filteredTasks.filter((i: any) => i.dueDate && new Date(i.dueDate) < new Date()).length;
               const highPriority = filteredTasks.filter((i: any) => i.priority === 'HIGHEST' || i.priority === 'HIGH').length;
+
+              // Calculate average age
               const now = new Date().getTime();
               const ages = filteredTasks.map((i: any) => {
                 const updated = new Date(i.updatedAt).getTime();
-                return (now - updated) / (1000 * 60 * 60 * 24);
+                return (now - updated) / (1000 * 60 * 60 * 24); // days
               });
               const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
@@ -818,12 +722,7 @@ export default function DashboardPage() {
                         setSelectedIssue(task);
                         setIsFilterModalOpen(false);
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          setSelectedIssue(task);
-                          setIsFilterModalOpen(false);
-                        }
-                      }}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
                       className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
                     >
                       <div className="flex items-start justify-between">
@@ -908,6 +807,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* CSS Animation */}
           <style jsx>{`
             @keyframes scale-in {
               from {
@@ -955,8 +855,11 @@ function StatCard({
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
       className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300" />
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      {/* 3D depth effect - bottom shadow layer */}
+      <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
 
       <div className="relative z-10">
         <div className="mb-2 md:mb-4 flex items-center justify-between">
@@ -971,6 +874,37 @@ function StatCard({
         <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
         <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-1">{sublabel}</div>
+      </div>
+    </div>
+  );
+}
+
+function PriorityBar({
+  label,
+  value,
+  max,
+  color = 'bg-slate-300 dark:bg-slate-600',
+}: {
+  label: string;
+  value: number;
+  max: number;
+  color?: string;
+}) {
+  const percentage = max > 0 ? (value / max) * 100 : 0;
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-20 text-sm text-slate-700 dark:text-slate-300">{label}</div>
+      <div className="flex-1 h-6 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        {percentage > 0 && (
+          <div
+            className={`h-full ${color} transition-all duration-300`}
+            style={{ width: `${percentage}%` }}
+          />
+        )}
+      </div>
+      <div className="w-8 text-right text-sm font-medium text-slate-900 dark:text-white">
+        {value}
       </div>
     </div>
   );
