@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
     const entityType = url.searchParams.get('entityType');
     const action = url.searchParams.get('action');
     const entityId = url.searchParams.get('entityId');
+    const projectIdFilter = url.searchParams.get('projectId');
     const hasPagination = url.searchParams.has('page');
 
     const where: any = {
@@ -42,6 +43,20 @@ export async function GET(request: NextRequest) {
 
     if (userIdFilter) {
       where.userId = userIdFilter;
+    }
+
+    // Project-scoped filtering: find task IDs belonging to the project
+    if (projectIdFilter) {
+      const projectTasks = await prisma.task.findMany({
+        where: { projectId: projectIdFilter, deletedAt: null },
+        select: { id: true },
+      });
+      const taskIds = projectTasks.map((t: { id: string }) => t.id);
+      // Include activities for tasks in this project OR for the project itself
+      where.OR = [
+        { entityType: 'TASK', entityId: { in: taskIds } },
+        { entityType: 'PROJECT', entityId: projectIdFilter },
+      ];
     }
 
     // Smart entity type filtering:
