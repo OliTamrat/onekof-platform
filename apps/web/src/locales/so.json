@@ -4,6 +4,8 @@
     "save": "Kaydi",
     "cancel": "Ka noqo",
     "delete": "Tirtir",
+    "deleteIssueTitle": "Arrinkan tirtir?",
+    "deleteIssueMessage": "Ficilkan lama beddeli karo. Arrinka, dhammaan faallooyinkiisa, lifaaqyadiisa, iyo hawlaha hoose si joogto ah ayaa loo tirtiri doonaa.",
     "edit": "Wax ka bedel",
     "create": "Samee",
     "search": "Raadi",

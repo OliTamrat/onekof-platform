@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
-import { resolveUserOrganization } from '@/lib/api-organization';
+import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import logger from '@/lib/logger';
 
@@ -27,14 +27,23 @@ export async function GET(request: NextRequest) {
 
     const organizationId = ctx.organizationId;
 
-    // Build query filters — use a relation filter to scope to the org in a
-    // single query, avoiding the previous "fetch all project IDs first" pattern.
+    // SECURITY: scope tasks to projects the user is actually allowed to see.
+    // This reuses the project access filter so the rules stay consistent with
+    // /api/projects (MEMBERs only see public projects or projects they're in).
+    const projectAccessFilter = buildProjectAccessFilter({
+      organizationId,
+      userId: ctx.user.id,
+      orgRole: ctx.role,
+    });
+
     const where: any = {
       deletedAt: null,
-      project: { organizationId, deletedAt: null },
+      project: projectAccessFilter,
     };
 
-    // Filter by specific project if specified (overrides the org-wide scope)
+    // Filter by specific project if specified — but still enforce access.
+    // If the user requests a project they can't access, they'll just get no
+    // results (better than a 403 that leaks the project's existence).
     if (projectId) {
       where.projectId = projectId;
     }

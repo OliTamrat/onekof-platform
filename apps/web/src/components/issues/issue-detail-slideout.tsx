@@ -497,10 +497,10 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
         onClose={() => setIsDeleteConfirmOpen(false)}
         type="error"
         destructive
-        title={t('common.deleteIssueTitle') || 'Delete this issue?'}
-        message={`${issue?.key ? issue.key + ' — ' : ''}${issue?.title || ''}\n\n${t('common.deleteIssueMessage') || 'This action cannot be undone. The issue and all its comments, attachments, and subtasks will be permanently removed.'}`}
-        confirmText={t('common.delete') || 'Delete'}
-        cancelText={t('common.cancel') || 'Cancel'}
+        title={t('common.deleteIssueTitle')}
+        message={`${issue?.key ? issue.key + ' — ' : ''}${issue?.title || ''}\n\n${t('common.deleteIssueMessage')}`}
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
         onConfirm={async () => {
           try {
             const res = await fetch(`/api/issues/${issue!.id}`, { method: 'DELETE' });

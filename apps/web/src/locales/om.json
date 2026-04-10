@@ -4,6 +4,8 @@
     "save": "Olchi",
     "cancel": "Haqi",
     "delete": "Haqi",
+    "deleteIssueTitle": "Dhimma kana haquu?",
+    "deleteIssueMessage": "Gocha kun deebi'uu hin danda'u. Dhimmichi, yaadoliisaa, faayilawwan itti dabalaman fi hojiiwwan xixiqqaa hundi yeroo dhumaatiif ni haqamu.",
     "edit": "Gulaali",
     "create": "Uumi",
     "search": "Barbaadi",

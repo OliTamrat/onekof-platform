@@ -4,6 +4,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "deleteIssueTitle": "Delete this issue?",
+    "deleteIssueMessage": "This action cannot be undone. The issue and all its comments, attachments, and subtasks will be permanently removed.",
     "edit": "Edit",
     "create": "Create",
     "search": "Search",

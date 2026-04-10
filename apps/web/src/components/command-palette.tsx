@@ -62,7 +62,7 @@ export function CommandPalette() {
     { id: 'nav-docs', label: t('nav.docs'), description: t('nav.docs'), icon: BookOpen, action: () => router.push('/dashboard/docs'), category: 'navigation', keywords: ['wiki', 'knowledge', 'documentation'] },
     { id: 'nav-calendar', label: t('nav.calendar'), description: t('nav.calendar'), icon: Calendar, action: () => router.push('/dashboard/calendar'), category: 'navigation', keywords: ['schedule', 'event', 'date'] },
     { id: 'nav-starred', label: t('nav.starred'), description: t('nav.starred'), icon: Star, action: () => router.push('/dashboard/starred'), category: 'navigation', keywords: ['favorite', 'bookmark'] },
-    { id: 'nav-settings', label: t('nav.settings'), description: t('settings.title'), icon: Settings, action: () => router.push('/settings'), category: 'navigation', keywords: ['preference', 'config', 'account'] },
+    { id: 'nav-settings', label: t('nav.settings'), description: t('settings.title'), icon: Settings, action: () => router.push('/dashboard/settings'), category: 'navigation', keywords: ['preference', 'config', 'account'] },
   ];
 
   // Action commands

@@ -335,7 +335,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/settings")}>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
                 {t('nav.settings')}
               </DropdownMenuItem>
@@ -367,7 +367,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 <p className="text-xs text-slate-500">{session?.user?.email}</p>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push('/settings')}>
+              <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
                 {t('nav.settings')}
               </DropdownMenuItem>
