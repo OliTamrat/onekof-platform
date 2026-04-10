@@ -3,5 +3,6 @@
   "framework": "nextjs",
   "buildCommand": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && pnpm exec next build",
   "devCommand": "next dev",
-  "installCommand": "pnpm install --no-frozen-lockfile"
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "regions": ["fra1"]
 }

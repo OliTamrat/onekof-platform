@@ -55,49 +55,32 @@ export async function getOrganizationContext(): Promise<{
       };
     }
 
-    // Get organization
-    const organization = await prisma.organization.findUnique({
-      where: { slug: organizationSlug },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        plan: true,
-        status: true,
-      },
-    });
-
-    if (!organization) {
-      return {
-        data: null,
-        error: NextResponse.json(
-          { error: 'Organization not found' },
-          { status: 404 }
-        ),
-      };
-    }
-
-    if (organization.status !== 'ACTIVE') {
-      return {
-        data: null,
-        error: NextResponse.json(
-          { error: 'Organization is not active' },
-          { status: 403 }
-        ),
-      };
-    }
-
-    // Check user membership
-    const membership = await prisma.organizationMember.findUnique({
+    // Single query: fetch membership with org + user included
+    // Replaces 3 sequential queries (organization, membership, user) → 1 query
+    const membership = await prisma.organizationMember.findFirst({
       where: {
-        organizationId_userId: {
-          organizationId: organization.id,
-          userId: session.user.id,
-        },
+        userId: session.user.id,
+        organization: { slug: organizationSlug },
       },
       select: {
         role: true,
         budgetAccess: true,
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            plan: true,
+            status: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -111,28 +94,24 @@ export async function getOrganizationContext(): Promise<{
       };
     }
 
-    // Get user details
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-      },
-    });
-
-    if (!user) {
+    if (membership.organization.status !== 'ACTIVE') {
       return {
         data: null,
-        error: NextResponse.json({ error: 'User not found' }, { status: 404 }),
+        error: NextResponse.json(
+          { error: 'Organization is not active' },
+          { status: 403 }
+        ),
       };
     }
 
     return {
       data: {
-        organization,
-        user,
-        membership,
+        organization: membership.organization,
+        user: membership.user,
+        membership: {
+          role: membership.role,
+          budgetAccess: membership.budgetAccess,
+        },
       },
       error: null,
     };
@@ -172,6 +151,36 @@ export async function resolveUserOrganization(): Promise<{
       };
     }
 
+    // 1. Try subdomain slug from middleware header (fast path — single query)
+    const headersList = headers();
+    const slug = headersList.get('x-organization-slug');
+
+    if (slug) {
+      const membership = await prisma.organizationMember.findFirst({
+        where: {
+          user: { email: session.user.email },
+          organization: { slug },
+        },
+        select: {
+          role: true,
+          organizationId: true,
+          user: { select: { id: true, email: true, name: true } },
+        },
+      });
+
+      if (membership) {
+        return {
+          data: {
+            user: membership.user,
+            organizationId: membership.organizationId,
+            role: membership.role,
+          },
+          error: null,
+        };
+      }
+    }
+
+    // 2. Fallback path (no slug or slug mismatch): fetch user + default org
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: {
@@ -180,11 +189,11 @@ export async function resolveUserOrganization(): Promise<{
         name: true,
         defaultOrganizationId: true,
         organizations: {
-          include: {
-            organization: {
-              select: { id: true, name: true, slug: true },
-            },
+          select: {
+            role: true,
+            organizationId: true,
           },
+          take: 5,
         },
       },
     });
@@ -196,25 +205,10 @@ export async function resolveUserOrganization(): Promise<{
       };
     }
 
-    // 1. Try subdomain slug from middleware header
-    const headersList = headers();
-    const slug = headersList.get('x-organization-slug');
-
-    let membership = slug
-      ? user.organizations.find((m) => m.organization.slug === slug)
-      : null;
-
-    // 2. Fall back to user's default organization
-    if (!membership && user.defaultOrganizationId) {
-      membership = user.organizations.find(
-        (m) => m.organizationId === user.defaultOrganizationId
-      );
-    }
-
-    // 3. Fall back to first org (Vercel previews, localhost without subdomain)
-    if (!membership) {
-      membership = user.organizations[0];
-    }
+    const membership =
+      (user.defaultOrganizationId &&
+        user.organizations.find((m) => m.organizationId === user.defaultOrganizationId)) ||
+      user.organizations[0];
 
     return {
       data: {

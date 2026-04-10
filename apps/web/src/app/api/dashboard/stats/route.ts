@@ -21,77 +21,78 @@ export async function GET(_request: NextRequest) {
     const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const next7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-    // Get all projects for the organization
-    const projects = await prisma.project.findMany({
-      where: {
-        organizationId,
-        deletedAt: null,
-      },
-      include: {
-        tasks: {
-          where: {
-            deletedAt: null,
-          },
-        },
-      },
-    });
-
-    // Calculate stats
-    const allTasks = projects.flatMap(p => p.tasks);
-
-    const completedLast7Days = allTasks.filter(task =>
-      task.status === 'DONE' &&
-      task.updatedAt >= last7Days
-    ).length;
-
-    const updatedLast7Days = allTasks.filter(task =>
-      task.updatedAt >= last7Days
-    ).length;
-
-    const createdLast7Days = allTasks.filter(task =>
-      task.createdAt >= last7Days
-    ).length;
-
-    const dueSoon = allTasks.filter(task =>
-      task.dueDate &&
-      task.dueDate <= next7Days &&
-      task.dueDate >= now &&
-      task.status !== 'DONE'
-    ).length;
-
-    // Get status breakdown
-    const statusCounts = allTasks.reduce((acc, task) => {
-      acc[task.status] = (acc[task.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Get priority breakdown
-    const priorityCounts = allTasks.reduce((acc, task) => {
-      const priority = task.priority || 'NONE';
-      acc[priority] = (acc[priority] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Get type breakdown (using project type as proxy for now)
-    const typeCounts = {
-      TASK: allTasks.length,
-      STORY: 0,
-      BUG: 0,
-      EPIC: 0,
-      FEATURE: 0,
+    // Shared task scope: org's non-deleted tasks in non-deleted projects
+    const baseWhere = {
+      project: { organizationId, deletedAt: null },
+      deletedAt: null,
     };
+
+    // All aggregations run in parallel — DB-side counting, no data transfer
+    const [
+      completed,
+      updated,
+      created,
+      dueSoon,
+      statusGroups,
+      priorityGroups,
+      totalTasks,
+    ] = await Promise.all([
+      prisma.task.count({
+        where: { ...baseWhere, status: 'DONE', updatedAt: { gte: last7Days } },
+      }),
+      prisma.task.count({
+        where: { ...baseWhere, updatedAt: { gte: last7Days } },
+      }),
+      prisma.task.count({
+        where: { ...baseWhere, createdAt: { gte: last7Days } },
+      }),
+      prisma.task.count({
+        where: {
+          ...baseWhere,
+          dueDate: { gte: now, lte: next7Days },
+          status: { not: 'DONE' },
+        },
+      }),
+      prisma.task.groupBy({
+        by: ['status'],
+        where: baseWhere,
+        _count: { _all: true },
+      }),
+      prisma.task.groupBy({
+        by: ['priority'],
+        where: baseWhere,
+        _count: { _all: true },
+      }),
+      prisma.task.count({ where: baseWhere }),
+    ]);
+
+    const statusBreakdown = statusGroups.reduce((acc: Record<string, number>, g: any) => {
+      acc[g.status] = g._count._all;
+      return acc;
+    }, {});
+
+    const priorityBreakdown = priorityGroups.reduce((acc: Record<string, number>, g: any) => {
+      acc[g.priority || 'NONE'] = g._count._all;
+      return acc;
+    }, {});
 
     return NextResponse.json({
       stats: {
-        completed: completedLast7Days,
-        updated: updatedLast7Days,
-        created: createdLast7Days,
+        completed,
+        updated,
+        created,
         dueSoon,
       },
-      statusBreakdown: statusCounts,
-      priorityBreakdown: priorityCounts,
-      typeBreakdown: typeCounts,
-      totalTasks: allTasks.length,
+      statusBreakdown,
+      priorityBreakdown,
+      typeBreakdown: {
+        TASK: totalTasks,
+        STORY: 0,
+        BUG: 0,
+        EPIC: 0,
+        FEATURE: 0,
+      },
+      totalTasks,
     });
   } catch (error) {
     logger.error('Dashboard stats error', { error: error instanceof Error ? error.message : error });
