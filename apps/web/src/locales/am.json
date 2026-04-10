@@ -586,7 +586,8 @@
     "teamActivity": "የቡድን እንቅስቃሴ",
     "searchActivity": "እንቅስቃሴ ይፈልጉ...",
     "activityDetails": "የእንቅስቃሴ ዝርዝሮች",
-    "activityInformation": "የእንቅስቃሴ መረጃ"
+    "activityInformation": "የእንቅስቃሴ መረጃ",
+    "addMember": "አባል ጨምር"
   },
   "goals": {
     "title": "ግቦች",
