@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
-import { sendMentionEmail } from '@/lib/email';
+import { sendMentionEmail, userWantsNotification } from '@/lib/email';
 import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 
@@ -139,12 +139,20 @@ export async function POST(
             select: { id: true, name: true, email: true },
           });
 
+          // Filter to only users who have NOT opted out of mention emails
+          const allowedUsers: typeof mentionedUsers = [];
+          for (const u of mentionedUsers) {
+            if (await userWantsNotification(u.id, 'emailOnMention')) {
+              allowedUsers.push(u);
+            }
+          }
+
           const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
           const taskUrl = `${baseUrl}/dashboard/issues?taskId=${params.id}`;
           const snippet = content.length > 200 ? content.slice(0, 200) + '…' : content;
 
           await Promise.all(
-            mentionedUsers.map((u: any) =>
+            allowedUsers.map((u: any) =>
               sendMentionEmail({
                 to: u.email,
                 mentionedName: u.name,

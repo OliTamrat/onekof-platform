@@ -860,6 +860,50 @@ export async function sendBudgetAlertEmail(
 }
 
 /**
+ * Check whether a user has opted in to receive a specific notification type.
+ * Returns true if:
+ * - The preference is not set (default-on)
+ * - The preference is explicitly true
+ * Returns false only when the user has explicitly toggled the preference off.
+ *
+ * This is the gate that makes the Settings → Notifications toggles actually
+ * work. Call it before sending any non-transactional email.
+ *
+ * Transactional emails (password reset, email verification, account locked)
+ * should NOT go through this gate — they're always sent.
+ */
+export async function userWantsNotification(
+  userId: string,
+  prefKey:
+    | 'emailOnMention'
+    | 'emailOnAssignment'
+    | 'emailOnStatusChange'
+    | 'emailOnComment'
+    | 'emailOnDueDate'
+    | 'emailWeeklySummary'
+    | 'emailOnExpenseDecision'
+    | 'emailOnExpenseSubmitted'
+): Promise<boolean> {
+  try {
+    const { prisma } = await import('@onekof/database');
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { preferences: true },
+    });
+    if (!user) return false;
+
+    const prefs = (user.preferences as any)?.notifications || {};
+    // Default to true when preference is unset — opt-out model
+    if (prefs[prefKey] === undefined) return true;
+    return prefs[prefKey] !== false;
+  } catch {
+    // If we can't read prefs, default to sending (safer than silently
+    // dropping notifications)
+    return true;
+  }
+}
+
+/**
  * Shared compact email template used by the notification helpers below.
  * Keeps the styled wrapper consistent while letting each notification supply
  * its own heading, body, and CTA.
