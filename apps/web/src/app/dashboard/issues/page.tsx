@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { SkeletonKanban } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
 import { useWorkspace } from '@/contexts/workspace-context';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 
 // Types
 interface Issue {
@@ -195,6 +196,23 @@ export default function IssuesPage() {
     acc[status].push(issue);
     return acc;
   }, {});
+
+  // Keyboard shortcuts: C = create, Esc = close modal/slideout
+  useKeyboardShortcuts([
+    {
+      key: 'c',
+      handler: () => setShowCreateModal(true),
+    },
+    {
+      key: 'Escape',
+      disableInInput: false,
+      handler: () => {
+        if (selectedIssue) setSelectedIssue(null);
+        else if (showCreateModal) setShowCreateModal(false);
+        else if (insightsOpen) setInsightsOpen(false);
+      },
+    },
+  ]);
 
   // Handle drag and drop
   const handleDragEnd = (result: any) => {

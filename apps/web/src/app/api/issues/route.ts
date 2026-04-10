@@ -27,26 +27,16 @@ export async function GET(request: NextRequest) {
 
     const organizationId = ctx.organizationId;
 
-    // Build query filters
+    // Build query filters — use a relation filter to scope to the org in a
+    // single query, avoiding the previous "fetch all project IDs first" pattern.
     const where: any = {
       deletedAt: null,
+      project: { organizationId, deletedAt: null },
     };
 
-    // Filter by project if specified
+    // Filter by specific project if specified (overrides the org-wide scope)
     if (projectId) {
       where.projectId = projectId;
-    } else {
-      // If no project specified, get all projects in org
-      const orgProjects = await prisma.project.findMany({
-        where: {
-          organizationId,
-          deletedAt: null,
-        },
-        select: { id: true },
-      });
-      where.projectId = {
-        in: orgProjects.map(p => p.id),
-      };
     }
 
     // Filter by status
@@ -81,6 +71,8 @@ export async function GET(request: NextRequest) {
     // Note: label filtering is done client-side after fetching since
     // Prisma Json field filtering varies by database provider
 
+    // Use _count for comment/attachment counts instead of loading full rows.
+    // This alone saves loading hundreds of objects on busy boards.
     const includeClause = {
       project: {
         select: {
@@ -106,17 +98,10 @@ export async function GET(request: NextRequest) {
           avatar: true,
         },
       },
-      comments: {
-        where: {
-          deletedAt: null,
-        },
+      _count: {
         select: {
-          id: true,
-        },
-      },
-      attachments: {
-        select: {
-          id: true,
+          comments: { where: { deletedAt: null } },
+          attachments: true,
         },
       },
     };
@@ -127,10 +112,9 @@ export async function GET(request: NextRequest) {
 
     const transformIssue = (issue: any) => ({
       ...issue,
-      commentCount: issue.comments.length,
-      attachmentCount: issue.attachments.length,
-      comments: undefined,
-      attachments: undefined,
+      commentCount: issue._count?.comments ?? 0,
+      attachmentCount: issue._count?.attachments ?? 0,
+      _count: undefined,
     });
 
     const url = request.nextUrl;
