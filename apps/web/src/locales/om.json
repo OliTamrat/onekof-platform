@@ -1825,6 +1825,7 @@
   },
   "departmentTabs": {
     "backlog": "Tarree Eeggataa",
+    "epics": "Epiikota",
     "releases": "Gadhiisota",
     "codeReview": "Gamaaggama Koodii",
     "socialMedia": "Miidiyaa Hawaasaa",

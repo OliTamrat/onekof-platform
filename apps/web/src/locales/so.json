@@ -1863,6 +1863,7 @@
   },
   "departmentTabs": {
     "backlog": "Shaqada sugaysa",
+    "epics": "Epikada",
     "releases": "Sii daynta",
     "codeReview": "Dib u eegista koodhka",
     "socialMedia": "Baraha bulshada",

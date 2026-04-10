@@ -1819,6 +1819,7 @@
   },
   "departmentTabs": {
     "backlog": "Backlog",
+    "epics": "Epics",
     "releases": "Releases",
     "codeReview": "Code Review",
     "socialMedia": "Social Media",

@@ -7,6 +7,7 @@ import { authOptions } from '@/lib/auth';
 import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
+import { sendTaskAssignmentEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -332,6 +333,39 @@ export async function PATCH(
       } catch (watcherError) {
         // Don't fail the update if watcher creation fails
         log.error('Auto-watch on assignment error', { error: watcherError instanceof Error ? watcherError.message : watcherError });
+      }
+
+      // Email the new assignee — fire-and-forget, skip if assigning to self
+      if (assigneeId !== currentUser.id) {
+        (async () => {
+          try {
+            const newAssignee = await prisma.user.findUnique({
+              where: { id: assigneeId },
+              select: { name: true, email: true },
+            });
+            if (!newAssignee?.email) return;
+
+            const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
+            const taskUrl = `${baseUrl}/dashboard/issues?taskId=${params.id}`;
+
+            await sendTaskAssignmentEmail({
+              to: newAssignee.email,
+              assigneeName: newAssignee.name,
+              assignerName: currentUser.name || currentUser.email,
+              taskKey: issue.key,
+              taskTitle: issue.title,
+              taskDescription: issue.description,
+              priority: issue.priority,
+              dueDate: issue.dueDate,
+              taskUrl,
+            });
+          } catch (emailErr) {
+            log.error('Failed to send task assignment email', {
+              error: emailErr instanceof Error ? emailErr.message : emailErr,
+              taskId: params.id,
+            });
+          }
+        })();
       }
     }
 
