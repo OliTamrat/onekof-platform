@@ -122,6 +122,15 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = React.useState(tabs.length);
 
+  // Preserve ?projectId query param across tab navigation
+  const [queryString, setQueryString] = React.useState('');
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('projectId');
+    setQueryString(projectId ? `?projectId=${projectId}` : '');
+  }, []);
+
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
@@ -148,7 +157,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
       {visibleTabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
-        const href = `${baseHref}${tab.href}`;
+        const href = `${baseHref}${tab.href}${queryString}`;
 
         return (
           <Link
@@ -187,7 +196,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
           <DropdownMenuContent align="start" className="w-48">
             {overflowTabs.map((tab) => {
               const Icon = tab.icon;
-              const href = `${baseHref}${tab.href}`;
+              const href = `${baseHref}${tab.href}${queryString}`;
               const isActive = activeTab === tab.id;
 
               return (
