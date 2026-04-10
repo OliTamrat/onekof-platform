@@ -8,6 +8,7 @@ import { requireAuth, requireProjectAccess } from '@/lib/security/authorization'
 import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail } from '@/lib/email';
+import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
 export const dynamic = 'force-dynamic';
 
@@ -442,6 +443,36 @@ export async function PATCH(
           action: 'ASSIGNED',
           metadata: { assigneeId },
         }).catch(() => {});
+      }
+
+      // Fire automation triggers — we emit the most specific trigger first
+      // (STATUS_CHANGED / ASSIGNED / COMPLETED) and a general UPDATED trigger
+      // so rules authored against either specificity can match.
+      // All fire-and-forget.
+      const triggers: TriggerEvent[] = ['UPDATED'];
+      if (status !== undefined && status !== currentIssue.status) {
+        triggers.push('STATUS_CHANGED');
+        if (status === 'DONE') triggers.push('COMPLETED');
+        if (status === 'BLOCKED') triggers.push('BLOCKED');
+      }
+      if (assigneeId !== undefined && assigneeId !== currentIssue.assigneeId) {
+        triggers.push('ASSIGNED');
+      }
+      for (const trigger of triggers) {
+        triggerAutomations({
+          organizationId: orgId,
+          trigger,
+          entityType: 'TASK',
+          entityId: params.id,
+          projectId: issue.projectId,
+          userId: currentUser.id,
+        }).catch((err) => {
+          log.error('Automation trigger on task update failed', {
+            error: err instanceof Error ? err.message : err,
+            trigger,
+            taskId: params.id,
+          });
+        });
       }
     }
 

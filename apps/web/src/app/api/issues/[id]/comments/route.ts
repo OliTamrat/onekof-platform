@@ -5,6 +5,7 @@ import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendMentionEmail } from '@/lib/email';
+import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -172,6 +173,21 @@ export async function POST(
         action: 'COMMENTED',
         metadata: { commentId: result.id, preview: content.slice(0, 100) },
       }).catch(() => {});
+
+      // Fire COMMENTED automation trigger — fire-and-forget
+      triggerAutomations({
+        organizationId: task.project.organization.id,
+        trigger: 'COMMENTED',
+        entityType: 'TASK',
+        entityId: params.id,
+        projectId: task.projectId,
+        userId: user.id,
+      }).catch((err) => {
+        logger.error('Automation trigger on comment failed', {
+          error: err instanceof Error ? err.message : err,
+          taskId: params.id,
+        });
+      });
     }
 
     return NextResponse.json({
