@@ -80,15 +80,32 @@ export async function DELETE(
       );
     }
 
-    // Only allow removing yourself OR if you're an admin/owner
-    // TODO: Add proper role checking here
-    const canRemove =
+    // Authorization: allow removing yourself, OR if you're the issue reporter,
+    // OR if you have OWNER/ADMIN role in the organization that owns the project.
+    let canRemove =
       params.userId === currentUser.id || // Removing yourself
       issue.reporterId === currentUser.id; // Issue creator
 
     if (!canRemove) {
+      // Check org role
+      const orgMembership = await prisma.organizationMember.findUnique({
+        where: {
+          organizationId_userId: {
+            organizationId: issue.project.organizationId,
+            userId: currentUser.id,
+          },
+        },
+        select: { role: true },
+      });
+
+      if (orgMembership?.role === 'OWNER' || orgMembership?.role === 'ADMIN') {
+        canRemove = true;
+      }
+    }
+
+    if (!canRemove) {
       return NextResponse.json(
-        { error: 'You can only remove yourself as a watcher' },
+        { error: 'You can only remove yourself or watchers you have permission to manage' },
         { status: 403 }
       );
     }

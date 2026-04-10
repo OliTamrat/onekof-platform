@@ -465,6 +465,9 @@ model Task {
   labels       Json @default("[]")
   customFields Json @default("{}") @map("custom_fields")
 
+  // Backlog ordering (drag-to-prioritize in backlog view)
+  backlogOrder Int? @map("backlog_order")
+
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -491,6 +494,7 @@ model Task {
   @@index([status, dueDate]) // Global task due date queries
   @@index([priority, status, deletedAt]) // Priority-based views
   @@index([parentId]) // Subtask lookups
+  @@index([projectId, status, backlogOrder]) // Backlog ordering
   @@map("tasks")
   @@schema("public")
 }
@@ -643,6 +647,7 @@ enum TaskType {
 }
 
 enum TaskStatus {
+  BACKLOG
   TODO
   IN_PROGRESS
   IN_REVIEW

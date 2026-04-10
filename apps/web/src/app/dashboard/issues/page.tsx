@@ -30,7 +30,7 @@ interface Issue {
   title: string;
   description?: string;
   type: 'TASK' | 'STORY' | 'BUG' | 'EPIC' | 'SUBTASK';
-  status: 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
+  status: 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
   priority: 'HIGHEST' | 'HIGH' | 'MEDIUM' | 'LOW' | 'LOWEST';
   assignee?: {
     id: string;
@@ -53,6 +53,7 @@ interface Issue {
 
 // Status columns configuration
 const STATUS_COLUMNS = [
+  { id: 'BACKLOG', labelKey: 'status.backlog' },
   { id: 'TODO', labelKey: 'status.todo' },
   { id: 'IN_PROGRESS', labelKey: 'status.inProgress' },
   { id: 'IN_REVIEW', labelKey: 'status.inReview' },

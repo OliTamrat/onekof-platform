@@ -1,343 +1,395 @@
 'use client';
 
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
-import { AppLayout } from '@/components/layouts/app-layout';
-import { ProjectPageHeader } from '@/components/navigation/project-page-header';
-import { CreateIssueModal } from '@/components/issues/create-issue-modal';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+/**
+ * Backlog View
+ *
+ * Real backlog page showing tasks with status = BACKLOG, ordered by
+ * backlogOrder (drag to reorder). Bulk-move selected tasks to TODO to
+ * schedule them for work.
+ */
+
+import { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import {
-  AlertCircle,
-  Building2,
-  Calendar,
-  CheckCircle2,
-  ClipboardList,
-  Clock,
-  Droplets,
-  Filter,
+  ListTodo,
   Plus,
-  Search,
-  Users,
-  Wrench
+  ArrowRight,
+  CheckSquare,
+  Square,
+  Calendar,
+  User,
+  Flag,
+  GripVertical,
 } from 'lucide-react';
-import { Select } from '@/components/ui/select';
+import { AppLayout } from '@/components/layouts/app-layout';
+import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { ISSUES_TABS } from '@/config/department-tabs';
+import { CreateIssueModal } from '@/components/issues/create-issue-modal';
+import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { Button } from '@/components/ui/button';
+import { SkeletonCard } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
 
-interface BacklogItem {
+interface Issue {
   id: string;
+  key: string;
   title: string;
-  description: string;
-  type: 'infrastructure' | 'maintenance' | 'irrigation' | 'monitoring' | 'stakeholder';
-  priority: 'critical' | 'high' | 'medium' | 'low';
-  status: 'planned' | 'approved' | 'ready' | 'blocked';
-  estimatedCost?: number;
-  assignedTo?: string;
+  description?: string;
+  type: 'TASK' | 'STORY' | 'BUG' | 'EPIC' | 'SUBTASK';
+  status: 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
+  priority: 'HIGHEST' | 'HIGH' | 'MEDIUM' | 'LOW' | 'LOWEST' | null;
+  assignee?: { id: string; name: string; avatar?: string };
+  project: { id: string; name: string; key: string; color?: string };
   dueDate?: string;
-  dependencies?: string[];
+  backlogOrder?: number | null;
+  createdAt: string;
 }
 
-const typeConfig = {
-  infrastructure: { icon: Building2, label: 'Infrastructure', color: 'bg-blue-500' },
-  maintenance: { icon: Wrench, label: 'Maintenance', color: 'bg-orange-500' },
-  irrigation: { icon: Droplets, label: 'Irrigation', color: 'bg-green-500' },
-  monitoring: { icon: AlertCircle, label: 'Monitoring', color: 'bg-purple-500' },
-  stakeholder: { icon: Users, label: 'Stakeholder', color: 'bg-pink-500' }
+const PRIORITY_COLORS: Record<string, string> = {
+  HIGHEST: 'text-red-600 dark:text-red-400',
+  HIGH: 'text-orange-600 dark:text-orange-400',
+  MEDIUM: 'text-yellow-600 dark:text-yellow-400',
+  LOW: 'text-green-600 dark:text-green-400',
+  LOWEST: 'text-gray-500 dark:text-gray-400',
 };
 
-const priorityConfig = {
-  critical: { color: 'bg-red-600 text-white', label: 'Critical' },
-  high: { color: 'bg-orange-600 text-white', label: 'High' },
-  medium: { color: 'bg-yellow-600 text-white', label: 'Medium' },
-  low: { color: 'bg-gray-500 text-white', label: 'Low' }
-};
-
-const statusConfig = {
-  planned: { color: 'bg-gray-200 text-gray-800', label: 'Planned' },
-  approved: { color: 'bg-blue-200 text-blue-800', label: 'Approved' },
-  ready: { color: 'bg-green-200 text-green-800', label: 'Ready' },
-  blocked: { color: 'bg-red-200 text-red-800', label: 'Blocked' }
-};
-
-export default function IssuesBacklogPage() {
+export default function BacklogPage() {
   const { t } = useLanguage();
-  const { data: session } = useSession();
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterPriority, setFilterPriority] = useState<string>('all');
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Fetch projects
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
+  // Read project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+
+  // Fetch backlog tasks
+  const { data: issuesData, isLoading } = useQuery({
+    queryKey: ['issues', 'backlog', scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
+      const params = new URLSearchParams();
+      params.append('status', 'BACKLOG');
+      if (scopedProjectId) params.append('projectId', scopedProjectId);
+      const res = await fetch(`/api/issues?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch backlog');
       return res.json();
     },
   });
 
-  const currentProject = projectsData?.projects?.[0];
+  // Sort tasks by backlogOrder (NULL goes last), then by createdAt descending
+  const backlogTasks: Issue[] = useMemo(() => {
+    const tasks = (issuesData?.issues || []) as Issue[];
+    return [...tasks].sort((a, b) => {
+      const aOrder = a.backlogOrder ?? Number.MAX_SAFE_INTEGER;
+      const bOrder = b.backlogOrder ?? Number.MAX_SAFE_INTEGER;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  }, [issuesData]);
 
-  // Mock data for demonstration - replace with actual API call
-  const backlogItems: BacklogItem[] = [
-    {
-      id: '1',
-      title: 'Dam Safety Inspection - Q2 2026',
-      description: 'Comprehensive structural integrity assessment of main dam wall and spillways',
-      type: 'infrastructure',
-      priority: 'critical',
-      status: 'approved',
-      estimatedCost: 250000,
-      assignedTo: 'Engineering Team A',
-      dueDate: '2026-06-30',
-      dependencies: []
+  // Reorder mutation — writes new backlogOrder values
+  const reorderMutation = useMutation({
+    mutationFn: async ({ issueId, newOrder }: { issueId: string; newOrder: number }) => {
+      const res = await fetch(`/api/issues/${issueId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ backlogOrder: newOrder }),
+      });
+      if (!res.ok) throw new Error('Failed to reorder');
+      return res.json();
     },
-    {
-      id: '2',
-      title: 'Install 50 New Drip Irrigation Units - Zone C',
-      description: 'Deploy modern drip irrigation systems for 500 hectares in southern agricultural zone',
-      type: 'irrigation',
-      priority: 'high',
-      status: 'ready',
-      estimatedCost: 180000,
-      assignedTo: 'Irrigation Specialists',
-      dueDate: '2026-04-15'
+    onMutate: async ({ issueId, newOrder }) => {
+      await queryClient.cancelQueries({ queryKey: ['issues', 'backlog'] });
+      const prev = queryClient.getQueriesData({ queryKey: ['issues', 'backlog'] });
+      queryClient.setQueriesData({ queryKey: ['issues', 'backlog'] }, (old: any) => {
+        if (!old?.issues) return old;
+        return {
+          ...old,
+          issues: old.issues.map((i: Issue) =>
+            i.id === issueId ? { ...i, backlogOrder: newOrder } : i
+          ),
+        };
+      });
+      return { prev };
     },
-    {
-      id: '3',
-      title: 'Community Training Program - Water Conservation',
-      description: 'Conduct training sessions for 500 farmers on efficient water usage techniques',
-      type: 'stakeholder',
-      priority: 'medium',
-      status: 'planned',
-      estimatedCost: 25000,
-      assignedTo: 'Community Outreach Team',
-      dueDate: '2026-05-20'
+    onError: (_err, _vars, ctx) => {
+      ctx?.prev?.forEach(([key, data]) => queryClient.setQueryData(key, data));
+      toast.error('Failed to reorder backlog');
     },
-    {
-      id: '4',
-      title: 'Upgrade Flow Monitoring Sensors',
-      description: 'Replace outdated sensors with IoT-enabled real-time monitoring devices across 12 canal points',
-      type: 'monitoring',
-      priority: 'high',
-      status: 'approved',
-      estimatedCost: 95000,
-      assignedTo: 'Tech Operations',
-      dueDate: '2026-04-30'
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
     },
-    {
-      id: '5',
-      title: 'Canal Sediment Removal - Main Channel',
-      description: 'Annual sediment clearing to maintain optimal water flow capacity',
-      type: 'maintenance',
-      priority: 'medium',
-      status: 'ready',
-      estimatedCost: 65000,
-      assignedTo: 'Maintenance Crew B',
-      dueDate: '2026-03-31'
-    },
-    {
-      id: '6',
-      title: 'Environmental Impact Assessment Update',
-      description: 'Update EIA report with latest biodiversity and water quality data',
-      type: 'stakeholder',
-      priority: 'medium',
-      status: 'planned',
-      estimatedCost: 40000,
-      assignedTo: 'Environmental Team',
-      dueDate: '2026-07-15'
-    }
-  ];
-
-  const filteredItems = backlogItems.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === 'all' || item.type === filterType;
-    const matchesPriority = filterPriority === 'all' || item.priority === filterPriority;
-    return matchesSearch && matchesType && matchesPriority;
   });
 
-  const groupedByStatus = {
-    planned: filteredItems.filter(item => item.status === 'planned'),
-    approved: filteredItems.filter(item => item.status === 'approved'),
-    ready: filteredItems.filter(item => item.status === 'ready'),
-    blocked: filteredItems.filter(item => item.status === 'blocked')
+  // Bulk move to TODO mutation
+  const moveToTodoMutation = useMutation({
+    mutationFn: async (issueIds: string[]) => {
+      const results = await Promise.all(
+        issueIds.map((id) =>
+          fetch(`/api/issues/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'TODO' }),
+          })
+        )
+      );
+      if (results.some((r) => !r.ok)) throw new Error('Some updates failed');
+      return results;
+    },
+    onSuccess: (_res, issueIds) => {
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+      toast.success(`${issueIds.length} task${issueIds.length > 1 ? 's' : ''} moved to To Do`);
+      setSelectedIds(new Set());
+    },
+    onError: () => {
+      toast.error('Failed to move tasks');
+    },
+  });
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    if (result.destination.index === result.source.index) return;
+
+    // Compute new order: use the destination index * 1000 as the new order.
+    // Multiplying by 1000 gives us room to insert without re-numbering everything.
+    const reordered = Array.from(backlogTasks);
+    const [moved] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, moved);
+
+    // Assign new backlogOrder values
+    const newOrder = result.destination.index * 1000;
+    reorderMutation.mutate({ issueId: moved.id, newOrder });
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === backlogTasks.length && backlogTasks.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(backlogTasks.map((t) => t.id)));
+    }
+  };
+
+  const handleBulkMoveToTodo = () => {
+    if (selectedIds.size === 0) return;
+    moveToTodoMutation.mutate(Array.from(selectedIds));
   };
 
   return (
     <AppLayout>
-      <ProjectPageHeader
-        project={currentProject}
-        onCreateClick={() => setShowCreateModal(true)}
+      <UnifiedPageHeader
+        title={t('nav.backlog') || 'Backlog'}
+        icon={<ListTodo className="h-6 w-6" />}
+        iconColor="#8B5CF6"
+        currentTab="backlog"
+        baseHref="/dashboard/issues"
+        showTabs
+        customTabs={ISSUES_TABS}
+        showSearch
+        showFilters
       />
 
-      <div className="p-3 md:p-6 space-y-4 md:space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-              <ClipboardList className="w-6 h-6 md:w-8 md:h-8" />
-              Infrastructure Backlog
-            </h1>
-            <p className="text-sm md:text-base text-muted-foreground mt-1">
-              Planned infrastructure, maintenance, and stakeholder activities
-            </p>
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+        {/* Toolbar */}
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleSelectAll}
+              className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              {selectedIds.size > 0 && selectedIds.size === backlogTasks.length ? (
+                <CheckSquare className="h-4 w-4 text-primary-500" />
+              ) : (
+                <Square className="h-4 w-4" />
+              )}
+              {selectedIds.size > 0
+                ? `${selectedIds.size} selected`
+                : `${backlogTasks.length} in backlog`}
+            </button>
+
+            {selectedIds.size > 0 && (
+              <Button
+                size="sm"
+                onClick={handleBulkMoveToTodo}
+                disabled={moveToTodoMutation.isPending}
+                className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
+              >
+                <ArrowRight className="h-3.5 w-3.5 mr-1.5" />
+                Move to To Do
+              </Button>
+            )}
           </div>
-          <Button onClick={() => setShowCreateModal(true)} className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Backlog Item
+
+          <Button
+            size="sm"
+            onClick={() => setShowCreateModal(true)}
+            className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
+          >
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
+            {t('common.create')}
           </Button>
         </div>
 
-        {/* Filters */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative md:col-span-2">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search backlog items..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                <option value="all">All Types</option>
-                <option value="infrastructure">Infrastructure</option>
-                <option value="maintenance">Maintenance</option>
-                <option value="irrigation">Irrigation</option>
-                <option value="monitoring">Monitoring</option>
-                <option value="stakeholder">Stakeholder</option>
-              </Select>
-              <Select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
-                <option value="all">All Priorities</option>
-                <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </Select>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-3 md:p-6">
+          {isLoading ? (
+            <div className="space-y-3 max-w-4xl">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-xs">Total Items</CardDescription>
-              <CardTitle className="text-2xl">{filteredItems.length}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-xs">Ready to Start</CardDescription>
-              <CardTitle className="text-2xl text-green-600">{groupedByStatus.ready.length}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-xs">Awaiting Approval</CardDescription>
-              <CardTitle className="text-2xl text-blue-600">{groupedByStatus.approved.length}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription className="text-xs">{t("status.blocked")}</CardDescription>
-              <CardTitle className="text-2xl text-red-600">{groupedByStatus.blocked.length}</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
-
-        {/* Backlog Items by Status */}
-        <div className="space-y-6">
-          {Object.entries(groupedByStatus).map(([status, items]) => (
-            items.length > 0 && (
-              <div key={status}>
-                <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  <Badge className={statusConfig[status as keyof typeof statusConfig].color}>
-                    {statusConfig[status as keyof typeof statusConfig].label}
-                  </Badge>
-                  <span className="text-muted-foreground">({items.length})</span>
-                </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {items.map((item) => {
-                    const TypeIcon = typeConfig[item.type].icon;
-                    return (
-                      <Card key={item.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                        <CardHeader>
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                <Badge variant="outline" className="flex items-center gap-1">
-                                  <TypeIcon className="w-3 h-3" />
-                                  {typeConfig[item.type].label}
-                                </Badge>
-                                <Badge className={priorityConfig[item.priority].color}>
-                                  {priorityConfig[item.priority].label}
-                                </Badge>
-                              </div>
-                              <CardTitle className="text-base md:text-lg break-words">
-                                {item.title}
-                              </CardTitle>
-                              <CardDescription className="mt-2 text-sm">
-                                {item.description}
-                              </CardDescription>
+          ) : backlogTasks.length === 0 ? (
+            <div className="flex h-full items-center justify-center">
+              <EmptyState
+                icon={ListTodo}
+                title="Your backlog is empty"
+                description="Move unprioritized work here to plan future sprints. Anything in the backlog stays out of active boards until you move it to To Do."
+                actionLabel={t('common.create')}
+                onAction={() => setShowCreateModal(true)}
+              />
+            </div>
+          ) : (
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="backlog-list">
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="space-y-2 max-w-4xl"
+                  >
+                    {backlogTasks.map((issue, index) => (
+                      <Draggable key={issue.id} draggableId={issue.id} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`group flex items-center gap-3 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 transition-all ${
+                              snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : 'hover:border-primary-500'
+                            }`}
+                          >
+                            {/* Drag handle */}
+                            <div
+                              {...provided.dragHandleProps}
+                              className="text-gray-300 dark:text-slate-600 group-hover:text-gray-500 dark:group-hover:text-slate-400 cursor-grab active:cursor-grabbing"
+                              title="Drag to reorder"
+                            >
+                              <GripVertical className="h-4 w-4" />
                             </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="space-y-2 text-sm">
-                            {item.estimatedCost && (
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold">Budget:</span>
-                                <span className="text-muted-foreground">
-                                  {item.estimatedCost.toLocaleString()} ETB
-                                </span>
-                              </div>
-                            )}
-                            {item.assignedTo && (
-                              <div className="flex items-center gap-2">
-                                <Users className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">{item.assignedTo}</span>
-                              </div>
-                            )}
-                            {item.dueDate && (
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">
-                                  Due: {new Date(item.dueDate).toLocaleDateString()}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </div>
-            )
-          ))}
-        </div>
 
-        {filteredItems.length === 0 && (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">No backlog items found matching your filters</p>
-            </CardContent>
-          </Card>
-        )}
+                            {/* Checkbox */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleSelection(issue.id);
+                              }}
+                              className="shrink-0"
+                              title="Select"
+                            >
+                              {selectedIds.has(issue.id) ? (
+                                <CheckSquare className="h-4 w-4 text-primary-500" />
+                              ) : (
+                                <Square className="h-4 w-4 text-gray-400" />
+                              )}
+                            </button>
+
+                            {/* Project badge */}
+                            <span
+                              className="h-5 shrink-0 rounded px-1.5 text-[10px] font-bold text-white flex items-center"
+                              style={{ backgroundColor: issue.project?.color || '#3B82F6' }}
+                            >
+                              {issue.project?.key?.slice(0, 3)}
+                            </span>
+
+                            {/* Key */}
+                            <span className="text-xs font-mono text-gray-500 dark:text-slate-400 shrink-0">
+                              {issue.key}
+                            </span>
+
+                            {/* Title — clickable */}
+                            <button
+                              type="button"
+                              onClick={() => setSelectedIssue(issue)}
+                              className="flex-1 text-left text-sm text-gray-900 dark:text-white hover:text-primary-500 truncate"
+                            >
+                              {issue.title}
+                            </button>
+
+                            {/* Priority */}
+                            {issue.priority && (
+                              <span className="shrink-0 flex items-center gap-1">
+                                <Flag className={`h-3.5 w-3.5 ${PRIORITY_COLORS[issue.priority] || 'text-gray-400'}`} />
+                              </span>
+                            )}
+
+                            {/* Due date */}
+                            {issue.dueDate && (
+                              <span className="shrink-0 flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
+                                <Calendar className="h-3.5 w-3.5" />
+                                {new Date(issue.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                              </span>
+                            )}
+
+                            {/* Assignee */}
+                            {issue.assignee ? (
+                              issue.assignee.avatar ? (
+                                <img
+                                  src={issue.assignee.avatar}
+                                  alt={issue.assignee.name}
+                                  className="h-6 w-6 shrink-0 rounded-full"
+                                />
+                              ) : (
+                                <div className="h-6 w-6 shrink-0 rounded-full bg-primary-500 text-white flex items-center justify-center text-[10px] font-semibold">
+                                  {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
+                                </div>
+                              )
+                            ) : (
+                              <div className="h-6 w-6 shrink-0 rounded-full border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center">
+                                <User className="h-3 w-3 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          )}
+        </div>
       </div>
 
+      {/* Create Issue Modal — defaults to BACKLOG status */}
       {showCreateModal && (
         <CreateIssueModal
           onClose={() => setShowCreateModal(false)}
+          defaultProjectId={scopedProjectId || undefined}
+          defaultStatus="BACKLOG"
+        />
+      )}
+
+      {/* Issue Detail Slideout */}
+      {selectedIssue && (
+        <IssueDetailSlideout
+          issue={selectedIssue as any}
+          onClose={() => setSelectedIssue(null)}
         />
       )}
     </AppLayout>
