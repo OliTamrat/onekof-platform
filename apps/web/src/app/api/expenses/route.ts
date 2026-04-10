@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import { sendExpenseSubmittedEmail } from '@/lib/email';
 import logger from '@/lib/logger';
 
 
@@ -198,7 +199,51 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // TODO: Send notification to budget approvers
+    // Notify budget approvers (org members with budgetAccess='FULL', plus OWNER/ADMIN).
+    // Fire-and-forget: don't block the response on email sending.
+    (async () => {
+      try {
+        const approvers = await prisma.organizationMember.findMany({
+          where: {
+            organizationId: ctx.organizationId,
+            OR: [
+              { budgetAccess: 'FULL' as any },
+              { role: 'OWNER' },
+              { role: 'ADMIN' },
+            ],
+            userId: { not: ctx.user.id }, // don't email the submitter
+          },
+          select: {
+            user: { select: { name: true, email: true } },
+          },
+        });
+
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
+        const expenseUrl = `${baseUrl}/dashboard/budget`;
+
+        await Promise.all(
+          approvers
+            .filter((m: any) => m.user?.email)
+            .map((m: any) =>
+              sendExpenseSubmittedEmail({
+                to: m.user.email,
+                approverName: m.user.name,
+                submitterName: ctx.user.name || ctx.user.email,
+                expenseTitle: description,
+                amount: Number(amount),
+                currency,
+                budgetName: expense.budget?.project?.name || 'Budget',
+                expenseUrl,
+              })
+            )
+        );
+      } catch (emailErr) {
+        logger.error('Failed to notify budget approvers', {
+          error: emailErr instanceof Error ? emailErr.message : emailErr,
+          expenseId: expense.id,
+        });
+      }
+    })();
 
     return NextResponse.json({
       expense,

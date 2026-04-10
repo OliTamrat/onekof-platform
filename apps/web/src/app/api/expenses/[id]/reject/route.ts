@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { sendExpenseDecisionEmail } from '@/lib/email';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -76,6 +77,7 @@ export async function POST(
         },
         include: {
           category: true,
+          budget: { select: { project: { select: { name: true } } } },
         },
       }),
       prisma.budgetRevision.create({
@@ -91,7 +93,34 @@ export async function POST(
       }),
     ]);
 
-    // TODO: Send notification to submitter
+    // Notify the submitter — fire-and-forget
+    (async () => {
+      try {
+        const submitter = await prisma.user.findUnique({
+          where: { id: expense.submittedBy },
+          select: { name: true, email: true },
+        });
+        if (!submitter?.email) return;
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
+        await sendExpenseDecisionEmail({
+          to: submitter.email,
+          submitterName: submitter.name,
+          decision: 'REJECTED',
+          expenseTitle: rejectedExpense.description,
+          amount: Number(rejectedExpense.amount),
+          currency: rejectedExpense.currency,
+          budgetName: rejectedExpense.budget?.project?.name || 'Budget',
+          decidedByName: user.name || user.email,
+          reason,
+          expenseUrl: `${baseUrl}/dashboard/budget`,
+        });
+      } catch (emailErr) {
+        logger.error('Failed to notify expense submitter of rejection', {
+          error: emailErr instanceof Error ? emailErr.message : emailErr,
+          expenseId: rejectedExpense.id,
+        });
+      }
+    })();
 
     return NextResponse.json({
       expense: rejectedExpense,

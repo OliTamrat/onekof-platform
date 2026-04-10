@@ -1869,6 +1869,7 @@
   },
   "departmentTabs": {
     "backlog": "ባክሎግ",
+    "epics": "ኤፒኮታት",
     "releases": "ምልቃቓት",
     "codeReview": "ናይ ኮድ ግምገማ",
     "socialMedia": "ማሕበራዊ ሚድያ",

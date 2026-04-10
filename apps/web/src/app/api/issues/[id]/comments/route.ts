@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
-import { autoWatchMentionedUsers } from '@/lib/mention-parser';
+import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
+import { sendMentionEmail } from '@/lib/email';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -116,6 +117,51 @@ export async function POST(
       ).catch(err => {
         logger.error('Auto-watch mentioned users in comment error', { error: err instanceof Error ? err.message : err });
       });
+
+      // Email notification to mentioned users — fire-and-forget.
+      // Resolves the same @mentions the auto-watch logic picked up, then
+      // sends an email to each (skipping the author).
+      (async () => {
+        try {
+          const mentions = extractMentions(content);
+          if (mentions.length === 0) return;
+          const mentionedUserIds = await resolveMentionsToUserIds(
+            mentions,
+            task.project!.organization!.id
+          );
+          if (mentionedUserIds.length === 0) return;
+
+          const mentionedUsers = await prisma.user.findMany({
+            where: {
+              id: { in: mentionedUserIds.filter((id) => id !== user.id) },
+            },
+            select: { id: true, name: true, email: true },
+          });
+
+          const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
+          const taskUrl = `${baseUrl}/dashboard/issues?taskId=${params.id}`;
+          const snippet = content.length > 200 ? content.slice(0, 200) + '…' : content;
+
+          await Promise.all(
+            mentionedUsers.map((u: any) =>
+              sendMentionEmail({
+                to: u.email,
+                mentionedName: u.name,
+                authorName: user.name || user.email,
+                taskKey: task.key || 'Task',
+                taskTitle: task.title || '',
+                commentSnippet: snippet,
+                taskUrl,
+              })
+            )
+          );
+        } catch (err) {
+          logger.error('Failed to send mention emails', {
+            error: err instanceof Error ? err.message : err,
+            taskId: params.id,
+          });
+        }
+      })();
 
       // Log comment activity
       logTaskActivity({

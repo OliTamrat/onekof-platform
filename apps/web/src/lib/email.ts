@@ -858,3 +858,260 @@ export async function sendBudgetAlertEmail(
     console.error('Failed to send budget alert email:', error);
   }
 }
+
+/**
+ * Shared compact email template used by the notification helpers below.
+ * Keeps the styled wrapper consistent while letting each notification supply
+ * its own heading, body, and CTA.
+ */
+function buildNotificationEmail(params: {
+  accentColor?: string;
+  heading: string;
+  body: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  footer?: string;
+}): string {
+  const accent = params.accentColor || '#1C8C7D';
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${params.heading}</title>
+</head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background-color:#f5f5f5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.08);border-top:4px solid ${accent};">
+        <tr><td style="padding:36px 40px 8px;">
+          <h1 style="margin:0 0 16px;font-size:22px;font-weight:600;color:#111827;">${params.heading}</h1>
+          <div style="font-size:15px;line-height:1.6;color:#374151;">${params.body}</div>
+        </td></tr>
+        <tr><td style="padding:24px 40px 40px;">
+          <a href="${params.ctaUrl}" style="display:inline-block;background-color:${accent};color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;font-size:14px;">
+            ${params.ctaLabel}
+          </a>
+        </td></tr>
+        ${params.footer ? `<tr><td style="padding:16px 40px 32px;border-top:1px solid #e5e7eb;">
+          <p style="margin:0;font-size:12px;color:#6b7280;">${params.footer}</p>
+        </td></tr>` : ''}
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+/**
+ * Notify an approver that a new expense was submitted for their review.
+ */
+export async function sendExpenseSubmittedEmail(params: {
+  to: string;
+  approverName?: string | null;
+  submitterName: string;
+  expenseTitle: string;
+  amount: number;
+  currency: string;
+  budgetName: string;
+  expenseUrl: string;
+}) {
+  try {
+    if (!resend) {
+      console.log('\n=== EXPENSE SUBMITTED EMAIL (dev) ===');
+      console.log('To:', params.to);
+      console.log('From:', params.submitterName);
+      console.log('Expense:', params.expenseTitle, `${params.amount} ${params.currency}`);
+      console.log('Budget:', params.budgetName);
+      console.log('======================================\n');
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: params.to,
+      subject: `New expense pending your approval: ${params.expenseTitle}`,
+      html: buildNotificationEmail({
+        heading: 'Expense awaiting your approval',
+        body: `
+          <p>Hi ${params.approverName || 'there'},</p>
+          <p><strong>${params.submitterName}</strong> has submitted a new expense that needs your review:</p>
+          <div style="margin:16px 0;padding:16px;background-color:#f9fafb;border-radius:6px;border:1px solid #e5e7eb;">
+            <div style="font-weight:600;color:#111827;margin-bottom:4px;">${params.expenseTitle}</div>
+            <div style="font-size:13px;color:#6b7280;">Budget: ${params.budgetName}</div>
+            <div style="margin-top:8px;font-size:18px;font-weight:600;color:#1C8C7D;">${params.amount.toLocaleString()} ${params.currency}</div>
+          </div>
+        `,
+        ctaLabel: 'Review expense',
+        ctaUrl: params.expenseUrl,
+        footer: 'You received this because you are an approver on this budget. Manage notification preferences in your Onekof settings.',
+      }),
+    });
+    console.log(`Expense submitted email sent to ${params.to}`);
+  } catch (error) {
+    console.error('Failed to send expense submitted email:', error);
+  }
+}
+
+/**
+ * Notify the submitter that their expense was approved or rejected.
+ */
+export async function sendExpenseDecisionEmail(params: {
+  to: string;
+  submitterName?: string | null;
+  decision: 'APPROVED' | 'REJECTED';
+  expenseTitle: string;
+  amount: number;
+  currency: string;
+  budgetName: string;
+  decidedByName: string;
+  reason?: string | null;
+  expenseUrl: string;
+}) {
+  try {
+    if (!resend) {
+      console.log(`\n=== EXPENSE ${params.decision} EMAIL (dev) ===`);
+      console.log('To:', params.to);
+      console.log('Expense:', params.expenseTitle);
+      console.log('Decided by:', params.decidedByName);
+      if (params.reason) console.log('Reason:', params.reason);
+      console.log('======================================\n');
+      return;
+    }
+
+    const isApproved = params.decision === 'APPROVED';
+    const accent = isApproved ? '#1C8C7D' : '#dc2626';
+    const headline = isApproved
+      ? 'Your expense was approved'
+      : 'Your expense was rejected';
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: params.to,
+      subject: `${isApproved ? 'Approved' : 'Rejected'}: ${params.expenseTitle}`,
+      html: buildNotificationEmail({
+        accentColor: accent,
+        heading: headline,
+        body: `
+          <p>Hi ${params.submitterName || 'there'},</p>
+          <p><strong>${params.decidedByName}</strong> has ${isApproved ? 'approved' : 'rejected'} your expense:</p>
+          <div style="margin:16px 0;padding:16px;background-color:#f9fafb;border-radius:6px;border:1px solid #e5e7eb;">
+            <div style="font-weight:600;color:#111827;margin-bottom:4px;">${params.expenseTitle}</div>
+            <div style="font-size:13px;color:#6b7280;">Budget: ${params.budgetName}</div>
+            <div style="margin-top:8px;font-size:18px;font-weight:600;color:${accent};">${params.amount.toLocaleString()} ${params.currency}</div>
+          </div>
+          ${params.reason ? `<p style="margin:16px 0 0;padding:12px;background-color:#fef2f2;border-left:3px solid #dc2626;border-radius:4px;font-size:13px;color:#991b1b;"><strong>Reason:</strong> ${params.reason}</p>` : ''}
+        `,
+        ctaLabel: 'View expense',
+        ctaUrl: params.expenseUrl,
+      }),
+    });
+    console.log(`Expense ${params.decision.toLowerCase()} email sent to ${params.to}`);
+  } catch (error) {
+    console.error('Failed to send expense decision email:', error);
+  }
+}
+
+/**
+ * Notify a user that they were mentioned in a comment.
+ */
+export async function sendMentionEmail(params: {
+  to: string;
+  mentionedName?: string | null;
+  authorName: string;
+  taskKey: string;
+  taskTitle: string;
+  commentSnippet: string;
+  taskUrl: string;
+}) {
+  try {
+    if (!resend) {
+      console.log('\n=== MENTION EMAIL (dev) ===');
+      console.log('To:', params.to);
+      console.log('From:', params.authorName);
+      console.log('Task:', params.taskKey, params.taskTitle);
+      console.log('===========================\n');
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: params.to,
+      subject: `${params.authorName} mentioned you in ${params.taskKey}`,
+      html: buildNotificationEmail({
+        heading: `${params.authorName} mentioned you`,
+        body: `
+          <p>Hi ${params.mentionedName || 'there'},</p>
+          <p><strong>${params.authorName}</strong> mentioned you in a comment on <strong>${params.taskKey}</strong> — ${params.taskTitle}:</p>
+          <blockquote style="margin:16px 0;padding:12px 16px;background-color:#f9fafb;border-left:3px solid #1C8C7D;border-radius:4px;font-size:14px;color:#374151;font-style:italic;">
+            ${params.commentSnippet}
+          </blockquote>
+        `,
+        ctaLabel: 'Reply on task',
+        ctaUrl: params.taskUrl,
+        footer: 'Manage your mention notifications in Onekof settings.',
+      }),
+    });
+    console.log(`Mention email sent to ${params.to}`);
+  } catch (error) {
+    console.error('Failed to send mention email:', error);
+  }
+}
+
+/**
+ * Notify a user that they were assigned to a task.
+ */
+export async function sendTaskAssignmentEmail(params: {
+  to: string;
+  assigneeName?: string | null;
+  assignerName: string;
+  taskKey: string;
+  taskTitle: string;
+  taskDescription?: string | null;
+  priority?: string | null;
+  dueDate?: Date | null;
+  taskUrl: string;
+}) {
+  try {
+    if (!resend) {
+      console.log('\n=== TASK ASSIGNMENT EMAIL (dev) ===');
+      console.log('To:', params.to);
+      console.log('Assigned by:', params.assignerName);
+      console.log('Task:', params.taskKey, params.taskTitle);
+      console.log('===================================\n');
+      return;
+    }
+
+    const dueDateText = params.dueDate
+      ? `Due ${new Date(params.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`
+      : '';
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: params.to,
+      subject: `You were assigned to ${params.taskKey}: ${params.taskTitle}`,
+      html: buildNotificationEmail({
+        heading: 'You have a new task',
+        body: `
+          <p>Hi ${params.assigneeName || 'there'},</p>
+          <p><strong>${params.assignerName}</strong> assigned you to a task:</p>
+          <div style="margin:16px 0;padding:16px;background-color:#f9fafb;border-radius:6px;border:1px solid #e5e7eb;">
+            <div style="font-size:12px;color:#6b7280;font-family:monospace;margin-bottom:4px;">${params.taskKey}</div>
+            <div style="font-weight:600;font-size:16px;color:#111827;margin-bottom:8px;">${params.taskTitle}</div>
+            ${params.taskDescription ? `<div style="font-size:13px;color:#6b7280;margin-bottom:8px;line-height:1.5;">${params.taskDescription.slice(0, 200)}${params.taskDescription.length > 200 ? '...' : ''}</div>` : ''}
+            <div style="display:flex;gap:12px;font-size:12px;color:#6b7280;">
+              ${params.priority ? `<span><strong>Priority:</strong> ${params.priority}</span>` : ''}
+              ${dueDateText ? `<span>${dueDateText}</span>` : ''}
+            </div>
+          </div>
+        `,
+        ctaLabel: 'Open task',
+        ctaUrl: params.taskUrl,
+        footer: 'You received this because a team member assigned you to this task.',
+      }),
+    });
+    console.log(`Task assignment email sent to ${params.to}`);
+  } catch (error) {
+    console.error('Failed to send task assignment email:', error);
+  }
+}

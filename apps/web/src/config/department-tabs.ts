@@ -104,6 +104,7 @@ export const ISSUES_TABS: TabDefinition[] = [
   { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '' },
   { id: 'backlog', label: 'Backlog', labelKey: 'departmentTabs.backlog', icon: ListChecks, href: '/backlog' },
   { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'epics', label: 'Epics', labelKey: 'departmentTabs.epics', icon: Target, href: '/epics' },
   { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
   { id: 'team', label: 'Team', labelKey: 'departmentTabs.team', icon: Users, href: '/team' },
   { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },

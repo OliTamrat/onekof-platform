@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { autoWatchMentionedUsers } from '@/lib/mention-parser';
+import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import { sendTaskAssignmentEmail, sendMentionEmail } from '@/lib/email';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -353,6 +354,39 @@ export async function POST(request: NextRequest) {
       ).catch(err => {
         logger.error('Auto-watch mentioned users error', { error: err instanceof Error ? err.message : err });
       });
+    }
+
+    // Email the assignee if one was set at creation — fire-and-forget, skip self-assignment
+    if (assigneeId && assigneeId !== ctx.user.id) {
+      (async () => {
+        try {
+          const newAssignee = await prisma.user.findUnique({
+            where: { id: assigneeId },
+            select: { name: true, email: true },
+          });
+          if (!newAssignee?.email) return;
+
+          const baseUrl = process.env.NEXTAUTH_URL || 'https://onekof.com';
+          const taskUrl = `${baseUrl}/dashboard/issues?taskId=${issue.id}`;
+
+          await sendTaskAssignmentEmail({
+            to: newAssignee.email,
+            assigneeName: newAssignee.name,
+            assignerName: ctx.user.name || ctx.user.email,
+            taskKey: issue.key,
+            taskTitle: issue.title,
+            taskDescription: issue.description,
+            priority: issue.priority,
+            dueDate: issue.dueDate,
+            taskUrl,
+          });
+        } catch (emailErr) {
+          logger.error('Failed to send task assignment email on create', {
+            error: emailErr instanceof Error ? emailErr.message : emailErr,
+            taskId: issue.id,
+          });
+        }
+      })();
     }
 
     return NextResponse.json({
