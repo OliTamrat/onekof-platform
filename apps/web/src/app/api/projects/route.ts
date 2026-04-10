@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { getOrganizationContext } from '@/lib/api-organization';
+import { getOrganizationContext, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import logger from '@/lib/logger';
 
@@ -22,15 +22,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { organization } = context;
+    const { organization, user, membership } = context;
 
     const url = request.nextUrl;
     const hasPagination = url.searchParams.has('page') || url.searchParams.has('limit');
 
-    const whereClause = {
+    // SECURITY: scope projects to what this user is allowed to see based on
+    // their org role and project membership (see buildProjectAccessFilter doc)
+    const whereClause = buildProjectAccessFilter({
       organizationId: organization.id,
-      deletedAt: null,
-    };
+      userId: user.id,
+      orgRole: membership.role,
+    });
 
     // Only fetch the lead member (not all members) + use _count for member count.
     // Task stats are computed separately via groupBy (see below) to avoid loading

@@ -231,6 +231,59 @@ export async function resolveUserOrganization(): Promise<{
 }
 
 /**
+ * Build a Prisma where clause that scopes project queries to what the current
+ * user is allowed to see based on their org role and project membership.
+ *
+ * Access rules:
+ * - OWNER / ADMIN: see all projects in the organization (no extra filter)
+ * - MEMBER / GUEST: see only projects where one of the following is true:
+ *     (a) project.visibility = PUBLIC (open to everyone in the org)
+ *     (b) user is an explicit member of the project (ProjectMember)
+ *     (c) user is the project lead (leadId)
+ *     (d) user is the project owner (ownerId)
+ *
+ * CONFIDENTIAL and PRIVATE projects are never visible unless the user is an
+ * explicit project member or lead/owner — even ADMINs must be added explicitly
+ * to CONFIDENTIAL projects.
+ */
+export function buildProjectAccessFilter(params: {
+  organizationId: string;
+  userId: string;
+  orgRole: string;
+}): any {
+  const { organizationId, userId, orgRole } = params;
+
+  const base: any = {
+    organizationId,
+    deletedAt: null,
+  };
+
+  // OWNER / ADMIN see everything except CONFIDENTIAL projects they're not in
+  if (orgRole === 'OWNER' || orgRole === 'ADMIN') {
+    return {
+      ...base,
+      OR: [
+        { visibility: { not: 'CONFIDENTIAL' } },
+        { members: { some: { userId } } },
+        { leadId: userId },
+        { ownerId: userId },
+      ],
+    };
+  }
+
+  // MEMBER / GUEST: only projects they have explicit access to
+  return {
+    ...base,
+    OR: [
+      { visibility: 'PUBLIC' },
+      { members: { some: { userId } } },
+      { leadId: userId },
+      { ownerId: userId },
+    ],
+  };
+}
+
+/**
  * Helper function to check if user has specific role in organization
  */
 export function hasRole(

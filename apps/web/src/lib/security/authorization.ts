@@ -115,10 +115,15 @@ export async function requireProjectAccess(
   userId: string,
   requiredRole?: 'ADMIN' | 'MEMBER' | 'VIEWER'
 ): Promise<AuthorizationResult> {
-  // Get project with organization
+  // Get project with organization + visibility + lead/owner for access check
   const project = await prisma.project.findUnique({
     where: { id: projectId },
-    select: { organizationId: true },
+    select: {
+      organizationId: true,
+      visibility: true,
+      leadId: true,
+      ownerId: true,
+    },
   });
 
   if (!project) {
@@ -132,6 +137,46 @@ export async function requireProjectAccess(
   const orgAuth = await requireOrganizationMembership(project.organizationId, userId);
   if (!orgAuth.authorized) {
     return orgAuth;
+  }
+
+  // SECURITY: Even without a required project role, enforce project visibility.
+  // PUBLIC projects are visible to all org members. INTERNAL/PRIVATE/CONFIDENTIAL
+  // require explicit project membership — with ONE exception: org OWNERs and
+  // ADMINs have implicit access to non-CONFIDENTIAL projects.
+  if (!requiredRole) {
+    const isOrgAdmin = orgAuth.membership?.role === 'OWNER' || orgAuth.membership?.role === 'ADMIN';
+    const isLeadOrOwner = project.leadId === userId || project.ownerId === userId;
+
+    if (project.visibility === 'PUBLIC') {
+      // Open to all org members — allow
+      return { authorized: true, membership: orgAuth.membership };
+    }
+
+    if (isLeadOrOwner) {
+      return { authorized: true, membership: orgAuth.membership };
+    }
+
+    if (project.visibility !== 'CONFIDENTIAL' && isOrgAdmin) {
+      // Org admins have implicit access to INTERNAL/PRIVATE (but NOT CONFIDENTIAL)
+      return { authorized: true, membership: orgAuth.membership };
+    }
+
+    // Otherwise require explicit project membership
+    const projectMember = await prisma.projectMember.findUnique({
+      where: {
+        projectId_userId: { projectId, userId },
+      },
+      select: { role: true },
+    });
+
+    if (!projectMember) {
+      return {
+        authorized: false,
+        error: NextResponse.json({ error: 'You do not have access to this project' }, { status: 403 }),
+      };
+    }
+
+    return { authorized: true, membership: orgAuth.membership };
   }
 
   // Check project membership if stricter access needed
