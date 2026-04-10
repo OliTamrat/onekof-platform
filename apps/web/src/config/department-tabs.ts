@@ -102,6 +102,7 @@ export const DOCUMENTS_TABS: TabDefinition[] = [
 export const ISSUES_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '/summary' },
   { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '' },
+  { id: 'backlog', label: 'Backlog', labelKey: 'departmentTabs.backlog', icon: ListChecks, href: '/backlog' },
   { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
   { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
   { id: 'team', label: 'Team', labelKey: 'departmentTabs.team', icon: Users, href: '/team' },

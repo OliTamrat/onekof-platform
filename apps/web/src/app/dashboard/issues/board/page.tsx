@@ -35,7 +35,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 
-type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
+type TaskStatus = 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
 type TaskPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
 interface Task {
@@ -68,6 +68,7 @@ interface Column {
 }
 
 const COLUMNS: Column[] = [
+  { id: 'BACKLOG', title: 'status.backlog', icon: Circle, color: 'bg-slate-400' },
   { id: 'TODO', title: 'status.todo', icon: Circle, color: 'bg-gray-500' },
   { id: 'IN_PROGRESS', title: 'status.inProgress', icon: Clock, color: 'bg-blue-500' },
   { id: 'IN_REVIEW', title: 'status.inReview', icon: AlertCircle, color: 'bg-purple-500' },
@@ -89,6 +90,7 @@ export default function IssuesBoardPage() {
     : null;
 
   const [optimisticTasks, setOptimisticTasks] = useState<Record<TaskStatus, Task[]>>({
+    BACKLOG: [],
     TODO: [],
     IN_PROGRESS: [],
     IN_REVIEW: [],
@@ -113,6 +115,7 @@ export default function IssuesBoardPage() {
   // Group tasks by status
   useEffect(() => {
     const grouped: Record<TaskStatus, Task[]> = {
+      BACKLOG: [],
       TODO: [],
       IN_PROGRESS: [],
       IN_REVIEW: [],

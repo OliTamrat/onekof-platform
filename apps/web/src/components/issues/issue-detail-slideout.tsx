@@ -58,7 +58,7 @@ interface Issue {
   title: string;
   description?: string;
   type: 'TASK' | 'STORY' | 'BUG' | 'EPIC' | 'SUBTASK';
-  status: 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
+  status: 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
   priority: 'HIGHEST' | 'HIGH' | 'MEDIUM' | 'LOW' | 'LOWEST';
   assignee?: {
     id: string;
@@ -268,6 +268,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
   // Status badge colors
   const statusColors: Record<string, string> = {
+    BACKLOG: 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300',
     TODO: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300',
     IN_PROGRESS: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300',
     IN_REVIEW: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300',
@@ -286,6 +287,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
   // Status options
   const statusOptions = [
+    { value: 'BACKLOG', label: t('status.backlog'), color: 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300' },
     { value: 'TODO', label: t('status.todo'), color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
     { value: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
     { value: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
@@ -551,6 +553,7 @@ function DetailsTab({
 
   // Status options
   const statusOptions = [
+    { value: 'BACKLOG', label: t('status.backlog'), color: 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300' },
     { value: 'TODO', label: t('status.todo'), color: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' },
     { value: 'IN_PROGRESS', label: t('status.inProgress'), color: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' },
     { value: 'IN_REVIEW', label: t('status.inReview'), color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' },
@@ -559,6 +562,7 @@ function DetailsTab({
   ];
 
   const statusColors: Record<string, string> = {
+    BACKLOG: 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300',
     TODO: 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300',
     IN_PROGRESS: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300',
     IN_REVIEW: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300',

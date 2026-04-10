@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { generateTokenPair, generateTokenExpiry } from '@/lib/security/tokens';
 import { log, logSecurity } from '@/lib/logger';
 import { checkRateLimit } from '@/lib/security/rate-limit';
+import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,22 +61,32 @@ export async function POST(req: NextRequest) {
       email: email,
     });
 
-    // TODO: Send email with verification link
-    // The verification URL contains the plaintext token (sent via email only)
+    // Build verification URL — plaintext token is only sent via email
     const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify-email?token=${token}`;
 
-    // SECURITY FIX: Only log to server console, NEVER return in response
-    log.info('Verification email token generated', {
-      email: email,
-      expiresAt: expires.toISOString(),
-    });
+    // Send the email via Resend
+    try {
+      await sendVerificationEmail(email, verificationUrl);
+      log.info('Verification email sent', {
+        email,
+        expiresAt: expires.toISOString(),
+      });
+    } catch (emailError) {
+      log.error('Failed to send verification email', {
+        error: emailError instanceof Error ? emailError.message : emailError,
+        email,
+      });
+      // Don't leak the email failure to the caller — token is already stored,
+      // user can request resend. Still return success for security (don't reveal
+      // whether send failed vs email doesn't exist).
+    }
 
-    // In development, log the URL for testing (server-side only)
+    // In development, also log the URL so Oli can test without checking inbox
     if (process.env.NODE_ENV === 'development') {
       log.debug('EMAIL VERIFICATION URL (Development Only)', { verificationUrl, validFor: '24 hours' });
     }
 
-    // SECURITY FIX: Never return token or verificationUrl in API response
+    // SECURITY: Never return token or verificationUrl in API response
     return NextResponse.json(
       {
         message: 'Verification email sent successfully',

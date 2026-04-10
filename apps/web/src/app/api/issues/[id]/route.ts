@@ -238,6 +238,7 @@ export async function PATCH(
       estimate,
       timeSpent,
       parentId,
+      backlogOrder,
     } = body;
 
     // Build update data
@@ -261,6 +262,7 @@ export async function PATCH(
     if (estimate !== undefined) updateData.estimate = estimate;
     if (timeSpent !== undefined) updateData.timeSpent = timeSpent;
     if (parentId !== undefined) updateData.parentId = parentId;
+    if (backlogOrder !== undefined) updateData.backlogOrder = backlogOrder;
 
     // Update issue
     const issue = await prisma.task.update({
