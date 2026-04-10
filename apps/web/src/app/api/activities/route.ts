@@ -120,22 +120,51 @@ export async function GET(request: NextRequest) {
       prisma.userActivity.count({ where }),
     ]);
 
-    // Enrich TASK activities with task key + title for display
-    const taskIds = [...new Set(
-      activities
-        .filter((a: any) => a.entityType === 'TASK')
-        .map((a: any) => a.entityId)
-    )];
-    const tasks = taskIds.length > 0 ? await prisma.task.findMany({
-      where: { id: { in: taskIds } },
-      select: {
-        id: true,
-        key: true,
-        title: true,
-        project: { select: { id: true, key: true, name: true, color: true } },
-      },
-    }) : [];
-    const taskMap = new Map(tasks.map((t: any) => [t.id, t]));
+    // Enrich TASK activities with task key + title for display.
+    // Skip entirely if there are no TASK-type activities (avoids round-trip).
+    const taskIds = Array.from(
+      new Set(
+        activities
+          .filter((a: any) => a.entityType === 'TASK')
+          .map((a: any) => a.entityId)
+      )
+    );
+
+    let taskMap = new Map<string, any>();
+    if (taskIds.length > 0) {
+      // Single flat query with scalar projectId — no nested project join.
+      const tasks = await prisma.task.findMany({
+        where: { id: { in: taskIds } },
+        select: {
+          id: true,
+          key: true,
+          title: true,
+          projectId: true,
+        },
+      });
+
+      // Fetch distinct project details in parallel (fewer rows than tasks)
+      const projectIds = Array.from(new Set(tasks.map((t: any) => t.projectId).filter(Boolean)));
+      const projects = projectIds.length > 0
+        ? await prisma.project.findMany({
+            where: { id: { in: projectIds } },
+            select: { id: true, key: true, name: true, color: true },
+          })
+        : [];
+      const projectsById = new Map(projects.map((p: any) => [p.id, p]));
+
+      taskMap = new Map(
+        tasks.map((t: any) => [
+          t.id,
+          {
+            id: t.id,
+            key: t.key,
+            title: t.title,
+            project: t.projectId ? projectsById.get(t.projectId) || null : null,
+          },
+        ])
+      );
+    }
 
     const enrichedActivities = activities.map((a: any) => ({
       ...a,
