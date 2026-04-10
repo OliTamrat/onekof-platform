@@ -14,6 +14,8 @@ export interface AlertModalProps {
   confirmText?: string;
   onConfirm?: () => void;
   cancelText?: string;
+  /** Use a red destructive button style for the confirm action */
+  destructive?: boolean;
 }
 
 const iconConfig = {
@@ -32,6 +34,7 @@ export function AlertModal({
   confirmText = 'OK',
   onConfirm,
   cancelText,
+  destructive = false,
 }: AlertModalProps) {
   const [isRendered, setIsRendered] = React.useState(false);
   const [isAnimating, setIsAnimating] = React.useState(false);
@@ -138,7 +141,12 @@ export function AlertModal({
             )}
             <Button
               onClick={handleConfirm}
-              className="w-full sm:w-auto h-10 rounded-lg bg-[#1C8C7D] hover:bg-[#167A6E] text-white"
+              className={cn(
+                'w-full sm:w-auto h-10 rounded-lg text-white',
+                destructive
+                  ? 'bg-red-600 hover:bg-red-700'
+                  : 'bg-[#1C8C7D] hover:bg-[#167A6E]'
+              )}
             >
               {confirmText}
             </Button>

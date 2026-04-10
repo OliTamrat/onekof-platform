@@ -47,6 +47,7 @@ import {
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
+import { AlertModal } from '@/components/ui/alert-modal';
 import { useLanguage } from '@/contexts/language-context';
 
 // Types
@@ -149,6 +150,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const [commentContent, setCommentContent] = useState('');
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch org + members for assignee picker and role-based delete permission
@@ -399,23 +401,9 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
                       <>
                         <div className="border-t border-slate-100 dark:border-slate-700/50" />
                         <button
-                          onClick={async () => {
-                            if (confirm(`Delete ${issue.key}? This cannot be undone.`)) {
-                              try {
-                                const res = await fetch(`/api/issues/${issue.id}`, { method: 'DELETE' });
-                                if (res.ok) {
-                                  toast.success('Issue deleted');
-                                  queryClient.invalidateQueries({ queryKey: ['issues'] });
-                                  onClose();
-                                } else {
-                                  const err = await res.json().catch(() => ({}));
-                                  toast.error(err.error || 'Failed to delete');
-                                }
-                              } catch {
-                                toast.error('Failed to delete');
-                              }
-                            }
+                          onClick={() => {
                             setIsMoreMenuOpen(false);
+                            setIsDeleteConfirmOpen(true);
                           }}
                           className="w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center gap-2"
                         >
@@ -501,6 +489,33 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           animation: slide-in-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
+
+      {/* Themed Delete Confirmation Modal */}
+      <AlertModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        type="error"
+        destructive
+        title={t('common.deleteIssueTitle') || 'Delete this issue?'}
+        message={`${issue?.key ? issue.key + ' — ' : ''}${issue?.title || ''}\n\n${t('common.deleteIssueMessage') || 'This action cannot be undone. The issue and all its comments, attachments, and subtasks will be permanently removed.'}`}
+        confirmText={t('common.delete') || 'Delete'}
+        cancelText={t('common.cancel') || 'Cancel'}
+        onConfirm={async () => {
+          try {
+            const res = await fetch(`/api/issues/${issue!.id}`, { method: 'DELETE' });
+            if (res.ok) {
+              toast.success('Issue deleted');
+              queryClient.invalidateQueries({ queryKey: ['issues'] });
+              onClose();
+            } else {
+              const err = await res.json().catch(() => ({}));
+              toast.error(err.error || 'Failed to delete');
+            }
+          } catch {
+            toast.error('Failed to delete');
+          }
+        }}
+      />
     </>
   );
 }
