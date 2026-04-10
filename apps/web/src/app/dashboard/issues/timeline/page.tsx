@@ -714,11 +714,21 @@ export default function IssuesTimelinePage() {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
-                <Button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors">
-                  View Full Project
+                <Button
+                  onClick={() => {
+                    window.location.href = `/dashboard?projectId=${selectedProject.id}`;
+                  }}
+                  className="flex-1 px-4 py-3 text-sm font-medium rounded-lg bg-[#8B5CF6] text-white hover:bg-[#7C3AED] transition-colors"
+                >
+                  View Project Dashboard
                 </Button>
-                <Button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors">
-                  Export Timeline Report
+                <Button
+                  onClick={() => {
+                    window.location.href = `/dashboard/issues?projectId=${selectedProject.id}`;
+                  }}
+                  className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                >
+                  View Issues
                 </Button>
               </div>
             </div>
