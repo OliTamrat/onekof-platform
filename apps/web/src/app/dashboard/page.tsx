@@ -826,7 +826,7 @@ export default function DashboardPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                              {task.project?.key}-{task.key}
+                              {task.key}
                             </span>
                             <span className={`text-xs px-2 py-0.5 rounded ${
                               task.status === 'TODO' ? 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' :

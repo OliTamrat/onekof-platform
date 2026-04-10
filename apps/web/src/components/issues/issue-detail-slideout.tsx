@@ -136,6 +136,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const resolvedId = initialIssue?.id || issueId;
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('details');
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState(initialIssue?.description || '');
   const [commentContent, setCommentContent] = useState('');
@@ -294,7 +295,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           {/* Left: Task Key */}
           <div className="flex items-center gap-2">
             <span className="text-sm md:text-base font-semibold text-gray-900 dark:text-white">
-              {issue.project?.key}-{issue.key}
+              {issue.key}
             </span>
           </div>
 
@@ -327,14 +328,63 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
             </Button>
 
             {/* More Menu */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-auto w-auto rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-              title="More options"
-            >
-              <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
-            </Button>
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                className="h-auto w-auto rounded-md p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                title="More options"
+              >
+                <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
+              </Button>
+              {isMoreMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsMoreMenuOpen(false)} />
+                  <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(issue.key);
+                        toast.success('Key copied');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] text-slate-700 dark:text-slate-300"
+                    >
+                      Copy key
+                    </button>
+                    <button
+                      onClick={() => {
+                        setActiveTab('settings');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] text-slate-700 dark:text-slate-300"
+                    >
+                      Settings
+                    </button>
+                    <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                    <button
+                      onClick={async () => {
+                        if (confirm('Delete this issue?')) {
+                          try {
+                            const res = await fetch(`/api/issues/${issue.id}`, { method: 'DELETE' });
+                            if (res.ok) {
+                              toast.success('Issue deleted');
+                              onClose();
+                            }
+                          } catch {
+                            toast.error('Failed to delete');
+                          }
+                        }
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Close Button */}
             <Button
