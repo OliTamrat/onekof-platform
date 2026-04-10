@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { InsightsSlideout } from '@/components/insights/insights-slideout';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
 import {
@@ -53,6 +54,7 @@ interface Project {
 export default function IssuesTimelinePage() {
   const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [insightsOpen, setInsightsOpen] = useState(false);
   const [timeRange, setTimeRange] = useState<'30d' | '90d' | '6m' | '1y'>('90d');
 
   // Read project scope from URL
@@ -196,6 +198,8 @@ export default function IssuesTimelinePage() {
         showGroupBy
         showViewSettings
         showInsights
+        onInsightsToggle={() => setInsightsOpen((v) => !v)}
+        insightsOpen={insightsOpen}
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
@@ -735,6 +739,12 @@ export default function IssuesTimelinePage() {
           </SlideoutPanelContent>
         </SlideoutPanel>
       )}
+
+      <InsightsSlideout
+        open={insightsOpen}
+        onClose={() => setInsightsOpen(false)}
+        context={{ type: 'timeline', projects: (issuesData as any)?.issues ? Array.from(new Map(((issuesData as any).issues as any[]).map((i: any) => [i.project?.id, { ...i.project, progress: 0 }])).values()) : [] }}
+      />
     </AppLayout>
   );
 }

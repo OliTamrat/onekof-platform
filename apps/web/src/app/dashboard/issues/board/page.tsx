@@ -18,6 +18,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { InsightsSlideout } from '@/components/insights/insights-slideout';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
@@ -80,6 +81,7 @@ export default function IssuesBoardPage() {
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [insightsOpen, setInsightsOpen] = useState(false);
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
@@ -221,6 +223,8 @@ export default function IssuesBoardPage() {
         showGroupBy
         showViewSettings
         showInsights
+        onInsightsToggle={() => setInsightsOpen((v) => !v)}
+        insightsOpen={insightsOpen}
       />
 
       <div className="flex h-full flex-col bg-slate-50 dark:bg-[#1B1F23]">
@@ -410,6 +414,12 @@ export default function IssuesBoardPage() {
           onClose={() => setShowCreateModal(false)}
         />
       )}
+
+      <InsightsSlideout
+        open={insightsOpen}
+        onClose={() => setInsightsOpen(false)}
+        context={{ type: 'issues', issues: issuesData?.issues || [] }}
+      />
     </AppLayout>
   );
 }
