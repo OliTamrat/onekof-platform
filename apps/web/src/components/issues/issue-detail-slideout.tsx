@@ -12,6 +12,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { ActivityTimeline as RealActivityTimeline } from '@/components/activity/activity-timeline';
 import {
   X,
@@ -139,6 +140,8 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const { t } = useLanguage();
   const resolvedId = initialIssue?.id || issueId;
   const toast = useToast();
+  const { data: session } = useSession();
+  const currentUserId = (session?.user as any)?.id;
   const [activeTab, setActiveTab] = useState<Tab>('details');
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -147,6 +150,33 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
   const queryClient = useQueryClient();
+
+  // Fetch org + members for assignee picker and role-based delete permission
+  const { data: orgData } = useQuery({
+    queryKey: ['current-org-for-issue-detail'],
+    queryFn: async () => {
+      const res = await fetch('/api/organizations');
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+
+  const { data: membersData } = useQuery({
+    queryKey: ['org-members-for-issue-detail', currentOrgId],
+    queryFn: async () => {
+      if (!currentOrgId) return { members: [] };
+      const res = await fetch(`/api/organizations/${currentOrgId}/members`);
+      if (!res.ok) return { members: [] };
+      return res.json();
+    },
+    enabled: !!currentOrgId,
+  });
+
+  const members: any[] = membersData?.members || [];
+  const currentMembership = members.find((m: any) => m.id === currentUserId || m.userId === currentUserId);
+  const userRole = currentMembership?.role;
+  const canDelete = userRole === 'OWNER' || userRole === 'ADMIN';
 
   // Fetch full issue details
   const { data: issueData, refetch } = useQuery({
@@ -365,26 +395,35 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
                     >
                       Settings
                     </button>
-                    <div className="border-t border-slate-100 dark:border-slate-700/50" />
-                    <button
-                      onClick={async () => {
-                        if (confirm('Delete this issue?')) {
-                          try {
-                            const res = await fetch(`/api/issues/${issue.id}`, { method: 'DELETE' });
-                            if (res.ok) {
-                              toast.success('Issue deleted');
-                              onClose();
+                    {canDelete && (
+                      <>
+                        <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                        <button
+                          onClick={async () => {
+                            if (confirm(`Delete ${issue.key}? This cannot be undone.`)) {
+                              try {
+                                const res = await fetch(`/api/issues/${issue.id}`, { method: 'DELETE' });
+                                if (res.ok) {
+                                  toast.success('Issue deleted');
+                                  queryClient.invalidateQueries({ queryKey: ['issues'] });
+                                  onClose();
+                                } else {
+                                  const err = await res.json().catch(() => ({}));
+                                  toast.error(err.error || 'Failed to delete');
+                                }
+                              } catch {
+                                toast.error('Failed to delete');
+                              }
                             }
-                          } catch {
-                            toast.error('Failed to delete');
-                          }
-                        }
-                        setIsMoreMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
-                    >
-                      Delete
-                    </button>
+                            setIsMoreMenuOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-sm text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center gap-2"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Delete issue
+                        </button>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -412,6 +451,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
               updateIssue={updateIssueMutation}
               addWatcher={addWatcherMutation}
               removeWatcher={removeWatcherMutation}
+              members={members}
             />
           )}
           {activeTab === 'settings' && <SettingsTab issue={issue} updateIssue={updateIssueMutation} />}
@@ -472,12 +512,14 @@ function DetailsTab({
   updateIssue,
   addWatcher,
   removeWatcher,
+  members,
 }: {
   issue: Issue;
   watchers: Watcher[];
   updateIssue: any;
   addWatcher: any;
   removeWatcher: any;
+  members: any[];
 }) {
   const { t } = useLanguage();
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -487,6 +529,7 @@ function DetailsTab({
   const [commentContent, setCommentContent] = useState('');
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false);
   const [isEditingDueDate, setIsEditingDueDate] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
 
@@ -694,9 +737,83 @@ function DetailsTab({
             {/* Assignee */}
             <div className="flex items-start gap-3">
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.assignee')}</span>
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <User className="h-4 w-4 text-gray-400 shrink-0" />
-                <span className="text-sm text-gray-900 dark:text-white truncate">{issue.assignee?.name || t('common.unassigned')}</span>
+              <div className="relative flex-1 min-w-0">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsAssigneeDropdownOpen(!isAssigneeDropdownOpen)}
+                  className="h-auto w-full justify-start gap-2 px-2 py-1 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
+                >
+                  {issue.assignee ? (
+                    issue.assignee.avatar ? (
+                      <img src={issue.assignee.avatar} alt={issue.assignee.name} className="h-5 w-5 rounded-full shrink-0" />
+                    ) : (
+                      <div className="h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
+                        {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                    )
+                  ) : (
+                    <User className="h-4 w-4 text-gray-400 shrink-0" />
+                  )}
+                  <span className="truncate flex-1 text-left">{issue.assignee?.name || t('common.unassigned')}</span>
+                  <ChevronDown className="h-3 w-3 text-gray-400 shrink-0" />
+                </Button>
+                {isAssigneeDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsAssigneeDropdownOpen(false)} />
+                    <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[220px] max-h-64 overflow-y-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#282E33] shadow-xl">
+                      {members.length === 0 ? (
+                        <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400">No members found</div>
+                      ) : (
+                        members.map((member: any) => {
+                          const memberId = member.id || member.userId;
+                          const memberName = member.name || member.user?.name || member.email || 'Unknown';
+                          const memberAvatar = member.avatar || member.user?.avatar;
+                          const isSelected = issue.assignee?.id === memberId;
+                          return (
+                            <Button
+                              key={memberId}
+                              variant="ghost"
+                              onClick={() => {
+                                updateIssue.mutate({ assigneeId: memberId });
+                                setIsAssigneeDropdownOpen(false);
+                                flashSaved();
+                              }}
+                              className={`w-full h-auto justify-start gap-2 rounded-none px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1B1F23] ${
+                                isSelected ? 'bg-gray-50 dark:bg-[#1B1F23]' : ''
+                              }`}
+                            >
+                              {memberAvatar ? (
+                                <img src={memberAvatar} alt={memberName} className="h-5 w-5 rounded-full shrink-0" />
+                              ) : (
+                                <div className="h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
+                                  {memberName.charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                              <span className="truncate flex-1 text-left text-gray-900 dark:text-white">{memberName}</span>
+                              {isSelected && <Check className="h-3.5 w-3.5 text-primary-500 shrink-0" />}
+                            </Button>
+                          );
+                        })
+                      )}
+                      {issue.assignee && (
+                        <>
+                          <div className="border-t border-gray-200 dark:border-slate-700" />
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              updateIssue.mutate({ assigneeId: null });
+                              setIsAssigneeDropdownOpen(false);
+                              flashSaved();
+                            }}
+                            className="w-full h-auto justify-start rounded-none px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1B1F23]"
+                          >
+                            {t('common.unassigned')}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
