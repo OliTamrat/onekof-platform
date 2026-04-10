@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, Loader2, ChevronDown, ChevronUp, Upload, Link as LinkIcon, FileText, Trash2 } from 'lucide-react';
+import { X, Loader2, Upload, Link as LinkIcon, FileText, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
@@ -29,7 +29,6 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   const [selectedWatchers, setSelectedWatchers] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState('');
   const [estimate, setEstimate] = useState('');
-  const [showMoreFields, setShowMoreFields] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [links, setLinks] = useState<{ toTaskId: string; type: string; label: string }[]>([]);
   const [linkType, setLinkType] = useState<string>('RELATES_TO');
@@ -76,13 +75,27 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
     },
   });
 
-  const { data: membersData } = useQuery({
-    queryKey: ['organization-members'],
+  // Fetch current org to get its ID, then fetch members
+  const { data: orgData } = useQuery({
+    queryKey: ['current-org'],
     queryFn: async () => {
-      const res = await fetch('/api/organizations/members');
+      const res = await fetch('/api/organizations');
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+
+  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+
+  const { data: membersData } = useQuery({
+    queryKey: ['organization-members', currentOrgId],
+    queryFn: async () => {
+      if (!currentOrgId) return { members: [] };
+      const res = await fetch(`/api/organizations/${currentOrgId}/members`);
       if (!res.ok) throw new Error('Failed to fetch members');
       return res.json();
     },
+    enabled: !!currentOrgId,
   });
 
   const createIssueMutation = useMutation({
@@ -179,16 +192,18 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   const labelClasses = 'mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-[2px]">
-      <div className="relative w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[85vh] overflow-hidden rounded-t-2xl sm:rounded-xl bg-white shadow-2xl dark:bg-[#22272B] border border-transparent sm:border-slate-200/80 dark:sm:border-white/[0.08]">
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+        onClick={onClose}
+      />
 
-        {/* Mobile drag handle */}
-        <div className="flex justify-center pt-3 pb-0 sm:hidden" aria-hidden="true">
-          <div className="h-1 w-10 rounded-full bg-slate-300 dark:bg-slate-600" />
-        </div>
+      {/* Slide-out Panel */}
+      <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex flex-col animate-slide-in-right">
 
-        {/* Teal accent — desktop */}
-        <div className="hidden sm:block h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60" />
+        {/* Teal accent */}
+        <div className="h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60" />
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-700/50 px-4 sm:px-6 py-3 sm:py-4">
@@ -220,25 +235,10 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
           </Button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="max-h-[calc(95vh-140px)] sm:max-h-[calc(85vh-140px)] overflow-y-auto p-4 sm:p-6 space-y-4">
-          {/* Essential fields — always visible */}
-          <div className="space-y-4">
-            {/* Project */}
-            <div>
-              <label className={labelClasses}>
-                {t('common.project')} <span className="text-red-500">*</span>
-              </label>
-              <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className={inputClasses} required>
-                <option value="">{t('common.project')}...</option>
-                {projectsData?.projects?.map((project: any) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name} ({project.key})
-                  </option>
-                ))}
-              </select>
-            </div>
-
+        {/* Form — two section layout: main content + details sidebar */}
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col md:flex-row overflow-hidden">
+          {/* Main Section */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 md:border-r md:border-gray-200 md:dark:border-slate-700/50">
             {/* Title */}
             <div>
               <label className={labelClasses}>
@@ -248,132 +248,23 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className={inputClasses}
+                className={cn(inputClasses, 'text-base font-medium')}
                 placeholder={t('common.title')}
                 required
                 autoFocus
               />
             </div>
 
-            {/* Type + Priority — compact row */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelClasses}>{t('common.type')}</label>
-                <select value={type} onChange={(e) => setType(e.target.value)} className={inputClasses}>
-                  <option value="TASK">Task</option>
-                  <option value="STORY">Story</option>
-                  <option value="BUG">Bug</option>
-                  <option value="EPIC">Epic</option>
-                </select>
-              </div>
-              <div>
-                <label className={labelClasses}>{t('common.priority')}</label>
-                <select value={priority} onChange={(e) => setPriority(e.target.value)} className={inputClasses}>
-                  <option value="HIGHEST">{t('priority.highest')}</option>
-                  <option value="HIGH">{t('priority.high')}</option>
-                  <option value="MEDIUM">{t('priority.medium')}</option>
-                  <option value="LOW">{t('priority.low')}</option>
-                  <option value="LOWEST">{t('priority.lowest')}</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Status + Assignee — compact row */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelClasses}>{t('common.status')}</label>
-                <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputClasses}>
-                  <option value="TODO">{t('status.todo')}</option>
-                  <option value="IN_PROGRESS">{t('status.inProgress')}</option>
-                  <option value="IN_REVIEW">{t('status.inReview')}</option>
-                  <option value="DONE">{t('status.done')}</option>
-                </select>
-              </div>
-              <div>
-                <label className={labelClasses}>{t('common.assignee')}</label>
-                <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} className={inputClasses}>
-                  <option value="">{t('common.unassigned')}</option>
-                  {membersData?.members?.map((member: any) => (
-                    <option key={member.userId} value={member.userId}>
-                      {member.user?.name || member.user?.email}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* More fields — collapsible */}
-          <button
-            type="button"
-            onClick={() => setShowMoreFields(!showMoreFields)}
-            className="flex items-center gap-2 text-sm font-medium text-[#1C8C7D] hover:text-[#167A6E] transition-colors w-full py-2"
-          >
-            {showMoreFields ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            {showMoreFields ? t('common.lessFields') || 'Less fields' : t('common.moreFields') || 'More fields'}
-          </button>
-
-          <div className={cn(
-            'space-y-4 overflow-hidden transition-all duration-300 ease-in-out',
-            showMoreFields ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
-          )}>
             {/* Description */}
             <div>
               <label className={labelClasses}>{t('common.description')}</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows={3}
+                rows={5}
                 className={inputClasses}
                 placeholder={t('tasks.addDescription')}
               />
-            </div>
-
-            {/* Team + Due Date */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelClasses}>{t('goals.team')}</label>
-                <select value={teamId} onChange={(e) => setTeamId(e.target.value)} className={inputClasses}>
-                  <option value="">{t('common.none')}</option>
-                  {teamsData?.teams?.map((team: any) => (
-                    <option key={team.id} value={team.id}>
-                      {team.icon} {team.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className={labelClasses}>{t('common.dueDate')}</label>
-                <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClasses} />
-              </div>
-            </div>
-
-            {/* Estimate */}
-            <div className="w-1/2">
-              <label className={labelClasses}>Estimate</label>
-              <input type="number" value={estimate} onChange={(e) => setEstimate(e.target.value)} className={inputClasses} placeholder="0" min="0" />
-            </div>
-
-            {/* Goals */}
-            <div>
-              <label className={labelClasses}>{t('nav.goals')}</label>
-              <div className="max-h-28 space-y-1.5 overflow-y-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] p-3">
-                {goalsData?.goals?.length > 0 ? (
-                  goalsData.goals.map((goal: any) => (
-                    <label key={goal.id} className="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input
-                        type="checkbox"
-                        checked={selectedGoals.includes(goal.id)}
-                        onChange={() => toggleGoal(goal.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-[#1C8C7D] focus:ring-[#1C8C7D]"
-                      />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{goal.title}</span>
-                    </label>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-400">{t('emptyStates.noGoals')}</p>
-                )}
-              </div>
             </div>
 
             {/* Attachments */}
@@ -387,7 +278,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                   const dropped = Array.from(e.dataTransfer.files);
                   setAttachments((prev) => [...prev, ...dropped]);
                 }}
-                className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-4 py-5 cursor-pointer hover:border-[#1C8C7D] transition-colors"
+                className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-4 py-6 cursor-pointer hover:border-[#1C8C7D] transition-colors"
               >
                 <Upload className="h-4 w-4 text-gray-400" />
                 <span className="text-sm text-gray-600 dark:text-gray-400">Drop files here or click to browse</span>
@@ -406,7 +297,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
               {attachments.length > 0 && (
                 <div className="mt-2 space-y-1">
                   {attachments.map((file, idx) => (
-                    <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#1B1F23] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
+                    <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
                       <FileText className="h-3.5 w-3.5 text-[#1C8C7D] shrink-0" />
                       <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
                       <span className="text-xs text-gray-400">{(file.size / 1024).toFixed(1)} KB</span>
@@ -481,7 +372,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 {links.length > 0 && (
                   <div className="space-y-1">
                     {links.map((link, idx) => (
-                      <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#1B1F23] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
+                      <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
                         <LinkIcon className="h-3 w-3 text-[#1C8C7D] shrink-0" />
                         <span className="text-xs font-medium text-[#1C8C7D]">{link.type.toLowerCase().replace(/_/g, ' ')}</span>
                         <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">{link.label}</span>
@@ -498,22 +389,136 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Details Sidebar */}
+          <div className="md:w-80 overflow-y-auto p-4 sm:p-6 space-y-4 bg-gray-50/50 dark:bg-[#22272B]/30 border-t md:border-t-0 border-gray-200 dark:border-slate-700/50">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Details</h3>
+
+            {/* Project */}
+            <div>
+              <label className={labelClasses}>
+                {t('common.project')} <span className="text-red-500">*</span>
+              </label>
+              <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className={inputClasses} required>
+                <option value="">{t('common.project')}...</option>
+                {projectsData?.projects?.map((project: any) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name} ({project.key})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Type */}
+            <div>
+              <label className={labelClasses}>{t('common.type')}</label>
+              <select value={type} onChange={(e) => setType(e.target.value)} className={inputClasses}>
+                <option value="TASK">Task</option>
+                <option value="STORY">Story</option>
+                <option value="BUG">Bug</option>
+                <option value="EPIC">Epic</option>
+              </select>
+            </div>
+
+            {/* Status */}
+            <div>
+              <label className={labelClasses}>{t('common.status')}</label>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputClasses}>
+                <option value="TODO">{t('status.todo')}</option>
+                <option value="IN_PROGRESS">{t('status.inProgress')}</option>
+                <option value="IN_REVIEW">{t('status.inReview')}</option>
+                <option value="DONE">{t('status.done')}</option>
+              </select>
+            </div>
+
+            {/* Priority */}
+            <div>
+              <label className={labelClasses}>{t('common.priority')}</label>
+              <select value={priority} onChange={(e) => setPriority(e.target.value)} className={inputClasses}>
+                <option value="HIGHEST">{t('priority.highest')}</option>
+                <option value="HIGH">{t('priority.high')}</option>
+                <option value="MEDIUM">{t('priority.medium')}</option>
+                <option value="LOW">{t('priority.low')}</option>
+                <option value="LOWEST">{t('priority.lowest')}</option>
+              </select>
+            </div>
+
+            {/* Assignee */}
+            <div>
+              <label className={labelClasses}>{t('common.assignee')}</label>
+              <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} className={inputClasses}>
+                <option value="">{t('common.unassigned')}</option>
+                {membersData?.members?.map((member: any) => (
+                  <option key={member.id} value={member.id}>
+                    {member.name || member.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Team */}
+            <div>
+              <label className={labelClasses}>{t('goals.team')}</label>
+              <select value={teamId} onChange={(e) => setTeamId(e.target.value)} className={inputClasses}>
+                <option value="">{t('common.none')}</option>
+                {teamsData?.teams?.map((team: any) => (
+                  <option key={team.id} value={team.id}>
+                    {team.icon} {team.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Due Date */}
+            <div>
+              <label className={labelClasses}>{t('common.dueDate')}</label>
+              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClasses} />
+            </div>
+
+            {/* Estimate */}
+            <div>
+              <label className={labelClasses}>Estimate (hours)</label>
+              <input type="number" value={estimate} onChange={(e) => setEstimate(e.target.value)} className={inputClasses} placeholder="0" min="0" />
+            </div>
+
+            {/* Goals */}
+            <div>
+              <label className={labelClasses}>{t('nav.goals')}</label>
+              <div className="max-h-28 space-y-1.5 overflow-y-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3">
+                {goalsData?.goals?.length > 0 ? (
+                  goalsData.goals.map((goal: any) => (
+                    <label key={goal.id} className="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input
+                        type="checkbox"
+                        checked={selectedGoals.includes(goal.id)}
+                        onChange={() => toggleGoal(goal.id)}
+                        className="h-4 w-4 rounded border-gray-300 text-[#1C8C7D] focus:ring-[#1C8C7D]"
+                      />
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{goal.title}</span>
+                    </label>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-400">{t('emptyStates.noGoals')}</p>
+                )}
+              </div>
+            </div>
 
             {/* Watchers */}
             <div>
               <label className={labelClasses}>Watchers</label>
-              <div className="max-h-28 space-y-1.5 overflow-y-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] p-3">
+              <div className="max-h-28 space-y-1.5 overflow-y-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] p-3">
                 {membersData?.members?.length > 0 ? (
                   membersData.members.map((member: any) => (
-                    <label key={member.userId} className="flex items-center gap-2 cursor-pointer py-0.5">
+                    <label key={member.id} className="flex items-center gap-2 cursor-pointer py-0.5">
                       <input
                         type="checkbox"
-                        checked={selectedWatchers.includes(member.userId)}
-                        onChange={() => toggleWatcher(member.userId)}
+                        checked={selectedWatchers.includes(member.id)}
+                        onChange={() => toggleWatcher(member.id)}
                         className="h-4 w-4 rounded border-gray-300 text-[#1C8C7D] focus:ring-[#1C8C7D]"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {member.user?.name || member.user?.email}
+                        {member.name || member.email}
                       </span>
                     </label>
                   ))
@@ -545,6 +550,17 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
           </Button>
         </div>
       </div>
-    </div>
+
+      {/* CSS Animation */}
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      `}</style>
+    </>
   );
 }
