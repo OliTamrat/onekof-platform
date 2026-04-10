@@ -141,6 +141,16 @@ export default function IssuesPage() {
     },
   });
 
+  // Auto-open task slideout from ?taskId= URL param (drill-down from activity)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const taskId = new URLSearchParams(window.location.search).get('taskId');
+    if (taskId && issuesData?.issues) {
+      const issue = issuesData.issues.find((i: Issue) => i.id === taskId);
+      if (issue) setSelectedIssue(issue);
+    }
+  }, [issuesData]);
+
   // Create issue mutation
   const createIssueMutation = useMutation({
     mutationFn: async ({ title, status, projectId }: { title: string; status: string; projectId: string }) => {

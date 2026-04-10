@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   CheckCircle2,
   AlertCircle,
@@ -43,6 +44,12 @@ interface Activity {
     email: string;
     avatar: string | null;
   };
+  entity?: {
+    id: string;
+    key: string;
+    title: string;
+    project: { id: string; key: string; name: string; color: string };
+  } | null;
 }
 
 interface ActivityTimelineProps {
@@ -102,8 +109,21 @@ export function ActivityTimeline({
   showFilters = true,
 }: ActivityTimelineProps) {
   const { t } = useLanguage();
+  const router = useRouter();
   const [selectedEntityType, setSelectedEntityType] = useState<string | undefined>(entityType);
   const [offset, setOffset] = useState(0);
+
+  const handleActivityClick = (activity: Activity) => {
+    if (activity.entityType === 'TASK' && activity.entity) {
+      const projectId = activity.entity.project?.id;
+      const url = projectId
+        ? `/dashboard/issues?projectId=${projectId}&taskId=${activity.entityId}`
+        : `/dashboard/issues?taskId=${activity.entityId}`;
+      router.push(url);
+    } else if (activity.entityType === 'PROJECT') {
+      router.push(`/dashboard?projectId=${activity.entityId}`);
+    }
+  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['activities', { entityType: selectedEntityType, entityId, userId, projectId, limit, offset }],
@@ -246,8 +266,14 @@ export function ActivityTimeline({
                       </div>
                     </div>
 
-                    {/* Activity Card */}
-                    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D]">
+                    {/* Activity Card — clickable to drill down */}
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleActivityClick(activity)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleActivityClick(activity); }}
+                      className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D] cursor-pointer"
+                    >
                       {/* Header */}
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div className="flex items-center gap-3 flex-1">
@@ -296,14 +322,28 @@ export function ActivityTimeline({
                       )}
 
                       {/* Metadata and Impact Score */}
-                      <div className="flex items-center justify-between">
-                        {/* Entity Info */}
-                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                          <span className="font-medium">
-                            {activity.entityType.charAt(0) + activity.entityType.slice(1).toLowerCase()}
-                          </span>
-                          <span>&#183;</span>
-                          <span className="font-mono">{activity.entityId.slice(0, 8)}</span>
+                      <div className="flex items-center justify-between gap-2">
+                        {/* Entity Info — show task key + title when available */}
+                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 min-w-0 flex-1">
+                          {activity.entity ? (
+                            <>
+                              {activity.entity.project && (
+                                <span
+                                  className="h-4 w-4 rounded flex items-center justify-center text-[8px] font-bold text-white shrink-0"
+                                  style={{ backgroundColor: activity.entity.project.color || '#3B82F6' }}
+                                >
+                                  {activity.entity.project.key?.slice(0, 2)}
+                                </span>
+                              )}
+                              <span className="font-mono text-[#1C8C7D] font-semibold shrink-0">{activity.entity.key}</span>
+                              <span className="text-slate-400">&#183;</span>
+                              <span className="truncate">{activity.entity.title}</span>
+                            </>
+                          ) : (
+                            <span className="font-medium">
+                              {activity.entityType.charAt(0) + activity.entityType.slice(1).toLowerCase()}
+                            </span>
+                          )}
                         </div>
 
                         {/* Impact Score */}

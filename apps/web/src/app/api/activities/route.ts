@@ -120,8 +120,30 @@ export async function GET(request: NextRequest) {
       prisma.userActivity.count({ where }),
     ]);
 
+    // Enrich TASK activities with task key + title for display
+    const taskIds = [...new Set(
+      activities
+        .filter((a: any) => a.entityType === 'TASK')
+        .map((a: any) => a.entityId)
+    )];
+    const tasks = taskIds.length > 0 ? await prisma.task.findMany({
+      where: { id: { in: taskIds } },
+      select: {
+        id: true,
+        key: true,
+        title: true,
+        project: { select: { id: true, key: true, name: true, color: true } },
+      },
+    }) : [];
+    const taskMap = new Map(tasks.map((t: any) => [t.id, t]));
+
+    const enrichedActivities = activities.map((a: any) => ({
+      ...a,
+      entity: a.entityType === 'TASK' ? taskMap.get(a.entityId) || null : null,
+    }));
+
     return NextResponse.json({
-      activities,
+      activities: enrichedActivities,
       pagination: {
         total: totalCount,
         limit,
