@@ -80,6 +80,12 @@ export default function IssuesBoardPage() {
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Read project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+
   const [optimisticTasks, setOptimisticTasks] = useState<Record<TaskStatus, Task[]>>({
     TODO: [],
     IN_PROGRESS: [],
@@ -88,11 +94,12 @@ export default function IssuesBoardPage() {
     BLOCKED: [],
   });
 
-  // Fetch issues/tasks
+  // Fetch issues/tasks (filtered by project if scoped)
+  const issuesUrl = scopedProjectId ? `/api/issues?projectId=${scopedProjectId}` : '/api/issues';
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
-    queryKey: ['issues', 'board'],
+    queryKey: ['issues', 'board', scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/issues');
+      const res = await fetch(issuesUrl);
       if (!res.ok) throw new Error('Failed to fetch issues');
       return res.json();
     },

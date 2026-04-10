@@ -55,11 +55,17 @@ export default function IssuesTimelinePage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [timeRange, setTimeRange] = useState<'30d' | '90d' | '6m' | '1y'>('90d');
 
-  // Fetch issues (includes project info) - THIS ENDPOINT WORKS without org header
+  // Read project scope from URL
+  const scopedProjectId = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('projectId')
+    : null;
+
+  // Fetch issues (filtered by project if scoped)
+  const issuesUrl = scopedProjectId ? `/api/issues?projectId=${scopedProjectId}` : '/api/issues';
   const { data: issuesData, isLoading: projectsLoading } = useQuery({
-    queryKey: ['issues'],
+    queryKey: ['issues', 'timeline', scopedProjectId],
     queryFn: async () => {
-      const res = await fetch('/api/issues');
+      const res = await fetch(issuesUrl);
       if (!res.ok) throw new Error('Failed to fetch issues');
       return res.json();
     },
@@ -244,7 +250,7 @@ export default function IssuesTimelinePage() {
               </div>
             </div>
           ) : (
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-6">
               {/* Summary Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3">
@@ -286,10 +292,10 @@ export default function IssuesTimelinePage() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-4 flex-1">
                             <div
-                              className="h-12 w-12 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                              className="h-12 w-12 shrink-0 rounded-lg flex items-center justify-center text-white font-bold text-sm"
                               style={{ backgroundColor: project.color }}
                             >
-                              {project.key}
+                              {project.key?.slice(0, 2).toUpperCase()}
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-2">
@@ -448,10 +454,10 @@ export default function IssuesTimelinePage() {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <div
-                        className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                        className="h-10 w-10 shrink-0 rounded-lg flex items-center justify-center text-white font-bold text-xs"
                         style={{ backgroundColor: selectedProject.color }}
                       >
-                        {selectedProject.key}
+                        {selectedProject.key?.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">

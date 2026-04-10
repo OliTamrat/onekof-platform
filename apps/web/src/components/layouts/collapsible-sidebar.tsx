@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronRight, ChevronDown, Check } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { getSidebarNavigation, type SidebarSection } from '@/lib/sidebar-navigation-dynamic';
@@ -34,7 +35,16 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
     return null;
   });
   const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
+  const projectButtonRef = useRef<HTMLButtonElement>(null);
   const scopedProject = scopedProjectId ? projects.find(p => p.id === scopedProjectId) : null;
+
+  useEffect(() => {
+    if (isProjectSelectorOpen && projectButtonRef.current) {
+      const rect = projectButtonRef.current.getBoundingClientRect();
+      setDropdownPos({ top: rect.bottom + 4, left: rect.left });
+    }
+  }, [isProjectSelectorOpen]);
 
   const selectProject = (projectId: string | null) => {
     setScopedProjectId(projectId);
@@ -145,8 +155,9 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
               <div className="mt-1 space-y-1 pl-8">
                 {/* Project Selector — replaces "All Projects" link in the projects section */}
                 {section.id === 'projects' && projects.length > 0 && (
-                  <div className="relative mb-1">
+                  <div className="mb-1">
                     <button
+                      ref={projectButtonRef}
                       onClick={() => setIsProjectSelectorOpen(!isProjectSelectorOpen)}
                       className={cn(
                         'flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
@@ -167,19 +178,22 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                       )}
                       <ChevronDown className="h-3 w-3 shrink-0" />
                     </button>
-                    {isProjectSelectorOpen && (
+                    {isProjectSelectorOpen && dropdownPos && typeof document !== 'undefined' && createPortal(
                       <>
-                        <div className="fixed inset-0 z-30" onClick={() => setIsProjectSelectorOpen(false)} />
-                        <div className="absolute left-0 top-full mt-1 z-40 w-56 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+                        <div className="fixed inset-0 z-[100]" onClick={() => setIsProjectSelectorOpen(false)} />
+                        <div
+                          className="fixed z-[101] w-64 max-h-[400px] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-2xl"
+                          style={{ top: dropdownPos.top, left: dropdownPos.left }}
+                        >
                           <button
                             onClick={() => selectProject(null)}
                             className={cn(
-                              'w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
-                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-600 dark:text-slate-400'
+                              'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
+                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
                             )}
                           >
-                            {!scopedProjectId && <Check className="h-3 w-3 shrink-0" />}
-                            <span className={!scopedProjectId ? '' : 'pl-5'}>{t('nav.allProjects')}</span>
+                            {!scopedProjectId ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
+                            <span>{t('nav.allProjects')}</span>
                           </button>
                           <div className="border-t border-slate-100 dark:border-slate-700/50" />
                           {projects.map((project) => (
@@ -187,20 +201,22 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                               key={project.id}
                               onClick={() => selectProject(project.id)}
                               className={cn(
-                                'w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
-                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-600 dark:text-slate-400'
+                                'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
+                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
                               )}
                             >
-                              {scopedProjectId === project.id && <Check className="h-3 w-3 shrink-0" />}
+                              {scopedProjectId === project.id ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
                               <span
-                                className={cn('h-3 w-3 rounded shrink-0', scopedProjectId === project.id ? '' : 'ml-5')}
+                                className="h-3.5 w-3.5 rounded shrink-0"
                                 style={{ backgroundColor: project.color || '#3B82F6' }}
                               />
                               <span className="truncate">{project.name}</span>
+                              <span className="ml-auto text-xs text-slate-400">{project.key}</span>
                             </button>
                           ))}
                         </div>
-                      </>
+                      </>,
+                      document.body
                     )}
                   </div>
                 )}
