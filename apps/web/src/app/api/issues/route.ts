@@ -4,6 +4,7 @@ import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } fr
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import { sendTaskAssignmentEmail, sendMentionEmail } from '@/lib/email';
+import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -59,19 +60,24 @@ export async function GET(request: NextRequest) {
       where.assigneeId = assigneeId;
     }
 
-    // TODO: Add team filtering when TeamTask relation is added to schema
-    // if (teamId) {
-    //   where.teamId = teamId;
-    // }
+    // Filter by team: tasks in projects linked to this team via ProjectTeam.
+    // Teams are attached to projects, not individual tasks, so we filter
+    // through the parent project's team list.
+    if (teamId) {
+      where.project = {
+        ...(where.project || {}),
+        teams: { some: { teamId } },
+      };
+    }
 
-    // TODO: Add goal filtering when TaskGoal model is added to schema
-    // if (goalId) {
-    //   where.goals = {
-    //     some: {
-    //       goalId: goalId,
-    //     },
-    //   };
-    // }
+    // Filter by goal: tasks in projects linked to this goal via GoalProject.
+    // Same pattern — goals live at the project level, not task level.
+    if (goalId) {
+      where.project = {
+        ...(where.project || {}),
+        goals: { some: { goalId } },
+      };
+    }
 
     // Filter by type
     if (type) {
@@ -355,6 +361,22 @@ export async function POST(request: NextRequest) {
         logger.error('Auto-watch mentioned users error', { error: err instanceof Error ? err.message : err });
       });
     }
+
+    // Fire automation rules matching the CREATED trigger for tasks.
+    // Fire-and-forget: response is never blocked on automation execution.
+    triggerAutomations({
+      organizationId: project.organization.id,
+      trigger: 'CREATED',
+      entityType: 'TASK',
+      entityId: issue.id,
+      projectId: issue.projectId,
+      userId: ctx.user.id,
+    }).catch((err) => {
+      logger.error('Automation trigger on task create failed', {
+        error: err instanceof Error ? err.message : err,
+        taskId: issue.id,
+      });
+    });
 
     // Email the assignee if one was set at creation — fire-and-forget, skip self-assignment
     if (assigneeId && assigneeId !== ctx.user.id) {
