@@ -586,7 +586,8 @@
     "teamActivity": "Team Activity",
     "searchActivity": "Search activity...",
     "activityDetails": "Activity Details",
-    "activityInformation": "Activity Information"
+    "activityInformation": "Activity Information",
+    "addMember": "Add Member"
   },
   "goals": {
     "title": "Goals",
