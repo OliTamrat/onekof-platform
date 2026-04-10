@@ -7,7 +7,7 @@ import { authOptions } from '@/lib/auth';
 import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
-import { sendTaskAssignmentEmail } from '@/lib/email';
+import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
 export const dynamic = 'force-dynamic';
@@ -337,9 +337,13 @@ export async function PATCH(
       }
 
       // Email the new assignee — fire-and-forget, skip if assigning to self
+      // Also respect the assignee's notification preferences
       if (assigneeId !== currentUser.id) {
         (async () => {
           try {
+            const wantsEmail = await userWantsNotification(assigneeId, 'emailOnAssignment');
+            if (!wantsEmail) return;
+
             const newAssignee = await prisma.user.findUnique({
               where: { id: assigneeId },
               select: { name: true, email: true },

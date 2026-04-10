@@ -3,7 +3,7 @@ import { prisma } from '@onekof/database';
 import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
-import { sendTaskAssignmentEmail, sendMentionEmail } from '@/lib/email';
+import { sendTaskAssignmentEmail, sendMentionEmail, userWantsNotification } from '@/lib/email';
 import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 
@@ -382,6 +382,9 @@ export async function POST(request: NextRequest) {
     if (assigneeId && assigneeId !== ctx.user.id) {
       (async () => {
         try {
+          const wantsEmail = await userWantsNotification(assigneeId, 'emailOnAssignment');
+          if (!wantsEmail) return;
+
           const newAssignee = await prisma.user.findUnique({
             where: { id: assigneeId },
             select: { name: true, email: true },

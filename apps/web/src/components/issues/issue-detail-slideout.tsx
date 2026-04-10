@@ -208,7 +208,9 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
   const watchers = watchersData?.watchers || issue?.watchers || [];
 
-  // Update issue mutation
+  // Update issue mutation — OPTIMISTIC so the slideout feels instant.
+  // Snapshots the current issue + all issues list caches, applies the update
+  // immediately, and rolls back on error.
   const updateIssueMutation = useMutation({
     mutationFn: async (updates: Partial<Issue>) => {
       const res = await fetch(`/api/issues/${issue!.id}`, {
@@ -219,9 +221,49 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
       if (!res.ok) throw new Error('Failed to update issue');
       return res.json();
     },
-    onSuccess: async () => {
-      await refetch();
-      // Invalidate all issues queries to refresh boards/lists
+    onMutate: async (updates) => {
+      const detailKey = ['issue', resolvedId] as const;
+      await queryClient.cancelQueries({ queryKey: detailKey });
+      await queryClient.cancelQueries({ queryKey: ['issues'] });
+
+      // Snapshot current detail view + all issues list caches so we can
+      // roll back if the server rejects the update.
+      const prevDetail = queryClient.getQueryData(detailKey);
+      const prevLists = queryClient.getQueriesData({ queryKey: ['issues'] });
+
+      // Optimistically merge the update into the detail cache
+      queryClient.setQueryData(detailKey, (old: any) => {
+        if (!old) return old;
+        return { ...old, ...updates };
+      });
+
+      // Also patch matching issues in every issues list cache so the
+      // background board/list views reflect the change immediately.
+      queryClient.setQueriesData({ queryKey: ['issues'] }, (old: any) => {
+        if (!old?.issues) return old;
+        return {
+          ...old,
+          issues: old.issues.map((i: any) =>
+            i.id === issue?.id ? { ...i, ...updates } : i
+          ),
+        };
+      });
+
+      return { prevDetail, prevLists };
+    },
+    onError: (_err, _vars, context) => {
+      // Roll back both the detail cache and every issues list cache
+      if (context?.prevDetail) {
+        queryClient.setQueryData(['issue', resolvedId], context.prevDetail);
+      }
+      context?.prevLists?.forEach(([key, data]) => {
+        queryClient.setQueryData(key, data);
+      });
+      toast.error('Failed to update issue');
+    },
+    onSettled: () => {
+      // Reconcile with server truth once the mutation completes
+      refetch();
       queryClient.invalidateQueries({ queryKey: ['issues'] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
@@ -1580,44 +1622,242 @@ function AttachmentsSection({ issue }: { issue: Issue }) {
   );
 }
 
-// Links Section Component
+// Links Section Component — with add/remove link management
 function LinksSection({ issue }: { issue: Issue }) {
   const [links, setLinks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [linkType, setLinkType] = useState('RELATES_TO');
+  const [taskSearch, setTaskSearch] = useState('');
+  const [availableTasks, setAvailableTasks] = useState<any[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string>('');
+  const [saving, setSaving] = useState(false);
+
+  const fetchLinks = async () => {
+    try {
+      const res = await fetch(`/api/tasks/${issue.id}/links`);
+      if (res.ok) {
+        const data = await res.json();
+        setLinks(data.links || []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(`/api/tasks/${issue.id}/links`)
-      .then((res) => res.ok ? res.json() : { links: [] })
-      .then((data) => setLinks(data.links || []))
-      .catch(() => {});
+    fetchLinks();
   }, [issue.id]);
 
-  if (links.length === 0) return null;
+  // Fetch all tasks in the org for the picker (excluding self)
+  useEffect(() => {
+    if (!isAdding) return;
+    fetch('/api/issues')
+      .then((res) => res.ok ? res.json() : { issues: [] })
+      .then((data) => {
+        setAvailableTasks((data.issues || []).filter((t: any) => t.id !== issue.id));
+      })
+      .catch(() => {});
+  }, [isAdding, issue.id]);
+
+  const filteredTasks = availableTasks.filter((t) => {
+    if (!taskSearch) return true;
+    const q = taskSearch.toLowerCase();
+    return (
+      t.key?.toLowerCase().includes(q) ||
+      t.title?.toLowerCase().includes(q)
+    );
+  }).slice(0, 10);
+
+  const handleAddLink = async () => {
+    if (!selectedTaskId) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/tasks/${issue.id}/links`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ toTaskId: selectedTaskId, type: linkType }),
+      });
+      if (res.ok) {
+        await fetchLinks();
+        setIsAdding(false);
+        setSelectedTaskId('');
+        setTaskSearch('');
+        setLinkType('RELATES_TO');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleRemoveLink = async (linkId: string) => {
+    if (!confirm('Remove this link? The reciprocal link will also be removed.')) return;
+    try {
+      const res = await fetch(`/api/tasks/${issue.id}/links?linkId=${linkId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        await fetchLinks();
+      }
+    } catch {
+      // noop
+    }
+  };
+
+  const LINK_TYPES = [
+    { value: 'RELATES_TO', label: 'Relates to' },
+    { value: 'BLOCKS', label: 'Blocks' },
+    { value: 'IS_BLOCKED_BY', label: 'Is blocked by' },
+    { value: 'DUPLICATES', label: 'Duplicates' },
+    { value: 'IS_DUPLICATED_BY', label: 'Is duplicated by' },
+    { value: 'CLONES', label: 'Clones' },
+    { value: 'IS_CLONED_BY', label: 'Is cloned by' },
+    { value: 'CAUSES', label: 'Causes' },
+    { value: 'IS_CAUSED_BY', label: 'Is caused by' },
+  ];
+
+  if (loading) return null;
 
   return (
     <div className="border-t border-gray-200 dark:border-gray-800 px-3 md:px-6 py-4">
-      <h2 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
-        <LinkIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-        Linked Work Items ({links.length})
-      </h2>
-      <div className="space-y-2">
-        {links.map((link) => (
-          <a
-            key={link.id}
-            href={`/dashboard/issues?taskId=${link.toTask.id}`}
-            className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 hover:border-[#1C8C7D] transition-colors"
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <LinkIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          Linked Work Items{links.length > 0 ? ` (${links.length})` : ''}
+        </h2>
+        {!isAdding && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsAdding(true)}
+            className="h-auto px-2 py-1 text-xs text-primary-500 hover:text-primary-600"
           >
-            <span
-              className="h-5 w-5 rounded flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-              style={{ backgroundColor: link.toTask.project?.color || '#3B82F6' }}
-            >
-              {link.toTask.project?.key?.slice(0, 2)}
-            </span>
-            <span className="text-xs text-[#1C8C7D] font-medium shrink-0">{link.type.toLowerCase().replace(/_/g, ' ')}</span>
-            <span className="text-xs font-mono text-gray-500 shrink-0">{link.toTask.key}</span>
-            <span className="text-sm text-gray-900 dark:text-white flex-1 truncate">{link.toTask.title}</span>
-          </a>
-        ))}
+            <Plus className="h-3 w-3 mr-1" />
+            Add link
+          </Button>
+        )}
       </div>
+
+      {/* Existing links */}
+      {links.length > 0 ? (
+        <div className="space-y-2 mb-3">
+          {links.map((link) => (
+            <div
+              key={link.id}
+              className="group flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 hover:border-[#1C8C7D] transition-colors"
+            >
+              <a
+                href={`/dashboard/issues?taskId=${link.toTask.id}`}
+                className="flex items-center gap-2 flex-1 min-w-0"
+              >
+                <span
+                  className="h-5 w-5 rounded flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                  style={{ backgroundColor: link.toTask.project?.color || '#3B82F6' }}
+                >
+                  {link.toTask.project?.key?.slice(0, 2)}
+                </span>
+                <span className="text-xs text-[#1C8C7D] font-medium shrink-0">
+                  {link.type.toLowerCase().replace(/_/g, ' ')}
+                </span>
+                <span className="text-xs font-mono text-gray-500 shrink-0">{link.toTask.key}</span>
+                <span className="text-sm text-gray-900 dark:text-white flex-1 truncate">{link.toTask.title}</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => handleRemoveLink(link.id)}
+                className="opacity-0 group-hover:opacity-100 h-6 w-6 flex items-center justify-center rounded text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-opacity shrink-0"
+                title="Remove link"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : !isAdding ? (
+        <p className="text-xs text-gray-400 dark:text-slate-500 italic mb-3">
+          No linked work items yet.
+        </p>
+      ) : null}
+
+      {/* Add link form */}
+      {isAdding && (
+        <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] p-3 space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
+              Link type
+            </label>
+            <select
+              value={linkType}
+              onChange={(e) => setLinkType(e.target.value)}
+              className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 py-1.5 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+            >
+              {LINK_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
+              Search task by key or title
+            </label>
+            <input
+              type="text"
+              value={taskSearch}
+              onChange={(e) => { setTaskSearch(e.target.value); setSelectedTaskId(''); }}
+              placeholder="e.g. WEBDEV-12 or 'database migration'"
+              className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 py-1.5 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+            />
+          </div>
+
+          {taskSearch && filteredTasks.length > 0 && (
+            <div className="max-h-40 overflow-y-auto rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+              {filteredTasks.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => { setSelectedTaskId(t.id); setTaskSearch(`${t.key} ${t.title}`); }}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#1B1F23] ${
+                    selectedTaskId === t.id ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                  }`}
+                >
+                  <span className="text-xs font-mono text-gray-500 shrink-0 w-20">{t.key}</span>
+                  <span className="text-sm text-gray-900 dark:text-white truncate">{t.title}</span>
+                  {selectedTaskId === t.id && <Check className="h-3.5 w-3.5 text-primary-500 shrink-0" />}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsAdding(false);
+                setSelectedTaskId('');
+                setTaskSearch('');
+              }}
+              disabled={saving}
+              className="h-7 text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleAddLink}
+              disabled={!selectedTaskId || saving}
+              className="h-7 text-xs bg-primary-500 hover:bg-primary-600 text-white"
+            >
+              {saving ? (
+                <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Linking</>
+              ) : (
+                <>Link</>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
