@@ -6,7 +6,7 @@
  * Supports multiple page contexts: issues, budget, team, goals, calendar, timeline.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   X,
   Sparkles,
@@ -21,6 +21,8 @@ import {
   Zap,
   Calendar,
   DollarSign,
+  Loader2,
+  Wand2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -52,6 +54,26 @@ function formatCurrency(amount: number, currency = 'ETB'): string {
 
 export function InsightsSlideout({ open, onClose, context }: InsightsSlideoutProps) {
   const insights = useMemo(() => computeInsights(context), [context]);
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiStats, setAiStats] = useState<any>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  const generateWeeklySummary = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const res = await fetch('/api/ai/weekly-summary?days=7');
+      if (!res.ok) throw new Error('Failed to generate summary');
+      const data = await res.json();
+      setAiSummary(data.summary);
+      setAiStats(data.stats);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : 'Failed to generate summary');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   if (!open) return null;
 
@@ -99,6 +121,82 @@ export function InsightsSlideout({ open, onClose, context }: InsightsSlideoutPro
               </div>
             </div>
           )}
+
+          {/* AI Weekly Summary — powered by Claude */}
+          <div className="rounded-lg border border-purple-200/50 dark:border-purple-800/30 bg-gradient-to-br from-purple-50/50 to-white dark:from-purple-900/5 dark:to-[#22272B] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Wand2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  AI Weekly Summary
+                </h3>
+              </div>
+              {!aiSummary && !aiLoading && (
+                <Button
+                  onClick={generateWeeklySummary}
+                  size="sm"
+                  className="h-7 px-3 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-md"
+                >
+                  Generate
+                </Button>
+              )}
+              {aiSummary && !aiLoading && (
+                <Button
+                  onClick={generateWeeklySummary}
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                >
+                  Regenerate
+                </Button>
+              )}
+            </div>
+
+            {!aiSummary && !aiLoading && !aiError && (
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Claude will analyze the past 7 days of team activity and write a narrative summary of what your team accomplished, who contributed most, and notable trends.
+              </p>
+            )}
+
+            {aiLoading && (
+              <div className="flex items-center gap-2 py-3 text-sm text-gray-600 dark:text-gray-400">
+                <Loader2 className="h-4 w-4 animate-spin text-purple-500" />
+                Claude is analyzing your team's week...
+              </div>
+            )}
+
+            {aiError && (
+              <div className="flex items-center gap-2 py-2 text-xs text-red-600 dark:text-red-400">
+                <AlertCircle className="h-3.5 w-3.5" />
+                {aiError}
+              </div>
+            )}
+
+            {aiSummary && !aiLoading && (
+              <div className="space-y-3">
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {aiSummary}
+                </p>
+                {aiStats && (
+                  <div className="flex flex-wrap gap-3 pt-3 border-t border-purple-200/30 dark:border-purple-800/20">
+                    <div className="text-xs">
+                      <span className="text-gray-500 dark:text-gray-400">Total actions: </span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{aiStats.totalActivities}</span>
+                    </div>
+                    <div className="text-xs">
+                      <span className="text-gray-500 dark:text-gray-400">Completed: </span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">{aiStats.tasksCompleted}</span>
+                    </div>
+                    <div className="text-xs">
+                      <span className="text-gray-500 dark:text-gray-400">Created: </span>
+                      <span className="font-semibold text-blue-600 dark:text-blue-400">{aiStats.tasksCreated}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
 
           {/* Metrics Grid */}
           {insights.metrics.length > 0 && (

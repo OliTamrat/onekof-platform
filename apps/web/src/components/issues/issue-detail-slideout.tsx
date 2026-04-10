@@ -48,6 +48,7 @@ import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
 import { AlertModal } from '@/components/ui/alert-modal';
+import { SkeletonIssueDetail } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
 
 // Types
@@ -308,8 +309,8 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
           onClick={onClose}
         />
-        <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex items-center justify-center">
-          <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
+        <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 animate-slide-in-right overflow-hidden">
+          <SkeletonIssueDetail />
         </div>
       </>
     );
