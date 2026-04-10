@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { InsightsSlideout } from '@/components/insights/insights-slideout';
 import { ISSUES_TABS } from '@/config/department-tabs';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
@@ -64,6 +65,7 @@ export default function IssuesPage() {
     }
     return null;
   });
+  const [insightsOpen, setInsightsOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
@@ -236,6 +238,8 @@ export default function IssuesPage() {
         showGroupBy
         showViewSettings
         showInsights
+        onInsightsToggle={() => setInsightsOpen((v) => !v)}
+        insightsOpen={insightsOpen}
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
@@ -324,6 +328,12 @@ export default function IssuesPage() {
           defaultProjectId={selectedProject || undefined}
         />
       )}
+
+      <InsightsSlideout
+        open={insightsOpen}
+        onClose={() => setInsightsOpen(false)}
+        context={{ type: 'issues', issues: issuesData?.issues || [] }}
+      />
     </div>
     </AppLayout>
   );

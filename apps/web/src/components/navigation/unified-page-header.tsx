@@ -527,8 +527,8 @@ export function UnifiedPageHeader({
               </DropdownMenu>
             )}
 
-            {/* Insights — only show if a handler is wired */}
-            {showInsights && onInsightsToggle && (
+            {/* Insights */}
+            {showInsights && (
               <Button
                 variant="outline"
                 size="sm"

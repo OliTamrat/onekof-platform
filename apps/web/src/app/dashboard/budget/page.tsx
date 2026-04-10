@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
+import { InsightsSlideout } from '@/components/insights/insights-slideout';
 import { BUDGET_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -112,6 +113,7 @@ export default function BudgetPage() {
   const scopedProjectId = typeof window !== 'undefined'
     ? new URLSearchParams(window.location.search).get('projectId')
     : null;
+  const [insightsOpen, setInsightsOpen] = useState(false);
 
   // UI state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -382,6 +384,9 @@ export default function BudgetPage() {
         customTabs={BUDGET_TABS}
         showTabs
         showSearch
+        showInsights
+        onInsightsToggle={() => setInsightsOpen((v) => !v)}
+        insightsOpen={insightsOpen}
       />
 
       {/* Project Header Banner — only show when real budget data exists */}
@@ -1329,6 +1334,12 @@ export default function BudgetPage() {
           `}</style>
         </>
       )}
+
+      <InsightsSlideout
+        open={insightsOpen}
+        onClose={() => setInsightsOpen(false)}
+        context={{ type: 'budget', budgets, expenses }}
+      />
     </AppLayout>
   );
 }
