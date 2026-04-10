@@ -10,6 +10,7 @@ import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { ProjectManagementDialog } from '@/components/project-management-dialog';
 import { Button } from '@/components/ui/button';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import {
   Plus,
   Search,
@@ -114,11 +115,10 @@ export default function ProjectsPage() {
         {/* Projects Content */}
         <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6">
           {isLoadingProjects ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-center">
-                <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{t('common.loading')}</p>
-              </div>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">

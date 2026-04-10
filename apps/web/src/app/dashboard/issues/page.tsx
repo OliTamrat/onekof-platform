@@ -18,6 +18,7 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import type { ProjectType } from '@/lib/project-navigation';
 import { Button } from '@/components/ui/button';
+import { SkeletonKanban } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
 import { useWorkspace } from '@/contexts/workspace-context';
 
@@ -101,7 +102,7 @@ export default function IssuesPage() {
     },
   });
 
-  // Update issue status mutation
+  // Update issue status mutation — OPTIMISTIC for instant kanban drag
   const updateIssueMutation = useMutation({
     mutationFn: async ({ issueId, status }: { issueId: string; status: string }) => {
       const res = await fetch(`/api/issues/${issueId}`, {
@@ -112,7 +113,36 @@ export default function IssuesPage() {
       if (!res.ok) throw new Error('Failed to update issue');
       return res.json();
     },
-    onSuccess: () => {
+    // Optimistic: update the cache immediately so the drag feels instant
+    onMutate: async ({ issueId, status }) => {
+      // Cancel any in-flight refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ['issues'] });
+
+      // Snapshot all ['issues', ...] query caches so we can roll back on error
+      const previousQueries = queryClient.getQueriesData({ queryKey: ['issues'] });
+
+      // Optimistically mutate every matching issues query cache
+      queryClient.setQueriesData({ queryKey: ['issues'] }, (old: any) => {
+        if (!old?.issues) return old;
+        return {
+          ...old,
+          issues: old.issues.map((issue: Issue) =>
+            issue.id === issueId ? { ...issue, status: status as Issue['status'] } : issue
+          ),
+        };
+      });
+
+      return { previousQueries };
+    },
+    onError: (_err, _vars, context) => {
+      // Roll back every snapshot we took in onMutate
+      context?.previousQueries?.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+      toast.error('Failed to update issue');
+    },
+    onSettled: () => {
+      // Re-fetch once at the end to reconcile with server truth
       queryClient.invalidateQueries({ queryKey: ['issues'] });
     },
   });
@@ -233,9 +263,7 @@ export default function IssuesPage() {
                 {/* Kanban Board */}
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">{t('dashboard.loadingIssues')}</div>
-            </div>
+            <SkeletonKanban columns={4} cardsPerColumn={3} />
           ) : (
             <DragDropContext onDragEnd={handleDragEnd}>
               <div className="flex h-full gap-4">
