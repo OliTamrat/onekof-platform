@@ -19,6 +19,7 @@ import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import type { ProjectType } from '@/lib/project-navigation';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 // Types
 interface Issue {
@@ -75,35 +76,10 @@ export default function IssuesPage() {
   const [newIssueTitle, setNewIssueTitle] = useState('');
   const queryClient = useQueryClient();
 
-  // Fetch projects
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
-      return res.json();
-    },
-  });
-
-  // Fetch teams
-  const { data: teamsData } = useQuery({
-    queryKey: ['teams'],
-    queryFn: async () => {
-      const res = await fetch('/api/teams');
-      if (!res.ok) throw new Error('Failed to fetch teams');
-      return res.json();
-    },
-  });
-
-  // Fetch goals
-  const { data: goalsData } = useQuery({
-    queryKey: ['goals'],
-    queryFn: async () => {
-      const res = await fetch('/api/goals');
-      if (!res.ok) throw new Error('Failed to fetch goals');
-      return res.json();
-    },
-  });
+  // Projects come from WorkspaceProvider context — already loaded app-wide,
+  // no need for a separate query here. Teams/goals queries removed (dead code).
+  const { projects: workspaceProjects } = useWorkspace();
+  const projectsData = { projects: workspaceProjects };
 
   // Fetch issues with filters
   const { data: issuesData, isLoading } = useQuery({

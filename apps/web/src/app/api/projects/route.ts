@@ -32,27 +32,12 @@ export async function GET(request: NextRequest) {
       deletedAt: null,
     };
 
+    // Only fetch the lead member (not all members) + use _count for member count.
+    // Task stats are computed separately via groupBy (see below) to avoid loading
+    // every task object just to count them.
     const includeClause = {
-      tasks: {
-        where: {
-          deletedAt: null,
-        },
-        select: {
-          id: true,
-          status: true,
-        },
-      },
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              avatar: true,
-            },
-          },
-        },
+      _count: {
+        select: { members: true },
       },
     };
 
@@ -60,12 +45,73 @@ export async function GET(request: NextRequest) {
       updatedAt: 'desc' as const,
     };
 
-    const transformProject = (project: any) => {
-      const totalTasks = project.tasks.length;
-      const completedTasks = project.tasks.filter((t: any) => t.status === 'DONE').length;
-      const inProgressTasks = project.tasks.filter((t: any) => t.status === 'IN_PROGRESS').length;
-      const todoTasks = project.tasks.filter((t: any) => t.status === 'TODO').length;
+    // Fetch projects (paginated or full list)
+    let projects: any[];
+    let total: number | null = null;
+    let paginationParams: { page: number; limit: number; skip: number } | null = null;
 
+    if (hasPagination) {
+      const { page, limit, skip } = parsePaginationParams(request);
+      paginationParams = { page, limit, skip };
+      const [projectRows, totalCount] = await Promise.all([
+        prisma.project.findMany({
+          where: whereClause,
+          include: includeClause,
+          orderBy: orderByClause,
+          skip,
+          take: limit,
+        }),
+        prisma.project.count({ where: whereClause }),
+      ]);
+      projects = projectRows;
+      total = totalCount;
+    } else {
+      projects = await prisma.project.findMany({
+        where: whereClause,
+        include: includeClause,
+        orderBy: orderByClause,
+      });
+    }
+
+    const projectIds = projects.map((p) => p.id);
+    const leadIds = Array.from(new Set(projects.map((p) => p.leadId).filter(Boolean))) as string[];
+
+    // Parallel fetch: task status groupBy + lead users
+    // Single DB call per aggregation regardless of project count
+    const [taskGroups, leadUsers] = await Promise.all([
+      projectIds.length > 0
+        ? prisma.task.groupBy({
+            by: ['projectId', 'status'],
+            where: {
+              projectId: { in: projectIds },
+              deletedAt: null,
+            },
+            _count: { _all: true },
+          })
+        : Promise.resolve([] as any[]),
+      leadIds.length > 0
+        ? prisma.user.findMany({
+            where: { id: { in: leadIds } },
+            select: { id: true, name: true, email: true, avatar: true },
+          })
+        : Promise.resolve([] as any[]),
+    ]);
+
+    // Build a projectId -> stats map
+    const statsByProject = new Map<string, { total: number; completed: number; inProgress: number; todo: number }>();
+    for (const g of taskGroups as any[]) {
+      const stats = statsByProject.get(g.projectId) || { total: 0, completed: 0, inProgress: 0, todo: 0 };
+      const count = g._count._all;
+      stats.total += count;
+      if (g.status === 'DONE') stats.completed += count;
+      else if (g.status === 'IN_PROGRESS') stats.inProgress += count;
+      else if (g.status === 'TODO') stats.todo += count;
+      statsByProject.set(g.projectId, stats);
+    }
+    const leadsById = new Map(leadUsers.map((u: any) => [u.id, u]));
+
+    const transformProject = (project: any) => {
+      const taskStats = statsByProject.get(project.id) || { total: 0, completed: 0, inProgress: 0, todo: 0 };
       return {
         id: project.id,
         name: project.name,
@@ -76,52 +122,27 @@ export async function GET(request: NextRequest) {
         color: project.color || '#3B82F6',
         icon: project.icon || '📁',
         leadId: project.leadId,
-        lead: project.leadId ? project.members.find((m: any) => m.userId === project.leadId)?.user : null,
+        lead: project.leadId ? leadsById.get(project.leadId) || null : null,
         defaultAssignee: project.defaultAssignee,
         priority: project.priority,
         template: project.template,
         startDate: project.startDate,
         dueDate: project.dueDate,
         settings: project.settings,
-        memberCount: project.members.length,
-        taskStats: {
-          total: totalTasks,
-          completed: completedTasks,
-          inProgress: inProgressTasks,
-          todo: todoTasks,
-        },
-        progress: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
+        memberCount: project._count?.members ?? 0,
+        taskStats,
+        progress: taskStats.total > 0 ? Math.round((taskStats.completed / taskStats.total) * 100) : 0,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
         isFavorite: project.isFavorite,
       };
     };
 
-    if (hasPagination) {
-      const { page, limit, skip } = parsePaginationParams(request);
-
-      const [projects, total] = await Promise.all([
-        prisma.project.findMany({
-          where: whereClause,
-          include: includeClause,
-          orderBy: orderByClause,
-          skip,
-          take: limit,
-        }),
-        prisma.project.count({ where: whereClause }),
-      ]);
-
-      const projectsWithStats = projects.map(transformProject);
-      return NextResponse.json(buildPaginatedResponse(projectsWithStats, total, { page, limit, skip }));
-    }
-
-    const projects = await prisma.project.findMany({
-      where: whereClause,
-      include: includeClause,
-      orderBy: orderByClause,
-    });
-
     const projectsWithStats = projects.map(transformProject);
+
+    if (paginationParams && total !== null) {
+      return NextResponse.json(buildPaginatedResponse(projectsWithStats, total, paginationParams));
+    }
 
     return NextResponse.json({
       projects: projectsWithStats,
