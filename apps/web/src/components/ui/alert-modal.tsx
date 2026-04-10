@@ -125,7 +125,7 @@ export function AlertModal({
 
           {/* Message */}
           <div className="mb-6 pl-[52px]">
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{message}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">{message}</p>
           </div>
 
           {/* Actions */}
