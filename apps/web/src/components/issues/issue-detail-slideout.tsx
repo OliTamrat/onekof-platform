@@ -10,7 +10,7 @@
  * - Only Lucide React Icons (NO EMOJIS!)
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ActivityTimeline as RealActivityTimeline } from '@/components/activity/activity-timeline';
 import {
@@ -38,6 +38,10 @@ import {
   Info,
   Share2,
   MoreVertical,
+  FileText,
+  Upload,
+  Link as LinkIcon,
+  Loader2,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
@@ -665,6 +669,12 @@ function DetailsTab({
           {/* Subtasks */}
           <SubtasksSection issue={issue} />
 
+          {/* Attachments */}
+          <AttachmentsSection issue={issue} />
+
+          {/* Linked Work Items */}
+          <LinksSection issue={issue} />
+
           {/* Activity */}
           <IssueActivitySection issue={issue} />
 
@@ -1112,6 +1122,69 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
   const toast = useToast();
   const comments = issue.comments || [];
   const [isSending, setIsSending] = useState(false);
+  const [mentionOpen, setMentionOpen] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [mentionStart, setMentionStart] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Fetch org members for @mentions
+  const { data: orgData } = useQuery({
+    queryKey: ['current-org-for-mentions'],
+    queryFn: async () => {
+      const res = await fetch('/api/organizations');
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+
+  const { data: membersData } = useQuery({
+    queryKey: ['org-members-mentions', currentOrgId],
+    queryFn: async () => {
+      if (!currentOrgId) return { members: [] };
+      const res = await fetch(`/api/organizations/${currentOrgId}/members`);
+      if (!res.ok) return { members: [] };
+      return res.json();
+    },
+    enabled: !!currentOrgId,
+  });
+
+  const filteredMembers = (membersData?.members || []).filter((m: any) => {
+    if (!mentionQuery) return true;
+    const q = mentionQuery.toLowerCase();
+    return (m.name || '').toLowerCase().includes(q) || (m.email || '').toLowerCase().includes(q);
+  }).slice(0, 6);
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setCommentContent(value);
+    const cursorPos = e.target.selectionStart;
+    // Find last @ before cursor
+    const textBeforeCursor = value.slice(0, cursorPos);
+    const atIdx = textBeforeCursor.lastIndexOf('@');
+    if (atIdx >= 0) {
+      const afterAt = textBeforeCursor.slice(atIdx + 1);
+      // Only trigger if no space after @
+      if (!afterAt.includes(' ') && !afterAt.includes('\n')) {
+        setMentionStart(atIdx);
+        setMentionQuery(afterAt);
+        setMentionOpen(true);
+        return;
+      }
+    }
+    setMentionOpen(false);
+  };
+
+  const insertMention = (member: any) => {
+    const displayName = (member.name || member.email || '').replace(/\s+/g, '');
+    const before = commentContent.slice(0, mentionStart);
+    const after = commentContent.slice(mentionStart + 1 + mentionQuery.length);
+    const newValue = `${before}@${displayName} ${after}`;
+    setCommentContent(newValue);
+    setMentionOpen(false);
+    setMentionQuery('');
+    setTimeout(() => textareaRef.current?.focus(), 0);
+  };
 
   const handleSendComment = async () => {
     if (!commentContent.trim()) return;
@@ -1150,19 +1223,49 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
       </div>
 
       {/* Add Comment */}
-      <div className="mb-4">
+      <div className="mb-4 relative">
         <textarea
+          ref={textareaRef}
           value={commentContent}
-          onChange={(e) => setCommentContent(e.target.value)}
-          placeholder="Add a comment..."
+          onChange={handleTextareaChange}
+          placeholder="Add a comment... Type @ to mention someone"
           className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
           rows={3}
           onKeyDown={(e) => {
+            if (e.key === 'Escape' && mentionOpen) {
+              e.preventDefault();
+              setMentionOpen(false);
+              return;
+            }
             if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
               handleSendComment();
             }
           }}
         />
+
+        {/* @mention dropdown */}
+        {mentionOpen && filteredMembers.length > 0 && (
+          <div className="absolute left-3 bottom-full mb-1 z-20 w-64 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+            {filteredMembers.map((member: any) => (
+              <button
+                key={member.id}
+                type="button"
+                onClick={() => insertMention(member)}
+                className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+              >
+                <div className="h-6 w-6 rounded-full bg-[#1C8C7D] text-white flex items-center justify-center text-xs font-semibold shrink-0">
+                  {(member.name || member.email || '?').charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{member.name || member.email}</div>
+                  {member.name && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{member.email}</div>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
         <div className="flex justify-end mt-2">
           <Button
             size="sm"
@@ -1190,7 +1293,13 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
                   {format(new Date(comment.createdAt), 'MMM dd, yyyy')}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{comment.content}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
+                {comment.content.split(/(@[A-Za-z][A-Za-z0-9_]*)/g).map((part, i) =>
+                  part.startsWith('@')
+                    ? <span key={i} className="text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-1 rounded">{part}</span>
+                    : <span key={i}>{part}</span>
+                )}
+              </p>
             </div>
           </div>
         ))}
@@ -1207,3 +1316,171 @@ const priorityColors: Record<string, string> = {
   LOW: 'text-green-600 dark:text-green-400',
   LOWEST: 'text-gray-600 dark:text-gray-400',
 };
+
+// Attachments Section Component
+function AttachmentsSection({ issue }: { issue: Issue }) {
+  const [attachments, setAttachments] = useState<any[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const toast = useToast();
+
+  const fetchAttachments = async () => {
+    try {
+      const res = await fetch(`/api/tasks/${issue.id}/attachments`);
+      if (res.ok) {
+        const data = await res.json();
+        setAttachments(data.attachments || []);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchAttachments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [issue.id]);
+
+  const handleUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setIsUploading(true);
+    for (const file of Array.from(files)) {
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch(`/api/tasks/${issue.id}/attachments`, { method: 'POST', body: fd });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          toast.error(err.error || 'Upload failed');
+        }
+      } catch {
+        toast.error('Upload failed');
+      }
+    }
+    setIsUploading(false);
+    fetchAttachments();
+  };
+
+  const handleDelete = async (attachmentId: string) => {
+    if (!confirm('Delete this attachment?')) return;
+    try {
+      const res = await fetch(`/api/tasks/${issue.id}/attachments?attachmentId=${attachmentId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setAttachments((prev) => prev.filter((a) => a.id !== attachmentId));
+        toast.success('Attachment deleted');
+      }
+    } catch {
+      toast.error('Failed to delete');
+    }
+  };
+
+  return (
+    <div className="border-t border-gray-200 dark:border-gray-800 px-3 md:px-6 py-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          Attachments ({attachments.length})
+        </h2>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+          className="flex items-center gap-1.5 text-xs font-medium text-[#1C8C7D] hover:text-[#156B60] disabled:opacity-50"
+        >
+          {isUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+          {isUploading ? 'Uploading...' : 'Upload'}
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={(e) => handleUpload(e.target.files)}
+        />
+      </div>
+
+      {attachments.length === 0 ? (
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.preventDefault(); handleUpload(e.dataTransfer.files); }}
+          className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-4 py-6 cursor-pointer hover:border-[#1C8C7D] transition-colors"
+        >
+          <Upload className="h-4 w-4 text-gray-400" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">Drop files here or click to upload</span>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {attachments.map((att) => (
+            <div key={att.id} className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2">
+              <FileText className="h-4 w-4 text-[#1C8C7D] shrink-0" />
+              <div className="flex-1 min-w-0">
+                <a
+                  href={att.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-gray-900 dark:text-white hover:text-[#1C8C7D] truncate block"
+                >
+                  {att.filename}
+                </a>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {(att.size / 1024).toFixed(1)} KB · {att.uploadedBy?.name || 'Unknown'} · {new Date(att.uploadedAt).toLocaleDateString()}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleDelete(att.id)}
+                className="text-gray-400 hover:text-red-500 transition-colors"
+                title="Delete"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Links Section Component
+function LinksSection({ issue }: { issue: Issue }) {
+  const [links, setLinks] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/tasks/${issue.id}/links`)
+      .then((res) => res.ok ? res.json() : { links: [] })
+      .then((data) => setLinks(data.links || []))
+      .catch(() => {});
+  }, [issue.id]);
+
+  if (links.length === 0) return null;
+
+  return (
+    <div className="border-t border-gray-200 dark:border-gray-800 px-3 md:px-6 py-4">
+      <h2 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
+        <LinkIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        Linked Work Items ({links.length})
+      </h2>
+      <div className="space-y-2">
+        {links.map((link) => (
+          <a
+            key={link.id}
+            href={`/dashboard/issues?taskId=${link.toTask.id}`}
+            className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#22272B] px-3 py-2 hover:border-[#1C8C7D] transition-colors"
+          >
+            <span
+              className="h-5 w-5 rounded flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+              style={{ backgroundColor: link.toTask.project?.color || '#3B82F6' }}
+            >
+              {link.toTask.project?.key?.slice(0, 2)}
+            </span>
+            <span className="text-xs text-[#1C8C7D] font-medium shrink-0">{link.type.toLowerCase().replace(/_/g, ' ')}</span>
+            <span className="text-xs font-mono text-gray-500 shrink-0">{link.toTask.key}</span>
+            <span className="text-sm text-gray-900 dark:text-white flex-1 truncate">{link.toTask.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
