@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Loader2, ChevronDown, ChevronUp, Upload, Link as LinkIcon, FileText, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
@@ -30,6 +30,22 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   const [dueDate, setDueDate] = useState('');
   const [estimate, setEstimate] = useState('');
   const [showMoreFields, setShowMoreFields] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [links, setLinks] = useState<{ toTaskId: string; type: string; label: string }[]>([]);
+  const [linkType, setLinkType] = useState<string>('RELATES_TO');
+  const [linkSearch, setLinkSearch] = useState('');
+  const [showLinkPicker, setShowLinkPicker] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch all tasks for link picker
+  const { data: allTasksData } = useQuery({
+    queryKey: ['all-tasks-for-linking'],
+    queryFn: async () => {
+      const res = await fetch('/api/issues');
+      if (!res.ok) return { issues: [] };
+      return res.json();
+    },
+  });
 
   const queryClient = useQueryClient();
 
@@ -77,7 +93,38 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error('Failed to create issue');
-      return res.json();
+      const result = await res.json();
+      const taskId = result.issue?.id || result.task?.id || result.id;
+
+      // Upload attachments after task creation
+      if (taskId && attachments.length > 0) {
+        for (const file of attachments) {
+          try {
+            const fd = new FormData();
+            fd.append('file', file);
+            await fetch(`/api/tasks/${taskId}/attachments`, { method: 'POST', body: fd });
+          } catch {
+            // Continue with next file even if one fails
+          }
+        }
+      }
+
+      // Create task links after task creation
+      if (taskId && links.length > 0) {
+        for (const link of links) {
+          try {
+            await fetch(`/api/tasks/${taskId}/links`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ toTaskId: link.toTaskId, type: link.type }),
+            });
+          } catch {
+            // Continue
+          }
+        }
+      }
+
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] });
@@ -325,6 +372,129 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
                   ))
                 ) : (
                   <p className="text-sm text-gray-400">{t('emptyStates.noGoals')}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Attachments */}
+            <div>
+              <label className={labelClasses}>Attachments</label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const dropped = Array.from(e.dataTransfer.files);
+                  setAttachments((prev) => [...prev, ...dropped]);
+                }}
+                className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-4 py-5 cursor-pointer hover:border-[#1C8C7D] transition-colors"
+              >
+                <Upload className="h-4 w-4 text-gray-400" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">Drop files here or click to browse</span>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setAttachments((prev) => [...prev, ...Array.from(e.target.files!)]);
+                  }
+                }}
+              />
+              {attachments.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {attachments.map((file, idx) => (
+                    <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#1B1F23] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
+                      <FileText className="h-3.5 w-3.5 text-[#1C8C7D] shrink-0" />
+                      <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
+                      <span className="text-xs text-gray-400">{(file.size / 1024).toFixed(1)} KB</span>
+                      <button
+                        type="button"
+                        onClick={() => setAttachments((prev) => prev.filter((_, i) => i !== idx))}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Linked Work Items */}
+            <div>
+              <label className={labelClasses}>Linked Work Items</label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <select value={linkType} onChange={(e) => setLinkType(e.target.value)} className={cn(inputClasses, 'flex-1')}>
+                    <option value="BLOCKS">blocks</option>
+                    <option value="IS_BLOCKED_BY">is blocked by</option>
+                    <option value="CLONES">clones</option>
+                    <option value="IS_CLONED_BY">is cloned by</option>
+                    <option value="DUPLICATES">duplicates</option>
+                    <option value="IS_DUPLICATED_BY">is duplicated by</option>
+                    <option value="RELATES_TO">relates to</option>
+                    <option value="CAUSES">causes</option>
+                    <option value="IS_CAUSED_BY">is caused by</option>
+                  </select>
+                  <div className="relative flex-[2]">
+                    <input
+                      type="text"
+                      value={linkSearch}
+                      onChange={(e) => { setLinkSearch(e.target.value); setShowLinkPicker(true); }}
+                      onFocus={() => setShowLinkPicker(true)}
+                      placeholder="Search issue by key or title..."
+                      className={inputClasses}
+                    />
+                    {showLinkPicker && linkSearch && (
+                      <div className="absolute top-full left-0 right-0 mt-1 z-10 max-h-48 overflow-y-auto rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-lg">
+                        {(allTasksData?.issues || [])
+                          .filter((issue: any) =>
+                            issue.title?.toLowerCase().includes(linkSearch.toLowerCase()) ||
+                            issue.key?.toLowerCase().includes(linkSearch.toLowerCase())
+                          )
+                          .slice(0, 10)
+                          .map((issue: any) => (
+                            <button
+                              key={issue.id}
+                              type="button"
+                              onClick={() => {
+                                if (!links.find((l) => l.toTaskId === issue.id && l.type === linkType)) {
+                                  setLinks((prev) => [...prev, { toTaskId: issue.id, type: linkType, label: `${issue.key} ${issue.title}` }]);
+                                }
+                                setLinkSearch('');
+                                setShowLinkPicker(false);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-gray-50 dark:hover:bg-[#282E33]"
+                            >
+                              <LinkIcon className="h-3 w-3 text-[#1C8C7D] shrink-0" />
+                              <span className="font-mono text-gray-500">{issue.key}</span>
+                              <span className="flex-1 truncate text-gray-700 dark:text-gray-300">{issue.title}</span>
+                            </button>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {links.length > 0 && (
+                  <div className="space-y-1">
+                    {links.map((link, idx) => (
+                      <div key={idx} className="flex items-center gap-2 rounded-md bg-gray-50 dark:bg-[#1B1F23] border border-gray-200 dark:border-slate-700 px-3 py-1.5">
+                        <LinkIcon className="h-3 w-3 text-[#1C8C7D] shrink-0" />
+                        <span className="text-xs font-medium text-[#1C8C7D]">{link.type.toLowerCase().replace(/_/g, ' ')}</span>
+                        <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">{link.label}</span>
+                        <button
+                          type="button"
+                          onClick={() => setLinks((prev) => prev.filter((_, i) => i !== idx))}
+                          className="text-gray-400 hover:text-red-500"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>

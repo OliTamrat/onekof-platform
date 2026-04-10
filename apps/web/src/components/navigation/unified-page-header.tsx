@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ChevronRight,
+  ArrowLeft,
   Search,
   Filter,
   LayoutGrid,
@@ -116,6 +117,27 @@ const PRIORITY_COLORS: Record<string, string> = {
   MEDIUM: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
   LOW: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
 };
+
+function BackButton() {
+  const router = useRouter();
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/dashboard');
+    }
+  };
+  return (
+    <button
+      onClick={handleBack}
+      className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
+      title="Back"
+      aria-label="Back"
+    >
+      <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+    </button>
+  );
+}
 
 function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; baseHref: string; activeTab: string }) {
   const { t } = useLanguage();
@@ -325,6 +347,7 @@ export function UnifiedPageHeader({
       {/* Title and Icon */}
       <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-slate-700">
         <div className="flex items-center gap-2 md:gap-3">
+          <BackButton />
           {icon && (
             <div
               className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-lg"

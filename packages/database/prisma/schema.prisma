@@ -177,6 +177,7 @@ model User {
   taskWatchers   TaskWatcher[]   @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
+  taskLinks      TaskLink[]      @relation("TaskLinkCreator") // Task relationships created by this user
 
   // 🚀 PERFORMANCE: Critical indexes for authentication and queries
   @@index([email, deletedAt]) // Soft-deleted user queries
@@ -476,6 +477,8 @@ model Task {
   attachments       Attachment[]
   watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
   budgetAllocations TaskBudget[] // 🚀 NEW: Budget category allocations
+  linksFrom         TaskLink[]    @relation("TaskLinkFrom")
+  linksTo           TaskLink[]    @relation("TaskLinkTo")
 
   @@unique([projectId, key])
   // 🚀 PERFORMANCE: Critical indexes for task queries (70% faster!)
@@ -531,6 +534,30 @@ model Attachment {
   uploadedAt   DateTime @default(now()) @map("uploaded_at")
 
   @@map("attachments")
+  @@schema("public")
+}
+
+// Task links — relationships between tasks (blocks, clones, duplicates, relates to, causes)
+// Supports cross-project linking within the same organization
+model TaskLink {
+  id String @id @default(cuid())
+
+  fromTaskId String @map("from_task_id")
+  fromTask   Task   @relation("TaskLinkFrom", fields: [fromTaskId], references: [id], onDelete: Cascade)
+
+  toTaskId String @map("to_task_id")
+  toTask   Task   @relation("TaskLinkTo", fields: [toTaskId], references: [id], onDelete: Cascade)
+
+  type TaskLinkType @default(RELATES_TO)
+
+  createdById String   @map("created_by")
+  createdBy   User     @relation("TaskLinkCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([fromTaskId, toTaskId, type])
+  @@index([fromTaskId])
+  @@index([toTaskId])
+  @@map("task_links")
   @@schema("public")
 }
 
@@ -631,6 +658,20 @@ enum TaskPriority {
   MEDIUM
   LOW
   LOWEST
+
+  @@schema("public")
+}
+
+enum TaskLinkType {
+  BLOCKS
+  IS_BLOCKED_BY
+  CLONES
+  IS_CLONED_BY
+  DUPLICATES
+  IS_DUPLICATED_BY
+  RELATES_TO
+  CAUSES
+  IS_CAUSED_BY
 
   @@schema("public")
 }
