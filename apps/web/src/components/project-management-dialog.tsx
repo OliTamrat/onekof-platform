@@ -77,6 +77,7 @@ export function ProjectManagementDialog({
     color: '#1C8C7D',
     leadId: '',
     defaultAssignee: 'UNASSIGNED',
+    visibility: 'PUBLIC' as 'PUBLIC' | 'INTERNAL' | 'PRIVATE' | 'CONFIDENTIAL',
   });
 
   // Update form when project changes
@@ -90,6 +91,7 @@ export function ProjectManagementDialog({
         color: project.color || '#1C8C7D',
         leadId: project.leadId || '',
         defaultAssignee: project.defaultAssignee || 'UNASSIGNED',
+        visibility: ((project as any).visibility || 'PUBLIC') as any,
       });
     }
   }, [project]);
@@ -395,6 +397,27 @@ export function ProjectManagementDialog({
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Visibility */}
+            <div className="space-y-2">
+              <Label className="text-gray-900 dark:text-white">Visibility</Label>
+              <select
+                value={projectForm.visibility}
+                onChange={(e) => setProjectForm({ ...projectForm, visibility: e.target.value as any })}
+                className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+              >
+                <option value="PUBLIC">Public — everyone in the organization</option>
+                <option value="INTERNAL">Internal — only project members (org admins still have access)</option>
+                <option value="PRIVATE">Private — only explicit project members, even admins must be added</option>
+                <option value="CONFIDENTIAL">Confidential — restricted access with audit logging</option>
+              </select>
+              <p className="text-xs text-gray-600 dark:text-slate-400">
+                {projectForm.visibility === 'PUBLIC' && 'Everyone in your organization can see this project.'}
+                {projectForm.visibility === 'INTERNAL' && 'Only people added as project members can see this project. Org admins still have access.'}
+                {projectForm.visibility === 'PRIVATE' && 'Only explicit project members can see this — even org admins must be added.'}
+                {projectForm.visibility === 'CONFIDENTIAL' && 'Restricted access with audit logging. Org admins cannot bypass this.'}
+              </p>
             </div>
 
             {/* Save Button */}

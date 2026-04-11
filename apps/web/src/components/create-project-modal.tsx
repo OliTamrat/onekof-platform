@@ -79,8 +79,12 @@ interface FormData {
 }
 
 const INITIAL_FORM_DATA: FormData = {
+  // visibility defaults to PUBLIC so new projects are org-wide-visible
+  // out of the box — matches user expectation that "I created this project,
+  // my teammates should see it". Admins can restrict to INTERNAL/PRIVATE/
+  // CONFIDENTIAL during creation or later via project settings.
   name: '', key: '', description: '', projectType: 'SOFTWARE',
-  department: '', category: '', entityType: 'INTERNAL', visibility: 'INTERNAL',
+  department: '', category: '', entityType: 'INTERNAL', visibility: 'PUBLIC',
   riskLevel: 'NOT_ASSESSED', budgetCode: '', tags: '',
   ownerId: '', leadId: '', defaultAssignee: '', teamIds: [], memberIds: [],
   priority: 'MEDIUM', startDate: '', dueDate: '',
@@ -420,6 +424,12 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
             <option value="PRIVATE">{t('projects.privateExplicit')}</option>
             <option value="CONFIDENTIAL">{t('projects.confidentialRestricted')}</option>
           </select>
+          <p className="mt-1.5 text-xs text-gray-500 dark:text-slate-400">
+            {formData.visibility === 'PUBLIC' && 'Everyone in your organization can see this project.'}
+            {formData.visibility === 'INTERNAL' && 'Only people added as project members can see this project. Org admins still have access.'}
+            {formData.visibility === 'PRIVATE' && 'Only explicit project members can see this — even org admins must be added.'}
+            {formData.visibility === 'CONFIDENTIAL' && 'Restricted access with audit logging. Org admins cannot bypass this.'}
+          </p>
         </div>
 
         <div>
