@@ -131,13 +131,24 @@ export async function PATCH(
 
     // Parse request body
     const body = await request.json();
-    const { name, description, status, color, icon } = body;
+    const { name, description, status, color, icon, visibility } = body;
 
     // Build update data
     const updateData: any = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (status !== undefined) updateData.status = status;
+    if (visibility !== undefined) {
+      // Only allow recognized enum values
+      const validVisibilities = ['PUBLIC', 'INTERNAL', 'PRIVATE', 'CONFIDENTIAL'];
+      if (!validVisibilities.includes(visibility)) {
+        return NextResponse.json(
+          { error: 'Invalid visibility value' },
+          { status: 400 }
+        );
+      }
+      updateData.visibility = visibility;
+    }
 
     // Update settings if color or icon provided
     if (color !== undefined || icon !== undefined) {
