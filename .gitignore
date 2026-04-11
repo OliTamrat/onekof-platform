@@ -111,3 +111,7 @@ backups/
 *.dump
 *.backup
 scripts/*.log
+
+# EIPA deposit package (generated, not versioned)
+DEPOSIT/
+generate-eipa-deposit.py
