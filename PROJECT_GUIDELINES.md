@@ -75,18 +75,85 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Subdomain routing**: `{orgslug}.onekof.com` → middleware sets `x-organization-slug` header
 - **Commit attribution**: every commit is `Oli Tamrat Oli <oli.oli@udc.edu>` (for IP registration)
 
-## Next Work Priorities (post-IP-registration)
+## Current Status (as of 2026-04-11)
 
-### Priority 1: Mobile UX refinement
-- Test on real iPhone/Android devices
-- Fix any cramped layouts, overflowing text, unreachable buttons
+**Launch stage:** Pre-launch. No paying customers. EIPA copyright registration filed 2026-04-11.
 
-### Priority 2: Bulk operations
-- Bulk select + status change / delete / label change for issues
-- Already flagged as "nice to have, can ship without" in earlier audit
+**Production deployment (Tier 3):** Live at `onekof.com` on Vercel serverless (fra1) + Supabase PostgreSQL 15 (aws-1-eu-central-1). 25 test/demo organizations, no real customer data.
 
-### Priority 3: Deferred features (need product decisions)
-- Error monitoring (Sentry) — needs DSN
-- Rate limiting (Upstash Redis) — needs account
-- Archive & grace-period deletion — scoped but not started
-- Amharic-native LLM task parsing — needs product scoping
+**Architecture target:** Three-tier federated hosting (see `docs/deployment/tier-2-runbook.md`):
+- **Tier 1 — Government:** EthioTelecom Cloud (or Raxio fallback), `*.gov.onekof.et`. **Not yet built.** Requires signed government LOI before coding begins.
+- **Tier 2 — Private:** On-premise Ethiopian server, `*.onekof.et`. **Code-ready** (Wave 1 shipped). Test server build pending on owned hardware (Massano/i7/64GB rig).
+- **Tier 3 — Global:** Vercel + Supabase, `*.onekof.com`. **Current production.** Unchanged by Wave 1.
+- **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage as cold recovery. **Deferred to Wave 3.**
+
+## Recently Shipped
+
+### Wave 1 — Portability PR (2026-04-11)
+Nine commits on `master` (`d014a9c..4c14a59`) that lift every hardcoded Vercel/.onekof.com assumption behind env vars while preserving Tier 3 behavior exactly. Plus three follow-up commits (`0e19dad..8725e93`) adding Dockerfile, docker-compose Tier 2 simulation, deployment runbook, and the EthioTelecom requirements letter.
+
+**What landed in the runtime code:**
+- `AUTH_COOKIE_DOMAIN` env var (was hardcoded `.onekof.com`)
+- `PUBLIC_HOSTS` env var for middleware hostname parser (was hardcoded `onekof.com,localhost,vercel.app`)
+- `NEXT_PUBLIC_SUBDOMAIN_DOMAINS` env var for client-side routing
+- `STORAGE_DRIVER` env var with pluggable driver architecture (`vercel-blob` | `local-fs` | `s3`) — default preserves Tier 3 behavior
+- `lib/env/runtime.ts` — `getRuntimeInfo()` replaces direct `VERCEL_*` env reads in 5 files
+- `lib/routing/subdomain.ts` — client-side subdomain helpers, replaces 5 copy-pasted `.onekof.com` regex blocks
+- `Organization.hostingTier` enum field (`GLOBAL_CLOUD | PRIVATE_ONPREM | GOV_ETHIOTELECOM`), default `GLOBAL_CLOUD`, all 25 existing orgs backfilled
+- `0_init` baseline Prisma migration (1,389 lines) that was missing entirely — required for any new Postgres to be provisioned
+- Wave 1 schema migration: `HostingTier` enum + 2 missing indexes (`BudgetCategory.budget_id`, `automation_rules(organizationId, isEnabled, deletedAt)`)
+- Prisma `binaryTargets += 'debian-openssl-3.0.x'` for Ubuntu self-hosting
+
+**What landed in infrastructure:**
+- `apps/web/Dockerfile` — multi-stage Node 20-slim, Ubuntu-compatible, ~2.6 GB runtime image (default output — standalone deferred to Wave 2)
+- `docker-compose.tier-sim.yml` — full Tier 2 stack (Postgres 15 + Redis 7 + Onekof) runnable on a dev laptop
+- `.dockerignore` with secret hygiene
+- `.env.tier2.example` — fully documented Tier 2 config template
+- `.env.tier3.example` — current production config reference
+
+**What landed in documentation:**
+- `docs/deployment/tier-2-runbook.md` — 671-line runbook from bare Ubuntu to live production Tier 2
+- `docs/business/ethiotelecom-cloud-requirements-letter.md` — formal inquiry to EthioTelecom Cloud for Tier 1 evaluation
+- `packages/database/prisma/migrations/README.md` — explains the baseline + deployment flow
+- Memory entries under `.claude/projects/C--Users-olita/memory/`
+
+**Empirical validation (2026-04-11 evening):**
+- Vercel production (`onekof.com`): still serving HTTP 200 after all 9 Wave 1 commits, tenant subdomains work, auth is enforced.
+- Local Docker simulation: full Tier 2 stack boots on developer laptop, serves HTTP 200 on `http://localhost:3000`, local Postgres has all 41 tables and 32 enums, `hosting_tier` column present. Zero Vercel/Supabase involvement.
+- Supabase migration state: `20260411120000_portability_wave1` applied, `_prisma_migrations.0_init` marked applied via `prisma migrate resolve`.
+
+## Next Work Priorities (after Wave 1)
+
+### Priority 0: Test server weekend — Massano/i7/64GB/1TB rig
+**Status:** Code-ready, hardware on hand, runbook written, Docker topology proven on laptop.
+**Goal:** Follow `docs/deployment/tier-2-runbook.md` end-to-end on bare Ubuntu 24.04 LTS. Produce a living Tier 2 reference deployment hosting a fake test tenant. Document every deviation from the runbook as a runbook update.
+**Effort:** ~1 focused day (down from 3 days of troubleshooting before the Docker simulation proved the stack).
+**Blockers:** None — Oli has time.
+
+### Priority 1: Wave 2 — medium-risk hardening
+All items are gated to "before first real customer," not urgent pre-launch.
+- **B6 — Admin password bcrypt hashing** (`api/admin/login/route.ts:90` currently does plaintext compare). Security file — requires re-reading this Security Rules section first per the workflow.
+- **Cloudflare Full Strict SSL** — currently Flexible (HTTP CF↔Vercel). Blocks government contracts. Follow `PRODUCTION_SECURITY_UPGRADE_GUIDE.md`.
+- **Disable `/api/debug/*` routes in production** — they expose env info.
+- **Tenant isolation validation in middleware** — currently trusts hostname header without cross-checking user membership.
+- **Mandatory Upstash Redis for rate limiting in production** — in-memory fallback is broken under serverless multi-instance scaling.
+- **`output: 'standalone'` in `next.config.mjs`** — drops Docker image from 2.6 GB to ~300 MB. Requires Vercel preview testing first (potential behavior change).
+
+### Priority 2: Wave 3 — data retention + DR
+- `UserActivity` rolling 90-day retention (table grows unboundedly today).
+- `RateLimit` table → Redis (wrong architecture for a Postgres-backed store).
+- JWT refresh token rotation.
+- Admin audit logging (`AdminAuditLog` model + 15+ route instrumentation).
+- Encrypted backup pipeline (`pg_dump | gzip | gpg --encrypt | rsync`) with Shamir 3-of-5 key split.
+
+### Priority 3: Async tracks (don't block on these)
+- **EthioTelecom Tier 1 evaluation** — send the letter from `docs/business/ethiotelecom-cloud-requirements-letter.md` once ready, then wait for their technical response. Keeps Tier 1 architecture dependencies unblocked without forcing synchronous work.
+- **Claim `onekof.et` domain** — required for Tier 2 production. Claim after EIPA registration completes.
+- **Ethiopian business entity formation for Olink Technologies** — required for government procurement, unrelated to the codebase but on the critical path for Tier 1 sales.
+
+### Priority 4: Product polish (deferred — no customer pressure yet)
+- Mobile UX refinement (Priority 1 from pre-Wave-1 list — still valid but no longer blocking).
+- Bulk operations (bulk status change / delete / label for issues).
+- Sentry DSN + error monitoring.
+- Archive & grace-period deletion workflow.
+- Amharic-native LLM task parsing (needs product scoping).
