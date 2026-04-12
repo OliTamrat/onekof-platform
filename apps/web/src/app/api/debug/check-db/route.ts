@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireSuperAdmin } from '@/lib/security/superadmin';
+import { getRuntimeInfo } from '@/lib/env/runtime';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export async function GET() {
   try {
     const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
     const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':****@');
+    const runtimeInfo = getRuntimeInfo();
 
     return NextResponse.json({
       databaseConfigured: dbUrl !== 'NOT_SET',
@@ -18,7 +20,7 @@ export async function GET() {
                      maskedUrl.includes('localhost') ? 'Localhost' : 'Unknown',
       maskedUrl: maskedUrl,
       nodeEnv: process.env.NODE_ENV,
-      vercelEnv: process.env.VERCEL_ENV
+      runtime: runtimeInfo,
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to check database' }, { status: 500 });

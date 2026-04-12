@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { requireSuperAdmin } from '@/lib/security/superadmin';
+import { getRuntimeInfo } from '@/lib/env/runtime';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,13 +94,16 @@ export async function GET() {
     ? 'degraded'
     : 'operational';
 
-  // Environment info (safe, no secrets)
+  // Environment info (safe, no secrets) — sourced via runtime abstraction
+  // so the health endpoint reports correct info on Vercel, on-prem, and local.
+  const runtimeInfo = getRuntimeInfo();
   const environment = {
-    nodeVersion: process.version,
-    runtime: process.env.NEXT_RUNTIME || 'nodejs',
-    region: process.env.VERCEL_REGION || 'unknown',
-    environment: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-    deploymentId: process.env.VERCEL_DEPLOYMENT_ID?.slice(0, 8) || 'local',
+    nodeVersion: runtimeInfo.nodeVersion,
+    runtime: runtimeInfo.nextRuntime,
+    region: runtimeInfo.region,
+    environment: runtimeInfo.environment,
+    deploymentId: runtimeInfo.deploymentId,
+    platform: runtimeInfo.platform,
   };
 
   return NextResponse.json({
