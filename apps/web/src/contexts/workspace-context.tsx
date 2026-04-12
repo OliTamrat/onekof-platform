@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
+import { findSubdomainBase, getTenantSlugFromHostname } from '@/lib/routing/subdomain';
 
 // Types
 export interface Organization {
@@ -103,14 +104,15 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         setOrganizations(data.organizations || []);
 
         // Multi-tenant: Check if we're on a subdomain
+        // Recognizes any base domain configured in NEXT_PUBLIC_SUBDOMAIN_DOMAINS
+        // (default: onekof.com) plus .localhost for dev.
         const hostname = window.location.hostname;
         let organizationSlug: string | null = null;
 
-        // Extract subdomain from hostname
-        if (hostname.endsWith('.onekof.com')) {
-          organizationSlug = hostname.replace('.onekof.com', '');
-        } else if (hostname.endsWith('.localhost')) {
+        if (hostname.endsWith('.localhost')) {
           organizationSlug = hostname.replace('.localhost', '');
+        } else if (findSubdomainBase(hostname)) {
+          organizationSlug = getTenantSlugFromHostname(hostname);
         }
 
         // If on subdomain, find organization by slug

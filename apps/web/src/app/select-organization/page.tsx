@@ -7,6 +7,7 @@ import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut,
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { buildTenantUrl } from '@/lib/routing/subdomain';
 
 interface Organization {
   id: string;
@@ -73,21 +74,21 @@ export default function SelectOrganizationPage() {
       console.error('Failed to set default organization:', error);
     });
 
-    // Redirect based on environment
-    const protocol = window.location.protocol;
-    const port = window.location.port ? `:${window.location.port}` : '';
-    const hostname = window.location.hostname;
+    // Redirect based on deployment tier. Production custom domains
+    // (onekof.com, onekof.et, gov.onekof.et) support per-tenant subdomains and
+    // get a full-URL redirect; preview/local hosts use path-based routing.
+    // See apps/web/src/lib/routing/subdomain.ts for the tier-aware logic.
+    const tenantUrl = buildTenantUrl(
+      window.location.hostname,
+      window.location.port,
+      window.location.protocol,
+      org.slug,
+      '/dashboard',
+    );
 
-    // For Vercel deployments (*.vercel.app) - use path-based routing
-    if (hostname.includes('vercel.app')) {
-      router.push('/dashboard');
-    }
-    // For custom domain production (onekof.com) - use subdomain
-    else if (hostname.includes('onekof.com') && hostname !== 'localhost') {
-      window.location.href = `${protocol}//${org.slug}.onekof.com/dashboard`;
-    }
-    // For local development - use path-based routing (subdomain DNS often not configured)
-    else {
+    if (tenantUrl) {
+      window.location.href = tenantUrl;
+    } else {
       router.push('/dashboard');
     }
   };

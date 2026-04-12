@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { findSubdomainBase } from '@/lib/routing/subdomain';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
 
@@ -92,25 +93,25 @@ function OnboardingContent() {
     { value: '500+', label: t('onboarding.people500plus') },
   ];
 
-  // CRITICAL: Redirect to main domain if accessing from subdomain
+  // CRITICAL: Redirect to main domain if accessing from a tenant subdomain.
+  // Onboarding happens on the main domain because the user hasn't picked a
+  // tenant yet. If they land here from a tenant subdomain, kick them to the
+  // base host for whichever tier they're on.
   useEffect(() => {
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    const port = window.location.port ? `:${window.location.port}` : '';
 
-    // Check if we're on a subdomain (not main domain)
-    const isSubdomain =
-      (hostname.includes('.onekof.com') && hostname !== 'onekof.com' && hostname !== 'www.onekof.com') ||
-      (hostname.includes('.localhost') && hostname !== 'localhost');
+    // Dev: .localhost subdomain → redirect to plain localhost
+    if (hostname.endsWith('.localhost') && hostname !== 'localhost') {
+      window.location.href = `${protocol}//localhost${port}/onboarding`;
+      return;
+    }
 
-    if (isSubdomain) {
-      // Redirect to main domain
-      const protocol = window.location.protocol;
-      const port = window.location.port ? `:${window.location.port}` : '';
-
-      if (hostname.includes('onekof.com')) {
-        window.location.href = `${protocol}//onekof.com/onboarding`;
-      } else {
-        window.location.href = `${protocol}//localhost${port}/onboarding`;
-      }
+    // Prod: any configured base domain → redirect to that base
+    const base = findSubdomainBase(hostname);
+    if (base && hostname !== base && hostname !== `www.${base}`) {
+      window.location.href = `${protocol}//${base}${port}/onboarding`;
     }
   }, []);
 

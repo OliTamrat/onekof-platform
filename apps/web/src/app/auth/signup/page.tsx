@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
+import { findSubdomainBase, getTenantSlugFromHostname } from '@/lib/routing/subdomain';
 
 interface OrganizationInfo {
   id: string;
@@ -38,20 +39,15 @@ export default function SignUpPage() {
   useEffect(() => {
     const detectOrganization = async () => {
       const hostname = window.location.hostname;
-      const isSubdomain =
-        hostname.includes('.') &&
-        !hostname.startsWith('www.') &&
-        (hostname.endsWith('.onekof.com') || hostname.endsWith('.localhost'));
+      let subdomain: string | null = null;
+      if (hostname.endsWith('.localhost')) {
+        subdomain = hostname.replace('.localhost', '');
+      } else if (findSubdomainBase(hostname)) {
+        subdomain = getTenantSlugFromHostname(hostname);
+      }
 
-      if (isSubdomain) {
+      if (subdomain) {
         setIsMainDomain(false);
-        let subdomain = '';
-        if (hostname.endsWith('.onekof.com')) {
-          subdomain = hostname.replace('.onekof.com', '');
-        } else if (hostname.endsWith('.localhost')) {
-          subdomain = hostname.replace('.localhost', '');
-        }
-
         try {
           const response = await fetch(`/api/organizations/by-slug/${subdomain}`);
           if (response.ok) {
