@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
-import { put, del } from '@vercel/blob';
+import { storage } from '@/lib/storage';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -100,20 +100,28 @@ export async function POST(
       );
     }
 
-    // Upload to Vercel Blob (if configured) or store metadata only
+    // Upload via the configured storage driver. The driver is selected by the
+    // STORAGE_DRIVER env var: vercel-blob (Tier 3 default), local-fs (Tier 2
+    // on-prem), or s3 (Tier 1, future). Each driver throws with a descriptive
+    // error message if its required config is missing.
     let fileUrl: string;
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const blob = await put(
+    try {
+      const result = await storage.put(
         `tasks/${params.id}/${Date.now()}-${file.name}`,
         file,
-        { access: 'public', addRandomSuffix: false }
+        { access: 'public', contentType: file.type || undefined },
       );
-      fileUrl = blob.url;
-    } else {
-      // Fallback: return error if storage not configured
+      fileUrl = result.url;
+    } catch (err) {
+      logger.error('Storage driver refused upload', {
+        error: err instanceof Error ? err.message : err,
+      });
       return NextResponse.json(
-        { error: 'File storage not configured. Set BLOB_READ_WRITE_TOKEN in Vercel env vars.' },
-        { status: 503 }
+        {
+          error:
+            'File storage is not configured. Check STORAGE_DRIVER and its required env vars.',
+        },
+        { status: 503 },
       );
     }
 
@@ -176,13 +184,18 @@ export async function DELETE(
     });
     if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-    // Delete from blob storage
-    if (process.env.BLOB_READ_WRITE_TOKEN && attachment.url.includes('blob.vercel-storage.com')) {
-      try {
-        await del(attachment.url);
-      } catch {
-        // Continue even if blob delete fails
-      }
+    // Delete from underlying storage via the active driver. Drivers are
+    // responsible for handling URLs created by any driver (a VercelBlob URL
+    // may still exist in the DB if the deployment switched drivers), and for
+    // treating missing files as a no-op.
+    try {
+      await storage.delete(attachment.url);
+    } catch (err) {
+      // Log but do not fail the request — the DB row is about to be deleted,
+      // and a stale blob is preferable to a stuck delete from the user's view.
+      logger.warn('Storage delete failed, continuing with DB delete', {
+        error: err instanceof Error ? err.message : err,
+      });
     }
 
     await prisma.attachment.delete({ where: { id: attachmentId } });
