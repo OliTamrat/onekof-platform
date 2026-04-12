@@ -58,7 +58,9 @@ next-env.d.ts
 .idea/
 
 # Prisma
-migrations/
+# Only ignore root-level migrations/ (not Prisma's — those MUST be tracked in git
+# so `prisma migrate deploy` has a source of truth for schema state)
+/migrations/
 
 .vercel
 .env*.local
@@ -111,6 +113,10 @@ backups/
 *.dump
 *.backup
 scripts/*.log
+# Exception: Prisma migration files MUST be tracked in git — they are the
+# source of truth for `prisma migrate deploy` and must match across all
+# deployment environments.
+!packages/database/prisma/migrations/**/migration.sql
 
 # EIPA deposit package (generated, not versioned)
 DEPOSIT/
