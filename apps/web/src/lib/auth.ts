@@ -6,6 +6,40 @@ import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
 import { logSecurity } from '@/lib/logger';
+import { isVercelPreview } from '@/lib/env/runtime';
+
+/**
+ * Resolve the NextAuth session cookie domain from environment.
+ *
+ * Behavior matrix (all security flags remain constant — see `sessionToken.options`):
+ *
+ * | Environment             | AUTH_COOKIE_DOMAIN set? | Resolved domain      |
+ * | ----------------------- | ----------------------- | -------------------- |
+ * | production (Vercel)     | yes                     | value of env var     |
+ * | production (Vercel)     | no                      | '.onekof.com'        |
+ * | preview   (vercel.app)  | any                     | undefined (exact)    |
+ * | production (self-host)  | yes (required)          | value of env var     |
+ * | development             | any                     | '.localhost'         |
+ *
+ * On preview Vercel deploys, cookies must stay on the exact preview hostname
+ * (e.g. `feature-branch.vercel.app`) so that unrelated preview deployments
+ * cannot observe each other's sessions. This preserves the existing
+ * production behavior on Tier 3.
+ *
+ * On self-hosted Tier 2 (`.onekof.et`) and Tier 1 (`.gov.onekof.et`) the env
+ * var MUST be set at deploy time — there is no safe default. The fallback
+ * `.onekof.com` only applies when the env var is unset AND the build is on
+ * Vercel production, matching the behavior that existed before Wave 1.
+ */
+function resolveAuthCookieDomain(): string | undefined {
+  if (process.env.NODE_ENV !== 'production') {
+    return '.localhost';
+  }
+  if (isVercelPreview()) {
+    return undefined;
+  }
+  return process.env.AUTH_COOKIE_DOMAIN || '.onekof.com';
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -15,7 +49,12 @@ export const authOptions: NextAuthOptions = {
   // @ts-expect-error trustHost exists in NextAuth v4.24+ but types lag behind
   trustHost: true, // Allow NextAuth to work on any host (Vercel, custom domains, etc.)
   cookies: {
-    // Configure cookies to work across subdomains
+    // Configure cookies to work across subdomains.
+    // All security flags (httpOnly, sameSite=lax, secure, __Secure- prefix)
+    // are preserved from the pre-Wave-1 configuration per PROJECT_GUIDELINES.md
+    // "Session strategy: JWT, cookies scoped to subdomain". Only the `domain`
+    // field is now resolved from AUTH_COOKIE_DOMAIN env var so self-hosted
+    // tiers can scope to .onekof.et or .gov.onekof.et without a code change.
     sessionToken: {
       name: process.env.NODE_ENV === 'production'
         ? '__Secure-next-auth.session-token'
@@ -24,14 +63,7 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        // Domain handling:
-        // - Production: .onekof.com for cross-subdomain sessions
-        // - Preview (vercel.app): undefined (exact domain match)
-        // - Development: .localhost for subdomain support
-        // Note: VERCEL_ENV distinguishes production vs preview on Vercel
-        domain: process.env.NODE_ENV === 'production'
-          ? (process.env.VERCEL_ENV === 'preview' ? undefined : '.onekof.com')
-          : '.localhost',
+        domain: resolveAuthCookieDomain(),
         secure: process.env.NODE_ENV === 'production',
       },
     },

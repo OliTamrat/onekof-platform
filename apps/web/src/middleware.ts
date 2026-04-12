@@ -140,37 +140,66 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
 }
 
 /**
- * Extract organization slug from hostname
- * Examples:
- *   - ministry-water-irrigation.onekof.com → ministry-water-irrigation
- *   - olink-tech.onekof.com → olink-tech
- *   - localhost:3000 → null (main domain)
- *   - onekof.com → null (main domain)
+ * Return the list of base hostnames from which tenant subdomains are extracted.
+ * Driven by the `PUBLIC_HOSTS` environment variable, comma-separated.
+ *
+ * Default: "onekof.com,localhost" — preserves the pre-Wave-1 Tier 3 behavior
+ * exactly. Self-hosted tiers set PUBLIC_HOSTS explicitly:
+ *   Tier 2 (private on-prem): PUBLIC_HOSTS=onekof.et
+ *   Tier 1 (gov):              PUBLIC_HOSTS=gov.onekof.et
+ *   Dev against Tier 2:        PUBLIC_HOSTS=onekof.et,localhost
+ *
+ * The function is pure and re-reads the env var on every call so test setup
+ * and hot-reload work as expected.
+ */
+function getPublicHosts(): string[] {
+  const raw = process.env.PUBLIC_HOSTS || 'onekof.com,localhost';
+  return raw
+    .split(',')
+    .map((h) => h.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+/**
+ * Extract organization slug from hostname.
+ *
+ * Examples (with default PUBLIC_HOSTS="onekof.com,localhost"):
+ *   - ministry-water-irrigation.onekof.com → "ministry-water-irrigation"
+ *   - olink-tech.onekof.com                → "olink-tech"
+ *   - acme.localhost:3000                  → "acme"
+ *   - onekof.com                           → null (main domain)
+ *   - www.onekof.com                       → null (main domain)
+ *   - localhost:3000                       → null (main domain)
+ *   - feature-branch.vercel.app            → null (Vercel preview)
+ *
+ * With PUBLIC_HOSTS="onekof.et" (Tier 2 production):
+ *   - acme.onekof.et                       → "acme"
+ *   - onekof.et                            → null
+ *
+ * The function always treats Vercel preview hostnames (*.vercel.app) as the
+ * main domain so the existing preview-routing behavior in select-organization
+ * page and auth cookie scoping stays consistent.
  */
 function getOrganizationSlug(hostname: string): string | null {
-  // Remove port if present
-  const host = hostname.split(':')[0];
+  // Remove port if present and lowercase for case-insensitive comparison
+  const host = hostname.split(':')[0].toLowerCase();
 
-  // Main domains (no organization)
-  if (
-    host === 'localhost' ||
-    host === 'onekof.com' ||
-    host === 'www.onekof.com' ||
-    host.includes('vercel.app')
-  ) {
+  // Vercel preview deploys always map to the main domain (no subdomain routing)
+  if (host.includes('vercel.app')) {
     return null;
   }
 
-  // Extract subdomain for onekof.com
-  if (host.endsWith('.onekof.com')) {
-    const subdomain = host.replace('.onekof.com', '');
-    return subdomain;
-  }
+  const publicHosts = getPublicHosts();
 
-  // For localhost development with subdomain
-  if (host.endsWith('.localhost')) {
-    const subdomain = host.replace('.localhost', '');
-    return subdomain;
+  for (const base of publicHosts) {
+    // Exact match on the base host or www. variant → main domain
+    if (host === base || host === `www.${base}`) {
+      return null;
+    }
+    // Subdomain of the base host → extract slug
+    if (host.endsWith(`.${base}`)) {
+      return host.slice(0, host.length - base.length - 1);
+    }
   }
 
   return null;
