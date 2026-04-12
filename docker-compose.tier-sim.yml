@@ -1,0 +1,185 @@
+# Onekof Platform — Tier 2 Local Simulation
+# ===========================================
+#
+# This docker-compose file boots a full Tier 2 Onekof stack on a developer
+# laptop: PostgreSQL 15, Redis 7, and the Onekof web app, all wired together
+# with the Wave 1 env vars that let Onekof run as a self-hosted application.
+#
+# PURPOSE:
+#   1. Empirical proof that Wave 1 portability works — boot the full stack
+#      locally before committing to build the same thing on bare metal.
+#   2. Dev mirror of the Tier 2 production topology — any issue discovered
+#      here will also occur on the real test server.
+#   3. Demo environment — show prospective customers a fully-local Onekof
+#      running without any Vercel/Supabase dependencies.
+#
+# NOT FOR:
+#   - Production hosting. No SSL, no backups, no monitoring, secrets are
+#     defaults. Use the Tier 2 runbook (docs/deployment/tier-2-runbook.md)
+#     for real deployments.
+#   - Running alongside the current Vercel+Supabase production (Tier 3).
+#     Use separate browsers/profiles if you want to run both at once.
+#
+# QUICK START:
+#   1. Copy env template:
+#        cp .env.tier2.example .env
+#   2. Generate a NextAuth secret:
+#        openssl rand -base64 32
+#      and paste it into .env as NEXTAUTH_SECRET
+#   3. Boot the stack:
+#        docker compose -f docker-compose.tier-sim.yml up -d --build
+#   4. Apply the Prisma baseline migration (one-time):
+#        docker compose -f docker-compose.tier-sim.yml exec onekof-web \
+#          pnpm exec prisma migrate deploy --schema packages/database/prisma/schema.prisma
+#      (Note: the 7 pre-baseline migrations need to be archived first —
+#       see packages/database/prisma/migrations/README.md Option A.)
+#   5. Open http://localhost:3000 — you should see the Onekof landing page
+#      served from a local Postgres with no Vercel involvement.
+#
+# Tear down:   docker compose -f docker-compose.tier-sim.yml down
+# Wipe data:   docker compose -f docker-compose.tier-sim.yml down -v
+
+services:
+
+  # ==========================================================================
+  # PostgreSQL 15 — matches Supabase major version
+  # ==========================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: onekof-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: onekof
+      POSTGRES_PASSWORD: onekof
+      POSTGRES_DB: onekof
+      # Tune for low-memory dev boxes
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "127.0.0.1:5432:5432"   # localhost-only — do not expose publicly
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onekof -d onekof"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - onekof-tier2
+
+  # ==========================================================================
+  # Redis 7 — for rate limiting and future caching
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: onekof-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "127.0.0.1:6379:6379"   # localhost-only
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - onekof-tier2
+
+  # ==========================================================================
+  # Onekof Web — the Next.js app built from apps/web/Dockerfile
+  # ==========================================================================
+  onekof-web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: onekof-web
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # ---- DEPLOYMENT IDENTITY ----
+      NODE_ENV: production
+      APP_ENV: production
+      APP_PLATFORM: self-hosted
+      APP_REGION: docker-local-1
+      APP_BUILD_SHA: tier-sim
+
+      # ---- DATABASE ----
+      # Points at the postgres service on the bridge network
+      DATABASE_URL: postgresql://onekof:onekof@postgres:5432/onekof?schema=public
+      DIRECT_URL: postgresql://onekof:onekof@postgres:5432/onekof?schema=public
+
+      # ---- NEXTAUTH ----
+      # NEXTAUTH_SECRET MUST be set in .env — compose passes it through.
+      # Generate with `openssl rand -base64 32` and put in .env at repo root.
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET:?NEXTAUTH_SECRET must be set in .env}"
+      NEXTAUTH_URL: "http://localhost:3000"
+      # Use .localhost so *.localhost subdomains share the session cookie
+      # during local testing (requires adding entries to hosts file — see runbook)
+      AUTH_COOKIE_DOMAIN: .localhost
+
+      # ---- MULTI-TENANT ROUTING (Wave 1) ----
+      PUBLIC_HOSTS: onekof.et,localhost
+      NEXT_PUBLIC_SUBDOMAIN_DOMAINS: onekof.et
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_NAME: Onekof
+
+      # ---- FILE STORAGE (Wave 1 local-fs driver) ----
+      STORAGE_DRIVER: local-fs
+      STORAGE_LOCAL_ROOT: /var/onekof/blobs
+      STORAGE_LOCAL_BASE_URL: http://localhost:3000/api/files
+
+      # ---- REDIS ----
+      REDIS_URL: redis://redis:6379
+
+      # ---- FEATURE FLAGS ----
+      NEXT_PUBLIC_ENABLE_AI_FEATURES: "false"  # No Anthropic key in dev
+      NEXT_PUBLIC_ENABLE_ETHIOPIAN_CALENDAR: "true"
+      ENABLE_GOOGLE_OAUTH: "false"
+      ENABLE_EMAIL_VERIFICATION: "false"
+
+      # ---- LOGGING ----
+      LOG_LEVEL: info
+      LOG_RETENTION_DAYS: "7"
+
+      # ---- OPTIONAL EXTERNAL SERVICES ----
+      # Pass through from .env if set, otherwise leave blank so the app
+      # gracefully disables these features.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@localhost}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "127.0.0.1:3000:3000"   # localhost-only
+    volumes:
+      - onekof_blobs:/var/onekof/blobs
+    networks:
+      - onekof-tier2
+
+# ============================================================================
+# VOLUMES — persistent data stays across `docker compose down` but is wiped
+# by `docker compose down -v`
+# ============================================================================
+volumes:
+  postgres_data:
+    name: onekof_tier2_postgres_data
+  redis_data:
+    name: onekof_tier2_redis_data
+  onekof_blobs:
+    name: onekof_tier2_blobs
+
+# ============================================================================
+# NETWORK — isolated bridge so containers can reach each other by service name
+# ============================================================================
+networks:
+  onekof-tier2:
+    name: onekof_tier2_network
+    driver: bridge

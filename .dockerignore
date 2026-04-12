@@ -1,0 +1,111 @@
+# Onekof .dockerignore
+# Controls which files are sent to the Docker daemon when building images.
+# A tight .dockerignore is essential for:
+#   1. Build speed — smaller build context = faster uploads to the Docker daemon
+#   2. Image size — prevents accidentally baking node_modules or secrets in
+#   3. Secret hygiene — .env and .env.local MUST NOT land inside an image
+#
+# Any file listed here is invisible to `COPY` instructions in Dockerfiles.
+
+# ===========================================================================
+# Secrets — NEVER in an image
+# ===========================================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.sentry-build-plugin
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.production
+**/.env.development
+
+# Keep the example templates so runbooks can reference them
+!.env.example
+!.env.tier2.example
+!.env.tier3.example
+!apps/web/.env.example
+!apps/web/.env.sentry.example
+
+# ===========================================================================
+# Dependencies — installed fresh during the build
+# ===========================================================================
+**/node_modules
+**/.pnpm-store
+**/.pnpm
+**/yarn.lock
+**/package-lock.json
+
+# ===========================================================================
+# Build outputs — regenerated during the build
+# ===========================================================================
+**/.next
+**/.turbo
+**/dist
+**/build
+**/out
+**/tsconfig.tsbuildinfo
+
+# ===========================================================================
+# Version control
+# ===========================================================================
+.git
+.gitignore
+.gitattributes
+.github
+
+# ===========================================================================
+# IDE / editor junk
+# ===========================================================================
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===========================================================================
+# Onekof-specific artifacts that don't belong in an image
+# ===========================================================================
+DEPOSIT
+DEPOSIT_SECURED
+backups
+*.bundle
+*.tar.gz
+*.zip
+
+# Python cache from the EIPA generator scripts
+__pycache__
+*.pyc
+
+# Test artifacts
+**/coverage
+**/playwright-report
+**/test-results
+**/*.log
+
+# Vercel metadata
+.vercel
+
+# Claude Code metadata
+.claude
+
+# ===========================================================================
+# Docs and examples that don't need to ship in the runtime image
+# (keep READMEs since they're cheap and useful for `docker inspect` context)
+# ===========================================================================
+docs
+*.md
+!README.md
+!apps/web/README.md
+!packages/database/prisma/migrations/README.md
+
+# ===========================================================================
+# Dockerfile itself doesn't need to be in the build context
+# ===========================================================================
+Dockerfile
+**/Dockerfile
+.dockerignore
+docker-compose*.yml
