@@ -4,7 +4,11 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema", "postgresqlExtensions"]
-  binaryTargets   = ["native", "rhel-openssl-3.0.x"]
+  // Binary targets:
+  // - native: local dev (Windows/macOS/Linux)
+  // - rhel-openssl-3.0.x: Vercel serverless runtime (Tier 3)
+  // - debian-openssl-3.0.x: Ubuntu-based self-hosted servers (Tier 2 on-prem, future Tier 1)
+  binaryTargets   = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -41,6 +45,14 @@ model Organization {
   // Settings
   settings Json @default("{}")
   features Json @default("[]")
+
+  // Hosting tier assignment (for multi-tier federated deployment)
+  // Determines which physical deployment hosts this organization's data.
+  // GLOBAL_CLOUD = Vercel + Supabase (Tier 3, default for backwards compatibility)
+  // PRIVATE_ONPREM = on-premise Ethiopian server (Tier 2)
+  // GOV_ETHIOTELECOM = EthioTelecom Cloud (Tier 1, for government tenants)
+  // This field is metadata only; the tenant physically exists in exactly one tier's database.
+  hostingTier HostingTier @default(GLOBAL_CLOUD) @map("hosting_tier")
 
   // Ethiopian-specific
   preferredCalendar Calendar @default(GREGORIAN) @map("preferred_calendar")
@@ -307,6 +319,16 @@ enum OrgRole {
   ADMIN
   MEMBER
   GUEST
+
+  @@schema("public")
+}
+
+// Hosting tier for multi-tier federated deployment.
+// See Organization.hostingTier field above for full context.
+enum HostingTier {
+  GLOBAL_CLOUD     // Tier 3: Vercel + Supabase (default, EU-hosted)
+  PRIVATE_ONPREM   // Tier 2: On-premise Ethiopian server
+  GOV_ETHIOTELECOM // Tier 1: EthioTelecom Cloud (government)
 
   @@schema("public")
 }
@@ -939,6 +961,7 @@ model AutomationRule {
   deletedAt DateTime? @map("deleted_at")
   createdBy String    @map("created_by")
 
+  @@index([organizationId, isEnabled, deletedAt])
   @@map("automation_rules")
   @@schema("public")
 }
@@ -1321,6 +1344,7 @@ model BudgetCategory {
   expenses    Expense[]
   taskBudgets TaskBudget[]
 
+  @@index([budgetId])
   @@map("budget_categories")
   @@schema("public")
 }
