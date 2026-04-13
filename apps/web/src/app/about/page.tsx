@@ -1,29 +1,48 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Globe, Shield, Zap, Users, Target, Building2 } from 'lucide-react';
+import { Globe, Shield, Zap, Users, Target, Building2 } from 'lucide-react';
 
 export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#1B1F23] text-white font-sans antialiased">
-      {/* Navigation */}
-      <nav className="border-b border-white/[0.08] bg-[#1B1F23]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
-            <ArrowLeft className="h-4 w-4 text-white/60" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#156b60]">
-              <span className="text-[12px] font-black text-white">O</span>
+      {/* Navbar — matches main landing page */}
+      <nav className="sticky top-0 z-50 border-b border-white/[0.12] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150">
+        <div className="mx-auto flex h-[60px] max-w-6xl items-center justify-between px-6">
+          <Link href="/" className="group flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#156b60] shadow-lg">
+              <span className="text-sm font-black text-white">O</span>
             </div>
-            <span className="text-[15px] font-semibold">Onekof</span>
+            <span className="text-[15px] font-semibold tracking-[-0.01em]">Onekof</span>
           </Link>
-          <div className="flex gap-3">
-            <Link href="/auth/signin" className="rounded-lg border border-white/[0.12] px-4 py-2 text-[13px] text-white/70 transition hover:bg-white/5">
+
+          <div className="hidden items-center gap-1 md:flex">
+            {[
+              { label: 'Features', href: '/#features' },
+              { label: 'Product', href: '/#product' },
+              { label: 'Pricing', href: '/#pricing' },
+              { label: 'About', href: '/about' },
+            ].map((link) => (
+              <a key={link.label} href={link.href} className={`rounded-lg px-3.5 py-2 text-[13px] transition-all hover:bg-white/[0.04] ${link.href === '/about' ? 'text-white' : 'text-white/80'}`}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href="/auth/signin" className="rounded-lg px-3.5 py-2 text-[13px] text-white/80 transition-colors hover:text-white">
               Sign In
             </Link>
-            <Link href="/auth/signup" className="rounded-lg bg-[#1C8C7D] px-4 py-2 text-[13px] font-medium text-white transition hover:bg-[#1a7d70]">
+            <Link href="/auth/signup" className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#156b60] px-5 py-2 text-[13px] font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110">
               Get Started
             </Link>
+          </div>
+
+          {/* Mobile */}
+          <div className="flex items-center gap-3 md:hidden">
+            <Link href="/auth/signin" className="rounded-lg px-3 py-1.5 text-[13px] text-white/70">Sign In</Link>
+            <Link href="/auth/signup" className="rounded-full bg-[#1C8C7D] px-4 py-1.5 text-[13px] font-semibold text-white">Get Started</Link>
           </div>
         </div>
       </nav>
@@ -135,38 +154,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* The Team */}
-      <section className="border-t border-white/[0.08] py-16 sm:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="mb-3 text-[13px] font-medium uppercase tracking-widest text-[#1C8C7D]">Our Team</p>
-            <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
-              Built by Ethiopians, for Ethiopia
-            </h2>
-            <p className="mt-6 text-[15px] leading-relaxed text-white/70">
-              Onekof is built by DABS Analytics — a technology company focused on delivering enterprise
-              software solutions for the Ethiopian and East African market. Our team understands the
-              unique challenges of operating in this market because we live them every day.
-            </p>
-          </div>
-
-          <div className="mx-auto mt-12 max-w-lg">
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#156b60]">
-                <span className="text-xl font-bold text-white">OT</span>
-              </div>
-              <h3 className="text-[17px] font-semibold">Oli Tamrat Oli</h3>
-              <p className="mt-1 text-[13px] text-[#1C8C7D]">Founder & Lead Engineer</p>
-              <p className="mt-4 text-[13px] leading-relaxed text-white/60">
-                132,000+ lines of production code. From architecture to deployment,
-                every line of Onekof is built with a singular focus: making Ethiopian
-                teams more productive with tools that respect their sovereignty, language, and workflow.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="border-t border-white/[0.08] py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -189,16 +176,73 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/[0.08] py-8">
-        <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-          <p className="text-[12px] text-white/50">
-            &copy; {new Date().getFullYear()} Onekof by DABS Analytics. All rights reserved.
-          </p>
-          <div className="mt-3 flex justify-center gap-6">
-            <Link href="/privacy" className="text-[12px] text-white/50 transition hover:text-white/70">Privacy</Link>
-            <Link href="/terms" className="text-[12px] text-white/50 transition hover:text-white/70">Terms</Link>
-            <Link href="/cookies" className="text-[12px] text-white/50 transition hover:text-white/70">Cookies</Link>
+      {/* Footer — matches main landing page */}
+      <footer className="border-t border-white/[0.12]">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#156b60] shadow-lg">
+                  <span className="text-[12px] font-black text-white">O</span>
+                </div>
+                <span className="text-[15px] font-semibold">Onekof</span>
+              </div>
+              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
+                Modern project management built for Ethiopian teams. Native calendar, local languages, ETB budgets, and workflows designed for how you actually work.
+              </p>
+              <div className="mt-6 flex gap-3">
+                {[
+                  { name: 'Twitter', letter: 'X' },
+                  { name: 'LinkedIn', letter: 'in' },
+                  { name: 'Telegram', letter: 'T' },
+                ].map((social) => (
+                  <a key={social.name} href="#" className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] text-[11px] font-bold text-white/70 transition-all hover:border-[#1C8C7D]/20 hover:bg-[#1C8C7D]/10 hover:text-[#1C8C7D]">
+                    {social.letter}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {[
+              { title: 'Product', links: [
+                { label: 'Features', href: '/#features' },
+                { label: 'Pricing', href: '/#pricing' },
+              ]},
+              { title: 'Company', links: [
+                { label: 'About', href: '/about' },
+              ]},
+              { title: 'Legal', links: [
+                { label: 'Privacy', href: '/privacy' },
+                { label: 'Terms', href: '/terms' },
+                { label: 'Cookies', href: '/cookies' },
+              ]},
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/70">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <a href={link.href} className="text-[13px] text-white/70 transition-colors hover:text-white">{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.12] pt-8 sm:flex-row">
+            <p className="text-[12px] text-white/70">
+              &copy; {new Date().getFullYear()} Onekof by DABS Analytics. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              {[
+                { label: 'Privacy', href: '/privacy' },
+                { label: 'Terms', href: '/terms' },
+                { label: 'Cookies', href: '/cookies' },
+              ].map((link) => (
+                <a key={link.href} href={link.href} className="text-[12px] text-white/70 transition-colors hover:text-white">{link.label}</a>
+              ))}
+            </div>
           </div>
         </div>
       </footer>
