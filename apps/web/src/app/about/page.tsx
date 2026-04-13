@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowLeft, Globe, Shield, Zap, Users, Target, Building2 } from 'lucide-react';
 
 export default function AboutPage() {
-  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-[#1B1F23] text-white font-sans antialiased">
