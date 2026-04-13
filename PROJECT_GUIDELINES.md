@@ -75,9 +75,9 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Subdomain routing**: `{orgslug}.onekof.com` → middleware sets `x-organization-slug` header
 - **Commit attribution**: every commit is `Oli Tamrat Oli <oli.oli@udc.edu>` (for IP registration)
 
-## Current Status (as of 2026-04-12)
+## Current Status (as of 2026-04-13)
 
-**Launch stage:** Pre-launch. No paying customers. EIPA copyright registration filed 2026-04-11.
+**Launch stage:** Pre-launch. No paying customers. EIPA copyright deposit prepared 2026-04-11, submission pending representative's return with questionnaire answers.
 
 **Production deployment (Tier 3):** Live at `onekof.com` on Vercel serverless (fra1) + Supabase PostgreSQL 15 (aws-1-eu-central-1). 25 test/demo organizations, no real customer data.
 
@@ -88,6 +88,37 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage as cold recovery. **Deferred to Wave 3.**
 
 ## Recently Shipped
+
+### Security Hardening Sprint (2026-04-13)
+
+INSA pentest readiness audit: 9 findings fixed, security score 85% → ~95%.
+- Admin token IP binding + 8hr expiry + secure-only cookies
+- Org isolation: block defaultOrganizationId fallback on API routes without subdomain context
+- Vercel Blob storage changed from `access: 'public'` to `access: 'private'`
+- File upload MIME type whitelist (blocks executables, scripts, HTML)
+- `/api/env-check` and `/api/test-db` blocked in production
+- Constant-time bcrypt compare to prevent user enumeration timing attacks
+- Rate limiting on organization creation endpoint
+- Per-email rate limiting on password reset
+
+### UI/UX Pages (2026-04-13)
+
+- `/about` page — mission, stats, differentiators, CTA (team section deferred for profile build)
+- `/privacy` page — data sovereignty tiers, security measures, user rights
+- `/terms` page — subscription model, data ownership, Ethiopian governing law
+- `/cookies` page — cookie table with names, purposes, durations, security flags
+- Navbar About link → `/about` (was `#about` testimonials)
+- Footer Privacy/Terms/Cookies → actual pages (were `#`)
+- Slogan: "Built for Ethiopia" → "Where African teams do their best work" (all 5 languages)
+- Pricing language corrected to monthly/yearly subscription (not one-time purchase)
+
+### Production Config (2026-04-13)
+
+- Upstash Redis connected (onekof-production, eu-west-1, Ireland)
+- ADMIN_USERS bcrypt hashes updated in Vercel
+- ADMIN_SECRET set in Vercel
+- Wave 3 migrations applied to Supabase (rate_limits dropped, admin_audit_logs created)
+- Cloudflare SSL: Full (Strict) attempted, reverted to Flexible (needs $10/mo ACM for wildcard proxy)
 
 ### Wave 2 — Security Hardening + Standalone Docker (2026-04-12)
 
