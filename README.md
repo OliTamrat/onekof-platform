@@ -31,7 +31,7 @@ International PM tools (Jira, Asana, Monday.com) cannot serve the Ethiopian mark
 |---------|-------------------|--------|
 | Data sovereignty | Data stored in US/EU | Data stays on your server in Ethiopia |
 | Internet dependency | 100% cloud, no offline | Runs entirely offline on local hardware |
-| Cost | $8-42K/year in USD | One-time deployment, no recurring fees |
+| Cost | $8-42K/year in USD | Affordable monthly/yearly plans in ETB |
 | Language | English only | Amharic, Oromo, Tigrinya, Somali, English |
 | Currency | USD/EUR | Ethiopian Birr (ETB) default |
 | Fiscal year | January start | July start (Ethiopian fiscal year) |
