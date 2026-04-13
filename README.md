@@ -2,64 +2,119 @@
 
 # Onekof Platform
 
-### *Purpose-Built Project Management for Ethiopian Organizations*
+### Enterprise Project Management for Ethiopia & East Africa
 
-**A unified workspace for planning, budgeting, and collaboration — designed from the ground up for Ethiopian government agencies, NGOs, and enterprises.**
+**A self-hosted, multi-tenant workspace for planning, budgeting, and collaboration — built for data sovereignty, offline deployment, and local languages.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748?logo=prisma)](https://www.prisma.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-408MB-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
-[Features](#key-features) • [Screenshots](#screenshots) • [Installation](#quick-start) • [Documentation](#documentation) • [Roadmap](#roadmap)
+[Features](#features) | [Architecture](#three-tier-architecture) | [Quick Start](#quick-start) | [Deployment](#deployment) | [Tech Stack](#tech-stack) | [Roadmap](#roadmap)
 
 </div>
 
 ---
 
-## About Onekof
+## About
 
-Onekof is a **unified project management platform** purpose-built for Ethiopian organizations. It brings together task management, budget tracking, team collaboration, and AI-powered document processing into a single workspace — eliminating the need for multiple disconnected tools.
+Onekof is a **132,000+ line production platform** that combines project management, budget tracking, team collaboration, and knowledge management into a single workspace. It is the only PM tool that supports on-premise deployment in Ethiopia, 4 local languages, Ethiopian Birr, and offline operation — from a single 408 MB Docker image.
 
-Unlike general-purpose project management software built for Western markets, Onekof was designed from day one to address the specific workflows, financial structures, and operational realities of Ethiopian teams.
+### Why Onekof Exists
 
-### What Makes Onekof Different
+International PM tools (Jira, Asana, Monday.com) cannot serve the Ethiopian market:
 
-**Ethiopian-First Design** — Native ETB currency support, project templates aligned with Ethiopian government and enterprise workflows, and infrastructure designed for local deployment requirements.
-
-**Unified Workspace** — Task tracking, budget management, document processing, team collaboration, and reporting in one platform. No switching between separate tools.
-
-**AI-Powered Document Processing** — Upload invoices, contracts, and RFPs. The system automatically extracts budget items, milestones, and vendor information with confidence scoring.
-
-**Project-Type Awareness** — Six specialized project types (Software, Business, Marketing, Operations, Research, Construction) with tailored navigation, workflows, and reporting for each.
-
-**Multi-Tenant Architecture** — Organizations operate in isolated workspaces with subdomain routing, role-based access control, and cross-organization security boundaries.
+| Problem | International Tools | Onekof |
+|---------|-------------------|--------|
+| Data sovereignty | Data stored in US/EU | Data stays on your server in Ethiopia |
+| Internet dependency | 100% cloud, no offline | Runs entirely offline on local hardware |
+| Cost | $8-42K/year in USD | One-time deployment, no recurring fees |
+| Language | English only | Amharic, Oromo, Tigrinya, Somali, English |
+| Currency | USD/EUR | Ethiopian Birr (ETB) default |
+| Fiscal year | January start | July start (Ethiopian fiscal year) |
 
 ---
 
-## Key Features
+## Features
 
 <table>
 <tr>
 <td width="50%">
 
-### Multi-Project Types
-- SOFTWARE projects with code integration
-- BUSINESS projects with P&L tracking
-- MARKETING campaigns with analytics
-- OPERATIONS with process workflows
-- RESEARCH with findings documentation
-- CONSTRUCTION with materials & inspections
+### Project Management
+- Kanban boards with drag-and-drop
+- Backlog management and sprint planning
+- Gantt timeline views
+- Task dependencies and linking
+- 6 project types (Software, Business, Marketing, Operations, Research, Construction)
+- 172 application pages
 
 </td>
 <td width="50%">
 
-### Comprehensive Navigation
-- Dynamic navigation (11-12 tabs per project type)
-- Board, List, Calendar, Timeline views
-- Team, Goals, Budget, Reports pages
-- Documents, Wiki, Automation
-- Mobile-optimized collapsible sidebar
+### Multi-Language (i18n)
+- English (EN)
+- Amharic (AM) with Ge'ez script support
+- Oromo (OM)
+- Tigrinya (TI) with Ge'ez script support
+- Somali (SO)
+- Language switcher in navigation
+- Abyssinica SIL font for Ge'ez scripts
+
+</td>
+</tr>
+<tr>
+<td>
+
+### Budget & Finance
+- Multi-category budgets (CAPEX, OPEX)
+- Real-time tracking and variance alerts
+- Expense approval workflows
+- Budget audit logs for compliance
+- Native ETB currency throughout
+- Ethiopian fiscal year (July start)
+
+</td>
+<td>
+
+### Team Collaboration
+- Organization-based workspaces
+- Teams, goals, and progress tracking
+- Real-time activity feeds
+- Comments and mentions
+- Knowledge base / Wiki with rich editing
+- Department dashboards (Dev, Marketing, Ops, Research)
+
+</td>
+</tr>
+<tr>
+<td>
+
+### Security (Wave 2)
+- bcrypt password hashing (12 rounds)
+- Progressive account lockout (5 attempts)
+- JWT sessions with HTTP-only cookies
+- Tenant isolation at middleware edge
+- RBAC: 5 roles, 4 project visibility levels
+- Redis-backed rate limiting (Upstash)
+- Admin audit logging
+- CSP, HSTS, X-Frame-Options headers
+- Debug routes blocked in production
+
+</td>
+<td>
+
+### Self-Hosted Deployment (Wave 1)
+- Single 408 MB Docker image
+- Runs on Windows, Ubuntu, or any Linux
+- USB-deployable (no internet required)
+- Environment-driven tier configuration
+- Pluggable storage (local-fs, Vercel Blob, S3)
+- Source code never exposed to clients
+- Comprehensive deployment runbooks
 
 </td>
 </tr>
@@ -71,39 +126,18 @@ Unlike general-purpose project management software built for Western markets, On
 - Automatic budget item extraction
 - Vendor and milestone detection
 - Confidence scoring per extraction
-- 50 documents/month on free tier
+- Powered by Anthropic API (optional)
 
 </td>
 <td>
 
-### Budget Management
-- Multi-category budgets (CAPEX, OPEX, etc.)
-- Real-time tracking & variance alerts
-- Budget watchers & notifications
-- Dashboard with financial insights
-- Native ETB currency support
-
-</td>
-</tr>
-<tr>
-<td>
-
-### Team Collaboration
-- Organization-based workspaces
-- Role-based access control (RBAC)
-- Member management & invitations
-- Activity tracking & audit logs
-- User profiles with avatars
-
-</td>
-<td>
-
-### Enterprise Security
-- JWT authentication with OAuth support
-- Soft delete with data restoration
-- Full audit trail on all actions
-- Organization-level data isolation
-- Cross-subdomain session management
+### Theme & Design
+- Light, Dark, and System preference modes
+- Ge'ez script font support in all themes
+- Inter font for Latin languages
+- Ethiopian calendar integration
+- Responsive mobile design
+- Teal (#1C8C7D) primary accent
 
 </td>
 </tr>
@@ -111,91 +145,135 @@ Unlike general-purpose project management software built for Western markets, On
 
 ---
 
-## Screenshots
+## Three-Tier Architecture
 
-<table>
-<tr>
-<td><strong>Issue Board</strong><br/><em>Visual task management with drag-and-drop</em></td>
-<td><strong>Budget Dashboard</strong><br/><em>Real-time financial tracking in ETB</em></td>
-</tr>
-<tr>
-<td><strong>AI Document Processing</strong><br/><em>Automatic data extraction from uploads</em></td>
-<td><strong>Dark Mode</strong><br/><em>Full dark theme across all components</em></td>
-</tr>
-</table>
+A single codebase and Docker image serves three deployment tiers with zero code changes:
 
-> *Screenshots coming soon — platform currently in active development*
+```
+                         Single Codebase (132,000+ lines)
+                                    |
+                 ----------------------------------------
+                 |                  |                    |
+           TIER 1              TIER 2               TIER 3
+         Government         Private/On-Prem       Global Cloud
+      EthioTelecom Cloud    Customer Servers     Vercel + Supabase
+       *.gov.onekof.et        *.onekof.et          *.onekof.com
+```
+
+| Tier | Domain | Hosting | Data Residency | Status |
+|------|--------|---------|----------------|--------|
+| **Tier 1 - Government** | `*.gov.onekof.et` | EthioTelecom Cloud / Raxio | Ethiopia (government-controlled) | Planned |
+| **Tier 2 - Private** | `*.onekof.et` | Customer's own server | Ethiopia (customer-controlled) | Docker-ready |
+| **Tier 3 - Global** | `*.onekof.com` | Vercel serverless (fra1) | EU (Frankfurt) | Live production |
+
+All tier-specific behavior is controlled by environment variables at deploy time:
+
+```env
+PUBLIC_HOSTS=onekof.et          # Subdomain routing base domains
+AUTH_COOKIE_DOMAIN=.onekof.et   # Cross-subdomain session cookies
+STORAGE_DRIVER=local-fs         # File storage backend (local-fs | vercel-blob | s3)
+APP_PLATFORM=self-hosted        # Runtime platform identifier
+```
+
+> Full architecture documentation: [`docs/architecture/three-tier-federation.md`](docs/architecture/three-tier-federation.md)
 
 ---
 
 ## Quick Start
 
-### Prerequisites
+### Option 1: Docker (Recommended)
 
 ```bash
-Node.js 18+  •  PostgreSQL 14+  •  Git
-```
-
-### Installation
-
-```bash
-# 1. Clone the repository
+# 1. Clone and configure
 git clone https://github.com/OliTamrat/onekof-platform.git
 cd onekof-platform
+cp .env.tier2.example .env
 
-# 2. Install dependencies
-npm install
+# 2. Generate a NextAuth secret and add to .env
+openssl rand -base64 32
 
-# 3. Set up environment variables
+# 3. Start the full stack (Postgres + Redis + Onekof)
+docker compose -f docker-compose.tier-sim.yml up -d --build
+
+# 4. Initialize the database (first run only)
+# See docs/deployment/windows-deployment-guide.md for detailed steps
+
+# 5. Open http://localhost:3000
+# Login: test@onekof.com / password123
+```
+
+### Option 2: Development (pnpm)
+
+```bash
+# Prerequisites: Node.js 20+, PostgreSQL 15+, pnpm 8+
+
+# 1. Clone and install
+git clone https://github.com/OliTamrat/onekof-platform.git
+cd onekof-platform
+pnpm install
+
+# 2. Configure environment
 cp apps/web/.env.example apps/web/.env
-# Edit apps/web/.env with your database URL and secrets
+# Edit with your DATABASE_URL and NEXTAUTH_SECRET
 
-# 4. Set up the database
-cd packages/database
-npx prisma generate
-npx prisma db push
+# 3. Set up database
+pnpm exec prisma generate --schema packages/database/prisma/schema.prisma
+pnpm exec prisma migrate deploy --schema packages/database/prisma/schema.prisma
+pnpm exec prisma db seed --schema packages/database/prisma/schema.prisma
 
-# 5. Start development server
-cd ../..
-npm run dev
+# 4. Start development server
+pnpm run dev
 ```
 
 Open **http://localhost:3000** to get started.
 
 ---
 
+## Deployment
+
+### Tier 3 — Vercel (Cloud)
+
+1. Import repository to [vercel.com/new](https://vercel.com/new)
+2. Framework: **Next.js** | Root Directory: **`apps/web`**
+3. Add environment variables (see [`.env.tier3.example`](.env.tier3.example))
+4. Deploy — auto-deploys on every push to `master`
+
+### Tier 2 — Docker (On-Premise)
+
+```bash
+# Build the 408 MB standalone image
+docker compose -f docker-compose.tier-sim.yml up -d --build
+
+# Export for USB distribution (no source code exposed)
+docker save onekof-platform-onekof-web | gzip > onekof-v1.0.tar.gz
+
+# On target server:
+docker load < onekof-v1.0.tar.gz
+docker compose -f docker-compose.tier-sim.yml up -d
+```
+
+| Platform | Guide |
+|----------|-------|
+| Ubuntu Server | [`docs/deployment/tier-2-runbook.md`](docs/deployment/tier-2-runbook.md) |
+| Windows (Docker Desktop) | [`docs/deployment/windows-deployment-guide.md`](docs/deployment/windows-deployment-guide.md) |
+
+---
+
 ## Tech Stack
 
-<table>
-<tr>
-<td><strong>Frontend</strong></td>
-<td>Next.js 14.1, React 18, TypeScript 5, Tailwind CSS 3.4</td>
-</tr>
-<tr>
-<td><strong>Backend</strong></td>
-<td>Next.js API Routes, Prisma ORM, PostgreSQL</td>
-</tr>
-<tr>
-<td><strong>AI</strong></td>
-<td>Anthropic Haiku (cost-optimized document processing)</td>
-</tr>
-<tr>
-<td><strong>Auth</strong></td>
-<td>NextAuth.js v4 with JWT strategy and OAuth</td>
-</tr>
-<tr>
-<td><strong>UI</strong></td>
-<td>Radix UI primitives, Lucide Icons, custom design system</td>
-</tr>
-<tr>
-<td><strong>State</strong></td>
-<td>TanStack Query, React Hook Form, Zod validation</td>
-</tr>
-<tr>
-<td><strong>Deployment</strong></td>
-<td>Vercel (frontend), PostgreSQL (managed database)</td>
-</tr>
-</table>
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | Next.js 14, React 18, TypeScript 5.3 | Server-side rendering, app router |
+| **Styling** | Tailwind CSS 3.4, Radix UI | Responsive design, accessible components |
+| **Backend** | Next.js API Routes | Serverless-compatible REST API |
+| **Database** | PostgreSQL 15, Prisma 5.22 | Type-safe ORM, automatic migrations |
+| **Auth** | NextAuth.js v4 | JWT sessions, OAuth, credential auth |
+| **Cache** | Redis 7 (Upstash) | Rate limiting, session caching |
+| **Storage** | Pluggable (Vercel Blob / Local FS / S3) | File uploads with data sovereignty |
+| **Container** | Docker (408 MB standalone) | Portable deployment, USB distribution |
+| **AI** | Anthropic API (optional) | Document processing, data extraction |
+| **Monitoring** | Sentry (optional) | Error tracking, performance monitoring |
+| **Email** | Resend (optional) | Transactional email, invitations |
 
 ---
 
@@ -203,161 +281,161 @@ Open **http://localhost:3000** to get started.
 
 ```
 onekof-platform/
-├── apps/
-│   └── web/                    # Main Next.js application
-│       ├── src/
-│       │   ├── app/            # Next.js 14 App Router
-│       │   │   ├── api/        # API routes
-│       │   │   ├── dashboard/  # Dashboard pages
-│       │   │   └── auth/       # Authentication pages
-│       │   ├── components/     # React components
-│       │   │   ├── layouts/    # Layout components
-│       │   │   ├── navigation/ # Navigation components
-│       │   │   └── ui/         # UI primitives
-│       │   └── lib/            # Utilities & helpers
-│       └── public/             # Static assets
-│
-├── packages/
-│   ├── database/               # Prisma schema & migrations
-│   │   ├── prisma/
-│   │   │   └── schema.prisma   # Database schema
-│   │   └── package.json
-│   └── ui/                     # Shared UI components
-│
-├── turbo.json                  # Turborepo config
-└── package.json                # Root package.json
+|-- apps/
+|   `-- web/                          # Next.js 14 application
+|       |-- src/
+|       |   |-- app/                  # App Router (172 pages)
+|       |   |   |-- api/              # REST API routes (120+)
+|       |   |   |-- admin/            # Admin panel
+|       |   |   |-- auth/             # Authentication pages
+|       |   |   `-- dashboard/        # Dashboard pages
+|       |   |-- components/           # React components
+|       |   |-- lib/
+|       |   |   |-- env/              # Runtime abstraction (Wave 1)
+|       |   |   |-- routing/          # Subdomain helpers (Wave 1)
+|       |   |   |-- security/         # Auth, rate-limit, lockout, audit
+|       |   |   `-- storage/          # Pluggable storage drivers (Wave 1)
+|       |   `-- locales/              # i18n: en, am, om, ti, so
+|       |-- Dockerfile                # Multi-stage standalone build
+|       `-- next.config.mjs           # Standalone output config
+|
+|-- packages/
+|   |-- database/                     # Prisma schema, migrations, seed
+|   `-- config/                       # Shared ESLint, TS, Tailwind config
+|
+|-- docs/
+|   |-- architecture/                 # Three-tier federation docs
+|   |-- deployment/                   # Runbooks (Ubuntu, Windows)
+|   `-- business/                     # EthioTelecom letter, strategy
+|
+|-- scripts/
+|   |-- backup-database.sh            # Encrypted backup (GPG + SHA-256)
+|   `-- generate-admin-hash.mjs       # Admin password hash generator
+|
+|-- docker-compose.tier-sim.yml       # Full Tier 2 stack simulation
+|-- .env.tier2.example                # On-premise environment template
+|-- .env.tier3.example                # Cloud environment reference
+`-- PROJECT_GUIDELINES.md             # Development rules and standards
 ```
+
+---
+
+## Security
+
+| Layer | Protection |
+|-------|-----------|
+| Authentication | bcrypt (12 rounds), progressive lockout, Google OAuth |
+| Sessions | JWT in HTTP-only cookies, subdomain-scoped, 24h expiry |
+| Tenant Isolation | JWT membership validation at middleware edge |
+| Access Control | 5 roles (Owner, Admin, Member, Viewer, Contractor) + 4 visibility levels |
+| Rate Limiting | Redis-backed (Upstash), per-endpoint throttling |
+| Admin Audit | Every admin action logged with IP, user-agent, outcome |
+| Backups | GPG-encrypted with SHA-256 checksums |
+| Headers | CSP, HSTS, X-Frame-Options, XSS protection |
+| Production | Debug routes return 404, source code never distributed |
 
 ---
 
 ## Roadmap
 
-### v0.1 — Foundation (Complete)
-- [x] Project-type-aware navigation (7 types incl. Custom)
-- [x] 140+ navigation pages with consistent UX
-- [x] Collapsible sidebar with 7 core categories
-- [x] AI-powered document processing (Claude API)
-- [x] Advanced budget management with ETB support
-- [x] Team collaboration & RBAC (4 role types)
-- [x] Dark mode support
-- [x] Mobile responsive design
+### Wave 1 — Portability (Shipped 2026-04-11)
+- [x] Environment-driven multi-tier architecture
+- [x] Pluggable storage drivers (local-fs, Vercel Blob, S3)
+- [x] Docker multi-stage build with Tier 2 simulation
+- [x] Subdomain routing via `PUBLIC_HOSTS` env var
+- [x] Ubuntu deployment runbook (671 lines)
+- [x] Organization hosting tier classification
 
-### v0.2 — Enhanced Features (Nearly Complete)
-- [x] Ethiopian calendar (Ge'ez) toggle & dual calendar view
-- [x] Real-time notifications system (SSE + notification center)
-- [x] Email integration (invites, digests via Resend)
-- [x] File attachments with drag-and-drop
-- [x] Advanced filtering & search
-- [x] Advanced reports & analytics dashboards
-- [x] Export to Excel/PDF (CSV, JSON, Excel XML, PDF via print)
+### Wave 2 — Security Hardening (Shipped 2026-04-12)
+- [x] Admin bcrypt password hashing
+- [x] Tenant isolation at middleware edge (JWT validation)
+- [x] Debug routes blocked in production
+- [x] Standalone Docker output (2.6 GB to 408 MB)
+- [x] Windows deployment guide
+- [x] Three-tier architecture documentation
 
-### v0.3 — Localization & Scale (In Progress)
-- [x] Public REST API (120+ endpoints + OpenAPI 3.0 spec)
-- [ ] Custom workflow builder (automation rules engine done, visual builder partial)
-- [ ] Full Ethiopian calendar integration (conversion library done, UI integration partial)
-- [ ] Amharic language support (schema + fonts ready, i18n framework needed)
-- [ ] Local payment gateways (Chapa, Telebirr, CBE Birr)
-- [ ] Mobile apps (iOS & Android)
+### Wave 3 — Data Retention & Audit (Shipped 2026-04-12)
+- [x] UserActivity 90-day rolling retention cleanup
+- [x] RateLimit table removed (Redis-only architecture)
+- [x] AdminAuditLog model and route instrumentation
+- [x] Encrypted backup pipeline (GPG + Shamir key split docs)
 
-### v1.0 — Production Ready
-- [x] Automation & rules engine (triggers, conditions, actions, templates)
-- [ ] White-label deployment options (multi-tenant + branding fields ready, advanced theming needed)
-- [ ] Custom fields & dynamic forms
-- [ ] Time tracking & resource planning
-- [ ] Enterprise SSO (SAML, LDAP)
+### Next — Production Readiness
+- [ ] Cloudflare Full Strict SSL (requires Advanced Certificate Manager)
+- [ ] Sentry error monitoring
+- [ ] Mobile UX refinement
+- [ ] Bulk operations (status, delete, label)
+- [ ] Offline mode (service worker)
+- [ ] Amharic AI task parsing (voice and text)
+
+---
+
+## Environment Variables
+
+### Required
+
+```env
+DATABASE_URL="postgresql://user:pass@host:5432/db?schema=public"
+NEXTAUTH_SECRET="openssl rand -base64 32"
+NEXTAUTH_URL="https://onekof.com"
+```
+
+### Tier Configuration (Wave 1)
+
+```env
+PUBLIC_HOSTS="onekof.et,localhost"
+AUTH_COOKIE_DOMAIN=".onekof.et"
+STORAGE_DRIVER="local-fs"
+APP_PLATFORM="self-hosted"
+```
+
+### Optional Services
+
+```env
+ANTHROPIC_API_KEY=""          # AI document processing
+UPSTASH_REDIS_REST_URL=""     # Production rate limiting
+UPSTASH_REDIS_REST_TOKEN=""
+RESEND_API_KEY=""             # Transactional email
+GOOGLE_CLIENT_ID=""           # OAuth login
+ADMIN_SECRET=""               # Admin panel JWT signing
+ADMIN_USERS=""                # Admin credentials (bcrypt hashes)
+```
+
+> Full templates: [`.env.tier2.example`](.env.tier2.example) | [`.env.tier3.example`](.env.tier3.example)
 
 ---
 
 ## Documentation
 
-### Environment Variables
-
-Create `apps/web/.env`:
-
-```env
-# Database (Required)
-DATABASE_URL="postgresql://user:password@host:5432/database"
-DIRECT_URL="${DATABASE_URL}"
-
-# Authentication (Required)
-NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
-NEXTAUTH_URL="http://localhost:3000"
-
-# AI Document Processing (Optional)
-ANTHROPIC_API_KEY="your-api-key"
-
-# OAuth (Optional)
-GOOGLE_CLIENT_ID="your-google-oauth-client-id"
-GOOGLE_CLIENT_SECRET="your-google-oauth-secret"
-GITHUB_ID="your-github-oauth-app-id"
-GITHUB_SECRET="your-github-oauth-secret"
-```
-
-> See [VERCEL_ENV_SETUP.md](VERCEL_ENV_SETUP.md) for full deployment guide.
-
-### Development Commands
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Lint code
-
-# Database commands
-cd packages/database
-npx prisma studio    # Open database GUI
-npx prisma generate  # Regenerate Prisma client
-npx prisma db push   # Push schema changes
-```
-
----
-
-## Deployment
-
-### Deploy to Vercel
-
-1. **Push to GitHub**
-   ```bash
-   git push origin master
-   ```
-
-2. **Import to Vercel**
-   - Visit [vercel.com/new](https://vercel.com/new)
-   - Select `onekof-platform` repository
-   - Framework: **Next.js**
-   - Root Directory: **`apps/web`**
-
-3. **Configure Environment Variables**
-   - `DATABASE_URL`
-   - `NEXTAUTH_SECRET`
-   - `NEXTAUTH_URL`
-
-4. **Deploy** — Vercel auto-deploys on every push to `master`
+| Document | Description |
+|----------|-------------|
+| [`PROJECT_GUIDELINES.md`](PROJECT_GUIDELINES.md) | Development rules, design system, security policies |
+| [`docs/architecture/three-tier-federation.md`](docs/architecture/three-tier-federation.md) | Complete architecture reference |
+| [`docs/deployment/tier-2-runbook.md`](docs/deployment/tier-2-runbook.md) | Ubuntu server deployment (671 lines) |
+| [`docs/deployment/windows-deployment-guide.md`](docs/deployment/windows-deployment-guide.md) | Windows Docker Desktop deployment |
+| [`.env.tier2.example`](.env.tier2.example) | On-premise environment template |
+| [`.env.tier3.example`](.env.tier3.example) | Cloud environment reference |
 
 ---
 
 ## License
 
-**Proprietary** — All rights reserved. Copyright 2026 Onekof.
+**Proprietary** -- All rights reserved.
+
+Copyright 2026 Oli Tamrat Oli. Commercial rights held by DABS Analytics.
 
 This software is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written consent from the copyright holder.
 
----
-
-## Contact
-
-**Website:** [onekof.com](https://onekof.com)
-
-**GitHub:** [github.com/OliTamrat/onekof-platform](https://github.com/OliTamrat/onekof-platform)
-
-**Issues:** [github.com/OliTamrat/onekof-platform/issues](https://github.com/OliTamrat/onekof-platform/issues)
+EIPA Copyright Registration: Filed 2026-04-11.
 
 ---
 
 <div align="center">
 
-*Built for Ethiopian teams. Designed for real work.*
+**Built for Ethiopia. Designed for real work.**
 
-**[Back to Top](#onekof-platform)**
+*132,000+ lines | 172 pages | 5 languages | 408 MB Docker image | 3 deployment tiers*
+
+[Back to Top](#onekof-platform)
 
 </div>
