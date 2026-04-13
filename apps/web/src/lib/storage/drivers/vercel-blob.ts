@@ -1,10 +1,10 @@
 /**
  * Vercel Blob storage driver.
  *
- * This is the default driver for Tier 3 (Vercel + Supabase) deployments and
- * preserves the behavior that existed before Wave 1: files uploaded via the
- * attachment API go into Vercel Blob with public access, identified by the
- * `BLOB_READ_WRITE_TOKEN` environment variable.
+ * This is the default driver for Tier 3 (Vercel + Supabase) deployments.
+ * Files are stored with private access — direct blob URLs are not
+ * world-readable. Downloads must go through the authenticated
+ * /api/tasks/[id]/attachments/download endpoint which verifies org membership.
  *
  * When this driver is active, the stored URL in the DB is the full
  * blob.vercel-storage.com URL returned by @vercel/blob's `put()` — NOT a
@@ -36,7 +36,7 @@ export class VercelBlobDriver implements StorageDriver {
     }
 
     const blob = await put(key, body, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
       contentType: options.contentType,
     });

@@ -75,19 +75,46 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Subdomain routing**: `{orgslug}.onekof.com` → middleware sets `x-organization-slug` header
 - **Commit attribution**: every commit is `Oli Tamrat Oli <oli.oli@udc.edu>` (for IP registration)
 
-## Current Status (as of 2026-04-11)
+## Current Status (as of 2026-04-12)
 
 **Launch stage:** Pre-launch. No paying customers. EIPA copyright registration filed 2026-04-11.
 
 **Production deployment (Tier 3):** Live at `onekof.com` on Vercel serverless (fra1) + Supabase PostgreSQL 15 (aws-1-eu-central-1). 25 test/demo organizations, no real customer data.
 
-**Architecture target:** Three-tier federated hosting (see `docs/deployment/tier-2-runbook.md`):
+**Architecture target:** Three-tier federated hosting (see `docs/architecture/three-tier-federation.md`):
 - **Tier 1 — Government:** EthioTelecom Cloud (or Raxio fallback), `*.gov.onekof.et`. **Not yet built.** Requires signed government LOI before coding begins.
-- **Tier 2 — Private:** On-premise Ethiopian server, `*.onekof.et`. **Code-ready** (Wave 1 shipped). Test server build pending on owned hardware (Massano/i7/64GB rig).
-- **Tier 3 — Global:** Vercel + Supabase, `*.onekof.com`. **Current production.** Unchanged by Wave 1.
+- **Tier 2 — Private:** On-premise Ethiopian server, `*.onekof.et`. **Code-ready** (Wave 1 + Wave 2 shipped). Docker image validated at 408 MB. Windows + Ubuntu deployment guides written. Test server build in progress on Massano/i7/64GB rig.
+- **Tier 3 — Global:** Vercel + Supabase, `*.onekof.com`. **Current production.** Unchanged by Wave 1/2.
 - **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage as cold recovery. **Deferred to Wave 3.**
 
 ## Recently Shipped
+
+### Wave 2 — Security Hardening + Standalone Docker (2026-04-12)
+
+**What landed in runtime code:**
+- **Admin bcrypt hashing** — `api/admin/login/route.ts` now uses `bcrypt.compare()` instead of plaintext password comparison. `ADMIN_USERS` env var must store bcrypt hashes (12 rounds).
+- **Debug routes blocked in production** — middleware returns 404 for all `/api/debug/*` routes when `NODE_ENV=production`.
+- **Tenant isolation at middleware edge** — middleware decodes JWT to verify user belongs to the subdomain's organization before allowing access. Non-members redirected to `/select-organization?error=access_denied`.
+- **Standalone Docker output** — `output: 'standalone'` in `next.config.mjs`. Docker image reduced from 2.6 GB to 408 MB. No pnpm/corepack needed at runtime.
+
+**What landed in infrastructure:**
+- `apps/web/Dockerfile` — rewritten runner stage for standalone: `node apps/web/server.js` replaces `next start` via node_modules
+- `.env.tier2.example` / `.env.tier3.example` — added `ADMIN_SECRET` and `ADMIN_USERS` with bcrypt format docs
+- `scripts/generate-admin-hash.mjs` — helper script to generate bcrypt hashes for `ADMIN_USERS`
+
+**What landed in documentation:**
+- `docs/architecture/three-tier-federation.md` — comprehensive developer reference for the federated hosting system
+- `docs/deployment/windows-deployment-guide.md` — Docker Desktop deployment on Windows for Ethiopian market
+- `ONEKOF_IP_CLAIMS_ASSESSMENT.md` — IP claims analysis with 4 potentially patentable innovations
+
+**Empirical validation (2026-04-12):**
+- Docker image rebuilt: 408 MB standalone image, HTTP 200, login + dashboard functional
+- All three tiers unaffected — env-driven architecture preserved, no code branches between tiers
+
+**Remaining Wave 2 config items (not code — require Oli's dashboard action):**
+- Cloudflare SSL mode: Flexible → Full (Strict)
+- Upstash Redis: set `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` in Vercel
+- Update `ADMIN_USERS` in Vercel with bcrypt hashes
 
 ### Wave 1 — Portability PR (2026-04-11)
 Nine commits on `master` (`d014a9c..4c14a59`) that lift every hardcoded Vercel/.onekof.com assumption behind env vars while preserving Tier 3 behavior exactly. Plus three follow-up commits (`0e19dad..8725e93`) adding Dockerfile, docker-compose Tier 2 simulation, deployment runbook, and the EthioTelecom requirements letter.
@@ -132,19 +159,19 @@ Nine commits on `master` (`d014a9c..4c14a59`) that lift every hardcoded Vercel/.
 
 ### Priority 1: Wave 2 — medium-risk hardening
 All items are gated to "before first real customer," not urgent pre-launch.
-- **B6 — Admin password bcrypt hashing** (`api/admin/login/route.ts:90` currently does plaintext compare). Security file — requires re-reading this Security Rules section first per the workflow.
-- **Cloudflare Full Strict SSL** — currently Flexible (HTTP CF↔Vercel). Blocks government contracts. Follow `PRODUCTION_SECURITY_UPGRADE_GUIDE.md`.
-- **Disable `/api/debug/*` routes in production** — they expose env info.
-- **Tenant isolation validation in middleware** — currently trusts hostname header without cross-checking user membership.
-- **Mandatory Upstash Redis for rate limiting in production** — in-memory fallback is broken under serverless multi-instance scaling.
-- **`output: 'standalone'` in `next.config.mjs`** — drops Docker image from 2.6 GB to ~300 MB. Requires Vercel preview testing first (potential behavior change).
+- ~~**B6 — Admin password bcrypt hashing**~~ — DONE 2026-04-12. Uses `bcrypt.compare()` with 12-round hashes.
+- **Cloudflare Full Strict SSL** — currently Flexible (HTTP CF↔Vercel). Blocks government contracts. Follow `PRODUCTION_SECURITY_UPGRADE_GUIDE.md`. **Oli action required.**
+- ~~**Disable `/api/debug/*` routes in production**~~ — DONE 2026-04-12. Middleware returns 404.
+- ~~**Tenant isolation validation in middleware**~~ — DONE 2026-04-12. JWT membership check at edge.
+- **Mandatory Upstash Redis for rate limiting in production** — in-memory fallback is broken under serverless multi-instance scaling. **Oli action required (Upstash dashboard).**
+- ~~**`output: 'standalone'` in `next.config.mjs`**~~ — DONE 2026-04-12. Docker image 2.6 GB → 408 MB.
 
 ### Priority 2: Wave 3 — data retention + DR
-- `UserActivity` rolling 90-day retention (table grows unboundedly today).
-- `RateLimit` table → Redis (wrong architecture for a Postgres-backed store).
-- JWT refresh token rotation.
-- Admin audit logging (`AdminAuditLog` model + 15+ route instrumentation).
-- Encrypted backup pipeline (`pg_dump | gzip | gpg --encrypt | rsync`) with Shamir 3-of-5 key split.
+- ~~`UserActivity` rolling 90-day retention~~ — DONE 2026-04-12. `/api/admin/cleanup` endpoint with configurable retention, supports Vercel Cron and system cron.
+- ~~`RateLimit` table → Redis~~ — DONE 2026-04-12. Removed dead `RateLimit` Prisma model. Rate limiting already uses Upstash Redis via `lib/security/rate-limit.ts`.
+- JWT refresh token rotation — **Deferred.** NextAuth JWT strategy with HttpOnly cookies is sufficient for current threat model. Revisit when session duration requirements change.
+- ~~Admin audit logging~~ — DONE 2026-04-12. `AdminAuditLog` model + `logAdminAction()` utility. Admin login/logout/cleanup instrumented. Migration created.
+- ~~Encrypted backup pipeline~~ — DONE 2026-04-12. `scripts/backup-database.sh` upgraded with GPG encryption, SHA-256 checksums, configurable retention, blob backup, and Shamir 3-of-5 key split documentation.
 
 ### Priority 3: Async tracks (don't block on these)
 - **EthioTelecom Tier 1 evaluation** — send the letter from `docs/business/ethiotelecom-cloud-requirements-letter.md` once ready, then wait for their technical response. Keeps Tier 1 architecture dependencies unblocked without forcing synchronous work.

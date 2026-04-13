@@ -1719,36 +1719,40 @@ model AIUsage {
 }
 
 // ============================================================================
-// RATE LIMITING & SECURITY
+// SECURITY & AUDIT
 // ============================================================================
 
-// 🔒 SECURITY: Rate limiting for API endpoints and authentication
-model RateLimit {
+// Rate limiting is handled by Upstash Redis (see lib/security/rate-limit.ts).
+// The RateLimit Prisma model was removed in Wave 3 (2026-04-12) because it was
+// dead code — storing rate limits in Postgres is wrong architecture for
+// serverless (multi-instance scaling breaks shared state).
+
+// 🔒 SECURITY: Admin Audit Log — tracks all admin panel actions for compliance
+model AdminAuditLog {
   id String @id @default(cuid())
 
-  // Identifier: IP address, user ID, or API key
-  identifier String
-  endpoint   String // e.g., "/api/auth/signin", "/api/projects"
+  // WHO performed the action
+  adminUsername String  @map("admin_username")
+  adminRole     String  @map("admin_role") // OWNER, ADMIN, VIEWER
+  ipAddress     String? @map("ip_address")
+  userAgent     String? @map("user_agent")
 
-  // Rate limiting window
-  requestCount Int      @default(0) @map("request_count")
-  windowStart  DateTime @map("window_start")
-  windowEnd    DateTime @map("window_end")
+  // WHAT action was performed
+  action     String // LOGIN, LOGOUT, USER_VIEW, USER_DELETE, ORG_UPDATE, SYSTEM_CONFIG, CLEANUP, etc.
+  resource   String // "user", "organization", "system", "debug", "backup"
+  resourceId String? @map("resource_id") // ID of affected entity (if applicable)
 
-  // Blocking
-  blocked     Boolean   @default(false)
-  blockedAt   DateTime? @map("blocked_at")
-  blockReason String?   @map("block_reason")
+  // DETAILS
+  details  Json   @default("{}") // Action-specific metadata
+  outcome  String @default("SUCCESS") // SUCCESS, FAILURE, DENIED
 
-  // Metadata
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([identifier, endpoint, windowStart])
-  @@index([identifier, windowEnd]) // Cleanup expired windows
-  @@index([endpoint, windowEnd]) // Endpoint-specific rate limits
-  @@index([blocked, windowEnd]) // Active blocks
-  @@map("rate_limits")
+  @@index([adminUsername, createdAt])
+  @@index([action, createdAt])
+  @@index([resource, resourceId, createdAt])
+  @@index([createdAt]) // For retention cleanup
+  @@map("admin_audit_logs")
   @@schema("public")
 }
 

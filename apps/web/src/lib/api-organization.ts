@@ -181,6 +181,20 @@ export async function resolveUserOrganization(): Promise<{
     }
 
     // 2. Fallback path (no slug or slug mismatch): fetch user + default org
+    // SECURITY: Only allow fallback on select-organization page and non-API routes.
+    // API routes MUST have an org context from subdomain to prevent cross-org access
+    // via defaultOrganizationId manipulation.
+    const isApiRoute = request.nextUrl.pathname.startsWith('/api');
+    if (isApiRoute && !slug) {
+      return {
+        data: null,
+        error: NextResponse.json(
+          { error: 'Organization context required. Access via organization subdomain.' },
+          { status: 403 }
+        ),
+      };
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: {

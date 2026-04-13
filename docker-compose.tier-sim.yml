@@ -28,13 +28,21 @@
 #      and paste it into .env as NEXTAUTH_SECRET
 #   3. Boot the stack:
 #        docker compose -f docker-compose.tier-sim.yml up -d --build
-#   4. Apply the Prisma baseline migration (one-time):
-#        docker compose -f docker-compose.tier-sim.yml exec onekof-web \
-#          pnpm exec prisma migrate deploy --schema packages/database/prisma/schema.prisma
-#      (Note: the 7 pre-baseline migrations need to be archived first —
-#       see packages/database/prisma/migrations/README.md Option A.)
-#   5. Open http://localhost:3000 — you should see the Onekof landing page
-#      served from a local Postgres with no Vercel involvement.
+#   4. Mark all migrations as applied (one-time, because the database was
+#      already created by the Dockerfile build step):
+#        for m in 0_init 20260304062200_add_automation_rules 20260407_add_wiki_models \
+#          20260409_add_contractor_role 20260409_add_task_links 20260410_add_backlog_status \
+#          20260410_project_visibility_default_public 20260410_revert_project_visibility_default \
+#          20260411120000_portability_wave1; do
+#          docker compose -f docker-compose.tier-sim.yml exec -u root onekof-web \
+#            npx prisma migrate resolve --applied "$m" \
+#            --schema /app/packages/database/prisma/schema.prisma
+#        done
+#   5. Seed with test user + demo data:
+#        docker compose -f docker-compose.tier-sim.yml exec -u root \
+#          -w /app/packages/database onekof-web npx tsx prisma/seed.ts
+#   6. Open http://localhost:3000 and log in:
+#        Email: test@onekof.com  |  Password: password123
 #
 # Tear down:   docker compose -f docker-compose.tier-sim.yml down
 # Wipe data:   docker compose -f docker-compose.tier-sim.yml down -v

@@ -5,10 +5,10 @@
 #
 # Multi-stage build for a self-hosted Onekof deployment on any Linux host
 # (on-premise Ethiopian server, EthioTelecom Cloud VM, etc.). Produces an
-# image that runs `next start` against a bundled `.next` build + shared
-# node_modules copy. This is the Wave 1 reference image and intentionally
-# does NOT use `output: 'standalone'` — that optimization is deferred to
-# Wave 2 because it interacts with Vercel's file tracing.
+# image that runs `node server.js` against a standalone Next.js build.
+# Wave 2 enabled `output: 'standalone'` in next.config.mjs, which lets
+# Next.js trace only the files needed at runtime — reducing the image
+# from ~2.6 GB to ~300 MB. This enables USB-based deployment.
 #
 # Build from the REPO ROOT (not apps/web), so the monorepo lockfile and
 # sibling packages are available to the build context:
@@ -105,7 +105,7 @@ RUN pnpm --filter=web run build
 
 
 # ---------------------------------------------------------------------------
-# Stage 3: runner — minimal runtime image
+# Stage 3: runner — minimal runtime image (~300 MB with standalone output)
 # ---------------------------------------------------------------------------
 FROM node:20-slim AS runner
 
@@ -115,31 +115,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
   && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable && corepack prepare pnpm@8.15.1 --activate
-
 WORKDIR /app
 
 # Create a non-root user so the container does not run as uid 0 at runtime.
 # The uid/gid are the Next.js-recommended defaults.
 RUN groupadd --system --gid 1001 nodejs \
-  && useradd --system --uid 1001 --gid nodejs nextjs
+  && useradd --system --uid 1001 --gid nodejs nextjs \
+  && mkdir -p /home/nextjs/.cache/node/corepack \
+  && chown -R nextjs:nodejs /home/nextjs
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# Copy the built app artifact. Because we are NOT using standalone output,
-# we copy the complete apps/web directory plus the workspace node_modules
-# and the Prisma client from packages/database.
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next ./apps/web/.next
+# Copy standalone output — Next.js traces only the files actually imported
+# at runtime, producing a self-contained server (~300 MB vs 2.6 GB full copy).
+# The standalone folder includes its own node_modules with only needed deps.
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/package.json ./apps/web/package.json
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/next.config.mjs ./apps/web/next.config.mjs
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/packages ./packages
-COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/pnpm-workspace.yaml /app/turbo.json ./
+
+# Prisma migration files for `prisma migrate deploy` on fresh databases.
+# The Prisma client itself is included by Next.js standalone trace via
+# outputFileTracingIncludes in next.config.mjs.
+COPY --from=builder --chown=nextjs:nodejs /app/packages/database/prisma ./packages/database/prisma
 
 # Create the local-fs storage directory used by the Wave 1 storage driver
 # when STORAGE_DRIVER=local-fs. Docker-compose mounts a named volume here
@@ -150,14 +150,10 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check hits /api/admin/health (which Wave 1 refactored to use the
-# runtime abstraction, so it reports the correct platform/region even on
-# self-hosted). wget is used because it's already in the base image.
+# Health check — use node to avoid wget/curl header issues with NextAuth
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD wget --quiet --spider http://127.0.0.1:3000/api/auth/session || exit 1
+  CMD node -e "require('http').get('http://127.0.0.1:3000/',{headers:{host:'localhost'}},r=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"
 
-WORKDIR /app/apps/web
-
-# Start Next.js directly from node_modules/.bin to avoid pnpm wrapper overhead
-# at runtime. `next start` respects HOSTNAME and PORT env vars.
-CMD ["./node_modules/.bin/next", "start"]
+# Standalone output produces a server.js at the repo root that includes
+# the Next.js server. No need for pnpm or node_modules/.bin/next.
+CMD ["node", "apps/web/server.js"]

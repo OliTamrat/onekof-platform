@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get('host') || '';
 
   // Extract organization slug from subdomain
   // Format: {org-slug}.onekof.com or {org-slug}.localhost:3000
   const organizationSlug = getOrganizationSlug(hostname);
+
+  // Block debug and diagnostic API routes in production — they expose env info and user data
+  const blockedInProduction = ['/api/debug', '/api/env-check', '/api/test-db'];
+  if (process.env.NODE_ENV === 'production' && blockedInProduction.some(p => pathname.startsWith(p))) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
 
   // Admin routes — separate auth system
   const isAdminRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login') && !pathname.startsWith('/admin/setup');
@@ -38,6 +45,25 @@ export function middleware(request: NextRequest) {
       const signInUrl = new URL('/auth/signin', request.url);
       signInUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  // SECURITY: Tenant isolation — verify user belongs to the organization subdomain
+  // The JWT contains the user's organization memberships (slug list). If the user
+  // is on a subdomain they don't belong to, redirect them to the main domain.
+  if (organizationSlug && isProtectedRoute) {
+    try {
+      const token = await getToken({ req: request });
+      if (token?.organizations) {
+        const orgs = token.organizations as Array<{ slug: string }>;
+        const isMember = orgs.some(org => org.slug === organizationSlug);
+        if (!isMember) {
+          // User is authenticated but not a member of this organization
+          return NextResponse.redirect(new URL('/select-organization?error=access_denied', request.url));
+        }
+      }
+    } catch {
+      // If token decoding fails, allow the request — API routes will enforce auth
     }
   }
 

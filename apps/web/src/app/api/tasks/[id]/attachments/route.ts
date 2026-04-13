@@ -9,6 +9,32 @@ export const dynamic = 'force-dynamic';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
+// SECURITY: Allowed MIME types for file uploads — blocks executables, scripts, and HTML
+const ALLOWED_MIME_TYPES = new Set([
+  // Documents
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'text/plain',
+  'text/csv',
+  // Images
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml',
+  // Archives
+  'application/zip',
+  'application/gzip',
+  'application/x-tar',
+  // Other
+  'application/json',
+]);
+
 /**
  * GET /api/tasks/[id]/attachments
  * List all attachments for a task
@@ -100,6 +126,14 @@ export async function POST(
       );
     }
 
+    // SECURITY: Validate MIME type — block executables, scripts, HTML
+    if (file.type && !ALLOWED_MIME_TYPES.has(file.type)) {
+      return NextResponse.json(
+        { error: 'File type not allowed. Supported: PDF, Word, Excel, PowerPoint, images, CSV, ZIP, and plain text.' },
+        { status: 400 }
+      );
+    }
+
     // Upload via the configured storage driver. The driver is selected by the
     // STORAGE_DRIVER env var: vercel-blob (Tier 3 default), local-fs (Tier 2
     // on-prem), or s3 (Tier 1, future). Each driver throws with a descriptive
@@ -109,7 +143,7 @@ export async function POST(
       const result = await storage.put(
         `tasks/${params.id}/${Date.now()}-${file.name}`,
         file,
-        { access: 'public', contentType: file.type || undefined },
+        { contentType: file.type || undefined },
       );
       fileUrl = result.url;
     } catch (err) {
