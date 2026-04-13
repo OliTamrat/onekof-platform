@@ -9,7 +9,7 @@ import { sendPasswordResetEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
-    // SECURITY: Rate limit password reset requests to prevent abuse
+    // SECURITY: Rate limit by IP to prevent distributed abuse
     const rateLimitError = await checkRateLimit(req, 'passwordReset');
     if (rateLimitError) return rateLimitError;
 
@@ -19,15 +19,18 @@ export async function POST(req: NextRequest) {
 
     const { email } = validation.data;
 
+    // SECURITY: Per-email rate limit — prevents targeted harassment of a single email
+    // 3 resets per email per hour, independent of IP
+    const emailRateLimitError = await checkRateLimit(req, 'passwordReset', `email:${email}`);
+    if (emailRateLimitError) return emailRateLimitError;
+
     // Find user by email
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     // Always return success to prevent email enumeration
-    // In production, you would send an email here
     if (!user) {
-      // Return success anyway to prevent leaking user existence
       log.warn('Password reset attempted for non-existent email', { email });
       return NextResponse.json(
         { message: 'If an account exists with that email, password reset instructions have been sent' },

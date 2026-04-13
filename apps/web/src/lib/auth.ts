@@ -119,6 +119,10 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user.password) {
+          // SECURITY: Run a dummy bcrypt compare to prevent timing-based user enumeration.
+          // Without this, responses for non-existent users are ~250ms faster than real users,
+          // allowing attackers to determine which emails have accounts.
+          await compare(credentials.password, '$2b$12$dummy.hash.to.prevent.timing.attacks.000000000000000000');
           try { await recordFailedLogin(credentials.email); } catch { /* columns may not exist */ }
           throw new Error('Invalid credentials');
         }

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -117,6 +118,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // SECURITY: Rate limit org creation to prevent spam/DoS
+    const rateLimitError = await checkRateLimit(req, 'signup');
+    if (rateLimitError) return rateLimitError;
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
