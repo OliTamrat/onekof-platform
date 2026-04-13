@@ -403,7 +403,7 @@ export default function HomePage() {
     { label: t('landing.nav.features'), href: '#features' },
     { label: t('landing.nav.product'), href: '#product' },
     { label: t('landing.nav.pricing'), href: '#pricing' },
-    { label: t('landing.nav.about'), href: '#about' },
+    { label: t('landing.nav.about'), href: '/about' },
   ];
 
   const showcaseMockups = [<BudgetMockup t={t} />, <AIDocsMockup t={t} />, <CalendarMockup t={t} />, <LanguageMockup t={t} />];
@@ -1322,16 +1322,34 @@ export default function HomePage() {
             </div>
 
             {[
-              { title: t('landing.footer.productCol'), links: [t('landing.footer.footerLinks.features'), t('landing.footer.footerLinks.pricing'), t('landing.footer.footerLinks.integrations'), t('landing.footer.footerLinks.changelog'), t('landing.footer.footerLinks.roadmap')] },
-              { title: t('landing.footer.companyCol'), links: [t('landing.footer.footerLinks.about'), t('landing.footer.footerLinks.blog'), t('landing.footer.footerLinks.careers'), t('landing.footer.footerLinks.press'), t('landing.footer.footerLinks.contact')] },
-              { title: t('landing.footer.resourcesCol'), links: [t('landing.footer.footerLinks.documentation'), t('landing.footer.footerLinks.helpCenter'), t('landing.footer.footerLinks.apiReference'), t('landing.footer.footerLinks.community'), t('landing.footer.footerLinks.status')] },
+              { title: t('landing.footer.productCol'), links: [
+                { label: t('landing.footer.footerLinks.features'), href: '#features' },
+                { label: t('landing.footer.footerLinks.pricing'), href: '#pricing' },
+                { label: t('landing.footer.footerLinks.integrations'), href: '#' },
+                { label: t('landing.footer.footerLinks.changelog'), href: '#' },
+                { label: t('landing.footer.footerLinks.roadmap'), href: '#' },
+              ]},
+              { title: t('landing.footer.companyCol'), links: [
+                { label: t('landing.footer.footerLinks.about'), href: '/about' },
+                { label: t('landing.footer.footerLinks.blog'), href: '#' },
+                { label: t('landing.footer.footerLinks.careers'), href: '#' },
+                { label: t('landing.footer.footerLinks.press'), href: '#' },
+                { label: t('landing.footer.footerLinks.contact'), href: '#' },
+              ]},
+              { title: t('landing.footer.resourcesCol'), links: [
+                { label: t('landing.footer.footerLinks.documentation'), href: '#' },
+                { label: t('landing.footer.footerLinks.helpCenter'), href: '#' },
+                { label: t('landing.footer.footerLinks.apiReference'), href: '#' },
+                { label: t('landing.footer.footerLinks.community'), href: '#' },
+                { label: t('landing.footer.footerLinks.status'), href: '#' },
+              ]},
             ].map((col) => (
               <div key={col.title}>
                 <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/70">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-[13px] text-white/70 transition-colors hover:text-white/70">{link}</a>
+                    <li key={link.label}>
+                      <a href={link.href} className="text-[13px] text-white/70 transition-colors hover:text-white">{link.label}</a>
                     </li>
                   ))}
                 </ul>
@@ -1344,8 +1362,12 @@ export default function HomePage() {
               &copy; {new Date().getFullYear()} Onekof. {t('landing.footer.allRightsReserved')}
             </p>
             <div className="flex gap-6">
-              {[t('landing.footer.privacy'), t('landing.footer.terms'), t('landing.footer.cookies')].map((link) => (
-                <a key={link} href="#" className="text-[12px] text-white/70 transition-colors hover:text-white/70">{link}</a>
+              {[
+                { label: t('landing.footer.privacy'), href: '/privacy' },
+                { label: t('landing.footer.terms'), href: '/terms' },
+                { label: t('landing.footer.cookies'), href: '/cookies' },
+              ].map((link) => (
+                <a key={link.href} href={link.href} className="text-[12px] text-white/70 transition-colors hover:text-white">{link.label}</a>
               ))}
             </div>
           </div>
