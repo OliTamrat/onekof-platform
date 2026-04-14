@@ -20,23 +20,32 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Onekof - Ethiopian Project Management Platform',
-    template: '%s | Onekof',
+    default: 'Onekof — Project Management Platform for African Teams',
+    template: '%s | Onekof PM',
   },
   description:
-    'Modern project management and collaboration platform built for Ethiopian teams. Kanban boards, documentation, AI-powered workflows, and Ethiopian calendar support.',
+    'Onekof is the project management platform built for Ethiopian and East African teams. Ethiopian calendar, 5 languages (Amharic, Oromo, Tigrinya, Somali, English), ETB budget tracking, AI-powered documents, and data sovereignty with on-premise deployment.',
   keywords: [
-    'project management',
-    'ethiopia',
-    'jira alternative',
-    'confluence alternative',
-    'collaboration',
-    'agile',
-    'scrum',
-    'kanban',
+    'Onekof',
+    'Onekof PM',
+    'Onekof project management',
+    'Ethiopian project management',
+    'project management Ethiopia',
+    'project management Africa',
+    'Ethiopian calendar project management',
+    'Amharic project management',
+    'ETB budget tracking',
+    'Jira alternative Ethiopia',
+    'Jira alternative Africa',
+    'project management platform',
+    'kanban board Ethiopia',
+    'agile project management',
+    'collaboration platform Africa',
+    'data sovereignty Ethiopia',
+    'DABS Analytics',
   ],
-  authors: [{ name: 'Onekof Team' }],
-  creator: 'Onekof',
+  authors: [{ name: 'DABS Analytics' }],
+  creator: 'DABS Analytics',
   publisher: 'Onekof',
   formatDetection: {
     email: false,
@@ -44,21 +53,33 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: '/',
     siteName: 'Onekof',
-    title: 'Onekof - Ethiopian Project Management Platform',
+    title: 'Onekof — Project Management Platform for African Teams',
     description:
-      'Modern project management and collaboration platform built for Ethiopian teams.',
+      'The project management platform built for Ethiopian and East African teams. Ethiopian calendar, 5 languages, ETB budgets, AI documents, and data sovereignty.',
+    images: [
+      {
+        url: '/images/dashboard-desktop.png',
+        width: 1920,
+        height: 1080,
+        alt: 'Onekof project management dashboard',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Onekof - Ethiopian Project Management Platform',
+    title: 'Onekof — Project Management Platform for African Teams',
     description:
-      'Modern project management and collaboration platform built for Ethiopian teams.',
+      'Ethiopian calendar, 5 languages, ETB budgets, AI documents. Built for how African teams actually work.',
     creator: '@onekof',
+    images: ['/images/dashboard-desktop.png'],
   },
   robots: {
     index: true,
@@ -99,7 +120,44 @@ export default function RootLayout({
           `
         }} />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563EB" />
+        <meta name="theme-color" content="#1C8C7D" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              name: 'Onekof',
+              alternateName: ['Onekof PM', 'Onekof Project Management'],
+              applicationCategory: 'BusinessApplication',
+              operatingSystem: 'Web',
+              description: 'Project management platform built for Ethiopian and East African teams. Ethiopian calendar, 5 languages, ETB budget tracking, AI-powered documents.',
+              url: 'https://onekof.com',
+              image: 'https://onekof.com/images/dashboard-desktop.png',
+              author: {
+                '@type': 'Organization',
+                name: 'DABS Analytics',
+                url: 'https://onekof.com/about',
+              },
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'ETB',
+                description: 'Free plan available for teams up to 5 members',
+              },
+              featureList: [
+                'Ethiopian Calendar Support',
+                'Amharic, Oromo, Tigrinya, Somali, English UI',
+                'ETB Budget Tracking',
+                'AI Document Processing',
+                'Kanban Boards',
+                'Timeline & Gantt Charts',
+                'On-premise Deployment Option',
+                'Data Sovereignty',
+              ],
+            }),
+          }}
+        />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Onekof" />
