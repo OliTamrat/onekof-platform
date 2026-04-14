@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/language-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
@@ -709,220 +710,169 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* INNOVATION: Beautiful Drill-Down Modal with AI Analytics */}
-      {isFilterModalOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
-            onClick={() => setIsFilterModalOpen(false)}
-          />
+      {/* Status Drill-Down Slideout */}
+      <SlideoutPanel
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        title={filterTitle}
+        size="lg"
+      >
+        <SlideoutPanelContent>
+          {/* AI-Powered Analytics Bar */}
+          {filteredTasks.length > 0 && (() => {
+            const withAssignee = filteredTasks.filter((i: any) => i.assignee).length;
+            const unassigned = filteredTasks.length - withAssignee;
+            const overdue = filteredTasks.filter((i: any) => i.dueDate && new Date(i.dueDate) < new Date()).length;
+            const highPriority = filteredTasks.filter((i: any) => i.priority === 'HIGHEST' || i.priority === 'HIGH').length;
+            const now = new Date().getTime();
+            const ages = filteredTasks.map((i: any) => {
+              const updated = new Date(i.updatedAt).getTime();
+              return (now - updated) / (1000 * 60 * 60 * 24);
+            });
+            const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
-          {/* Modal */}
-          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[95vw] md:w-full max-w-4xl max-h-[85vh] bg-white dark:bg-[#1B1F23] rounded-lg shadow-2xl overflow-hidden animate-scale-in">
-            {/* Header */}
-            <div className="border-b border-gray-200 dark:border-gray-800 px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-white">{filterTitle}</h2>
-                  <p className="text-sm text-white/80 mt-1">
-                    {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'} found
-                  </p>
-                </div>
-                <Button variant="ghost" size="icon"
-                  onClick={() => setIsFilterModalOpen(false)}
-                  className="rounded-md p-2 text-white hover:bg-white/20 transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* AI-Powered Analytics Bar */}
-            {filteredTasks.length > 0 && (() => {
-              // Calculate analytics in real-time
-              const withAssignee = filteredTasks.filter((i: any) => i.assignee).length;
-              const unassigned = filteredTasks.length - withAssignee;
-              const overdue = filteredTasks.filter((i: any) => i.dueDate && new Date(i.dueDate) < new Date()).length;
-              const highPriority = filteredTasks.filter((i: any) => i.priority === 'HIGHEST' || i.priority === 'HIGH').length;
-
-              // Calculate average age
-              const now = new Date().getTime();
-              const ages = filteredTasks.map((i: any) => {
-                const updated = new Date(i.updatedAt).getTime();
-                return (now - updated) / (1000 * 60 * 60 * 24); // days
-              });
-              const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
-
-              return (
-                <div className="border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4 md:px-6 py-3">
-                  <div className="flex flex-wrap items-center gap-3 md:gap-6 text-xs md:text-sm">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
-                      <span className="font-medium text-slate-700 dark:text-slate-300">AI Insights:</span>
-                    </div>
-                    {overdue > 0 && (
-                      <div className="flex items-center gap-1">
-                        <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span> overdue
-                        </span>
-                      </div>
-                    )}
-                    {unassigned > 0 && (
-                      <div className="flex items-center gap-1">
-                        <User className="h-3.5 w-3.5 text-orange-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span> unassigned
-                        </span>
-                      </div>
-                    )}
-                    {highPriority > 0 && (
-                      <div className="flex items-center gap-1">
-                        <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span> high priority
-                        </span>
-                      </div>
-                    )}
-                    {avgAge > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-blue-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
-                          avg <span className="font-semibold text-blue-600 dark:text-blue-400">{avgAge}d</span> old
-                        </span>
-                      </div>
-                    )}
-                    {withAssignee > 0 && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
-                          <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span> assigned
-                        </span>
-                      </div>
-                    )}
+            return (
+              <div className="rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 p-4 mb-6">
+                <div className="flex flex-wrap items-center gap-3 md:gap-5 text-xs md:text-sm">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">AI Insights</span>
                   </div>
+                  {overdue > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <AlertCircle className="h-3.5 w-3.5 text-red-500" />
+                      <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span> overdue
+                      </span>
+                    </div>
+                  )}
+                  {unassigned > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5 text-orange-500" />
+                      <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span> unassigned
+                      </span>
+                    </div>
+                  )}
+                  {highPriority > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
+                      <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span> high priority
+                      </span>
+                    </div>
+                  )}
+                  {avgAge > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5 text-blue-500" />
+                      <span className="text-slate-600 dark:text-slate-400">
+                        avg <span className="font-semibold text-blue-600 dark:text-blue-400">{avgAge}d</span> old
+                      </span>
+                    </div>
+                  )}
+                  {withAssignee > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                      <span className="text-slate-600 dark:text-slate-400">
+                        <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span> assigned
+                      </span>
+                    </div>
+                  )}
                 </div>
-              );
-            })()}
+              </div>
+            );
+          })()}
 
-            {/* Content */}
-            <div className="overflow-y-auto max-h-[calc(85vh-180px)] p-6">
-              {filteredTasks.length > 0 ? (
-                <div className="space-y-3">
-                  {filteredTasks.map((task: any) => (
-                    <div
-                      key={task.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        setSelectedIssue(task);
-                        setIsFilterModalOpen(false);
-                      }}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
-                      className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                              {task.key}
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              task.status === 'TODO' ? 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' :
-                              task.status === 'IN_PROGRESS' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' :
-                              task.status === 'IN_REVIEW' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' :
-                              task.status === 'DONE' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
-                              'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
-                            }`}>
-                              {task.status.replace('_', ' ')}
-                            </span>
-                            {task.priority && (
-                              <span className={`text-xs font-medium ${
-                                task.priority === 'HIGHEST' ? 'text-red-600' :
-                                task.priority === 'HIGH' ? 'text-orange-600' :
-                                task.priority === 'MEDIUM' ? 'text-yellow-600' :
-                                task.priority === 'LOW' ? 'text-green-600' :
-                                'text-gray-600'
-                              }`}>
-                                {task.priority}
-                              </span>
-                            )}
-                          </div>
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            {task.title}
-                          </h3>
-                          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              <span>{task.assignee?.name || t('common.unassigned')}</span>
-                            </div>
-                            {task.updatedAt && (
-                              <div className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                <span>
-                                  Updated {new Date(task.updatedAt).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </span>
-                              </div>
-                            )}
-                            {task.reporter && (
-                              <div className="flex items-center gap-1">
-                                <Sparkles className="h-3 w-3" />
-                                <span>Created by {task.reporter.name}</span>
-                              </div>
-                            )}
-                          </div>
+          {/* Task List */}
+          {filteredTasks.length > 0 ? (
+            <div className="space-y-3">
+              {filteredTasks.map((task: any) => (
+                <div
+                  key={task.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    setSelectedIssue(task);
+                    setIsFilterModalOpen(false);
+                  }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all cursor-pointer"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          {task.key}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          task.status === 'TODO' ? 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300' :
+                          task.status === 'IN_PROGRESS' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' :
+                          task.status === 'IN_REVIEW' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' :
+                          task.status === 'DONE' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                          'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
+                        }`}>
+                          {task.status.replace('_', ' ')}
+                        </span>
+                        {task.priority && (
+                          <span className={`text-xs font-medium ${
+                            task.priority === 'HIGHEST' ? 'text-red-600' :
+                            task.priority === 'HIGH' ? 'text-orange-600' :
+                            task.priority === 'MEDIUM' ? 'text-yellow-600' :
+                            task.priority === 'LOW' ? 'text-green-600' :
+                            'text-gray-600'
+                          }`}>
+                            {task.priority}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-sm font-medium text-slate-900 dark:text-white mb-2">
+                        {task.title}
+                      </h3>
+                      <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-1">
+                          <User className="h-3 w-3" />
+                          <span>{task.assignee?.name || t('common.unassigned')}</span>
                         </div>
-                        {task.assignee?.avatar ? (
-                          <img
-                            src={task.assignee.avatar}
-                            alt={task.assignee.name}
-                            className="h-10 w-10 rounded-full"
-                          />
-                        ) : task.assignee ? (
-                          <div className="h-10 w-10 rounded-full bg-[#1C8C7D] text-white flex items-center justify-center text-sm font-medium">
-                            {task.assignee.name?.charAt(0).toUpperCase() || '?'}
+                        {task.updatedAt && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>
+                              Updated {new Date(task.updatedAt).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
                           </div>
-                        ) : (
-                          <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700" />
                         )}
                       </div>
                     </div>
-                  ))}
+                    {task.assignee?.avatar ? (
+                      <img
+                        src={task.assignee.avatar}
+                        alt={task.assignee.name}
+                        className="h-10 w-10 rounded-full"
+                      />
+                    ) : task.assignee ? (
+                      <div className="h-10 w-10 rounded-full bg-[#1C8C7D] text-white flex items-center justify-center text-sm font-medium">
+                        {task.assignee.name?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700" />
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                  <p className="text-gray-600 dark:text-gray-400">{t('dashboard.noTasks')}</p>
-                </div>
-              )}
+              ))}
             </div>
-          </div>
-
-          {/* CSS Animation */}
-          <style jsx>{`
-            @keyframes scale-in {
-              from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.9);
-              }
-              to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-              }
-            }
-
-            .animate-scale-in {
-              animation: scale-in 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-          `}</style>
-        </>
-      )}
+          ) : (
+            <div className="text-center py-12">
+              <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+              <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.noTasks')}</p>
+            </div>
+          )}
+        </SlideoutPanelContent>
+      </SlideoutPanel>
     </AppLayout>
   );
 }

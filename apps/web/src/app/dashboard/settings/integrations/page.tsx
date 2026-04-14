@@ -482,17 +482,17 @@ export default function IntegrationsPage() {
           selected ? 'lg:mr-[420px]' : ''
         )}>
           {/* Header */}
-          <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-5">
+          <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] px-6 py-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-sm">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center shadow-sm">
                   <Puzzle className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('integrationsPage.title')}</h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     {connectedCount > 0 && (
-                      <span className="text-primary-500 font-medium">
+                      <span className="text-[#1C8C7D] font-medium">
                         {t('integrationsPage.connectedCount').replace('{count}', String(connectedCount))}
                       </span>
                     )}
@@ -723,15 +723,15 @@ function IntegrationCard({
       onClick={onSelect}
       className={cn(
         'group relative text-left rounded-xl border p-5 transition-all duration-200 w-full h-auto overflow-hidden',
-        'bg-white dark:bg-[#22272B]',
+        'bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:ring-offset-[#1B1F23]',
         isSelected
-          ? 'border-primary-500 dark:border-primary-500 ring-2 ring-primary-500/20 shadow-md'
+          ? 'border-[#1C8C7D] dark:border-[#1C8C7D] ring-2 ring-[#1C8C7D]/20 shadow-md'
           : isComingSoon
-            ? 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-90'
+            ? 'border-slate-200/60 dark:border-slate-700/60 opacity-70 hover:opacity-90'
             : isConnected
-              ? 'border-emerald-300 dark:border-emerald-700 hover:shadow-md'
-              : 'border-slate-200 dark:border-slate-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-md',
+              ? 'border-emerald-300/60 dark:border-emerald-700/60 hover:shadow-lg hover:border-[#1C8C7D]/40 hover:-translate-y-0.5'
+              : 'border-slate-200/60 dark:border-slate-700/60 hover:border-[#1C8C7D]/40 hover:shadow-lg hover:-translate-y-0.5',
       )}
     >
       {/* Connected indicator line */}
@@ -945,21 +945,24 @@ function IntegrationDetailPanel({
             {t('integrationsPage.statusComingSoon')}
           </Button>
         ) : isConnected ? (
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 gap-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800"
-              onClick={onDisconnect}
-              disabled={disconnecting}
-            >
-              {disconnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unplug className="h-4 w-4" />}
-              {t('integrationsPage.disconnect')}
-            </Button>
-            <Button variant="outline" className="flex-1 gap-2 text-sm">
-              <ExternalLink className="h-4 w-4" />
-              {t('integrationsPage.documentation')}
-            </Button>
-          </div>
+          <>
+            <TestConnectionButton provider={integration.provider} />
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1 gap-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800"
+                onClick={onDisconnect}
+                disabled={disconnecting}
+              >
+                {disconnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unplug className="h-4 w-4" />}
+                {t('integrationsPage.disconnect')}
+              </Button>
+              <Button variant="outline" className="flex-1 gap-2 text-sm">
+                <ExternalLink className="h-4 w-4" />
+                {t('integrationsPage.documentation')}
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             <Button
@@ -996,29 +999,60 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
     <div className="space-y-6">
       {/* Connection info */}
       {connection && (
-        <div className="rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-              {t('integrationsPage.statusConnected')}
-            </span>
+        <div className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-900/10 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-8 w-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 block">
+                {t('integrationsPage.statusConnected')}
+              </span>
+              <span className="text-[10px] text-emerald-600/70 dark:text-emerald-400/70">
+                Integration is active and syncing
+              </span>
+            </div>
           </div>
-          <div className="space-y-1.5 text-xs text-emerald-600 dark:text-emerald-400">
+          <div className="space-y-2 text-xs">
             {connection.externalAccountName && (
-              <div className="flex justify-between">
-                <span>{t('integrationsPage.overviewAccountLabel')}</span>
-                <span className="font-medium">{connection.externalAccountName}</span>
+              <div className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-white/60 dark:bg-[#1B1F23]/60">
+                <span className="text-emerald-600 dark:text-emerald-400">{t('integrationsPage.overviewAccountLabel')}</span>
+                <span className="font-semibold text-emerald-800 dark:text-emerald-200">{connection.externalAccountName}</span>
               </div>
             )}
-            <div className="flex justify-between">
-              <span>{t('integrationsPage.overviewConnectedLabel')}</span>
-              <span className="font-medium">{new Date(connection.connectedAt).toLocaleDateString()}</span>
+            <div className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-white/60 dark:bg-[#1B1F23]/60">
+              <span className="text-emerald-600 dark:text-emerald-400">{t('integrationsPage.overviewConnectedLabel')}</span>
+              <span className="font-semibold text-emerald-800 dark:text-emerald-200">{new Date(connection.connectedAt).toLocaleDateString()}</span>
             </div>
-            <div className="flex justify-between">
-              <span>{t('integrationsPage.overviewStatusLabel')}</span>
-              <span className="font-medium capitalize">{connection.status}</span>
+            <div className="flex justify-between items-center py-1.5 px-3 rounded-lg bg-white/60 dark:bg-[#1B1F23]/60">
+              <span className="text-emerald-600 dark:text-emerald-400">{t('integrationsPage.overviewStatusLabel')}</span>
+              <span className="font-semibold text-emerald-800 dark:text-emerald-200 flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Active
+              </span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* What this integration does when connected */}
+      {connection && (
+        <div className="rounded-xl border border-[#1C8C7D]/20 bg-gradient-to-br from-[#1C8C7D]/5 to-[#16A085]/5 dark:from-[#1C8C7D]/10 dark:to-[#16A085]/10 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
+            <h4 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider">Active Capabilities</h4>
+          </div>
+          <div className="space-y-2">
+            {integration.featureKeys.map((key, i) => (
+              <div key={i} className="flex items-center gap-2.5 py-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-[#1C8C7D] shrink-0" />
+                <span className="text-xs text-slate-700 dark:text-slate-300">{t(`integrationsPage.${key}`)}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
+            Configure notification rules and sync settings in the Configure tab.
+          </p>
         </div>
       )}
 
@@ -1435,6 +1469,61 @@ function ActivityTab({ events }: { events: IntegrationEvent[] }) {
           </span>
         </div>
       ))}
+    </div>
+  );
+}
+
+// ─── Test Connection Button ──────────────────────────────────────────────────
+
+function TestConnectionButton({ provider }: { provider?: string }) {
+  const { t } = useLanguage();
+  const [testing, setTesting] = useState(false);
+  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleTest = async () => {
+    if (!provider) return;
+    setTesting(true);
+    setResult(null);
+    try {
+      const res = await fetch(`/api/integrations/${provider}/test`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.success !== false) {
+        setResult({ success: true, message: data.message || 'Connection is working' });
+      } else {
+        setResult({ success: false, message: data.error || data.message || 'Connection test failed' });
+      }
+    } catch {
+      setResult({ success: false, message: 'Failed to reach test endpoint' });
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return (
+    <div>
+      <Button
+        onClick={handleTest}
+        disabled={testing}
+        className="w-full gap-2 text-sm bg-[#1C8C7D] hover:bg-[#156B60] text-white"
+      >
+        {testing ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Zap className="h-4 w-4" />
+        )}
+        {testing ? 'Testing Connection...' : 'Test Connection'}
+      </Button>
+      {result && (
+        <div className={cn(
+          'mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium',
+          result.success
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
+            : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+        )}>
+          {result.success ? <CheckCircle2 className="h-3.5 w-3.5" /> : <AlertCircle className="h-3.5 w-3.5" />}
+          {result.message}
+        </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { InsightsSlideout } from '@/components/insights/insights-slideout';
+import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
 import { BUDGET_TABS } from '@/config/department-tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1257,83 +1258,64 @@ export default function BudgetPage() {
         </>
       )}
 
-      {/* Activity Slideout */}
-      {isActivitySlideoutOpen && (
-        <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsActivitySlideoutOpen(false)} />
-          <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#1B1F23] shadow-2xl overflow-hidden flex flex-col animate-slide-in-right">
-            <div className="border-b border-slate-200 dark:border-slate-700 px-4 md:px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-white">{slideoutTitle}</h2>
-                  <p className="text-sm text-white/80 mt-1">{slideoutData.length} {t('common.items')}</p>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => setIsActivitySlideoutOpen(false)} className="rounded-md p-2 text-white hover:bg-white/20">
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 md:p-6">
-              {slideoutData.length === 0 ? (
-                <div className="text-center py-12">
-                  <AlertCircle className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                  <p className="text-slate-600 dark:text-slate-400">{t('common.noResults')}</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {slideoutData.map((item: any) => (
-                    <div
-                      key={item.id}
-                      className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D] transition-colors"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm font-medium text-slate-900 dark:text-white">{item.description}</span>
-                            {item.status && (
-                              <span className={`text-xs px-2 py-0.5 rounded font-medium ${
-                                item.status === 'APPROVED' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                                item.status === 'PENDING' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
-                                'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                              }`}>
-                                {item.status}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-3 text-xs text-slate-500">
-                            {item.budget?.project?.name && <span>{item.budget.project.name}</span>}
-                            {item.category?.name && <span>• {item.category.name}</span>}
-                            {item.transactionDate && (
-                              <span>• {new Date(item.transactionDate).toLocaleDateString()}</span>
-                            )}
-                            {item.vendor && <span>• {item.vendor}</span>}
-                          </div>
-                        </div>
-                        <div className="text-right ml-4">
-                          <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                            ETB {formatCurrency(Number(item.amount))}
-                          </div>
-                        </div>
+      {/* Activity Drill-Down Slideout */}
+      <SlideoutPanel
+        isOpen={isActivitySlideoutOpen}
+        onClose={() => setIsActivitySlideoutOpen(false)}
+        title={slideoutTitle}
+        size="lg"
+      >
+        <SlideoutPanelContent>
+          {slideoutData.length > 0 ? (
+            <div className="space-y-3">
+              {slideoutData.map((item: any) => (
+                <div
+                  key={item.id}
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          item.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400' :
+                          item.status === 'PENDING' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400' :
+                          item.status === 'REJECTED' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' :
+                          'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+                        }`}>
+                          {item.status}
+                        </span>
+                        {item.category?.name && (
+                          <span className="text-xs text-slate-500 dark:text-slate-400">{item.category.name}</span>
+                        )}
+                      </div>
+                      <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                        {item.description || item.vendor || 'Expense'}
+                      </p>
+                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {item.budget?.project?.name && <span>{item.budget.project.name}</span>}
+                        {item.vendor && <span>{item.vendor}</span>}
+                        {item.transactionDate && (
+                          <span>{new Date(item.transactionDate).toLocaleDateString()}</span>
+                        )}
                       </div>
                     </div>
-                  ))}
+                    <div className="text-right flex-shrink-0 ml-4">
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">
+                        {item.currency || 'ETB'} {new Intl.NumberFormat('en-US', { minimumFractionDigits: 0 }).format(Number(item.amount || 0))}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          </div>
-
-          <style jsx>{`
-            @keyframes slide-in-right {
-              from { opacity: 0; transform: translateX(100%); }
-              to { opacity: 1; transform: translateX(0); }
-            }
-            .animate-slide-in-right {
-              animation: slide-in-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-          `}</style>
-        </>
-      )}
+          ) : (
+            <div className="text-center py-12">
+              <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+              <p className="text-sm text-slate-600 dark:text-slate-400">{t('common.noResults')}</p>
+            </div>
+          )}
+        </SlideoutPanelContent>
+      </SlideoutPanel>
 
       <InsightsSlideout
         open={insightsOpen}

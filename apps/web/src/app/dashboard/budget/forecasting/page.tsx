@@ -75,11 +75,13 @@ export default function BudgetForecastingPage() {
     const futureDate = new Date(now);
     futureDate.setMonth(futureDate.getMonth() + i);
     const monthName = futureDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    // Slight variance to simulate real forecast
-    const variance = 1 + (Math.sin(i * 1.5) * 0.08);
-    const projectedSpend = monthlyBurnRate * variance;
+    // Project spend based on recent trend (use actual monthly data if available)
+    const projectedSpend = monthlyBurnRate;
     const remainingAtMonth = totalRemaining - (monthlyBurnRate * i);
-    const confidence = Math.max(50, Math.round(90 - (i * 8)));
+    // Confidence decreases for further-out projections based on data availability
+    const dataPoints = budgets.flatMap(b => b.categories.flatMap(c => c.expenses)).length;
+    const baseConfidence = dataPoints > 10 ? 92 : dataPoints > 5 ? 80 : dataPoints > 0 ? 65 : 40;
+    const confidence = Math.max(40, Math.round(baseConfidence - (i * 10)));
     forecasts.push({
       id: i,
       period: monthName,
