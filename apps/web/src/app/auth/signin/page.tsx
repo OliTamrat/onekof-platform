@@ -99,20 +99,6 @@ function SignInContent() {
 
   const handleOAuthSignIn = async (provider: string) => {
     setIsLoading(true);
-    // Route all OAuth through the main domain so we only need one
-    // redirect URI registered per provider (not one per subdomain).
-    // After auth, the user lands on /select-organization on the main domain.
-    const mainDomain = typeof window !== 'undefined'
-      ? window.location.hostname.endsWith('.localhost')
-        ? 'http://localhost:3000'
-        : 'https://onekof.com'
-      : 'https://onekof.com';
-    const currentHost = typeof window !== 'undefined' ? window.location.origin : '';
-    if (currentHost !== mainDomain) {
-      // On a subdomain — redirect to main domain's signin with OAuth trigger
-      window.location.href = `${mainDomain}/api/auth/signin/${provider}?callbackUrl=${encodeURIComponent(mainDomain + '/select-organization')}`;
-      return;
-    }
     await signIn(provider, { callbackUrl: '/select-organization' });
   };
 
