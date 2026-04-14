@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  AlertCircle, Loader2, ArrowRight, Eye, EyeOff, Shield,
+  AlertCircle, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff, Shield,
   Calendar, Languages, Wallet, Brain, Kanban, BarChart3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -103,16 +103,20 @@ function SignInContent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1B1F23]">
-      {/* Language Switcher - top right */}
-      <div className="fixed top-4 right-4 z-50">
+    <div className="flex min-h-screen bg-[#0B0E11]">
+      {/* Top bar — back + language */}
+      <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
+        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+          Back to home
+        </Link>
         <LanguageSwitcher />
       </div>
 
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         {/* Ambient glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#0B3A34]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B3A34]" />
         <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
         <div className="absolute bottom-1/4 right-1/3 h-[400px] w-[400px] rounded-full bg-primary-700/[0.06] blur-[120px]" />
 
@@ -127,12 +131,12 @@ function SignInContent() {
 
           {/* Main content */}
           <div className="max-w-md">
-            <h2 className="text-4xl font-semibold leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
+            <h2 className="font-serif font-medium text-4xl leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
               {t('auth.welcomeBack')}
               <br />
-              <span className="text-white/30">{t('auth.toYourWorkspace')}</span>
+              <span className="text-white/40">{t('auth.toYourWorkspace')}</span>
             </h2>
-            <p className="mt-5 text-[16px] leading-relaxed text-white/30">
+            <p className="mt-5 text-[16px] leading-relaxed text-white/50">
               {t('auth.projectsDescription')}
             </p>
 
@@ -146,7 +150,7 @@ function SignInContent() {
               ].map((f) => (
                 <div key={f.label} className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
                   <f.icon className="h-3.5 w-3.5 text-primary-400" />
-                  <span className="text-[12px] text-white/40">{f.label}</span>
+                  <span className="text-[12px] text-white/50">{f.label}</span>
                 </div>
               ))}
             </div>
@@ -161,7 +165,7 @@ function SignInContent() {
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl font-semibold text-white">{stat.value}</p>
-                <p className="text-[12px] text-white/20">{stat.label}</p>
+                <p className="text-[12px] text-white/30">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -180,8 +184,8 @@ function SignInContent() {
           </div>
 
           <div className="mb-10">
-            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">{t('auth.signInTitle')}</h3>
-            <p className="mt-2 text-[14px] text-white/30">
+            <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.signInTitle')}</h3>
+            <p className="mt-2 text-[14px] text-white/50">
               {t('auth.noAccount')}{' '}
               <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                 {t('common.signUp')}
@@ -267,7 +271,7 @@ function SignInContent() {
             <Button
               type="submit"
               disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
-              className="group w-full rounded-xl py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
+              className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -286,7 +290,7 @@ function SignInContent() {
           {/* Divider */}
           <div className="my-8 flex items-center gap-4">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <span className="text-[11px] font-medium uppercase tracking-wider text-white/15">{t('common.or')}</span>
+            <span className="text-[11px] font-medium uppercase tracking-wider text-white/20">{t('common.or')}</span>
             <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
 
@@ -321,8 +325,8 @@ function SignInContent() {
 
           {isMainDomain && (
             <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-              <p className="text-[13px] text-white/30">
-                <span className="font-medium text-white/50">{t('auth.directAccess')}</span>{' '}
+              <p className="text-[13px] text-white/40">
+                <span className="font-medium text-white/60">{t('auth.directAccess')}</span>{' '}
                 <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
                   your-org.onekof.com
                 </code>
@@ -330,7 +334,7 @@ function SignInContent() {
             </div>
           )}
 
-          <p className="mt-10 text-center text-[12px] text-white/15">
+          <p className="mt-10 text-center text-[12px] text-white/20">
             &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
           </p>
         </div>
@@ -342,7 +346,7 @@ function SignInContent() {
 export default function SignInPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
         <Loader2 className="h-6 w-6 animate-spin text-primary-400" />
       </div>
     }>

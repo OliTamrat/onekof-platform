@@ -48,10 +48,10 @@ import { useLanguage } from '@/contexts/language-context';
 function Reveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.7, delay: delay / 1000, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.8, delay: delay / 1000, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -79,6 +79,63 @@ function Counter({ end, suffix = '', duration = 2 }: { end: number; suffix?: str
   return <span ref={ref}>0{suffix}</span>;
 }
 
+/* ─── Video Modal ─── */
+function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="relative mx-4 w-full max-w-4xl overflow-hidden rounded-2xl border border-white/[0.15] bg-[#0B0E11] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3">
+              <span className="text-[13px] font-medium text-white/70">Onekof Product Tour</span>
+              <button
+                onClick={onClose}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="relative aspect-video w-full bg-[#12161B]">
+              {/* Video placeholder — replace src with your actual video URL */}
+              <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/[0.15] bg-gradient-to-br from-primary-500/20 to-violet-500/10">
+                  <Play className="h-8 w-8 text-primary-400" />
+                </div>
+                <p className="text-[15px] font-medium text-white/60">Product video coming soon</p>
+                <p className="max-w-sm text-center text-[13px] text-white/40">
+                  We&apos;re crafting a walkthrough of Onekof&apos;s features. Check back soon.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 /* ─── Animation Variants ─── */
 const heroStagger = {
   hidden: {},
@@ -89,8 +146,6 @@ const heroChild = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
 };
-
-/* ─── Data (static parts only — translated labels are inside component) ─── */
 
 /* ─── Sub-components for product showcases ─── */
 function BudgetMockup({ t }: { t: (key: string) => string }) {
@@ -185,7 +240,7 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-[14px] font-medium text-white/70">መጋቢት 2017</span>
+        <span className="text-[14px] font-medium text-white/70">&#4632;&#4875;&#4706;&#4725; 2017</span>
         <div className="flex gap-1">
           <Button variant="ghost" size="icon" className="rounded-md p-1.5 text-white/70 transition-colors hover:bg-white/[0.05]">
             <ChevronLeft className="h-3.5 w-3.5" />
@@ -196,7 +251,7 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
         </div>
       </div>
       <div className="grid grid-cols-7 gap-0.5">
-        {['ሰ', 'ማ', 'ረ', 'ሐ', 'አ', 'ቅ', 'እ'].map((d) => (
+        {['\u1230', '\u121B', '\u1228', '\u1210', '\u12A0', '\u1245', '\u12A5'].map((d) => (
           <div key={d} className="py-2 text-center text-[11px] font-medium text-white/70">{d}</div>
         ))}
         {Array.from({ length: 30 }, (_, i) => {
@@ -221,15 +276,15 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
         })}
       </div>
       <div className="space-y-1.5">
-        <div className="flex items-center gap-2 rounded-md bg-primary-500/8 border border-primary-500/10 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-md border border-primary-500/10 bg-primary-500/[0.08] px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
           <span className="text-[11px] text-primary-300">{_t('landing.mockup.calendarEvent1')}</span>
         </div>
-        <div className="flex items-center gap-2 rounded-md bg-red-500/8 border border-red-500/10 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-md border border-red-500/10 bg-red-500/[0.08] px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-red-400" />
           <span className="text-[11px] text-red-300">{_t('landing.mockup.calendarEvent2')}</span>
         </div>
-        <div className="flex items-center gap-2 rounded-md bg-amber-500/8 border border-amber-500/10 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-md border border-amber-500/10 bg-amber-500/[0.08] px-3 py-2">
           <div className="h-1.5 w-1.5 rounded-full bg-amber-400" />
           <span className="text-[11px] text-amber-300">{_t('landing.mockup.calendarEvent3')}</span>
         </div>
@@ -243,10 +298,10 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
     <div className="space-y-4">
       <div className="space-y-2">
         {[
-          { lang: 'አማርኛ', flag: '🇪🇹', sample: 'ፕሮጀክት አስተዳደር', sublabel: 'Project Management' },
-          { lang: 'English', flag: '🇬🇧', sample: 'Create New Task', sublabel: 'Create New Task' },
-          { lang: 'Afaan Oromoo', flag: '🇪🇹', sample: 'Hojii Haaraa Uumi', sublabel: 'Create New Task' },
-          { lang: 'ትግርኛ', flag: '🇪🇹', sample: 'ሓድሽ ዕማም ፍጠር', sublabel: 'Create New Task' },
+          { lang: '\u12A0\u121B\u122D\u129B', flag: '\u{1F1EA}\u{1F1F9}', sample: '\u1355\u122E\u1300\u12AD\u1275 \u12A0\u1235\u1270\u12F3\u12F0\u122D', sublabel: 'Project Management' },
+          { lang: 'English', flag: '\u{1F1EC}\u{1F1E7}', sample: 'Create New Task', sublabel: 'Create New Task' },
+          { lang: 'Afaan Oromoo', flag: '\u{1F1EA}\u{1F1F9}', sample: 'Hojii Haaraa Uumi', sublabel: 'Create New Task' },
+          { lang: '\u1275\u130D\u122D\u129B', flag: '\u{1F1EA}\u{1F1F7}', sample: '\u1213\u12F5\u1235 \u12D5\u121B\u121D \u134D\u1325\u122D', sublabel: 'Create New Task' },
         ].map((item, i) => (
           <div
             key={item.lang}
@@ -270,20 +325,37 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <LayoutDashboard className="h-3.5 w-3.5 text-white/70" />
-            <span className="text-[12px] text-white/70">ዳሽቦርድ</span>
+            <span className="text-[12px] text-white/70">{'\u12F3\u123D\u1266\u122D\u12F5'}</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-primary-500/10 px-3 py-2">
             <Kanban className="h-3.5 w-3.5 text-primary-400" />
-            <span className="text-[12px] font-medium text-primary-400">ፕሮጀክቶች</span>
+            <span className="text-[12px] font-medium text-primary-400">{'\u1355\u122E\u1300\u12AD\u1276\u127D'}</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <Calendar className="h-3.5 w-3.5 text-white/70" />
-            <span className="text-[12px] text-white/70">የኢትዮጵያ ቀን መቁጠሪያ</span>
+            <span className="text-[12px] text-white/70">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u1240\u1295 \u1218\u1281\u1320\u122A\u12EB'}</span>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+/* ─── Grain Overlay ─── */
+function GrainOverlay() {
+  return (
+    <div
+      className="pointer-events-none fixed inset-0 z-[100]"
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")`,
+      }}
+    />
+  );
+}
+
+/* ─── Section Divider ─── */
+function SectionDivider() {
+  return <div className="mx-auto h-px max-w-6xl bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />;
 }
 
 /* ─── MAIN PAGE ─── */
@@ -294,6 +366,7 @@ export default function HomePage() {
   const [activeShowcase, setActiveShowcase] = useState(0);
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('yearly');
   const [heroTyped, setHeroTyped] = useState('');
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
@@ -409,7 +482,10 @@ export default function HomePage() {
   const showcaseMockups = [<BudgetMockup t={t} />, <AIDocsMockup t={t} />, <CalendarMockup t={t} />, <LanguageMockup t={t} />];
 
   return (
-    <div className="min-h-screen bg-[#1B1F23] font-sans antialiased text-white selection:bg-primary-500/20">
+    <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white/85 selection:bg-primary-500/20">
+      <GrainOverlay />
+      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
+
       {/* ═══ NAVBAR ═══ */}
       <motion.nav
         initial={{ y: -100 }}
@@ -417,16 +493,16 @@ export default function HomePage() {
         transition={{ type: 'spring', stiffness: 200, damping: 30 }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'border-b border-white/[0.12] bg-[#1B1F23]/70 backdrop-blur-2xl backdrop-saturate-150'
+            ? 'border-b border-white/[0.08] bg-[#0B0E11]/80 backdrop-blur-2xl backdrop-saturate-150'
             : 'bg-transparent'
         }`}
       >
-        <div className="mx-auto flex h-[60px] max-w-6xl items-center justify-between px-6">
+        <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center gap-2.5">
-            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg transition-shadow group-hover:shadow-xl">
+            <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg transition-shadow group-hover:shadow-xl">
               <span className="text-sm font-black text-white">O</span>
             </div>
-            <span className="text-[15px] font-semibold tracking-[-0.01em]">Onekof</span>
+            <span className="text-[16px] font-bold tracking-[-0.01em]">Onekof</span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -434,7 +510,7 @@ export default function HomePage() {
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-3.5 py-2 text-[13px] text-white/80 transition-all hover:bg-white/[0.04] hover:text-white/80"
+                className="rounded-lg px-4 py-2 text-[14px] font-medium text-white/50 tracking-[0.02em] transition-all hover:text-white"
               >
                 {link.label}
               </a>
@@ -445,13 +521,13 @@ export default function HomePage() {
             <LanguageSwitcher />
             <Link
               href="/auth/signin"
-              className="rounded-lg px-3.5 py-2 text-[13px] text-white/80 transition-colors hover:text-white/80"
+              className="rounded-full border border-white/[0.08] px-4 py-2 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"
             >
               {t('common.signIn')}
             </Link>
             <Link
               href="/auth/signup"
-              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-5 py-2 text-[13px] font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:brightness-110"
+              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-400 px-5 py-2 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/30 hover:brightness-110"
             >
               <span className="relative z-10 flex items-center gap-1.5">
                 {t('common.getStarted')}
@@ -473,7 +549,7 @@ export default function HomePage() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="border-t border-white/[0.12] bg-[#1B1F23]/98 backdrop-blur-2xl md:hidden overflow-hidden"
+              className="overflow-hidden border-t border-white/[0.08] bg-[#0B0E11]/98 backdrop-blur-2xl md:hidden"
             >
               <div className="space-y-1 px-6 py-4">
                 {navLinks.map((link) => (
@@ -486,9 +562,9 @@ export default function HomePage() {
                     {link.label}
                   </a>
                 ))}
-                <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.12] pt-4">
+                <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.08] pt-4">
                   <Link href="/auth/signin" className="py-2.5 text-[15px] text-white/70">{t('common.signIn')}</Link>
-                  <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
+                  <Link href="/auth/signup" className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-400 px-4 py-2.5 text-center text-[15px] font-semibold text-white shadow-lg">
                     {t('common.getStarted')}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -501,90 +577,205 @@ export default function HomePage() {
 
       {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden">
-        {/* Ambient glow */}
+        {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[800px] w-[1200px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
-          <div className="absolute left-1/4 top-40 h-[400px] w-[400px] rounded-full bg-purple-500/[0.04] blur-[120px]" />
-          <div className="absolute right-1/4 top-60 h-[300px] w-[300px] rounded-full bg-primary-500/[0.04] blur-[100px]" />
-          {/* Grid */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
-              backgroundSize: '80px 80px',
-            }}
-          />
+          <div className="absolute -right-[15%] -top-[20%] h-[700px] w-[700px] rounded-full bg-primary-500/[0.08] blur-[120px]" />
+          <div className="absolute -left-[10%] bottom-[10%] h-[500px] w-[500px] rounded-full bg-violet-500/[0.05] blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-6 pb-20 pt-32 text-center sm:pt-40 lg:pt-48">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={heroStagger}
-          >
-            <motion.div variants={heroChild}>
-              <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/[0.15] bg-white/[0.03] px-4 py-2 backdrop-blur-sm transition-all hover:border-white/[0.12] hover:bg-white/[0.05]">
-                <div className="relative h-2 w-2">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
-                  <div className="relative h-2 w-2 rounded-full bg-emerald-400" />
+        <div className="relative mx-auto max-w-[1200px] px-6 pb-8 pt-32 sm:pt-40 lg:pt-44">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            {/* LEFT — Text content */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={heroStagger}
+            >
+              <motion.div variants={heroChild}>
+                <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-4 py-2">
+                  <div className="relative h-2 w-2">
+                    <div className="absolute inset-0 animate-ping rounded-full bg-primary-400/60" />
+                    <div className="relative h-2 w-2 rounded-full bg-primary-400" />
+                  </div>
+                  <span className="text-[13px] font-medium text-[#2BB5A2]">{t('landing.hero.badge')}</span>
                 </div>
-                <span className="text-[13px] text-white/70">{t('landing.hero.badge')}</span>
-                <ArrowRight className="h-3 w-3 text-white/70" />
-              </div>
-            </motion.div>
+              </motion.div>
 
-            <motion.div variants={heroChild}>
-              <h1 className="mx-auto max-w-4xl font-display text-[clamp(2rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.04em]">
-                {t('landing.hero.headingPrefix')}
-                <br />
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-200 bg-clip-text text-transparent">
-                    {heroTyped}
+              <motion.div variants={heroChild}>
+                <h1 className="font-serif text-[clamp(2.5rem,5vw,4.25rem)] font-medium leading-[1.08] tracking-[-0.02em]">
+                  {t('landing.hero.headingPrefix')}
+                  <br />
+                  <span className="relative inline-block">
+                    <span className="bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
+                      {heroTyped}
+                    </span>
+                    <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
                   </span>
-                  <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
-                </span>
-              </h1>
-            </motion.div>
+                </h1>
+              </motion.div>
 
-            <motion.div variants={heroChild}>
-              <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/75 sm:text-[18px]">
-                {t('auth.projectsDescription')}
-              </p>
-            </motion.div>
+              <motion.div variants={heroChild}>
+                <p className="mt-6 max-w-[480px] text-[17px] leading-[1.7] text-white/50">
+                  {t('auth.projectsDescription')}
+                </p>
+              </motion.div>
 
-            <motion.div variants={heroChild}>
-              <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link
-                  href="/auth/signup"
-                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-7 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98]"
-                >
-                  <span className="relative z-10 flex items-center gap-2.5">
+              <motion.div variants={heroChild}>
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link
+                    href="/auth/signup"
+                    className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[14px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
+                  >
                     {t('landing.hero.getStartedFree')}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 transition-opacity group-hover:opacity-100" />
-                </Link>
-                <a
-                  href="#product"
-                  className="group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/80"
-                >
-                  <Play className="h-3.5 w-3.5 text-primary-400" />
-                  {t('landing.hero.watchDemo')}
-                </a>
-              </div>
+                  </Link>
+                  <button
+                    onClick={() => setVideoOpen(true)}
+                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"
+                  >
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 transition-colors group-hover:bg-primary-500/20">
+                      <Play className="h-3 w-3 text-primary-400" />
+                    </div>
+                    {t('landing.hero.watchDemo')}
+                  </button>
+                </div>
+              </motion.div>
+
+              <motion.div variants={heroChild}>
+                <div className="mt-10 flex items-center gap-4">
+                  <div className="flex -space-x-2">
+                    {[
+                      { bg: 'bg-primary-500', initials: 'OT' },
+                      { bg: 'bg-violet-500', initials: 'AB' },
+                      { bg: 'bg-amber-500', initials: 'FH' },
+                      { bg: 'bg-rose-500', initials: 'MK' },
+                    ].map((a) => (
+                      <div key={a.initials} className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#0B0E11] ${a.bg} text-[10px] font-bold text-white`}>
+                        {a.initials}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-[13px] text-white/50">
+                    <strong className="text-white">500+ teams</strong> already building with Onekof
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
 
-            <motion.div variants={heroChild}>
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-                {[t('landing.hero.freeForever'), t('landing.hero.noCreditCard'), t('landing.hero.setupMinutes')].map((text) => (
-                  <span key={text} className="flex items-center gap-1.5 text-[13px] text-white/70">
-                    <Check className="h-3.5 w-3.5 text-white/70" />
-                    {text}
-                  </span>
-                ))}
+            {/* RIGHT — Feature cards visual */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="relative hidden lg:block"
+            >
+              {/* Glow behind cards */}
+              <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/[0.06] blur-[100px]" />
+
+              <div className="relative space-y-4">
+                {/* Top row — 2 cards */}
+                <div className="flex gap-4">
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+                  >
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 border border-primary-500/15">
+                      <Kanban className="h-5 w-5 text-[#2BB5A2]" />
+                    </div>
+                    <p className="text-[14px] font-semibold text-white/85">Kanban Boards</p>
+                    <p className="mt-1 text-[12px] text-white/40">Drag, drop, ship</p>
+                    <div className="mt-3 flex gap-1.5">
+                      <div className="h-1.5 flex-1 rounded-full bg-primary-500" />
+                      <div className="h-1.5 flex-1 rounded-full bg-amber-500/60" />
+                      <div className="h-1.5 flex-1 rounded-full bg-white/[0.06]" />
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+                  >
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 border border-violet-500/15">
+                      <Brain className="h-5 w-5 text-violet-400" />
+                    </div>
+                    <p className="text-[14px] font-semibold text-white/85">AI Documents</p>
+                    <p className="mt-1 text-[12px] text-white/40">Smart summaries</p>
+                    <div className="mt-3 space-y-1.5">
+                      <div className="h-2 w-3/4 rounded bg-white/[0.04]" />
+                      <div className="h-2 w-full rounded bg-white/[0.04]" />
+                      <div className="h-2 w-1/2 rounded bg-white/[0.04]" />
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Middle — wide card */}
+                <motion.div
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                  className="rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/15">
+                      <Wallet className="h-5 w-5 text-amber-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[14px] font-semibold text-white/85">ETB Budget Tracking</p>
+                      <p className="text-[12px] text-white/40">377,000 of 650,000 ETB spent</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">58%</span>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div className="h-full w-[58%] rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2]" />
+                  </div>
+                </motion.div>
+
+                {/* Bottom row — 2 cards */}
+                <div className="flex gap-4">
+                  <motion.div
+                    animate={{ y: [0, -7, 0] }}
+                    transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+                  >
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/15">
+                      <Calendar className="h-5 w-5 text-rose-400" />
+                    </div>
+                    <p className="text-[14px] font-semibold text-white/85">Ethiopian Calendar</p>
+                    <p className="mt-1 text-[12px] text-white/40">{'\u1218\u130B\u1262\u1275'} 6, 2018</p>
+                    <div className="mt-2 grid grid-cols-7 gap-0.5">
+                      {Array.from({ length: 14 }, (_, i) => (
+                        <div key={i} className={`h-4 rounded text-center text-[8px] leading-4 ${i === 5 ? 'bg-primary-500 text-white font-bold' : i === 10 ? 'bg-violet-500/20 text-violet-300' : 'text-white/30'}`}>
+                          {i + 1}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+                  >
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 border border-primary-500/15">
+                      <Languages className="h-5 w-5 text-[#2BB5A2]" />
+                    </div>
+                    <p className="text-[14px] font-semibold text-white/85">5 Languages</p>
+                    <div className="mt-2 space-y-1">
+                      {[
+                        { flag: '\u{1F1EA}\u{1F1F9}', name: '\u12A0\u121B\u122D\u129B', active: true },
+                        { flag: '\u{1F1EC}\u{1F1E7}', name: 'English', active: false },
+                        { flag: '\u{1F1EA}\u{1F1F9}', name: 'Oromoo', active: false },
+                      ].map((lang) => (
+                        <div key={lang.name} className={`flex items-center gap-2 rounded-lg px-2 py-1 text-[11px] ${lang.active ? 'bg-primary-500/10 text-[#2BB5A2] font-medium' : 'text-white/40'}`}>
+                          <span className="text-[10px]">{lang.flag}</span>
+                          {lang.name}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ─── Dashboard Preview ─── */}
@@ -593,17 +784,19 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="relative mx-auto max-w-6xl px-6 pb-28">
-            <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.08] via-primary-700/[0.04] to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.15] bg-[#22272B]/60 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04]">
+          <div className="relative mx-auto max-w-[1200px] px-6 pb-28">
+            <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.06] via-primary-700/[0.03] to-transparent blur-3xl" />
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12161B]/80 shadow-2xl shadow-black/60 ring-1 ring-white/[0.04]"
+              style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
+            >
               {/* Browser Chrome */}
-              <div className="flex items-center gap-2 border-b border-white/[0.12] bg-[#22272B]/80 px-4 py-3">
+              <div className="flex items-center gap-2 border-b border-white/[0.08] bg-[#12161B] px-4 py-3">
                 <div className="flex gap-1.5">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/80" />
                 </div>
-                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/70 sm:w-72">
+                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/40 sm:w-72">
                   <Shield className="mr-1.5 h-3 w-3" />
                   app.onekof.com/projects/sprint-14
                 </div>
@@ -612,29 +805,29 @@ export default function HomePage() {
               {/* Dashboard Content */}
               <div className="flex min-h-[460px] sm:min-h-[520px]">
                 {/* Sidebar */}
-                <div className="hidden w-56 border-r border-white/[0.12] bg-[#1B1F23]/60 p-4 lg:block">
+                <div className="hidden w-56 border-r border-white/[0.08] bg-[#0B0E11]/60 p-4 lg:block">
                   <div className="mb-6 flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-[10px] font-bold shadow-sm">T</div>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-violet-600 text-[10px] font-bold shadow-sm">T</div>
                     <div>
                       <span className="text-[12px] font-medium text-white/70">TechEth</span>
-                      <p className="text-[10px] text-white/70">Professional</p>
+                      <p className="text-[10px] text-white/40">Professional</p>
                     </div>
                   </div>
                   {[
-                    { icon: LayoutDashboard, label: 'ዳሽቦርድ', active: false },
-                    { icon: Kanban, label: 'ፕሮጀክቶች', active: true },
-                    { icon: Calendar, label: 'ቀን መቁጠሪያ', active: false },
-                    { icon: Users, label: 'ቡድን', active: false },
-                    { icon: Wallet, label: 'በጀት', active: false },
-                    { icon: FileText, label: 'ሰነዶች', active: false },
-                    { icon: BarChart3, label: 'ሪፖርቶች', active: false },
+                    { icon: LayoutDashboard, label: '\u12F3\u123D\u1266\u122D\u12F5', active: false },
+                    { icon: Kanban, label: '\u1355\u122E\u1300\u12AD\u1276\u127D', active: true },
+                    { icon: Calendar, label: '\u1240\u1295 \u1218\u1281\u1320\u122A\u12EB', active: false },
+                    { icon: Users, label: '\u1261\u12F5\u1295', active: false },
+                    { icon: Wallet, label: '\u1260\u1300\u1275', active: false },
+                    { icon: FileText, label: '\u1230\u1290\u12F6\u127D', active: false },
+                    { icon: BarChart3, label: '\u122A\u1356\u122D\u1276\u127D', active: false },
                   ].map((item) => (
                     <div
                       key={item.label}
                       className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-colors ${
                         item.active
                           ? 'bg-primary-500/10 font-medium text-primary-400'
-                          : 'text-white/70 hover:bg-white/[0.03] hover:text-white/70'
+                          : 'text-white/40 hover:bg-white/[0.03] hover:text-white/60'
                       }`}
                     >
                       <item.icon className="h-3.5 w-3.5" />
@@ -647,8 +840,8 @@ export default function HomePage() {
                 <div className="flex-1 p-5 sm:p-6">
                   <div className="mb-5 flex items-center justify-between">
                     <div>
-                      <h3 className="text-[14px] font-medium text-white/80">Sprint 14 — Website Redesign</h3>
-                      <p className="mt-0.5 text-[11px] text-white/70">መጋቢት 1 – 15, 2017 E.C.</p>
+                      <h3 className="text-[14px] font-medium text-white/80">Sprint 14 &mdash; Website Redesign</h3>
+                      <p className="mt-0.5 text-[11px] text-white/40">{'\u1218\u130B\u1262\u1275'} 1 &ndash; 15, 2017 E.C.</p>
                     </div>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5">
                       {[
@@ -660,7 +853,7 @@ export default function HomePage() {
                         <div
                           key={v.label}
                           className={`rounded-lg px-2 py-1 text-[10px] transition-colors sm:px-3 sm:py-1.5 sm:text-[11px] ${
-                            v.active ? 'bg-white/[0.08] font-medium text-white/70' : 'text-white/70 hover:bg-white/[0.04]'
+                            v.active ? 'bg-white/[0.06] font-medium text-white/70' : 'text-white/40 hover:bg-white/[0.04]'
                           }`}
                         >
                           {v.label}
@@ -677,8 +870,8 @@ export default function HomePage() {
                       { label: t('landing.preview.completed'), value: '18', color: 'text-emerald-400' },
                       { label: t('landing.preview.budgetUsed'), value: '58%', color: 'text-amber-400' },
                     ].map((s) => (
-                      <div key={s.label} className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
-                        <p className="text-[10px] text-white/70">{s.label}</p>
+                      <div key={s.label} className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
+                        <p className="text-[10px] text-white/40">{s.label}</p>
                         <p className={`text-[16px] font-semibold ${s.color}`}>{s.value}</p>
                       </div>
                     ))}
@@ -706,15 +899,15 @@ export default function HomePage() {
                       <div key={col.label}>
                         <div className="mb-2.5 flex items-center gap-2">
                           <div className={`h-2 w-2 rounded-full ${col.dot}`} />
-                          <span className="text-[11px] font-medium text-white/80">{col.label}</span>
-                          <span className="ml-auto text-[10px] text-white/70">{col.count}</span>
+                          <span className="text-[11px] font-medium text-white/60">{col.label}</span>
+                          <span className="ml-auto text-[10px] text-white/30">{col.count}</span>
                         </div>
                         <div className="space-y-2">
                           {col.cards.map((card) => (
-                            <div key={card.title} className="rounded-lg border border-white/[0.12] bg-white/[0.025] p-3 transition-all hover:border-white/[0.2] hover:bg-white/[0.04]">
-                              <p className="text-[11px] leading-snug text-white/80">{card.title}</p>
+                            <div key={card.title} className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-3 transition-all hover:border-white/[0.15] hover:bg-white/[0.04]">
+                              <p className="text-[11px] leading-snug text-white/70">{card.title}</p>
                               <div className="mt-2.5 flex items-center justify-between">
-                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/70">{card.tag}</span>
+                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/50">{card.tag}</span>
                                 <div className={`h-1.5 w-1.5 rounded-full ${
                                   card.priority === 'high' ? 'bg-red-400' : card.priority === 'medium' ? 'bg-amber-400' : 'bg-white/20'
                                 }`} />
@@ -732,77 +925,64 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ═══ TRUSTED BY ═══ */}
-      <section className="border-y border-white/[0.12] py-14">
-        <div className="mx-auto max-w-6xl px-6">
-          <p className="mb-8 text-center text-[12px] font-medium uppercase tracking-widest text-white/70">{t('landing.trustedBy')}</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-14">
-            {[
-              'TechEth Solutions', 'Addis Development', 'BuildEth Construction',
-              'HabeshaFin', 'EthioCloud', 'NileTech Systems',
-            ].map((name) => (
-              <span key={name} className="text-[14px] font-medium tracking-wide text-white/[0.1] transition-colors hover:text-white/[0.2]">
-                {name}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* spacing between hero and features */}
 
       {/* ═══ WHY ONEKOF ═══ */}
-      <section className="py-16 sm:py-28 lg:py-36">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section className="py-20 sm:py-32 lg:py-40" id="features">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-20">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.whyOnekof.label')}</p>
-              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
-                {t('landing.whyOnekof.heading1')}
-                <br />
-                <span className="text-white/75">{t('landing.whyOnekof.heading2')}</span>
+            <div className="mx-auto mb-16 max-w-3xl text-center sm:mb-20">
+              <div className="mb-5 inline-flex items-center gap-2">
+                <span className="h-px w-6 bg-primary-500" />
+                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.whyOnekof.label')}</span>
+              </div>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
+                {t('landing.whyOnekof.heading1')}{' '}
+                <span className="font-serif italic text-[#2BB5A2]">{t('landing.whyOnekof.heading2')}</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/70">
+              <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
                 {t('landing.whyOnekof.subtitle')}
               </p>
             </div>
           </Reveal>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: Calendar,
                 title: t('landing.whyOnekof.ethiopianCalendar'),
                 desc: t('landing.whyOnekof.ethiopianCalendarDesc'),
-                gradient: 'from-primary-500/20 to-primary-700/20',
+                iconBg: 'bg-primary-500/10 border-primary-500/15',
               },
               {
                 icon: Languages,
                 title: t('landing.whyOnekof.fourLanguages'),
                 desc: t('landing.whyOnekof.fourLanguagesDesc'),
-                gradient: 'from-violet-500/20 to-pink-500/20',
+                iconBg: 'bg-violet-500/10 border-violet-500/15',
               },
               {
                 icon: Wallet,
                 title: t('landing.whyOnekof.etbBudgetTracking'),
                 desc: t('landing.whyOnekof.etbBudgetTrackingDesc'),
-                gradient: 'from-emerald-500/20 to-teal-500/20',
+                iconBg: 'bg-amber-500/10 border-amber-500/15',
               },
               {
                 icon: Brain,
                 title: t('landing.whyOnekof.aiDocProcessor'),
                 desc: t('landing.whyOnekof.aiDocProcessorDesc'),
-                gradient: 'from-amber-500/20 to-orange-500/20',
+                iconBg: 'bg-violet-500/10 border-violet-500/15',
               },
               {
                 icon: Workflow,
                 title: t('landing.whyOnekof.customWorkflows'),
                 desc: t('landing.whyOnekof.customWorkflowsDesc'),
-                gradient: 'from-cyan-500/20 to-blue-500/20',
+                iconBg: 'bg-primary-500/10 border-primary-500/15',
               },
               {
                 icon: Shield,
                 title: t('landing.whyOnekof.enterpriseSecurity'),
                 desc: t('landing.whyOnekof.enterpriseSecurityDesc'),
-                gradient: 'from-slate-500/20 to-gray-500/20',
+                iconBg: 'bg-amber-500/10 border-amber-500/15',
               },
             ].map((feature, index) => (
               <motion.div
@@ -810,17 +990,20 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                transition={{ delay: index * 0.08, duration: 0.6 }}
+                whileHover={{ y: -4, transition: { duration: 0.25 } }}
               >
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] p-5 transition-all duration-500 hover:border-primary-500/40 hover:bg-white/[0.06] sm:p-7">
-                  <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100`} />
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 transition-all duration-400 hover:border-primary-500/20 hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)]"
+                  style={{ transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)' }}
+                >
+                  {/* Top glow line */}
+                  <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgba(28,140,125,0.25)] to-transparent opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
                   <div className="relative">
-                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.15] bg-white/[0.04] transition-colors group-hover:border-primary-500/20 group-hover:bg-primary-500/10">
-                      <feature.icon className="h-5 w-5 text-white/80 transition-colors group-hover:text-primary-400" />
+                    <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl border ${feature.iconBg}`}>
+                      <feature.icon className="h-5 w-5 text-white/85 transition-colors group-hover:text-primary-400" />
                     </div>
-                    <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                    <p className="text-[14px] leading-relaxed text-white/70">{feature.desc}</p>
+                    <h3 className="mb-2.5 text-[20px] font-semibold leading-[1.35]">{feature.title}</h3>
+                    <p className="text-[14px] leading-[1.6] text-white/50">{feature.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -829,16 +1012,84 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
+      {/* ═══ ANALYTICS HIGHLIGHT ═══ */}
+      <section className="py-20 sm:py-32">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <Reveal>
+            <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-gradient-to-br from-[#12161B] to-[#181D23] p-8 sm:p-12 lg:p-14">
+              <div className="absolute -right-[20%] -top-[50%] h-[400px] w-[400px] rounded-full bg-primary-500/[0.06] blur-[80px]" />
+              <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+                <div>
+                  <div className="mb-5 inline-flex items-center gap-2">
+                    <span className="h-px w-6 bg-primary-500" />
+                    <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">Analytics</span>
+                  </div>
+                  <h2 className="mb-4 font-serif text-[clamp(2rem,3.5vw,2.75rem)] font-medium leading-[1.15]">
+                    See the full picture, <span className="font-serif italic text-[#2BB5A2]">instantly</span>
+                  </h2>
+                  <p className="mb-6 max-w-md text-[15px] leading-[1.65] text-white/50">
+                    Real-time dashboards that show team velocity, budget burn rate, sprint health, and
+                    project progress — all from data your team is already creating.
+                  </p>
+                  <Link
+                    href="/auth/signup"
+                    className="group inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white/60 transition-all hover:border-primary-500/30 hover:text-white"
+                  >
+                    Explore analytics
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </div>
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0B0E11] p-5">
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { number: '40%', label: 'Faster delivery' },
+                      { number: '99.9%', label: 'Uptime SLA' },
+                      { number: '12k', label: 'Issues resolved' },
+                      { number: '5', label: 'Languages' },
+                    ].map((s) => (
+                      <div key={s.label} className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                        <p className="font-serif text-[2rem] font-semibold text-[#2BB5A2]">{s.number}</p>
+                        <p className="mt-1 text-[12px] text-white/50">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="relative mt-3 h-20 overflow-hidden rounded-xl border border-white/[0.08] bg-gradient-to-t from-primary-500/[0.06] to-transparent">
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-[70%] bg-gradient-to-b from-primary-500/[0.15] to-transparent"
+                      style={{ clipPath: 'polygon(0% 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 20%, 60% 35%, 70% 15%, 80% 25%, 90% 5%, 100% 10%, 100% 100%, 0% 100%)' }}
+                    />
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-[70%]"
+                      style={{
+                        clipPath: 'polygon(0% 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 20%, 60% 35%, 70% 15%, 80% 25%, 90% 5%, 100% 10%)',
+                        borderTop: '2px solid rgba(28,140,125,0.5)',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <SectionDivider />
+
       {/* ═══ PRODUCT SHOWCASE — Interactive Tabs ═══ */}
-      <section id="product" className="border-y border-white/[0.12] py-16 sm:py-28 lg:py-36">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section id="product" className="py-20 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.showcase.label')}</p>
-              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-[2.75rem]">
+              <div className="mb-5 inline-flex items-center gap-2">
+                <span className="h-px w-6 bg-primary-500" />
+                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.showcase.label')}</span>
+              </div>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
                 {t('landing.showcase.heading')}
               </h2>
-              <p className="mt-4 text-[16px] text-white/70">
+              <p className="mx-auto mt-4 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
                 {t('landing.showcase.subtitle')}
               </p>
             </div>
@@ -846,21 +1097,21 @@ export default function HomePage() {
 
           <Reveal delay={100}>
             <div className="mx-auto max-w-5xl">
-              {/* Tab buttons */}
+              {/* Tab pills */}
               <div className="mb-8 flex flex-wrap justify-center gap-2">
                 {showcaseTabs.map((tab, i) => (
-                  <Button
+                  <button
                     key={tab.id}
                     onClick={() => setActiveShowcase(i)}
-                    className={`group flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium transition-all duration-300 sm:gap-2 sm:px-5 sm:py-3 sm:text-[13px] ${
+                    className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
                       activeShowcase === i
-                        ? 'bg-white/[0.08] text-white shadow-lg shadow-primary-500/5 ring-1 ring-white/[0.1]'
-                        : 'text-white/70 hover:bg-white/[0.04] hover:text-white/70'
+                        ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                        : 'border border-white/[0.08] text-white/50 hover:border-white/[0.15] hover:text-white'
                     }`}
                   >
-                    <tab.icon className={`h-4 w-4 transition-colors ${activeShowcase === i ? 'text-primary-400' : 'text-white/70'}`} />
+                    <tab.icon className={`h-4 w-4 ${activeShowcase === i ? 'text-white' : 'text-white/50'}`} />
                     {tab.label}
-                  </Button>
+                  </button>
                 ))}
               </div>
 
@@ -878,7 +1129,7 @@ export default function HomePage() {
               </div>
 
               {/* Content */}
-              <div className="grid items-start gap-6 sm:gap-8 lg:grid-cols-2">
+              <div className="grid items-center gap-8 rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:grid-cols-2">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${activeShowcase}`}
@@ -891,15 +1142,15 @@ export default function HomePage() {
                     <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-3 py-1">
                       <span className="text-[11px] font-medium text-primary-400">{showcaseTabs[activeShowcase].tagline}</span>
                     </div>
-                    <h3 className="mb-3 font-display text-2xl font-semibold tracking-[-0.03em] sm:text-[1.75rem]">
+                    <h3 className="mb-3 font-serif text-2xl font-medium tracking-[-0.01em] sm:text-[1.75rem]">
                       {showcaseTabs[activeShowcase].title}
                     </h3>
-                    <p className="mb-6 text-[15px] leading-relaxed text-white/75">
+                    <p className="mb-6 text-[15px] leading-[1.65] text-white/50">
                       {showcaseTabs[activeShowcase].desc}
                     </p>
-                    <ul className="mb-8 space-y-3">
+                    <ul className="mb-8 space-y-4">
                       {showcaseTabs[activeShowcase].features.map((f) => (
-                        <li key={f} className="flex items-start gap-3 text-[14px] text-white/70">
+                        <li key={f} className="flex items-start gap-3 text-[15px] text-white/50">
                           <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
                             <Check className="h-3 w-3 text-primary-400" />
                           </div>
@@ -926,7 +1177,7 @@ export default function HomePage() {
                     transition={{ duration: 0.4, ease: 'easeInOut' }}
                     className="order-1 lg:order-2"
                   >
-                    <div className="rounded-2xl border border-white/[0.15] bg-[#22272B]/50 p-5 ring-1 ring-white/[0.04] transition-all">
+                    <div className="rounded-xl border border-white/[0.08] bg-[#0B0E11] p-6 transition-all">
                       {showcaseMockups[activeShowcase]}
                     </div>
                   </motion.div>
@@ -937,21 +1188,25 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ═══ FEATURES GRID ═══ */}
-      <section id="features" className="py-16 sm:py-28 lg:py-36">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section className="py-20 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.features.label')}</p>
-              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                {t('landing.features.heading1')}
-                <br />
-                <span className="text-white/75">{t('landing.features.heading2')}</span>
+              <div className="mb-5 inline-flex items-center gap-2">
+                <span className="h-px w-6 bg-primary-500" />
+                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.features.label')}</span>
+              </div>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
+                {t('landing.features.heading1')}{' '}
+                <span className="font-serif italic text-white/60">{t('landing.features.heading2')}</span>
               </h2>
             </div>
           </Reveal>
 
-          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Kanban, title: t('landing.features.kanban'), desc: t('landing.features.kanbanDesc') },
               { icon: GanttChart, title: t('landing.features.timeline'), desc: t('landing.features.timelineDesc') },
@@ -968,14 +1223,14 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.08, duration: 0.5 }}
-                whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
+                transition={{ delay: index * 0.06, duration: 0.5 }}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="group"
               >
-                <div className="border border-white/[0.03] bg-[#1B1F23] p-5 transition-all duration-500 hover:bg-white/[0.025] sm:p-7 h-full">
-                  <feature.icon className="mb-4 h-5 w-5 text-white/70 transition-colors duration-300 group-hover:text-primary-400" />
-                  <h3 className="mb-2 text-[15px] font-medium">{feature.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-white/70">{feature.desc}</p>
+                <div className="h-full border border-white/[0.03] bg-[#0B0E11] p-6 transition-all duration-500 hover:bg-white/[0.02] sm:p-7">
+                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-primary-400" />
+                  <h3 className="mb-2 text-[15px] font-semibold text-white/85">{feature.title}</h3>
+                  <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -984,28 +1239,27 @@ export default function HomePage() {
       </section>
 
       {/* ═══ STATS ═══ */}
-      <section className="border-y border-white/[0.12]">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid grid-cols-2 divide-x divide-white/[0.06] lg:grid-cols-4">
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
-              { value: 500, suffix: '+', label: t('landing.stats.teamsOnboarded'), icon: Building2 },
-              { value: 40, suffix: '%', label: t('landing.stats.fasterDelivery'), icon: TrendingUp },
-              { value: 99, suffix: '.9%', label: t('landing.stats.platformUptime'), icon: Timer },
-              { value: 4, suffix: '', label: t('landing.stats.languagesSupported'), icon: Globe },
+              { value: 500, suffix: '+', label: t('landing.stats.teamsOnboarded') },
+              { value: 40, suffix: '%', label: t('landing.stats.fasterDelivery') },
+              { value: 99, suffix: '.9%', label: t('landing.stats.platformUptime') },
+              { value: 4, suffix: '', label: t('landing.stats.languagesSupported') },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ type: 'spring', stiffness: 200, damping: 20, delay: index * 0.15 }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
               >
-                <div className="group py-8 text-center transition-colors hover:bg-white/[0.02] sm:py-14 lg:py-16">
-                  <stat.icon className="mx-auto mb-4 h-5 w-5 text-white/70 transition-colors group-hover:text-primary-400/50" />
-                  <div className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#12161B] px-6 py-10 text-center">
+                  <div className="font-serif text-[clamp(2rem,3vw,2.75rem)] font-semibold text-[#2BB5A2]">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="mt-2 text-[13px] text-white/70">{stat.label}</p>
+                  <p className="mt-1.5 text-[13px] text-white/50">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
@@ -1014,20 +1268,22 @@ export default function HomePage() {
       </section>
 
       {/* ═══ TESTIMONIALS ═══ */}
-      <section id="about" className="py-16 sm:py-28 lg:py-36">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section id="about" className="py-20 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-16">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.testimonials.label')}</p>
-              <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-                {t('landing.testimonials.heading1')}
-                <br />
-                <span className="text-white/75">{t('landing.testimonials.heading2')}</span>
+            <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-16">
+              <div className="mb-5 inline-flex items-center gap-2">
+                <span className="h-px w-6 bg-primary-500" />
+                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.testimonials.label')}</span>
+              </div>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
+                {t('landing.testimonials.heading1')}{' '}
+                <span className="font-serif italic text-white/60">{t('landing.testimonials.heading2')}</span>
               </h2>
             </div>
           </Reveal>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 quote: t('landing.testimonials.quote1'),
@@ -1067,140 +1323,136 @@ export default function HomePage() {
               },
             ].map((testimonial, i) => (
               <Reveal key={testimonial.name} delay={i * 60}>
-                <motion.div
-                  whileHover={{ scale: 1.03, rotate: 0.5 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                >
-                  <div className="group h-full rounded-2xl border border-white/[0.12] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04]">
-                    <div className="mb-4 flex gap-1">
-                      {Array.from({ length: 5 }).map((_, j) => (
-                        <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
-                      ))}
+                <div className="group h-full rounded-2xl border border-white/[0.08] bg-[#12161B] p-6 transition-all duration-500 hover:border-white/[0.15]">
+                  <div className="mb-4 flex gap-1">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
+                    ))}
+                  </div>
+                  <p className="mb-6 text-[14px] leading-relaxed text-white/50">
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
+                      {testimonial.name.split(' ').map(n => n[0]).join('')}
                     </div>
-                    <p className="mb-6 text-[14px] leading-relaxed text-white/80">
-                      &ldquo;{testimonial.quote}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div>
-                        <p className="text-[13px] font-medium text-white/70">{testimonial.name}</p>
-                        <p className="text-[12px] text-white/70">{testimonial.role}</p>
-                      </div>
+                    <div>
+                      <p className="text-[13px] font-medium text-white/85">{testimonial.name}</p>
+                      <p className="text-[12px] text-white/50">{testimonial.role}</p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ═══ PRICING ═══ */}
-      <section id="pricing" className="border-t border-white/[0.12] py-16 sm:py-28 lg:py-36">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section id="pricing" className="py-20 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="mb-4 text-[13px] font-medium uppercase tracking-widest text-primary-400">{t('landing.pricing.label')}</p>
-              <h2 className="mb-4 font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
+              <div className="mb-5 inline-flex items-center gap-2">
+                <span className="h-px w-6 bg-primary-500" />
+                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.pricing.label')}</span>
+              </div>
+              <h2 className="mb-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                 {t('landing.pricing.heading')}
               </h2>
-              <p className="text-[16px] text-white/70">
+              <p className="text-[18px] leading-[1.7] text-white/50">
                 {t('landing.pricing.subtitle')}
               </p>
 
-              <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.15] bg-white/[0.03] p-1">
-                <Button
+              <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-[#12161B] p-1">
+                <button
                   onClick={() => setBilling('monthly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'monthly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/75 hover:text-white/80'
+                    billing === 'monthly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
                   }`}
                 >
                   {t('landing.pricing.monthly')}
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => setBilling('yearly')}
                   className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'yearly' ? 'bg-white text-[#1B1F23] shadow-sm' : 'text-white/75 hover:text-white/80'
+                    billing === 'yearly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
                   }`}
                 >
                   {t('landing.pricing.yearly')}
-                  {billing !== 'yearly' && <span className="ml-1.5 text-[11px] font-semibold text-emerald-400">{t('landing.pricing.save20')}</span>}
-                </Button>
+                  {billing !== 'yearly' && <span className="ml-1.5 text-[11px] font-semibold text-primary-400">{t('landing.pricing.save20')}</span>}
+                </button>
               </div>
             </div>
           </Reveal>
 
-          <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-3">
+          <div className="mx-auto grid max-w-5xl items-stretch gap-5 lg:grid-cols-3">
             {plans.map((plan, i) => (
               <motion.div
                 key={plan.name}
-                initial={{ opacity: 0, y: 40, scale: plan.highlighted ? 0.9 : 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={plan.highlighted
-                  ? { type: 'spring', stiffness: 200, delay: 0.2 }
-                  : { duration: 0.6, delay: i * 0.1 }
-                }
-                whileHover={{ y: -10 }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
               >
                 <div
-                  className={`relative h-full rounded-2xl border p-5 transition-all duration-500 sm:p-7 ${
+                  className={`relative flex h-full flex-col rounded-2xl border transition-all duration-400 ${
                     plan.highlighted
-                      ? 'border-primary-500/30 bg-gradient-to-b from-primary-500/[0.08] to-transparent shadow-xl'
-                      : 'border-white/[0.12] bg-white/[0.02] hover:border-white/[0.2] hover:bg-white/[0.04]'
+                      ? 'scale-[1.02] border-primary-500 bg-[#12161B] p-10 shadow-[0_0_40px_rgba(28,140,125,0.25)]'
+                      : 'border-white/[0.08] bg-[#12161B] p-10 hover:border-white/[0.15]'
                   }`}
                 >
                   {plan.highlighted && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 px-3.5 py-1 text-[11px] font-medium shadow-xl">
+                      <div className="flex items-center gap-1.5 rounded-full bg-primary-500 px-4 py-1 text-[11px] font-semibold tracking-[0.05em] shadow-lg">
                         <Crown className="h-3 w-3" />
                         {t('landing.pricing.mostPopular')}
                       </div>
                     </div>
                   )}
 
-                  <div className="mb-5">
-                    <h3 className="text-[16px] font-medium">{plan.name}</h3>
-                    <p className="mt-1 text-[13px] text-white/70">{plan.desc}</p>
+                  <div className="mb-6">
+                    <h3 className="text-[18px] font-semibold">{plan.name}</h3>
+                    <p className="mt-1 text-[13px] text-white/50">{plan.desc}</p>
                   </div>
 
-                  <div className="mb-6">
+                  <div className="mb-1">
                     {plan.price !== null ? (
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="font-display text-4xl font-semibold tracking-tight">
+                      <div className="flex items-baseline gap-1">
+                        <span className="font-serif text-[3rem] font-semibold">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
-                        <span className="text-[13px] text-white/70">{t('landing.pricing.etbPerUserMo')}</span>
+                        <span className="ml-1 text-[20px] text-white/50">ETB</span>
                       </div>
                     ) : (
-                      <div className="font-display text-4xl font-semibold tracking-tight">{t('landing.pricing.custom')}</div>
-                    )}
-                    {plan.price === 0 && (
-                      <p className="mt-1.5 text-[12px] text-white/70">{t('landing.pricing.freeForeverNoCard')}</p>
+                      <div className="font-serif text-[3rem] font-semibold">{t('landing.pricing.custom')}</div>
                     )}
                   </div>
+                  <p className="mb-8 text-[13px] text-white/50">
+                    {plan.price === 0 ? t('landing.pricing.freeForeverNoCard') : plan.price !== null ? t('landing.pricing.etbPerUserMo') : 'Tailored to your organization'}
+                  </p>
 
-                  <Link
-                    href={plan.price === null ? '#contact' : '/auth/signup'}
-                    className={`mb-7 block rounded-xl py-3 text-center text-[13px] font-medium transition-all duration-300 ${
-                      plan.highlighted
-                        ? 'bg-gradient-to-r from-primary-500 to-primary-700 text-white shadow-xl hover:shadow-xl hover:brightness-110'
-                        : 'border border-white/[0.1] text-white/70 hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white'
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
-
-                  <ul className="space-y-3">
+                  <ul className="mb-8 flex-1 space-y-3">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/75">
-                        <Check className="h-3.5 w-3.5 flex-shrink-0 text-primary-400/50" />
+                      <li key={f} className="flex items-center gap-2.5 text-[14px] text-white/50">
+                        <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#2BB5A2]" />
                         {f}
                       </li>
                     ))}
                   </ul>
+
+                  <Link
+                    href={plan.price === null ? '#contact' : '/auth/signup'}
+                    className={`mt-auto block w-full rounded-full py-3 text-center text-[14px] font-semibold transition-all duration-300 ${
+                      plan.highlighted
+                        ? 'bg-gradient-to-r from-primary-500 to-[#2BB5A2] text-white shadow-lg shadow-primary-500/20 hover:shadow-xl hover:brightness-110'
+                        : 'border border-white/[0.15] text-white hover:border-primary-500 hover:shadow-[0_0_20px_rgba(28,140,125,0.25)]'
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
                 </div>
               </motion.div>
             ))}
@@ -1208,35 +1460,37 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ═══ COMPARISON ═══ */}
-      <section className="border-y border-white/[0.12] py-16 sm:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <h3 className="mb-8 text-center font-display text-xl font-semibold tracking-[-0.03em] sm:mb-12 sm:text-2xl">
+            <h3 className="mb-10 text-center font-serif text-xl font-medium sm:mb-14 sm:text-2xl">
               {t('landing.comparison.heading')}
             </h3>
           </Reveal>
 
-          <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
+          <div className="grid gap-4 sm:grid-cols-3">
             {[
               { from: 'Jira', reasons: [t('landing.comparison.jira.reason1'), t('landing.comparison.jira.reason2'), t('landing.comparison.jira.reason3'), t('landing.comparison.jira.reason4')] },
               { from: 'Trello', reasons: [t('landing.comparison.trello.reason1'), t('landing.comparison.trello.reason2'), t('landing.comparison.trello.reason3'), t('landing.comparison.trello.reason4')] },
               { from: t('landing.comparison.spreadsheets.name'), reasons: [t('landing.comparison.spreadsheets.reason1'), t('landing.comparison.spreadsheets.reason2'), t('landing.comparison.spreadsheets.reason3'), t('landing.comparison.spreadsheets.reason4')] },
             ].map((item, i) => (
               <Reveal key={item.from} delay={i * 80}>
-                <div className="group rounded-2xl border border-white/[0.12] bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.2] hover:bg-white/[0.04]">
+                <div className="group h-full rounded-2xl border border-white/[0.08] bg-[#12161B] p-6 transition-all duration-500 hover:border-white/[0.15]">
                   <p className="mb-5 text-[14px] font-medium">
                     {t('landing.comparison.switchingFrom')} <span className="text-primary-400">{item.from}</span>?
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
-                      <li key={r} className="flex items-center gap-2.5 text-[13px] text-white/70">
+                      <li key={r} className="flex items-center gap-2.5 text-[14px] text-white/50">
                         <X className="h-3.5 w-3.5 flex-shrink-0 text-red-400/40" />
                         {r}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-5 border-t border-white/[0.12] pt-5">
+                  <div className="mt-5 border-t border-white/[0.08] pt-5">
                     <p className="flex items-center gap-2 text-[13px] font-medium text-emerald-400">
                       <Check className="h-4 w-4" />
                       {t('landing.comparison.onekofHandlesAll')}
@@ -1249,59 +1503,61 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ═══ FINAL CTA ═══ */}
-      <section className="relative overflow-hidden py-20 sm:py-32 lg:py-40">
-        <motion.div className="pointer-events-none absolute inset-0" style={{ y: ctaY }}>
-          <div className="absolute left-1/2 top-1/2 h-[400px] w-[500px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1),transparent_70%)] sm:h-[600px] sm:w-[800px]" />
-        </motion.div>
-        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <Reveal>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.15] bg-white/[0.03] px-4 py-2">
-              <Sparkles className="h-3.5 w-3.5 text-primary-400" />
-              <span className="text-[13px] text-white/80">{t('landing.cta.badge')}</span>
+      <section className="py-20 sm:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-primary-500/[0.06] to-violet-500/[0.03] px-6 py-16 text-center sm:px-12 sm:py-20">
+            <div className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-primary-500/[0.08] blur-[80px]" />
+            <div className="relative">
+              <Reveal>
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-2">
+                  <Sparkles className="h-3.5 w-3.5 text-primary-400" />
+                  <span className="text-[13px] text-white/60">{t('landing.cta.badge')}</span>
+                </div>
+                <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
+                  {t('landing.cta.heading1')}
+                  <br />
+                  <span className="font-serif italic text-[#2BB5A2]">{t('landing.cta.heading2')}</span>
+                </h2>
+                <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
+                  {t('landing.cta.subtitle')}
+                </p>
+                <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Link
+                    href="/auth/signup"
+                    className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-primary-400 px-8 py-4 text-[15px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98] sm:w-auto"
+                  >
+                    {t('landing.cta.getStartedFree')}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                  <a
+                    href="mailto:hello@onekof.com"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/[0.1] px-8 py-4 text-[15px] font-medium text-white/60 transition-all hover:border-white/[0.2] hover:text-white sm:w-auto"
+                  >
+                    {t('landing.cta.talkToSales')}
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+              </Reveal>
             </div>
-            <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-              {t('landing.cta.heading1')}
-              <br />
-              {t('landing.cta.heading2')}
-            </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-white/70">
-              {t('landing.cta.subtitle')}
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href="/auth/signup"
-                className="group relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-6 py-3.5 text-[14px] font-medium text-white shadow-xl transition-all hover:shadow-2xl hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
-              >
-                <span className="relative z-10 flex items-center gap-2.5">
-                  {t('landing.cta.getStartedFree')}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </span>
-              </Link>
-              <a
-                href="mailto:hello@onekof.com"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-3.5 text-[14px] font-medium text-white/80 transition-all hover:border-white/[0.2] hover:bg-white/[0.04] hover:text-white/70 sm:w-auto sm:px-8 sm:py-4 sm:text-[15px]"
-              >
-                {t('landing.cta.talkToSales')}
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
-            </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-white/[0.12]">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <footer className="border-t border-white/[0.06]">
+        <div className="mx-auto max-w-[1200px] px-6 py-14 sm:py-16">
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg">
+                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg">
                   <span className="text-[12px] font-black text-white">O</span>
                 </div>
-                <span className="text-[15px] font-semibold">Onekof</span>
+                <span className="text-[16px] font-bold">Onekof</span>
               </div>
-              <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/70">
+              <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/50">
                 {t('landing.footer.description')}
               </p>
               <div className="mt-6 flex gap-3">
@@ -1313,7 +1569,7 @@ export default function HomePage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] text-[11px] font-bold text-white/70 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
                   >
                     {social.letter}
                   </a>
@@ -1345,11 +1601,11 @@ export default function HomePage() {
               ]},
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-white/70">{col.title}</h4>
+                <h4 className="mb-5 text-[12px] font-semibold uppercase tracking-[0.1em] text-white/30">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href} className="text-[13px] text-white/70 transition-colors hover:text-white">{link.label}</a>
+                      <a href={link.href} className="text-[14px] text-white/50 transition-colors hover:text-white">{link.label}</a>
                     </li>
                   ))}
                 </ul>
@@ -1357,8 +1613,8 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.12] pt-8 sm:flex-row">
-            <p className="text-[12px] text-white/70">
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
+            <p className="text-[13px] text-white/30">
               &copy; {new Date().getFullYear()} Onekof. {t('landing.footer.allRightsReserved')}
             </p>
             <div className="flex gap-6">
@@ -1367,7 +1623,7 @@ export default function HomePage() {
                 { label: t('landing.footer.terms'), href: '/terms' },
                 { label: t('landing.footer.cookies'), href: '/cookies' },
               ].map((link) => (
-                <a key={link.href} href={link.href} className="text-[12px] text-white/70 transition-colors hover:text-white">{link.label}</a>
+                <a key={link.href} href={link.href} className="text-[13px] text-white/30 transition-colors hover:text-white/50">{link.label}</a>
               ))}
             </div>
           </div>

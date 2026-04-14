@@ -50,7 +50,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0E11]">
       {/* Skip Navigation Link */}
       <a
         href="#main-content"
@@ -63,12 +63,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside
         aria-label="Main navigation"
         className={cn(
-          'flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1B1F23] transition-all duration-300',
+          'flex flex-col border-r border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] transition-all duration-300',
           isSidebarCollapsed ? 'w-16' : 'w-64'
         )}
       >
         {/* Logo & Workspace */}
-        <div className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4">
+        <div className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-white/[0.08] px-4">
           {!isSidebarCollapsed && (
             <Link href="/dashboard" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085] text-white font-bold">
@@ -97,7 +97,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Workspace Switcher */}
         {!isSidebarCollapsed && (
-          <div className="border-b border-slate-200 dark:border-slate-800 p-3">
+          <div className="border-b border-slate-200 dark:border-white/[0.08] p-3">
             <WorkspaceSwitcher />
           </div>
         )}
@@ -113,8 +113,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive(item.href)
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-slate-100 dark:bg-[#181D23] text-slate-900 dark:text-white'
+                    : 'text-slate-600 dark:text-white/50 hover:bg-slate-100 dark:hover:bg-[#181D23] hover:text-slate-900 dark:hover:text-white'
                 )}
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 title={isSidebarCollapsed ? item.name : undefined}
@@ -127,7 +127,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </nav>
 
         {/* User Profile */}
-        <div className="border-t border-slate-200 dark:border-slate-800 p-3">
+        <div className="border-t border-slate-200 dark:border-white/[0.08] p-3">
           {!isSidebarCollapsed ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 min-w-0">
@@ -138,7 +138,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                     {session?.user?.name || 'User'}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  <p className="text-xs text-slate-500 dark:text-white/30 truncate">
                     {session?.user?.email}
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1B1F23] px-6">
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
               {currentOrganization?.name || 'Dashboard'}
@@ -189,7 +189,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main id="main-content" className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]" role="main">
+        <main id="main-content" className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#0B0E11]" role="main">
           {children}
         </main>
       </div>

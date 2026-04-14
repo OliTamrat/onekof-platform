@@ -15,9 +15,10 @@ import { IconRenderer } from '@/components/ui/icon-renderer';
 
 interface CollapsibleSidebarProps {
   className?: string;
+  collapsed?: boolean;
 }
 
-export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
+export function CollapsibleSidebar({ className, collapsed = false }: CollapsibleSidebarProps) {
   const pathname = usePathname();
   const { currentOrganization, projects } = useWorkspace();
   const { t } = useLanguage();
@@ -92,13 +93,62 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
   };
 
   return (
-    <nav className={cn('space-y-0.5 pt-1 pb-2', className)}>
+    <nav className={cn('pt-1 pb-2', collapsed ? 'space-y-0' : 'space-y-0.5', className)}>
       {sidebarNavigation.map((section) => {
         const isExpanded = expandedSections.includes(section.id);
         const hasSubItems = section.items.length > 0;
         const Icon = section.icon;
         const sectionActive = isSectionActive(section);
+        const label = section.nameKey ? t(section.nameKey) : section.name;
 
+        // Collapsed mode: render icon-only button/link with native tooltip
+        if (collapsed) {
+          const activeClass = sectionActive
+            ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
+            : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]';
+
+          if (!hasSubItems && section.href) {
+            return (
+              <div key={section.id} className="px-2 py-0.5">
+                <Link
+                  href={(() => {
+                    if (!scopedProjectId || !section.href) return section.href!;
+                    if (section.href.startsWith('/dashboard/')) {
+                      const separator = section.href.includes('?') ? '&' : '?';
+                      return `${section.href}${separator}projectId=${scopedProjectId}`;
+                    }
+                    return section.href;
+                  })()}
+                  title={label}
+                  className={cn(
+                    'flex w-full items-center justify-center rounded-md p-2 text-sm font-medium transition-colors',
+                    activeClass
+                  )}
+                >
+                  <Icon className="h-5 w-5 shrink-0" />
+                </Link>
+              </div>
+            );
+          }
+
+          // Collapsible section in collapsed mode: toggle sub-items visibility
+          return (
+            <div key={section.id} className="px-2 py-0.5">
+              <button
+                onClick={() => toggleSection(section.id)}
+                title={label}
+                className={cn(
+                  'flex w-full items-center justify-center rounded-md p-2 text-sm font-medium transition-colors',
+                  activeClass
+                )}
+              >
+                <Icon className="h-5 w-5 shrink-0" />
+              </button>
+            </div>
+          );
+        }
+
+        // Expanded mode: full label rendering
         return (
           <div key={section.id} className="px-3">
             {/* Section Header */}
@@ -111,13 +161,13 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                   'flex w-full items-center gap-2 h-auto px-3 py-2 text-sm font-medium justify-start',
                   sectionActive
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                    : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="flex-1 text-left">{section.nameKey ? t(section.nameKey) : section.name}</span>
+                <span className="flex-1 text-left">{label}</span>
                 {section.items.length > 0 && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">
+                  <span className="text-xs text-gray-500 dark:text-white/30 mr-1">
                     {section.items.length}
                   </span>
                 )}
@@ -142,11 +192,11 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive(section.href!)
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                    : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="flex-1">{section.nameKey ? t(section.nameKey) : section.name}</span>
+                <span className="flex-1">{label}</span>
               </Link>
             )}
 
@@ -163,7 +213,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                         'flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         scopedProjectId
                           ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                          : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                       )}
                     >
                       {scopedProject ? (
@@ -182,27 +232,27 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                       <>
                         <div className="fixed inset-0 z-[100]" onClick={() => setIsProjectSelectorOpen(false)} />
                         <div
-                          className="fixed z-[101] w-64 max-h-[400px] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-2xl"
+                          className="fixed z-[101] w-64 max-h-[400px] overflow-y-auto rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] shadow-2xl"
                           style={{ top: dropdownPos.top, left: dropdownPos.left }}
                         >
                           <button
                             onClick={() => selectProject(null)}
                             className={cn(
-                              'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
-                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
+                              'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors',
+                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white/85'
                             )}
                           >
                             {!scopedProjectId ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
                             <span>{t('nav.allProjects')}</span>
                           </button>
-                          <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                          <div className="border-t border-slate-100 dark:border-white/[0.08]" />
                           {projects.map((project) => (
                             <button
                               key={project.id}
                               onClick={() => selectProject(project.id)}
                               className={cn(
-                                'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors',
-                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
+                                'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors',
+                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white/85'
                               )}
                             >
                               {scopedProjectId === project.id ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
@@ -211,7 +261,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                                 style={{ backgroundColor: project.color || '#3B82F6' }}
                               />
                               <span className="truncate">{project.name}</span>
-                              <span className="ml-auto text-xs text-slate-400">{project.key}</span>
+                              <span className="ml-auto text-xs text-white/30">{project.key}</span>
                             </button>
                           ))}
                         </div>
@@ -237,7 +287,7 @@ export function CollapsibleSidebar({ className }: CollapsibleSidebarProps) {
                         'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         isActive(item.href)
                           ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium dark:bg-primary-500/20'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white'
+                          : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white'
                       )}
                     >
                       {ItemIcon && <ItemIcon className="h-3.5 w-3.5 shrink-0" />}

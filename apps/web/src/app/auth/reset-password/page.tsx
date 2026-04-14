@@ -28,7 +28,7 @@ function ResetPasswordContent() {
       setStatus('error');
       setMessage(t('auth.invalidResetLink'));
     }
-  }, [token]);
+  }, [token, t]);
 
   // Calculate password strength
   useEffect(() => {
@@ -96,9 +96,13 @@ function ResetPasswordContent() {
       setTimeout(() => {
         router.push('/auth/signin');
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus('error');
-      setMessage(error.message || t('auth.somethingWentWrongTryAgain'));
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : t('auth.somethingWentWrongTryAgain')
+      );
     } finally {
       setIsLoading(false);
     }
@@ -106,10 +110,10 @@ function ResetPasswordContent() {
 
   // Get strength color
   const getStrengthColor = () => {
-    if (!passwordStrength) return 'bg-gray-200';
+    if (!passwordStrength) return 'bg-white/[0.08]';
     if (passwordStrength === 'weak') return 'bg-red-500';
     if (passwordStrength === 'medium') return 'bg-yellow-500';
-    return 'bg-green-500';
+    return 'bg-emerald-500';
   };
 
   // Get strength width
@@ -121,14 +125,14 @@ function ResetPasswordContent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Language Switcher */}
       <div className="fixed top-4 right-4 z-50">
         <LanguageSwitcher />
       </div>
 
       {/* Left side - Branding */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-[#0070f3] via-[#0056b3] to-[#003d82] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3 group">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm transition-all group-hover:bg-white/20 group-hover:scale-105">
@@ -140,90 +144,92 @@ function ResetPasswordContent() {
 
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-5xl font-bold leading-tight text-white">
+            <h1 className="font-serif font-medium text-5xl leading-tight text-white">
               Create a New
               <br />
               Secure Password
             </h1>
-            <p className="text-xl text-white/90 max-w-md">
+            <p className="text-xl text-white/50 max-w-md">
               Choose a strong password to keep your account safe and secure.
             </p>
           </div>
 
           {/* Security features */}
           <div className="space-y-4 max-w-md">
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm">
               <div className="mt-0.5">
-                <Lock className="h-5 w-5 text-white/90" />
+                <Lock className="h-5 w-5 text-white/50" />
               </div>
               <div>
-                <p className="font-semibold text-white">Bank-level Security</p>
-                <p className="text-sm text-white/80 mt-1">Your password is encrypted with industry-standard protocols</p>
+                <p className="font-semibold text-white/85">Bank-level Security</p>
+                <p className="text-sm text-white/50 mt-1">Your password is encrypted with industry-standard protocols</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm">
               <div className="mt-0.5">
-                <CheckCircle2 className="h-5 w-5 text-white/90" />
+                <CheckCircle2 className="h-5 w-5 text-white/50" />
               </div>
               <div>
-                <p className="font-semibold text-white">One-time Use Link</p>
-                <p className="text-sm text-white/80 mt-1">This reset link expires after use for your protection</p>
+                <p className="font-semibold text-white/85">One-time Use Link</p>
+                <p className="text-sm text-white/50 mt-1">This reset link expires after use for your protection</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-white/30">
           © 2026 Onekof. All rights reserved.
         </div>
       </div>
 
       {/* Right side - Form */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+      <div className="flex w-full flex-col justify-center bg-[#0B0E11] px-6 py-12 lg:w-1/2 lg:px-20">
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0070f3] to-[#0056b3]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2]">
               <span className="text-xl font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Onekof</span>
+            <span className="text-xl font-bold text-white">Onekof</span>
           </Link>
 
           {/* Back to signin link */}
           <Link
             href="/auth/signin"
-            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t('auth.backToSignIn')}
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="font-serif font-medium text-3xl text-white">
+              {t('auth.resetPasswordTitle')}
+            </h2>
+            <p className="mt-2 text-sm text-white/50">
               {t('resetPage.newPasswordDifferent')}
             </p>
           </div>
 
           {/* Status messages */}
           {status === 'success' && (
-            <div className="mb-6 rounded-xl border border-green-200 bg-gradient-to-r from-green-50 to-green-100 p-5 shadow-sm">
+            <div className="mb-6 rounded-xl border border-white/[0.08] bg-[#12161B] p-5">
               <div className="flex items-center gap-3">
                 <div className="flex-shrink-0">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500">
                     <CheckCircle2 className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-green-900">{t('resetPage.success')}</p>
-                  <p className="text-sm text-green-800 mt-1">{message}</p>
+                  <p className="font-semibold text-white/85">{t('resetPage.success')}</p>
+                  <p className="text-sm text-white/50 mt-1">{message}</p>
                 </div>
               </div>
             </div>
           )}
 
           {status === 'error' && message && (
-            <div className="mb-6 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100 p-5 shadow-sm">
+            <div className="mb-6 rounded-xl border border-white/[0.08] bg-[#12161B] p-5">
               <div className="flex items-center gap-3">
                 <div className="flex-shrink-0">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500">
@@ -231,8 +237,8 @@ function ResetPasswordContent() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-red-900">{t('resetPage.error')}</p>
-                  <p className="text-sm text-red-800 mt-1">{message}</p>
+                  <p className="font-semibold text-white/85">{t('resetPage.error')}</p>
+                  <p className="text-sm text-white/50 mt-1">{message}</p>
                 </div>
               </div>
             </div>
@@ -240,17 +246,17 @@ function ResetPasswordContent() {
 
           {/* Form */}
           {!token || (status === 'error' && !password) ? (
-            <div className="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                <AlertCircle className="h-8 w-8 text-gray-400" />
+            <div className="rounded-xl border border-white/[0.08] bg-[#12161B] p-8 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#181D23]">
+                <AlertCircle className="h-8 w-8 text-white/30" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('resetPage.invalidResetLink')}</h3>
-              <p className="text-sm text-gray-600 mb-6">
+              <h3 className="text-lg font-semibold text-white/85 mb-2">{t('resetPage.invalidResetLink')}</h3>
+              <p className="text-sm text-white/50 mb-6">
                 {t('resetPage.resetLinkExpiredOrInvalid')}
               </p>
               <Link
                 href="/auth/forgot-password"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0070f3] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#0056b3] transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
               >
                 {t('resetPage.requestNewLink')}
               </Link>
@@ -259,11 +265,11 @@ function ResetPasswordContent() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Password field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-white/85 mb-2">
                   {t('auth.newPassword')}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30" />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -271,7 +277,7 @@ function ResetPasswordContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={8}
-                    className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
+                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
                     placeholder={t('resetPage.enterNewPassword')}
                   />
                   <Button
@@ -279,7 +285,7 @@ function ResetPasswordContent() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-gray-400 hover:bg-transparent hover:text-gray-600"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/50"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </Button>
@@ -289,18 +295,18 @@ function ResetPasswordContent() {
                 {password && (
                   <div className="mt-3 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-gray-600">{t('auth.passwordStrength')}:</span>
+                      <span className="text-xs font-medium text-white/50">{t('auth.passwordStrength')}:</span>
                       <span className={`text-xs font-semibold ${
-                        passwordStrength === 'weak' ? 'text-red-600' :
-                        passwordStrength === 'medium' ? 'text-yellow-600' :
-                        'text-green-600'
+                        passwordStrength === 'weak' ? 'text-red-400' :
+                        passwordStrength === 'medium' ? 'text-yellow-400' :
+                        'text-emerald-400'
                       }`}>
                         {passwordStrength === 'weak' ? t('auth.weak') :
                          passwordStrength === 'medium' ? t('priority.medium') :
                          t('auth.strong')}
                       </span>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.08]">
                       <div
                         className={`h-full transition-all duration-300 ${getStrengthColor()} ${getStrengthWidth()}`}
                       />
@@ -310,20 +316,20 @@ function ResetPasswordContent() {
 
                 {/* Password requirements */}
                 {password && (
-                  <div className="mt-4 space-y-2 rounded-lg bg-gray-50 p-4">
-                    <p className="text-xs font-semibold text-gray-700 mb-2">{t('resetPage.passwordMustContain')}</p>
+                  <div className="mt-4 space-y-2 rounded-lg border border-white/[0.08] bg-[#181D23] p-4">
+                    <p className="text-xs font-semibold text-white/50 mb-2">{t('resetPage.passwordMustContain')}</p>
                     {requirements.map((req, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <div className={`flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full transition-colors ${
-                          req.met ? 'bg-green-500' : 'bg-gray-300'
+                          req.met ? 'bg-emerald-500' : 'bg-white/[0.08]'
                         }`}>
                           {req.met ? (
                             <Check className="h-3 w-3 text-white" />
                           ) : (
-                            <X className="h-3 w-3 text-gray-500" />
+                            <X className="h-3 w-3 text-white/30" />
                           )}
                         </div>
-                        <span className={`text-xs ${req.met ? 'text-green-700 font-medium' : 'text-gray-600'}`}>
+                        <span className={`text-xs ${req.met ? 'text-emerald-400 font-medium' : 'text-white/50'}`}>
                           {req.label}
                         </span>
                       </div>
@@ -334,18 +340,18 @@ function ResetPasswordContent() {
 
               {/* Confirm password field */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-white/85 mb-2">
                   {t('auth.confirmNewPassword')}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30" />
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-12 text-gray-900 placeholder-gray-400 focus:border-[#0070f3] focus:outline-none focus:ring-4 focus:ring-[#0070f3]/10 transition-all"
+                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
                     placeholder={t('resetPage.confirmNewPassword')}
                   />
                   <Button
@@ -353,19 +359,19 @@ function ResetPasswordContent() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-gray-400 hover:bg-transparent hover:text-gray-600"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/50"
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </Button>
                 </div>
                 {confirmPassword && password !== confirmPassword && (
-                  <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
+                  <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
                     <X className="h-3 w-3" />
                     {t('auth.passwordsDontMatch')}
                   </p>
                 )}
                 {confirmPassword && password === confirmPassword && (
-                  <p className="mt-2 text-xs text-green-600 flex items-center gap-1">
+                  <p className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
                     <Check className="h-3 w-3" />
                     {t('auth.passwordsMatch')}
                   </p>
@@ -375,7 +381,7 @@ function ResetPasswordContent() {
               <Button
                 type="submit"
                 disabled={isLoading || status === 'success' || password !== confirmPassword || !password}
-                className="w-full rounded-lg py-3.5 text-sm font-semibold shadow-lg"
+                className="w-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] py-3.5 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-opacity"
               >
                 {isLoading ? (
                   <>
@@ -396,12 +402,12 @@ function ResetPasswordContent() {
               </Button>
 
               {/* Security note */}
-              <div className="rounded-lg bg-blue-50 border border-blue-100 p-4">
+              <div className="rounded-xl border border-white/[0.08] bg-[#12161B] p-4">
                 <div className="flex gap-3">
-                  <Lock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <Lock className="h-5 w-5 text-[#2BB5A2] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-blue-900">{t('resetPage.securePasswordReset')}</p>
-                    <p className="text-xs text-blue-700 mt-1">
+                    <p className="text-xs font-semibold text-white/85">{t('resetPage.securePasswordReset')}</p>
+                    <p className="text-xs text-white/50 mt-1">
                       {t('resetPage.passwordEncryptedOneTime')}
                     </p>
                   </div>
@@ -417,9 +423,9 @@ function ResetPasswordContent() {
 
 function ResetPasswordLoading() {
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Left side - Branding */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-[#0070f3] via-[#0056b3] to-[#003d82] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
@@ -431,27 +437,27 @@ function ResetPasswordLoading() {
 
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-5xl font-bold leading-tight text-white">
+            <h1 className="font-serif font-medium text-5xl leading-tight text-white">
               Create a New
               <br />
               Secure Password
             </h1>
-            <p className="text-xl text-white/90 max-w-md">
+            <p className="text-xl text-white/50 max-w-md">
               Choose a strong password to keep your account safe and secure.
             </p>
           </div>
         </div>
 
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-white/30">
           © 2026 Onekof. All rights reserved.
         </div>
       </div>
 
       {/* Right side - Loading state */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+      <div className="flex w-full flex-col justify-center bg-[#0B0E11] px-6 py-12 lg:w-1/2 lg:px-20">
         <div className="mx-auto w-full max-w-md">
           <div className="flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-[#0070f3]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#2BB5A2]" />
           </div>
         </div>
       </div>

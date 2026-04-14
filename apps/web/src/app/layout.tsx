@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
@@ -9,6 +9,13 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
+});
+
+// Playfair Display — editorial serif for landing page headings
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
 });
 
 export const metadata: Metadata = {
@@ -72,7 +79,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -111,7 +118,7 @@ export default function RootLayout({
           `
         }} />
       </head>
-      <body className={cn('min-h-screen bg-white dark:bg-[#1B1F23] antialiased', inter.className)}>
+      <body className={cn('min-h-screen bg-white dark:bg-[#0B0E11] antialiased', inter.className)}>
         <Providers>{children}</Providers>
       </body>
     </html>

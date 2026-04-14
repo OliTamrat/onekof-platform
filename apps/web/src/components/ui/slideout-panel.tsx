@@ -130,7 +130,7 @@ export function SlideoutPanel({
       <div
         ref={panelRef}
         className={cn(
-          'relative flex h-full w-full flex-col bg-white dark:bg-[#282E33] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+          'relative flex h-full w-full flex-col bg-white dark:bg-[#12161B] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
           isAnimating ? 'translate-x-0' : 'translate-x-full',
           sizeClasses[size],
           className
@@ -153,7 +153,7 @@ export function SlideoutPanel({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-9 w-9 flex-shrink-0 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
+            className="h-9 w-9 flex-shrink-0 rounded-lg text-gray-500 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.06] hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
             aria-label="Close panel"
           >
             <X className="h-5 w-5" />
@@ -167,7 +167,7 @@ export function SlideoutPanel({
 
         {/* Footer */}
         {showFooter && footer && (
-          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0">
+          <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#0B0E11] px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0">
             {footer}
           </div>
         )}
@@ -198,7 +198,7 @@ interface SlideoutPanelSidebarProps {
 
 export function SlideoutPanelSidebar({ children, className }: SlideoutPanelSidebarProps) {
   return (
-    <div className={cn('hidden sm:block w-64 overflow-y-auto border-l border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#1B1F23] px-4 sm:px-6 py-4 sm:py-6', className)}>
+    <div className={cn('hidden sm:block w-64 overflow-y-auto border-l border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#181D23] px-4 sm:px-6 py-4 sm:py-6', className)}>
       {children}
     </div>
   );

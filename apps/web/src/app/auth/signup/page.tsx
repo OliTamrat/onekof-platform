@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
-  AlertCircle, Loader2, ArrowRight, Eye, EyeOff, CheckCircle2,
+  AlertCircle, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff, CheckCircle2,
   Calendar, Languages, Wallet, Brain, Kanban, Shield, Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -126,15 +126,19 @@ export default function SignUpPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#1B1F23]">
-      {/* Language Switcher - top right */}
-      <div className="fixed top-4 right-4 z-50">
+    <div className="flex min-h-screen bg-[#0B0E11]">
+      {/* Top bar — back + language */}
+      <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
+        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+          Back to home
+        </Link>
         <LanguageSwitcher />
       </div>
 
       {/* LEFT — Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#0B3A34]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B3A34]" />
         <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
         <div className="absolute bottom-1/3 right-1/4 h-[400px] w-[400px] rounded-full bg-primary-700/[0.06] blur-[120px]" />
 
@@ -147,12 +151,12 @@ export default function SignUpPage() {
           </Link>
 
           <div className="max-w-md">
-            <h2 className="text-4xl font-semibold leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
+            <h2 className="font-serif font-medium text-4xl leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
               Start building
               <br />
               <span className="text-white/30">with your team</span>
             </h2>
-            <p className="mt-5 text-[16px] leading-relaxed text-white/30">
+            <p className="mt-5 text-[16px] leading-relaxed text-white/50">
               Join hundreds of Ethiopian organizations using Onekof to
               manage projects, track budgets in ETB, and collaborate in
               their preferred language.
@@ -171,7 +175,7 @@ export default function SignUpPage() {
                   <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
                     <Check className="h-3 w-3 text-primary-400" />
                   </div>
-                  <span className="text-[13px] text-white/35">{item}</span>
+                  <span className="text-[13px] text-white/50">{item}</span>
                 </div>
               ))}
             </div>
@@ -185,7 +189,7 @@ export default function SignUpPage() {
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl font-semibold text-white">{stat.value}</p>
-                <p className="text-[12px] text-white/20">{stat.label}</p>
+                <p className="text-[12px] text-white/30">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -203,8 +207,8 @@ export default function SignUpPage() {
           </div>
 
           <div className="mb-8">
-            <h3 className="text-2xl font-semibold tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
-            <p className="mt-2 text-[14px] text-white/30">
+            <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
+            <p className="mt-2 text-[14px] text-white/50">
               {t('auth.hasAccount')}{' '}
               <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                 {t('common.signIn')}
@@ -278,7 +282,7 @@ export default function SignUpPage() {
               {password.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
                   {passwordChecks.map((check) => (
-                    <span key={check.label} className={`text-[11px] ${check.met ? 'text-emerald-400' : 'text-white/15'}`}>
+                    <span key={check.label} className={`text-[11px] ${check.met ? 'text-emerald-400' : 'text-white/25'}`}>
                       {check.met ? '✓' : '○'} {check.label}
                     </span>
                   ))}
@@ -316,7 +320,7 @@ export default function SignUpPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-xl py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
+              className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -336,18 +340,18 @@ export default function SignUpPage() {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary-400" />
               <div>
-                <p className="text-[13px] font-medium text-white/50">{t('auth.quickSetup')}</p>
-                <p className="text-[12px] text-white/25">
+                <p className="text-[13px] font-medium text-white/60">{t('auth.quickSetup')}</p>
+                <p className="text-[12px] text-white/40">
                   {t('auth.afterSignup')}
                 </p>
               </div>
             </div>
           </div>
 
-          <p className="mt-6 text-center text-[12px] text-white/15">
+          <p className="mt-6 text-center text-[12px] text-white/20">
             {t('auth.termsAgreement')}
           </p>
-          <p className="mt-2 text-center text-[12px] text-white/15">
+          <p className="mt-2 text-center text-[12px] text-white/20">
             &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
           </p>
         </div>

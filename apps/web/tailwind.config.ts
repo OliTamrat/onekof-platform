@@ -26,6 +26,12 @@ const config: Config = {
           'system-ui',
           'sans-serif',
         ],
+        serif: [
+          'var(--font-playfair)',
+          'Playfair Display',
+          'Georgia',
+          'serif',
+        ],
       },
       colors: {
         // Semantic tokens — Teal design system (#1C8C7D primary)
@@ -178,6 +184,7 @@ const config: Config = {
         'word-rotate': 'word-rotate 12s ease-in-out infinite',
         'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
         'border-rotate': 'border-rotate 4s linear infinite',
+        'progress': 'progress 8s linear',
       },
       keyframes: {
         float: {
@@ -210,6 +217,10 @@ const config: Config = {
         'border-rotate': {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
+        },
+        'progress': {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
         },
       },
     },

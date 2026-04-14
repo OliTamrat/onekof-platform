@@ -99,10 +99,10 @@ export default function SelectOrganizationPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B0E11]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-[#1C8C7D] mx-auto mb-4" />
-          <p className="text-slate-400 text-sm">{t('selectOrg.loadingOrgs')}</p>
+          <Loader2 className="w-12 h-12 animate-spin text-[#2BB5A2] mx-auto mb-4" />
+          <p className="text-white/50 text-sm">{t('selectOrg.loadingOrgs')}</p>
         </div>
       </div>
     );
@@ -112,7 +112,7 @@ export default function SelectOrganizationPage() {
   const RoleIcon = roleConfig.icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1B1F23] via-[#22272B] to-[#1B1F23] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B0E11] relative overflow-hidden">
       {/* Language Switcher */}
       <div className="fixed top-4 right-4 z-50">
         <LanguageSwitcher />
@@ -125,7 +125,7 @@ export default function SelectOrganizationPage() {
         <div className="flex-1 bg-[#DA121A]" />
       </div>
 
-      {/* Animated Background */}
+      {/* Ambient background glows */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
         <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-tr from-[#1C8C7D]/15 to-primary-600/10 blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
@@ -138,21 +138,21 @@ export default function SelectOrganizationPage() {
           <div className="text-center mb-12">
             {/* Logo */}
             <div className="inline-flex items-center gap-3 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1C8C7D] to-emerald-600 shadow-lg">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2] shadow-lg">
                 <span className="text-2xl font-bold text-white">O</span>
               </div>
               <div className="text-left">
                 <h1 className="text-2xl font-bold text-white">Onekof</h1>
-                <p className="text-sm text-slate-400">Enterprise Project Management</p>
+                <p className="text-sm text-white/30">Enterprise Project Management</p>
               </div>
             </div>
 
             {/* Greeting */}
             <div className="mb-4">
-              <h2 className="text-4xl font-bold text-white mb-3">
+              <h2 className="font-serif font-medium text-4xl text-white mb-3">
                 {t('selectOrg.welcomeBackName', { name: session?.user?.name?.split(' ')[0] || '' })}
               </h2>
-              <p className="text-lg text-slate-300">
+              <p className="text-lg text-white/50">
                 {t('selectOrg.selectWorkspace')}
               </p>
             </div>
@@ -160,27 +160,27 @@ export default function SelectOrganizationPage() {
 
           {/* Organizations Grid */}
           {organizations.length === 0 ? (
-            <div className="rounded-2xl bg-[#22272B]/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl p-12 text-center">
+            <div className="rounded-2xl bg-[#12161B] border border-white/[0.08] shadow-2xl p-12 text-center">
               <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1C8C7D]/10 mb-6">
                 <Building2 className="h-10 w-10 text-[#1C8C7D]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">No Organizations Yet</h3>
-              <p className="text-slate-400 mb-6">
+              <p className="text-white/50 mb-6">
                 You haven&apos;t been added to any organizations yet.
               </p>
               <div className="rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/20 p-4 mb-6 text-left">
-                <p className="text-sm text-[#1C8C7D] font-medium mb-1">Have a pending invitation?</p>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-[#2BB5A2] font-medium mb-1">Have a pending invitation?</p>
+                <p className="text-sm text-white/50">
                   Check your email for an invitation link to join an existing organization.
                   Click the link in the email to accept and join.
                 </p>
               </div>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-white/30">
                 Or create a new workspace to get started.
               </p>
               <Button
                 onClick={() => router.push('/onboarding')}
-                className="mt-8 rounded-xl px-6 py-3 text-sm font-semibold shadow-lg hover:scale-[1.02]"
+                className="mt-8 rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] px-6 py-3 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-opacity hover:scale-[1.02]"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>Create Organization</span>
@@ -200,7 +200,7 @@ export default function SelectOrganizationPage() {
                     onClick={() => handleSelectOrganization(org)}
                     onMouseEnter={() => setHoveredOrg(org.id)}
                     onMouseLeave={() => setHoveredOrg(null)}
-                    className="group relative rounded-2xl bg-[#22272B]/60 backdrop-blur-xl border-2 border-slate-700/50 p-6 text-left transition-all hover:bg-[#22272B]/80 hover:border-[#1C8C7D]/50 hover:shadow-2xl hover:shadow-[#1C8C7D]/20 hover:scale-[1.02]"
+                    className="group relative rounded-2xl bg-[#12161B] border-2 border-white/[0.08] p-6 text-left transition-all hover:bg-[#181D23] hover:border-[#1C8C7D]/50 hover:shadow-2xl hover:shadow-[#1C8C7D]/20 hover:scale-[1.02]"
                   >
                     {/* Gradient overlay on hover */}
                     <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-[#1C8C7D]/5 to-emerald-600/5 opacity-0 transition-opacity ${isHovered ? 'opacity-100' : ''}`} />
@@ -210,22 +210,22 @@ export default function SelectOrganizationPage() {
                       <div className="flex items-start justify-between mb-6">
                         <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/20 border border-[#1C8C7D]/30">
                           {org.type === 'personal' ? (
-                            <User className="h-7 w-7 text-[#1C8C7D]" />
+                            <User className="h-7 w-7 text-[#2BB5A2]" />
                           ) : (
-                            <Building2 className="h-7 w-7 text-[#1C8C7D]" />
+                            <Building2 className="h-7 w-7 text-[#2BB5A2]" />
                           )}
                         </div>
                         <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-[#1C8C7D]/10 border border-[#1C8C7D]/30 transition-all ${isHovered ? 'bg-[#1C8C7D] border-[#1C8C7D]' : ''}`}>
-                          <ArrowRight className={`h-5 w-5 transition-all ${isHovered ? 'text-white translate-x-1' : 'text-[#1C8C7D]'}`} />
+                          <ArrowRight className={`h-5 w-5 transition-all ${isHovered ? 'text-white translate-x-1' : 'text-[#2BB5A2]'}`} />
                         </div>
                       </div>
 
                       {/* Organization Info */}
                       <div className="mb-4">
-                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#1C8C7D] transition-colors">
+                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#2BB5A2] transition-colors">
                           {org.name}
                         </h3>
-                        <p className="text-sm text-slate-400 font-mono">
+                        <p className="text-sm text-white/30 font-mono">
                           {org.slug}.onekof.com
                         </p>
                       </div>
@@ -258,8 +258,8 @@ export default function SelectOrganizationPage() {
 
                       {/* Member count if available */}
                       {org.memberCount && (
-                        <div className="mt-4 pt-4 border-t border-slate-700/50">
-                          <div className="flex items-center gap-2 text-slate-400">
+                        <div className="mt-4 pt-4 border-t border-white/[0.08]">
+                          <div className="flex items-center gap-2 text-white/50">
                             <Users className="h-4 w-4" />
                             <span className="text-sm">{org.memberCount} members</span>
                           </div>
@@ -273,16 +273,16 @@ export default function SelectOrganizationPage() {
               {/* Create New Project Card */}
               <button
                 onClick={() => router.push('/dashboard/projects?create=true')}
-                className="group relative rounded-2xl border-2 border-dashed border-slate-700/50 p-6 text-center transition-all hover:border-[#1C8C7D]/50 hover:bg-[#22272B]/40"
+                className="group relative rounded-2xl border-2 border-dashed border-white/[0.08] p-6 text-center transition-all hover:border-[#1C8C7D]/50 hover:bg-[#12161B]"
               >
                 <div className="flex flex-col items-center justify-center h-full min-h-[200px]">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/30 mb-4 group-hover:bg-[#1C8C7D]/20 transition-colors">
-                    <FolderKanban className="h-7 w-7 text-[#1C8C7D]" />
+                    <FolderKanban className="h-7 w-7 text-[#2BB5A2]" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#1C8C7D] transition-colors">
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#2BB5A2] transition-colors">
                     Create Project
                   </h3>
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-white/30">
                     Start a new project
                   </p>
                 </div>
@@ -296,14 +296,14 @@ export default function SelectOrganizationPage() {
               <Button
                 variant="ghost"
                 onClick={handleSignOut}
-                className="text-sm text-slate-400 hover:text-white hover:bg-transparent"
+                className="text-sm text-white/50 hover:text-white hover:bg-transparent"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Sign out</span>
               </Button>
             </div>
-            <p className="mt-4 text-xs text-slate-400">
-              © 2026 Onekof. Built with ❤️ for Ethiopia
+            <p className="mt-4 text-xs text-white/30">
+              © 2026 Onekof. Built with love for Ethiopia
             </p>
           </div>
         </div>

@@ -43,9 +43,13 @@ function VerifyEmailContent() {
       setTimeout(() => {
         router.push('/auth/signin?verified=true');
       }, 3000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus('error');
-      setMessage(error.message || t('auth.failedToVerifyEmailRetry'));
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : t('auth.failedToVerifyEmailRetry')
+      );
     }
   };
 
@@ -67,17 +71,21 @@ function VerifyEmailContent() {
       }
 
       setMessage(t('auth.verificationEmailSent'));
-    } catch (error: any) {
-      setMessage(error.message || t('auth.failedToSendVerification'));
+    } catch (error: unknown) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : t('auth.failedToSendVerification')
+      );
     } finally {
       setIsResending(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Left side - Branding */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-[#0EA5E9] via-[#0284C7] to-[#0369A1] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
@@ -89,7 +97,7 @@ function VerifyEmailContent() {
 
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold leading-tight text-white">
+            <h1 className="font-serif font-medium text-4xl leading-tight text-white">
               {status === 'success' ? (
                 <>
                   {t('auth.welcomeToOnekof')}
@@ -104,47 +112,47 @@ function VerifyEmailContent() {
                 </>
               )}
             </h1>
-            <p className="text-lg text-white/90">
+            <p className="text-lg text-white/50">
               {status === 'success'
                 ? t('verifyEmail.canAccessAllFeatures')
                 : t('verifyEmail.oneMoreStep')}
             </p>
           </div>
 
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 p-4 backdrop-blur-sm">
-            <Mail className="h-8 w-8 text-white" />
+          <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.06] p-4 backdrop-blur-sm">
+            <Mail className="h-8 w-8 text-white/50" />
             <div>
-              <div className="font-semibold text-white">{t('verifyEmail.checkYourInbox')}</div>
-              <div className="text-sm text-white/70">
+              <div className="font-semibold text-white/85">{t('verifyEmail.checkYourInbox')}</div>
+              <div className="text-sm text-white/30">
                 {t('verifyEmail.sentVerificationLink')}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-white/30">
           &copy; {t('auth.copyright')}
         </div>
       </div>
 
       {/* Right side - Verification status */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+      <div className="flex w-full flex-col justify-center bg-[#0B0E11] px-6 py-12 lg:w-1/2 lg:px-20">
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2]">
               <span className="text-xl font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Onekof</span>
+            <span className="text-xl font-bold text-white">Onekof</span>
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="font-serif font-medium text-3xl text-white">
               {status === 'loading' && t('verifyEmail.verifyingYourEmail')}
               {status === 'success' && t('verifyEmail.emailVerified')}
               {status === 'error' && t('verifyEmail.verificationFailed')}
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-white/50">
               {status === 'loading' && t('verifyEmail.pleaseWaitVerifying')}
               {status === 'success' && t('verifyEmail.accountVerified')}
               {status === 'error' && t('verifyEmail.couldNotVerify')}
@@ -154,21 +162,21 @@ function VerifyEmailContent() {
           {/* Status display */}
           <div className="space-y-6">
             {status === 'loading' && (
-              <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-8">
-                <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0EA5E9]" />
-                <p className="text-sm text-gray-600">{t('verifyEmail.verifyingEmailAddress')}</p>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
+                <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#2BB5A2]" />
+                <p className="text-sm text-white/50">{t('verifyEmail.verifyingEmailAddress')}</p>
               </div>
             )}
 
             {status === 'success' && (
               <div className="space-y-4">
-                <div className="flex flex-col items-center justify-center rounded-lg border border-green-200 bg-green-50 p-8">
-                  <CheckCircle2 className="mb-4 h-12 w-12 text-green-600" />
-                  <p className="text-center font-medium text-green-800">{message}</p>
+                <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
+                  <CheckCircle2 className="mb-4 h-12 w-12 text-emerald-400" />
+                  <p className="text-center font-medium text-white/85">{message}</p>
                 </div>
                 <Link
                   href="/auth/signin"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0EA5E9] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:ring-offset-2"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] focus:ring-offset-2 focus:ring-offset-[#0B0E11]"
                 >
                   {t('auth.continueToSignIn')}
                   <ArrowRight className="h-4 w-4" />
@@ -178,35 +186,35 @@ function VerifyEmailContent() {
 
             {status === 'error' && (
               <div className="space-y-4">
-                <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
-                  <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
+                <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#12161B] p-4">
+                  <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-400 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-red-800">{message}</p>
-                    <p className="mt-1 text-xs text-red-700">
+                    <p className="text-sm font-medium text-white/85">{message}</p>
+                    <p className="mt-1 text-xs text-white/50">
                       {t('verifyEmail.linkExpiredOrUsed')}
                     </p>
                   </div>
                 </div>
 
                 {/* Resend verification form */}
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-                  <h3 className="mb-4 text-sm font-semibold text-gray-900">
+                <div className="rounded-xl border border-white/[0.08] bg-[#12161B] p-6">
+                  <h3 className="mb-4 text-sm font-semibold text-white/85">
                     {t('verifyEmail.requestNewLink')}
                   </h3>
                   <form onSubmit={handleResendVerification} className="space-y-3">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="email" className="block text-sm font-medium text-white/50">
                         {t('verifyEmail.emailAddress')}
                       </label>
                       <div className="relative mt-1">
-                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30" />
                         <input
                           id="email"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
-                          className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-[#0EA5E9] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20"
+                          className="w-full rounded-lg border border-white/[0.08] bg-[#181D23] py-2.5 pl-10 pr-4 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
                           placeholder="you@company.com"
                         />
                       </div>
@@ -214,7 +222,7 @@ function VerifyEmailContent() {
                     <Button
                       type="submit"
                       disabled={isResending}
-                      className="w-full rounded-lg py-2.5 text-sm font-semibold"
+                      className="w-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
                     >
                       {isResending ? (
                         <>
@@ -231,7 +239,7 @@ function VerifyEmailContent() {
                 <div className="text-center">
                   <Link
                     href="/auth/signin"
-                    className="text-sm font-medium text-[#0EA5E9] hover:text-[#0284C7]"
+                    className="text-sm font-medium text-[#2BB5A2] hover:text-[#1C8C7D] transition-colors"
                   >
                     {t('auth.backToSignIn')}
                   </Link>
@@ -247,9 +255,9 @@ function VerifyEmailContent() {
 
 function VerifyEmailLoading() {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Left side - Branding */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-[#0EA5E9] via-[#0284C7] to-[#0369A1] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
@@ -261,53 +269,53 @@ function VerifyEmailLoading() {
 
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold leading-tight text-white">
+            <h1 className="font-serif font-medium text-4xl leading-tight text-white">
               Verify Your Email
               <br />
-              Almost There!
+              Almost There.
             </h1>
-            <p className="text-lg text-white/90">
+            <p className="text-lg text-white/50">
               Just one more step to get started with Onekof.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 p-4 backdrop-blur-sm">
-            <Mail className="h-8 w-8 text-white" />
+          <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.06] p-4 backdrop-blur-sm">
+            <Mail className="h-8 w-8 text-white/50" />
             <div>
-              <div className="font-semibold text-white">Check your inbox</div>
-              <div className="text-sm text-white/70">
-                We've sent you a verification link
+              <div className="font-semibold text-white/85">Check your inbox</div>
+              <div className="text-sm text-white/30">
+                We&apos;ve sent you a verification link
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-white/30">
           &copy; 2026 Onekof. Built with love in Ethiopia
         </div>
       </div>
 
       {/* Right side - Loading state */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+      <div className="flex w-full flex-col justify-center bg-[#0B0E11] px-6 py-12 lg:w-1/2 lg:px-20">
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2]">
               <span className="text-xl font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Onekof</span>
+            <span className="text-xl font-bold text-white">Onekof</span>
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Verifying your email...</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="font-serif font-medium text-3xl text-white">Verifying your email...</h2>
+            <p className="mt-2 text-sm text-white/50">
               Please wait while we verify your email address.
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-8">
-            <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#0EA5E9]" />
-            <p className="text-sm text-gray-600">Verifying your email address...</p>
+          <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
+            <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#2BB5A2]" />
+            <p className="text-sm text-white/50">Verifying your email address...</p>
           </div>
         </div>
       </div>

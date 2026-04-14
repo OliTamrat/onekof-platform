@@ -130,7 +130,7 @@ function BackButton() {
   return (
     <button
       onClick={handleBack}
-      className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
+      className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg text-gray-500 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
       title="Back"
       aria-label="Back"
     >
@@ -190,7 +190,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
               'flex items-center gap-1.5 px-2.5 md:px-3 py-2.5 text-xs md:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap shrink-0',
               isActive
                 ? 'border-primary-500 text-primary-500'
-                : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
             )}
           >
             <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
@@ -208,7 +208,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
                 'flex items-center gap-1.5 px-2.5 h-auto py-2.5 text-xs md:text-sm font-medium rounded-none border-b-2 whitespace-nowrap shrink-0',
                 overflowTabs.some(tab => activeTab === tab.id)
                   ? 'border-primary-500 text-primary-500'
-                  : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                  : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
               )}
             >
               <MoreHorizontal className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
@@ -322,17 +322,17 @@ export function UnifiedPageHeader({
   };
 
   return (
-    <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+    <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
-        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-slate-700">
+        <div className="flex items-center gap-2 px-6 py-2 text-sm border-b border-gray-200 dark:border-white/[0.08]">
           {breadcrumbs.map((crumb, index) => (
             <div key={index} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-slate-400" />}
+              {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400 dark:text-white/30" />}
               {crumb.href ? (
                 <Link
                   href={crumb.href}
-                  className="text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   {crumb.label}
                 </Link>
@@ -345,7 +345,7 @@ export function UnifiedPageHeader({
       )}
 
       {/* Title and Icon */}
-      <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-slate-700">
+      <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-white/[0.08]">
         <div className="flex items-center gap-2 md:gap-3">
           <BackButton />
           {icon && (
@@ -359,11 +359,11 @@ export function UnifiedPageHeader({
           <div className="flex-1 min-w-0">
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 dark:text-white truncate">{title}</h1>
             {description && (
-              <p className="text-xs md:text-sm text-gray-600 dark:text-slate-400 mt-1 line-clamp-1">{description}</p>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-white/50 mt-1 line-clamp-1">{description}</p>
             )}
           </div>
           {taskCounts && (
-            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="hidden sm:flex items-center gap-2 text-xs text-white/30">
               <span className="font-medium">{taskCounts.filtered}</span>
               {taskCounts.filtered !== taskCounts.total && (
                 <span>{t('common.of')} {taskCounts.total}</span>
@@ -376,31 +376,31 @@ export function UnifiedPageHeader({
 
       {/* Navigation Tabs */}
       {showTabs && (
-        <div className="border-b border-gray-200 dark:border-slate-700">
+        <div className="border-b border-gray-200 dark:border-white/[0.08]">
           <NavigationTabs tabs={tabs} baseHref={baseHref} activeTab={activeTab} />
         </div>
       )}
 
       {/* Controls Bar */}
-      <div className="px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-slate-700">
+      <div className="px-3 md:px-6 py-2 md:py-3 border-t border-gray-200 dark:border-white/[0.08]">
         <div className="flex items-center justify-between gap-2 md:gap-3">
           {/* Search */}
           {showSearch && (
             <div className="relative flex-1 md:max-w-md">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-white/30" />
               <input
                 type="text"
                 placeholder={t('common.searchPlaceholder')}
                 value={searchVal}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               />
               {searchVal && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => handleSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-white/85"
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>
@@ -610,7 +610,7 @@ export function UnifiedPageHeader({
                 onFilterChange?.('status', []);
                 onFilterChange?.('priority', []);
               }}
-              className="h-auto text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 ml-1 px-1 py-0.5"
+              className="h-auto text-[11px] text-white/30 hover:text-red-500 dark:hover:text-red-400 ml-1 px-1 py-0.5"
             >
               {t('common.clearAll')}
             </Button>

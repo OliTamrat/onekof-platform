@@ -26,23 +26,22 @@
   }
 
   ::selection {
-    background-color: rgba(37, 99, 235, 0.25);
+    background-color: rgba(28, 140, 125, 0.25);
     color: #DBEAFE;
   }
 
   /*
    * Dark mode text contrast fix
-   * Default gray-400/slate-400 (#9CA3AF/#94A3B8) is too dim on dark backgrounds.
-   * Bump all muted/secondary text to brighter shades for readability.
+   * Background is now #0B0E11 (Nocturne) — bump muted text brighter to compensate.
    */
-  .dark .text-gray-400 { color: #B0B8C1 !important; }
-  .dark .text-gray-500 { color: #A0A8B3 !important; }
-  .dark .text-gray-600 { color: #9CA3AF !important; }
-  .dark .text-slate-400 { color: #AAB2BD !important; }
-  .dark .text-slate-500 { color: #9CA3AF !important; }
+  .dark .text-gray-400 { color: #C0C8D1 !important; }
+  .dark .text-gray-500 { color: #B0B8C3 !important; }
+  .dark .text-gray-600 { color: #A8B2BE !important; }
+  .dark .text-slate-400 { color: #BAC2CC !important; }
+  .dark .text-slate-500 { color: #ACB4C0 !important; }
 
   /* Fix hardcoded dim hex colors used in dark mode */
-  .dark .text-\[\#6B7684\] { color: #A0A8B3 !important; }
+  .dark .text-\[\#6B7684\] { color: #B0B8C3 !important; }
 }
 
 /* Custom scrollbar */
@@ -107,6 +106,15 @@
   .text-gradient-blue {
     @apply bg-gradient-to-r from-[#60A5FA] via-[#3B82F6] to-[#818CF8] bg-clip-text text-transparent;
   }
+
+  /* Nocturne design system tokens */
+  .bg-nocturne { background-color: #0B0E11; }
+  .bg-nocturne-card { background-color: #12161B; }
+  .bg-nocturne-elevated { background-color: #181D23; }
+  .text-nocturne { color: rgba(255,255,255,0.85); }
+  .text-nocturne-dim { color: rgba(255,255,255,0.50); }
+  .text-nocturne-faint { color: rgba(255,255,255,0.30); }
+  .border-nocturne { border-color: rgba(255,255,255,0.08); }
 }
 
 /* Progress bar animation for showcase tabs */

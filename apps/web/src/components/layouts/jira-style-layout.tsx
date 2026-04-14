@@ -40,6 +40,7 @@ import {
   Plus,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   LogOut,
   Building2,
   BookOpen,
@@ -83,6 +84,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [isPricingModalOpen, setIsPricingModalOpen] = React.useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
 
   // Mock trial end date - in production, this would come from the organization data
   const trialEndDate = 'March 30, 2026';
@@ -133,12 +135,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#1B1F23]">
+    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#0B0E11]">
       {/* Global overlays */}
       <CommandPalette />
       <KeyboardShortcutsModal />
       {/* TOP BAR - Jira Style with Centered Search */}
-      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#1B1F23] px-3">
+      <header className="flex h-14 items-center gap-2 border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3">
         {/* Mobile Menu Button */}
         <Button
           variant="ghost"
@@ -197,12 +199,12 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
-            className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#22272B] px-3 text-sm text-slate-500 dark:text-slate-400 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#282E33] justify-start font-normal"
+            className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#12161B] px-3 text-sm text-slate-500 dark:text-white/50 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#181D23] justify-start font-normal"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left truncate hidden sm:block">{t('nav.searchPlaceholder')}</span>
             <span className="flex-1 text-left truncate sm:hidden">{t('common.search')}</span>
-            <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-[#1B1F23] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
+            <kbd className="hidden rounded border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-1.5 py-0.5 text-[10px] font-medium lg:inline-block">
               Ctrl K
             </kbd>
           </Button>
@@ -294,7 +296,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 <DropdownMenuSubTrigger>
                   <Globe className="mr-2 h-4 w-4" />
                   <span>{t('settings.language')}</span>
-                  <span className="ml-auto text-xs text-slate-500">{LOCALE_FLAGS[locale]}</span>
+                  <span className="ml-auto text-xs text-white/30">{LOCALE_FLAGS[locale]}</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   {(['en', 'am', 'om', 'ti', 'so'] as Locale[]).map((l) => (
@@ -398,16 +400,19 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           />
         )}
 
-        {/* LEFT SIDEBAR - Changes based on context */}
+        {/* LEFT SIDEBAR */}
         <aside className={cn(
-          "w-56 border-r border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#1B1F23] overflow-y-auto transition-transform duration-300 ease-in-out",
-          // Desktop: Reset mobile fixed positioning (top-14/bottom-0/left-0 must be cleared)
+          // Base styles
+          "border-r border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] flex flex-col overflow-hidden transition-all duration-300 ease-in-out shrink-0",
+          // Desktop width: collapsed = w-16, expanded = w-56
+          sidebarCollapsed ? "md:w-16" : "md:w-56",
+          // Desktop: static in flow
           "md:relative md:top-auto md:bottom-auto md:left-auto md:translate-x-0 md:z-auto md:h-full",
-          // Mobile: Fixed position with slide-in animation, positioned below header
-          isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50"
+          // Mobile: fixed slide-in, always full width when open
+          isMobileSidebarOpen ? "fixed top-14 bottom-0 left-0 translate-x-0 z-50 w-56" : "fixed top-14 bottom-0 left-0 -translate-x-full z-50 w-56"
         )}>
           {/* Mobile Sidebar Header with Close Button */}
-          <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.06] md:hidden">
+          <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.08] md:hidden shrink-0">
             <Link href="/dashboard" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm">
                 O
@@ -426,156 +431,176 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
             </Button>
           </div>
 
-          {/* Collapsible Sidebar Navigation - 7 Core Categories */}
-          <CollapsibleSidebar />
+          {/* Scrollable nav area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
+            {/* Collapsible Sidebar Navigation */}
+            <CollapsibleSidebar collapsed={sidebarCollapsed} />
 
-          {/* Project Scope Indicator */}
-          {scopedProject && !isInProject && (
-            <div className="mx-3 mt-2 mb-1 rounded-lg border border-[#1C8C7D]/30 bg-[#1C8C7D]/10 p-2.5">
-              <div className="flex items-center gap-2 mb-1.5">
-                <div
-                  className="flex h-6 w-6 items-center justify-center rounded text-[10px] font-bold text-white shrink-0"
-                  style={{ backgroundColor: scopedProject.color || '#3B82F6' }}
-                >
-                  {scopedProject.key?.slice(0, 2)}
+            {/* Project Scope Indicator — hidden when collapsed */}
+            {!sidebarCollapsed && scopedProject && !isInProject && (
+              <div className="mx-3 mt-2 mb-1 rounded-lg border border-[#1C8C7D]/30 bg-[#1C8C7D]/10 p-2.5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded text-[10px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: scopedProject.color || '#3B82F6' }}
+                  >
+                    {scopedProject.key?.slice(0, 2)}
+                  </div>
+                  <span className="text-xs font-semibold text-[#1C8C7D] truncate flex-1">{scopedProject.name}</span>
                 </div>
-                <span className="text-xs font-semibold text-[#1C8C7D] truncate flex-1">{scopedProject.name}</span>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-1 text-[10px] text-white/50 hover:text-[#1C8C7D] transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                  {t('nav.viewAllProjects')}
+                </Link>
               </div>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 hover:text-[#1C8C7D] transition-colors"
-              >
-                <X className="h-3 w-3" />
-                {t('nav.viewAllProjects')}
-              </Link>
-            </div>
-          )}
+            )}
 
-          {/* Collapsible Projects Section - Only in Dashboard */}
-          {!isInProject && (
-            <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
-              <Button
-                variant="ghost"
-                onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              >
-                <span>{t('nav.projects').toUpperCase()}</span>
-                <ChevronRight
-                  className={cn(
-                    'h-3 w-3 transition-transform',
-                    isProjectsExpanded && 'rotate-90'
-                  )}
-                />
-              </Button>
+            {/* Collapsible Projects Section — hidden when collapsed */}
+            {!sidebarCollapsed && !isInProject && (
+              <div className="mt-2 border-t border-slate-200 dark:border-white/[0.08] pt-2 px-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
+                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
+                >
+                  <span>{t('nav.projects').toUpperCase()}</span>
+                  <ChevronRight
+                    className={cn(
+                      'h-3 w-3 transition-transform',
+                      isProjectsExpanded && 'rotate-90'
+                    )}
+                  />
+                </Button>
 
-              {isProjectsExpanded && (
-                <div className="space-y-0.5 mt-1">
-                  {favoriteProjects.length > 0 && (
-                    <>
-                      {favoriteProjects.map((project) => (
-                        <Link
-                          key={project.id}
-                          href={`/dashboard?projectId=${project.id}`}
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 group"
-                        >
-                          <div
-                            className="flex h-5 w-5 items-center justify-center rounded shrink-0"
-                            style={{ backgroundColor: project.color || '#3B82F6' }}
+                {isProjectsExpanded && (
+                  <div className="space-y-0.5 mt-1">
+                    {favoriteProjects.length > 0 && (
+                      <>
+                        {favoriteProjects.map((project) => (
+                          <Link
+                            key={project.id}
+                            href={`/dashboard?projectId=${project.id}`}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85 group"
                           >
-                            <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
-                          </div>
-                          <span className="truncate flex-1">{project.name}</span>
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 opacity-0 group-hover:opacity-100" />
-                        </Link>
-                      ))}
-                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
-                    </>
-                  )}
-                  {recentProjects.map((project) => (
-                    <Link
-                      key={project.id}
-                      href={`/dashboard?projectId=${project.id}`}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                    >
-                      <div
-                        className="flex h-5 w-5 items-center justify-center rounded shrink-0"
-                        style={{ backgroundColor: project.color || '#3B82F6' }}
+                            <div
+                              className="flex h-5 w-5 items-center justify-center rounded shrink-0"
+                              style={{ backgroundColor: project.color || '#3B82F6' }}
+                            >
+                              <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
+                            </div>
+                            <span className="truncate flex-1">{project.name}</span>
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 opacity-0 group-hover:opacity-100" />
+                          </Link>
+                        ))}
+                        <div className="h-px bg-slate-200 dark:bg-white/[0.08] my-2" />
+                      </>
+                    )}
+                    {recentProjects.map((project) => (
+                      <Link
+                        key={project.id}
+                        href={`/dashboard?projectId=${project.id}`}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
                       >
-                        <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
-                      </div>
-                      <span className="truncate">{project.name}</span>
+                        <div
+                          className="flex h-5 w-5 items-center justify-center rounded shrink-0"
+                          style={{ backgroundColor: project.color || '#3B82F6' }}
+                        >
+                          <IconRenderer iconName={project.icon ?? undefined} className="h-3 w-3 text-white" fallback="📁" />
+                        </div>
+                        <span className="truncate">{project.name}</span>
+                      </Link>
+                    ))}
+                    <Link
+                      href="/dashboard/projects"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/50 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#181D23] mt-2"
+                    >
+                      {t('nav.viewAllProjects')}
                     </Link>
-                  ))}
-                  <Link
-                    href="/dashboard/projects"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 mt-2"
-                  >
-                    {t('nav.viewAllProjects')}
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
+                  </div>
+                )}
+              </div>
+            )}
 
-          {/* Collapsible Docs & Spaces Section - Only in Dashboard */}
-          {!isInProject && (
-            <div className="mt-2 border-t border-slate-200 dark:border-white/[0.06] pt-2 px-3">
-              <Button
-                variant="ghost"
-                onClick={() => setIsDocsExpanded(!isDocsExpanded)}
-                className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              >
-                <span>{t('nav.docs').toUpperCase()}</span>
-                <ChevronRight
-                  className={cn(
-                    'h-3 w-3 transition-transform',
-                    isDocsExpanded && 'rotate-90'
-                  )}
-                />
-              </Button>
-
-              {isDocsExpanded && (
-                <div className="space-y-0.5 mt-1">
-                  <Link
-                    href="/dashboard/docs"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  >
-                    <Folders className="h-4 w-4" />
-                    <span>{t('nav.allSpaces')}</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/docs/recent"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  >
-                    <FileText className="h-4 w-4" />
-                    <span>{t('nav.recentPages')}</span>
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* If in project, show quick project info */}
-          {isInProject && currentProject && (
-            <div className="mt-auto border-t border-slate-200 dark:border-white/[0.06] p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <div
-                  className="flex h-6 w-6 items-center justify-center rounded text-xs"
-                  style={{ backgroundColor: currentProject.color || '#3B82F6' }}
+            {/* Collapsible Docs & Spaces Section — hidden when collapsed */}
+            {!sidebarCollapsed && !isInProject && (
+              <div className="mt-2 border-t border-slate-200 dark:border-white/[0.08] pt-2 px-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsDocsExpanded(!isDocsExpanded)}
+                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
                 >
-                  {currentProject.icon || '📁'}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{currentProject.name}</p>
-                  <p className="text-xs text-slate-500">{currentProject.key}</p>
+                  <span>{t('nav.docs').toUpperCase()}</span>
+                  <ChevronRight
+                    className={cn(
+                      'h-3 w-3 transition-transform',
+                      isDocsExpanded && 'rotate-90'
+                    )}
+                  />
+                </Button>
+
+                {isDocsExpanded && (
+                  <div className="space-y-0.5 mt-1">
+                    <Link
+                      href="/dashboard/docs"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
+                    >
+                      <Folders className="h-4 w-4" />
+                      <span>{t('nav.allSpaces')}</span>
+                    </Link>
+                    <Link
+                      href="/dashboard/docs/recent"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>{t('nav.recentPages')}</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* If in project, show quick project info — hidden when collapsed */}
+            {!sidebarCollapsed && isInProject && currentProject && (
+              <div className="mt-auto border-t border-slate-200 dark:border-white/[0.08] p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded text-xs"
+                    style={{ backgroundColor: currentProject.color || '#3B82F6' }}
+                  >
+                    {currentProject.icon || '📁'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">{currentProject.name}</p>
+                    <p className="text-xs text-white/30">{currentProject.key}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Collapse / Expand toggle — desktop only */}
+          <div className="hidden md:flex shrink-0 border-t border-slate-200 dark:border-white/[0.08] p-2 justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="h-8 w-8 text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06]"
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {sidebarCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#1B1F23]">
+        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#0B0E11]">
           {children}
         </main>
       </div>

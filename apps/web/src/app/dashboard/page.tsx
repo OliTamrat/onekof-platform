@@ -121,7 +121,7 @@ export default function DashboardPage() {
   // Show loading while checking session
   if (status === 'loading' && !loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
           <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
   // If loading timed out
   if (status === 'loading' && loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center max-w-md p-6">
           <div className="mb-4 text-yellow-500">
             <AlertCircle className="h-12 w-12 mx-auto" />

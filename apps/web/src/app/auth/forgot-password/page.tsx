@@ -35,23 +35,27 @@ export default function ForgotPasswordPage() {
 
       setStatus('success');
       setMessage(t('auth.resetInstructionsSent'));
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus('error');
-      setMessage(error.message || t('auth.somethingWentWrongTryAgain'));
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : t('auth.somethingWentWrongTryAgain')
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Language Switcher */}
       <div className="fixed top-4 right-4 z-50">
         <LanguageSwitcher />
       </div>
 
       {/* Left side - Branding */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-[#0EA5E9] via-[#0284C7] to-[#0369A1] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
@@ -63,56 +67,56 @@ export default function ForgotPasswordPage() {
 
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold leading-tight text-white">
+            <h1 className="font-serif font-medium text-4xl leading-tight text-white">
               {t('auth.forgotPasswordTitle')}
-              <br />
-
             </h1>
-            <p className="text-lg text-white/90">
+            <p className="text-lg text-white/50">
               {t('auth.resetInstructions')}
             </p>
           </div>
         </div>
 
-        <div className="text-sm text-white/70">
-          © 2026 Onekof. Built with ❤️ in Ethiopia 🇪🇹
+        <div className="text-sm text-white/30">
+          © 2026 Onekof. Built with love in Ethiopia.
         </div>
       </div>
 
       {/* Right side - Form */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-20">
+      <div className="flex w-full flex-col justify-center bg-[#0B0E11] px-6 py-12 lg:w-1/2 lg:px-20">
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2]">
               <span className="text-xl font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Onekof</span>
+            <span className="text-xl font-bold text-white">Onekof</span>
           </Link>
 
           {/* Back to signin link */}
           <Link
             href="/auth/signin"
-            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t('auth.backToSignIn')}
           </Link>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">{t('auth.resetPasswordTitle')}</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="font-serif font-medium text-3xl text-white">
+              {t('auth.resetPasswordTitle')}
+            </h2>
+            <p className="mt-2 text-sm text-white/50">
               {t('resetPage.enterEmailInstructions')}
             </p>
           </div>
 
           {/* Status messages */}
           {status === 'success' && (
-            <div className="mb-6 flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4">
-              <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-green-600" />
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#12161B] p-4">
+              <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-400 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-green-800">{message}</p>
-                <p className="mt-1 text-xs text-green-700">
+                <p className="text-sm font-medium text-white/85">{message}</p>
+                <p className="mt-1 text-xs text-white/50">
                   {t('resetPage.checkSpamFolder')}
                 </p>
               </div>
@@ -120,8 +124,8 @@ export default function ForgotPasswordPage() {
           )}
 
           {status === 'error' && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-              <AlertCircle className="h-4 w-4" />
+            <div className="mb-6 flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#12161B] p-3 text-sm text-red-400">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
               {message}
             </div>
           )}
@@ -129,18 +133,18 @@ export default function ForgotPasswordPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-white/85 mb-1">
                 {t('auth.emailAddress')}
               </label>
               <div className="relative mt-1">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-[#0EA5E9] focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20"
+                  className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-2.5 pl-10 pr-4 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
                   placeholder="you@company.com"
                 />
               </div>
@@ -149,7 +153,7 @@ export default function ForgotPasswordPage() {
             <Button
               type="submit"
               disabled={isLoading || status === 'success'}
-              className="w-full rounded-lg py-2.5 text-sm font-semibold"
+              className="w-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] py-2.5 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-opacity"
             >
               {isLoading ? (
                 <>
@@ -168,9 +172,9 @@ export default function ForgotPasswordPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-white/50">
               {t('auth.rememberPassword')}{' '}
-              <Link href="/auth/signin" className="font-semibold text-[#0EA5E9] hover:text-[#0284C7]">
+              <Link href="/auth/signin" className="font-semibold text-[#2BB5A2] hover:text-[#1C8C7D] transition-colors">
                 {t('common.signIn')}
               </Link>
             </p>

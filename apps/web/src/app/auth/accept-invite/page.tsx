@@ -107,10 +107,10 @@ function AcceptInviteContent() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
-          <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">{t('invite.validating')}</p>
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#2BB5A2]" />
+          <p className="mt-4 text-sm text-white/50">{t('invite.validating')}</p>
         </div>
       </div>
     );
@@ -118,15 +118,15 @@ function AcceptInviteContent() {
 
   if (error && !invitation) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
-        <div className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-            <XCircle className="h-8 w-8 text-red-500" />
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11] px-4">
+        <div className="w-full max-w-md rounded-xl border border-white/[0.08] bg-[#12161B] p-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-900/20">
+            <XCircle className="h-8 w-8 text-red-400" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{t('invite.invalidInvitation')}</h1>
-          <p className="mb-6 text-sm text-gray-600 dark:text-slate-400">{error}</p>
+          <h1 className="mb-2 text-xl font-semibold text-white/85">{t('invite.invalidInvitation')}</h1>
+          <p className="mb-6 text-sm text-white/50">{error}</p>
           <Link href="/auth/signin">
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+            <Button className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity">
               {t('invite.goToSignIn')}
             </Button>
           </Link>
@@ -137,16 +137,16 @@ function AcceptInviteContent() {
 
   if (success && resultOrg) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
-        <div className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-            <CheckCircle2 className="h-8 w-8 text-green-500" />
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11] px-4">
+        <div className="w-full max-w-md rounded-xl border border-white/[0.08] bg-[#12161B] p-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-900/20">
+            <CheckCircle2 className="h-8 w-8 text-emerald-400" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{t('invite.welcome')}</h1>
-          <p className="mb-6 text-sm text-gray-600 dark:text-slate-400">{resultMessage}</p>
+          <h1 className="mb-2 text-xl font-semibold text-white/85">{t('invite.welcome')}</h1>
+          <p className="mb-6 text-sm text-white/50">{resultMessage}</p>
           <Button
             onClick={() => router.push('/dashboard')}
-            className="bg-primary-500 hover:bg-primary-600 text-white"
+            className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity"
           >
             {t('invite.goToDashboard')}
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -157,9 +157,10 @@ function AcceptInviteContent() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23] px-4">
-      <div className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
-        <div className="bg-gradient-to-br from-primary-500 to-primary-700 px-8 py-8 text-center">
+    <div className="flex min-h-screen items-center justify-center bg-[#0B0E11] px-4">
+      <div className="w-full max-w-md rounded-xl border border-white/[0.08] bg-[#12161B] overflow-hidden">
+        {/* Invitation header banner */}
+        <div className="bg-gradient-to-br from-[#1C8C7D] to-[#0B3A34] px-8 py-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
             <Users className="h-7 w-7 text-white" />
           </div>
@@ -169,36 +170,37 @@ function AcceptInviteContent() {
 
         <div className="p-8">
           {invitation?.isExpired ? (
-            <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 p-4 text-center">
-              <XCircle className="mx-auto mb-2 h-6 w-6 text-red-500" />
-              <p className="text-sm font-medium text-red-700 dark:text-red-400">
+            <div className="mb-6 rounded-xl border border-white/[0.08] bg-[#181D23] p-4 text-center">
+              <XCircle className="mx-auto mb-2 h-6 w-6 text-red-400" />
+              <p className="text-sm font-medium text-white/85">
                 {t('invite.invitationExpired')}
               </p>
-              <p className="mt-1 text-xs text-red-600 dark:text-red-500">
+              <p className="mt-1 text-xs text-white/50">
                 {t('invite.askNewInvitation')}
               </p>
             </div>
           ) : (
             <>
+              {/* Invitation detail rows */}
               <div className="mb-6 space-y-3">
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.organization')}</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{invitation?.organizationName}</span>
+                <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                  <span className="text-xs font-medium text-white/50">{t('invite.organization')}</span>
+                  <span className="text-sm font-semibold text-white/85">{invitation?.organizationName}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.invitedBy')}</span>
-                  <span className="text-sm text-gray-900 dark:text-white">{invitation?.invitedBy}</span>
+                <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                  <span className="text-xs font-medium text-white/50">{t('invite.invitedBy')}</span>
+                  <span className="text-sm text-white/85">{invitation?.invitedBy}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.role')}</span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-100 dark:bg-primary-900/20 px-2.5 py-0.5 text-xs font-medium text-primary-700 dark:text-primary-400">
+                <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                  <span className="text-xs font-medium text-white/50">{t('invite.role')}</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 px-2.5 py-0.5 text-xs font-medium text-[#2BB5A2]">
                     <Shield className="h-3 w-3" />
                     {invitation?.role}
                   </span>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-[#1B1F23] p-3">
-                  <span className="text-xs font-medium text-gray-500 dark:text-slate-400">{t('invite.expires')}</span>
-                  <span className="inline-flex items-center gap-1 text-xs text-gray-600 dark:text-slate-400">
+                <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                  <span className="text-xs font-medium text-white/50">{t('invite.expires')}</span>
+                  <span className="inline-flex items-center gap-1 text-xs text-white/50">
                     <Clock className="h-3 w-3" />
                     {invitation?.expiresAt ? new Date(invitation.expiresAt).toLocaleDateString() : ''}
                   </span>
@@ -206,21 +208,21 @@ function AcceptInviteContent() {
               </div>
 
               {error && (
-                <div className="mb-4 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 p-3 text-center">
-                  <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+                <div className="mb-4 rounded-xl border border-white/[0.08] bg-[#181D23] p-3 text-center">
+                  <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
 
               {sessionStatus === 'unauthenticated' ? (
                 <div className="space-y-3">
-                  <p className="text-center text-sm text-gray-600 dark:text-slate-400">
+                  <p className="text-center text-sm text-white/50">
                     {t('invite.signInOrCreate')}
                   </p>
                   <Link
                     href={`/auth/signin?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`}
                     className="block"
                   >
-                    <Button className="w-full bg-primary-500 hover:bg-primary-600 text-white">
+                    <Button className="w-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity">
                       {t('invite.signInToAccept')}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -229,7 +231,10 @@ function AcceptInviteContent() {
                     href={`/auth/signup?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`}
                     className="block"
                   >
-                    <Button variant="outline" className="w-full border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white">
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-full border-white/[0.08] bg-transparent text-white/85 hover:bg-white/[0.06] hover:text-white"
+                    >
                       {t('invite.createAccount')}
                     </Button>
                   </Link>
@@ -238,7 +243,7 @@ function AcceptInviteContent() {
                 <Button
                   onClick={handleAccept}
                   disabled={accepting}
-                  className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+                  className="w-full rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity"
                 >
                   {accepting ? (
                     <>
@@ -265,10 +270,10 @@ export default function AcceptInvitePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-[#1B1F23]">
+        <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
           <div className="text-center">
-            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-500" />
-            <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">Loading...</p>
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#2BB5A2]" />
+            <p className="mt-4 text-sm text-white/50">Loading...</p>
           </div>
         </div>
       }

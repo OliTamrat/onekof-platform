@@ -16,6 +16,16 @@ import { useLanguage } from '@/contexts/language-context';
 import { findSubdomainBase } from '@/lib/routing/subdomain';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
+// Color token map — used to build Tailwind classes for icon boxes per org type
+const ORG_TYPE_COLORS: Record<string, { icon: string; box: string; border: string }> = {
+  teal:    { icon: 'text-[#1C8C7D]',  box: 'bg-[#1C8C7D]/10',  border: 'border-[#1C8C7D]/15' },
+  blue:    { icon: 'text-blue-400',   box: 'bg-blue-400/10',   border: 'border-blue-400/15'  },
+  purple:  { icon: 'text-purple-400', box: 'bg-purple-400/10', border: 'border-purple-400/15'},
+  emerald: { icon: 'text-emerald-400',box: 'bg-emerald-400/10',border: 'border-emerald-400/15'},
+  amber:   { icon: 'text-amber-400',  box: 'bg-amber-400/10',  border: 'border-amber-400/15' },
+  orange:  { icon: 'text-orange-400', box: 'bg-orange-400/10', border: 'border-orange-400/15'},
+  red:     { icon: 'text-red-400',    box: 'bg-red-400/10',    border: 'border-red-400/15'   },
+};
 
 function OnboardingContent() {
   const router = useRouter();
@@ -256,7 +266,7 @@ function OnboardingContent() {
 
   if (status === 'loading' || status === 'unauthenticated') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
         <Loader2 className="h-8 w-8 animate-spin text-primary-400" />
       </div>
     );
@@ -265,7 +275,7 @@ function OnboardingContent() {
   const selectedOrgType = ORG_TYPES.find(t => t.id === organizationType);
 
   return (
-    <div className="min-h-screen bg-[#1B1F23] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0B0E11] relative overflow-hidden">
       {/* Language Switcher */}
       <div className="fixed top-4 right-4 z-50">
         <LanguageSwitcher />
@@ -273,7 +283,7 @@ function OnboardingContent() {
 
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gradient-to-br from-primary-500/[0.08] to-primary-700/[0.05] blur-3xl animate-pulse sm:-top-40 sm:-right-40 sm:h-96 sm:w-96" />
+        <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gradient-to-br from-primary-500/[0.06] to-primary-700/[0.04] blur-3xl animate-pulse sm:-top-40 sm:-right-40 sm:h-96 sm:w-96" />
         <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-gradient-to-tr from-primary-500/[0.06] to-primary-700/[0.04] blur-3xl animate-pulse sm:-bottom-40 sm:-left-40 sm:h-96 sm:w-96" style={{ animationDelay: '2s' }} />
       </div>
 
@@ -294,18 +304,18 @@ function OnboardingContent() {
               </div>
               <div className="text-left">
                 <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
-                <p className="text-xs text-white/60">{t('onboardingPage.enterprisePM')}</p>
+                <p className="text-xs text-white/50">{t('onboardingPage.enterprisePM')}</p>
               </div>
             </div>
 
             {/* Greeting */}
             <div>
-              <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-2">
+              <h2 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white mb-2">
                 {currentStep === 1 && t('onboardingPage.whatTypeWorkspace')}
                 {currentStep === 2 && t('onboardingPage.tellUsAboutOrg')}
                 {currentStep === 3 && t('onboardingPage.finalStepCreate')}
               </h2>
-              <p className="text-white/60">
+              <p className="text-white/50">
                 {currentStep === 1 && t('onboardingPage.choosePersonalOrOrg')}
                 {currentStep === 2 && t('onboardingPage.personalizeExperience')}
                 {currentStep === 3 && t('onboardingPage.readyInSeconds')}
@@ -321,43 +331,56 @@ function OnboardingContent() {
             </div>
             <div className="h-2 w-full rounded-full bg-white/[0.06]">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-700 transition-all duration-500 shadow-lg shadow-primary-500/30"
+                className="h-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] transition-all duration-500 shadow-lg shadow-primary-500/30"
                 style={{ width: `${(currentStep / totalSteps) * 100}%` }}
               />
             </div>
           </div>
 
           {/* Main Card */}
-          <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl p-4 sm:p-8 md:p-10">
-            {/* STEP 1: Organization Type - CRITICAL FOR CATEGORIZATION */}
+          <div className="rounded-2xl border border-white/[0.08] bg-[#12161B] shadow-2xl p-8 sm:p-10">
+
+            {/* STEP 1: Organization Type */}
             {currentStep === 1 && (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {ORG_TYPES.map((type) => {
                     const Icon = type.icon;
+                    const isSelected = organizationType === type.id;
+                    const colors = ORG_TYPE_COLORS[type.color] ?? ORG_TYPE_COLORS['teal'];
                     return (
                       <button
                         key={type.id}
                         onClick={() => setOrganizationType(type.id)}
-                        className={`relative rounded-xl border p-4 text-left transition-all h-auto flex flex-col items-start ${
-                          organizationType === type.id
-                            ? 'border-primary-500 bg-primary-500/10 shadow-lg shadow-primary-500/20'
-                            : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:shadow-md'
+                        className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 cursor-pointer group ${
+                          isSelected
+                            ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg shadow-primary-500/10'
+                            : 'border-white/[0.08] bg-[#12161B] hover:border-white/[0.15]'
                         }`}
                       >
-                        {organizationType === type.id && (
-                          <div className="absolute top-3 right-3">
+                        {/* Top glow line on hover */}
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                        {isSelected && (
+                          <div className="absolute top-4 right-4">
                             <CheckCircle2 className="h-5 w-5 text-primary-400" />
                           </div>
                         )}
-                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/20 border border-primary-500/30 mb-3">
-                          <Icon className="h-5 w-5 text-primary-400" />
+
+                        {/* Icon box — 48px, per-type color */}
+                        <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl border mb-4 ${colors.box} ${colors.border}`}>
+                          <Icon className={`h-5 w-5 ${colors.icon}`} />
                         </div>
-                        <div className="text-[14px] font-medium text-white mb-1.5">{type.label}</div>
-                        <p className="text-xs text-white/50 mb-2">{type.description}</p>
+
+                        <div className="text-[16px] font-semibold text-white/85 mb-1.5">{type.label}</div>
+                        <p className="text-[13px] text-white/50 mb-3">{type.description}</p>
+
                         <div className="flex flex-wrap gap-1.5">
                           {type.features.slice(0, 2).map((feature) => (
-                            <span key={feature} className="text-xs bg-white/[0.06] text-white/60 px-2 py-0.5 rounded border border-white/[0.06]">
+                            <span
+                              key={feature}
+                              className="text-xs rounded-full border border-white/[0.08] bg-white/[0.03] text-white/50 px-2.5 py-0.5"
+                            >
                               {feature}
                             </span>
                           ))}
@@ -380,7 +403,7 @@ function OnboardingContent() {
                     type="text"
                     value={organizationName}
                     onChange={(e) => setOrganizationName(e.target.value)}
-                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                    className="w-full rounded-xl border border-white/[0.08] bg-[#12161B] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                     placeholder={organizationType === 'government' ? t('onboardingPage.govPlaceholder') : t('onboardingPage.orgPlaceholder')}
                   />
                 </div>
@@ -395,7 +418,7 @@ function OnboardingContent() {
                       type="text"
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                      className="w-full rounded-xl border border-white/[0.08] bg-[#12161B] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                       placeholder={t('onboardingPage.deptPlaceholder')}
                     />
                   </div>
@@ -410,7 +433,7 @@ function OnboardingContent() {
                     <select
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                      className="w-full rounded-xl border border-white/[0.08] bg-[#12161B] py-3.5 px-4 text-white transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                     >
                       <option value="">{t('onboardingPage.selectIndustry')}</option>
                       <option value="technology">{t('onboardingPage.technology')}</option>
@@ -429,17 +452,18 @@ function OnboardingContent() {
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {TEAM_SIZES.map((size) => (
-                      <Button
+                      <button
                         key={size.value}
+                        type="button"
                         onClick={() => setTeamSize(size.value)}
-                        className={`rounded-xl border py-2 px-3 text-sm font-semibold transition-all ${
+                        className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-300 ${
                           teamSize === size.value
-                            ? 'border-primary-500 bg-primary-500/[0.06] text-primary-400'
-                            : 'border-white/[0.08] text-white hover:border-white/[0.15]'
+                            ? 'border-primary-500 bg-primary-500/[0.06] text-white'
+                            : 'border-white/[0.08] bg-[#12161B] text-white/50 hover:border-white/[0.15] hover:text-white/80'
                         }`}
                       >
                         {size.label}
-                      </Button>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -453,7 +477,7 @@ function OnboardingContent() {
                       type="text"
                       value={organizationSlug}
                       onChange={(e) => setOrganizationSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3.5 px-4 text-white placeholder-white/40 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/10 sm:flex-1"
+                      className="w-full rounded-xl border border-white/[0.08] bg-[#12161B] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/10 sm:flex-1"
                       placeholder="my-organization"
                     />
                     <span className="text-sm text-white/50 whitespace-nowrap">.onekof.com</span>
@@ -475,107 +499,120 @@ function OnboardingContent() {
                     {t('onboardingPage.calendarPreference')}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Ethiopian calendar tile */}
                     <div
                       role="button"
                       tabIndex={0}
                       onClick={() => setCalendarPreference('ethiopian')}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('ethiopian'); } }}
-                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 cursor-pointer group ${
                         calendarPreference === 'ethiopian'
-                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
-                          : 'border-white/[0.08] hover:border-white/[0.15]'
+                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg shadow-primary-500/10'
+                          : 'border-white/[0.08] bg-[#12161B] hover:border-white/[0.15]'
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Calendar className="h-4 w-4 text-primary-400" />
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-500/20 border border-primary-500/30">
+                          <Calendar className="h-4 w-4 text-primary-400" />
+                        </div>
                         {calendarPreference === 'ethiopian' && (
-                          <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
+                          <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.ethiopian')}</div>
-                      <div className="text-xs text-white/60">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u12D8\u1218\u1295 \u12A0\u1246\u1323\u1320\u122D'}</div>
+                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.ethiopian')}</div>
+                      <div className="text-[13px] text-white/50">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u12D8\u1218\u1295 \u12A0\u1246\u1323\u1320\u122D'}</div>
                     </div>
 
+                    {/* Gregorian calendar tile */}
                     <div
                       role="button"
                       tabIndex={0}
                       onClick={() => setCalendarPreference('gregorian')}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('gregorian'); } }}
-                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 cursor-pointer group ${
                         calendarPreference === 'gregorian'
-                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
-                          : 'border-white/[0.08] hover:border-white/[0.15]'
+                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg shadow-primary-500/10'
+                          : 'border-white/[0.08] bg-[#12161B] hover:border-white/[0.15]'
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Calendar className="h-4 w-4 text-white/60" />
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.08]">
+                          <Calendar className="h-4 w-4 text-white/50" />
+                        </div>
                         {calendarPreference === 'gregorian' && (
-                          <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
+                          <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.gregorian')}</div>
-                      <div className="text-xs text-white/60">{t('onboardingPage.international')}</div>
+                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.gregorian')}</div>
+                      <div className="text-[13px] text-white/50">{t('onboardingPage.international')}</div>
                     </div>
 
+                    {/* Both calendars tile */}
                     <div
                       role="button"
                       tabIndex={0}
                       onClick={() => setCalendarPreference('both')}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCalendarPreference('both'); } }}
-                      className={`cursor-pointer rounded-xl border p-3 text-left transition-all ${
+                      className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 cursor-pointer group ${
                         calendarPreference === 'both'
-                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg'
-                          : 'border-white/[0.08] hover:border-white/[0.15]'
+                          ? 'border-primary-500 bg-primary-500/[0.06] shadow-lg shadow-primary-500/10'
+                          : 'border-white/[0.08] bg-[#12161B] hover:border-white/[0.15]'
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Globe className="h-4 w-4 text-purple-400" />
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-400/10 border border-purple-400/15">
+                          <Globe className="h-4 w-4 text-purple-400" />
+                        </div>
                         {calendarPreference === 'both' && (
-                          <CheckCircle2 className="h-4 w-4 text-primary-400 ml-auto" />
+                          <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white text-sm mb-0.5">{t('onboardingPage.both')}</div>
-                      <div className="text-xs text-white/60">{t('onboardingPage.showBothCalendars')}</div>
+                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.both')}</div>
+                      <div className="text-[13px] text-white/50">{t('onboardingPage.showBothCalendars')}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Mobile App Promo */}
-                <div className="rounded-xl bg-gradient-to-br from-primary-500/[0.06] to-primary-700/[0.04] border border-primary-500/20 p-4 sm:p-6">
-                  <div className="flex items-center gap-2.5 mb-4 sm:gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 sm:h-12 sm:w-12">
-                      <Smartphone className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+                <div className="rounded-2xl border border-primary-500/20 bg-gradient-to-br from-primary-500/[0.06] to-primary-700/[0.04] p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-700">
+                      <Smartphone className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <div className="font-bold text-white">{t('onboardingPage.downloadMobileApp')}</div>
-                      <div className="text-sm text-white/60">{t('onboardingPage.manageOnTheGo')}</div>
+                      <div className="text-sm text-white/50">{t('onboardingPage.manageOnTheGo')}</div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.06] px-4 py-2.5 text-sm text-white transition-colors hover:bg-white/[0.08]">
                       <span>App Store</span>
                     </a>
-                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm text-white hover:bg-white/[0.08] transition-colors">
+                    <a href="#" className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.06] px-4 py-2.5 text-sm text-white transition-colors hover:bg-white/[0.08]">
                       <span>Google Play</span>
                     </a>
                   </div>
                 </div>
 
-                {/* Summary */}
-                <div className="rounded-xl bg-primary-500/[0.06] border border-primary-500/30 p-4 sm:p-6">
-                  <div className="flex items-start gap-2.5 sm:gap-3">
+                {/* Summary card */}
+                <div className="rounded-2xl border border-white/[0.08] bg-[#12161B] p-6">
+                  <div className="flex items-start gap-3">
                     <Sparkles className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="font-semibold text-white mb-2">{t('onboardingPage.youreAllSet')}</p>
-                      <p className="text-sm text-white/60 mb-3">
+                      <p className="text-sm text-white/50 mb-4">
                         {t('onboardingPage.basedOnSelections')}{' '}
                         <strong className="text-white">{selectedOrgType?.label}</strong> {t('onboardingPage.organization')}.
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="space-y-2">
                         {selectedOrgType?.features.map((feature) => (
-                          <span key={feature} className="text-xs bg-white/[0.06] text-primary-300 px-2 py-1 rounded border border-primary-500/30">
-                            {feature}
-                          </span>
+                          <div key={feature} className="flex items-center gap-2.5">
+                            <CheckCircle2 className="h-4 w-4 text-primary-400 flex-shrink-0" />
+                            <span className="text-[13px] text-white/60">{feature}</span>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -590,7 +627,7 @@ function OnboardingContent() {
             {currentStep > 1 && (
               <Button variant="outline"
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#1B1F23] px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
+                className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0E11] px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>{t('onboardingPage.back')}</span>
@@ -604,7 +641,7 @@ function OnboardingContent() {
                   (currentStep === 1 && !canProceedStep1) ||
                   (currentStep === 2 && !canProceedStep2)
                 }
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
+                className="ml-auto group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-4 py-2.5 text-[13px] font-medium text-white shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <div className="flex items-center gap-2">
@@ -616,7 +653,7 @@ function OnboardingContent() {
               <Button
                 onClick={handleComplete}
                 disabled={isLoading}
-                className="ml-auto group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-500 to-primary-700 px-4 py-2.5 text-[13px] font-medium text-white/50 shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
+                className="ml-auto group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-4 py-2.5 text-[13px] font-medium text-white shadow-lg shadow-primary-500/20 transition-all hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500/30 disabled:opacity-50 disabled:hover:scale-100 sm:px-6 sm:py-3"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 {isLoading ? (
@@ -635,7 +672,7 @@ function OnboardingContent() {
           </div>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-xs text-white/50">
+          <p className="mt-8 text-center text-xs text-white/30">
             &copy; 2026 Onekof &middot; {t('onboardingPage.builtForEthiopia')}
           </p>
         </div>
@@ -647,7 +684,7 @@ function OnboardingContent() {
 export default function OnboardingPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
         <Loader2 className="h-8 w-8 animate-spin text-primary-400" />
       </div>
     }>
