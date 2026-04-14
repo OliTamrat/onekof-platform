@@ -205,7 +205,7 @@ export default function IssuesBoardPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-slate-500">{t('dashboard.pleaseSignInBoard')}</p>
+          <p className="text-white/30">{t('dashboard.pleaseSignInBoard')}</p>
         </div>
       </AppLayout>
     );
@@ -230,13 +230,13 @@ export default function IssuesBoardPage() {
         insightsOpen={insightsOpen}
       />
 
-      <div className="flex h-full flex-col bg-slate-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-slate-50 dark:bg-[#0B0E11]">
         <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.loadingBoard')}</p>
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-white/[0.08]"></div>
+                <p className="text-sm text-slate-600 dark:text-white/50">{t('dashboard.loadingBoard')}</p>
               </div>
             </div>
           ) : (
@@ -249,25 +249,25 @@ export default function IssuesBoardPage() {
                   return (
                     <div
                       key={column.id}
-                      className="flex w-72 sm:w-80 shrink-0 flex-col rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-sm"
+                      className="flex w-72 sm:w-80 shrink-0 flex-col rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] shadow-sm"
                     >
                       {/* Column Header */}
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 p-4">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] p-4">
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                          <Icon className="h-4 w-4 text-slate-600 dark:text-white/50" />
                           <h3 className="font-semibold text-slate-900 dark:text-white">
                             {t(column.title)}
                           </h3>
-                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-slate-100 dark:bg-[#282E33] px-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+                          <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-slate-100 dark:bg-[#181D23] px-2 text-xs font-medium text-slate-600 dark:text-white/50">
                             {columnTasks.length}
                           </span>
                         </div>
                         <Button variant="ghost" size="icon"
                           onClick={() => setShowCreateModal(true)}
-                          className="rounded p-1 hover:bg-slate-100 dark:hover:bg-[#282E33] transition-colors"
+                          className="rounded p-1 hover:bg-slate-100 dark:hover:bg-[#181D23] transition-colors"
                           title={t('dashboard.addTask')}
                         >
-                          <Plus className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                          <Plus className="h-4 w-4 text-slate-600 dark:text-white/50" />
                         </Button>
                       </div>
 
@@ -292,7 +292,7 @@ export default function IssuesBoardPage() {
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                       onClick={() => setSelectedTaskId(task.id)}
-                                      className={`group cursor-grab rounded-lg border-l-4 bg-white dark:bg-[#22272B] p-3 shadow-sm transition-shadow hover:shadow-md ${
+                                      className={`group cursor-grab rounded-lg border-l-4 bg-white dark:bg-[#12161B] p-3 shadow-sm transition-shadow hover:shadow-md ${
                                         snapshot.isDragging ? 'shadow-lg' : ''
                                       }`}
                                       style={{
@@ -310,7 +310,7 @@ export default function IssuesBoardPage() {
                                           <div className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
                                             dueDate.isOverdue
                                               ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                                              : 'bg-slate-100 text-slate-600 dark:bg-[#282E33] dark:text-slate-400'
+                                              : 'bg-slate-100 text-slate-600 dark:bg-[#181D23] dark:text-white/50'
                                           }`}>
                                             <Clock className="h-3 w-3" />
                                             {dueDate.formatted}
@@ -325,7 +325,7 @@ export default function IssuesBoardPage() {
 
                                       {/* Task Description */}
                                       {task.description && (
-                                        <p className="text-xs text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                                        <p className="text-xs text-slate-600 dark:text-white/50 mb-3 line-clamp-2">
                                           {task.description}
                                         </p>
                                       )}
@@ -337,7 +337,7 @@ export default function IssuesBoardPage() {
                                             className="h-2 w-2 rounded-full"
                                             style={{ backgroundColor: task.project.color }}
                                           />
-                                          <span className="text-xs text-slate-500 dark:text-slate-400">
+                                          <span className="text-xs text-white/30 dark:text-white/50">
                                             {task.project.key}
                                           </span>
                                         </div>
@@ -365,13 +365,13 @@ export default function IssuesBoardPage() {
                                           {task.tags.slice(0, 2).map((tag, idx) => (
                                             <span
                                               key={idx}
-                                              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#282E33] text-slate-600 dark:text-slate-400"
+                                              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#181D23] text-slate-600 dark:text-white/50"
                                             >
                                               {tag}
                                             </span>
                                           ))}
                                           {task.tags.length > 2 && (
-                                            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                                            <span className="text-[10px] text-white/30 dark:text-white/50">
                                               +{task.tags.length - 2}
                                             </span>
                                           )}
@@ -388,7 +388,7 @@ export default function IssuesBoardPage() {
                             {columnTasks.length === 0 && !snapshot.isDraggingOver && (
                               <div className="flex flex-col items-center justify-center py-8 text-center">
                                 <div className={`mb-2 h-2 w-2 rounded-full ${column.color} opacity-30`} />
-                                <p className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.noTasks')}</p>
+                                <p className="text-xs text-white/30 dark:text-white/50">{t('dashboard.noTasks')}</p>
                               </div>
                             )}
                           </div>

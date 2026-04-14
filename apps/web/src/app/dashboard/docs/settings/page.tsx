@@ -42,9 +42,9 @@ export default function DocsSettingsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#1C8C7D] text-white font-semibold">
                 <BookOpen className="h-6 w-6" />
@@ -65,7 +65,7 @@ export default function DocsSettingsPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-[#1C8C7D] text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -78,7 +78,7 @@ export default function DocsSettingsPage() {
 
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-4xl">
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 {t('docs.accessSettings')}
               </h2>
@@ -96,7 +96,7 @@ export default function DocsSettingsPage() {
                     type="button"
                     onClick={() => setPublicAccess((v) => !v)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] ${
-                      publicAccess ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                      publicAccess ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
                     }`}
                     aria-checked={publicAccess}
                     role="switch"
@@ -121,7 +121,7 @@ export default function DocsSettingsPage() {
                     type="button"
                     onClick={() => setCommentingEnabled((v) => !v)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] ${
-                      commentingEnabled ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                      commentingEnabled ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
                     }`}
                     aria-checked={commentingEnabled}
                     role="switch"

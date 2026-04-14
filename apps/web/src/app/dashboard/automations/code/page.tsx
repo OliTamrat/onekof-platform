@@ -28,10 +28,10 @@ export default function AutomationsCodePage() {
   const { t } = useLanguage();
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <Code className="h-6 w-6" />
@@ -61,7 +61,7 @@ export default function AutomationsCodePage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -80,7 +80,7 @@ export default function AutomationsCodePage() {
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                 {t('automations.codeTitle')}
               </h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
+              <p className="mt-2 text-sm text-gray-600 dark:text-white/50">
                 {t('automations.codeDesc')} — {t('automations.comingSoon')}
               </p>
             </div>

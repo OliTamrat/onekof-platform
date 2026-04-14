@@ -82,9 +82,9 @@ export default function AutomationsSummaryPage() {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-          <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
+          <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                   <BarChart3 className="h-6 w-6" />
@@ -102,7 +102,7 @@ export default function AutomationsSummaryPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -116,14 +116,14 @@ export default function AutomationsSummaryPage() {
             <div className="max-w-7xl mx-auto space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 animate-pulse">
-                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24 mb-3"></div>
-                    <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-16 mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
+                  <div key={i} className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 dark:bg-white/[0.08] rounded w-24 mb-3"></div>
+                    <div className="h-8 bg-gray-200 dark:bg-white/[0.08] rounded w-16 mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-white/[0.08] rounded w-20"></div>
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-slate-400">
+              <div className="text-center py-12 text-gray-500 dark:text-white/50">
                 {t('automations.summaryLoadingAnalytics')}
               </div>
             </div>
@@ -135,10 +135,10 @@ export default function AutomationsSummaryPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <BarChart3 className="h-6 w-6" />
@@ -150,7 +150,7 @@ export default function AutomationsSummaryPage() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value as 'week' | 'month' | 'quarter')}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="week">{t('automations.summaryLast7Days')}</option>
                 <option value="month">{t('automations.summaryLast30Days')}</option>
@@ -177,7 +177,7 @@ export default function AutomationsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -234,7 +234,7 @@ export default function AutomationsSummaryPage() {
             {/* Charts and Lists */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Automations by Entity */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryByEntity')}</h3>
                 <div className="space-y-4">
                   <AutomationTypeBar label={t('automations.summaryIssues')} count={automationsByEntity.issue} total={totalAutomations} color="bg-blue-500" />
@@ -245,7 +245,7 @@ export default function AutomationsSummaryPage() {
               </div>
 
               {/* Automations by Scope */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryByScope')}</h3>
                 <div className="space-y-4">
                   <StatusBar label={t('automations.summaryOrganization')} count={automationsByScope.organization} total={totalAutomations} color="bg-indigo-500" />
@@ -255,7 +255,7 @@ export default function AutomationsSummaryPage() {
               </div>
 
               {/* Execution Stats */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryExecutionStats')}</h3>
                 <div className="space-y-4">
                   <ExecutionBar label={t('automations.summarySuccessful')} count={totalSuccesses} total={totalExecutions} color="bg-green-500" icon={CheckCircle2} />
@@ -264,7 +264,7 @@ export default function AutomationsSummaryPage() {
               </div>
 
               {/* AI-Generated Automations */}
-              <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryAiAssistance')}</h3>
                 <div className="flex items-center justify-center h-40">
                   <div className="text-center">
@@ -272,7 +272,7 @@ export default function AutomationsSummaryPage() {
                       <Sparkles className="h-12 w-12 text-amber-500" />
                     </div>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{aiGeneratedAutomations}</p>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">{t('automations.summaryAiGeneratedCount')}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/50">{t('automations.summaryAiGeneratedCount')}</p>
                     <p className="text-xs text-gray-500 dark:text-[#6B7684] mt-2">
                       {totalAutomations > 0 ? Math.round((aiGeneratedAutomations / totalAutomations) * 100) : 0}{t('automations.summaryOfTotal')}
                     </p>
@@ -282,16 +282,16 @@ export default function AutomationsSummaryPage() {
             </div>
 
             {/* Recent Automations */}
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryRecent')}</h3>
               <div className="space-y-3">
                 {automations.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500 dark:text-slate-400">
+                  <div className="text-center py-8 text-gray-500 dark:text-white/50">
                     {t('automations.summaryNoAutomationsYet')}
                   </div>
                 ) : (
                   automations.slice(0, 5).map((automation: any) => (
-                    <div key={automation.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#1B1F23] hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors cursor-pointer">
+                    <div key={automation.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#0B0E11] hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors cursor-pointer">
                       <div className="flex h-8 w-8 items-center justify-center rounded" style={{ backgroundColor: automation.color || '#6B7684' }}>
                         <Zap className="h-4 w-4 text-white" />
                       </div>
@@ -300,7 +300,7 @@ export default function AutomationsSummaryPage() {
                           {automation.name}
                           {automation.aiGenerated && <Sparkles className="h-3 w-3 text-amber-500" />}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                        <div className="text-xs text-gray-500 dark:text-white/50 mt-1">
                           {automation.entityType} • {automation.executionCount} {t('automations.runs')}
                         </div>
                       </div>
@@ -338,9 +338,9 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   const isPositive = trend === 'up' ? change >= 0 : change <= 0;
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-gray-600 dark:text-slate-400">{title}</span>
+        <span className="text-sm font-medium text-gray-600 dark:text-white/50">{title}</span>
         <div className={`flex h-8 w-8 items-center justify-center rounded ${iconColor}`}>
           <Icon className="h-4 w-4 text-white" />
         </div>
@@ -351,7 +351,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
           {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
           {Math.abs(change)}%
         </span>
-        <span className="text-gray-500 dark:text-slate-400">{changeLabel}</span>
+        <span className="text-gray-500 dark:text-white/50">{changeLabel}</span>
       </div>
     </div>
   );
@@ -366,7 +366,7 @@ function AutomationTypeBar({ label, count, total, color }: { label: string; coun
         <span className="text-sm font-medium text-gray-900 dark:text-white">{label}</span>
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
-      <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
         <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
@@ -382,7 +382,7 @@ function StatusBar({ label, count, total, color }: { label: string; count: numbe
         <span className="text-sm font-medium text-gray-900 dark:text-white">{label}</span>
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
-      <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
         <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
@@ -396,12 +396,12 @@ function ExecutionBar({ label, count, total, color, icon: Icon }: { label: strin
     <div>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+          <Icon className="h-4 w-4 text-gray-600 dark:text-white/50" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">{label}</span>
         </div>
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>
       </div>
-      <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
         <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${percentage}%` }} />
       </div>
     </div>

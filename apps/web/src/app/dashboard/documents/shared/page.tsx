@@ -102,7 +102,7 @@ export default function DocumentsSharedPage() {
         ) : documents.length === 0 ? (
           <div className="text-center py-16">
             <Users className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-white/50">
               {t('documents.noSharedDocuments')}
             </p>
           </div>
@@ -111,7 +111,7 @@ export default function DocumentsSharedPage() {
             {documents.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all cursor-pointer"
+                className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all cursor-pointer"
               >
                 <div className="flex items-start gap-3">
                   <FileText className="h-5 w-5 text-[#1C8C7D] flex-shrink-0" />
@@ -119,7 +119,7 @@ export default function DocumentsSharedPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 truncate">
                       {doc.title || doc.fileName}
                     </h3>
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                       {doc.uploadedBy && (
                         <span className="flex items-center gap-1">
                           <User className="h-3 w-3" />

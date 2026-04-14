@@ -110,12 +110,12 @@ export default function CalendarPage() {
         showInsights
       />
 
-      <div className="flex h-full flex-col bg-white dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-white dark:bg-[#0B0E11]">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-slate-700"></div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{t('dashboard.loadingCalendar')}</p>
+              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-white/[0.08]"></div>
+              <p className="text-sm text-slate-500 dark:text-white/50">{t('dashboard.loadingCalendar')}</p>
             </div>
           </div>
         ) : (

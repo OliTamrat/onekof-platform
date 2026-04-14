@@ -118,21 +118,21 @@ export default function AutomationsHistoryPage() {
       />
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.historyTotalExecutions')}</div>
+          <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historyTotalExecutions')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredHistory.length}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.historySuccessful')}</div>
+          <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historySuccessful')}</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{totalSuccessful}</div>
           </div>
-          <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-slate-400">{t('automations.historyFailed')}</div>
+          <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
+            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historyFailed')}</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{totalFailed}</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-6">
+        <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -140,19 +140,19 @@ export default function AutomationsHistoryPage() {
               placeholder={t('automations.historySearchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-slate-400">{t('automations.loading')}</div>
+            <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
           </div>
         ) : filteredHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Zap className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-3" />
-            <p className="text-sm text-gray-500 dark:text-slate-400">{t('automations.noAutomations')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/50">{t('automations.noAutomations')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -160,7 +160,7 @@ export default function AutomationsHistoryPage() {
               <div
                 key={item.id}
                 onClick={() => { setSelectedExecution(item); setIsSlideoutOpen(true); }}
-                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1">
@@ -172,7 +172,7 @@ export default function AutomationsHistoryPage() {
                           {item.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                         <span>{t('automations.historyTriggeredBy')} {item.triggeredBy}</span>
                         <span>{item.executedAt}</span>
                         <span>{item.executionCount} {t('automations.runs')}</span>

@@ -122,10 +122,10 @@ export default function DocsSummaryPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <BookOpen className="h-6 w-6" />
@@ -153,7 +153,7 @@ export default function DocsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -166,7 +166,7 @@ export default function DocsSummaryPage() {
 
         <div className="flex-1 overflow-y-auto p-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
               {t('common.loading')}
             </div>
           )}
@@ -206,7 +206,7 @@ export default function DocsSummaryPage() {
                 {/* Left Column */}
                 <div className="lg:col-span-2 space-y-6">
                   {/* Content Activity */}
-                  <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                  <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white">
                         {t('docs.contentActivity')}
@@ -219,7 +219,7 @@ export default function DocsSummaryPage() {
                             className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                               timeRange === range
                                 ? 'bg-primary-500 text-white'
-                                : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
+                                : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-slate-700'
                             }`}
                           >
                             {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -260,31 +260,31 @@ export default function DocsSummaryPage() {
                               />
                             </div>
                           </div>
-                          <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
+                          <span className="text-xs font-medium text-gray-600 dark:text-white/50">
                             {data.day}
                           </span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
+                    <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-blue-500" />
-                        <span className="text-xs text-gray-600 dark:text-slate-400">{t('docs.created')}</span>
+                        <span className="text-xs text-gray-600 dark:text-white/50">{t('docs.created')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-purple-500" />
-                        <span className="text-xs text-gray-600 dark:text-slate-400">{t('docs.edited')}</span>
+                        <span className="text-xs text-gray-600 dark:text-white/50">{t('docs.edited')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-green-500" />
-                        <span className="text-xs text-gray-600 dark:text-slate-400">{t('docs.viewed10')}</span>
+                        <span className="text-xs text-gray-600 dark:text-white/50">{t('docs.viewed10')}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Popular Pages */}
-                  <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                  <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white">
                         {t('docs.mostPopularPages')}
@@ -298,7 +298,7 @@ export default function DocsSummaryPage() {
                     </div>
 
                     {popularPages.length === 0 ? (
-                      <p className="text-sm text-gray-500 dark:text-slate-400 text-center py-6">
+                      <p className="text-sm text-gray-500 dark:text-white/50 text-center py-6">
                         {t('docs.noPagesYet')}
                       </p>
                     ) : (
@@ -307,7 +307,7 @@ export default function DocsSummaryPage() {
                           <Link
                             key={page.id}
                             href={`/dashboard/docs/pages/${page.id}`}
-                            className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                            className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors"
                           >
                             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-sm font-bold text-white shrink-0">
                               #{index + 1}
@@ -317,10 +317,10 @@ export default function DocsSummaryPage() {
                                 {page.title}
                               </h4>
                               {page.category && (
-                                <p className="text-xs text-gray-500 dark:text-slate-400">{page.category.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-white/50">{page.category.name}</p>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-slate-400 shrink-0">
+                            <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-white/50 shrink-0">
                               <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
                                 {page.viewCount ?? 0}
@@ -334,7 +334,7 @@ export default function DocsSummaryPage() {
 
                   {/* Space Overview */}
                   {categories.length > 0 && (
-                    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">
                         {t('docs.spaceOverview')}
                       </h3>
@@ -342,7 +342,7 @@ export default function DocsSummaryPage() {
                         {categories.map((cat) => (
                           <div
                             key={cat.id}
-                            className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                            className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors"
                           >
                             <div
                               className="flex h-12 w-12 items-center justify-center rounded-lg"
@@ -354,7 +354,7 @@ export default function DocsSummaryPage() {
                               <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                                 {cat.name}
                               </h4>
-                              <div className="flex items-center gap-6 text-xs text-gray-600 dark:text-slate-400">
+                              <div className="flex items-center gap-6 text-xs text-gray-600 dark:text-white/50">
                                 <div className="flex items-center gap-1">
                                   <FileText className="h-3 w-3" />
                                   {cat._count.articles} {t('common.pages')}
@@ -371,7 +371,7 @@ export default function DocsSummaryPage() {
                 {/* Right Column */}
                 <div className="space-y-6">
                   {/* Recent Updates */}
-                  <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                  <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                     <div className="flex items-center gap-2 mb-6">
                       <Zap className="h-5 w-5 text-purple-500" />
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white">
@@ -380,7 +380,7 @@ export default function DocsSummaryPage() {
                     </div>
 
                     {recentArticles.length === 0 ? (
-                      <p className="text-sm text-gray-500 dark:text-slate-400 text-center py-4">
+                      <p className="text-sm text-gray-500 dark:text-white/50 text-center py-4">
                         {t('docs.noPagesYet')}
                       </p>
                     ) : (
@@ -391,14 +391,14 @@ export default function DocsSummaryPage() {
                             href={`/dashboard/docs/pages/${article.id}`}
                             className="flex items-start gap-3 hover:opacity-80 transition-opacity"
                           >
-                            <div className="flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-[#282E33]">
+                            <div className="flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-[#181D23]">
                               <FileText className="h-4 w-4 text-blue-500" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                 {article.title}
                               </p>
-                              <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-1">
+                              <p className="text-xs text-gray-500 dark:text-white/50 mt-1 flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 {new Date(article.updatedAt).toLocaleDateString()}
                               </p>
@@ -419,7 +419,7 @@ export default function DocsSummaryPage() {
                         <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                           {t('docs.docQuality')}
                         </h4>
-                        <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
+                        <p className="text-xs text-gray-600 dark:text-white/50 leading-relaxed">
                           {totalPages > 0
                             ? t('docs.docQualityDesc').replace('{count}', String(totalPages))
                             : t('docs.docQualityEmpty')}
@@ -446,7 +446,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, icon: Icon, iconColor }: MetricCardProps) {
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${iconColor}`}>
           <Icon className="h-6 w-6 text-white" />

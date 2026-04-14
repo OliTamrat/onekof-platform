@@ -15,7 +15,7 @@ export default function GoalsLoading() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#22272B]"
+            className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#12161B]"
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">

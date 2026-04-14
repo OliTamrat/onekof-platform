@@ -109,7 +109,7 @@ export default function DocumentsRecentPage() {
         ) : documents.length === 0 ? (
           <div className="text-center py-16">
             <Clock className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-white/50">
               {t('documents.noDocuments')}
             </p>
           </div>
@@ -118,7 +118,7 @@ export default function DocumentsRecentPage() {
             {documents.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all cursor-pointer"
+                className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export default function DocumentsRecentPage() {
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                         {doc.title || doc.fileName}
                       </h3>
-                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400 mt-1">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-white/50 mt-1">
                         <span>{doc.fileType}</span>
                         {doc.uploadedBy && (
                           <>
@@ -141,7 +141,7 @@ export default function DocumentsRecentPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400 flex-shrink-0">
+                  <div className="text-xs text-gray-600 dark:text-white/50 flex-shrink-0">
                     {formatRelativeTime(doc.updatedAt)}
                   </div>
                 </div>

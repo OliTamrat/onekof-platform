@@ -229,9 +229,9 @@ export default function CreateAutomationPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-4">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -246,7 +246,7 @@ export default function CreateAutomationPage() {
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Create Automation
                 </h1>
-                <p className="text-xs text-gray-600 dark:text-slate-400">
+                <p className="text-xs text-gray-600 dark:text-white/50">
                   Build a custom automation rule step by step
                 </p>
               </div>
@@ -256,7 +256,7 @@ export default function CreateAutomationPage() {
               <Button
                 variant="outline"
                 onClick={() => router.back()}
-                className="border-gray-300 dark:border-slate-700"
+                className="border-gray-300 dark:border-white/[0.08]"
               >
                 Cancel
               </Button>
@@ -296,7 +296,7 @@ export default function CreateAutomationPage() {
                       ? 'bg-primary-500 text-white'
                       : step > s.num
                       ? 'bg-green-500/20 text-green-600 dark:text-green-400'
-                      : 'bg-gray-200 dark:bg-[#282E33] text-gray-600 dark:text-slate-400'
+                      : 'bg-gray-200 dark:bg-[#181D23] text-gray-600 dark:text-white/50'
                   )}
                   onClick={() => setStep(s.num)}
                 >
@@ -307,7 +307,7 @@ export default function CreateAutomationPage() {
                         ? 'bg-white/20'
                         : step > s.num
                         ? 'bg-green-500/30'
-                        : 'bg-gray-300 dark:bg-slate-700'
+                        : 'bg-gray-300 dark:bg-white/[0.08]'
                     )}
                   >
                     {step > s.num ? <CheckCircle2 className="h-3 w-3" /> : s.num}
@@ -322,12 +322,12 @@ export default function CreateAutomationPage() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-6xl">
             {/* Step 1: Configure & Trigger */}
             {step === 1 && (
               <div className="space-y-6">
                 {/* Basic Information */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                     Basic Information
                   </h2>
@@ -397,7 +397,7 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                     Choose what event will trigger this automation to run
                   </p>
 
@@ -410,7 +410,7 @@ export default function CreateAutomationPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, entityType: e.target.value, triggerEvent: '' })
                         }
-                        className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
+                        className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
                       >
                         <option value="">Select entity type...</option>
                         {ENTITY_TYPES.map((entity) => (
@@ -428,7 +428,7 @@ export default function CreateAutomationPage() {
                           id="triggerEvent"
                           value={formData.triggerEvent}
                           onChange={(e) => setFormData({ ...formData, triggerEvent: e.target.value })}
-                          className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
+                          className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
                         >
                           <option value="">Select trigger event...</option>
                           {(TRIGGER_EVENTS[formData.entityType] || []).map((event) => (
@@ -491,17 +491,17 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                     Conditions filter when the automation should run. Leave empty to run on every trigger.
                   </p>
 
                   {conditions.length === 0 ? (
-                    <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700 p-8 text-center">
+                    <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-white/[0.08] p-8 text-center">
                       <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
                       <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
                         No conditions added
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                         This automation will run every time the trigger event occurs
                       </p>
                       <Button onClick={addCondition} variant="outline">
@@ -514,7 +514,7 @@ export default function CreateAutomationPage() {
                       {conditions.map((condition, index) => (
                         <div
                           key={condition.id}
-                          className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4"
+                          className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4"
                         >
                           <div className="flex items-start gap-3">
                             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold shrink-0">
@@ -541,7 +541,7 @@ export default function CreateAutomationPage() {
                                   onChange={(e) =>
                                     updateCondition(condition.id, { operator: e.target.value })
                                   }
-                                  className="flex h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
+                                  className="flex h-9 w-full rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
                                 >
                                   {OPERATORS.map((op) => (
                                     <option key={op.value} value={op.value}>
@@ -615,17 +615,17 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                     Actions are what the automation will do when triggered and conditions are met
                   </p>
 
                   {actions.length === 0 ? (
-                    <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700 p-8 text-center">
+                    <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-white/[0.08] p-8 text-center">
                       <Zap className="h-12 w-12 text-gray-400 mx-auto mb-3" />
                       <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
                         No actions added
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                         Add at least one action for this automation to perform
                       </p>
                       <Button onClick={addAction}>
@@ -638,7 +638,7 @@ export default function CreateAutomationPage() {
                       {actions.map((action, index) => (
                         <div
                           key={action.id}
-                          className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4"
+                          className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4"
                         >
                           <div className="flex items-start gap-3">
                             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-600 dark:text-green-400 text-xs font-bold shrink-0">
@@ -653,7 +653,7 @@ export default function CreateAutomationPage() {
                                   onChange={(e) =>
                                     updateAction(action.id, { type: e.target.value, params: {} })
                                   }
-                                  className="flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
+                                  className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 mt-1"
                                 >
                                   <option value="">Select action...</option>
                                   {ACTION_TYPES.map((actionType) => (
@@ -775,14 +775,14 @@ export default function CreateAutomationPage() {
             {/* Step 4: Review */}
             {step === 4 && (
               <div className="space-y-6">
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                     Review Your Automation
                   </h2>
 
                   <div className="space-y-4">
                     {/* Basic Info */}
-                    <div className="flex items-start gap-3 pb-4 border-b border-gray-200 dark:border-slate-700">
+                    <div className="flex items-start gap-3 pb-4 border-b border-gray-200 dark:border-white/[0.08]">
                       <div
                         className="flex h-12 w-12 items-center justify-center rounded-lg shrink-0"
                         style={{ backgroundColor: formData.color }}
@@ -794,7 +794,7 @@ export default function CreateAutomationPage() {
                           {formData.name || 'Untitled Automation'}
                         </h3>
                         {formData.description && (
-                          <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                             {formData.description}
                           </p>
                         )}
@@ -837,7 +837,7 @@ export default function CreateAutomationPage() {
                         </h4>
                       </div>
                       {conditions.length === 0 ? (
-                        <p className="text-sm text-gray-600 dark:text-slate-400 ml-8 italic">
+                        <p className="text-sm text-gray-600 dark:text-white/50 ml-8 italic">
                           No conditions - runs on every trigger
                         </p>
                       ) : (
@@ -872,7 +872,7 @@ export default function CreateAutomationPage() {
                               {ACTION_TYPES.find((a) => a.value === action.type)?.label}
                             </strong>
                             {Object.keys(action.params).length > 0 && (
-                              <span className="text-gray-600 dark:text-slate-400 ml-1">
+                              <span className="text-gray-600 dark:text-white/50 ml-1">
                                 ({Object.entries(action.params).map(([key, val]) =>
                                   Array.isArray(val) ? `${key}: ${val.join(', ')}` : `${key}: ${val}`
                                 ).join(', ')})

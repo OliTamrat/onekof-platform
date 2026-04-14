@@ -186,7 +186,7 @@ export default function BudgetReportsPage() {
           <div className="text-center py-16">
             <FileSpreadsheet className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Reports Available</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Create budgets with expenses to generate reports.</p>
+            <p className="text-sm text-slate-600 dark:text-white/50">Create budgets with expenses to generate reports.</p>
           </div>
         ) : (
           <>
@@ -199,7 +199,7 @@ export default function BudgetReportsPage() {
                   placeholder="Search reports..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <span className="text-sm text-slate-500">{filteredReports.length} reports</span>
@@ -211,7 +211,7 @@ export default function BudgetReportsPage() {
                 <div
                   key={report.id}
                   onClick={() => { setSelectedReport(report); setIsSlideoutOpen(true); }}
-                  className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-5 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
+                  className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-5 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
                 >
                   <div className="flex items-start gap-3 mb-4">
                     <div className="h-10 w-10 rounded-lg bg-[#1C8C7D]/10 flex items-center justify-center flex-shrink-0">
@@ -246,7 +246,7 @@ export default function BudgetReportsPage() {
                   </div>
 
                   {/* Progress bar */}
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mb-3">
+                  <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-1.5 mb-3">
                     <div
                       className={`h-1.5 rounded-full ${
                         report.utilization > 90 ? 'bg-red-500' :
@@ -258,7 +258,7 @@ export default function BudgetReportsPage() {
 
                   <Button
                     onClick={(e) => { e.stopPropagation(); handleDownload(report); }}
-                    className="w-full flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors"
                   >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
@@ -303,7 +303,7 @@ export default function BudgetReportsPage() {
                   </div>
 
                   {/* Progress bar */}
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-2">
+                  <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2 mt-2">
                     <div
                       className={`h-2 rounded-full ${
                         selectedReport.utilization > 90 ? 'bg-red-500' :
@@ -342,7 +342,7 @@ export default function BudgetReportsPage() {
                           {cat.utilization.toFixed(0)}%
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+                      <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-1.5">
                         <div
                           className={`h-1.5 rounded-full ${
                             cat.utilization > 90 ? 'bg-red-500' :

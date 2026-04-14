@@ -159,7 +159,7 @@ export default function SecuritySettingsPage() {
       )}
 
       {/* 2FA Status Card */}
-      <div className="bg-white dark:bg-[#22272B] rounded-xl border border-gray-200 dark:border-[#374151] shadow-sm">
+      <div className="bg-white dark:bg-[#12161B] rounded-xl border border-gray-200 dark:border-[#374151] shadow-sm">
         <div className="p-6 border-b border-gray-200 dark:border-[#374151]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -261,7 +261,7 @@ export default function SecuritySettingsPage() {
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     placeholder="000000"
-                    className="w-40 px-4 py-2.5 text-center text-lg font-mono tracking-widest border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent"
+                    className="w-40 px-4 py-2.5 text-center text-lg font-mono tracking-widest border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-white/[0.08] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#1C8C7D] focus:border-transparent"
                     maxLength={6}
                   />
                   <Button
@@ -346,7 +346,7 @@ export default function SecuritySettingsPage() {
                   type="password"
                   value={disablePassword}
                   onChange={(e) => setDisablePassword(e.target.value)}
-                  className="w-full max-w-sm px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full max-w-sm px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-white/[0.08] text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   placeholder="Enter your password"
                 />
               </div>

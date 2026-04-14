@@ -12,11 +12,11 @@ export default function BudgetLoading() {
       </div>
       <SkeletonStats count={4} />
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#22272B]">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#12161B]">
           <Skeleton className="mb-4 h-5 w-32" />
           <Skeleton className="h-48 w-full rounded-md" />
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#22272B]">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-white/[0.08] dark:bg-[#12161B]">
           <Skeleton className="mb-4 h-5 w-32" />
           <Skeleton className="h-48 w-full rounded-md" />
         </div>

@@ -77,11 +77,11 @@ export default function TeamsListPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Users className="h-5 w-5" />
@@ -105,7 +105,7 @@ export default function TeamsListPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -117,7 +117,7 @@ export default function TeamsListPage() {
         </div>
 
         {/* Filters */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6 py-3">
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -126,7 +126,7 @@ export default function TeamsListPage() {
                 placeholder={t('teams.searchTeams')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function TeamsListPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 {STATUS_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -149,41 +149,41 @@ export default function TeamsListPage() {
         {/* Table */}
         <div className="flex-1 overflow-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-[#22272B] sticky top-0 border-b border-gray-200 dark:border-slate-700">
+            <thead className="bg-gray-50 dark:bg-[#12161B] sticky top-0 border-b border-gray-200 dark:border-white/[0.08]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('goals.team')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('teams.lead')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('teams.members')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('common.status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('teams.performance')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                   {t('teams.created')}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-[#1B1F23] divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="bg-white dark:bg-[#0B0E11] divide-y divide-gray-200 dark:divide-slate-700">
               {filteredTeams.map((team) => (
                 <tr
                   key={team.id}
                   onClick={() => router.push(`/dashboard/teams/${team.id}`)}
-                  className="hover:bg-gray-50 dark:hover:bg-[#22272B] cursor-pointer transition-colors"
+                  className="hover:bg-gray-50 dark:hover:bg-[#12161B] cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div>
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {team.name}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-slate-400">
+                      <div className="text-sm text-gray-500 dark:text-white/50">
                         {team.description}
                       </div>
                     </div>
@@ -218,7 +218,7 @@ export default function TeamsListPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-white/50">
                       <Calendar className="h-4 w-4" />
                       {new Date(team.created).toLocaleDateString()}
                     </div>
@@ -230,7 +230,7 @@ export default function TeamsListPage() {
 
           {filteredTeams.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-slate-400">{t('teams.noTeamsMatchingFilters')}</p>
+              <p className="text-gray-500 dark:text-white/50">{t('teams.noTeamsMatchingFilters')}</p>
             </div>
           )}
         </div>

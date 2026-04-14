@@ -203,14 +203,14 @@ export default function BacklogPage() {
         showFilters
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Toolbar */}
-        <div className="flex items-center justify-between gap-3 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={toggleSelectAll}
-              className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"
+              className="flex items-center gap-2 text-sm text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white"
             >
               {selectedIds.size > 0 && selectedIds.size === backlogTasks.length ? (
                 <CheckSquare className="h-4 w-4 text-primary-500" />
@@ -278,7 +278,7 @@ export default function BacklogPage() {
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            className={`group flex items-center gap-3 rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 transition-all ${
+                            className={`group flex items-center gap-3 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 transition-all ${
                               snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : 'hover:border-primary-500'
                             }`}
                           >
@@ -317,7 +317,7 @@ export default function BacklogPage() {
                             </span>
 
                             {/* Key */}
-                            <span className="text-xs font-mono text-gray-500 dark:text-slate-400 shrink-0">
+                            <span className="text-xs font-mono text-gray-500 dark:text-white/50 shrink-0">
                               {issue.key}
                             </span>
 
@@ -339,7 +339,7 @@ export default function BacklogPage() {
 
                             {/* Due date */}
                             {issue.dueDate && (
-                              <span className="shrink-0 flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
+                              <span className="shrink-0 flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
                                 <Calendar className="h-3.5 w-3.5" />
                                 {new Date(issue.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                               </span>

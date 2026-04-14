@@ -94,8 +94,8 @@ export default function DocSpaceDetailPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 md:px-6 py-4">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-4 md:px-6 py-4">
           <div className="flex items-center gap-3 mb-4">
             <Link href="/dashboard/docs">
               <Button variant="ghost" size="icon" className="shrink-0">
@@ -115,7 +115,7 @@ export default function DocSpaceDetailPage() {
                     {category.name}
                   </h1>
                   {category.description && (
-                    <p className="text-sm text-gray-500 dark:text-slate-400">{category.description}</p>
+                    <p className="text-sm text-gray-500 dark:text-white/50">{category.description}</p>
                   )}
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function DocSpaceDetailPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500 dark:text-slate-400">
+            <p className="text-sm text-gray-500 dark:text-white/50">
               {!loading && `${articles.length} ${t('common.pages')}`}
             </p>
             <Link href={`/dashboard/docs/pages/new${category ? `?category=${category.id}` : ''}`}>
@@ -142,7 +142,7 @@ export default function DocSpaceDetailPage() {
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
               {t('common.loading')}
             </div>
           )}
@@ -155,12 +155,12 @@ export default function DocSpaceDetailPage() {
           )}
 
           {!loading && !error && articles.length === 0 && (
-            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-white/[0.08]">
               <FolderOpen className="h-12 w-12 text-gray-300 dark:text-slate-700 mb-4" />
               <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {t('emptyStates.noPages')}
               </p>
-              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+              <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
                 {t('emptyStates.noPagesDesc')}
               </p>
               <Link href={`/dashboard/docs/pages/new${category ? `?category=${category.id}` : ''}`}>
@@ -178,7 +178,7 @@ export default function DocSpaceDetailPage() {
                 <Link
                   key={article.id}
                   href={`/dashboard/docs/pages/${article.id}`}
-                  className="flex items-start gap-4 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
+                  className="flex items-start gap-4 bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
                 >
                   <div
                     className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0 mt-0.5"
@@ -194,11 +194,11 @@ export default function DocSpaceDetailPage() {
                       {article.title}
                     </h3>
                     {article.excerpt && (
-                      <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-2 mb-2">
+                      <p className="text-xs text-gray-500 dark:text-white/50 line-clamp-2 mb-2">
                         {article.excerpt}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400">
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {toRelativeTime(article.updatedAt)}

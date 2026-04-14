@@ -33,7 +33,7 @@ const TAB_CONFIGS = [
 ];
 
 const STATUS_CONFIGS = [
-  { id: 'PLANNING', labelKey: 'projectsBoard.status.planning', color: 'border-gray-300 dark:border-slate-700' },
+  { id: 'PLANNING', labelKey: 'projectsBoard.status.planning', color: 'border-gray-300 dark:border-white/[0.08]' },
   { id: 'ACTIVE', labelKey: 'projectsBoard.status.active', color: 'border-blue-300 dark:border-blue-900' },
   { id: 'ON_HOLD', labelKey: 'projectsBoard.status.onHold', color: 'border-yellow-300 dark:border-yellow-900' },
   { id: 'COMPLETED', labelKey: 'projectsBoard.status.completed', color: 'border-green-300 dark:border-green-900' },
@@ -60,10 +60,10 @@ export default function ProjectsBoardPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Folder className="h-5 w-5" />
@@ -93,7 +93,7 @@ export default function ProjectsBoardPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -106,13 +106,13 @@ export default function ProjectsBoardPage() {
           {/* Search */}
           <div className="flex items-center gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
               <input
                 type="text"
                 placeholder={t('projectsBoard.searchProjects')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
               />
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function ProjectsBoardPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}</div>
+              <div className="text-gray-600 dark:text-white/50">{t("common.loading")}</div>
             </div>
           ) : (
             <div className="flex h-full gap-4">
@@ -130,10 +130,10 @@ export default function ProjectsBoardPage() {
                 <div key={column.id} className="flex w-80 flex-shrink-0 flex-col">
                   {/* Column Header */}
                   <div className="mb-3 flex items-center gap-2 px-1">
-                    <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                    <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/50">
                       {t(column.labelKey)}
                     </h3>
-                    <span className="rounded-sm bg-gray-200 dark:bg-slate-700 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-slate-400">
+                    <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/50">
                       {projectsByStatus[column.id]?.length || 0}
                     </span>
                   </div>
@@ -144,7 +144,7 @@ export default function ProjectsBoardPage() {
                       <div
                         key={project.id}
                         onClick={() => router.push(`/dashboard/projects/${project.id}`)}
-                        className={`cursor-pointer rounded-lg border-l-4 ${column.color} border-t border-r border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:shadow-md`}
+                        className={`cursor-pointer rounded-lg border-l-4 ${column.color} border-t border-r border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4 transition-all hover:bg-gray-50 dark:hover:bg-[#181D23] hover:shadow-md`}
                       >
                         <div className="space-y-3">
                           {/* Project Header */}
@@ -160,7 +160,7 @@ export default function ProjectsBoardPage() {
                                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                                   {project.name}
                                 </h4>
-                                <p className="text-xs text-gray-500 dark:text-slate-400">
+                                <p className="text-xs text-gray-500 dark:text-white/50">
                                   {project.key}
                                 </p>
                               </div>
@@ -172,13 +172,13 @@ export default function ProjectsBoardPage() {
 
                           {/* Description */}
                           {project.description && (
-                            <p className="text-sm text-gray-600 dark:text-slate-400 line-clamp-2">
+                            <p className="text-sm text-gray-600 dark:text-white/50 line-clamp-2">
                               {project.description}
                             </p>
                           )}
 
                           {/* Stats */}
-                          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                             <div className="flex items-center gap-1">
                               <Users className="h-3.5 w-3.5" />
                               <span>{project._count?.members || 0} {t('projectsBoard.members')}</span>
@@ -191,11 +191,11 @@ export default function ProjectsBoardPage() {
 
                           {/* Lead */}
                           {project.lead && (
-                            <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-slate-700">
+                            <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.08]">
                               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                                 {project.lead.name?.charAt(0) || 'U'}
                               </div>
-                              <span className="text-xs text-gray-600 dark:text-slate-400">
+                              <span className="text-xs text-gray-600 dark:text-white/50">
                                 {project.lead.name}
                               </span>
                             </div>
@@ -207,7 +207,7 @@ export default function ProjectsBoardPage() {
                     {/* Add Project Button */}
                     <Button
                       onClick={() => router.push('/dashboard/projects?create=true')}
-                      className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white transition-colors"
+                      className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       {t('projectsBoard.addProject')}

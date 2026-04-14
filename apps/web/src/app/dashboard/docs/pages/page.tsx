@@ -73,13 +73,13 @@ export default function DocsPagesPage() {
               placeholder={t('docs.searchPages')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
 
         {loading && (
-          <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+          <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
             {t('common.loading')}
           </div>
         )}
@@ -94,7 +94,7 @@ export default function DocsPagesPage() {
         {!loading && !error && filtered.length === 0 && (
           <div className="text-center py-12">
             <FileText className="h-12 w-12 text-gray-300 dark:text-slate-700 mx-auto mb-4" />
-            <p className="text-sm text-gray-500 dark:text-slate-400">{t('common.noResults')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/50">{t('common.noResults')}</p>
           </div>
         )}
 
@@ -104,7 +104,7 @@ export default function DocsPagesPage() {
               <Link
                 key={article.id}
                 href={`/dashboard/docs/pages/${article.id}`}
-                className="block bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                className="block bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -114,13 +114,13 @@ export default function DocsPagesPage() {
                         {article.title}
                       </h3>
                       {article.category && (
-                        <p className="text-xs text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-xs text-gray-600 dark:text-white/50 mt-1">
                           {article.category.name}
                         </p>
                       )}
                     </div>
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400">
+                  <div className="text-xs text-gray-600 dark:text-white/50">
                     {new Date(article.updatedAt).toLocaleDateString()}
                   </div>
                 </div>

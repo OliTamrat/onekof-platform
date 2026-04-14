@@ -138,20 +138,20 @@ export default function BudgetSettingsPage() {
           <div className="text-center py-16">
             <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budgetSettings.noBudgetsFound')}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{t('budgetSettings.noBudgetsFoundDesc')}</p>
+            <p className="text-sm text-slate-600 dark:text-white/50">{t('budgetSettings.noBudgetsFoundDesc')}</p>
           </div>
         ) : (
           <>
             {/* Budget Selector */}
             {budgets.length > 1 && (
-              <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('budgetSettings.selectBudget')}
                 </label>
                 <select
                   value={selectedBudgetId}
                   onChange={(e) => setSelectedBudgetId(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   {budgets.map((b: any) => (
                     <option key={b.id} value={b.id}>
@@ -163,7 +163,7 @@ export default function BudgetSettingsPage() {
             )}
 
             {/* General Settings */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <DollarSign className="h-5 w-5 text-[#F59E0B]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.generalSettings')}</h2>
@@ -177,7 +177,7 @@ export default function BudgetSettingsPage() {
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
                     <option value="ETB">{t('budgetSettings.etbBirr')}</option>
                     <option value="USD">{t('budgetSettings.usdDollar')}</option>
@@ -193,7 +193,7 @@ export default function BudgetSettingsPage() {
                   <select
                     value={fiscalYearStart}
                     onChange={(e) => setFiscalYearStart(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
                     <option value="01">{t('budgetSettings.januaryMonth')}</option>
                     <option value="02">{t('budgetSettings.februaryMonth')}</option>
@@ -213,7 +213,7 @@ export default function BudgetSettingsPage() {
             </div>
 
             {/* Notifications */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <Bell className="h-5 w-5 text-[#F59E0B]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.notifications')}</h2>
@@ -231,7 +231,7 @@ export default function BudgetSettingsPage() {
                     type="button"
                     onClick={() => setNotificationsEnabled(!notificationsEnabled)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      notificationsEnabled ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                      notificationsEnabled ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
                     }`}
                   >
                     <span
@@ -252,7 +252,7 @@ export default function BudgetSettingsPage() {
                     onChange={(e) => setBudgetAlertThreshold(e.target.value)}
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     {t('budgetSettings.budgetAlertThresholdDesc')}
@@ -262,7 +262,7 @@ export default function BudgetSettingsPage() {
             </div>
 
             {/* Approval Workflow */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <Shield className="h-5 w-5 text-[#F59E0B]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('budgetSettings.approvalWorkflow')}</h2>
@@ -280,7 +280,7 @@ export default function BudgetSettingsPage() {
                     type="button"
                     onClick={() => setApprovalRequired(!approvalRequired)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      approvalRequired ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+                      approvalRequired ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
                     }`}
                   >
                     <span
@@ -302,7 +302,7 @@ export default function BudgetSettingsPage() {
                       value={approvalThreshold}
                       onChange={(e) => setApprovalThreshold(e.target.value)}
                       min="0"
-                      className="w-full pl-12 pr-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full pl-12 pr-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

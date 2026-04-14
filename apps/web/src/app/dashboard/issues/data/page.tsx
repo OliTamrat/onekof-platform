@@ -27,7 +27,7 @@ export default function IssuesDataPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Project Page Header with Navigation */}
         <ProjectPageHeader
           project={currentProject}
@@ -40,7 +40,7 @@ export default function IssuesDataPage() {
             <div className="text-center">
               <FileSpreadsheet className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Data</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+              <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
                 This feature is coming soon. Stay tuned!
               </p>
             </div>

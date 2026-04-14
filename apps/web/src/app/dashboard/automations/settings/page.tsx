@@ -28,7 +28,7 @@ export default function AutomationsSettingsPage() {
       />
       <div className="p-6 max-w-4xl">
         {/* Notifications Section */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+        <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Bell className="h-5 w-5 text-[#EC4899]" />
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('automations.settingsNotifications')}</h2>
@@ -46,7 +46,7 @@ export default function AutomationsSettingsPage() {
               <Button
                 onClick={() => setEnableNotifications(!enableNotifications)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  enableNotifications ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
+                  enableNotifications ? 'bg-primary-500' : 'bg-gray-200 dark:bg-white/[0.08]'
                 }`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -58,7 +58,7 @@ export default function AutomationsSettingsPage() {
         </div>
 
         {/* Execution Settings Section */}
-        <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+        <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Zap className="h-5 w-5 text-[#EC4899]" />
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('automations.settingsExecution')}</h2>
@@ -76,7 +76,7 @@ export default function AutomationsSettingsPage() {
               <Button
                 onClick={() => setEnableAutoRetry(!enableAutoRetry)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  enableAutoRetry ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
+                  enableAutoRetry ? 'bg-primary-500' : 'bg-gray-200 dark:bg-white/[0.08]'
                 }`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -95,7 +95,7 @@ export default function AutomationsSettingsPage() {
                 onChange={(e) => setMaxRetries(e.target.value)}
                 min="1"
                 max="10"
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
 
@@ -109,7 +109,7 @@ export default function AutomationsSettingsPage() {
                 onChange={(e) => setExecutionTimeout(e.target.value)}
                 min="10"
                 max="300"
-                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -117,7 +117,7 @@ export default function AutomationsSettingsPage() {
 
         {/* Footer Actions */}
         <div className="flex items-center justify-end gap-3">
-          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-slate-700">
+          <Button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-md border border-gray-300 dark:border-white/[0.08]">
             {t('common.cancel')}
           </Button>
           <Button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md">

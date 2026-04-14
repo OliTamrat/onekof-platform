@@ -48,7 +48,7 @@ function PageCard({ article }: { article: WikiArticle }) {
   return (
     <Link
       href={`/dashboard/docs/pages/${article.id}`}
-      className="block bg-white dark:bg-[#22272B] border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
+      className="block bg-white dark:bg-[#12161B] border border-slate-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
     >
       <div className="flex items-start gap-4">
         <div
@@ -60,11 +60,11 @@ function PageCard({ article }: { article: WikiArticle }) {
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{article.title}</h3>
           {article.excerpt && (
-            <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">
+            <p className="text-sm text-slate-500 dark:text-white/50 line-clamp-2 mb-2">
               {article.excerpt}
             </p>
           )}
-          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/50">
             {article.category && (
               <div className="flex items-center gap-1">
                 <Folders className="h-3 w-3" />
@@ -141,7 +141,7 @@ export default function RecentPagesPage() {
     if (items.length === 0) return null;
     return (
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-slate-500 dark:text-white/50 uppercase tracking-wider mb-3">
           {label}
         </h2>
         <div className="space-y-2">
@@ -156,7 +156,7 @@ export default function RecentPagesPage() {
   return (
     <AppLayout>
       <div className="flex-1 overflow-y-auto">
-        <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           <div className="px-8 py-6">
             <div className="flex items-center gap-4 mb-6">
               <Link href="/dashboard/docs">
@@ -172,7 +172,7 @@ export default function RecentPagesPage() {
                   <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                     {t('docs.recentPages')}
                   </h1>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-slate-500 dark:text-white/50">
                     {t('docs.recentPagesDesc')}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ export default function RecentPagesPage() {
                 placeholder={t('docs.searchRecentPages')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-slate-50 dark:bg-[#161B22] border-slate-200 dark:border-slate-700"
+                className="pl-10 bg-slate-50 dark:bg-[#161B22] border-slate-200 dark:border-white/[0.08]"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function RecentPagesPage() {
 
         <div className="px-8 py-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-slate-500 dark:text-slate-400">
+            <div className="text-center py-12 text-sm text-slate-500 dark:text-white/50">
               {t('common.loading')}
             </div>
           )}
@@ -219,7 +219,7 @@ export default function RecentPagesPage() {
                   <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
                     {t('docs.noRecentPages')}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                  <p className="text-sm text-slate-500 dark:text-white/50 mb-4">
                     {searchQuery ? t('docs.tryAdjusting') : t('docs.browseSpacesHint')}
                   </p>
                   <Link href="/dashboard/docs">

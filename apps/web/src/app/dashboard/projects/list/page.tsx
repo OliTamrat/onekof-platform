@@ -60,7 +60,7 @@ export default function ProjectsListPage() {
       case 'OFF_TRACK':
         return 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400';
       default:
-        return 'bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400';
+        return 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50';
     }
   };
 
@@ -71,10 +71,10 @@ export default function ProjectsListPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Folder className="h-5 w-5" />
@@ -104,7 +104,7 @@ export default function ProjectsListPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -117,20 +117,20 @@ export default function ProjectsListPage() {
           {/* Search and Filter */}
           <div className="flex items-center gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
               <input
                 type="text"
                 placeholder={t('projectList.searchProjects')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">{t('projectList.allStatus')}</option>
               <option value="ON_TRACK">{t('projectList.onTrack')}</option>
@@ -144,14 +144,14 @@ export default function ProjectsListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-slate-400">{t("common.loading")}</div>
+              <div className="text-gray-600 dark:text-white/50">{t("common.loading")}</div>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <Folder className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('projectList.noProjects')}</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
                   {searchQuery ? t('projectList.noProjectsMatchSearch') : t('projectList.getStarted')}
                 </p>
                 <Button
@@ -164,39 +164,39 @@ export default function ProjectsListPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
+            <div className="bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08] overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-                <thead className="bg-gray-50 dark:bg-[#282E33]">
+                <thead className="bg-gray-50 dark:bg-[#181D23]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.project')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.key')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.lead')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.members')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.tasks')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.status')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
                       {t('projectList.updated')}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-[#22272B] divide-y divide-gray-200 dark:divide-slate-700">
+                <tbody className="bg-white dark:bg-[#12161B] divide-y divide-gray-200 dark:divide-slate-700">
                   {filteredProjects.map((project) => (
                     <tr
                       key={project.id}
                       onClick={() => router.push(`/dashboard/projects/${project.id}`)}
-                      className="hover:bg-gray-50 dark:hover:bg-[#282E33] cursor-pointer transition-colors"
+                      className="hover:bg-gray-50 dark:hover:bg-[#181D23] cursor-pointer transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -214,7 +214,7 @@ export default function ProjectsListPage() {
                               {project.name}
                             </div>
                             {project.description && (
-                              <div className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1">
+                              <div className="text-xs text-gray-500 dark:text-white/50 line-clamp-1">
                                 {project.description}
                               </div>
                             )}
@@ -239,13 +239,13 @@ export default function ProjectsListPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-1">
                           <Users className="h-4 w-4 text-gray-400 dark:text-[#6B7684]" />
-                          <span className="text-sm text-gray-600 dark:text-slate-400">
+                          <span className="text-sm text-gray-600 dark:text-white/50">
                             {project._count?.members || 0}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-600 dark:text-slate-400">
+                        <span className="text-sm text-gray-600 dark:text-white/50">
                           {project._count?.tasks || 0}
                         </span>
                       </td>
@@ -255,7 +255,7 @@ export default function ProjectsListPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-slate-400">
+                        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-white/50">
                           <Calendar className="h-3.5 w-3.5" />
                           <span>{formatDate(project.updatedAt)}</span>
                         </div>

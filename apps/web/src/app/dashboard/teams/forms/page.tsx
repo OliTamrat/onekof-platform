@@ -120,11 +120,11 @@ export default function TeamsFormsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           {/* Title */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <FileText className="h-5 w-5" />
@@ -144,7 +144,7 @@ export default function TeamsFormsPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -160,7 +160,7 @@ export default function TeamsFormsPage() {
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('teamForms.heading')}</h2>
-              <p className="text-gray-600 dark:text-slate-400">
+              <p className="text-gray-600 dark:text-white/50">
                 {t('teamForms.subtitle')}
               </p>
             </div>
@@ -170,7 +170,7 @@ export default function TeamsFormsPage() {
                 <Button variant="outline"
                   key={template.id}
                   onClick={() => setSelectedTemplate(template)}
-                  className="text-left p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 hover:border-primary-500 hover:shadow-md transition-all"
+                  className="text-left p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08] hover:border-primary-500 hover:shadow-md transition-all"
                 >
                   <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-500/10">
                     <template.icon className="h-5 w-5 text-primary-500" />
@@ -178,7 +178,7 @@ export default function TeamsFormsPage() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {t(template.nameKey)}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
                     {t(template.descKey)}
                   </p>
                   <div className="flex items-center gap-2 text-sm text-primary-500">
@@ -194,13 +194,13 @@ export default function TeamsFormsPage() {
         {/* Form Modal */}
         {selectedTemplate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-            <div className="w-full max-w-2xl bg-white dark:bg-[#22272B] rounded-lg shadow-xl my-8">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
+            <div className="w-full max-w-2xl bg-white dark:bg-[#12161B] rounded-lg shadow-xl my-8">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/[0.08]">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {t(selectedTemplate.nameKey)}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                     {t(selectedTemplate.descKey)}
                   </p>
                 </div>
@@ -226,14 +226,14 @@ export default function TeamsFormsPage() {
                         value={formData[field.nameKey] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.nameKey]: e.target.value })}
                         rows={4}
-                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       />
                     ) : field.type === 'select' ? (
                       <select
                         required={field.required}
                         value={formData[field.nameKey] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.nameKey]: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       >
                         <option value="">{t('teamForms.select', { name: t(field.nameKey) })}</option>
                         {field.options?.map((option) => (
@@ -249,18 +249,18 @@ export default function TeamsFormsPage() {
                         placeholder={field.placeholderKey ? t(field.placeholderKey) : undefined}
                         value={formData[field.nameKey] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.nameKey]: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       />
                     )}
                   </div>
                 ))}
               </form>
 
-              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-slate-700">
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-white/[0.08]">
                 <Button
                   type="button"
                   onClick={() => setSelectedTemplate(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#282E33] rounded-md"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#181D23] rounded-md"
                 >
                   {t('common.cancel')}
                 </Button>

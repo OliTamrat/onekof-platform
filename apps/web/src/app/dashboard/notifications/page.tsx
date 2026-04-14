@@ -100,9 +100,9 @@ export default function NotificationsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 md:px-6 py-4">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white relative">
@@ -117,7 +117,7 @@ export default function NotificationsPage() {
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t('notifications.title') || 'Notifications'}
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-slate-400">
+                <p className="text-sm text-gray-500 dark:text-white/50">
                   {unreadCount > 0
                     ? `${unreadCount} new ${unreadCount === 1 ? 'update' : 'updates'}`
                     : 'All caught up'}
@@ -155,7 +155,7 @@ export default function NotificationsPage() {
                     key={n.id}
                     type="button"
                     onClick={() => handleClick(n)}
-                    className="w-full text-left group flex items-start gap-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-primary-500 transition-colors"
+                    className="w-full text-left group flex items-start gap-3 rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4 hover:border-primary-500 transition-colors"
                   >
                     {/* Actor avatar */}
                     {n.user?.avatar ? (
@@ -200,7 +200,7 @@ export default function NotificationsPage() {
                       ) : null}
 
                       {/* Footer: project + timestamp */}
-                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-500">
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/30">
                         {n.task?.project && (
                           <>
                             <span

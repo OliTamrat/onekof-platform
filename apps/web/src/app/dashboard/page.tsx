@@ -124,7 +124,7 @@ export default function DashboardPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
+          <p className="text-sm text-white/30 dark:text-white/50">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -139,7 +139,7 @@ export default function DashboardPage() {
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.sessionLoadingIssue')}</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
             {t('dashboard.sessionLoadingDesc')}
           </p>
           <Button
@@ -325,9 +325,9 @@ export default function DashboardPage() {
             <div className="relative">
               <button
                 onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
-                className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-[#1C8C7D] transition-colors"
+                className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-[#1C8C7D] transition-colors"
               >
-                <Filter className="h-3.5 w-3.5 text-slate-400" />
+                <Filter className="h-3.5 w-3.5 text-white/50" />
                 {selectedProject ? (
                   <span className="flex items-center gap-2">
                     <span
@@ -339,28 +339,28 @@ export default function DashboardPage() {
                 ) : (
                   <span>{t('nav.allProjects')}</span>
                 )}
-                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronDown className="h-3.5 w-3.5 text-white/50" />
               </button>
 
               {isProjectDropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setIsProjectDropdownOpen(false)} />
-                  <div className="absolute left-0 top-full mt-1 z-40 w-72 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] shadow-xl overflow-hidden">
+                  <div className="absolute left-0 top-full mt-1 z-40 w-72 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] shadow-xl overflow-hidden">
                     <button
                       onClick={() => setProjectFilter(null)}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors ${
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors ${
                         !selectedProjectId ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
                       }`}
                     >
-                      <Folder className="h-4 w-4 text-slate-400" />
+                      <Folder className="h-4 w-4 text-white/50" />
                       {t('nav.allProjects')}
                     </button>
-                    <div className="border-t border-slate-100 dark:border-slate-700/50" />
+                    <div className="border-t border-slate-100 dark:border-white/[0.08]/50" />
                     {projects.map((project) => (
                       <button
                         key={project.id}
                         onClick={() => setProjectFilter(project.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#282E33] transition-colors ${
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors ${
                           selectedProjectId === project.id ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
                         }`}
                       >
@@ -371,7 +371,7 @@ export default function DashboardPage() {
                           {project.key?.slice(0, 2)}
                         </span>
                         <span className="truncate">{project.name}</span>
-                        <span className="ml-auto text-xs text-slate-400">{project.key}</span>
+                        <span className="ml-auto text-xs text-white/50">{project.key}</span>
                       </button>
                     ))}
                   </div>
@@ -381,7 +381,7 @@ export default function DashboardPage() {
             {selectedProject && (
               <button
                 onClick={() => setProjectFilter(null)}
-                className="flex items-center gap-1 text-xs text-slate-500 hover:text-[#1C8C7D] transition-colors"
+                className="flex items-center gap-1 text-xs text-white/30 hover:text-[#1C8C7D] transition-colors"
               >
                 <X className="h-3 w-3" />
                 Clear filter
@@ -435,7 +435,7 @@ export default function DashboardPage() {
               tabIndex={0}
               onClick={handleShowAllStatusOverview}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShowAllStatusOverview(); }}
-              className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
+              className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-white/[0.08]/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
             >
               {/* 3D depth effect */}
               <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
@@ -450,7 +450,7 @@ export default function DashboardPage() {
                   {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
                 {t('dashboard.statusDescription')}
               </p>
 
@@ -509,7 +509,7 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{t('dashboard.totalItems')}</div>
+                    <div className="text-xs md:text-sm text-white/30 dark:text-white/50">{t('dashboard.totalItems')}</div>
                   </div>
                 </div>
 
@@ -520,7 +520,7 @@ export default function DashboardPage() {
                     tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
@@ -533,7 +533,7 @@ export default function DashboardPage() {
                     tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-blue-500 shrink-0"></div>
@@ -546,7 +546,7 @@ export default function DashboardPage() {
                     tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-yellow-500 shrink-0"></div>
@@ -559,7 +559,7 @@ export default function DashboardPage() {
                     tabIndex={0}
                     onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
@@ -575,7 +575,7 @@ export default function DashboardPage() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                   {t('dashboard.priorityDescription')}
                 </p>
                 <div className="space-y-2">
@@ -593,7 +593,7 @@ export default function DashboardPage() {
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Recent Activity - AI-Powered Timeline */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
               <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
@@ -607,7 +607,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                   {t('dashboard.recentActivityDescription')}
                 </p>
                 <div className="max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
@@ -617,7 +617,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Types of Work */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
               <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
@@ -628,7 +628,7 @@ export default function DashboardPage() {
                     {t('dashboard.viewAllItems')}
                   </a>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                   {t('dashboard.statusDescription')}
                 </p>
                 <div className="space-y-2">
@@ -640,7 +640,7 @@ export default function DashboardPage() {
                       <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
                     </>
                   ) : (
-                    <p className="text-sm text-slate-400">{t('common.noData')}</p>
+                    <p className="text-sm text-white/50">{t('common.noData')}</p>
                   )}
                 </div>
               </div>
@@ -648,7 +648,7 @@ export default function DashboardPage() {
 
             {/* Favorite Projects */}
             {favoriteProjects.length > 0 && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
                 <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -667,7 +667,7 @@ export default function DashboardPage() {
                     <div
                       key={project.id}
                       onClick={() => router.push(`/dashboard/projects/${project.key}`)}
-                      className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                      className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] cursor-pointer"
                     >
                       <div
                         className="flex h-8 w-8 items-center justify-center rounded text-sm"
@@ -679,7 +679,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                           {project.name}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-white/30 dark:text-white/50">
                           {project.key}
                         </p>
                       </div>
@@ -732,7 +732,7 @@ export default function DashboardPage() {
             const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
             return (
-              <div className="rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 p-4 mb-6">
+              <div className="rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50 border border-slate-200/60 dark:border-white/[0.08]/60 p-4 mb-6">
                 <div className="flex flex-wrap items-center gap-3 md:gap-5 text-xs md:text-sm">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
@@ -741,7 +741,7 @@ export default function DashboardPage() {
                   {overdue > 0 && (
                     <div className="flex items-center gap-1.5">
                       <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-slate-600 dark:text-white/50">
                         <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span> overdue
                       </span>
                     </div>
@@ -749,7 +749,7 @@ export default function DashboardPage() {
                   {unassigned > 0 && (
                     <div className="flex items-center gap-1.5">
                       <User className="h-3.5 w-3.5 text-orange-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-slate-600 dark:text-white/50">
                         <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span> unassigned
                       </span>
                     </div>
@@ -757,7 +757,7 @@ export default function DashboardPage() {
                   {highPriority > 0 && (
                     <div className="flex items-center gap-1.5">
                       <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-slate-600 dark:text-white/50">
                         <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span> high priority
                       </span>
                     </div>
@@ -765,7 +765,7 @@ export default function DashboardPage() {
                   {avgAge > 0 && (
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-blue-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-slate-600 dark:text-white/50">
                         avg <span className="font-semibold text-blue-600 dark:text-blue-400">{avgAge}d</span> old
                       </span>
                     </div>
@@ -773,7 +773,7 @@ export default function DashboardPage() {
                   {withAssignee > 0 && (
                     <div className="flex items-center gap-1.5">
                       <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
+                      <span className="text-slate-600 dark:text-white/50">
                         <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span> assigned
                       </span>
                     </div>
@@ -796,12 +796,12 @@ export default function DashboardPage() {
                     setIsFilterModalOpen(false);
                   }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
-                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all cursor-pointer"
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        <span className="text-xs font-medium text-white/30 dark:text-white/50">
                           {task.key}
                         </span>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -828,7 +828,7 @@ export default function DashboardPage() {
                       <h3 className="text-sm font-medium text-slate-900 dark:text-white mb-2">
                         {task.title}
                       </h3>
-                      <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-4 text-xs text-white/30 dark:text-white/50">
                         <div className="flex items-center gap-1">
                           <User className="h-3 w-3" />
                           <span>{task.assignee?.name || t('common.unassigned')}</span>
@@ -859,7 +859,7 @@ export default function DashboardPage() {
                         {task.assignee.name?.charAt(0).toUpperCase() || '?'}
                       </div>
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700" />
+                      <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-white/[0.08]" />
                     )}
                   </div>
                 </div>
@@ -868,7 +868,7 @@ export default function DashboardPage() {
           ) : (
             <div className="text-center py-12">
               <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.noTasks')}</p>
+              <p className="text-sm text-slate-600 dark:text-white/50">{t('dashboard.noTasks')}</p>
             </div>
           )}
         </SlideoutPanelContent>
@@ -900,7 +900,7 @@ function StatCard({
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
-      className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
+      className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-white/[0.08]/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
       {/* Subtle gradient overlay on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -910,7 +910,7 @@ function StatCard({
 
       <div className="relative z-10">
         <div className="mb-2 md:mb-4 flex items-center justify-between">
-          <div className={`${color} p-2 md:p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 group-hover:scale-110 transition-transform duration-300`}>
+          <div className={`${color} p-2 md:p-2.5 rounded-lg bg-slate-100 dark:bg-[#181D23]/50 group-hover:scale-110 transition-transform duration-300`}>
             {icon}
           </div>
           <div className="text-[10px] md:text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-semibold hidden sm:flex items-center gap-1 group-hover:gap-2 transition-all">
@@ -920,7 +920,7 @@ function StatCard({
         </div>
         <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
-        <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-1">{sublabel}</div>
+        <div className="text-[10px] md:text-xs text-white/30 dark:text-white/50 hidden sm:block mt-1">{sublabel}</div>
       </div>
     </div>
   );
@@ -942,7 +942,7 @@ function PriorityBar({
   return (
     <div className="flex items-center gap-3">
       <div className="w-20 text-sm text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="flex-1 h-6 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="flex-1 h-6 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
         {percentage > 0 && (
           <div
             className={`h-full ${color} transition-all duration-300`}
@@ -970,7 +970,7 @@ function TypeBar({
     <div className="flex items-center justify-between text-sm">
       <span className="text-slate-700 dark:text-slate-300">{label}</span>
       <div className="flex items-center gap-2">
-        <div className="w-32 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div className="w-32 h-2 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
           {percentage > 0 && (
             <div
               className={`h-full ${color}`}
@@ -1010,7 +1010,7 @@ function ActivityItem({
 
   return (
     <div
-      className="text-sm cursor-pointer p-2 -m-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-150"
+      className="text-sm cursor-pointer p-2 -m-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#181D23]/50 transition-colors duration-150"
       onClick={onClick}
     >
       <p className="text-slate-700 dark:text-slate-300">
@@ -1022,7 +1022,7 @@ function ActivityItem({
         <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${statusColors[status] || statusColors.TODO}`}>
           {status.replace('_', ' ')}
         </span>
-        <span className="text-xs text-slate-500 dark:text-slate-400">{time}</span>
+        <span className="text-xs text-white/30 dark:text-white/50">{time}</span>
       </div>
     </div>
   );

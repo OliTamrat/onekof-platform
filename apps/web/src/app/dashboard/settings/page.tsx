@@ -188,9 +188,9 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-full bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="min-h-full bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 md:px-6 py-4">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-4 md:px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/30">
               <SettingsIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
@@ -199,7 +199,7 @@ export default function SettingsPage() {
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t('nav.settings')}
               </h1>
-              <p className="text-sm text-gray-500 dark:text-slate-400">
+              <p className="text-sm text-gray-500 dark:text-white/50">
                 Manage your profile, preferences, and security
               </p>
             </div>
@@ -218,7 +218,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'profile'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <UserIcon className="h-4 w-4" />
@@ -230,7 +230,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'notifications'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <Bell className="h-4 w-4" />
@@ -242,7 +242,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'security'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <Shield className="h-4 w-4" />
@@ -254,19 +254,19 @@ export default function SettingsPage() {
             {/* Content */}
             <div className="flex-1 min-w-0">
               {isLoading ? (
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-8 text-center">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-8 text-center">
                   <Loader2 className="h-6 w-6 animate-spin text-primary-500 mx-auto" />
                 </div>
               ) : (
                 <>
                   {/* Profile Tab */}
                   {activeTab === 'profile' && (
-                    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-                      <div className="border-b border-gray-200 dark:border-slate-700 px-6 py-4">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+                      <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                           Profile information
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
                           Update your personal details
                         </p>
                       </div>
@@ -308,7 +308,7 @@ export default function SettingsPage() {
                             Email
                           </label>
                           <Input value={user?.email || ''} disabled className="opacity-60" />
-                          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                          <p className="text-xs text-gray-500 dark:text-white/50 mt-1">
                             Contact support to change your email address.
                           </p>
                         </div>
@@ -323,7 +323,7 @@ export default function SettingsPage() {
                             onChange={(e) => setBio(e.target.value)}
                             rows={3}
                             placeholder="A short introduction about yourself"
-                            className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                            className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                           />
                         </div>
 
@@ -344,7 +344,7 @@ export default function SettingsPage() {
                             <select
                               value={timezone}
                               onChange={(e) => setTimezone(e.target.value)}
-                              className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                              className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                             >
                               {TIMEZONES.map((tz) => (
                                 <option key={tz.value} value={tz.value}>{tz.label}</option>
@@ -358,7 +358,7 @@ export default function SettingsPage() {
                             <select
                               value={language}
                               onChange={(e) => setLanguage(e.target.value)}
-                              className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                              className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
                             >
                               {LANGUAGES.map((l) => (
                                 <option key={l.value} value={l.value}>{l.label}</option>
@@ -368,7 +368,7 @@ export default function SettingsPage() {
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-200 dark:border-slate-700 px-6 py-3 flex justify-end">
+                      <div className="border-t border-gray-200 dark:border-white/[0.08] px-6 py-3 flex justify-end">
                         <Button
                           onClick={handleSaveProfile}
                           disabled={profileMutation.isPending}
@@ -386,12 +386,12 @@ export default function SettingsPage() {
 
                   {/* Notifications Tab */}
                   {activeTab === 'notifications' && (
-                    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-                      <div className="border-b border-gray-200 dark:border-slate-700 px-6 py-4">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+                      <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                           Email notifications
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
                           Choose what we email you about
                         </p>
                       </div>
@@ -408,7 +408,7 @@ export default function SettingsPage() {
                           <div key={item.key} className="flex items-start justify-between gap-4 px-6 py-4">
                             <div className="flex-1 min-w-0">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">{item.title}</div>
-                              <div className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">{item.desc}</div>
+                              <div className="text-xs text-gray-500 dark:text-white/50 mt-0.5">{item.desc}</div>
                             </div>
                             <button
                               type="button"
@@ -416,7 +416,7 @@ export default function SettingsPage() {
                               aria-checked={notifPrefs[item.key] || false}
                               onClick={() => toggleNotif(item.key)}
                               className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none ${
-                                notifPrefs[item.key] ? 'bg-primary-500' : 'bg-gray-200 dark:bg-slate-700'
+                                notifPrefs[item.key] ? 'bg-primary-500' : 'bg-gray-200 dark:bg-white/[0.08]'
                               }`}
                             >
                               <span
@@ -429,7 +429,7 @@ export default function SettingsPage() {
                         ))}
                       </div>
 
-                      <div className="border-t border-gray-200 dark:border-slate-700 px-6 py-3 flex justify-end">
+                      <div className="border-t border-gray-200 dark:border-white/[0.08] px-6 py-3 flex justify-end">
                         <Button
                           onClick={handleSaveNotifications}
                           disabled={profileMutation.isPending}
@@ -448,12 +448,12 @@ export default function SettingsPage() {
                   {/* Security Tab */}
                   {activeTab === 'security' && (
                     <div className="space-y-4">
-                      <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-                        <div className="border-b border-gray-200 dark:border-slate-700 px-6 py-4">
+                      <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+                        <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                           <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                             Change password
                           </h2>
-                          <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
                             At least 8 characters; use a unique password
                           </p>
                         </div>
@@ -494,7 +494,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        <div className="border-t border-gray-200 dark:border-slate-700 px-6 py-3 flex justify-end">
+                        <div className="border-t border-gray-200 dark:border-white/[0.08] px-6 py-3 flex justify-end">
                           <Button
                             onClick={handleChangePassword}
                             disabled={
@@ -514,11 +514,11 @@ export default function SettingsPage() {
                         </div>
                       </div>
 
-                      <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                      <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                           Two-factor authentication
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 mb-3">
+                        <p className="text-xs text-gray-500 dark:text-white/50 mb-3">
                           Add an extra layer of security to your account with TOTP (authenticator app).
                         </p>
                         <a

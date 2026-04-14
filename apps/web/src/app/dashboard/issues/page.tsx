@@ -277,7 +277,7 @@ export default function IssuesPage() {
         insightsOpen={insightsOpen}
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Project Page Header */}
                 {/* Kanban Board */}
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
@@ -293,10 +293,10 @@ export default function IssuesPage() {
                   >
                     {/* Column Header */}
                     <div className="mb-3 flex items-center gap-2 px-1">
-                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/50">
                         {t(column.labelKey)}
                       </h3>
-                      <span className="rounded-sm bg-gray-200 dark:bg-slate-700 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-slate-400">
+                      <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/50">
                         {issuesByStatus[column.id]?.length || 0}
                       </span>
                     </div>
@@ -317,7 +317,7 @@ export default function IssuesPage() {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   onClick={() => setSelectedIssue(issue)}
-                                  className={`cursor-pointer rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] ${
+                                  className={`cursor-pointer rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 transition-all hover:bg-gray-50 dark:hover:bg-[#181D23] ${
                                     snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : ''
                                   }`}
                                 >
@@ -331,7 +331,7 @@ export default function IssuesPage() {
                           {/* Add Issue Button */}
                           <Button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] hover:text-gray-900 dark:hover:text-white"
+                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
                             {t('common.create')}
@@ -391,7 +391,7 @@ function IssueCard({ issue }: { issue: Issue }) {
 
       {/* Due Date */}
       {issue.dueDate && (
-        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-400">
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-white/50">
           <Calendar className="h-3.5 w-3.5" />
           <span>{formatDate(issue.dueDate)}</span>
         </div>
@@ -402,7 +402,7 @@ function IssueCard({ issue }: { issue: Issue }) {
         {/* Issue Key */}
         <div className="flex items-center gap-2">
           <CheckSquare className="h-3.5 w-3.5 text-primary-500" />
-          <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
+          <span className="text-xs font-medium text-gray-600 dark:text-white/50">
             {issue.key}
           </span>
         </div>
@@ -422,7 +422,7 @@ function IssueCard({ issue }: { issue: Issue }) {
               </div>
             )
           ) : (
-            <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-slate-700" />
+            <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-white/[0.08]" />
           )}
         </div>
       </div>

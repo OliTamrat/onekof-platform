@@ -275,10 +275,10 @@ export default function IssuesAutomationPage() {
         showInsights
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
 
         {/* Filter Bar */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
               <Zap className="h-4 w-4" />
@@ -288,7 +288,7 @@ export default function IssuesAutomationPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="all">All Categories</option>
                 <option value="irrigation">Irrigation</option>
@@ -300,7 +300,7 @@ export default function IssuesAutomationPage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -321,10 +321,10 @@ export default function IssuesAutomationPage() {
               return (
                 <div
                   key={rule.id}
-                  className={`p-3 bg-white dark:bg-[#22272B] rounded-lg border ${
+                  className={`p-3 bg-white dark:bg-[#12161B] rounded-lg border ${
                     rule.status === 'error'
                       ? 'border-red-500'
-                      : 'border-gray-200 dark:border-slate-700'
+                      : 'border-gray-200 dark:border-white/[0.08]'
                   } hover:border-primary-500 cursor-pointer transition-colors`}
                 >
                   <div
@@ -334,10 +334,10 @@ export default function IssuesAutomationPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className={`h-2 w-2 rounded-full ${getStatusColor(rule.status)}`} />
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
                           {categoryLabels[rule.category].toUpperCase()}
                         </span>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
                           {rule.status.toUpperCase()}
                         </span>
                         {rule.priority === 'critical' && (
@@ -349,7 +349,7 @@ export default function IssuesAutomationPage() {
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                         {rule.name}
                       </h3>
-                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                         <span className="flex items-center gap-1">
                           <TrendingUp className="h-3 w-3" />
                           {rule.executionCount.toLocaleString()} executions
@@ -367,7 +367,7 @@ export default function IssuesAutomationPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <ChevronDown
-                        className={`h-4 w-4 text-gray-600 dark:text-slate-400 transition-transform ${
+                        className={`h-4 w-4 text-gray-600 dark:text-white/50 transition-transform ${
                           isExpanded ? 'rotate-180' : ''
                         }`}
                       />
@@ -376,21 +376,21 @@ export default function IssuesAutomationPage() {
 
                   {/* Expanded Details */}
                   {isExpanded && (
-                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-slate-700 space-y-2">
+                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/[0.08] space-y-2">
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-slate-400 mb-1">Description:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Description:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.description}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-slate-400 mb-1">Trigger:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Trigger:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.trigger}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-slate-400 mb-1">Action:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Action:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.action}</p>
                       </div>
                       {rule.nextScheduled && (
-                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-slate-400">
+                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/50">
                           <Calendar className="h-3 w-3" />
                           Next scheduled: {formatDate(rule.nextScheduled)}
                         </div>
@@ -418,7 +418,7 @@ export default function IssuesAutomationPage() {
                 <div className="text-center">
                   <Zap className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No automation rules found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
                     No rules match the selected filters.
                   </p>
                 </div>

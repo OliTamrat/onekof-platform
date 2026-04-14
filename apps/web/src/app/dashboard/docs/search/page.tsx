@@ -84,13 +84,13 @@ export default function DocsSearchPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
-                className="w-full pl-12 pr-4 py-4 text-base border-2 border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 text-base border-2 border-gray-300 dark:border-white/[0.08] rounded-lg bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
           </div>
 
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
               {t('common.loading')}
             </div>
           )}
@@ -105,7 +105,7 @@ export default function DocsSearchPage() {
           {!loading && !error && searched && results.length === 0 && (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-slate-400">
+              <p className="text-gray-600 dark:text-white/50">
                 {t('docs.noResultsFor')} &ldquo;{searchQuery}&rdquo;
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
@@ -117,13 +117,13 @@ export default function DocsSearchPage() {
           {!loading && !error && !searched && (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-slate-400">{t('docs.startTyping')}</p>
+              <p className="text-gray-600 dark:text-white/50">{t('docs.startTyping')}</p>
             </div>
           )}
 
           {!loading && !error && results.length > 0 && (
             <div className="space-y-3">
-              <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
+              <p className="text-xs text-gray-500 dark:text-white/50 mb-4">
                 {results.length} {t('common.results')}
               </p>
               {results.map((article) => {
@@ -132,7 +132,7 @@ export default function DocsSearchPage() {
                   <Link
                     key={article.id}
                     href={`/dashboard/docs/pages/${article.id}`}
-                    className="block bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
+                    className="block bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-md hover:border-[#1C8C7D]/30 transition-all"
                   >
                     <div className="flex items-start gap-4">
                       <div
@@ -146,11 +146,11 @@ export default function DocsSearchPage() {
                           {article.title}
                         </h3>
                         {article.excerpt && (
-                          <p className="text-sm text-gray-500 dark:text-slate-400 line-clamp-2 mb-2">
+                          <p className="text-sm text-gray-500 dark:text-white/50 line-clamp-2 mb-2">
                             {article.excerpt}
                           </p>
                         )}
-                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400">
+                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
                           {article.category && (
                             <div className="flex items-center gap-1">
                               <Folders className="h-3 w-3" />

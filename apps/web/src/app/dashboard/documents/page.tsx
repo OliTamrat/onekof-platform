@@ -95,7 +95,7 @@ export default function DocumentsPage() {
       case 'rfp':
         return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
       default:
-        return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+        return 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300';
     }
   };
 
@@ -123,7 +123,7 @@ export default function DocumentsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
+          <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -132,12 +132,12 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.totalDocuments')}</p>
+                <p className="text-xs text-slate-500 dark:text-white/50">{t('documents.totalDocuments')}</p>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
+          <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -146,12 +146,12 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'COMPLETED').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.processed')}</p>
+                <p className="text-xs text-slate-500 dark:text-white/50">{t('documents.processed')}</p>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
+          <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
                 <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -160,12 +160,12 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'PROCESSING').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.processing')}</p>
+                <p className="text-xs text-slate-500 dark:text-white/50">{t('documents.processing')}</p>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
+          <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                 <DollarSign className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -174,19 +174,19 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.reduce((sum, d) => sum + (d.budgetItems || 0), 0)}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{t('documents.budgetItemsExtracted')}</p>
+                <p className="text-xs text-slate-500 dark:text-white/50">{t('documents.budgetItemsExtracted')}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Documents List */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B]">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+        <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="p-6 border-b border-slate-200 dark:border-white/[0.08]">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
               {t('documents.yourDocuments')}
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-sm text-slate-600 dark:text-white/50 mt-1">
               {t('documents.yourDocumentsDesc')}
             </p>
           </div>
@@ -199,7 +199,7 @@ export default function DocumentsPage() {
             ) : documents.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                <p className="text-slate-600 dark:text-slate-400">
+                <p className="text-slate-600 dark:text-white/50">
                   {t('documents.noDocuments')}
                 </p>
               </div>
@@ -208,7 +208,7 @@ export default function DocumentsPage() {
                 {documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
+                    className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
                     onClick={() => setSelectedDocument(doc)}
                   >
                     <div className="flex items-start gap-4">
@@ -218,7 +218,7 @@ export default function DocumentsPage() {
                         ${doc.status === 'COMPLETED' ? 'bg-green-100 dark:bg-green-900/30' :
                           doc.status === 'PROCESSING' ? 'bg-orange-100 dark:bg-orange-900/30' :
                           doc.status === 'FAILED' ? 'bg-red-100 dark:bg-red-900/30' :
-                          'bg-slate-100 dark:bg-slate-800'}
+                          'bg-slate-100 dark:bg-[#181D23]'}
                       `}>
                         {doc.status === 'PROCESSING' ? (
                           <Loader2 className="h-6 w-6 text-orange-600 dark:text-orange-400 animate-spin" />
@@ -227,7 +227,7 @@ export default function DocumentsPage() {
                         ) : doc.status === 'FAILED' ? (
                           <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
                         ) : (
-                          <Clock className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                          <Clock className="h-6 w-6 text-slate-600 dark:text-white/50" />
                         )}
                       </div>
 
@@ -242,10 +242,10 @@ export default function DocumentsPage() {
                               <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getDocumentTypeColor(doc.fileType)}`}>
                                 {doc.fileType}
                               </span>
-                              <span className="text-xs text-slate-500 dark:text-slate-400">
+                              <span className="text-xs text-slate-500 dark:text-white/50">
                                 • {(doc.fileSize / 1024).toFixed(0)} KB
                               </span>
-                              <span className="text-xs text-slate-500 dark:text-slate-400">
+                              <span className="text-xs text-slate-500 dark:text-white/50">
                                 • {formatDate(doc.uploadedAt)}
                               </span>
                             </div>
@@ -263,14 +263,14 @@ export default function DocumentsPage() {
 
                         {/* AI Summary */}
                         {doc.aiSummary && (
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                          <p className="text-sm text-slate-600 dark:text-white/50 mb-3 line-clamp-2">
                             {doc.aiSummary}
                           </p>
                         )}
 
                         {/* Extracted Items */}
                         {doc.status === 'COMPLETED' && (
-                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/50">
                             {doc.budgetItems > 0 && (
                               <div className="flex items-center gap-1">
                                 <DollarSign className="h-3.5 w-3.5" />

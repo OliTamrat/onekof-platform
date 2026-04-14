@@ -138,7 +138,7 @@ export default function BudgetIncomePage() {
           <div className="text-center py-16">
             <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Funding Sources</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-white/50">
               Create a budget with additional funding sources to track income here.
             </p>
           </div>
@@ -146,23 +146,23 @@ export default function BudgetIncomePage() {
           <>
             {/* Stats Cards */}
             <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-3 md:gap-4 mb-6 scrollbar-hide">
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                     <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">Total Funding</div>
+                  <div className="text-xs text-slate-500 dark:text-white/50">Total Funding</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">ETB {formatCompact(totalFunding)}</div>
                 <div className="text-xs text-slate-500 mt-1">{sourceCount} funding sources</div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">External Funding</div>
+                  <div className="text-xs text-slate-500 dark:text-white/50">External Funding</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">ETB {formatCompact(externalFunding)}</div>
                 <div className="text-xs text-slate-500 mt-1">
@@ -170,12 +170,12 @@ export default function BudgetIncomePage() {
                 </div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
                     <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">Active Budgets</div>
+                  <div className="text-xs text-slate-500 dark:text-white/50">Active Budgets</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400">{budgets.length}</div>
                 <div className="text-xs text-slate-500 mt-1">across projects</div>
@@ -183,7 +183,7 @@ export default function BudgetIncomePage() {
             </div>
 
             {/* Search Bar */}
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 mb-6 shadow-sm">
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 mb-6 shadow-sm">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
@@ -191,7 +191,7 @@ export default function BudgetIncomePage() {
                   placeholder="Search funding sources, projects, currencies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function BudgetIncomePage() {
                   <div
                     key={source.id}
                     onClick={() => { setSelectedSource(source); setIsSlideoutOpen(true); }}
-                    className="bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 rounded-xl p-4 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
+                    className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -219,7 +219,7 @@ export default function BudgetIncomePage() {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400 ml-11">
+                        <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/50 ml-11">
                           <span className="flex items-center gap-1">
                             <Tag className="h-3 w-3" />
                             {source.projectName}

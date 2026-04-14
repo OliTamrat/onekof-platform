@@ -342,10 +342,10 @@ export default function BudgetPage() {
   if (status === 'loading' && !loadingTimeout) {
     return (
       <AppLayout>
-        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
+            <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
           </div>
         </div>
       </AppLayout>
@@ -355,11 +355,11 @@ export default function BudgetPage() {
   if (status === 'loading' && loadingTimeout) {
     return (
       <AppLayout>
-        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center max-w-md p-3 md:p-6">
             <AlertCircle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('budget.sessionLoadingIssue')}</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
               {t('budget.sessionTakingLong')}
             </p>
             <Button onClick={() => router.push('/auth/signin')}>{t('budget.goToSignIn')}</Button>
@@ -428,7 +428,7 @@ export default function BudgetPage() {
       )}
 
       {/* Stats Cards — scrollable row on mobile, grid on desktop */}
-      <div className="bg-white dark:bg-[#1B1F23] border-b border-slate-200 dark:border-slate-700 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
+      <div className="bg-white dark:bg-[#0B0E11] border-b border-slate-200 dark:border-white/[0.08] lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
         <div className="p-3 md:p-6">
           <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4 scrollbar-hide">
             <StatCard
@@ -486,7 +486,7 @@ export default function BudgetPage() {
                   {t('budget.aiDocumentAnalysis')}
                 </h3>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
+              <p className="text-xs text-slate-500 dark:text-white/50 mt-0.5 hidden sm:block">
                 {t('budget.uploadDescription')}
               </p>
             </div>
@@ -509,7 +509,7 @@ export default function BudgetPage() {
           {/* Budget Overview - 2 columns */}
           <div className="lg:col-span-2 space-y-6">
             {/* Budget Overview Card */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('budget.budgetOverview')}</h3>
                 {hasBudgets && (
@@ -526,7 +526,7 @@ export default function BudgetPage() {
                   <div className="text-center py-12">
                     <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noBudgetsYet')}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
                       {t('budget.noBudgetsYetDesc')}
                     </p>
                     <Button
@@ -564,7 +564,7 @@ export default function BudgetPage() {
                           <div className="text-2xl font-bold text-slate-900 dark:text-white">
                             {overallUtilization.toFixed(0)}%
                           </div>
-                          <div className="text-sm text-slate-500 dark:text-slate-400">{t('budget.utilized')}</div>
+                          <div className="text-sm text-slate-500 dark:text-white/50">{t('budget.utilized')}</div>
                         </div>
                       </div>
 
@@ -581,7 +581,7 @@ export default function BudgetPage() {
                                 expenses.filter((e: any) => e.category?.name === category.name)
                               )}
                               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openSlideout(`${category.name} Expenses`, expenses.filter((ex: any) => ex.category?.name === category.name)); }}
-                              className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                              className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 rounded-md transition-colors cursor-pointer"
                             >
                               <div className="flex items-center gap-2 flex-1 min-w-0">
                                 <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: category.color }} />
@@ -617,7 +617,7 @@ export default function BudgetPage() {
                     </div>
 
                     {/* AI Analysis Section — Project-Specific */}
-                    <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                    <div className="mt-8 border-t border-slate-200 dark:border-white/[0.08] pt-6">
                       <div className="flex items-center gap-2 mb-4">
                         <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
                         <h3 className="font-semibold text-slate-900 dark:text-white">{t('budget.aiProjectBudgetAnalysis')}</h3>
@@ -627,7 +627,7 @@ export default function BudgetPage() {
                       </div>
 
                       {/* Executive Summary */}
-                      <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-slate-700 mb-4">
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-white/[0.08] mb-4">
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0 mt-1 h-8 w-8 rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center">
                             <Sparkles className="h-4 w-4 text-white" />
@@ -660,14 +660,14 @@ export default function BudgetPage() {
 
                       {/* Key Insights Grid — data-driven from real budget data */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-700/60">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60 dark:border-white/[0.08]/60">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="h-6 w-6 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                               <TrendingUp className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                             </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.budgetUtilization')}</h5>
                           </div>
-                          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
                             <li className="flex items-start gap-2">
                               {overallUtilization <= 85 ? (
                                 <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -698,14 +698,14 @@ export default function BudgetPage() {
                             )}
                           </ul>
                         </div>
-                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-700/60">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60 dark:border-white/[0.08]/60">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="h-6 w-6 rounded-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                               <DollarSign className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                             </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.categoryAllocation')}</h5>
                           </div>
-                          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
                             {categories.slice(0, 3).map(c => (
                               <li key={c.name} className="flex items-start gap-2">
                                 {c.budget > 0 && (c.spent / c.budget) > 0.9 ? (
@@ -757,7 +757,7 @@ export default function BudgetPage() {
                       </div>
 
                       {/* Report Footer */}
-                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/50 pt-2">
                         <span>{t('budget.analysisGeneratedOn').replace('{date}', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))}</span>
                         <span>{t('budget.budgetAnalysis')}</span>
                       </div>
@@ -772,7 +772,7 @@ export default function BudgetPage() {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                   <Sparkles className="h-3.5 w-3.5 text-[#1C8C7D]" />
@@ -792,7 +792,7 @@ export default function BudgetPage() {
                     tabIndex={0}
                     onClick={() => { setAnalysisType(action.type); setIsUploadModalOpen(true); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setAnalysisType(action.type); setIsUploadModalOpen(true); } }}
-                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group cursor-pointer"
+                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:border-[#1C8C7D]/40 hover:shadow-sm transition-all group cursor-pointer"
                   >
                     <div className={`flex-shrink-0 h-8 w-8 rounded-lg ${action.bg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                       <action.icon className={`h-4 w-4 ${action.iconColor}`} />
@@ -804,7 +804,7 @@ export default function BudgetPage() {
             </div>
 
             {/* Recent Activity */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.recentActivity')}</h3>
                 <span className="flex items-center gap-1 text-[11px] text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-2 py-0.5 rounded-full">
@@ -826,7 +826,7 @@ export default function BudgetPage() {
                   {expenses.slice(0, 5).map((expense: any) => (
                     <div
                       key={expense.id}
-                      className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+                      className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-[#181D23]/50 transition-colors group"
                     >
                       <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         expense.status === 'APPROVED' ? 'bg-emerald-50 dark:bg-emerald-900/20' :
@@ -843,7 +843,7 @@ export default function BudgetPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate leading-tight">
                           {expense.vendor || expense.description?.split(' — ')[0]}
                         </p>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                        <p className="text-[11px] text-slate-500 dark:text-white/50 truncate mt-0.5">
                           {expense.category?.name}
                         </p>
                       </div>
@@ -875,7 +875,7 @@ export default function BudgetPage() {
 
             {/* Project Financial Summary */}
             {hasBudgets && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] p-5 shadow-md border border-slate-200/60 dark:border-slate-700/60">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                   <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                     <TrendingUp className="h-3.5 w-3.5 text-[#1C8C7D]" />
@@ -903,12 +903,12 @@ export default function BudgetPage() {
                       { label: t('budget.totalExpenses'), value: expenseCount.toString(), icon: Receipt, bg: 'bg-indigo-50 dark:bg-indigo-900/20', iconColor: 'text-indigo-600 dark:text-indigo-400' },
                     ];
                   })().map((item) => (
-                    <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-[#181D23]/30 transition-colors">
                       <div className={`h-8 w-8 rounded-lg ${item.bg} flex items-center justify-center flex-shrink-0`}>
                         <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">{item.label}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-white/50">{item.label}</p>
                         <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{item.value}</p>
                       </div>
                     </div>
@@ -924,9 +924,9 @@ export default function BudgetPage() {
       {isUploadModalOpen && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} />
-          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:max-h-[90vh] z-50 bg-white dark:bg-[#22272B] rounded-xl shadow-2xl overflow-hidden flex flex-col">
+          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:max-h-[90vh] z-50 bg-white dark:bg-[#12161B] rounded-xl shadow-2xl overflow-hidden flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
+            <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-slate-200 dark:border-white/[0.08] bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center gap-3">
                 <Sparkles className="h-5 w-5 text-white" />
                 <div>
@@ -962,7 +962,7 @@ export default function BudgetPage() {
                           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                             analysisType === type.value
                               ? 'bg-[#1C8C7D] text-white'
-                              : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                              : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           <type.icon className="h-4 w-4" />
@@ -981,7 +981,7 @@ export default function BudgetPage() {
                       <select
                         value={selectedBudgetId}
                         onChange={(e) => setSelectedBudgetId(e.target.value)}
-                        className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-sm"
+                        className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] text-sm"
                       >
                         <option value="">{t('budget.selectBudget')}</option>
                         {budgets.map((b) => (
@@ -1081,7 +1081,7 @@ export default function BudgetPage() {
                   </div>
 
                   {/* Extracted Summary */}
-                  <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+                  <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] p-4 space-y-3">
                     {extractedData.vendor && (
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500">{t('budget.vendor')}</span>
@@ -1101,7 +1101,7 @@ export default function BudgetPage() {
                       </div>
                     )}
                     {(extractedData.total || extractedData.totalBudget) && (
-                      <div className="flex justify-between text-sm border-t border-slate-200 dark:border-slate-700 pt-3">
+                      <div className="flex justify-between text-sm border-t border-slate-200 dark:border-white/[0.08] pt-3">
                         <span className="text-slate-500 font-medium">{t('common.total')}</span>
                         <span className="text-lg font-bold text-[#1C8C7D]">
                           {extractedData.currency || 'ETB'} {formatCurrency(extractedData.total || extractedData.totalBudget || 0)}
@@ -1126,7 +1126,7 @@ export default function BudgetPage() {
                       </h4>
                       <div className="space-y-2">
                         {extractedData.lineItems.map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-sm">
+                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50 text-sm">
                             <div className="flex-1">
                               <p className="font-medium text-slate-900 dark:text-white">{item.description}</p>
                               {item.category && <p className="text-xs text-slate-500">{item.category}</p>}
@@ -1148,7 +1148,7 @@ export default function BudgetPage() {
                       </h4>
                       <div className="space-y-2">
                         {extractedData.expenses.map((exp, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-sm">
+                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50 text-sm">
                             <div className="flex-1">
                               <p className="font-medium text-slate-900 dark:text-white">{exp.description}</p>
                               <p className="text-xs text-slate-500">{exp.date} • {exp.category}</p>
@@ -1170,7 +1170,7 @@ export default function BudgetPage() {
                       </h4>
                       <div className="space-y-2">
                         {extractedData.categories.map((cat, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-sm">
+                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50 text-sm">
                             <div className="flex-1">
                               <p className="font-medium text-slate-900 dark:text-white">{cat.name}</p>
                               {cat.code && <p className="text-xs text-slate-500">Code: {cat.code}</p>}
@@ -1227,7 +1227,7 @@ export default function BudgetPage() {
 
             {/* Modal Footer */}
             {extractedData && (
-              <div className="border-t border-slate-200 dark:border-slate-700 px-4 md:px-6 py-4 bg-slate-50 dark:bg-[#1B1F23] flex items-center gap-3">
+              <div className="border-t border-slate-200 dark:border-white/[0.08] px-4 md:px-6 py-4 bg-slate-50 dark:bg-[#0B0E11] flex items-center gap-3">
                 <Button
                   variant="outline"
                   onClick={resetUploadState}
@@ -1271,7 +1271,7 @@ export default function BudgetPage() {
               {slideoutData.map((item: any) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all"
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -1285,13 +1285,13 @@ export default function BudgetPage() {
                           {item.status}
                         </span>
                         {item.category?.name && (
-                          <span className="text-xs text-slate-500 dark:text-slate-400">{item.category.name}</span>
+                          <span className="text-xs text-slate-500 dark:text-white/50">{item.category.name}</span>
                         )}
                       </div>
                       <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                         {item.description || item.vendor || 'Expense'}
                       </p>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-white/50">
                         {item.budget?.project?.name && <span>{item.budget.project.name}</span>}
                         {item.vendor && <span>{item.vendor}</span>}
                         {item.transactionDate && (
@@ -1311,7 +1311,7 @@ export default function BudgetPage() {
           ) : (
             <div className="text-center py-12">
               <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-sm text-slate-600 dark:text-slate-400">{t('common.noResults')}</p>
+              <p className="text-sm text-slate-600 dark:text-white/50">{t('common.noResults')}</p>
             </div>
           )}
         </SlideoutPanelContent>
@@ -1343,16 +1343,16 @@ function StatCard({
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
-      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left cursor-pointer"
+      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] transition-all text-left cursor-pointer"
     >
       <div className="flex items-center gap-2.5 mb-2 md:mb-3">
         <div className={`h-8 w-8 rounded-lg ${iconBg} flex items-center justify-center`}>
           <div className={color}>{icon}</div>
         </div>
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 capitalize">{label}</span>
+        <span className="text-xs font-medium text-slate-500 dark:text-white/50 capitalize">{label}</span>
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
-      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
+      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/50 truncate">{sublabel}</div>
     </div>
   );
 }
@@ -1367,7 +1367,7 @@ function CategoryBar({ label, value, budget, max, color }: {
       <div className="flex items-center justify-between text-sm">
         <span className="text-slate-700 dark:text-slate-300 truncate mr-2">{label}</span>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className={`text-xs font-medium ${utilization > 90 ? 'text-red-600 dark:text-red-400' : utilization > 75 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}>
+          <span className={`text-xs font-medium ${utilization > 90 ? 'text-red-600 dark:text-red-400' : utilization > 75 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-white/50'}`}>
             {utilization.toFixed(0)}%
           </span>
           <span className="font-medium text-slate-900 dark:text-white">
@@ -1375,7 +1375,7 @@ function CategoryBar({ label, value, budget, max, color }: {
           </span>
         </div>
       </div>
-      <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="h-2 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
         {percentage > 0 && (
           <div
             className="h-full transition-all duration-300 rounded-full"

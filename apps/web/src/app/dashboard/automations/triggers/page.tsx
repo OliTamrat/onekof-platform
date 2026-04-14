@@ -110,7 +110,7 @@ export default function AutomationsTriggersPage() {
               placeholder={t('automations.triggersSearchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <Button className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600">
@@ -121,12 +121,12 @@ export default function AutomationsTriggersPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-slate-400">{t('automations.loading')}</div>
+            <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
           </div>
         ) : filteredTriggers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Zap className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-3" />
-            <p className="text-sm text-gray-500 dark:text-slate-400">{t('automations.noAutomations')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/50">{t('automations.noAutomations')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -134,7 +134,7 @@ export default function AutomationsTriggersPage() {
               <div
                 key={trigger.id}
                 onClick={() => { setSelectedTrigger(trigger); setIsSlideoutOpen(true); }}
-                className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -148,8 +148,8 @@ export default function AutomationsTriggersPage() {
                         {trigger.type}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">{trigger.condition}</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50 mb-2">{trigger.condition}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                       <span>{trigger.rawAutomation.entityType} — {trigger.rawAutomation.triggerEvent}</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />

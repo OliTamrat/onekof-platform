@@ -122,9 +122,9 @@ export default function GoalsSummaryPage() {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
-          <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
+          <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                   <Target className="h-6 w-6" />
@@ -142,7 +142,7 @@ export default function GoalsSummaryPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -156,14 +156,14 @@ export default function GoalsSummaryPage() {
             <div className="max-w-7xl mx-auto space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 animate-pulse">
-                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24 mb-3"></div>
-                    <div className="h-8 bg-gray-200 dark:bg-slate-700 rounded w-16 mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
+                  <div key={i} className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 dark:bg-white/[0.08] rounded w-24 mb-3"></div>
+                    <div className="h-8 bg-gray-200 dark:bg-white/[0.08] rounded w-16 mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-white/[0.08] rounded w-20"></div>
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-slate-400">
+              <div className="text-center py-12 text-gray-500 dark:text-white/50">
                 Loading goals analytics...
               </div>
             </div>
@@ -175,10 +175,10 @@ export default function GoalsSummaryPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Target className="h-6 w-6" />
@@ -190,7 +190,7 @@ export default function GoalsSummaryPage() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value as 'quarter' | 'year' | 'all')}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="quarter">This Quarter</option>
                 <option value="year">This Year</option>
@@ -215,7 +215,7 @@ export default function GoalsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -273,12 +273,12 @@ export default function GoalsSummaryPage() {
             </div>
 
             {/* Overall Progress */}
-            <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white">Overall OKR Progress</h3>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">72%</div>
               </div>
-              <div className="w-full h-4 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="w-full h-4 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
                 <div
                   className="h-4 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transition-all duration-1000"
                   style={{ width: '72%' }}
@@ -287,19 +287,19 @@ export default function GoalsSummaryPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="text-center p-3 rounded-lg bg-green-500/10">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">{goalsByStatus.onTrack}</div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">On Track</div>
+                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">On Track</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-orange-500/10">
                   <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{goalsByStatus.atRisk}</div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">At Risk</div>
+                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">At Risk</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-red-500/10">
                   <div className="text-2xl font-bold text-red-600 dark:text-red-400">{goalsByStatus.behindSchedule}</div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Behind Schedule</div>
+                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Behind Schedule</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-purple-500/10">
                   <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{goalsByStatus.achieved}</div>
-                  <div className="text-xs text-gray-600 dark:text-slate-400 mt-1">Achieved</div>
+                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Achieved</div>
                 </div>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function GoalsSummaryPage() {
               {/* Left Column - 2/3 width */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Key Results Progress */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">Key Results Progress</h3>
 
                   <div className="space-y-5">
@@ -319,13 +319,13 @@ export default function GoalsSummaryPage() {
                       const isReversed = kr.title.includes('Reduce') || kr.title.includes('Churn');
 
                       return (
-                        <div key={kr.id} className="p-4 rounded-lg border border-gray-200 dark:border-slate-700">
+                        <div key={kr.id} className="p-4 rounded-lg border border-gray-200 dark:border-white/[0.08]">
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
                               <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
                                 {kr.title}
                               </h4>
-                              <p className="text-xs text-gray-500 dark:text-slate-400">
+                              <p className="text-xs text-gray-500 dark:text-white/50">
                                 {kr.goal}
                               </p>
                             </div>
@@ -334,7 +334,7 @@ export default function GoalsSummaryPage() {
                                 <div className="text-sm font-bold text-gray-900 dark:text-white">
                                   {kr.current.toLocaleString()} {kr.unit}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-slate-400">
+                                <div className="text-xs text-gray-500 dark:text-white/50">
                                   of {kr.target.toLocaleString()}
                                 </div>
                               </div>
@@ -342,7 +342,7 @@ export default function GoalsSummaryPage() {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <div className="flex-1 h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div className="flex-1 h-2 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
                               <div
                                 className="h-2 rounded-full transition-all duration-500"
                                 style={{
@@ -357,7 +357,7 @@ export default function GoalsSummaryPage() {
                           </div>
 
                           <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
+                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
                               <Calendar className="h-3 w-3" />
                               Due {kr.dueDate}
                             </div>
@@ -375,7 +375,7 @@ export default function GoalsSummaryPage() {
                 </div>
 
                 {/* Quarterly Progress Trends */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Quarterly Progress</h3>
                     <div className="flex gap-2">
@@ -386,7 +386,7 @@ export default function GoalsSummaryPage() {
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
                               ? 'bg-primary-500 text-white'
-                              : 'bg-gray-100 dark:bg-[#282E33] text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
+                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range === 'quarter' ? 'Quarter' : range === 'year' ? 'Year' : 'All Time'}
@@ -421,31 +421,31 @@ export default function GoalsSummaryPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
+                        <span className="text-xs font-medium text-gray-600 dark:text-white/50">
                           {data.quarter.replace(' ', '\n')}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-blue-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">Planned</span>
+                      <span className="text-xs text-gray-600 dark:text-white/50">Planned</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">Achieved</span>
+                      <span className="text-xs text-gray-600 dark:text-white/50">Achieved</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-orange-500" />
-                      <span className="text-xs text-gray-600 dark:text-slate-400">{t("status.inProgress")}</span>
+                      <span className="text-xs text-gray-600 dark:text-white/50">{t("status.inProgress")}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Team Goal Completion */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Team Performance</h3>
                     <Link
@@ -465,12 +465,12 @@ export default function GoalsSummaryPage() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-900 dark:text-white">{team.team}</span>
-                            <span className="text-sm text-gray-600 dark:text-slate-400">
+                            <span className="text-sm text-gray-600 dark:text-white/50">
                               {team.completed}/{team.total} goals
                             </span>
                           </div>
                           <div className="flex items-center gap-3">
-                            <div className="flex-1 h-2 bg-gray-200 dark:bg-slate-700 rounded-full">
+                            <div className="flex-1 h-2 bg-gray-200 dark:bg-white/[0.08] rounded-full">
                               <div
                                 className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
                                 style={{ width: `${team.rate}%` }}
@@ -490,7 +490,7 @@ export default function GoalsSummaryPage() {
               {/* Right Column - 1/3 width */}
               <div className="space-y-6">
                 {/* Upcoming Deadlines */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Flag className="h-5 w-5 text-primary-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Upcoming Deadlines</h3>
@@ -500,7 +500,7 @@ export default function GoalsSummaryPage() {
                     {upcomingDeadlines.map((deadline: { id: string; title: string; team: string; dueDate: string; daysLeft: number; progress: number; priority: string }) => (
                       <div
                         key={deadline.id}
-                        className="p-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-[#282E33] transition-colors"
+                        className="p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white flex-1">
@@ -514,17 +514,17 @@ export default function GoalsSummaryPage() {
                             {deadline.priority}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-slate-400 mb-2 flex items-center gap-1">
+                        <p className="text-xs text-gray-600 dark:text-white/50 mb-2 flex items-center gap-1">
                           <Users className="h-3 w-3" />
                           {deadline.team}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
+                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/50 mb-2">
                           <Clock className="h-3 w-3" />
                           <span>{deadline.dueDate}</span>
                           <span className="text-orange-500">• {deadline.daysLeft} days left</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full">
+                          <div className="flex-1 h-1.5 bg-gray-200 dark:bg-white/[0.08] rounded-full">
                             <div
                               className="h-1.5 rounded-full bg-primary-500"
                               style={{ width: `${deadline.progress}%` }}
@@ -540,7 +540,7 @@ export default function GoalsSummaryPage() {
                 </div>
 
                 {/* Top Performing Goals */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Trophy className="h-5 w-5 text-yellow-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Top Goals</h3>
@@ -553,7 +553,7 @@ export default function GoalsSummaryPage() {
                           index === 0 ? 'bg-yellow-500 text-white' :
                           index === 1 ? 'bg-gray-400 text-white' :
                           index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-slate-400'
+                          'bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-white/50'
                         }`}>
                           {index + 1}
                         </div>
@@ -561,11 +561,11 @@ export default function GoalsSummaryPage() {
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                             {goal.title}
                           </h4>
-                          <p className="text-xs text-gray-500 dark:text-slate-400 mb-2">
+                          <p className="text-xs text-gray-500 dark:text-white/50 mb-2">
                             {goal.owner}
                           </p>
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full">
+                            <div className="flex-1 h-1.5 bg-gray-200 dark:bg-white/[0.08] rounded-full">
                               <div
                                 className={`h-1.5 rounded-full ${
                                   goal.health === 'excellent' ? 'bg-green-500' :
@@ -592,7 +592,7 @@ export default function GoalsSummaryPage() {
                 </div>
 
                 {/* Recent Achievements */}
-                <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
+                <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <Zap className="h-5 w-5 text-purple-500" />
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">Recent Wins</h3>
@@ -610,10 +610,10 @@ export default function GoalsSummaryPage() {
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                               {achievement.title}
                             </h4>
-                            <p className="text-xs text-gray-600 dark:text-slate-400">
+                            <p className="text-xs text-gray-600 dark:text-white/50">
                               {achievement.team}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                            <p className="text-xs text-gray-500 dark:text-white/50 mt-1">
                               {achievement.completedDate}
                             </p>
                           </div>
@@ -633,7 +633,7 @@ export default function GoalsSummaryPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         Goal Achievement Trend
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-white/50 leading-relaxed">
                         You're on track to exceed this quarter's target! <span className="font-semibold text-blue-600 dark:text-blue-400">72% of goals</span> are making excellent progress.
                       </p>
                     </div>
@@ -663,7 +663,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   const isPositive = trend === 'up' ? change >= 0 : change <= 0;
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg transition-shadow">
+    <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${iconColor}`}>
           <Icon className="h-6 w-6 text-white" />
@@ -681,7 +681,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
       </div>
       <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-slate-400">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-white/50">{changeLabel}</div>
     </div>
   );
 }

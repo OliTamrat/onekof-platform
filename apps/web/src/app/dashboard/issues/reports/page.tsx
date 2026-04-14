@@ -127,14 +127,14 @@ export default function IssuesReportsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         <ProjectPageHeader
           project={currentProject}
           onCreateClick={() => setShowCreateModal(true)}
         />
 
         {/* Filter Bar */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
               <FileBarChart className="h-4 w-4" />
@@ -144,7 +144,7 @@ export default function IssuesReportsPage() {
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="all">All Types</option>
                 <option value="operational">Operational</option>
@@ -157,7 +157,7 @@ export default function IssuesReportsPage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="all">All Status</option>
                 <option value="current">Current</option>
@@ -175,20 +175,20 @@ export default function IssuesReportsPage() {
             {filteredReports.map((report) => (
               <div
                 key={report.id}
-                className={`p-3 bg-white dark:bg-[#22272B] rounded-lg border ${
+                className={`p-3 bg-white dark:bg-[#12161B] rounded-lg border ${
                   report.status === 'overdue'
                     ? 'border-red-500'
-                    : 'border-gray-200 dark:border-slate-700'
+                    : 'border-gray-200 dark:border-white/[0.08]'
                 } hover:border-primary-500 cursor-pointer transition-colors`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`h-2 w-2 rounded-full ${getStatusColor(report.status)}`} />
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
                         {report.type.toUpperCase()}
                       </span>
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#282E33] text-gray-700 dark:text-slate-400">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
                         {report.frequency.toUpperCase()}
                       </span>
                       {report.priority === 'critical' && (
@@ -200,7 +200,7 @@ export default function IssuesReportsPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                       {report.title}
                     </h3>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
                       <span>Period: {report.reportingPeriod}</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -215,11 +215,11 @@ export default function IssuesReportsPage() {
                   <div className="flex items-center gap-2">
                     {report.status === 'submitted' || report.status === 'current' ? (
                       <>
-                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
-                          <Eye className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#181D23]">
+                          <Eye className="h-4 w-4 text-gray-600 dark:text-white/50" />
                         </Button>
-                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#282E33]">
-                          <Download className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+                        <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#181D23]">
+                          <Download className="h-4 w-4 text-gray-600 dark:text-white/50" />
                         </Button>
                       </>
                     ) : null}
@@ -244,7 +244,7 @@ export default function IssuesReportsPage() {
                 <div className="text-center">
                   <FileBarChart className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No reports found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
                     No reports match the selected filters.
                   </p>
                 </div>

@@ -169,18 +169,18 @@ export default function TemplatesPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           {/* Header Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold">
                 <LayoutTemplate className="h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.templatesTitle')}</h1>
-                <p className="text-xs text-gray-600 dark:text-slate-400">
+                <p className="text-xs text-gray-600 dark:text-white/50">
                   {t('automations.templatesSubtitle')}
                 </p>
               </div>
@@ -188,7 +188,7 @@ export default function TemplatesPage() {
 
             <Link
               href="/dashboard/automations"
-              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-slate-700 px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+              className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-white/[0.08] px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
             >
               <List className="h-4 w-4" />
               {t('automations.templatesViewMy')}
@@ -206,7 +206,7 @@ export default function TemplatesPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.id === 'templates'
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -219,18 +219,18 @@ export default function TemplatesPage() {
           {/* Search and Filter Bar */}
           <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
               <input
                 type="text"
                 placeholder={t('automations.templatesSearchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500 focus:outline-none transition-colors"
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+              <Filter className="h-4 w-4 text-gray-600 dark:text-white/50" />
               {categories.map((category, idx) => {
                 const isAll = idx === 0;
                 const key = isAll ? 'all' : category;
@@ -242,7 +242,7 @@ export default function TemplatesPage() {
                       'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
                       selectedCategory === (isAll ? 'all' : category)
                         ? 'bg-primary-500 text-white'
-                        : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
+                        : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
                     )}
                   >
                     {category}
@@ -259,7 +259,7 @@ export default function TemplatesPage() {
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{t('automations.templatesLoadingTemplates')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/50">{t('automations.templatesLoadingTemplates')}</p>
               </div>
             </div>
           ) : filteredTemplates.length > 0 ? (
@@ -282,12 +282,12 @@ export default function TemplatesPage() {
               ))}
             </div>
           ) : (
-            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+            <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-white/[0.08]">
               <LayoutTemplate className="h-12 w-12 text-gray-300 dark:text-slate-700" />
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 {t('automations.templatesNoTemplates')}
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+              <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
                 {t('automations.templatesNoTemplatesDesc')}
               </p>
             </div>
@@ -297,7 +297,7 @@ export default function TemplatesPage() {
         {/* Template Detail Dialog */}
         {selectedTemplate && (
           <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-            <DialogContent className="max-w-2xl bg-[#22272B] border-slate-700 text-white">
+            <DialogContent className="max-w-2xl bg-[#12161B] border-white/[0.08] text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
                   <div
@@ -314,10 +314,10 @@ export default function TemplatesPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">{selectedTemplate.name}</h2>
-                    <p className="text-xs text-slate-400">{selectedTemplate.category}</p>
+                    <p className="text-xs text-white/50">{selectedTemplate.category}</p>
                   </div>
                 </DialogTitle>
-                <DialogDescription className="text-sm text-slate-400">
+                <DialogDescription className="text-sm text-white/50">
                   {selectedTemplate.description}
                 </DialogDescription>
               </DialogHeader>
@@ -325,21 +325,21 @@ export default function TemplatesPage() {
               <div className="py-4 space-y-4">
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-white/[0.08] p-3 bg-[#0B0E11]">
                     <div className="flex items-center gap-2 mb-1">
                       <Star className="h-4 w-4 text-amber-500" />
                       <h3 className="text-xs font-semibold text-white">{t('automations.templatesPopularity')}</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.popularity}%</p>
                   </div>
-                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-white/[0.08] p-3 bg-[#0B0E11]">
                     <div className="flex items-center gap-2 mb-1">
                       <Clock className="h-4 w-4 text-green-500" />
                       <h3 className="text-xs font-semibold text-white">{t('automations.templatesTimeSaved')}</h3>
                     </div>
                     <p className="text-2xl font-bold text-white">{selectedTemplate.estimatedTimeSaved}h/week</p>
                   </div>
-                  <div className="rounded-lg border border-slate-700 p-3 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-white/[0.08] p-3 bg-[#0B0E11]">
                     <div className="flex items-center gap-2 mb-1">
                       <Zap className="h-4 w-4 text-purple-500" />
                       <h3 className="text-xs font-semibold text-white">{t('automations.templatesRunMode')}</h3>
@@ -349,13 +349,13 @@ export default function TemplatesPage() {
                 </div>
 
                 {/* Trigger */}
-                <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
+                <div className="rounded-lg border border-white/[0.08] p-4 bg-[#0B0E11]">
                   <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold">1</span>
                     {t('automations.templatesWhen')}
                   </h3>
                   <div className="ml-8">
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-white/50">
                       <span className="font-medium text-white">{selectedTemplate.entityType}</span>
                       {' → '}
                       <span className="font-medium text-white">{selectedTemplate.triggerEvent}</span>
@@ -365,14 +365,14 @@ export default function TemplatesPage() {
 
                 {/* Conditions */}
                 {selectedTemplate.conditions && selectedTemplate.conditions.length > 0 && (
-                  <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-white/[0.08] p-4 bg-[#0B0E11]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">2</span>
                       {t('automations.templatesIf')}
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.conditions.map((condition: any, index: number) => (
-                        <p key={index} className="text-sm text-slate-400">
+                        <p key={index} className="text-sm text-white/50">
                           {condition.field}{' '}
                           <span className="font-medium text-white">{condition.operator}</span>{' '}
                           {condition.value !== null && <span className="font-medium text-white">{condition.value}</span>}
@@ -384,14 +384,14 @@ export default function TemplatesPage() {
 
                 {/* Actions */}
                 {selectedTemplate.actions && selectedTemplate.actions.length > 0 && (
-                  <div className="rounded-lg border border-slate-700 p-4 bg-[#1B1F23]">
+                  <div className="rounded-lg border border-white/[0.08] p-4 bg-[#0B0E11]">
                     <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-400 text-xs font-bold">3</span>
                       {t('automations.templatesThen')}
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.actions.map((action: any, index: number) => (
-                        <p key={index} className="text-sm text-slate-400">
+                        <p key={index} className="text-sm text-white/50">
                           <span className="font-medium text-white capitalize">{action.type.replace(/_/g, ' ')}</span>
                           {action.params && Object.keys(action.params).length > 0 && (
                             <span className="text-xs ml-2">
@@ -409,7 +409,7 @@ export default function TemplatesPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsDetailDialogOpen(false)}
-                  className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
+                  className="bg-[#181D23] border-white/[0.08] text-white hover:bg-slate-700"
                 >
                   {t('common.cancel')}
                 </Button>
@@ -432,7 +432,7 @@ export default function TemplatesPage() {
         {/* Confirmation Dialog */}
         {templateToActivate && (
           <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-            <DialogContent className="max-w-md bg-[#22272B] border-slate-700 text-white">
+            <DialogContent className="max-w-md bg-[#12161B] border-white/[0.08] text-white">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
@@ -440,13 +440,13 @@ export default function TemplatesPage() {
                   </div>
                   {t('automations.templatesActivateConfirmTitle')}
                 </DialogTitle>
-                <DialogDescription className="text-sm text-slate-400">
+                <DialogDescription className="text-sm text-white/50">
                   {t('automations.templatesActivateConfirmDesc').replace('{name}', templateToActivate.name)}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="py-4">
-                <div className="rounded-lg border border-slate-700 bg-[#1B1F23] p-4">
+                <div className="rounded-lg border border-white/[0.08] bg-[#0B0E11] p-4">
                   <div className="flex items-start gap-3">
                     <div
                       className="flex h-10 w-10 items-center justify-center rounded-lg shrink-0"
@@ -462,8 +462,8 @@ export default function TemplatesPage() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-white mb-1">{templateToActivate.name}</h4>
-                      <p className="text-xs text-slate-400 mb-2">{templateToActivate.description}</p>
-                      <div className="flex items-center gap-3 text-xs text-slate-400">
+                      <p className="text-xs text-white/50 mb-2">{templateToActivate.description}</p>
+                      <div className="flex items-center gap-3 text-xs text-white/50">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-green-500" />
                           {templateToActivate.estimatedTimeSaved}h saved/week
@@ -486,7 +486,7 @@ export default function TemplatesPage() {
                     setTemplateToActivate(null);
                   }}
                   disabled={activateTemplateMutation.isPending}
-                  className="bg-[#282E33] border-slate-700 text-white hover:bg-slate-700"
+                  className="bg-[#181D23] border-white/[0.08] text-white hover:bg-slate-700"
                 >
                   {t('common.cancel')}
                 </Button>
@@ -533,7 +533,7 @@ function TemplateCard({ template, activateLabel, onClick, onActivate }: Template
   const IconComponent = ICON_MAP[template.icon] || Zap;
 
   return (
-    <div className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] transition-all hover:border-primary-500 hover:shadow-lg">
+    <div className="group cursor-pointer overflow-hidden rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] transition-all hover:border-primary-500 hover:shadow-lg">
       <div className="p-3" onClick={onClick}>
         {/* Header */}
         <div className="flex items-start gap-2 mb-2">
@@ -547,17 +547,17 @@ function TemplateCard({ template, activateLabel, onClick, onActivate }: Template
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors line-clamp-1">
               {template.name}
             </h3>
-            <p className="text-xs text-gray-600 dark:text-slate-400">{template.category}</p>
+            <p className="text-xs text-gray-600 dark:text-white/50">{template.category}</p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-2 mb-3">
+        <p className="text-xs text-gray-600 dark:text-white/50 line-clamp-2 mb-3">
           {template.description}
         </p>
 
         {/* Stats */}
-        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-slate-400">
+        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-white/50">
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 text-amber-500" />
             <span>{template.popularity}%</span>
@@ -570,7 +570,7 @@ function TemplateCard({ template, activateLabel, onClick, onActivate }: Template
       </div>
 
       {/* Action Button */}
-      <div className="border-t border-gray-200 dark:border-slate-700 px-3 py-2 bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="border-t border-gray-200 dark:border-white/[0.08] px-3 py-2 bg-gray-50 dark:bg-[#0B0E11]">
         <Button
           onClick={(e) => {
             e.stopPropagation();

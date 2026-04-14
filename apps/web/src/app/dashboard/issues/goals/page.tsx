@@ -294,7 +294,7 @@ export default function IssuesGoalsPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500 dark:text-slate-400">Please sign in to view goals.</p>
+          <p className="text-gray-500 dark:text-white/50">Please sign in to view goals.</p>
         </div>
       </AppLayout>
     );
@@ -317,7 +317,7 @@ export default function IssuesGoalsPage() {
         showInsights
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         <div className="flex-1 overflow-auto">
           <div className="mx-auto max-w-7xl p-6">
             {/* Header with Actions */}
@@ -326,7 +326,7 @@ export default function IssuesGoalsPage() {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Goals & OKRs
                 </h2>
-                <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+                <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
                   Track objectives and key results across your organization
                 </p>
               </div>
@@ -355,7 +355,7 @@ export default function IssuesGoalsPage() {
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
                     statusFilter === value
                       ? 'bg-[#8B5CF6] text-white'
-                      : 'bg-white dark:bg-[#22272B] text-gray-700 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#282E33] border border-gray-200 dark:border-slate-700'
+                      : 'bg-white dark:bg-[#12161B] text-gray-700 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -369,16 +369,16 @@ export default function IssuesGoalsPage() {
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#8B5CF6] dark:border-gray-700"></div>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Loading goals...</p>
+                  <p className="text-sm text-gray-600 dark:text-white/50">Loading goals...</p>
                 </div>
               </div>
             ) : goals.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] py-12">
+              <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] py-12">
                 <Target className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                   No goals found
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+                <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
                   {statusFilter === 'all'
                     ? 'Get started by creating your first goal'
                     : `No goals with status "${statusFilter.replace('_', ' ').toLowerCase()}"`}
@@ -404,7 +404,7 @@ export default function IssuesGoalsPage() {
                   return (
                     <div
                       key={goal.id}
-                      className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden transition-shadow hover:shadow-md"
+                      className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] overflow-hidden transition-shadow hover:shadow-md"
                     >
                       {/* Goal Header */}
                       <div className="p-5">
@@ -430,7 +430,7 @@ export default function IssuesGoalsPage() {
                                   </h3>
                                 </Button>
                                 {goal.description && (
-                                  <p className="mt-1 text-sm text-gray-600 dark:text-slate-400 line-clamp-2 ml-6">
+                                  <p className="mt-1 text-sm text-gray-600 dark:text-white/50 line-clamp-2 ml-6">
                                     {goal.description}
                                   </p>
                                 )}
@@ -444,7 +444,7 @@ export default function IssuesGoalsPage() {
                             </div>
 
                             {/* Metadata Row */}
-                            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-slate-400 ml-6">
+                            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/50 ml-6">
                               {goal.team && (
                                 <div className="flex items-center gap-1.5">
                                   <div
@@ -474,14 +474,14 @@ export default function IssuesGoalsPage() {
                             {/* Progress Bar */}
                             <div className="mt-4 ml-6">
                               <div className="flex items-center justify-between text-xs mb-1">
-                                <span className="font-medium text-gray-700 dark:text-slate-400">
+                                <span className="font-medium text-gray-700 dark:text-white/50">
                                   Progress
                                 </span>
                                 <span className="font-semibold text-gray-900 dark:text-white">
                                   {goal.progress}%
                                 </span>
                               </div>
-                              <div className="h-2 rounded-full bg-gray-200 dark:bg-[#282E33] overflow-hidden">
+                              <div className="h-2 rounded-full bg-gray-200 dark:bg-[#181D23] overflow-hidden">
                                 <div
                                   className={`h-full transition-all ${getProgressColor(goal.progress)}`}
                                   style={{ width: `${goal.progress}%` }}
@@ -494,7 +494,7 @@ export default function IssuesGoalsPage() {
 
                       {/* Key Results (Expanded) */}
                       {isExpanded && goal.keyResults.length > 0 && (
-                        <div className="border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] p-5">
+                        <div className="border-t border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#0B0E11] p-5">
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                             <Target className="h-4 w-4 text-[#8B5CF6]" />
                             Key Results
@@ -505,7 +505,7 @@ export default function IssuesGoalsPage() {
                               return (
                                 <div
                                   key={kr.id}
-                                  className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4"
+                                  className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4"
                                 >
                                   <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1">
@@ -523,11 +523,11 @@ export default function IssuesGoalsPage() {
                                       {/* KR Progress */}
                                       <div className="mt-3 ml-6">
                                         <div className="flex items-center gap-3 text-xs mb-1">
-                                          <span className="text-gray-600 dark:text-slate-400">
+                                          <span className="text-gray-600 dark:text-white/50">
                                             Current: {kr.current} {kr.unit}
                                           </span>
                                           <span className="text-gray-400">•</span>
-                                          <span className="text-gray-600 dark:text-slate-400">
+                                          <span className="text-gray-600 dark:text-white/50">
                                             Target: {kr.target} {kr.unit}
                                           </span>
                                           <span className="text-gray-400">•</span>
@@ -535,7 +535,7 @@ export default function IssuesGoalsPage() {
                                             {Math.round(krProgress)}%
                                           </span>
                                         </div>
-                                        <div className="h-1.5 rounded-full bg-gray-200 dark:bg-[#282E33] overflow-hidden">
+                                        <div className="h-1.5 rounded-full bg-gray-200 dark:bg-[#181D23] overflow-hidden">
                                           <div
                                             className={`h-full transition-all ${getProgressColor(krProgress)}`}
                                             style={{ width: `${Math.min(krProgress, 100)}%` }}
@@ -558,7 +558,7 @@ export default function IssuesGoalsPage() {
                                                   });
                                                 }
                                               }}
-                                              className="w-24 rounded border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 py-1 text-xs text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-1 focus:ring-[#8B5CF6]"
+                                              className="w-24 rounded border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-2 py-1 text-xs text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-1 focus:ring-[#8B5CF6]"
                                             />
                                             <span className="text-xs text-gray-500 dark:text-[#6B7684]">
                                               Update current value
@@ -586,17 +586,17 @@ export default function IssuesGoalsPage() {
       {/* Create Goal Modal */}
       {showCreateGoal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-white dark:bg-[#22272B] rounded-lg shadow-2xl my-8">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 p-4">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-[#12161B] rounded-lg shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] p-4">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <Target className="h-5 w-5 text-[#8B5CF6]" />
                 Create Goal (OKR)
               </h2>
               <Button variant="ghost" size="icon"
                 onClick={() => setShowCreateGoal(false)}
-                className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
               >
-                <Plus className="h-5 w-5 rotate-45 text-gray-600 dark:text-slate-400" />
+                <Plus className="h-5 w-5 rotate-45 text-gray-600 dark:text-white/50" />
               </Button>
             </div>
 
@@ -606,7 +606,7 @@ export default function IssuesGoalsPage() {
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Objective</h3>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
                     Title
                   </label>
                   <input
@@ -614,33 +614,33 @@ export default function IssuesGoalsPage() {
                     value={goalFormData.title}
                     onChange={(e) => setGoalFormData({ ...goalFormData, title: e.target.value })}
                     required
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                     placeholder="e.g., Increase platform adoption"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
                     Description
                   </label>
                   <textarea
                     value={goalFormData.description}
                     onChange={(e) => setGoalFormData({ ...goalFormData, description: e.target.value })}
                     rows={3}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                    className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                     placeholder="Brief description of what you want to achieve"
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
                       Priority
                     </label>
                     <select
                       value={goalFormData.priority}
                       onChange={(e) => setGoalFormData({ ...goalFormData, priority: e.target.value as GoalPriority })}
-                      className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                      className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -650,13 +650,13 @@ export default function IssuesGoalsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
                       Team
                     </label>
                     <select
                       value={goalFormData.teamId}
                       onChange={(e) => setGoalFormData({ ...goalFormData, teamId: e.target.value })}
-                      className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                      className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                     >
                       <option value="">No team</option>
                       {teams.map((team) => (
@@ -668,14 +668,14 @@ export default function IssuesGoalsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
                       Due Date
                     </label>
                     <input
                       type="date"
                       value={goalFormData.dueDate}
                       onChange={(e) => setGoalFormData({ ...goalFormData, dueDate: e.target.value })}
-                      className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                      className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                     />
                   </div>
                 </div>
@@ -697,7 +697,7 @@ export default function IssuesGoalsPage() {
                 </div>
 
                 {goalFormData.keyResults.map((kr, index) => (
-                  <div key={index} className="rounded-lg border border-gray-200 dark:border-slate-700 p-4 space-y-3">
+                  <div key={index} className="rounded-lg border border-gray-200 dark:border-white/[0.08] p-4 space-y-3">
                     <div className="flex items-start gap-3">
                       <div className="flex-1">
                         <input
@@ -705,7 +705,7 @@ export default function IssuesGoalsPage() {
                           value={kr.description}
                           onChange={(e) => updateKeyResult(index, 'description', e.target.value)}
                           placeholder="e.g., Reach 1000 active users"
-                          className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                          className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                         />
                       </div>
                       {goalFormData.keyResults.length > 1 && (
@@ -721,7 +721,7 @@ export default function IssuesGoalsPage() {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
+                        <label className="block text-xs font-medium text-gray-600 dark:text-white/50 mb-1">
                           Unit
                         </label>
                         <input
@@ -729,19 +729,19 @@ export default function IssuesGoalsPage() {
                           value={kr.unit}
                           onChange={(e) => updateKeyResult(index, 'unit', e.target.value)}
                           placeholder="users"
-                          className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                          className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
+                        <label className="block text-xs font-medium text-gray-600 dark:text-white/50 mb-1">
                           Target
                         </label>
                         <input
                           type="number"
                           value={kr.target}
                           onChange={(e) => updateKeyResult(index, 'target', parseFloat(e.target.value))}
-                          className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                          className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
                         />
                       </div>
                     </div>
@@ -749,11 +749,11 @@ export default function IssuesGoalsPage() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                 <Button
                   type="button"
                   onClick={() => setShowCreateGoal(false)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33] transition-colors"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   Cancel
                 </Button>

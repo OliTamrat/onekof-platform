@@ -68,11 +68,11 @@ export default function TeamsBoardPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           {/* Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Users className="h-5 w-5" />
@@ -96,7 +96,7 @@ export default function TeamsBoardPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -108,7 +108,7 @@ export default function TeamsBoardPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-6 py-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -116,7 +116,7 @@ export default function TeamsBoardPage() {
               placeholder={t("nav.searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function TeamsBoardPage() {
                   <h3 className="font-semibold text-gray-900 dark:text-white">
                     {column.label}
                   </h3>
-                  <span className="text-sm text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-[#282E33] px-2 py-0.5 rounded-full">
+                  <span className="text-sm text-gray-500 dark:text-white/50 bg-gray-100 dark:bg-[#181D23] px-2 py-0.5 rounded-full">
                     {teamsByStatus[column.id]?.length || 0}
                   </span>
                 </div>
@@ -139,7 +139,7 @@ export default function TeamsBoardPage() {
                   {teamsByStatus[column.id]?.map((team) => (
                     <div
                       key={team.id}
-                      className="bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
+                      className="bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08] p-4 hover:shadow-md transition-shadow cursor-pointer"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <h4 className="font-semibold text-gray-900 dark:text-white">
@@ -150,21 +150,21 @@ export default function TeamsBoardPage() {
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">
+                      <p className="text-sm text-gray-600 dark:text-white/50 mb-3">
                         {team.description}
                       </p>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-white/[0.08]">
                         <div className="flex items-center gap-2">
                           <div className="h-6 w-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-semibold">
                             {team.lead.split(' ').map((n: string) => n[0]).join('')}
                           </div>
-                          <span className="text-xs text-gray-600 dark:text-slate-400">
+                          <span className="text-xs text-gray-600 dark:text-white/50">
                             {team.lead}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400">
+                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
                           <Users className="h-3 w-3" />
                           {team.members}
                         </div>

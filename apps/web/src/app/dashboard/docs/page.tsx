@@ -125,7 +125,7 @@ export default function DocsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         <UnifiedPageHeader
           title={t('nav.docs')}
           icon={<BookOpen className="h-6 w-6" />}
@@ -141,16 +141,16 @@ export default function DocsPage() {
           showInsights={false}
         />
 
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           <div className="flex items-center justify-between gap-3 px-3 md:px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
               <input
                 type="text"
                 placeholder={t('common.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-[#1C8C7D] focus:outline-none transition-colors"
+                className="h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-[#1C8C7D] focus:outline-none transition-colors"
               />
             </div>
 
@@ -160,7 +160,7 @@ export default function DocsPage() {
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'grid'
                     ? 'bg-[#1C8C7D] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
+                    : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
                 }`}
               >
                 <Grid3x3 className="h-4 w-4" />
@@ -170,7 +170,7 @@ export default function DocsPage() {
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   viewMode === 'list'
                     ? 'bg-[#1C8C7D] text-white'
-                    : 'bg-gray-200 dark:bg-[#282E33] text-gray-700 dark:text-slate-400 hover:bg-gray-300 dark:hover:bg-slate-700'
+                    : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
                 }`}
               >
                 <List className="h-4 w-4" />
@@ -187,7 +187,7 @@ export default function DocsPage() {
 
         <div className="flex-1 overflow-y-auto p-3 md:p-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-slate-400">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
               {t('common.loading')}
             </div>
           )}
@@ -204,7 +204,7 @@ export default function DocsPage() {
               {recentPages.length > 0 && (
                 <div className="mb-8">
                   <div className="mb-4 flex items-center justify-between">
-                    <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                    <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
                       <Clock className="h-4 w-4" />
                       {t('nav.recentPages').toUpperCase()}
                     </h2>
@@ -216,22 +216,22 @@ export default function DocsPage() {
                     </Link>
                   </div>
 
-                  <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+                  <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                     {recentPages.map((page, index) => (
                       <Link
                         key={page.id}
                         href={`/dashboard/docs/pages/${page.id}`}
                         className={cn(
-                          'flex items-center gap-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
-                          index !== recentPages.length - 1 && 'border-b border-gray-200 dark:border-slate-700',
+                          'flex items-center gap-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-[#181D23]',
+                          index !== recentPages.length - 1 && 'border-b border-gray-200 dark:border-white/[0.08]',
                         )}
                       >
-                        <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-slate-400" />
+                        <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-white/50" />
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-medium text-gray-900 dark:text-white">
                             {page.title}
                           </p>
-                          <p className="text-xs text-gray-600 dark:text-slate-400">
+                          <p className="text-xs text-gray-600 dark:text-white/50">
                             {page.category?.name && `${page.category.name} • `}
                             {t('common.updated')} {toRelativeTime(page.updatedAt)}
                           </p>
@@ -244,7 +244,7 @@ export default function DocsPage() {
 
               {favoriteSpaces.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {t('nav.starred').toUpperCase()}
                   </h2>
@@ -256,7 +256,7 @@ export default function DocsPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       {favoriteSpaces.map((space, index) => (
                         <SpaceListItem
                           key={space.id}
@@ -271,7 +271,7 @@ export default function DocsPage() {
               )}
 
               <div>
-                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
                   {favoriteSpaces.length > 0
                     ? t('nav.allSpaces').toUpperCase()
                     : `${t('nav.allSpaces').toUpperCase()} (${filteredSpaces.length})`}
@@ -285,7 +285,7 @@ export default function DocsPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       {otherSpaces.map((space, index) => (
                         <SpaceListItem
                           key={space.id}
@@ -297,12 +297,12 @@ export default function DocsPage() {
                     </div>
                   )
                 ) : (
-                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-slate-700">
+                  <div className="flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-white/[0.08]">
                     <Folders className="h-12 w-12 text-gray-300 dark:text-slate-700" />
                     <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                       {searchQuery ? t('emptyStates.noSpacesSearch') : t('emptyStates.noSpaces')}
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+                    <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
                       {searchQuery
                         ? t('emptyStates.noSpacesSearchDesc')
                         : t('emptyStates.noSpacesDesc')}
@@ -334,7 +334,7 @@ function SpaceCard({ space }: SpaceCardProps) {
   return (
     <Link
       href={`/dashboard/docs/spaces/${space.id}`}
-      className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-[#1C8C7D]"
+      className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-5 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-[#181D23] hover:border-[#1C8C7D]"
     >
       {space.isFavorite && (
         <Star className="absolute right-3 top-3 h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -350,11 +350,11 @@ function SpaceCard({ space }: SpaceCardProps) {
       <h3 className="mb-1 font-semibold text-gray-900 dark:text-white group-hover:text-[#1C8C7D] transition-colors">
         {space.name}
       </h3>
-      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-slate-400">
+      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-white/50">
         {space.description}
       </p>
 
-      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-slate-400">
+      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
         <div className="flex items-center gap-1">
           <FileText className="h-3 w-3" />
           {space.pageCount}
@@ -375,8 +375,8 @@ function SpaceListItem({ space, showBorder, pagesLabel }: SpaceListItemProps) {
     <Link
       href={`/dashboard/docs/spaces/${space.id}`}
       className={cn(
-        'flex items-center gap-4 px-4 md:px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#282E33]',
-        showBorder && 'border-b border-gray-200 dark:border-slate-700',
+        'flex items-center gap-4 px-4 md:px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#181D23]',
+        showBorder && 'border-b border-gray-200 dark:border-white/[0.08]',
       )}
     >
       <div
@@ -395,10 +395,10 @@ function SpaceListItem({ space, showBorder, pagesLabel }: SpaceListItemProps) {
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
           )}
         </div>
-        <p className="text-sm text-gray-600 dark:text-slate-400 truncate">
+        <p className="text-sm text-gray-600 dark:text-white/50 truncate">
           {space.description}
         </p>
-        <div className="flex items-center gap-4 mt-1 text-xs text-gray-600 dark:text-slate-400 md:hidden">
+        <div className="flex items-center gap-4 mt-1 text-xs text-gray-600 dark:text-white/50 md:hidden">
           <div className="flex items-center gap-1">
             <FileText className="h-3 w-3" />
             <span>{space.pageCount} {pagesLabel}</span>
@@ -406,7 +406,7 @@ function SpaceListItem({ space, showBorder, pagesLabel }: SpaceListItemProps) {
         </div>
       </div>
 
-      <div className="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-slate-400 shrink-0">
+      <div className="hidden md:flex items-center gap-6 text-sm text-gray-600 dark:text-white/50 shrink-0">
         <div className="flex items-center gap-1">
           <FileText className="h-4 w-4" />
           <span>{space.pageCount} {pagesLabel}</span>
@@ -414,7 +414,7 @@ function SpaceListItem({ space, showBorder, pagesLabel }: SpaceListItemProps) {
       </div>
 
       <Button variant="ghost" size="icon" className="shrink-0 hover:bg-gray-100 dark:hover:bg-slate-700">
-        <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-slate-400" />
+        <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-white/50" />
       </Button>
     </Link>
   );

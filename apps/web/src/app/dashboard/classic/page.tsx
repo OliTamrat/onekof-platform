@@ -52,7 +52,7 @@ export default function DashboardPage() {
   // Show loading while checking session (with timeout to prevent infinite loading)
   if (status === 'loading' && !loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
           <p className="text-sm text-gray-400">{t("common.loading")}</p>
@@ -64,7 +64,7 @@ export default function DashboardPage() {
   // If loading timed out, show error message
   if (status === 'loading' && loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center max-w-md p-6">
           <div className="mb-4 text-yellow-500">
             <AlertCircle className="h-12 w-12 mx-auto" />
@@ -89,9 +89,9 @@ export default function DashboardPage() {
     return null;
   }
   return (
-    <div className="flex h-screen bg-[#1B1F23]">
+    <div className="flex h-screen bg-[#0B0E11]">
       {/* Sidebar - Jira-inspired */}
-      <aside className="w-64 border-r border-gray-800 bg-[#22272B]">
+      <aside className="w-64 border-r border-gray-800 bg-[#12161B]">
         {/* Logo */}
         <div className="flex h-16 items-center gap-2 border-b border-gray-800 px-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#0F3D2E]">
@@ -131,10 +131,10 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="flex h-16 items-center justify-between border-b border-gray-800 bg-[#22272B] px-6">
+        <header className="flex h-16 items-center justify-between border-b border-gray-800 bg-[#12161B] px-6">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold text-white">My Software Team</h1>
-            <div className="flex items-center gap-2 rounded-md bg-[#1B1F23] px-3 py-1.5">
+            <div className="flex items-center gap-2 rounded-md bg-[#0B0E11] px-3 py-1.5">
               <Search className="h-4 w-4 text-gray-400" />
               <input
                 type="text"
@@ -156,13 +156,13 @@ export default function DashboardPage() {
               <Plus className="h-4 w-4" />
               Create
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-md p-2 hover:bg-[#1B1F23]">
+            <Button variant="ghost" size="icon" className="rounded-md p-2 hover:bg-[#0B0E11]">
               <Bell className="h-5 w-5 text-gray-400" />
             </Button>
 
             {/* User Profile Dropdown */}
             <div className="relative group">
-              <Button className="flex items-center gap-2 rounded-md p-2 hover:bg-[#1B1F23]">
+              <Button className="flex items-center gap-2 rounded-md p-2 hover:bg-[#0B0E11]">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1C8C7D] text-sm font-semibold text-white">
                   {session.user?.name?.charAt(0).toUpperCase() || session.user?.email?.charAt(0).toUpperCase() || 'U'}
                 </div>
@@ -174,21 +174,21 @@ export default function DashboardPage() {
               </Button>
 
               {/* Dropdown Menu */}
-              <div className="absolute right-0 top-full mt-2 hidden w-56 rounded-lg border border-gray-800 bg-[#22272B] py-2 shadow-xl group-hover:block">
+              <div className="absolute right-0 top-full mt-2 hidden w-56 rounded-lg border border-gray-800 bg-[#12161B] py-2 shadow-xl group-hover:block">
                 <div className="border-b border-gray-800 px-4 py-3">
                   <p className="text-sm font-medium text-white">{session.user?.name}</p>
                   <p className="text-xs text-gray-400">{session.user?.email}</p>
                 </div>
                 <Button
                   onClick={() => router.push('/settings/profile')}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-[#1B1F23]"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-[#0B0E11]"
                 >
                   <Settings className="h-4 w-4" />
                   Settings
                 </Button>
                 <Button
                   onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-[#1B1F23]"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-[#0B0E11]"
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out
@@ -199,7 +199,7 @@ export default function DashboardPage() {
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-auto bg-[#1B1F23] p-6">
+        <main className="flex-1 overflow-auto bg-[#0B0E11] p-6">
           {/* Stats Cards */}
           <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <StatCard
@@ -236,7 +236,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Status Overview */}
             <div className="lg:col-span-2">
-              <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-800 bg-[#12161B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Status overview</h2>
                   <a href="#" className="text-sm text-[#1C8C7D] hover:underline">
@@ -301,7 +301,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Priority Breakdown */}
-              <div className="mt-6 rounded-lg border border-gray-800 bg-[#22272B] p-6">
+              <div className="mt-6 rounded-lg border border-gray-800 bg-[#12161B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Priority breakdown</h2>
                   <a href="#" className="text-sm text-[#1C8C7D] hover:underline">
@@ -327,10 +327,10 @@ export default function DashboardPage() {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Recent Activity */}
-              <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-800 bg-[#12161B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Recent activity</h2>
-                  <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#1B1F23]">
+                  <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#0B0E11]">
                     <MoreHorizontal className="h-4 w-4 text-gray-400" />
                   </Button>
                 </div>
@@ -364,7 +364,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Types of Work */}
-              <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
+              <div className="rounded-lg border border-gray-800 bg-[#12161B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Types of work</h2>
                   <a href="#" className="text-sm text-[#1C8C7D] hover:underline">
@@ -397,7 +397,7 @@ function NavItem({ icon, label, active }: { icon: React.ReactNode; label: string
       className={`mb-1 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
         active
           ? 'bg-[#1C8C7D]/20 text-[#1C8C7D]'
-          : 'text-gray-400 hover:bg-[#1B1F23] hover:text-white'
+          : 'text-gray-400 hover:bg-[#0B0E11] hover:text-white'
       }`}
     >
       {icon}
@@ -420,10 +420,10 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-lg border border-gray-800 bg-[#22272B] p-6">
+    <div className="rounded-lg border border-gray-800 bg-[#12161B] p-6">
       <div className="flex items-start justify-between">
         <div className={color}>{icon}</div>
-        <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#1B1F23]">
+        <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-[#0B0E11]">
           <MoreHorizontal className="h-4 w-4 text-gray-400" />
         </Button>
       </div>
@@ -452,7 +452,7 @@ function PriorityBar({ label, value, max, color }: { label: string; value: numbe
     <div className="flex items-center gap-4">
       <div className="w-20 text-sm text-gray-400">{label}</div>
       <div className="flex-1">
-        <div className="h-6 overflow-hidden rounded bg-[#1B1F23]">
+        <div className="h-6 overflow-hidden rounded bg-[#0B0E11]">
           {value > 0 && (
             <div
               className={`h-full ${color} transition-all duration-300`}
@@ -474,7 +474,7 @@ function TypeBar({ label, value, color }: { label: string; value: number; color:
         <span className="text-sm text-gray-300">{label}</span>
       </div>
       <div className="flex items-center gap-4">
-        <div className="h-2 w-24 overflow-hidden rounded-full bg-[#1B1F23]">
+        <div className="h-2 w-24 overflow-hidden rounded-full bg-[#0B0E11]">
           {value > 0 && (
             <div
               className={`h-full ${color}`}

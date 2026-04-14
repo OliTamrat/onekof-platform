@@ -70,10 +70,10 @@ export default function ProjectsPage() {
   // Show loading while checking session
   if (status === 'loading') {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-          <p className="text-sm text-slate-400">{t('common.loading')}</p>
+          <p className="text-sm text-white/50">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -86,11 +86,11 @@ export default function ProjectsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Jira-style Header Section */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
           {/* Project Title and Actions */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-3 md:px-6 py-3">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-3 md:px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 {currentOrganization?.name?.substring(0, 2).toUpperCase() || 'PR'}
@@ -126,7 +126,7 @@ export default function ProjectsPage() {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 {searchQuery ? t('common.noResults') : t('projects.noProjects')}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 max-w-sm text-center">
+              <p className="text-sm text-gray-600 dark:text-white/50 mb-6 max-w-sm text-center">
                 {searchQuery
                   ? t('common.noResults')
                   : t('projects.createFirst')}
@@ -146,7 +146,7 @@ export default function ProjectsPage() {
               {/* Starred Projects */}
               {favoriteProjects.length > 0 && (
                 <div>
-                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {t('nav.starred')}
                   </h2>
@@ -182,7 +182,7 @@ export default function ProjectsPage() {
 
               {/* All Projects */}
               <div>
-                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
                   {favoriteProjects.length > 0 ? t('nav.allProjects') : `${t('dashboard.yourProjects')} (${filteredProjects.length})`}
                 </h2>
                 {viewMode === 'grid' ? (
@@ -238,7 +238,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
-      className="group relative block cursor-pointer rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-5 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
+      className="group relative block cursor-pointer rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-5 transition-all hover:bg-gray-50 dark:hover:bg-[#181D23] hover:border-primary-500"
     >
       <div className="absolute right-4 top-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {project.isFavorite && (
@@ -250,10 +250,10 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-slate-400" />
+              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/50" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
+          <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
@@ -280,16 +280,16 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
         <h3 className="mb-1 text-base font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
           {project.name}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-slate-400">{project.key}</p>
+        <p className="text-sm text-gray-600 dark:text-white/50">{project.key}</p>
       </div>
 
       {project.description && (
-        <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-slate-400">
+        <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-white/50">
           {project.description}
         </p>
       )}
 
-      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400">
+      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>{project.taskCount || 0} {t('projects.tasks')}</span>
@@ -309,7 +309,7 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
-      className="group flex cursor-pointer items-center gap-4 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 transition-all hover:bg-gray-50 dark:hover:bg-[#282E33] hover:border-primary-500"
+      className="group flex cursor-pointer items-center gap-4 rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4 transition-all hover:bg-gray-50 dark:hover:bg-[#181D23] hover:border-primary-500"
     >
       <div
         className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded"
@@ -323,19 +323,19 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
           <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
             {project.name}
           </h3>
-          <span className="text-sm text-gray-600 dark:text-slate-400">{project.key}</span>
+          <span className="text-sm text-gray-600 dark:text-white/50">{project.key}</span>
           {project.isFavorite && (
             <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
           )}
         </div>
         {project.description && (
-          <p className="text-sm text-gray-600 dark:text-slate-400 line-clamp-1">
+          <p className="text-sm text-gray-600 dark:text-white/50 line-clamp-1">
             {project.description}
           </p>
         )}
       </div>
 
-      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-slate-400">
+      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-white/50">
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="h-4 w-4" />
           <span>{project.taskCount || 0}</span>
@@ -350,10 +350,10 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-slate-400" />
+              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/50" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-[#282E33] border border-gray-200 dark:border-slate-700">
+          <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();

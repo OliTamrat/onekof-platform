@@ -63,7 +63,7 @@ export default function IssuesSettingsPage() {
     <button
       onClick={onChange}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] ${
-        checked ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-slate-700'
+        checked ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
       }`}
       role="switch"
       aria-checked={checked}
@@ -88,11 +88,11 @@ export default function IssuesSettingsPage() {
         customTabs={ISSUES_TABS}
       />
 
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         <div className="flex-1 overflow-auto p-3 md:p-6">
           <div className="space-y-6">
             {/* Display Preferences */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Eye className="h-5 w-5 text-[#1C8C7D]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Display Preferences</h2>
@@ -103,7 +103,7 @@ export default function IssuesSettingsPage() {
                   <select
                     value={defaultView}
                     onChange={(e) => setDefaultView(e.target.value as any)}
-                    className="w-full rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
+                    className="w-full rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
                   >
                     <option value="list">List</option>
                     <option value="board">Board (Kanban)</option>
@@ -115,7 +115,7 @@ export default function IssuesSettingsPage() {
                   <select
                     value={groupByDefault}
                     onChange={(e) => setGroupByDefault(e.target.value as any)}
-                    className="w-full rounded-md border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
+                    className="w-full rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
                   >
                     <option value="status">Status</option>
                     <option value="priority">Priority</option>
@@ -126,14 +126,14 @@ export default function IssuesSettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Show subtasks inline</label>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Display subtasks under their parent in list views</p>
+                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Display subtasks under their parent in list views</p>
                   </div>
                   <Toggle checked={showSubtasks} onChange={() => setShowSubtasks(!showSubtasks)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Show completed issues</label>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Include Done items in default lists</p>
+                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Include Done items in default lists</p>
                   </div>
                   <Toggle checked={showCompletedIssues} onChange={() => setShowCompletedIssues(!showCompletedIssues)} />
                 </div>
@@ -141,7 +141,7 @@ export default function IssuesSettingsPage() {
             </div>
 
             {/* Notification Preferences */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Bell className="h-5 w-5 text-[#1C8C7D]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
@@ -150,21 +150,21 @@ export default function IssuesSettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email when assigned to me</label>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Receive email when an issue is assigned to you</p>
+                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when an issue is assigned to you</p>
                   </div>
                   <Toggle checked={emailOnAssign} onChange={() => setEmailOnAssign(!emailOnAssign)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email on @mention</label>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Receive email when someone @mentions you</p>
+                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when someone @mentions you</p>
                   </div>
                   <Toggle checked={emailOnMention} onChange={() => setEmailOnMention(!emailOnMention)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email on status change</label>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Receive email when issues you watch change status</p>
+                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when issues you watch change status</p>
                   </div>
                   <Toggle checked={emailOnStatusChange} onChange={() => setEmailOnStatusChange(!emailOnStatusChange)} />
                 </div>
@@ -172,12 +172,12 @@ export default function IssuesSettingsPage() {
             </div>
 
             {/* Workflow & Labels Info */}
-            <div className="bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-6">
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Workflow className="h-5 w-5 text-[#1C8C7D]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Workflow & Labels</h2>
               </div>
-              <p className="text-sm text-gray-600 dark:text-slate-400">
+              <p className="text-sm text-gray-600 dark:text-white/50">
                 Workflow statuses and labels are configured per project. Visit a project&apos;s settings page to customize them.
               </p>
             </div>

@@ -50,10 +50,10 @@ export default function DashboardPage() {
   // Show loading while checking session (with timeout to prevent infinite loading)
   if (status === 'loading' && !loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
+          <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -62,13 +62,13 @@ export default function DashboardPage() {
   // If loading timed out, show error message
   if (status === 'loading' && loadingTimeout) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#1B1F23]">
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center max-w-md p-6">
           <div className="mb-4 text-yellow-500">
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
             The session is taking longer than expected to load. This might be a configuration issue.
           </p>
           <Button
@@ -101,7 +101,7 @@ export default function DashboardPage() {
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                 New Dashboard Experience
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-white/50">
                 You're viewing the redesigned dashboard with modern layouts and dark mode support
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             value="0"
             label="completed"
             sublabel="in the last 7 days"
-            color="text-slate-500 dark:text-slate-400"
+            color="text-slate-500 dark:text-white/50"
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
@@ -153,7 +153,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Status Overview */}
           <div className="lg:col-span-2">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Status overview
@@ -162,7 +162,7 @@ export default function DashboardPage() {
                   View all work items
                 </a>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
                 Get a snapshot of the status of your work items.
               </p>
 
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-3xl font-bold text-slate-900 dark:text-white">3</div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">Total work items</div>
+                    <div className="text-sm text-slate-500 dark:text-white/50">Total work items</div>
                   </div>
                 </div>
 
@@ -238,7 +238,7 @@ export default function DashboardPage() {
                     How to manage priorities for spaces
                   </a>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                   Get a holistic view of how work is being prioritized.
                 </p>
                 <div className="space-y-2">
@@ -256,7 +256,7 @@ export default function DashboardPage() {
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Recent Activity */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Recent activity
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                 Stay up to date with what's happening across the space.
               </p>
               <div className="space-y-3">
@@ -294,7 +294,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Types of Work */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+            <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Types of work
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                   View all items
                 </a>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                 Get a breakdown of work items by their types.
               </p>
               <div className="space-y-2">
@@ -317,7 +317,7 @@ export default function DashboardPage() {
 
             {/* Favorite Projects */}
             {favoriteProjects.length > 0 && (
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                     Favorite Projects
@@ -335,7 +335,7 @@ export default function DashboardPage() {
                     <div
                       key={project.id}
                       onClick={() => router.push(`/dashboard/projects/${project.key}`)}
-                      className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                      className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] cursor-pointer"
                     >
                       <div
                         className="flex h-8 w-8 items-center justify-center rounded text-sm"
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                           {project.name}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-slate-500 dark:text-white/50">
                           {project.key}
                         </p>
                       </div>
@@ -385,16 +385,16 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-6 shadow-sm hover:shadow-md transition-all">
+    <div className="rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-6 shadow-sm hover:shadow-md transition-all">
       <div className="mb-2 md:mb-4 flex items-center justify-between">
-        <div className={`p-1.5 md:p-2 rounded-lg bg-slate-100 dark:bg-slate-800/50 ${color}`}>{icon}</div>
+        <div className={`p-1.5 md:p-2 rounded-lg bg-slate-100 dark:bg-[#181D23]/50 ${color}`}>{icon}</div>
         <Button variant="ghost" size="icon" className="h-6 w-6 hidden md:flex">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </div>
       <div className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
       <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">{sublabel}</div>
+      <div className="text-[10px] md:text-xs text-slate-500 dark:text-white/50 hidden sm:block">{sublabel}</div>
     </div>
   );
 }
@@ -415,7 +415,7 @@ function PriorityBar({
   return (
     <div className="flex items-center gap-3">
       <div className="w-20 text-sm text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="flex-1 h-6 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="flex-1 h-6 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
         {percentage > 0 && (
           <div
             className={`h-full ${color} transition-all duration-300`}
@@ -443,7 +443,7 @@ function TypeBar({
     <div className="flex items-center justify-between text-sm">
       <span className="text-slate-700 dark:text-slate-300">{label}</span>
       <div className="flex items-center gap-2">
-        <div className="w-32 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div className="w-32 h-2 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
           {percentage > 0 && (
             <div
               className={`h-full ${color}`}
@@ -483,7 +483,7 @@ function ActivityItem({
         <span className="inline-block rounded bg-blue-100 dark:bg-blue-900 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
           {status}
         </span>
-        <span className="text-xs text-slate-500 dark:text-slate-400">{time}</span>
+        <span className="text-xs text-slate-500 dark:text-white/50">{time}</span>
       </div>
     </div>
   );

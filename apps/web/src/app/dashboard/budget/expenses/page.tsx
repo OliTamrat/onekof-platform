@@ -225,7 +225,7 @@ export default function BudgetExpensesPage() {
       case 'PENDING': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
       case 'REJECTED': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
       case 'PAID': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
-      default: return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300';
+      default: return 'bg-slate-100 text-slate-800 dark:bg-[#181D23] dark:text-slate-300';
     }
   };
 
@@ -244,34 +244,34 @@ export default function BudgetExpensesPage() {
       <div className="p-4 md:p-6">
         {/* Stats Cards */}
         <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-4 md:gap-4 mb-6 scrollbar-hide">
-          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                 <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('common.total')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('common.total')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
               {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
             </div>
           </div>
-          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('budget.approved')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('budget.approved')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-emerald-600 dark:text-emerald-400">
               {isLoading ? '...' : approvedCount}
             </div>
           </div>
-          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#22272B] dark:to-[#1B1F23] border border-slate-200/60 dark:border-slate-700/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">{t('budget.pending')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('budget.pending')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-amber-600 dark:text-amber-400">
               {isLoading ? '...' : pendingCount}
@@ -296,7 +296,7 @@ export default function BudgetExpensesPage() {
                   placeholder={t('budget.searchExpenses')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-white/[0.08] rounded-md bg-white dark:bg-[#0B0E11] text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div className="flex gap-2">
@@ -307,7 +307,7 @@ export default function BudgetExpensesPage() {
                     className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${
                       statusFilter === s
                         ? 'bg-[#1C8C7D] text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     {s === 'all' ? t('common.all') : s === 'PENDING' ? t('budget.pending') : s === 'APPROVED' ? t('budget.approved') : s === 'REJECTED' ? t('budget.rejected') : t('status.paid')}
@@ -327,7 +327,7 @@ export default function BudgetExpensesPage() {
           <div className="text-center py-16">
             <Receipt className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noExpensesFound')}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
               {searchQuery || statusFilter !== 'all'
                 ? t('budget.tryAdjustingFilters')
                 : t('budget.uploadReceiptGetStarted')}
@@ -354,7 +354,7 @@ export default function BudgetExpensesPage() {
                           {expense.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
+                      <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/50">
                         {expense.category?.name && (
                           <span className="flex items-center gap-1">
                             <Tag className="h-3 w-3" />
@@ -487,7 +487,7 @@ export default function BudgetExpensesPage() {
                       value={rejectionReason}
                       onChange={(e) => setRejectionReason(e.target.value)}
                       placeholder={t('budget.reasonForRejection')}
-                      className="w-full p-3 text-sm border border-red-200 dark:border-red-800 rounded-lg bg-white dark:bg-[#1B1F23] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full p-3 text-sm border border-red-200 dark:border-red-800 rounded-lg bg-white dark:bg-[#0B0E11] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                       rows={3}
                     />
                     <div className="flex gap-2">
@@ -541,8 +541,8 @@ export default function BudgetExpensesPage() {
       {isUploadModalOpen && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setIsUploadModalOpen(false); resetUpload(); }} />
-          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg md:max-h-[85vh] z-50 bg-white dark:bg-[#22272B] rounded-xl shadow-2xl overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
+          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg md:max-h-[85vh] z-50 bg-white dark:bg-[#12161B] rounded-xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-white/[0.08] bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-white" />
                 <h2 className="text-lg font-semibold text-white">{t('budget.aiReceiptAnalysis')}</h2>
@@ -561,7 +561,7 @@ export default function BudgetExpensesPage() {
                       <select
                         value={selectedBudgetId}
                         onChange={(e) => setSelectedBudgetId(e.target.value)}
-                        className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-sm"
+                        className="w-full h-10 px-3 rounded-md border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] text-sm"
                       >
                         <option value="">{t('budget.selectBudget')}</option>
                         {budgets.map((b: any) => (
@@ -614,7 +614,7 @@ export default function BudgetExpensesPage() {
                     </span>
                   </div>
 
-                  <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-2">
+                  <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] p-4 space-y-2">
                     {extractedData.vendor && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('budget.vendor')}</span><span className="font-medium">{extractedData.vendor}</span></div>}
                     {extractedData.date && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('common.date')}</span><span className="font-medium">{extractedData.date}</span></div>}
                     {extractedData.invoiceNumber && <div className="flex justify-between text-sm"><span className="text-slate-500">{t('budget.invoiceNumber')}</span><span className="font-medium">{extractedData.invoiceNumber}</span></div>}
@@ -630,7 +630,7 @@ export default function BudgetExpensesPage() {
                     <div className="space-y-2">
                       <h4 className="text-sm font-semibold">{t('budget.lineItems')}</h4>
                       {extractedData.lineItems.map((item: any, idx: number) => (
-                        <div key={idx} className="flex justify-between p-2 rounded bg-slate-50 dark:bg-slate-800/50 text-sm">
+                        <div key={idx} className="flex justify-between p-2 rounded bg-slate-50 dark:bg-[#181D23]/50 text-sm">
                           <span>{item.description}</span>
                           <span className="font-medium">{extractedData.currency || 'ETB'} {formatCurrency(item.total)}</span>
                         </div>
@@ -642,7 +642,7 @@ export default function BudgetExpensesPage() {
             </div>
 
             {extractedData && (
-              <div className="border-t border-slate-200 dark:border-slate-700 px-6 py-4 flex gap-3">
+              <div className="border-t border-slate-200 dark:border-white/[0.08] px-6 py-4 flex gap-3">
                 <Button variant="outline" onClick={resetUpload} className="gap-2">
                   <RotateCcw className="h-4 w-4" /> {t('budget.newUpload')}
                 </Button>

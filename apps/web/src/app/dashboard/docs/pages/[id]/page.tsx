@@ -136,13 +136,13 @@ export default function ArticlePage() {
       <AppLayout>
         <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
           <div className="text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-[#282E33]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-[#181D23]">
               <FileText className="h-8 w-8 text-gray-400" />
             </div>
             <h1 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">
               {error === 'not_found' ? t('wiki.articleNotFound') : t('common.error')}
             </h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">
+            <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
               {error === 'not_found' ? t('wiki.articleNotFoundDesc') : t('wiki.fetchError')}
             </p>
             <Button
@@ -164,14 +164,14 @@ export default function ArticlePage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Top bar */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] px-3 md:px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => router.push('/dashboard/wiki')}
-                className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-[#1C8C7D] transition-colors shrink-0"
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-white/50 hover:text-[#1C8C7D] transition-colors shrink-0"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {t('wiki.backToWiki')}
@@ -206,7 +206,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => { setEditing(false); setTitle(article.title); setContent(article.content); }}
-                    className="text-gray-600 dark:text-slate-400"
+                    className="text-gray-600 dark:text-white/50"
                   >
                     {t('common.cancel')}
                   </Button>
@@ -226,7 +226,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => setEditing(true)}
-                    className="gap-1.5 text-gray-600 dark:text-slate-400 hover:text-[#1C8C7D]"
+                    className="gap-1.5 text-gray-600 dark:text-white/50 hover:text-[#1C8C7D]"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     {t('common.edit')}
@@ -235,7 +235,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={handlePublish}
-                    className="gap-1.5 text-gray-600 dark:text-slate-400"
+                    className="gap-1.5 text-gray-600 dark:text-white/50"
                   >
                     <Eye className="h-3.5 w-3.5" />
                     {article.status === 'published' ? t('wiki.unpublish') : t('wiki.publish')}
@@ -273,7 +273,7 @@ export default function ArticlePage() {
             )}
 
             {/* Meta row */}
-            <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-500 dark:text-white/50">
               <div className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
                 <span>{t('wiki.lastUpdated')} {formattedDate}</span>
@@ -295,7 +295,7 @@ export default function ArticlePage() {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full min-h-[500px] text-base leading-relaxed text-gray-700 dark:text-slate-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg p-4 resize-y outline-none focus:border-[#1C8C7D] focus:ring-1 focus:ring-[#1C8C7D] transition-colors"
+                className="w-full min-h-[500px] text-base leading-relaxed text-gray-700 dark:text-slate-300 bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4 resize-y outline-none focus:border-[#1C8C7D] focus:ring-1 focus:ring-[#1C8C7D] transition-colors"
                 placeholder={t('wiki.startWriting')}
               />
             ) : (
@@ -313,7 +313,7 @@ export default function ArticlePage() {
                 ) : (
                   <div className="text-center py-12">
                     <FileText className="mx-auto h-10 w-10 text-gray-300 dark:text-slate-600 mb-3" />
-                    <p className="text-gray-400 dark:text-slate-500">{t('wiki.emptyArticle')}</p>
+                    <p className="text-gray-400 dark:text-white/30">{t('wiki.emptyArticle')}</p>
                     <Button
                       onClick={() => setEditing(true)}
                       className="mt-3 gap-1.5 bg-[#1C8C7D] hover:bg-[#167A6E] text-white"

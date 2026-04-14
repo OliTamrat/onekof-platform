@@ -62,10 +62,10 @@ export default function ProjectsSettingsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-3">
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/[0.08] px-6 py-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-500 text-white font-semibold">
                 <Settings className="h-5 w-5" />
@@ -92,7 +92,7 @@ export default function ProjectsSettingsPage() {
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"
+                  className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white"
                 >
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
@@ -105,7 +105,7 @@ export default function ProjectsSettingsPage() {
         {/* Settings Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Sidebar */}
-          <div className="w-64 border-r border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-y-auto">
+          <div className="w-64 border-r border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] overflow-y-auto">
             <div className="p-4 space-y-1">
               {SETTINGS_SECTIONS.map((section) => {
                 const Icon = section.icon;
@@ -116,7 +116,7 @@ export default function ProjectsSettingsPage() {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
                       activeSection === section.id
                         ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20'
-                        : 'text-gray-700 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#282E33]'
+                        : 'text-gray-700 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -136,7 +136,7 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.generalSettings")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.generalSettingsDesc")}
                     </p>
                   </div>
@@ -149,7 +149,7 @@ export default function ProjectsSettingsPage() {
                       <select
                         value={settings.defaultStatus}
                         onChange={(e) => setSettings({ ...settings, defaultStatus: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#1B1F23] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                        className="w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       >
                         <option value="PLANNING">{t("projectSettings.planning")}</option>
                         <option value="ACTIVE">{t("projectSettings.active")}</option>
@@ -157,7 +157,7 @@ export default function ProjectsSettingsPage() {
                       </select>
                     </div>
 
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="autoArchive"
@@ -169,13 +169,13 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="autoArchive" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.autoArchive")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.autoArchiveDesc")}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="requireApproval"
@@ -187,7 +187,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="requireApproval" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.requireApproval")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.requireApprovalDesc")}
                         </p>
                       </div>
@@ -202,13 +202,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.notificationPreferences")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.notificationPreferencesDesc")}
                     </p>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="emailNotifications"
@@ -220,13 +220,13 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.emailNotifications")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.emailNotificationsDesc")}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="notifyOnMention"
@@ -238,13 +238,13 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="notifyOnMention" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.notifyWhenMentioned")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.notifyWhenMentionedDesc")}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="notifyOnAssignment"
@@ -256,13 +256,13 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="notifyOnAssignment" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.notifyOnAssignment")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.notifyOnAssignmentDesc")}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="weeklyDigest"
@@ -274,7 +274,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="weeklyDigest" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.weeklyProjectDigest")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.weeklyProjectDigestDesc")}
                         </p>
                       </div>
@@ -289,13 +289,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.membersPermissions")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.membersPermissionsDesc")}
                     </p>
                   </div>
 
-                  <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                  <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.membersComingSoon")}
                     </p>
                   </div>
@@ -308,13 +308,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.workflows")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.workflowsDesc")}
                     </p>
                   </div>
 
-                  <div className="p-6 bg-white dark:bg-[#22272B] rounded-lg border border-gray-200 dark:border-slate-700">
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                  <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.workflowsComingSoon")}
                     </p>
                   </div>
@@ -327,13 +327,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.security")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                    <p className="text-sm text-gray-600 dark:text-white/50">
                       {t("projectSettings.securityDesc")}
                     </p>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#282E33] rounded-lg">
+                    <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input
                         type="checkbox"
                         id="allowGuestAccess"
@@ -345,7 +345,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="allowGuestAccess" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.allowGuestAccess")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
                           {t("projectSettings.allowGuestAccessDesc")}
                         </p>
                       </div>

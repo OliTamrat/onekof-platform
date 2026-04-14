@@ -84,7 +84,7 @@ export default function EpicsListPage() {
         showFilters
       />
 
-      <div className="min-h-full bg-gray-50 dark:bg-[#1B1F23] p-3 md:p-6">
+      <div className="min-h-full bg-gray-50 dark:bg-[#0B0E11] p-3 md:p-6">
         {isLoading ? (
           <div className="space-y-3 max-w-4xl">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -106,7 +106,7 @@ export default function EpicsListPage() {
                 key={epic.id}
                 type="button"
                 onClick={() => router.push(`/dashboard/issues/epics/${epic.id}`)}
-                className="w-full group text-left rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:border-purple-500 transition-all"
+                className="w-full group text-left rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4 hover:border-purple-500 transition-all"
               >
                 {/* Header row */}
                 <div className="flex items-start gap-3 mb-3">
@@ -122,7 +122,7 @@ export default function EpicsListPage() {
                       >
                         {epic.project.key}
                       </span>
-                      <span className="text-xs font-mono text-gray-500 dark:text-slate-400">
+                      <span className="text-xs font-mono text-gray-500 dark:text-white/50">
                         {epic.key}
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-purple-700 dark:text-purple-400">
@@ -140,7 +140,7 @@ export default function EpicsListPage() {
                       {epic.title}
                     </h3>
                     {epic.description && (
-                      <p className="mt-1 text-sm text-gray-600 dark:text-slate-400 line-clamp-2">
+                      <p className="mt-1 text-sm text-gray-600 dark:text-white/50 line-clamp-2">
                         {epic.description}
                       </p>
                     )}
@@ -171,14 +171,14 @@ export default function EpicsListPage() {
                 {/* Progress bar */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-gray-500 dark:text-slate-400">
+                    <span className="text-xs text-gray-500 dark:text-white/50">
                       {epic.childDoneCount} of {epic.childCount} tasks done
                     </span>
                     <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
                       {epic.progress}%
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
+                  <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-[#181D23] overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-purple-500 to-[#1C8C7D] transition-all duration-500"
                       style={{ width: `${epic.progress}%` }}
@@ -188,7 +188,7 @@ export default function EpicsListPage() {
 
                 {/* Footer metadata */}
                 {epic.dueDate && (
-                  <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-500 dark:text-white/50">
                     <Calendar className="h-3 w-3" />
                     Due {new Date(epic.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </div>

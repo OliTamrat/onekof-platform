@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
 import {
   Globe,
   Shield,
@@ -165,6 +167,7 @@ export default function AboutPage() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
+            <LanguageSwitcher />
             <Link
               href="/auth/signin"
               className="rounded-full border border-white/[0.08] px-4 py-2 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"

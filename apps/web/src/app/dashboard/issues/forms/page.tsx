@@ -24,7 +24,7 @@ export default function IssuesFormsPage() {
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#1B1F23]">
+      <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Project Page Header with Navigation */}
         <ProjectPageHeader
           project={currentProject}
@@ -36,7 +36,7 @@ export default function IssuesFormsPage() {
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">{t("teams.forms")}</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+              <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
                 {t("underConstruction.description")}
               </p>
             </div>

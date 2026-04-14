@@ -65,10 +65,10 @@ export default function BudgetPage() {
   if (status === 'loading' && !loadingTimeout) {
     return (
       <AppLayout>
-        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t("common.loading")}</p>
+            <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
           </div>
         </div>
       </AppLayout>
@@ -79,13 +79,13 @@ export default function BudgetPage() {
   if (status === 'loading' && loadingTimeout) {
     return (
       <AppLayout>
-        <div className="flex h-full items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center max-w-md p-6">
             <div className="mb-4 text-yellow-500">
               <AlertCircle className="h-12 w-12 mx-auto" />
             </div>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
               The session is taking longer than expected to load. This might be a configuration issue.
             </p>
             <Button
@@ -277,18 +277,18 @@ export default function BudgetPage() {
       />
 
       {isLoading ? (
-        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D] mx-auto mb-3" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">Loading budget data...</p>
+            <p className="text-sm text-slate-500 dark:text-white/50">Loading budget data...</p>
           </div>
         </div>
       ) : !hasBudgets ? (
-        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#1B1F23]">
+        <div className="flex h-64 items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center max-w-md">
             <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Yet</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-white/50">
               Create a budget in any project to start tracking expenses here.
             </p>
           </div>
@@ -296,7 +296,7 @@ export default function BudgetPage() {
       ) : (
       <>
       {/* Stats Cards — sticky only on desktop */}
-      <div className="bg-white dark:bg-[#1B1F23] border-b border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
+      <div className="bg-white dark:bg-[#0B0E11] border-b border-gray-200 dark:border-gray-800 lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
         <div className="p-3 md:p-6">
           <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4 scrollbar-hide">
           <StatCard
@@ -345,7 +345,7 @@ export default function BudgetPage() {
             <div className="lg:col-span-3">
               <div
                 onClick={handleShowAllBudgetOverview}
-                className="w-full text-left rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer h-full"
+                className="w-full text-left rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-lg hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer h-full"
               >
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -355,7 +355,7 @@ export default function BudgetPage() {
                   Click to view details →
                 </div>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
                 Track spending across all budget categories. Click anywhere to drill down.
               </p>
 
@@ -403,7 +403,7 @@ export default function BudgetPage() {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {((spent / totalBudget) * 100).toFixed(0)}%
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">Utilized</div>
+                    <div className="text-sm text-slate-500 dark:text-white/50">Utilized</div>
                   </div>
                 </div>
 
@@ -415,14 +415,14 @@ export default function BudgetPage() {
                       <Button variant="ghost" size="icon"
                         key={category.name}
                         onClick={(e) => { e.stopPropagation(); handleShowCategoryDetails(category.name); }}
-                        className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-md transition-colors cursor-pointer"
+                        className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 rounded-md transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: category.color }}></div>
                           <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{category.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500 dark:text-slate-400">{utilizationRate}%</span>
+                          <span className="text-xs text-slate-500 dark:text-white/50">{utilizationRate}%</span>
                           <span className="text-sm font-medium text-slate-900 dark:text-white">
                             ETB {(category.spent / 1000000).toFixed(1)}M
                           </span>
@@ -438,7 +438,7 @@ export default function BudgetPage() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-semibold text-slate-900 dark:text-white">Category spending breakdown</h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                   Visual representation of spending levels across budget categories.
                 </p>
                 <div className="space-y-2">
@@ -456,7 +456,7 @@ export default function BudgetPage() {
               </div>
 
               {/* AI-Powered Budget Analysis Summary */}
-              <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-8">
+              <div className="mt-8 border-t border-slate-200 dark:border-white/[0.08] pt-8">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-slate-900 dark:text-white">AI Budget Analysis</h3>
@@ -481,7 +481,7 @@ export default function BudgetPage() {
                 {/* AI Summary Content */}
                 <div className="space-y-4">
                   {/* Executive Summary */}
-                  <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-slate-700">
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/30 dark:to-slate-800/30 border border-slate-200 dark:border-white/[0.08]">
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 mt-1">
                         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center">
@@ -504,12 +504,12 @@ export default function BudgetPage() {
                   {/* Key Insights Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Budget Performance */}
-                    <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+                    <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       <div className="flex items-center gap-2 mb-3">
                         <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Budget Performance</h5>
                       </div>
-                      <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                           <span><span className="font-medium text-slate-900 dark:text-white">ETB {((totalBudget - spent) / 1000000).toFixed(1)}M</span> remaining in total budget</span>
@@ -526,12 +526,12 @@ export default function BudgetPage() {
                     </div>
 
                     {/* Category Analysis */}
-                    <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B]">
+                    <div className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       <div className="flex items-center gap-2 mb-3">
                         <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                         <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Top Spending Categories</h5>
                       </div>
-                      <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
                         {[...categories]
                           .sort((a, b) => b.spent - a.spent)
                           .slice(0, 3)
@@ -585,7 +585,7 @@ export default function BudgetPage() {
                   </div>
 
                   {/* Report Timestamp */}
-                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/50 pt-2">
                     <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     <span>Budget Analysis</span>
                   </div>
@@ -597,7 +597,7 @@ export default function BudgetPage() {
             {/* Recent Budget Activity + Budget Watchers - Takes 2 columns */}
             <div className="lg:col-span-2 space-y-6">
               {/* Recent Budget Activity - AI-Powered */}
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Recent activity
@@ -609,7 +609,7 @@ export default function BudgetPage() {
                   </div>
                 </div>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                 Stay up to date with what's happening across your organization.
               </p>
 
@@ -622,7 +622,7 @@ export default function BudgetPage() {
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'all'
                         ? 'bg-[#1C8C7D] text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     All
@@ -632,7 +632,7 @@ export default function BudgetPage() {
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'approved'
                         ? 'bg-[#1C8C7D] text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     Approved
@@ -642,7 +642,7 @@ export default function BudgetPage() {
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'pending'
                         ? 'bg-[#1C8C7D] text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     Pending
@@ -652,7 +652,7 @@ export default function BudgetPage() {
                     className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                       activityFilter === 'category'
                         ? 'bg-[#1C8C7D] text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     By Category
@@ -683,13 +683,13 @@ export default function BudgetPage() {
                       >
                         {/* Timeline Dot */}
                         <div className="absolute left-0 flex items-center justify-center">
-                          <div className="h-10 w-10 rounded-full bg-white dark:bg-[#22272B] border-2 border-[#1C8C7D] shadow-md flex items-center justify-center">
+                          <div className="h-10 w-10 rounded-full bg-white dark:bg-[#12161B] border-2 border-[#1C8C7D] shadow-md flex items-center justify-center">
                             <DollarSign className="h-5 w-5 text-[#1C8C7D]" />
                           </div>
                         </div>
 
                         {/* Activity Card */}
-                        <div className="rounded-lg border bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D]">
+                        <div className="rounded-lg border bg-white dark:bg-[#12161B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D]">
                           {/* Header */}
                           <div className="flex items-start justify-between gap-4 mb-2">
                             <div className="flex items-center gap-3 flex-1">
@@ -801,14 +801,14 @@ export default function BudgetPage() {
               </div>
 
               {/* Budget Watchers */}
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6">
+              <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Budget watchers
                   <span className="ml-2 text-sm font-normal text-slate-500">({budgetWatchers.length})</span>
                 </h2>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
                 Team members monitoring budget activities.
               </p>
 
@@ -827,13 +827,13 @@ export default function BudgetPage() {
                     >
                       {/* Timeline Dot */}
                       <div className="absolute left-0 flex items-center justify-center">
-                        <div className="h-10 w-10 rounded-full bg-white dark:bg-[#22272B] border-2 border-[#1C8C7D] shadow-md flex items-center justify-center">
+                        <div className="h-10 w-10 rounded-full bg-white dark:bg-[#12161B] border-2 border-[#1C8C7D] shadow-md flex items-center justify-center">
                           <Eye className="h-5 w-5 text-[#1C8C7D]" />
                         </div>
                       </div>
 
                       {/* Watcher Card */}
-                      <div className="rounded-lg border bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D]">
+                      <div className="rounded-lg border bg-white dark:bg-[#12161B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D]">
                         <div className="flex items-center gap-3">
                           {/* User Avatar */}
                           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#1C8C7D] to-[#16A085] flex items-center justify-center text-white text-sm font-semibold ring-2 ring-[#1C8C7D]/20">
@@ -851,7 +851,7 @@ export default function BudgetPage() {
                                 watching
                               </span>
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-slate-500 dark:text-white/50">
                               {watcher.role} • {watcher.watching.length} {watcher.watching.length === 1 ? 'category' : 'categories'}
                             </p>
                           </div>
@@ -862,7 +862,7 @@ export default function BudgetPage() {
                           {watcher.watching.map((category, i) => (
                             <span
                               key={i}
-                              className="inline-block px-2 py-0.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                              className="inline-block px-2 py-0.5 text-xs rounded-md bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300"
                             >
                               {category}
                             </span>
@@ -924,7 +924,7 @@ export default function BudgetPage() {
                         Action Required
                       </span>
                     </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <p className="text-sm text-slate-600 dark:text-white/50 leading-relaxed mb-4">
                       {categoriesAtRisk} {categoriesAtRisk === 1 ? 'category is' : 'categories are'} approaching budget limits at <span className="font-semibold text-orange-600 dark:text-orange-400">80%+ utilization</span>.
                     </p>
                     <div className="flex items-center gap-2">
@@ -943,24 +943,24 @@ export default function BudgetPage() {
             {/* Budget Insights */}
             <div>
               {/* Quick Stats Card */}
-              <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-6 hover:shadow-md transition-all duration-200">
+              <div className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-md transition-all duration-200">
                 <h4 className="text-base font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-[#1C8C7D]" />
                   Budget Insights
                 </h4>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Average Spending/Day</p>
+                      <p className="text-xs text-slate-500 dark:text-white/50">Average Spending/Day</p>
                       <p className="text-lg font-bold text-slate-900 dark:text-white">ETB {((spent / 30) / 1000).toFixed(0)}K</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                       <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Projected End Date</p>
+                      <p className="text-xs text-slate-500 dark:text-white/50">Projected End Date</p>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">
                         {spent > 0 ? Math.ceil((totalBudget - spent) / (spent / 30)) : '—'} days remaining
                       </p>
@@ -986,7 +986,7 @@ export default function BudgetPage() {
           />
 
           {/* Slide-out Panel */}
-          <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#1B1F23] shadow-2xl overflow-hidden animate-slide-in-right flex flex-col">
+          <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#0B0E11] shadow-2xl overflow-hidden animate-slide-in-right flex flex-col">
             {/* Header */}
             <div className="border-b border-gray-200 dark:border-gray-800 px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center justify-between">
@@ -1021,7 +1021,7 @@ export default function BudgetPage() {
                     {totalAmount > 0 && (
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-3.5 w-3.5 text-blue-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="text-slate-600 dark:text-white/50">
                           Total: <span className="font-semibold text-blue-600 dark:text-blue-400">ETB {(totalAmount / 1000000).toFixed(2)}M</span>
                         </span>
                       </div>
@@ -1029,7 +1029,7 @@ export default function BudgetPage() {
                     {approved > 0 && (
                       <div className="flex items-center gap-1">
                         <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="text-slate-600 dark:text-white/50">
                           <span className="font-semibold text-green-600 dark:text-green-400">{approved}</span> approved
                         </span>
                       </div>
@@ -1037,7 +1037,7 @@ export default function BudgetPage() {
                     {pending > 0 && (
                       <div className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-orange-500" />
-                        <span className="text-slate-600 dark:text-slate-400">
+                        <span className="text-slate-600 dark:text-white/50">
                           <span className="font-semibold text-orange-600 dark:text-orange-400">{pending}</span> pending
                         </span>
                       </div>
@@ -1054,7 +1054,7 @@ export default function BudgetPage() {
                   {filteredTransactions.map((transaction: any) => (
                     <div
                       key={transaction.id}
-                      className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200"
+                      className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#12161B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -1140,7 +1140,7 @@ export default function BudgetPage() {
           />
 
           {/* Slide-out Panel */}
-          <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#1B1F23] shadow-2xl overflow-hidden animate-slide-in-right flex flex-col">
+          <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-2xl bg-white dark:bg-[#0B0E11] shadow-2xl overflow-hidden animate-slide-in-right flex flex-col">
             {/* Header */}
             <div className="border-b border-gray-200 dark:border-gray-800 px-6 py-4 bg-gradient-to-r from-[#1C8C7D] to-[#16A085]">
               <div className="flex items-center justify-between">
@@ -1165,7 +1165,7 @@ export default function BudgetPage() {
                 {budgetWatchers.map((watcher) => (
                   <div
                     key={watcher.id}
-                    className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#22272B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200"
+                    className="p-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#12161B] hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200"
                   >
                     <div className="flex items-start gap-4">
                       {/* User Avatar */}
@@ -1193,7 +1193,7 @@ export default function BudgetPage() {
                           {watcher.watching.map((category, i) => (
                             <span
                               key={i}
-                              className="inline-block px-3 py-1 text-sm rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                              className="inline-block px-3 py-1 text-sm rounded-md bg-slate-100 dark:bg-[#181D23] text-slate-700 dark:text-slate-300"
                             >
                               {category}
                             </span>
@@ -1207,7 +1207,7 @@ export default function BudgetPage() {
             </div>
 
             {/* Footer Actions */}
-            <div className="border-t border-gray-200 dark:border-gray-800 px-6 py-4 bg-gray-50 dark:bg-[#22272B]">
+            <div className="border-t border-gray-200 dark:border-gray-800 px-6 py-4 bg-gray-50 dark:bg-[#12161B]">
               <Button className="w-full px-4 py-2 text-sm font-medium rounded-md bg-[#1C8C7D] text-white hover:bg-[#156B60] transition-colors">
                 <Plus className="h-4 w-4 inline-block mr-2" />
                 Add Watcher
@@ -1259,14 +1259,14 @@ function StatCard({
   return (
     <Button variant="outline"
       onClick={onClick}
-      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#22272B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left"
+      className="flex-shrink-0 w-[160px] md:w-auto rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 md:p-4 hover:shadow-md hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer text-left"
     >
       <div className="flex items-center gap-2.5 mb-2 md:mb-3">
-        <div className={`p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 ${color}`}>{icon}</div>
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 capitalize">{label}</span>
+        <div className={`p-1.5 rounded-lg bg-slate-100 dark:bg-[#181D23]/50 ${color}`}>{icon}</div>
+        <span className="text-xs font-medium text-slate-500 dark:text-white/50 capitalize">{label}</span>
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
-      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-slate-400 truncate">{sublabel}</div>
+      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/50 truncate">{sublabel}</div>
     </Button>
   );
 }
@@ -1290,7 +1290,7 @@ function CategoryBar({
   return (
     <div className="flex items-center gap-3">
       <div className="w-32 text-sm text-slate-700 dark:text-slate-300 truncate">{label}</div>
-      <div className="flex-1 h-6 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="flex-1 h-6 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
         {percentage > 0 && (
           <div
             className="h-full transition-all duration-300"
