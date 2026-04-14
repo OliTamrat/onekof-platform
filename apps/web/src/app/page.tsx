@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence, useInView as fmUseInView, useMotionValue, useSpring } from 'framer-motion';
 
 import {
@@ -778,7 +779,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ─── Dashboard Preview ─── */}
+        {/* ─── Dashboard Preview — Real Screenshot ─── */}
         <motion.div
           initial={{ opacity: 0, y: 60, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -786,140 +787,17 @@ export default function HomePage() {
         >
           <div className="relative mx-auto max-w-[1200px] px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.06] via-primary-700/[0.03] to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12161B]/80 shadow-2xl shadow-black/60 ring-1 ring-white/[0.04]"
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl"
               style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
             >
-              {/* Browser Chrome */}
-              <div className="flex items-center gap-2 border-b border-white/[0.08] bg-[#12161B] px-4 py-3">
-                <div className="flex gap-1.5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/80" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/80" />
-                </div>
-                <div className="mx-auto flex h-7 w-48 items-center justify-center rounded-lg bg-white/[0.04] text-[11px] text-white/40 sm:w-72">
-                  <Shield className="mr-1.5 h-3 w-3" />
-                  app.onekof.com/projects/sprint-14
-                </div>
-              </div>
-
-              {/* Dashboard Content */}
-              <div className="flex min-h-[460px] sm:min-h-[520px]">
-                {/* Sidebar */}
-                <div className="hidden w-56 border-r border-white/[0.08] bg-[#0B0E11]/60 p-4 lg:block">
-                  <div className="mb-6 flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-violet-600 text-[10px] font-bold shadow-sm">T</div>
-                    <div>
-                      <span className="text-[12px] font-medium text-white/70">TechEth</span>
-                      <p className="text-[10px] text-white/40">Professional</p>
-                    </div>
-                  </div>
-                  {[
-                    { icon: LayoutDashboard, label: '\u12F3\u123D\u1266\u122D\u12F5', active: false },
-                    { icon: Kanban, label: '\u1355\u122E\u1300\u12AD\u1276\u127D', active: true },
-                    { icon: Calendar, label: '\u1240\u1295 \u1218\u1281\u1320\u122A\u12EB', active: false },
-                    { icon: Users, label: '\u1261\u12F5\u1295', active: false },
-                    { icon: Wallet, label: '\u1260\u1300\u1275', active: false },
-                    { icon: FileText, label: '\u1230\u1290\u12F6\u127D', active: false },
-                    { icon: BarChart3, label: '\u122A\u1356\u122D\u1276\u127D', active: false },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-colors ${
-                        item.active
-                          ? 'bg-primary-500/10 font-medium text-primary-400'
-                          : 'text-white/40 hover:bg-white/[0.03] hover:text-white/60'
-                      }`}
-                    >
-                      <item.icon className="h-3.5 w-3.5" />
-                      {item.label}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Main */}
-                <div className="flex-1 p-5 sm:p-6">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-[14px] font-medium text-white/80">Sprint 14 &mdash; Website Redesign</h3>
-                      <p className="mt-0.5 text-[11px] text-white/40">{'\u1218\u130B\u1262\u1275'} 1 &ndash; 15, 2017 E.C.</p>
-                    </div>
-                    <div className="flex flex-wrap gap-1 sm:gap-1.5">
-                      {[
-                        { label: t('landing.preview.board'), active: true },
-                        { label: t('landing.preview.list'), active: false },
-                        { label: t('landing.preview.timeline'), active: false },
-                        { label: t('landing.preview.calendar'), active: false },
-                      ].map((v) => (
-                        <div
-                          key={v.label}
-                          className={`rounded-lg px-2 py-1 text-[10px] transition-colors sm:px-3 sm:py-1.5 sm:text-[11px] ${
-                            v.active ? 'bg-white/[0.06] font-medium text-white/70' : 'text-white/40 hover:bg-white/[0.04]'
-                          }`}
-                        >
-                          {v.label}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Stats row */}
-                  <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-                    {[
-                      { label: t('landing.preview.totalTasks'), value: '34', color: 'text-white/70' },
-                      { label: t('landing.preview.inProgress'), value: '8', color: 'text-primary-400' },
-                      { label: t('landing.preview.completed'), value: '18', color: 'text-emerald-400' },
-                      { label: t('landing.preview.budgetUsed'), value: '58%', color: 'text-amber-400' },
-                    ].map((s) => (
-                      <div key={s.label} className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
-                        <p className="text-[10px] text-white/40">{s.label}</p>
-                        <p className={`text-[16px] font-semibold ${s.color}`}>{s.value}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Kanban */}
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {[
-                      { label: t('landing.preview.backlog'), count: 5, dot: 'bg-white/20', cards: [
-                        { title: t('landing.preview.card1'), tag: t('landing.preview.tagDevOps'), priority: 'medium' },
-                        { title: t('landing.preview.card2'), tag: t('landing.preview.tagDesign'), priority: 'low' },
-                      ]},
-                      { label: t('landing.preview.inProgress'), count: 3, dot: 'bg-primary-500', cards: [
-                        { title: t('landing.preview.card3'), tag: t('landing.preview.tagBackend'), priority: 'high' },
-                        { title: t('landing.preview.card4'), tag: t('landing.preview.tagFrontend'), priority: 'medium' },
-                      ]},
-                      { label: t('landing.preview.inReview'), count: 2, dot: 'bg-amber-500', cards: [
-                        { title: t('landing.preview.card5'), tag: t('landing.preview.tagFrontend'), priority: 'high' },
-                      ]},
-                      { label: t('landing.preview.done'), count: 8, dot: 'bg-emerald-500', cards: [
-                        { title: t('landing.preview.card6'), tag: t('landing.preview.tagBackend'), priority: 'high' },
-                        { title: t('landing.preview.card7'), tag: t('landing.preview.tagFrontend'), priority: 'high' },
-                      ]},
-                    ].map((col) => (
-                      <div key={col.label}>
-                        <div className="mb-2.5 flex items-center gap-2">
-                          <div className={`h-2 w-2 rounded-full ${col.dot}`} />
-                          <span className="text-[11px] font-medium text-white/60">{col.label}</span>
-                          <span className="ml-auto text-[10px] text-white/30">{col.count}</span>
-                        </div>
-                        <div className="space-y-2">
-                          {col.cards.map((card) => (
-                            <div key={card.title} className="rounded-lg border border-white/[0.08] bg-white/[0.02] p-3 transition-all hover:border-white/[0.15] hover:bg-white/[0.04]">
-                              <p className="text-[11px] leading-snug text-white/70">{card.title}</p>
-                              <div className="mt-2.5 flex items-center justify-between">
-                                <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/50">{card.tag}</span>
-                                <div className={`h-1.5 w-1.5 rounded-full ${
-                                  card.priority === 'high' ? 'bg-red-400' : card.priority === 'medium' ? 'bg-amber-400' : 'bg-white/20'
-                                }`} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Image
+                src="/images/dashboard-desktop.png"
+                alt="Onekof dashboard showing project summary with status overview, priority breakdown, and recent activity"
+                width={1920}
+                height={1080}
+                className="w-full"
+                priority
+              />
             </div>
           </div>
         </motion.div>
@@ -1041,33 +919,14 @@ export default function HomePage() {
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </div>
-                <div className="rounded-2xl border border-white/[0.08] bg-[#0B0E11] p-5">
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { number: '40%', label: 'Faster delivery' },
-                      { number: '99.9%', label: 'Uptime SLA' },
-                      { number: '12k', label: 'Issues resolved' },
-                      { number: '5', label: 'Languages' },
-                    ].map((s) => (
-                      <div key={s.label} className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-                        <p className="font-serif text-[2rem] font-semibold text-[#2BB5A2]">{s.number}</p>
-                        <p className="mt-1 text-[12px] text-white/50">{s.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="relative mt-3 h-20 overflow-hidden rounded-xl border border-white/[0.08] bg-gradient-to-t from-primary-500/[0.06] to-transparent">
-                    <div
-                      className="absolute bottom-0 left-0 right-0 h-[70%] bg-gradient-to-b from-primary-500/[0.15] to-transparent"
-                      style={{ clipPath: 'polygon(0% 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 20%, 60% 35%, 70% 15%, 80% 25%, 90% 5%, 100% 10%, 100% 100%, 0% 100%)' }}
-                    />
-                    <div
-                      className="absolute bottom-0 left-0 right-0 h-[70%]"
-                      style={{
-                        clipPath: 'polygon(0% 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 20%, 60% 35%, 70% 15%, 80% 25%, 90% 5%, 100% 10%)',
-                        borderTop: '2px solid rgba(28,140,125,0.5)',
-                      }}
-                    />
-                  </div>
+                <div className="overflow-hidden rounded-2xl border border-white/[0.08] shadow-xl">
+                  <Image
+                    src="/images/board-laptop.png"
+                    alt="Onekof kanban board with issue detail slideout panel"
+                    width={1200}
+                    height={750}
+                    className="w-full"
+                  />
                 </div>
               </div>
             </div>
