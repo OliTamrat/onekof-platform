@@ -3,6 +3,8 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import AzureADProvider from 'next-auth/providers/azure-ad';
+import GitHubProvider from 'next-auth/providers/github';
+import LinkedInProvider from 'next-auth/providers/linkedin';
 import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
@@ -90,6 +92,18 @@ export const authOptions: NextAuthOptions = {
           clientId: process.env.AZURE_AD_CLIENT_ID,
           clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
           tenantId: process.env.AZURE_AD_TENANT_ID || 'common',
+        })]
+      : []),
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+      ? [GitHubProvider({
+          clientId: process.env.GITHUB_CLIENT_ID,
+          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        })]
+      : []),
+    ...(process.env.LINKEDIN_CLIENT_ID && process.env.LINKEDIN_CLIENT_SECRET
+      ? [LinkedInProvider({
+          clientId: process.env.LINKEDIN_CLIENT_ID,
+          clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
         })]
       : []),
     CredentialsProvider({
