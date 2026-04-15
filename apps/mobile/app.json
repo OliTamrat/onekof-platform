@@ -15,7 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dabsanalytics.onekof"
+      "bundleIdentifier": "com.dabsanalytics.onekof",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Use Face ID to unlock Onekof"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +26,11 @@
         "backgroundColor": "#0B0E11"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.dabsanalytics.onekof"
+      "package": "com.dabsanalytics.onekof",
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +39,21 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Onekof to use Face ID to unlock the app"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#1C8C7D"
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true

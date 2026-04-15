@@ -1,29 +1,47 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../src/contexts/auth-context';
+import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
+import { Avatar } from '../../src/components';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function MoreScreen() {
   const { user, currentOrg, signOut } = useAuth();
+  const router = useRouter();
 
-  const menuSections = [
+  const { data: notifData } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => apiFetch<{ notifications: Array<{ read: boolean }> }>('/api/notifications').catch(() => ({ notifications: [] })),
+  });
+
+  const unreadCount = notifData?.notifications?.filter((n) => !n.read).length || 0;
+
+  interface MenuItem {
+    label: string;
+    icon: React.ComponentProps<typeof FontAwesome>['name'];
+    route: string;
+    badge?: number;
+  }
+
+  const menuSections: Array<{ title: string; items: MenuItem[] }> = [
     {
       title: 'Workspace',
       items: [
-        { label: 'Teams', icon: 'users' as const },
-        { label: 'Budget', icon: 'money' as const },
-        { label: 'Calendar', icon: 'calendar' as const },
-        { label: 'Documents', icon: 'file-text-o' as const },
-        { label: 'Goals', icon: 'bullseye' as const },
+        { label: 'Teams', icon: 'users', route: '/teams' },
+        { label: 'Budget', icon: 'money', route: '/budget' },
+        { label: 'Calendar', icon: 'calendar', route: '/calendar' },
+        { label: 'Documents', icon: 'file-text-o', route: '/documents' },
+        { label: 'Goals', icon: 'bullseye', route: '/goals' },
       ],
     },
     {
       title: 'Settings',
       items: [
-        { label: 'Profile', icon: 'user' as const },
-        { label: 'Notifications', icon: 'bell' as const },
-        { label: 'Language', icon: 'globe' as const },
-        { label: 'Security', icon: 'shield' as const },
+        { label: 'Profile', icon: 'user', route: '/profile' },
+        { label: 'Notifications', icon: 'bell', route: '/notifications', badge: unreadCount },
+        { label: 'Security', icon: 'shield', route: '/profile' },
       ],
     },
   ];
@@ -36,12 +54,8 @@ export default function MoreScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* User card */}
-        <View style={styles.userCard}>
-          <View style={styles.userAvatar}>
-            <Text style={styles.userAvatarText}>
-              {user?.name?.charAt(0).toUpperCase() || 'O'}
-            </Text>
-          </View>
+        <TouchableOpacity style={styles.userCard} onPress={() => router.push('/profile' as any)} activeOpacity={0.7}>
+          <Avatar name={user?.name || 'User'} size={48} />
           <View style={styles.userInfo}>
             <Text style={styles.userName}>{user?.name || 'User'}</Text>
             <Text style={styles.userEmail}>{user?.email}</Text>
@@ -49,7 +63,7 @@ export default function MoreScreen() {
           <View style={styles.orgBadge}>
             <Text style={styles.orgBadgeText}>{currentOrg?.name}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Menu sections */}
         {menuSections.map((section) => (
@@ -61,9 +75,15 @@ export default function MoreScreen() {
                   key={item.label}
                   style={[styles.menuItem, index < section.items.length - 1 && styles.menuItemBorder]}
                   activeOpacity={0.7}
+                  onPress={() => router.push(item.route as any)}
                 >
                   <FontAwesome name={item.icon} size={16} color={Colors.textSecondary} style={styles.menuIcon} />
                   <Text style={styles.menuLabel}>{item.label}</Text>
+                  {item.badge ? (
+                    <View style={styles.badgeCircle}>
+                      <Text style={styles.badgeText}>{item.badge > 9 ? '9+' : item.badge}</Text>
+                    </View>
+                  ) : null}
                   <FontAwesome name="chevron-right" size={12} color={Colors.textFaint} />
                 </TouchableOpacity>
               ))}
@@ -97,11 +117,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl, padding: Spacing.lg, gap: Spacing.lg,
     marginBottom: Spacing['3xl'],
   },
-  userAvatar: {
-    width: 48, height: 48, borderRadius: BorderRadius.full,
-    backgroundColor: Colors.primary + '20', justifyContent: 'center', alignItems: 'center',
-  },
-  userAvatarText: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.primaryLight },
   userInfo: { flex: 1 },
   userName: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textWhite },
   userEmail: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
@@ -125,6 +140,12 @@ const styles = StyleSheet.create({
   menuItemBorder: { borderBottomWidth: 1, borderBottomColor: Colors.border },
   menuIcon: { width: 20, textAlign: 'center' },
   menuLabel: { flex: 1, fontSize: FontSize.base, color: Colors.textPrimary },
+  badgeCircle: {
+    backgroundColor: Colors.error, borderRadius: 10,
+    minWidth: 20, height: 20, justifyContent: 'center', alignItems: 'center',
+    paddingHorizontal: 6, marginRight: Spacing.sm,
+  },
+  badgeText: { fontSize: 10, fontWeight: '700', color: '#fff' },
   signOutBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: Spacing.sm, padding: Spacing.lg, marginTop: Spacing.lg,

@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { cacheResponse, getCachedResponse, queueOfflineMutation } from './offline';
 
 // Always use production API — mobile connects over the network
 const API_BASE = 'https://onekof.com';
@@ -37,7 +38,7 @@ export async function clearOrgSlug() {
 }
 
 /**
- * API client with auth headers
+ * API client with auth headers and offline support
  */
 export async function apiFetch<T = any>(
   path: string,
@@ -59,17 +60,43 @@ export async function apiFetch<T = any>(
     headers['x-organization-slug'] = orgSlug;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  });
+  const method = options.method || 'GET';
+  const isRead = method === 'GET';
 
-  if (!res.ok) {
-    const errorBody = await res.text().catch(() => '');
-    throw new Error(`API ${res.status}: ${errorBody}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+    });
+
+    if (!res.ok) {
+      const errorBody = await res.text().catch(() => '');
+      throw new Error(`API ${res.status}: ${errorBody}`);
+    }
+
+    const data = await res.json();
+
+    // Cache successful GET responses for offline use
+    if (isRead) {
+      cacheResponse(path, data).catch(() => {});
+    }
+
+    return data;
+  } catch (error) {
+    // If GET request fails, try to return cached data
+    if (isRead) {
+      const cached = await getCachedResponse<T>(path);
+      if (cached) return cached;
+    }
+
+    // If mutation fails (likely offline), queue it
+    if (!isRead && (error as Error)?.message?.includes('Network request failed')) {
+      await queueOfflineMutation(path, method, options.body as string);
+      throw new Error('Saved offline — will sync when reconnected');
+    }
+
+    throw error;
   }
-
-  return res.json();
 }
 
 /**

@@ -1,96 +1,207 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput,
-  RefreshControl, ActivityIndicator, KeyboardAvoidingView, Platform,
+  RefreshControl, ActivityIndicator, KeyboardAvoidingView, Platform, Alert, Share,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as Clipboard from 'expo-clipboard';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
+import {
+  STATUS_CONFIG, PRIORITY_CONFIG, TYPE_CONFIG,
+  type Issue, type User, type Comment, type Activity,
+  type TaskStatus, type TaskPriority, type TaskType, type UpdateIssuePayload,
+} from '../../src/types';
+import { BottomSheet } from '../../src/components/BottomSheet';
+import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const STATUS_OPTIONS = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
-const PRIORITY_OPTIONS = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+/* ─── Constants ─── */
+const STATUS_OPTIONS = (['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'] as const).map((s) => ({
+  value: s, label: STATUS_CONFIG[s].label, icon: STATUS_CONFIG[s].icon as any, color: STATUS_CONFIG[s].color,
+}));
+const PRIORITY_OPTIONS = (['HIGHEST', 'HIGH', 'MEDIUM', 'LOW', 'LOWEST'] as const).map((p) => ({
+  value: p, label: PRIORITY_CONFIG[p].label, icon: PRIORITY_CONFIG[p].icon as any, color: PRIORITY_CONFIG[p].color,
+}));
+const TYPE_OPTIONS = (['TASK', 'STORY', 'BUG', 'EPIC'] as const).map((t) => ({
+  value: t, label: TYPE_CONFIG[t].label, icon: TYPE_CONFIG[t].icon as any, color: TYPE_CONFIG[t].color,
+}));
 
-const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  BACKLOG: { bg: 'rgba(148,163,184,0.1)', text: '#94A3B8', label: 'Backlog' },
-  TODO: { bg: Colors.warningBg, text: Colors.warning, label: 'To Do' },
-  IN_PROGRESS: { bg: Colors.infoBg, text: Colors.info, label: 'In Progress' },
-  IN_REVIEW: { bg: 'rgba(139,92,246,0.1)', text: Colors.violet, label: 'In Review' },
-  DONE: { bg: Colors.successBg, text: Colors.success, label: 'Done' },
-};
-
-const PRIORITY_COLORS: Record<string, { bg: string; text: string; label: string }> = {
-  LOW: { bg: Colors.infoBg, text: Colors.info, label: 'Low' },
-  MEDIUM: { bg: Colors.warningBg, text: Colors.warning, label: 'Medium' },
-  HIGH: { bg: 'rgba(249,115,22,0.1)', text: '#F97316', label: 'High' },
-  CRITICAL: { bg: Colors.errorBg, text: Colors.error, label: 'Critical' },
-};
-
-interface Issue {
-  id: string;
-  title: string;
-  description: string | null;
-  status: string;
-  priority: string;
-  dueDate: string | null;
-  createdAt: string;
-  updatedAt: string;
-  assignee?: { id: string; name: string; avatar: string | null };
-  reporter?: { id: string; name: string };
-  project?: { id: string; name: string; key: string };
-  labels: string[];
-  comments?: Array<{
-    id: string;
-    content: string;
-    createdAt: string;
-    user: { name: string; avatar: string | null };
-  }>;
-  subtasks?: Array<{
-    id: string;
-    title: string;
-    status: string;
-  }>;
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fmtDate(d: string | null | undefined): string {
+  if (!d) return '';
+  const dt = new Date(d);
+  return `${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+}
+function fmtDateTime(d: string | null | undefined): string {
+  if (!d) return '';
+  const dt = new Date(d);
+  const h = dt.getHours();
+  const m = dt.getMinutes().toString().padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  return `${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()} at ${h % 12 || 12}:${m} ${ampm}`;
+}
+function timeAgo(d: string): string {
+  const diff = Date.now() - new Date(d).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const days = Math.floor(h / 24);
+  if (days < 7) return `${days}d ago`;
+  return fmtDate(d);
 }
 
+function generateDateOptions() {
+  const options: { value: string; label: string; icon: any; color: string }[] = [
+    { value: '__none__', label: 'No due date', icon: 'times', color: Colors.textFaint },
+  ];
+  const today = new Date();
+  const presets = [
+    { days: 0, label: 'Today' }, { days: 1, label: 'Tomorrow' }, { days: 3, label: 'In 3 days' },
+    { days: 7, label: 'Next week' }, { days: 14, label: 'In 2 weeks' }, { days: 30, label: 'In 1 month' },
+  ];
+  for (const p of presets) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + p.days);
+    const iso = d.toISOString().split('T')[0];
+    options.push({ value: iso, label: `${p.label} (${fmtDate(iso)})`, icon: 'calendar', color: Colors.info });
+  }
+  return options;
+}
+
+/* ─── Collapsible Section ─── */
+function Section({ title, subtitle, children, defaultOpen = false }: {
+  title: string; subtitle?: string; children: React.ReactNode; defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <View style={s.section}>
+      <TouchableOpacity style={s.sectionHeader} onPress={() => setOpen(!open)} activeOpacity={0.7}>
+        <View style={{ flex: 1 }}>
+          <Text style={s.sectionTitle}>{title}</Text>
+          {!open && subtitle && <Text style={s.sectionSubtitle} numberOfLines={1}>{subtitle}</Text>}
+        </View>
+        <FontAwesome name={open ? 'chevron-down' : 'chevron-right'} size={12} color={Colors.textFaint} />
+      </TouchableOpacity>
+      {open && <View style={s.sectionBody}>{children}</View>}
+    </View>
+  );
+}
+
+/* ─── Detail Field Row ─── */
+function Field({ label, children, onPress }: { label: string; children: React.ReactNode; onPress?: () => void }) {
+  const Wrapper = onPress ? TouchableOpacity : View;
+  return (
+    <Wrapper style={s.fieldRow} onPress={onPress} activeOpacity={0.6}>
+      <Text style={s.fieldLabel}>{label}</Text>
+      <View style={s.fieldValue}>{children}</View>
+    </Wrapper>
+  );
+}
+
+/* ════════════════════════════════════════════
+   ISSUE DETAIL SCREEN (Jira-style)
+   ════════════════════════════════════════════ */
 export default function IssueDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'activity'>('details');
-  const [newComment, setNewComment] = useState('');
-  const [showStatusPicker, setShowStatusPicker] = useState(false);
-  const [showPriorityPicker, setShowPriorityPicker] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const { data: issue, isLoading, refetch } = useQuery({
+  // UI state
+  const [refreshing, setRefreshing] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [newSubtask, setNewSubtask] = useState('');
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+  // Bottom sheet state
+  const [showStatus, setShowStatus] = useState(false);
+  const [showPriority, setShowPriority] = useState(false);
+  const [showType, setShowType] = useState(false);
+  const [showAssignee, setShowAssignee] = useState(false);
+  const [showDueDate, setShowDueDate] = useState(false);
+
+  // Data
+  const { data: issueData, isLoading, refetch } = useQuery({
     queryKey: ['issue', id],
-    queryFn: () => apiFetch<Issue>(`/api/issues/${id}`),
+    queryFn: () => apiFetch<{ issue: Issue } | Issue>(`/api/issues/${id}`),
     enabled: !!id,
   });
+  const issue: Issue | undefined = issueData
+    ? ('issue' in issueData ? (issueData as any).issue : issueData as Issue)
+    : undefined;
+
+  const { data: membersData } = useQuery({
+    queryKey: ['project-members', issue?.projectId],
+    queryFn: () => apiFetch<{ members: Array<{ userId: string; user: User }> }>(
+      `/api/projects/${issue?.projectId}/members`,
+    ),
+    enabled: !!issue?.projectId,
+  });
+
+  const members = membersData?.members || [];
+  const dateOptions = useMemo(generateDateOptions, []);
+
+  const assigneeOptions = useMemo(() => [
+    { value: '__unassigned__', label: 'Unassigned', icon: 'user-o' as any, color: Colors.textFaint },
+    ...members.map((m) => ({
+      value: m.userId, label: m.user?.name || m.user?.email || 'User', icon: 'user' as any, color: Colors.primaryLight,
+    })),
+  ], [members]);
+
+  // Mutations
+  const showError = (msg: string) => Alert.alert('Error', msg);
 
   const updateMutation = useMutation({
-    mutationFn: (updates: Partial<Issue>) =>
-      apiFetch(`/api/issues/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(updates),
-      }),
+    mutationFn: (updates: UpdateIssuePayload) =>
+      apiFetch(`/api/issues/${id}`, { method: 'PATCH', body: JSON.stringify(updates) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issue', id] });
       queryClient.invalidateQueries({ queryKey: ['issues'] });
+      queryClient.invalidateQueries({ queryKey: ['all-issues'] });
     },
+    onError: (e: Error) => showError(e.message || 'Failed to update issue'),
   });
 
   const commentMutation = useMutation({
     mutationFn: (content: string) =>
-      apiFetch(`/api/issues/${id}/comments`, {
-        method: 'POST',
-        body: JSON.stringify({ content }),
-      }),
+      apiFetch(`/api/issues/${id}/comments`, { method: 'POST', body: JSON.stringify({ content }) }),
     onSuccess: () => {
       setNewComment('');
       queryClient.invalidateQueries({ queryKey: ['issue', id] });
     },
+    onError: (e: Error) => showError(e.message || 'Failed to post comment'),
+  });
+
+  const subtaskMutation = useMutation({
+    mutationFn: (title: string) =>
+      apiFetch(`/api/issues/${id}/subtasks`, { method: 'POST', body: JSON.stringify({ title }) }),
+    onSuccess: () => {
+      setNewSubtask('');
+      queryClient.invalidateQueries({ queryKey: ['issue', id] });
+    },
+    onError: (e: Error) => showError(e.message || 'Failed to create subtask'),
+  });
+
+  const toggleSubtaskMutation = useMutation({
+    mutationFn: ({ subtaskId, status }: { subtaskId: string; status: string }) =>
+      apiFetch(`/api/issues/${subtaskId}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['issue', id] }),
+    onError: (e: Error) => showError(e.message || 'Failed to update subtask'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => apiFetch(`/api/issues/${id}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+      queryClient.invalidateQueries({ queryKey: ['all-issues'] });
+      router.back();
+    },
+    onError: (e: Error) => showError(e.message || 'Failed to delete issue'),
   });
 
   const onRefresh = useCallback(async () => {
@@ -99,9 +210,31 @@ export default function IssueDetailScreen() {
     setRefreshing(false);
   }, [refetch]);
 
+  const handleDelete = () => {
+    Alert.alert('Delete Issue', 'This action cannot be undone. Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: () => deleteMutation.mutate() },
+    ]);
+  };
+
+  const handleCopyLink = async () => {
+    const url = `https://onekof.com/dashboard/issues?issueId=${id}`;
+    try { await Clipboard.setStringAsync(url); } catch {}
+    Alert.alert('Copied', 'Link copied to clipboard');
+    setShowMoreMenu(false);
+  };
+
+  const handleShare = async () => {
+    setShowMoreMenu(false);
+    try {
+      await Share.share({ message: `${issue?.key || ''}: ${issue?.title}\nhttps://onekof.com/dashboard/issues?issueId=${id}` });
+    } catch {}
+  };
+
+  // Loading
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={s.center}>
         <ActivityIndicator size="large" color={Colors.primaryLight} />
       </View>
     );
@@ -109,366 +242,517 @@ export default function IssueDetailScreen() {
 
   if (!issue) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.errorText}>Issue not found</Text>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backLink}>
-          <Text style={styles.backLinkText}>Go back</Text>
+      <View style={s.center}>
+        <FontAwesome name="exclamation-circle" size={32} color={Colors.textFaint} />
+        <Text style={s.centerText}>Issue not found</Text>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={s.linkText}>Go back</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  const statusStyle = STATUS_COLORS[issue.status] || STATUS_COLORS.BACKLOG;
-  const priorityStyle = PRIORITY_COLORS[issue.priority] || PRIORITY_COLORS.MEDIUM;
+  const statusCfg = STATUS_CONFIG[issue.status as TaskStatus] || STATUS_CONFIG.BACKLOG;
+  const typeCfg = TYPE_CONFIG[(issue.type || 'TASK') as TaskType] || TYPE_CONFIG.TASK;
+  const priorityCfg = PRIORITY_CONFIG[issue.priority as TaskPriority] || PRIORITY_CONFIG.MEDIUM;
+  const isOverdue = issue.dueDate && new Date(issue.dueDate) < new Date() && issue.status !== 'DONE';
+  const doneCount = issue.subtasks?.filter((st) => st.status === 'DONE').length || 0;
+  const totalSubtasks = issue.subtasks?.length || 0;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+    <KeyboardAvoidingView style={s.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      {/* ════ HEADER (Jira-style) ════ */}
+      <View style={[s.header, { paddingTop: insets.top + 8 }]}>
+        <TouchableOpacity onPress={() => router.back()} style={s.headerBtn} hitSlop={8}>
           <FontAwesome name="chevron-left" size={16} color={Colors.textSecondary} />
         </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerProject} numberOfLines={1}>
-            {issue.project?.key || 'Issue'}
-          </Text>
+        <Text style={s.headerKey}>{issue.key || ''}</Text>
+        <View style={s.headerActions}>
+          <TouchableOpacity style={s.headerBtn}>
+            <FontAwesome name="eye" size={15} color={Colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={s.headerBtn}>
+            <FontAwesome name="paperclip" size={15} color={Colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={s.headerBtn} onPress={() => setShowMoreMenu(true)}>
+            <FontAwesome name="ellipsis-h" size={15} color={Colors.textSecondary} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.moreBtn}>
-          <FontAwesome name="ellipsis-h" size={16} color={Colors.textSecondary} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />
-        }
+        style={s.scroll}
+        contentContainerStyle={s.scrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />}
       >
-        {/* Title */}
-        <Text style={styles.issueTitle}>{issue.title}</Text>
-
-        {/* Status + Priority row */}
-        <View style={styles.badgeRow}>
-          <TouchableOpacity
-            style={[styles.badge, { backgroundColor: statusStyle.bg }]}
-            onPress={() => setShowStatusPicker(!showStatusPicker)}
-          >
-            <Text style={[styles.badgeText, { color: statusStyle.text }]}>{statusStyle.label}</Text>
-            <FontAwesome name="caret-down" size={10} color={statusStyle.text} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.badge, { backgroundColor: priorityStyle.bg }]}
-            onPress={() => setShowPriorityPicker(!showPriorityPicker)}
-          >
-            <Text style={[styles.badgeText, { color: priorityStyle.text }]}>{priorityStyle.label}</Text>
-            <FontAwesome name="caret-down" size={10} color={priorityStyle.text} />
-          </TouchableOpacity>
+        {/* ════ ISSUE KEY + TYPE ICON ════ */}
+        <View style={s.keyRow}>
+          <FontAwesome name={typeCfg.icon as any} size={14} color={typeCfg.color} />
+          <Text style={s.keyText}>{issue.key || issue.project?.key || ''}</Text>
         </View>
 
-        {/* Status Picker */}
-        {showStatusPicker && (
-          <View style={styles.pickerCard}>
-            {STATUS_OPTIONS.map((status) => (
-              <TouchableOpacity
-                key={status}
-                style={[styles.pickerItem, issue.status === status && styles.pickerItemActive]}
-                onPress={() => {
-                  updateMutation.mutate({ status });
-                  setShowStatusPicker(false);
-                }}
-              >
-                <View style={[styles.pickerDot, { backgroundColor: STATUS_COLORS[status]?.text }]} />
-                <Text style={[styles.pickerText, issue.status === status && styles.pickerTextActive]}>
-                  {STATUS_COLORS[status]?.label || status}
-                </Text>
-                {issue.status === status && <FontAwesome name="check" size={12} color={Colors.primaryLight} />}
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* Priority Picker */}
-        {showPriorityPicker && (
-          <View style={styles.pickerCard}>
-            {PRIORITY_OPTIONS.map((priority) => (
-              <TouchableOpacity
-                key={priority}
-                style={[styles.pickerItem, issue.priority === priority && styles.pickerItemActive]}
-                onPress={() => {
-                  updateMutation.mutate({ priority });
-                  setShowPriorityPicker(false);
-                }}
-              >
-                <View style={[styles.pickerDot, { backgroundColor: PRIORITY_COLORS[priority]?.text }]} />
-                <Text style={[styles.pickerText, issue.priority === priority && styles.pickerTextActive]}>
-                  {PRIORITY_COLORS[priority]?.label || priority}
-                </Text>
-                {issue.priority === priority && <FontAwesome name="check" size={12} color={Colors.primaryLight} />}
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {(['details', 'comments', 'activity'] as const).map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[styles.tab, activeTab === tab && styles.tabActive]}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Details Tab */}
-        {activeTab === 'details' && (
-          <View style={styles.detailsSection}>
-            {/* Description */}
-            <View style={styles.fieldCard}>
-              <Text style={styles.fieldLabel}>Description</Text>
-              <Text style={styles.fieldValue}>
-                {issue.description || 'No description'}
-              </Text>
-            </View>
-
-            {/* Assignee */}
-            <View style={styles.fieldRow}>
-              <Text style={styles.fieldLabel}>Assignee</Text>
-              <View style={styles.fieldRight}>
-                {issue.assignee ? (
-                  <View style={styles.userChip}>
-                    <View style={styles.userAvatar}>
-                      <Text style={styles.userAvatarText}>
-                        {issue.assignee.name?.charAt(0) || '?'}
-                      </Text>
-                    </View>
-                    <Text style={styles.userName}>{issue.assignee.name}</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.fieldValueDim}>Unassigned</Text>
-                )}
-              </View>
-            </View>
-
-            {/* Reporter */}
-            <View style={styles.fieldRow}>
-              <Text style={styles.fieldLabel}>Reporter</Text>
-              <View style={styles.fieldRight}>
-                <Text style={styles.fieldValueText}>{issue.reporter?.name || 'Unknown'}</Text>
-              </View>
-            </View>
-
-            {/* Due Date */}
-            <View style={styles.fieldRow}>
-              <Text style={styles.fieldLabel}>Due Date</Text>
-              <View style={styles.fieldRight}>
-                <Text style={[styles.fieldValueText, issue.dueDate && new Date(issue.dueDate) < new Date() && { color: Colors.error }]}>
-                  {issue.dueDate ? new Date(issue.dueDate).toLocaleDateString() : 'No due date'}
-                </Text>
-              </View>
-            </View>
-
-            {/* Labels */}
-            {issue.labels && issue.labels.length > 0 && (
-              <View style={styles.fieldCard}>
-                <Text style={styles.fieldLabel}>Labels</Text>
-                <View style={styles.labelsRow}>
-                  {issue.labels.map((label) => (
-                    <View key={label} style={styles.labelChip}>
-                      <Text style={styles.labelText}>{label}</Text>
-                    </View>
-                  ))}
-                </View>
+        {/* ════ TITLE + ASSIGNEE ════ */}
+        <View style={s.titleRow}>
+          <Text style={s.title}>{issue.title}</Text>
+          <TouchableOpacity onPress={() => setShowAssignee(true)}>
+            {issue.assignee ? (
+              <Avatar name={issue.assignee.name || ''} size={36} />
+            ) : (
+              <View style={s.unassignedAvatar}>
+                <FontAwesome name="user-o" size={16} color={Colors.textFaint} />
               </View>
             )}
+          </TouchableOpacity>
+        </View>
 
-            {/* Subtasks */}
-            {issue.subtasks && issue.subtasks.length > 0 && (
-              <View style={styles.fieldCard}>
-                <Text style={styles.fieldLabel}>
-                  Subtasks ({issue.subtasks.filter(s => s.status === 'DONE').length}/{issue.subtasks.length})
-                </Text>
-                {issue.subtasks.map((subtask) => (
-                  <View key={subtask.id} style={styles.subtaskItem}>
-                    <FontAwesome
-                      name={subtask.status === 'DONE' ? 'check-circle' : 'circle-o'}
-                      size={16}
-                      color={subtask.status === 'DONE' ? Colors.success : Colors.textFaint}
-                    />
-                    <Text style={[styles.subtaskText, subtask.status === 'DONE' && styles.subtaskDone]}>
-                      {subtask.title}
-                    </Text>
+        {/* ════ STATUS PILL + ACTION ════ */}
+        <View style={s.statusRow}>
+          <TouchableOpacity
+            style={[s.statusPill, { backgroundColor: statusCfg.bg, borderColor: statusCfg.color + '40' }]}
+            onPress={() => setShowStatus(true)}
+          >
+            <Text style={[s.statusPillText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
+            <FontAwesome name="caret-down" size={10} color={statusCfg.color} />
+          </TouchableOpacity>
+          <TouchableOpacity style={s.actionBtn} onPress={() => setShowType(true)}>
+            <FontAwesome name="bolt" size={13} color={Colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* ════ DESCRIPTION (collapsible) ════ */}
+        <Section
+          title="Description"
+          defaultOpen={!!issue.description}
+          subtitle={issue.description ? issue.description.slice(0, 60) + '...' : 'No description'}
+        >
+          {issue.description ? (
+            <Text style={s.descText}>{issue.description}</Text>
+          ) : (
+            <Text style={s.descEmpty}>No description provided.</Text>
+          )}
+        </Section>
+
+        {/* ════ PARENT WORK ITEM (if exists) ════ */}
+        {issue.parentId && (
+          <Section title="Parent work item">
+            <View style={s.parentRow}>
+              <FontAwesome name="bolt" size={13} color={Colors.violet} />
+              <Text style={s.parentText}>Parent Issue</Text>
+            </View>
+          </Section>
+        )}
+
+        {/* ════ DETAILS (collapsible — Jira-style) ════ */}
+        <Section
+          title="Details"
+          subtitle="Issue Type, Assignee, Priority, Due date, Labels, Start..."
+          defaultOpen={false}
+        >
+          <Field label="Issue Type" onPress={() => setShowType(true)}>
+            <View style={s.fieldInline}>
+              <FontAwesome name={typeCfg.icon as any} size={13} color={typeCfg.color} />
+              <Text style={s.fieldText}>{typeCfg.label}</Text>
+            </View>
+          </Field>
+          <Field label="Assignee" onPress={() => setShowAssignee(true)}>
+            {issue.assignee ? (
+              <View style={s.fieldInline}>
+                <Avatar name={issue.assignee.name || ''} size={22} />
+                <Text style={s.fieldText}>{issue.assignee.name}</Text>
+              </View>
+            ) : (
+              <Text style={s.fieldDim}>None</Text>
+            )}
+          </Field>
+          <Field label="Priority" onPress={() => setShowPriority(true)}>
+            <View style={s.fieldInline}>
+              <FontAwesome name={priorityCfg.icon as any} size={13} color={priorityCfg.color} />
+              <Text style={s.fieldText}>{priorityCfg.label}</Text>
+            </View>
+          </Field>
+          <Field label="Due date" onPress={() => setShowDueDate(true)}>
+            <Text style={[s.fieldText, isOverdue && { color: Colors.error }]}>
+              {issue.dueDate ? fmtDate(issue.dueDate) : 'None'}
+            </Text>
+            {isOverdue && <FontAwesome name="exclamation-triangle" size={11} color={Colors.error} style={{ marginLeft: 6 }} />}
+          </Field>
+          {issue.labels && issue.labels.length > 0 ? (
+            <Field label="Labels">
+              <View style={s.labelsWrap}>
+                {issue.labels.map((l) => (
+                  <View key={l} style={s.labelChip}>
+                    <Text style={s.labelChipText}>{l}</Text>
                   </View>
                 ))}
               </View>
+            </Field>
+          ) : (
+            <Field label="Labels"><Text style={s.fieldDim}>None</Text></Field>
+          )}
+          <Field label="Start date">
+            <Text style={s.fieldDim}>{issue.startDate ? fmtDate(issue.startDate) : 'None'}</Text>
+          </Field>
+          <Field label="Reporter">
+            {issue.reporter ? (
+              <View style={s.fieldInline}>
+                <Avatar name={issue.reporter.name || ''} size={22} />
+                <Text style={s.fieldText}>{issue.reporter.name}</Text>
+              </View>
+            ) : (
+              <Text style={s.fieldDim}>None</Text>
             )}
+          </Field>
+          {issue.estimate != null && (
+            <Field label="Estimate">
+              <Text style={s.fieldText}>{issue.estimate}h</Text>
+            </Field>
+          )}
+          {issue.timeSpent != null && (
+            <Field label="Time Spent">
+              <Text style={s.fieldText}>{issue.timeSpent}h</Text>
+            </Field>
+          )}
+        </Section>
 
-            {/* Timestamps */}
-            <View style={styles.timestamps}>
-              <Text style={styles.timestampText}>
-                Created {new Date(issue.createdAt).toLocaleDateString()}
-              </Text>
-              <Text style={styles.timestampText}>
-                Updated {new Date(issue.updatedAt).toLocaleDateString()}
-              </Text>
+        {/* ════ MORE FIELDS (collapsible) ════ */}
+        <Section title="More fields" subtitle="Project, Created, and Updated">
+          {issue.project && (
+            <Field label="Project" onPress={() => router.push(`/project/${issue.project?.id}`)}>
+              <View style={s.fieldInline}>
+                <View style={[s.projectDot, { backgroundColor: issue.project.color || Colors.primary }]}>
+                  <Text style={s.projectDotText}>{issue.project.key?.slice(0, 2)}</Text>
+                </View>
+                <Text style={s.fieldText}>{issue.project.name}</Text>
+              </View>
+            </Field>
+          )}
+          <Field label="Created">
+            <Text style={s.fieldText}>{fmtDateTime(issue.createdAt)}</Text>
+          </Field>
+          <Field label="Updated">
+            <Text style={s.fieldText}>{fmtDateTime(issue.updatedAt)}</Text>
+          </Field>
+        </Section>
+
+        {/* ════ SUBTASKS ════ */}
+        {(totalSubtasks > 0 || true) && (
+          <Section title={`Child issues${totalSubtasks > 0 ? ` (${doneCount}/${totalSubtasks})` : ''}`} defaultOpen={totalSubtasks > 0}>
+            {issue.subtasks?.map((subtask) => (
+              <TouchableOpacity
+                key={subtask.id}
+                style={s.subtaskRow}
+                onPress={() => toggleSubtaskMutation.mutate({
+                  subtaskId: subtask.id,
+                  status: subtask.status === 'DONE' ? 'TODO' : 'DONE',
+                })}
+                activeOpacity={0.6}
+              >
+                <FontAwesome
+                  name={subtask.status === 'DONE' ? 'check-circle' : 'circle-o'}
+                  size={18}
+                  color={subtask.status === 'DONE' ? Colors.success : Colors.textFaint}
+                />
+                <Text style={[s.subtaskTitle, subtask.status === 'DONE' && s.subtaskDone]} numberOfLines={2}>
+                  {subtask.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
+            <View style={s.addSubtaskRow}>
+              <FontAwesome name="plus" size={12} color={Colors.textFaint} />
+              <TextInput
+                style={s.addSubtaskInput}
+                value={newSubtask}
+                onChangeText={setNewSubtask}
+                placeholder="Add child issue..."
+                placeholderTextColor={Colors.textFaint}
+                returnKeyType="done"
+                onSubmitEditing={() => { if (newSubtask.trim()) subtaskMutation.mutate(newSubtask.trim()); }}
+              />
+              {newSubtask.trim().length > 0 && (
+                <TouchableOpacity style={s.addBtn} onPress={() => subtaskMutation.mutate(newSubtask.trim())}>
+                  {subtaskMutation.isPending ? (
+                    <ActivityIndicator size="small" color={Colors.primaryLight} />
+                  ) : (
+                    <Text style={s.addBtnText}>Add</Text>
+                  )}
+                </TouchableOpacity>
+              )}
             </View>
-          </View>
+          </Section>
         )}
 
-        {/* Comments Tab */}
-        {activeTab === 'comments' && (
-          <View style={styles.commentsSection}>
-            {issue.comments && issue.comments.length > 0 ? (
-              issue.comments.map((comment) => (
-                <View key={comment.id} style={styles.commentCard}>
-                  <View style={styles.commentHeader}>
-                    <View style={styles.commentAvatar}>
-                      <Text style={styles.commentAvatarText}>
-                        {comment.user.name?.charAt(0) || '?'}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.commentAuthor}>{comment.user.name}</Text>
-                      <Text style={styles.commentDate}>
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </Text>
+        {/* ════ COMMENTS (Jira-style — always visible, not tabbed) ════ */}
+        <View style={s.commentsHeader}>
+          <Text style={s.commentsTitle}>Comments</Text>
+          <View style={s.commentsSortPill}>
+            <Text style={s.commentsSortText}>Newest first</Text>
+            <FontAwesome name="arrow-down" size={10} color={Colors.textSecondary} />
+          </View>
+        </View>
+
+        {issue.comments && issue.comments.length > 0 ? (
+          <View style={s.commentsList}>
+            {[...issue.comments].reverse().map((comment: Comment) => (
+              <View key={comment.id} style={s.commentCard}>
+                <View style={s.commentTop}>
+                  <Avatar name={comment.author?.name || ''} size={30} />
+                  <View style={{ flex: 1 }}>
+                    <View style={s.commentNameRow}>
+                      <Text style={s.commentAuthor}>{comment.author?.name || 'User'}</Text>
+                      <Text style={s.commentTime}>{timeAgo(comment.createdAt)}</Text>
                     </View>
                   </View>
-                  <Text style={styles.commentBody}>{comment.content}</Text>
+                  <TouchableOpacity style={s.commentMore}>
+                    <FontAwesome name="ellipsis-h" size={13} color={Colors.textFaint} />
+                  </TouchableOpacity>
                 </View>
-              ))
-            ) : (
-              <View style={styles.emptyState}>
-                <FontAwesome name="comment-o" size={24} color={Colors.textFaint} />
-                <Text style={styles.emptyText}>No comments yet</Text>
+                <Text style={s.commentBody}>{comment.content}</Text>
+                <View style={s.commentActions}>
+                  <TouchableOpacity style={s.commentAction}>
+                    <FontAwesome name="thumbs-o-up" size={14} color={Colors.textFaint} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.commentAction}>
+                    <FontAwesome name="smile-o" size={14} color={Colors.textFaint} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.commentAction}>
+                    <Text style={s.commentReply}>Reply</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            )}
+            ))}
+          </View>
+        ) : (
+          <View style={s.emptyComments}>
+            <Text style={s.emptyCommentsText}>Leave the first comment</Text>
           </View>
         )}
 
-        {/* Activity Tab */}
-        {activeTab === 'activity' && (
-          <View style={styles.emptyState}>
-            <FontAwesome name="history" size={24} color={Colors.textFaint} />
-            <Text style={styles.emptyText}>Activity timeline coming soon</Text>
-          </View>
-        )}
+        <View style={{ height: 80 }} />
       </ScrollView>
 
-      {/* Comment Input (visible on comments tab) */}
-      {activeTab === 'comments' && (
-        <View style={styles.commentInput}>
-          <TextInput
-            style={styles.commentTextInput}
-            value={newComment}
-            onChangeText={setNewComment}
-            placeholder="Write a comment..."
-            placeholderTextColor={Colors.textFaint}
-            multiline
-          />
+      {/* ════ STICKY COMMENT INPUT (always visible like Jira) ════ */}
+      <View style={[s.commentBar, { paddingBottom: insets.bottom + 8 }]}>
+        <TextInput
+          style={s.commentInput}
+          value={newComment}
+          onChangeText={setNewComment}
+          placeholder="Add a comment..."
+          placeholderTextColor={Colors.textFaint}
+          multiline
+        />
+        {newComment.trim().length > 0 && (
           <TouchableOpacity
-            style={[styles.sendBtn, !newComment.trim() && styles.sendBtnDisabled]}
+            style={s.sendBtn}
             onPress={() => newComment.trim() && commentMutation.mutate(newComment.trim())}
-            disabled={!newComment.trim() || commentMutation.isPending}
+            disabled={commentMutation.isPending}
           >
             {commentMutation.isPending ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <FontAwesome name="send" size={14} color="#fff" />
+              <FontAwesome name="send" size={13} color="#fff" />
             )}
           </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </View>
+
+      {/* ════ MORE MENU (Jira-style) ════ */}
+      <BottomSheet
+        visible={showMoreMenu}
+        onClose={() => setShowMoreMenu(false)}
+        title=""
+        options={[
+          { value: 'copy', label: 'Copy link', icon: 'link' as any, color: Colors.textPrimary },
+          { value: 'share', label: 'Share', icon: 'share-square-o' as any, color: Colors.textPrimary },
+          { value: 'flag', label: 'Flag', icon: 'flag-o' as any, color: Colors.textPrimary },
+          { value: 'link', label: 'Link work item', icon: 'external-link' as any, color: Colors.textPrimary },
+          { value: 'parent', label: 'Assign to parent work item', icon: 'level-up' as any, color: Colors.textPrimary },
+          { value: 'clone', label: 'Clone', icon: 'clone' as any, color: Colors.textPrimary },
+          { value: 'child', label: 'Create child work item', icon: 'sitemap' as any, color: Colors.textPrimary },
+          { value: 'delete', label: 'Delete', icon: 'trash-o' as any, color: Colors.error },
+        ]}
+        selected=""
+        onSelect={(v) => {
+          setShowMoreMenu(false);
+          if (v === 'copy') handleCopyLink();
+          else if (v === 'share') handleShare();
+          else if (v === 'delete') handleDelete();
+          else if (v === 'child') { /* focus subtask input */ }
+        }}
+      />
+
+      {/* ════ BOTTOM SHEETS ════ */}
+      <BottomSheet visible={showStatus} onClose={() => setShowStatus(false)} title="Status" options={STATUS_OPTIONS}
+        selected={issue.status} onSelect={(v) => updateMutation.mutate({ status: v as TaskStatus })} />
+      <BottomSheet visible={showPriority} onClose={() => setShowPriority(false)} title="Priority" options={PRIORITY_OPTIONS}
+        selected={issue.priority} onSelect={(v) => updateMutation.mutate({ priority: v as TaskPriority })} />
+      <BottomSheet visible={showType} onClose={() => setShowType(false)} title="Type" options={TYPE_OPTIONS}
+        selected={issue.type || 'TASK'} onSelect={(v) => updateMutation.mutate({ type: v as TaskType })} />
+      <BottomSheet visible={showAssignee} onClose={() => setShowAssignee(false)} title="Assignee" options={assigneeOptions}
+        selected={issue.assigneeId || '__unassigned__'}
+        onSelect={(v) => updateMutation.mutate({ assigneeId: v === '__unassigned__' ? null : v })} />
+      <BottomSheet visible={showDueDate} onClose={() => setShowDueDate(false)} title="Due Date" options={dateOptions}
+        selected={issue.dueDate?.split('T')[0] || '__none__'}
+        onSelect={(v) => updateMutation.mutate({ dueDate: v === '__none__' ? null : v })} />
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
+/* ════════════════════════════════════════════
+   STYLES
+   ════════════════════════════════════════════ */
+const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
-  loadingContainer: { flex: 1, backgroundColor: Colors.bg, justifyContent: 'center', alignItems: 'center' },
-  errorText: { fontSize: FontSize.md, color: Colors.textSecondary },
-  backLink: { marginTop: Spacing.lg },
-  backLinkText: { fontSize: FontSize.base, color: Colors.primaryLight },
+  center: { flex: 1, backgroundColor: Colors.bg, justifyContent: 'center', alignItems: 'center', gap: Spacing.md },
+  centerText: { fontSize: FontSize.md, color: Colors.textSecondary },
+  linkText: { fontSize: FontSize.base, color: Colors.primaryLight },
+
+  /* Header */
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg, paddingTop: 56, paddingBottom: Spacing.md,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.sm, paddingBottom: Spacing.sm,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
-  backBtn: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
-  headerCenter: { flex: 1, alignItems: 'center' },
-  headerProject: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
-  moreBtn: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
+  headerBtn: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
+  headerKey: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  headerActions: { flexDirection: 'row' },
+
+  /* Scroll */
   scroll: { flex: 1 },
-  scrollContent: { padding: Spacing.xl, paddingBottom: 100 },
-  issueTitle: { fontSize: FontSize['2xl'], fontWeight: '600', color: Colors.textWhite, marginBottom: Spacing.lg, lineHeight: 32 },
-  badgeRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.xl },
-  badge: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, borderRadius: BorderRadius.full },
-  badgeText: { fontSize: FontSize.xs, fontWeight: '600', textTransform: 'uppercase' },
-  pickerCard: {
-    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.lg, marginBottom: Spacing.lg, overflow: 'hidden',
+  scrollContent: { padding: Spacing.lg, paddingBottom: 120 },
+
+  /* Key row */
+  keyRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
+  keyText: { fontSize: FontSize.xs, fontWeight: '500', color: Colors.textFaint },
+
+  /* Title + Assignee */
+  titleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md, marginBottom: Spacing.lg },
+  title: { flex: 1, fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite, lineHeight: 28 },
+  unassignedAvatar: {
+    width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.bgElevated,
+    justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: Colors.border,
   },
-  pickerItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  pickerItemActive: { backgroundColor: Colors.primary + '10' },
-  pickerDot: { width: 8, height: 8, borderRadius: 4 },
-  pickerText: { flex: 1, fontSize: FontSize.base, color: Colors.textSecondary },
-  pickerTextActive: { color: Colors.textWhite, fontWeight: '600' },
-  tabs: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: Colors.border, marginBottom: Spacing.xl },
-  tab: { flex: 1, paddingVertical: Spacing.md, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  tabActive: { borderBottomColor: Colors.primary },
-  tabText: { fontSize: FontSize.sm, fontWeight: '500', color: Colors.textFaint },
-  tabTextActive: { color: Colors.primaryLight },
-  detailsSection: { gap: Spacing.md },
-  fieldCard: { backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.lg, padding: Spacing.lg, gap: Spacing.md },
-  fieldRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.lg, padding: Spacing.lg },
-  fieldLabel: { fontSize: FontSize.sm, fontWeight: '500', color: Colors.textFaint },
-  fieldValue: { fontSize: FontSize.base, color: Colors.textPrimary, lineHeight: 22 },
-  fieldRight: { flexDirection: 'row', alignItems: 'center' },
-  fieldValueText: { fontSize: FontSize.base, color: Colors.textPrimary },
-  fieldValueDim: { fontSize: FontSize.base, color: Colors.textFaint },
-  userChip: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  userAvatar: { width: 24, height: 24, borderRadius: 12, backgroundColor: Colors.primary + '20', justifyContent: 'center', alignItems: 'center' },
-  userAvatarText: { fontSize: 10, fontWeight: '700', color: Colors.primaryLight },
-  userName: { fontSize: FontSize.base, color: Colors.textPrimary },
-  labelsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
-  labelChip: { backgroundColor: Colors.bgElevated, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderRadius: BorderRadius.full },
-  labelText: { fontSize: FontSize.xs, color: Colors.textSecondary },
-  subtaskItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.sm },
-  subtaskText: { fontSize: FontSize.base, color: Colors.textPrimary, flex: 1 },
+
+  /* Status row */
+  statusRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.xl },
+  statusPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: Spacing.md, paddingVertical: 7,
+    borderRadius: BorderRadius.sm, borderWidth: 1,
+  },
+  statusPillText: { fontSize: FontSize.xs, fontWeight: '700' },
+  actionBtn: {
+    width: 32, height: 32, borderRadius: BorderRadius.sm,
+    backgroundColor: Colors.bgElevated, justifyContent: 'center', alignItems: 'center',
+  },
+
+  /* Collapsible Section */
+  section: {
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, marginBottom: Spacing.md, overflow: 'hidden',
+  },
+  sectionHeader: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg, paddingVertical: Spacing.lg,
+  },
+  sectionTitle: { fontSize: FontSize.base, fontWeight: '600', color: Colors.textWhite },
+  sectionSubtitle: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 2 },
+  sectionBody: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.lg },
+
+  /* Detail Field */
+  fieldRow: {
+    paddingVertical: Spacing.md,
+    borderTopWidth: 1, borderTopColor: Colors.border,
+  },
+  fieldLabel: { fontSize: FontSize.xs, color: Colors.textFaint, marginBottom: 4 },
+  fieldValue: { flexDirection: 'row', alignItems: 'center' },
+  fieldInline: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  fieldText: { fontSize: FontSize.base, color: Colors.textWhite },
+  fieldDim: { fontSize: FontSize.base, color: Colors.textFaint },
+  projectDot: {
+    width: 22, height: 22, borderRadius: 6, justifyContent: 'center', alignItems: 'center',
+  },
+  projectDotText: { fontSize: 8, fontWeight: '700', color: '#fff' },
+
+  /* Description */
+  descText: { fontSize: FontSize.base, color: Colors.textPrimary, lineHeight: 24 },
+  descEmpty: { fontSize: FontSize.base, color: Colors.textFaint, fontStyle: 'italic' },
+
+  /* Parent */
+  parentRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  parentText: { fontSize: FontSize.base, color: Colors.textPrimary },
+
+  /* Labels */
+  labelsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs },
+  labelChip: {
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    paddingHorizontal: Spacing.sm, paddingVertical: 2, borderRadius: BorderRadius.full,
+  },
+  labelChipText: { fontSize: FontSize.xs, color: Colors.textSecondary },
+
+  /* Subtasks */
+  subtaskRow: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
+    paddingVertical: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.border,
+  },
+  subtaskTitle: { fontSize: FontSize.sm, color: Colors.textPrimary, flex: 1 },
   subtaskDone: { textDecorationLine: 'line-through', color: Colors.textFaint },
-  timestamps: { paddingTop: Spacing.lg, gap: Spacing.xs },
-  timestampText: { fontSize: FontSize.xs, color: Colors.textFaint },
-  commentsSection: { gap: Spacing.md },
-  commentCard: { backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.lg, padding: Spacing.lg },
-  commentHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.md },
-  commentAvatar: { width: 28, height: 28, borderRadius: 14, backgroundColor: Colors.violet + '20', justifyContent: 'center', alignItems: 'center' },
-  commentAvatarText: { fontSize: 10, fontWeight: '700', color: Colors.violet400 },
-  commentAuthor: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary },
-  commentDate: { fontSize: FontSize.xs, color: Colors.textFaint },
-  commentBody: { fontSize: FontSize.base, color: Colors.textSecondary, lineHeight: 22 },
-  emptyState: { alignItems: 'center', paddingVertical: Spacing['5xl'], gap: Spacing.md },
-  emptyText: { fontSize: FontSize.sm, color: Colors.textFaint },
-  commentInput: {
-    flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.md,
-    paddingHorizontal: Spacing.xl, paddingVertical: Spacing.md,
+  addSubtaskRow: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
+    borderTopWidth: 1, borderTopColor: Colors.border, paddingTop: Spacing.md, marginTop: Spacing.xs,
+  },
+  addSubtaskInput: { flex: 1, fontSize: FontSize.sm, color: Colors.textPrimary, padding: 0 },
+  addBtn: {
+    backgroundColor: Colors.primary + '20', paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+  },
+  addBtnText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primaryLight },
+
+  /* Comments header */
+  commentsHeader: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginTop: Spacing.lg, marginBottom: Spacing.md,
+  },
+  commentsTitle: { fontSize: FontSize.base, fontWeight: '600', color: Colors.textWhite },
+  commentsSortPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: Spacing.md, paddingVertical: 5,
+    borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.full,
+  },
+  commentsSortText: { fontSize: FontSize.xs, color: Colors.textSecondary },
+
+  /* Comment cards */
+  commentsList: { gap: Spacing.md },
+  commentCard: {
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, padding: Spacing.lg,
+  },
+  commentTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.md },
+  commentNameRow: { flex: 1 },
+  commentAuthor: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textWhite },
+  commentTime: { fontSize: FontSize.xs, color: Colors.textFaint },
+  commentMore: { padding: 4 },
+  commentBody: { fontSize: FontSize.base, color: Colors.textPrimary, lineHeight: 22 },
+  commentActions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.lg, marginTop: Spacing.md },
+  commentAction: {},
+  commentReply: { fontSize: FontSize.sm, color: Colors.textFaint, fontWeight: '500' },
+
+  /* Empty comments */
+  emptyComments: { alignItems: 'center', paddingVertical: Spacing['3xl'] },
+  emptyCommentsText: { fontSize: FontSize.sm, color: Colors.textFaint },
+
+  /* Sticky comment bar */
+  commentBar: {
+    flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm,
     backgroundColor: Colors.bgCard, borderTopWidth: 1, borderTopColor: Colors.border,
   },
-  commentTextInput: {
-    flex: 1, backgroundColor: Colors.bg, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.lg, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md,
-    fontSize: FontSize.base, color: Colors.textWhite, maxHeight: 100,
+  commentInput: {
+    flex: 1, fontSize: FontSize.base, color: Colors.textWhite,
+    paddingVertical: Spacing.sm, maxHeight: 80,
   },
   sendBtn: {
-    width: 40, height: 40, borderRadius: BorderRadius.full,
+    width: 36, height: 36, borderRadius: 18,
     backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center',
+    marginBottom: 2,
   },
-  sendBtnDisabled: { opacity: 0.4 },
 });
