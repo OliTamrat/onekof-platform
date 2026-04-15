@@ -1,8 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE = __DEV__
-  ? 'http://localhost:3000'
-  : 'https://onekof.com';
+// Always use production API — mobile connects over the network
+const API_BASE = 'https://onekof.com';
 
 const TOKEN_KEY = 'onekof_session_token';
 const ORG_SLUG_KEY = 'onekof_org_slug';
