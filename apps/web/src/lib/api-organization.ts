@@ -3,6 +3,41 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { headers } from 'next/headers';
+import { verify } from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'fallback-secret';
+
+/**
+ * Resolve the authenticated user from either:
+ * 1. NextAuth session cookie (web app), OR
+ * 2. Bearer JWT token in Authorization header (mobile app)
+ *
+ * Returns { id, email, name } or null if unauthenticated.
+ */
+export async function resolveAuthUser(): Promise<{ id: string; email: string; name: string | null } | null> {
+  // 1. Try NextAuth session (web)
+  const session = await getServerSession(authOptions);
+  if (session?.user?.id && session.user.email) {
+    return { id: session.user.id, email: session.user.email, name: session.user.name || null };
+  }
+
+  // 2. Try Bearer JWT (mobile)
+  const headersList = headers();
+  const authHeader = headersList.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.slice(7);
+      const payload = verify(token, JWT_SECRET) as { id: string; email: string; name?: string };
+      if (payload.id && payload.email) {
+        return { id: payload.id, email: payload.email, name: payload.name || null };
+      }
+    } catch {
+      // Invalid or expired token
+    }
+  }
+
+  return null;
+}
 
 interface OrganizationContext {
   organization: {
@@ -32,16 +67,16 @@ export async function getOrganizationContext(): Promise<{
   error: NextResponse | null;
 }> {
   try {
-    // Get session
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // Get authenticated user (web session or mobile Bearer token)
+    const authUser = await resolveAuthUser();
+    if (!authUser) {
       return {
         data: null,
         error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
       };
     }
 
-    // Get organization slug from middleware-set header
+    // Get organization slug from middleware-set header (web) or client header (mobile)
     const headersList = headers();
     const organizationSlug = headersList.get('x-organization-slug');
 
@@ -59,7 +94,7 @@ export async function getOrganizationContext(): Promise<{
     // Replaces 3 sequential queries (organization, membership, user) → 1 query
     const membership = await prisma.organizationMember.findFirst({
       where: {
-        userId: session.user.id,
+        userId: authUser.id,
         organization: { slug: organizationSlug },
       },
       select: {
@@ -143,22 +178,23 @@ export async function resolveUserOrganization(): Promise<{
   error: NextResponse | null;
 }> {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    // Get authenticated user (web session or mobile Bearer token)
+    const authUser = await resolveAuthUser();
+    if (!authUser?.email) {
       return {
         data: null,
         error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
       };
     }
 
-    // 1. Try subdomain slug from middleware header (fast path — single query)
+    // 1. Try subdomain slug from middleware header or mobile client header (fast path)
     const headersList = headers();
     const slug = headersList.get('x-organization-slug');
 
     if (slug) {
       const membership = await prisma.organizationMember.findFirst({
         where: {
-          user: { email: session.user.email },
+          user: { email: authUser.email },
           organization: { slug },
         },
         select: {
@@ -181,22 +217,20 @@ export async function resolveUserOrganization(): Promise<{
     }
 
     // 2. Fallback path (no slug or slug mismatch): fetch user + default org
-    // SECURITY: Only allow fallback on select-organization page and non-API routes.
-    // API routes MUST have an org context from subdomain to prevent cross-org access
-    // via defaultOrganizationId manipulation.
-    const isApiRoute = request.nextUrl.pathname.startsWith('/api');
-    if (isApiRoute && !slug) {
+    // SECURITY: API routes MUST have an org context from subdomain/header
+    // to prevent cross-org access via defaultOrganizationId manipulation.
+    if (!slug) {
       return {
         data: null,
         error: NextResponse.json(
-          { error: 'Organization context required. Access via organization subdomain.' },
+          { error: 'Organization context required. Access via organization subdomain or set x-organization-slug header.' },
           { status: 403 }
         ),
       };
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authUser.email },
       select: {
         id: true,
         email: true,

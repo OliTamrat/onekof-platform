@@ -1,14 +1,17 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Colors } from '../../src/constants/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-function TabIcon({ name, color }: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
-  return <FontAwesome size={20} name={name} color={color} />;
+function TabIcon({ name, color, size }: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string; size?: number }) {
+  return <FontAwesome size={size || 20} name={name} color={color} />;
 }
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -19,20 +22,26 @@ export default function TabLayout() {
           backgroundColor: Colors.bgCard,
           borderTopColor: Colors.border,
           borderTopWidth: 1,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 56 + insets.bottom,
+          paddingBottom: insets.bottom + 4,
+          paddingTop: 6,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '500',
+          fontSize: 10,
+          fontWeight: '600',
+          letterSpacing: 0.3,
+        },
+        tabBarItemStyle: {
+          gap: 2,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Home',
           tabBarIcon: ({ color }) => <TabIcon name="home" color={color} />,
         }}
       />
@@ -47,14 +56,14 @@ export default function TabLayout() {
         name="issues"
         options={{
           title: 'Issues',
-          tabBarIcon: ({ color }) => <TabIcon name="list" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="check-square-o" color={color} />,
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
           title: 'More',
-          tabBarIcon: ({ color }) => <TabIcon name="ellipsis-h" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="th-large" color={color} />,
         }}
       />
     </Tabs>

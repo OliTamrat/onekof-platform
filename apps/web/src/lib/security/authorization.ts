@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { NextResponse } from 'next/server';
 import { log, logSecurity } from '@/lib/logger';
+import { resolveAuthUser } from '@/lib/api-organization';
 
 /**
  * Authorization Middleware for API Routes
@@ -22,19 +23,30 @@ interface AuthorizationResult {
 }
 
 /**
- * Verify user is authenticated
+ * Verify user is authenticated.
+ * Accepts NextAuth session cookies (web) or Bearer JWT tokens (mobile).
  */
 export async function requireAuth(): Promise<AuthorizationResult> {
+  // Try NextAuth session first (web)
   const session = await getServerSession(authOptions);
+  if (session?.user) {
+    return { authorized: true, session };
+  }
 
-  if (!session?.user) {
+  // Try Bearer JWT (mobile)
+  const authUser = await resolveAuthUser();
+  if (authUser) {
+    // Return a session-like object for compatibility with existing code
     return {
-      authorized: false,
-      error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+      authorized: true,
+      session: { user: { id: authUser.id, email: authUser.email, name: authUser.name } },
     };
   }
 
-  return { authorized: true, session };
+  return {
+    authorized: false,
+    error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+  };
 }
 
 /**

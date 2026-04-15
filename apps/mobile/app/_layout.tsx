@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/contexts/auth-context';
+import { BiometricLock } from '../src/components/BiometricLock';
+import { OfflineBanner } from '../src/components/OfflineBanner';
 import { Colors } from '../src/constants/theme';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
@@ -26,24 +29,37 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StatusBar style="light" backgroundColor={Colors.bg} />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: Colors.bg },
-            animation: 'slide_from_right',
-          }}
-        >
-          <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
-          <Stack.Screen name="select-org" options={{ animation: 'fade' }} />
-          <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-          <Stack.Screen name="issue/[id]" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="create-issue/index" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="project/[id]" options={{ animation: 'slide_from_right' }} />
-        </Stack>
-      </AuthProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <StatusBar style="light" backgroundColor={Colors.bg} />
+          <OfflineBanner />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: Colors.bg },
+              animation: 'slide_from_right',
+            }}
+          >
+            <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+            <Stack.Screen name="select-org" options={{ animation: 'fade' }} />
+            <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+            <Stack.Screen name="issue/[id]" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="project/[id]" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="create-issue/index" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="create-project/index" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="teams/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="goals/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="budget/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="documents/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="calendar/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="notifications/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="profile/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="search/index" options={{ animation: 'fade' }} />
+          </Stack>
+          <BiometricLock />
+        </AuthProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }

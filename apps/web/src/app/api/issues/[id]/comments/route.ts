@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendMentionEmail, userWantsNotification } from '@/lib/email';
@@ -19,10 +18,10 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    // Get the current user (web session or mobile Bearer token)
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -31,7 +30,7 @@ export async function POST(
 
     // Get user from database
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: authUser.email },
     });
 
     if (!user) {
