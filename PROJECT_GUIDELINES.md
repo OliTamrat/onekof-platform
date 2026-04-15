@@ -75,11 +75,37 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Subdomain routing**: `{orgslug}.onekof.com` → middleware sets `x-organization-slug` header
 - **Commit attribution**: every commit is `Oli Tamrat Oli <oli.oli@udc.edu>` (for IP registration)
 
-## Current Status (as of 2026-04-13)
+## Design System
+
+- **Theme:** Nocturne dark editorial (shipped 2026-04-14)
+- **Backgrounds:** `#0B0E11` (page), `#12161B` (card/sidebar), `#181D23` (elevated/hover)
+- **Text:** `white/85` (primary), `white/50` (secondary), `white/30` (faint)
+- **Borders:** `white/[0.08]` in dark mode
+- **Accents:** `#1C8C7D` (teal primary), `#2BB5A2` (teal-light), `#8B5CF6` (violet for AI)
+- **Headings:** `font-serif` (Playfair Display) for landing/marketing pages, Inter for dashboard
+- **Buttons:** `rounded-full` with teal gradient `from-primary-500 to-[#2BB5A2]`
+- **Cards:** `bg-[#12161B] border-white/[0.08] rounded-2xl` with top glow line on hover
+- **Section labels:** teal dash prefix + uppercase tracking + `#2BB5A2` color
+- **Grain overlay:** SVG turbulence filter on landing/about pages
+- Applied across all 184 pages including dashboard, auth, onboarding, settings
+
+## Mobile App
+
+- **Stack:** Expo SDK 54, React Native, Expo Router, React Query
+- **Location:** `apps/mobile/` in monorepo
+- **Bundle ID:** `com.dabsanalytics.onekof` (iOS + Android)
+- **Auth:** JWT-based via `/api/auth/mobile/signin` and `/api/auth/mobile/me`
+- **API:** Points to `https://onekof.com` production API
+- **Theme:** Same Nocturne color tokens as web (`src/constants/theme.ts`)
+- **Quality bar:** Must match or exceed Jira Mobile — full CRUD, offline, push notifications, biometric auth
+
+## Current Status (as of 2026-04-15)
 
 **Launch stage:** Pre-launch. No paying customers. EIPA copyright deposit prepared 2026-04-11, submission pending representative's return with questionnaire answers.
 
 **Production deployment (Tier 3):** Live at `onekof.com` on Vercel serverless (fra1) + Supabase PostgreSQL 15 (aws-1-eu-central-1). 25 test/demo organizations, no real customer data.
+
+**Mobile app:** Foundation deployed (Expo/React Native). Auth working against production API. Building toward App Store + Google Play submission.
 
 **Architecture target:** Three-tier federated hosting (see `docs/architecture/three-tier-federation.md`):
 - **Tier 1 — Government:** EthioTelecom Cloud (or Raxio fallback), `*.gov.onekof.et`. **Not yet built.** Requires signed government LOI before coding begins.
@@ -88,6 +114,40 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage as cold recovery. **Deferred to Wave 3.**
 
 ## Recently Shipped
+
+### Nocturne UI/UX Redesign + Mobile App + SEO (2026-04-14/15)
+
+**UI/UX — Nocturne dark editorial design:**
+- Landing page: two-column hero with floating feature cards, real product screenshots, serif headings (Playfair Display), grain overlay, video modal, equal-height pricing cards
+- All 184 dashboard pages migrated to Nocturne tokens (#0B0E11/#12161B/#181D23)
+- Auth pages (7): deeper bg, serif headings, teal gradient buttons, back-to-home navigation
+- Onboarding: Nocturne card design, 48px icon boxes, top glow hover effects
+- About page: complete rewrite with DABS Analytics section, three deployment tiers, values
+- Sidebar: elevated to #12161B, collapsible with icon-only mode, visible border
+- Select-organization, all shared UI primitives (Card, Input, Slideout), unified header updated
+
+**OAuth providers:**
+- Google OAuth configured (Onekof PM project in Google Cloud Console)
+- Microsoft Azure AD configured (multi-tenant, Entra ID)
+- GitHub provider wired (needs OAuth app + env vars)
+- LinkedIn provider wired (needs app + env vars)
+- OAuth redirect: always through main domain (onekof.com) for multi-tenant compatibility
+
+**SEO:**
+- `sitemap.ts`: 7 public pages with priority/frequency
+- `robots.ts`: allow public pages, block /api/ /dashboard/ /admin/
+- JSON-LD structured data: SoftwareApplication schema with features, pricing, author
+- Brand keywords: Onekof, Onekof PM, Onekof project management, DABS Analytics
+- OG image: real dashboard screenshot
+- Page-level metadata on about, privacy, terms, cookies
+- Google Search Console verified + sitemap submitted (7 pages discovered)
+
+**Mobile app foundation:**
+- Expo SDK 54, React Native, Expo Router, React Query, expo-secure-store
+- JWT auth endpoints: `/api/auth/mobile/signin`, `/api/auth/mobile/me`
+- 4 tabs: Dashboard, Projects, Issues, More
+- Auth flow: signin → org select → dashboard
+- Bundle ID: com.dabsanalytics.onekof
 
 ### Security Hardening Sprint (2026-04-13)
 
@@ -209,8 +269,22 @@ All items are gated to "before first real customer," not urgent pre-launch.
 - **Claim `onekof.et` domain** — required for Tier 2 production. Claim after EIPA registration completes.
 - **Ethiopian business entity formation for Olink Technologies** — required for government procurement, unrelated to the codebase but on the critical path for Tier 1 sales.
 
-### Priority 4: Product polish (deferred — no customer pressure yet)
-- Mobile UX refinement (Priority 1 from pre-Wave-1 list — still valid but no longer blocking).
+### Priority 4: Mobile App — full production build (IN PROGRESS)
+**Quality bar:** Match or exceed Jira Mobile. Not a companion app — a full production client.
+**Stack:** Expo SDK 54 + React Native + Expo Router in `apps/mobile/`
+- Full CRUD: projects, issues, epics, goals, teams
+- Kanban board with drag-and-drop
+- Issue detail with all fields (assignee, status, priority, labels, due date, subtasks, comments, activity, attachments)
+- Push notifications (Expo Notifications)
+- Ethiopian calendar native component
+- 5 language support (AM, OM, TI, SO, EN)
+- ETB budget views
+- Offline mode with sync
+- Biometric auth (Face ID / fingerprint)
+- Deep linking (open issue from notification)
+- App Store + Google Play submission
+
+### Priority 5: Product polish
 - Bulk operations (bulk status change / delete / label for issues).
 - Sentry DSN + error monitoring.
 - Archive & grace-period deletion workflow.
