@@ -19,6 +19,7 @@ import {
   Target,
   Workflow,
   Languages,
+  Pause,
   Play,
   Star,
   Sparkles,
@@ -80,16 +81,35 @@ function Counter({ end, suffix = '', duration = 2 }: { end: number; suffix?: str
   return <span ref={ref}>0{suffix}</span>;
 }
 
+/* ─── Demo Videos ─── */
+const demoVideos = [
+  { src: '/videos/demo-2.mp4', label: 'Product Tour' },
+  { src: '/videos/demo-3.mp4', label: 'Feature Walkthrough' },
+  { src: '/videos/demo-1.mp4', label: 'Quick Demo' },
+];
+
 /* ─── Video Modal ─── */
 function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [modalVideoIdx, setModalVideoIdx] = useState(0);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      videoRef.current?.play();
     } else {
       document.body.style.overflow = '';
+      videoRef.current?.pause();
     }
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play();
+    }
+  }, [modalVideoIdx, isOpen]);
 
   return (
     <AnimatePresence>
@@ -110,7 +130,17 @@ function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3">
-              <span className="text-[13px] font-medium text-white/70">Onekof Product Tour</span>
+              <div className="flex items-center gap-3">
+                {demoVideos.map((v, i) => (
+                  <button
+                    key={v.src}
+                    onClick={() => setModalVideoIdx(i)}
+                    className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${i === modalVideoIdx ? 'bg-primary-500/15 text-[#2BB5A2]' : 'text-white/40 hover:text-white/60'}`}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
               <button
                 onClick={onClose}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white"
@@ -119,16 +149,15 @@ function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
               </button>
             </div>
             <div className="relative aspect-video w-full bg-[#12161B]">
-              {/* Video placeholder — replace src with your actual video URL */}
-              <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/[0.15] bg-gradient-to-br from-primary-500/20 to-violet-500/10">
-                  <Play className="h-8 w-8 text-primary-400" />
-                </div>
-                <p className="text-[15px] font-medium text-white/60">Product video coming soon</p>
-                <p className="max-w-sm text-center text-[13px] text-white/40">
-                  We&apos;re crafting a walkthrough of Onekof&apos;s features. Check back soon.
-                </p>
-              </div>
+              <video
+                ref={videoRef}
+                className="h-full w-full object-contain"
+                controls
+                playsInline
+                autoPlay
+              >
+                <source src={demoVideos[modalVideoIdx].src} type="video/mp4" />
+              </video>
             </div>
           </motion.div>
         </motion.div>
@@ -368,6 +397,7 @@ export default function HomePage() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('yearly');
   const [heroTyped, setHeroTyped] = useState('');
   const [videoOpen, setVideoOpen] = useState(false);
+  const [showcaseIdx, setShowcaseIdx] = useState(0);
 
   const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
@@ -663,123 +693,66 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* RIGHT — Feature cards visual */}
+            {/* RIGHT — Hero Video Showcase */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="relative hidden lg:block"
             >
-              {/* Glow behind cards */}
+              {/* Glow behind video */}
               <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/[0.06] blur-[100px]" />
 
-              <div className="relative space-y-4">
-                {/* Top row — 2 cards */}
-                <div className="flex gap-4">
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
+              <div className="relative">
+                {/* Main hero video */}
+                <div className="overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12161B] shadow-2xl"
+                  style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.4), 0 0 80px rgba(28,140,125,0.06)' }}
+                >
+                  <video
+                    className="aspect-video w-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                   >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 border border-primary-500/15">
-                      <Kanban className="h-5 w-5 text-[#2BB5A2]" />
-                    </div>
-                    <p className="text-[14px] font-semibold text-white/85">Kanban Boards</p>
-                    <p className="mt-1 text-[12px] text-white/40">Drag, drop, ship</p>
-                    <div className="mt-3 flex gap-1.5">
-                      <div className="h-1.5 flex-1 rounded-full bg-primary-500" />
-                      <div className="h-1.5 flex-1 rounded-full bg-amber-500/60" />
-                      <div className="h-1.5 flex-1 rounded-full bg-white/[0.06]" />
-                    </div>
-                  </motion.div>
-                  <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
-                  >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 border border-violet-500/15">
-                      <Brain className="h-5 w-5 text-violet-400" />
-                    </div>
-                    <p className="text-[14px] font-semibold text-white/85">AI Documents</p>
-                    <p className="mt-1 text-[12px] text-white/40">Smart summaries</p>
-                    <div className="mt-3 space-y-1.5">
-                      <div className="h-2 w-3/4 rounded bg-white/[0.04]" />
-                      <div className="h-2 w-full rounded bg-white/[0.04]" />
-                      <div className="h-2 w-1/2 rounded bg-white/[0.04]" />
-                    </div>
-                  </motion.div>
+                    <source src="/videos/demo-2.mp4" type="video/mp4" />
+                  </video>
                 </div>
 
-                {/* Middle — wide card */}
-                <motion.div
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                  className="rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/15">
-                      <Wallet className="h-5 w-5 text-amber-400" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[14px] font-semibold text-white/85">ETB Budget Tracking</p>
-                      <p className="text-[12px] text-white/40">377,000 of 650,000 ETB spent</p>
-                    </div>
-                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">58%</span>
-                  </div>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div className="h-full w-[58%] rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2]" />
-                  </div>
-                </motion.div>
-
-                {/* Bottom row — 2 cards */}
-                <div className="flex gap-4">
-                  <motion.div
-                    animate={{ y: [0, -7, 0] }}
-                    transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
-                  >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/15">
-                      <Calendar className="h-5 w-5 text-rose-400" />
-                    </div>
-                    <p className="text-[14px] font-semibold text-white/85">Ethiopian Calendar</p>
-                    <p className="mt-1 text-[12px] text-white/40">{'\u1218\u130B\u1262\u1275'} 6, 2018</p>
-                    <div className="mt-2 grid grid-cols-7 gap-0.5">
-                      {Array.from({ length: 14 }, (_, i) => (
-                        <div key={i} className={`h-4 rounded text-center text-[8px] leading-4 ${i === 5 ? 'bg-primary-500 text-white font-bold' : i === 10 ? 'bg-violet-500/20 text-violet-300' : 'text-white/30'}`}>
-                          {i + 1}
+                {/* Video thumbnails */}
+                <div className="mt-4 flex gap-3">
+                  {demoVideos.map((v, i) => (
+                    <button
+                      key={v.src}
+                      onClick={() => setVideoOpen(true)}
+                      className="group relative flex-1 overflow-hidden rounded-xl border border-white/[0.08] bg-[#12161B] transition-all hover:border-primary-500/30"
+                    >
+                      <video
+                        className="aspect-video w-full object-cover opacity-60 transition-opacity group-hover:opacity-90"
+                        muted
+                        loop
+                        playsInline
+                        autoPlay
+                      >
+                        <source src={v.src} type="video/mp4" />
+                      </video>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                          <Play className="h-3.5 w-3.5 text-white" />
                         </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                  <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                    className="flex-1 rounded-2xl border border-white/[0.08] bg-[#12161B] p-5"
-                  >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10 border border-primary-500/15">
-                      <Languages className="h-5 w-5 text-[#2BB5A2]" />
-                    </div>
-                    <p className="text-[14px] font-semibold text-white/85">5 Languages</p>
-                    <div className="mt-2 space-y-1">
-                      {[
-                        { flag: '\u{1F1EA}\u{1F1F9}', name: '\u12A0\u121B\u122D\u129B', active: true },
-                        { flag: '\u{1F1EC}\u{1F1E7}', name: 'English', active: false },
-                        { flag: '\u{1F1EA}\u{1F1F9}', name: 'Oromoo', active: false },
-                      ].map((lang) => (
-                        <div key={lang.name} className={`flex items-center gap-2 rounded-lg px-2 py-1 text-[11px] ${lang.active ? 'bg-primary-500/10 text-[#2BB5A2] font-medium' : 'text-white/40'}`}>
-                          <span className="text-[10px]">{lang.flag}</span>
-                          {lang.name}
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 pb-1.5 pt-4">
+                        <span className="text-[10px] font-medium text-white/70">{v.label}</span>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* ─── Dashboard Preview — Real Screenshot ─── */}
+        {/* ─── Video Showcase — Full-width Demo Carousel ─── */}
         <motion.div
           initial={{ opacity: 0, y: 60, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -787,17 +760,42 @@ export default function HomePage() {
         >
           <div className="relative mx-auto max-w-[1200px] px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.06] via-primary-700/[0.03] to-transparent blur-3xl" />
+
+            {/* Video selector tabs */}
+            <div className="relative mb-5 flex items-center justify-center gap-2">
+              {demoVideos.map((v, i) => (
+                <button
+                  key={v.src}
+                  onClick={() => setShowcaseIdx(i)}
+                  className={`rounded-full px-4 py-2 text-[13px] font-medium transition-all ${i === showcaseIdx ? 'bg-primary-500/15 text-[#2BB5A2] border border-primary-500/20' : 'text-white/40 hover:text-white/60 border border-transparent'}`}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Main showcase video */}
             <div className="relative overflow-hidden rounded-2xl shadow-2xl"
               style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
             >
-              <Image
-                src="/images/dashboard-desktop.png"
-                alt="Onekof dashboard showing project summary with status overview, priority breakdown, and recent activity"
-                width={1920}
-                height={1080}
-                className="w-full"
-                priority
-              />
+              <video
+                key={demoVideos[showcaseIdx].src}
+                className="aspect-video w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src={demoVideos[showcaseIdx].src} type="video/mp4" />
+              </video>
+              {/* Play full button overlay */}
+              <button
+                onClick={() => setVideoOpen(true)}
+                className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-[13px] font-medium text-white/80 backdrop-blur-sm transition-all hover:bg-black/80 hover:text-white"
+              >
+                <Play className="h-3.5 w-3.5" />
+                Watch with sound
+              </button>
             </div>
           </div>
         </motion.div>
