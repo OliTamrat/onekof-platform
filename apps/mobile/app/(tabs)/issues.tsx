@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -29,6 +30,7 @@ interface Issue {
 }
 
 export default function IssuesScreen() {
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, refetch } = useQuery({
@@ -48,7 +50,7 @@ export default function IssuesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Issues</Text>
-        <TouchableOpacity style={styles.addBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.addBtn} activeOpacity={0.7} onPress={() => router.push('/create-issue')}>
           <FontAwesome name="plus" size={14} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -65,7 +67,7 @@ export default function IssuesScreen() {
           const priorityColor = PRIORITY_COLORS[item.priority] || Colors.textFaint;
 
           return (
-            <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/issue/${item.id}`)}>
               <View style={[styles.priorityDot, { backgroundColor: priorityColor }]} />
               <View style={styles.cardContent}>
                 <Text style={styles.issueTitle} numberOfLines={2}>{item.title}</Text>

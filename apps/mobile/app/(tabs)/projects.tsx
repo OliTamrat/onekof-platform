@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -15,6 +16,7 @@ interface Project {
 }
 
 export default function ProjectsScreen() {
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, refetch } = useQuery({
@@ -47,7 +49,7 @@ export default function ProjectsScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />
         }
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/project/${item.id}`)}>
             <View style={[styles.projectColor, { backgroundColor: item.color || Colors.primary }]} />
             <View style={styles.cardContent}>
               <View style={styles.cardHeader}>
