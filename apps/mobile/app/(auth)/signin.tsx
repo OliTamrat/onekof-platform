@@ -123,7 +123,7 @@ export default function SignInScreen() {
         </View>
 
         <Text style={styles.copyright}>
-          &copy; 2026 Onekof by DABS Analytics
+          &copy; 2026 Onekof by DAPS Analytics
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>

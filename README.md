@@ -422,7 +422,7 @@ ADMIN_USERS=""                # Admin credentials (bcrypt hashes)
 
 **Proprietary** -- All rights reserved.
 
-Copyright 2026 Oli Tamrat Oli. Commercial rights held by DABS Analytics.
+Copyright 2026 Oli Tamrat Oli. Commercial rights held by DAPS Analytics.
 
 This software is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written consent from the copyright holder.
 

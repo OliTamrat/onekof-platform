@@ -67,6 +67,17 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Optimistic updates**: apply onMutate snapshot + rollback pattern to kanban drag, slideout field edits, backlog reorder
 - **No N+1**: use `include` or batched `findMany`
 
+## TypeScript Error Policy
+
+- **Known cosmetic errors** (`TS2786`, `TS2322` on `Link` / `ChevronRight` / `LucideIcon` / `ReactNode`) come from duplicated `@types/react` in the pnpm store. Code runs fine at runtime; Next.js + Vercel ignore them during build.
+- **During feature work:** ignore pre-existing TS errors. Only act on errors in files you are actively modifying for the task at hand. Never wrap in `@ts-ignore` or alter working runtime code to satisfy `tsc`.
+- **Known-affected files (do not touch for type reasons):** `components/dashboard-layout.tsx`, `components/layouts/app-layout.tsx`, `app/dashboard/automations/templates/page.tsx`, `lib/api-organization.ts` (also has a runtime concern — see memory).
+- **Proper fix (standalone infra PR, never bundled with features):**
+  1. `pnpm why @types/react` from repo root — confirm duplicates
+  2. Add `pnpm.overrides` to root `package.json`: `"@types/react": "18.3.x"`, `"@types/react-dom": "18.3.x"`
+  3. Delete `node_modules` + `pnpm-lock.yaml`, run `pnpm install` fresh
+  4. Confirm `pnpm why @types/react` shows single resolution, re-run `tsc --noEmit`, commit as `chore: dedupe @types/react`
+
 ## Project / Platform Context
 
 - **Platform**: Onekof — multi-tenant PM platform for Ethiopian and East African teams
@@ -93,7 +104,7 @@ These rules apply to any contributor or AI coding assistant working on this code
 
 - **Stack:** Expo SDK 54, React Native, Expo Router, React Query
 - **Location:** `apps/mobile/` in monorepo
-- **Bundle ID:** `com.dabsanalytics.onekof` (iOS + Android)
+- **Bundle ID:** `com.dapsanalytics.onekof` (iOS + Android)
 - **Auth:** JWT-based via `/api/auth/mobile/signin` and `/api/auth/mobile/me`
 - **API:** Points to `https://onekof.com` production API
 - **Theme:** Same Nocturne color tokens as web (`src/constants/theme.ts`)
@@ -122,7 +133,7 @@ These rules apply to any contributor or AI coding assistant working on this code
 - All 184 dashboard pages migrated to Nocturne tokens (#0B0E11/#12161B/#181D23)
 - Auth pages (7): deeper bg, serif headings, teal gradient buttons, back-to-home navigation
 - Onboarding: Nocturne card design, 48px icon boxes, top glow hover effects
-- About page: complete rewrite with DABS Analytics section, three deployment tiers, values
+- About page: complete rewrite with DAPS Analytics section, three deployment tiers, values
 - Sidebar: elevated to #12161B, collapsible with icon-only mode, visible border
 - Select-organization, all shared UI primitives (Card, Input, Slideout), unified header updated
 
@@ -137,7 +148,7 @@ These rules apply to any contributor or AI coding assistant working on this code
 - `sitemap.ts`: 7 public pages with priority/frequency
 - `robots.ts`: allow public pages, block /api/ /dashboard/ /admin/
 - JSON-LD structured data: SoftwareApplication schema with features, pricing, author
-- Brand keywords: Onekof, Onekof PM, Onekof project management, DABS Analytics
+- Brand keywords: Onekof, Onekof PM, Onekof project management, DAPS Analytics
 - OG image: real dashboard screenshot
 - Page-level metadata on about, privacy, terms, cookies
 - Google Search Console verified + sitemap submitted (7 pages discovered)
@@ -147,7 +158,7 @@ These rules apply to any contributor or AI coding assistant working on this code
 - JWT auth endpoints: `/api/auth/mobile/signin`, `/api/auth/mobile/me`
 - 4 tabs: Dashboard, Projects, Issues, More
 - Auth flow: signin → org select → dashboard
-- Bundle ID: com.dabsanalytics.onekof
+- Bundle ID: com.dapsanalytics.onekof
 
 ### Security Hardening Sprint (2026-04-13)
 

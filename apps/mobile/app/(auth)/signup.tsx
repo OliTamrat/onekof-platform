@@ -144,7 +144,7 @@ export default function SignUpScreen() {
           </Link>
         </View>
 
-        <Text style={styles.copyright}>&copy; 2026 Onekof by DABS Analytics</Text>
+        <Text style={styles.copyright}>&copy; 2026 Onekof by DAPS Analytics</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

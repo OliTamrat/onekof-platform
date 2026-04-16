@@ -26,7 +26,7 @@ export default function TermsPage() {
         <div className="mt-10 space-y-8 text-[14px] leading-relaxed text-white/70">
           <section>
             <h2 className="mb-3 text-[17px] font-semibold text-white">1. Agreement to Terms</h2>
-            <p>By accessing or using the Onekof platform (&quot;Service&quot;), you agree to be bound by these Terms of Service. The Service is operated by DABS Analytics (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). If you are using the Service on behalf of an organization, you represent that you have authority to bind that organization to these terms.</p>
+            <p>By accessing or using the Onekof platform (&quot;Service&quot;), you agree to be bound by these Terms of Service. The Service is operated by DAPS Analytics (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). If you are using the Service on behalf of an organization, you represent that you have authority to bind that organization to these terms.</p>
           </section>
 
           <section>
@@ -81,7 +81,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-3 text-[17px] font-semibold text-white">7. Intellectual Property</h2>
-            <p>The Onekof platform, including its source code, design, documentation, and trademarks, is the intellectual property of Oli Tamrat Oli (author, moral rights holder) with commercial rights held by DABS Analytics. All rights are reserved. EIPA copyright registration filed 2026-04-11.</p>
+            <p>The Onekof platform, including its source code, design, documentation, and trademarks, is the intellectual property of Oli Tamrat Oli (author, moral rights holder) with commercial rights held by DAPS Analytics. All rights are reserved. EIPA copyright registration filed 2026-04-11.</p>
           </section>
 
           <section>
@@ -96,7 +96,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-3 text-[17px] font-semibold text-white">9. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, DABS Analytics shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, revenue, data, or business opportunities arising from your use of the Service.</p>
+            <p>To the maximum extent permitted by law, DAPS Analytics shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, revenue, data, or business opportunities arising from your use of the Service.</p>
           </section>
 
           <section>

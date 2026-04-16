@@ -337,7 +337,7 @@ export default function AboutPage() {
 
       <SectionDivider />
 
-      {/* ═══ ABOUT DABS ANALYTICS ═══ */}
+      {/* ═══ ABOUT DAPS ANALYTICS ═══ */}
       <section className="py-20 sm:py-32">
         <div className="mx-auto max-w-[1200px] px-6">
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:p-16">
@@ -349,13 +349,13 @@ export default function AboutPage() {
               <div>
                 <SectionLabel>The Company</SectionLabel>
                 <h2 className="font-serif text-[clamp(2rem,4vw,3rem)] font-medium leading-[1.15]">
-                  DABS Analytics —{' '}
+                  DAPS Analytics —{' '}
                   <span className="font-serif italic text-[#2BB5A2]">
                     software built from Ethiopian roots
                   </span>
                 </h2>
                 <p className="mt-7 text-[16px] leading-[1.8] text-white/50">
-                  DABS Analytics is the company behind Onekof. We were founded with a single
+                  DAPS Analytics is the company behind Onekof. We were founded with a single
                   mandate: build the software infrastructure that Ethiopian and East African
                   organizations deserve — not adapted from tools designed for other markets, but
                   built from the ground up for ours.
@@ -373,7 +373,7 @@ export default function AboutPage() {
                     icon: Shield,
                     title: 'Not a consulting firm',
                     description:
-                      'DABS Analytics is a product company. We build software that scales, not bespoke solutions that disappear when the engagement ends.',
+                      'DAPS Analytics is a product company. We build software that scales, not bespoke solutions that disappear when the engagement ends.',
                   },
                   {
                     icon: Lock,
@@ -790,7 +790,7 @@ export default function AboutPage() {
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
             <p className="text-[13px] text-white/30">
-              &copy; {new Date().getFullYear()} DABS Analytics. All rights reserved.
+              &copy; {new Date().getFullYear()} DAPS Analytics. All rights reserved.
             </p>
             <div className="flex gap-6">
               {[

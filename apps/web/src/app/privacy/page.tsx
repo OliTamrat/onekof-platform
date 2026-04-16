@@ -52,7 +52,7 @@ export default function PrivacyPage() {
             <p>Onekof operates a three-tier hosting architecture designed for data sovereignty:</p>
             <ul className="mt-3 list-disc space-y-2 pl-6">
               <li><strong className="text-white/90">Tier 1 (Government):</strong> Data stored exclusively within Ethiopian government-controlled infrastructure.</li>
-              <li><strong className="text-white/90">Tier 2 (Private):</strong> Data stored on customer-owned or DABS Analytics-managed servers within Ethiopia.</li>
+              <li><strong className="text-white/90">Tier 2 (Private):</strong> Data stored on customer-owned or DAPS Analytics-managed servers within Ethiopia.</li>
               <li><strong className="text-white/90">Tier 3 (Global Cloud):</strong> Data stored on Vercel (Frankfurt, Germany) and Supabase (EU region), compliant with GDPR.</li>
             </ul>
             <p className="mt-3">Your organization&apos;s hosting tier determines where your data is stored. Data does not flow between tiers.</p>

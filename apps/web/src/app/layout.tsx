@@ -42,10 +42,10 @@ export const metadata: Metadata = {
     'agile project management',
     'collaboration platform Africa',
     'data sovereignty Ethiopia',
-    'DABS Analytics',
+    'DAPS Analytics',
   ],
-  authors: [{ name: 'DABS Analytics' }],
-  creator: 'DABS Analytics',
+  authors: [{ name: 'DAPS Analytics' }],
+  creator: 'DAPS Analytics',
   publisher: 'Onekof',
   formatDetection: {
     email: false,
@@ -136,7 +136,7 @@ export default function RootLayout({
               image: 'https://onekof.com/images/dashboard-desktop.png',
               author: {
                 '@type': 'Organization',
-                name: 'DABS Analytics',
+                name: 'DAPS Analytics',
                 url: 'https://onekof.com/about',
               },
               offers: {
