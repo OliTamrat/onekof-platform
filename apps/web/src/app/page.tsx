@@ -83,9 +83,10 @@ function Counter({ end, suffix = '', duration = 2 }: { end: number; suffix?: str
 
 /* ─── Demo Videos ─── */
 const demoVideos = [
-  { src: '/videos/demo-2.mp4', label: 'Product Tour' },
-  { src: '/videos/demo-3.mp4', label: 'Feature Walkthrough' },
-  { src: '/videos/demo-1.mp4', label: 'Quick Demo' },
+  { src: '/videos/demo-1.mp4', label: 'Product Tour' },
+  { src: '/videos/demo-2.mp4', label: 'Feature Walkthrough' },
+  { src: '/videos/demo-3.mp4', label: 'Quick Demo' },
+  { src: '/videos/demo-4.mp4', label: 'Watch Demo' },
 ];
 
 /* ─── Video Modal ─── */
@@ -398,6 +399,8 @@ export default function HomePage() {
   const [heroTyped, setHeroTyped] = useState('');
   const [videoOpen, setVideoOpen] = useState(false);
   const [showcaseIdx, setShowcaseIdx] = useState(0);
+  const [heroIdx, setHeroIdx] = useState(0);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
 
   const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
@@ -500,6 +503,18 @@ export default function HomePage() {
 
   useEffect(() => {
     const timer = setInterval(() => setActiveShowcase((prev) => (prev + 1) % showcaseTabs.length), 8000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Auto-rotate hero video every 6s
+  useEffect(() => {
+    const timer = setInterval(() => setHeroIdx((prev) => (prev + 1) % demoVideos.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Auto-rotate showcase video every 6s
+  useEffect(() => {
+    const timer = setInterval(() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length), 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -709,43 +724,56 @@ export default function HomePage() {
                   style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.4), 0 0 80px rgba(28,140,125,0.06)' }}
                 >
                   <video
+                    key={demoVideos[heroIdx].src}
                     className="aspect-video w-full object-cover"
                     autoPlay
                     muted
                     loop
                     playsInline
                   >
-                    <source src="/videos/demo-2.mp4" type="video/mp4" />
+                    <source src={demoVideos[heroIdx].src} type="video/mp4" />
                   </video>
                 </div>
 
-                {/* Video thumbnails */}
-                <div className="mt-4 flex gap-3">
-                  {demoVideos.map((v, i) => (
+                {/* Video controls bar */}
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
                     <button
-                      key={v.src}
-                      onClick={() => setVideoOpen(true)}
-                      className="group relative flex-1 overflow-hidden rounded-xl border border-white/[0.08] bg-[#12161B] transition-all hover:border-primary-500/30"
+                      onClick={() => setHeroIdx((prev) => (prev - 1 + demoVideos.length) % demoVideos.length)}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
                     >
-                      <video
-                        className="aspect-video w-full object-cover opacity-60 transition-opacity group-hover:opacity-90"
-                        muted
-                        loop
-                        playsInline
-                        autoPlay
-                      >
-                        <source src={v.src} type="video/mp4" />
-                      </video>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                          <Play className="h-3.5 w-3.5 text-white" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 pb-1.5 pt-4">
-                        <span className="text-[10px] font-medium text-white/70">{v.label}</span>
-                      </div>
+                      <ChevronLeft className="h-4 w-4" />
                     </button>
-                  ))}
+                    <button
+                      onClick={() => setHeroIdx((prev) => (prev + 1) % demoVideos.length)}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Dot indicators + label */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[12px] font-medium text-white/50">{demoVideos[heroIdx].label}</span>
+                    <div className="flex gap-1.5">
+                      {demoVideos.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setHeroIdx(i)}
+                          className={`h-1.5 rounded-full transition-all ${i === heroIdx ? 'w-5 bg-[#2BB5A2]' : 'w-1.5 bg-white/20 hover:bg-white/40'}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Watch with sound */}
+                  <button
+                    onClick={() => setVideoOpen(true)}
+                    className="flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-[#12161B] px-3 py-1.5 text-[11px] font-medium text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                  >
+                    <Play className="h-3 w-3" />
+                    Sound
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -761,17 +789,34 @@ export default function HomePage() {
           <div className="relative mx-auto max-w-[1200px] px-6 pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.06] via-primary-700/[0.03] to-transparent blur-3xl" />
 
-            {/* Video selector tabs */}
-            <div className="relative mb-5 flex items-center justify-center gap-2">
-              {demoVideos.map((v, i) => (
-                <button
-                  key={v.src}
-                  onClick={() => setShowcaseIdx(i)}
-                  className={`rounded-full px-4 py-2 text-[13px] font-medium transition-all ${i === showcaseIdx ? 'bg-primary-500/15 text-[#2BB5A2] border border-primary-500/20' : 'text-white/40 hover:text-white/60 border border-transparent'}`}
-                >
-                  {v.label}
-                </button>
-              ))}
+            {/* Video controls — arrows + dots + label */}
+            <div className="relative mb-5 flex items-center justify-center gap-4">
+              <button
+                onClick={() => setShowcaseIdx((prev) => (prev - 1 + demoVideos.length) % demoVideos.length)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  {demoVideos.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setShowcaseIdx(i)}
+                      className={`h-2 rounded-full transition-all ${i === showcaseIdx ? 'w-6 bg-[#2BB5A2]' : 'w-2 bg-white/20 hover:bg-white/40'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-[13px] font-medium text-white/50">{demoVideos[showcaseIdx].label}</span>
+              </div>
+
+              <button
+                onClick={() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
 
             {/* Main showcase video */}
