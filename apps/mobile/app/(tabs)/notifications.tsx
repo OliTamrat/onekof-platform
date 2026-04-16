@@ -1,64 +1,122 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
+import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+/* ─── Types (match /api/notifications response) ─── */
+interface NotificationUser {
+  id: string;
+  name: string | null;
+  email: string;
+  avatar: string | null;
+}
+
+interface NotificationTask {
+  id: string;
+  key: string;
+  title: string;
+  project: { id: string; key: string; name: string; color: string | null };
+}
 
 interface Notification {
   id: string;
-  type: string;
-  title: string;
-  message: string;
-  read: boolean;
+  action: string;
+  activityType: string;
+  entityType: string;
+  entityId: string;
+  aiSummary: string | null;
+  impactScore: number;
   createdAt: string;
-  data?: { issueId?: string; projectId?: string };
+  user: NotificationUser;
+  task: NotificationTask | null;
 }
 
-const NOTIF_ICONS: Record<string, { icon: React.ComponentProps<typeof FontAwesome>['name']; color: string }> = {
-  ISSUE_ASSIGNED: { icon: 'user-plus', color: Colors.info },
-  ISSUE_COMMENT: { icon: 'comment', color: Colors.violet },
-  ISSUE_STATUS: { icon: 'exchange', color: Colors.warning },
-  MENTION: { icon: 'at', color: Colors.primaryLight },
-  PROJECT_UPDATE: { icon: 'folder-open', color: Colors.success },
-  DEFAULT: { icon: 'bell', color: Colors.textSecondary },
+/* ─── Action → icon + color + readable verb ─── */
+const ACTION_STYLE: Record<string, { icon: string; color: string; bg: string; verb: string }> = {
+  CREATED:    { icon: 'plus-circle',  color: '#22C55E', bg: 'rgba(34,197,94,0.12)',  verb: 'created' },
+  UPDATED:    { icon: 'pencil',       color: '#3B82F6', bg: 'rgba(59,130,246,0.12)', verb: 'updated' },
+  COMPLETED:  { icon: 'check-circle', color: '#8B5CF6', bg: 'rgba(139,92,246,0.12)', verb: 'completed' },
+  COMMENTED:  { icon: 'comment',      color: '#1C8C7D', bg: 'rgba(28,140,125,0.12)', verb: 'commented on' },
+  ASSIGNED:   { icon: 'user-plus',    color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', verb: 'assigned' },
+  UNASSIGNED: { icon: 'user-times',   color: '#F97316', bg: 'rgba(249,115,22,0.12)', verb: 'unassigned' },
+  DELETED:    { icon: 'trash',        color: '#EF4444', bg: 'rgba(239,68,68,0.12)',  verb: 'deleted' },
+  WATCHED:    { icon: 'eye',          color: '#6366F1', bg: 'rgba(99,102,241,0.12)', verb: 'started watching' },
+  MOVED:      { icon: 'arrows',       color: '#06B6D4', bg: 'rgba(6,182,212,0.12)',  verb: 'moved' },
+  STATUS_CHANGED: { icon: 'exchange', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', verb: 'changed status of' },
 };
 
-function timeAgo(dateStr: string) {
+/* ─── Relative time ─── */
+function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
   if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
 }
+
+/* ─── Grouping by relative day ─── */
+function groupKey(dateStr: string): 'Today' | 'Yesterday' | 'This week' | 'Older' {
+  const now = new Date();
+  const then = new Date(dateStr);
+  const msPerDay = 86400000;
+  const sameDay = now.toDateString() === then.toDateString();
+  if (sameDay) return 'Today';
+  const diffDays = Math.floor((now.getTime() - then.getTime()) / msPerDay);
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return 'This week';
+  return 'Older';
+}
+
+type GroupedItem =
+  | { kind: 'header'; key: string; label: string }
+  | { kind: 'notif'; key: string; notif: Notification };
 
 export default function NotificationsTab() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'mentions' | 'assigned' | 'watching'>('all');
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['notifications'],
-    queryFn: () => apiFetch<{ notifications: Notification[] }>('/api/notifications').catch(() => ({ notifications: [] })),
-  });
-
-  const markReadMutation = useMutation({
-    mutationFn: (notifId: string) =>
-      apiFetch(`/api/notifications/${notifId}/read`, { method: 'PATCH' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
-  });
-
-  const markAllReadMutation = useMutation({
-    mutationFn: () => apiFetch('/api/notifications/read-all', { method: 'POST' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    queryFn: () =>
+      apiFetch<{ notifications: Notification[]; unreadCount: number }>('/api/notifications').catch(
+        () => ({ notifications: [], unreadCount: 0 }),
+      ),
   });
 
   const notifications = data?.notifications || [];
-  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const filtered = useMemo(() => {
+    if (filter === 'assigned') return notifications.filter((n) => n.action === 'ASSIGNED');
+    if (filter === 'mentions') return notifications.filter((n) => n.action === 'COMMENTED');
+    if (filter === 'watching') return notifications;  // everything is already watched-only server-side
+    return notifications;
+  }, [notifications, filter]);
+
+  // Build grouped list: [header, notif, notif, header, notif, ...]
+  const grouped = useMemo<GroupedItem[]>(() => {
+    const out: GroupedItem[] = [];
+    let lastGroup: string | null = null;
+    for (const n of filtered) {
+      const g = groupKey(n.createdAt);
+      if (g !== lastGroup) {
+        out.push({ kind: 'header', key: `hdr-${g}`, label: g });
+        lastGroup = g;
+      }
+      out.push({ kind: 'notif', key: n.id, notif: n });
+    }
+    return out;
+  }, [filtered]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -66,64 +124,133 @@ export default function NotificationsTab() {
     setRefreshing(false);
   }, [refetch]);
 
-  const handlePress = (notif: Notification) => {
-    if (!notif.read) markReadMutation.mutate(notif.id);
-    if (notif.data?.issueId) router.push(`/issue/${notif.data.issueId}`);
+  const handlePress = (n: Notification) => {
+    if (n.task?.id) router.push(`/issue/${n.task.id}`);
   };
 
+  const FILTERS: { key: typeof filter; label: string }[] = [
+    { key: 'all',       label: 'All' },
+    { key: 'assigned',  label: 'Assigned' },
+    { key: 'mentions',  label: 'Comments' },
+    { key: 'watching',  label: 'Watching' },
+  ];
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[s.container, { paddingTop: insets.top }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Notifications</Text>
-        {unreadCount > 0 && (
-          <TouchableOpacity style={styles.markAllBtn} onPress={() => markAllReadMutation.mutate()}>
-            <FontAwesome name="check-circle-o" size={14} color={Colors.primaryLight} />
-            <Text style={styles.markAllText}>Mark all read</Text>
-          </TouchableOpacity>
-        )}
+      <View style={s.header}>
+        <View>
+          <Text style={s.headerTitle}>Notifications</Text>
+          <Text style={s.headerSub}>
+            {notifications.length} {notifications.length === 1 ? 'update' : 'updates'}
+          </Text>
+        </View>
       </View>
 
-      {unreadCount > 0 && (
-        <View style={styles.unreadBanner}>
-          <Text style={styles.unreadText}>{unreadCount} unread</Text>
-        </View>
-      )}
+      {/* Filter chips */}
+      <View style={s.filterRow}>
+        {FILTERS.map((f) => {
+          const active = filter === f.key;
+          const count = f.key === 'all'
+            ? notifications.length
+            : f.key === 'assigned' ? notifications.filter((n) => n.action === 'ASSIGNED').length
+            : f.key === 'mentions' ? notifications.filter((n) => n.action === 'COMMENTED').length
+            : notifications.length;
+          return (
+            <TouchableOpacity
+              key={f.key}
+              style={[s.filterChip, active && s.filterChipActive]}
+              activeOpacity={0.7}
+              onPress={() => setFilter(f.key)}
+            >
+              <Text style={[s.filterChipText, active && s.filterChipTextActive]}>
+                {f.label}
+              </Text>
+              {count > 0 && (
+                <View style={[s.filterBadge, active && s.filterBadgeActive]}>
+                  <Text style={[s.filterBadgeText, active && s.filterBadgeTextActive]}>{count}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
 
       <FlatList
-        data={notifications}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
+        data={grouped}
+        keyExtractor={(item) => item.key}
+        contentContainerStyle={s.list}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />
         }
         renderItem={({ item }) => {
-          const iconCfg = NOTIF_ICONS[item.type] || NOTIF_ICONS.DEFAULT;
+          if (item.kind === 'header') {
+            return <Text style={s.groupHeader}>{item.label}</Text>;
+          }
+          const n = item.notif;
+          const style = ACTION_STYLE[n.action] || ACTION_STYLE.UPDATED;
+
           return (
             <TouchableOpacity
-              style={[styles.card, !item.read && styles.cardUnread]}
-              onPress={() => handlePress(item)}
+              style={s.card}
               activeOpacity={0.7}
+              onPress={() => handlePress(n)}
+              disabled={!n.task}
             >
-              <View style={[styles.notifIcon, { backgroundColor: iconCfg.color + '15' }]}>
-                <FontAwesome name={iconCfg.icon} size={14} color={iconCfg.color} />
+              {/* Avatar + action badge column */}
+              <View style={s.avatarCol}>
+                <Avatar name={n.user.name || n.user.email || 'U'} size={38} />
+                <View style={[s.actionBadgeOverlay, { backgroundColor: style.bg, borderColor: Colors.bg }]}>
+                  <FontAwesome name={style.icon as any} size={9} color={style.color} />
+                </View>
               </View>
-              <View style={styles.cardBody}>
-                <Text style={[styles.notifTitle, !item.read && styles.notifTitleUnread]} numberOfLines={1}>
-                  {item.title}
+
+              {/* Content */}
+              <View style={s.cardBody}>
+                <Text style={s.cardText} numberOfLines={2}>
+                  <Text style={s.userName}>{n.user.name || n.user.email}</Text>
+                  <Text style={s.verb}> {style.verb} </Text>
+                  {n.task && (
+                    <>
+                      <Text style={s.taskKey}>{n.task.key}</Text>
+                      <Text style={s.verb}> · </Text>
+                      <Text style={s.taskTitle}>{n.task.title}</Text>
+                    </>
+                  )}
                 </Text>
-                <Text style={styles.notifMessage} numberOfLines={2}>{item.message}</Text>
-                <Text style={styles.notifTime}>{timeAgo(item.createdAt)}</Text>
+
+                {n.aiSummary && (
+                  <Text style={s.aiSummary} numberOfLines={2}>{n.aiSummary}</Text>
+                )}
+
+                <View style={s.cardFooter}>
+                  {n.task?.project && (
+                    <View style={[s.projectTag, { backgroundColor: (n.task.project.color || '#3B82F6') + '20' }]}>
+                      <View style={[s.projectDot, { backgroundColor: n.task.project.color || '#3B82F6' }]} />
+                      <Text style={[s.projectTagText, { color: n.task.project.color || '#3B82F6' }]}>
+                        {n.task.project.key}
+                      </Text>
+                    </View>
+                  )}
+                  <Text style={s.timeText}>{timeAgo(n.createdAt)}</Text>
+                </View>
               </View>
-              {!item.read && <View style={styles.unreadDot} />}
+
+              {n.task && <FontAwesome name="chevron-right" size={11} color={Colors.textFaint} />}
             </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <FontAwesome name="bell-slash-o" size={32} color={Colors.textFaint} />
-            <Text style={styles.emptyTitle}>No notifications</Text>
-            <Text style={styles.emptyDesc}>You're all caught up</Text>
+          <View style={s.empty}>
+            <View style={s.emptyIconBox}>
+              <FontAwesome name="bell-slash-o" size={32} color={Colors.textFaint} />
+            </View>
+            <Text style={s.emptyTitle}>You're all caught up</Text>
+            <Text style={s.emptyDesc}>
+              {filter === 'all'
+                ? 'Updates on tasks you watch, are assigned, or report will appear here.'
+                : `No ${filter} notifications right now.`}
+            </Text>
           </View>
         }
       />
@@ -131,40 +258,98 @@ export default function NotificationsTab() {
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
+
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: Spacing.xl, paddingVertical: Spacing.lg,
     borderBottomWidth: 1, borderBottomColor: Colors.border,
+    backgroundColor: Colors.bgCard,
   },
   headerTitle: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
-  markAllBtn: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  markAllText: { fontSize: FontSize.xs, color: Colors.primaryLight, fontWeight: '500' },
-  unreadBanner: {
-    backgroundColor: Colors.primary + '15', paddingHorizontal: Spacing.xl, paddingVertical: Spacing.sm,
+  headerSub: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 2 },
+
+  /* Filter chips */
+  filterRow: {
+    flexDirection: 'row', gap: 6,
+    paddingHorizontal: Spacing.xl, paddingVertical: Spacing.md,
+    backgroundColor: Colors.bgCard,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
-  unreadText: { fontSize: FontSize.xs, color: Colors.primaryLight, fontWeight: '500' },
-  list: { padding: Spacing.lg, gap: Spacing.sm, paddingBottom: 100 },
-  card: {
-    flexDirection: 'row', alignItems: 'flex-start',
-    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.lg, padding: Spacing.lg, gap: Spacing.md,
+  filterChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 10, paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
   },
-  cardUnread: { borderColor: Colors.primary + '30', backgroundColor: Colors.primary + '05' },
-  notifIcon: {
-    width: 36, height: 36, borderRadius: BorderRadius.md,
+  filterChipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  filterChipText: { fontSize: 11, fontWeight: '500', color: Colors.textSecondary },
+  filterChipTextActive: { color: '#fff' },
+  filterBadge: {
+    minWidth: 16, height: 16, borderRadius: 8,
+    paddingHorizontal: 4,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     justifyContent: 'center', alignItems: 'center',
   },
-  cardBody: { flex: 1 },
-  notifTitle: { fontSize: FontSize.sm, fontWeight: '500', color: Colors.textPrimary },
-  notifTitleUnread: { fontWeight: '700' },
-  notifMessage: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, lineHeight: 18 },
-  notifTime: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: Spacing.xs },
-  unreadDot: {
-    width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.primaryLight, marginTop: 4,
+  filterBadgeActive: { backgroundColor: 'rgba(255,255,255,0.25)' },
+  filterBadgeText: { fontSize: 9, fontWeight: '700', color: Colors.textSecondary },
+  filterBadgeTextActive: { color: '#fff' },
+
+  /* List */
+  list: { padding: Spacing.lg, paddingBottom: 120 },
+  groupHeader: {
+    fontSize: 11, fontWeight: '700', color: Colors.textFaint,
+    textTransform: 'uppercase', letterSpacing: 1,
+    marginTop: Spacing.lg, marginBottom: Spacing.sm,
   },
-  empty: { alignItems: 'center', paddingVertical: Spacing['5xl'], gap: Spacing.sm },
+
+  /* Card */
+  card: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  avatarCol: { position: 'relative' },
+  actionBadgeOverlay: {
+    position: 'absolute', bottom: -2, right: -2,
+    width: 18, height: 18, borderRadius: 9, borderWidth: 2,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  cardBody: { flex: 1, gap: 4 },
+  cardText: { fontSize: FontSize.sm, lineHeight: 20, color: Colors.textSecondary },
+  userName: { fontWeight: '600', color: Colors.textWhite },
+  verb: { color: Colors.textSecondary },
+  taskKey: { fontFamily: 'Courier', fontWeight: '700', color: Colors.primaryLight },
+  taskTitle: { color: Colors.textPrimary },
+  aiSummary: {
+    fontSize: FontSize.xs, color: Colors.textFaint, fontStyle: 'italic',
+    lineHeight: 16, marginTop: 2,
+  },
+  cardFooter: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: 2 },
+  projectTag: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 6, paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  projectDot: { width: 5, height: 5, borderRadius: 3 },
+  projectTagText: { fontSize: 9, fontWeight: '700' },
+  timeText: { fontSize: 10, color: Colors.textFaint },
+
+  /* Empty */
+  empty: {
+    alignItems: 'center', paddingVertical: Spacing['5xl'],
+    paddingHorizontal: Spacing['3xl'], gap: Spacing.md,
+  },
+  emptyIconBox: {
+    width: 64, height: 64, borderRadius: 32,
+    backgroundColor: Colors.bgElevated,
+    justifyContent: 'center', alignItems: 'center',
+  },
   emptyTitle: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary },
-  emptyDesc: { fontSize: FontSize.xs, color: Colors.textFaint },
+  emptyDesc: {
+    fontSize: FontSize.xs, color: Colors.textFaint, textAlign: 'center', lineHeight: 18,
+    maxWidth: 260,
+  },
 });

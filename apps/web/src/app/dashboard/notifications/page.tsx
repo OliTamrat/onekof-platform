@@ -8,7 +8,7 @@
  * Click any notification to drill into the task.
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -23,6 +23,19 @@ import {
   Clock,
   Sparkles,
 } from 'lucide-react';
+
+type NotifFilter = 'all' | 'assigned' | 'comments' | 'watching';
+
+/* Relative-day grouping (matches mobile UX) */
+function groupKey(dateStr: string): 'Today' | 'Yesterday' | 'This week' | 'Older' {
+  const now = new Date();
+  const then = new Date(dateStr);
+  if (now.toDateString() === then.toDateString()) return 'Today';
+  const diffDays = Math.floor((now.getTime() - then.getTime()) / 86400000);
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return 'This week';
+  return 'Older';
+}
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { SkeletonCard } from '@/components/ui/skeleton';
@@ -88,6 +101,43 @@ export default function NotificationsPage() {
   const notifications = data?.notifications || [];
   const unreadCount = data?.unreadCount || 0;
 
+  const [filter, setFilter] = useState<NotifFilter>('all');
+
+  const filtered = useMemo(() => {
+    if (filter === 'assigned') return notifications.filter((n) => n.action === 'ASSIGNED');
+    if (filter === 'comments') return notifications.filter((n) => n.action === 'COMMENTED');
+    return notifications;  // 'all' and 'watching' → same backing set (server scope covers watcher/assignee/reporter)
+  }, [notifications, filter]);
+
+  // Build grouped list for section rendering
+  const grouped = useMemo(() => {
+    const groups: { label: string; items: Notification[] }[] = [];
+    let lastLabel: string | null = null;
+    for (const n of filtered) {
+      const g = groupKey(n.createdAt);
+      if (g !== lastLabel) {
+        groups.push({ label: g, items: [] });
+        lastLabel = g;
+      }
+      groups[groups.length - 1].items.push(n);
+    }
+    return groups;
+  }, [filtered]);
+
+  const filterCounts = useMemo(() => ({
+    all: notifications.length,
+    assigned: notifications.filter((n) => n.action === 'ASSIGNED').length,
+    comments: notifications.filter((n) => n.action === 'COMMENTED').length,
+    watching: notifications.length,
+  }), [notifications]);
+
+  const FILTERS: { key: NotifFilter; label: string }[] = [
+    { key: 'all',      label: 'All' },
+    { key: 'assigned', label: 'Assigned' },
+    { key: 'comments', label: 'Comments' },
+    { key: 'watching', label: 'Watching' },
+  ];
+
   const handleClick = (n: Notification) => {
     if (n.task) {
       const projectId = n.task.project?.id;
@@ -127,6 +177,39 @@ export default function NotificationsPage() {
           </div>
         </div>
 
+        {/* Filter chip bar */}
+        <div className="border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-4 md:px-6 py-3">
+          <div className="max-w-3xl mx-auto flex items-center gap-2 flex-wrap">
+            {FILTERS.map((f) => {
+              const active = filter === f.key;
+              const count = filterCounts[f.key];
+              return (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => setFilter(f.key)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors border ${
+                    active
+                      ? 'bg-primary-500 text-white border-primary-500'
+                      : 'bg-gray-50 dark:bg-[#181D23] text-gray-700 dark:text-white/70 border-gray-200 dark:border-white/[0.08] hover:border-primary-500/40'
+                  }`}
+                >
+                  {f.label}
+                  {count > 0 && (
+                    <span
+                      className={`min-w-[1.25rem] rounded-full px-1 text-[10px] font-bold ${
+                        active ? 'bg-white/25 text-white' : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/60'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Content */}
         <div className="flex-1 overflow-auto p-4 md:p-6">
           <div className="max-w-3xl mx-auto space-y-2">
@@ -136,16 +219,25 @@ export default function NotificationsPage() {
                   <SkeletonCard key={i} />
                 ))}
               </div>
-            ) : notifications.length === 0 ? (
+            ) : filtered.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <EmptyState
                   icon={Bell}
-                  title="No notifications yet"
-                  description="When someone comments on a task you watch, assigns you to something, or updates a task you care about, it will show up here."
+                  title={filter === 'all' ? 'No notifications yet' : `No ${filter} notifications`}
+                  description={
+                    filter === 'all'
+                      ? 'When someone comments on a task you watch, assigns you to something, or updates a task you care about, it will show up here.'
+                      : 'Switch filters or check back later.'
+                  }
                 />
               </div>
             ) : (
-              notifications.map((n) => {
+              grouped.map((group) => (
+                <div key={group.label} className="space-y-2">
+                  <h2 className="pt-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-white/40">
+                    {group.label}
+                  </h2>
+                  {group.items.map((n) => {
                 const ActionIcon = ACTION_ICONS[n.action] || Edit3;
                 const actionColor = ACTION_COLORS[n.action] || ACTION_COLORS.UPDATED;
                 const actorName = n.user?.name || n.user?.email || 'Someone';
@@ -220,7 +312,9 @@ export default function NotificationsPage() {
                     </div>
                   </button>
                 );
-              })
+              })}
+                </div>
+              ))
             )}
           </div>
         </div>

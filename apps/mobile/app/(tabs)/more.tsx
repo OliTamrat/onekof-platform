@@ -13,10 +13,11 @@ export default function MoreScreen() {
 
   const { data: notifData } = useQuery({
     queryKey: ['notifications'],
-    queryFn: () => apiFetch<{ notifications: Array<{ read: boolean }> }>('/api/notifications').catch(() => ({ notifications: [] })),
+    queryFn: () => apiFetch<{ notifications: unknown[]; unreadCount: number }>('/api/notifications').catch(() => ({ notifications: [], unreadCount: 0 })),
   });
 
-  const unreadCount = notifData?.notifications?.filter((n) => !n.read).length || 0;
+  // API treats all notifications as unread until real read-tracking ships (Phase 2)
+  const unreadCount = notifData?.unreadCount ?? notifData?.notifications?.length ?? 0;
 
   interface MenuItem {
     label: string;

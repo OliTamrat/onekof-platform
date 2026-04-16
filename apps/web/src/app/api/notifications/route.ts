@@ -31,23 +31,46 @@ export async function GET(request: NextRequest) {
     const url = request.nextUrl;
     const limit = Math.min(100, parseInt(url.searchParams.get('limit') || '50'));
 
-    // Fetch task IDs the user is watching — these are the tasks the user
-    // wants to be notified about.
-    const watchedTasks = await prisma.taskWatcher.findMany({
-      where: { userId },
-      select: { taskId: true },
-    });
-    const watchedTaskIds = watchedTasks.map((w: any) => w.taskId);
+    // Gather all task IDs the user cares about:
+    //   1. Tasks they're watching
+    //   2. Tasks assigned to them
+    //   3. Tasks they reported
+    // This matches Jira's notification scope — users shouldn't have to
+    // manually "watch" a task to hear about their own assignments.
+    const [watchedTasks, relatedTasks] = await Promise.all([
+      prisma.taskWatcher.findMany({
+        where: { userId },
+        select: { taskId: true },
+      }),
+      prisma.task.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          OR: [
+            { assigneeId: userId },
+            { reporterId: userId },
+          ],
+        },
+        select: { id: true },
+      }),
+    ]);
+
+    const relevantTaskIds = Array.from(
+      new Set([
+        ...watchedTasks.map((w: any) => w.taskId),
+        ...relatedTasks.map((t: any) => t.id),
+      ]),
+    );
 
     // Pull activities where:
-    // - The activity is on a task the user watches, AND
+    // - The activity is on a task the user watches/owns/reported, AND
     // - The activity was NOT performed by the user themselves
-    const activities = watchedTaskIds.length > 0
+    const activities = relevantTaskIds.length > 0
       ? await prisma.userActivity.findMany({
           where: {
             organizationId,
             entityType: 'TASK',
-            entityId: { in: watchedTaskIds },
+            entityId: { in: relevantTaskIds },
             userId: { not: userId }, // exclude self-actions
           },
           orderBy: { createdAt: 'desc' },

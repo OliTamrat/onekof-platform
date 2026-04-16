@@ -38,16 +38,56 @@ function timeAgo(dateStr: string): string {
 }
 
 /* ─── Types ─── */
+interface ActivityEntity {
+  id: string;
+  key: string;
+  title: string;
+  project?: { id: string; key: string; name: string; color?: string | null } | null;
+}
+
 interface Activity {
   id: string;
   action: string;
   entityType: string;
-  description: string;
-  createdAt?: string;
-  timestamp?: string;
-  user?: { name: string; avatar?: string | null };
-  timeAgo?: string;
+  entityId: string;
+  aiSummary?: string | null;
+  metadata?: Record<string, any> | null;
+  createdAt: string;
+  user?: { id?: string; name?: string | null; email?: string; avatar?: string | null };
+  entity?: ActivityEntity | null;
 }
+
+/* ─── Activity filter tabs ─── */
+const ACTIVITY_FILTERS: { key: string | undefined; label: string }[] = [
+  { key: undefined, label: 'All' },
+  { key: 'TASK', label: 'Task' },
+  { key: 'PROJECT', label: 'Project' },
+  { key: 'GOAL', label: 'Goal' },
+  { key: 'COMMENT', label: 'Comment' },
+];
+
+/* ─── Entity icon map (FontAwesome 4 names) ─── */
+const ENTITY_ICON: Record<string, string> = {
+  TASK: 'file-text-o',
+  PROJECT: 'folder-open-o',
+  GOAL: 'bullseye',
+  COMMENT: 'comment-o',
+  WATCHER: 'eye',
+  TEAM: 'users',
+};
+
+/* ─── Action badge styling ─── */
+const ACTION_STYLE: Record<string, { icon: string; color: string; bg: string }> = {
+  CREATED: { icon: 'check-circle', color: '#22C55E', bg: 'rgba(34,197,94,0.12)' },
+  UPDATED: { icon: 'pencil', color: '#3B82F6', bg: 'rgba(59,130,246,0.12)' },
+  DELETED: { icon: 'trash', color: '#EF4444', bg: 'rgba(239,68,68,0.12)' },
+  COMPLETED: { icon: 'check-circle', color: '#8B5CF6', bg: 'rgba(139,92,246,0.12)' },
+  ASSIGNED: { icon: 'user-plus', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)' },
+  COMMENTED: { icon: 'comment', color: '#1C8C7D', bg: 'rgba(28,140,125,0.12)' },
+  WATCHED: { icon: 'eye', color: '#6366F1', bg: 'rgba(99,102,241,0.12)' },
+  UNASSIGNED: { icon: 'user-times', color: '#F97316', bg: 'rgba(249,115,22,0.12)' },
+  MOVED: { icon: 'arrows', color: '#06B6D4', bg: 'rgba(6,182,212,0.12)' },
+};
 
 interface Project {
   id: string;
@@ -123,6 +163,9 @@ export default function DashboardScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
+  const [activityFilter, setActivityFilter] = useState<string | undefined>(undefined);
+  const [activityPage, setActivityPage] = useState(0);
+  const ACTIVITIES_PER_PAGE = 4;
 
   /* ── Data Queries ── */
 
@@ -140,11 +183,15 @@ export default function DashboardScreen() {
     enabled: !!currentOrg,
   });
 
-  // Fetch activity
+  // Fetch activity (uses /api/activities — enriched with entity.key, entity.title, entity.project)
   const { data: activityData, refetch: r3 } = useQuery({
-    queryKey: ['recent-activity'],
-    queryFn: () => apiFetch<{ activities: Activity[] }>('/api/analytics/activity?limit=8')
-      .catch(() => ({ activities: [] })),
+    queryKey: ['recent-activity', activityFilter],
+    queryFn: () => {
+      const params = new URLSearchParams({ limit: '20' });
+      if (activityFilter) params.append('entityType', activityFilter);
+      return apiFetch<{ activities: Activity[] }>(`/api/activities?${params.toString()}`)
+        .catch(() => ({ activities: [] }));
+    },
     enabled: !!currentOrg,
   });
 
@@ -445,46 +492,173 @@ export default function DashboardScreen() {
           </View>
         )}
 
-        {/* ════ RECENT ACTIVITY ════ */}
-        <View style={s.sectionRow}>
-          <Text style={s.sectionTitle}>Recent Activity</Text>
-          <TouchableOpacity onPress={() => router.push('/notifications' as any)}>
-            <Text style={s.seeAll}>View all</Text>
-          </TouchableOpacity>
-        </View>
-        {activities.length > 0 ? (
-          <View style={s.activityCard}>
-            {activities.map((act, i) => (
-              <View key={act.id} style={[s.activityItem, i < activities.length - 1 && s.activityBorder]}>
-                <View style={s.activityLeft}>
-                  <View style={[s.activityDot, {
-                    backgroundColor:
-                      act.action === 'COMPLETED' ? Colors.success :
-                      act.action === 'CREATED' ? Colors.info :
-                      act.action === 'UPDATED' ? Colors.warning :
-                      Colors.primary,
-                  }]} />
-                  {i < activities.length - 1 && <View style={s.activityLine} />}
-                </View>
-                <View style={s.activityContent}>
-                  <Text style={s.activityText} numberOfLines={2}>
-                    {act.user?.name && <Text style={s.activityBold}>{act.user.name} </Text>}
-                    {act.description}
+        {/* ════ RECENT ACTIVITY (AI-Powered Timeline with drill-down) ════ */}
+        <View style={s.activitySection}>
+          <View style={s.activityHeaderRow}>
+            <Text style={s.cardTitle}>Recent activity</Text>
+            <View style={s.aiPill}>
+              <FontAwesome name="magic" size={10} color={Colors.primaryLight} />
+              <Text style={s.aiPillText}>AI-Powered</Text>
+            </View>
+          </View>
+          <Text style={s.activitySubtitle}>
+            Stay up to date with what's happening across your organization.
+          </Text>
+
+          {/* Filter chips */}
+          <View style={s.filterRow}>
+            <Text style={s.filterLabel}>Filter by:</Text>
+            <View style={s.filterChips}>
+              {ACTIVITY_FILTERS.map((f) => {
+                const active = activityFilter === f.key;
+                return (
+                  <TouchableOpacity
+                    key={f.key ?? 'all'}
+                    style={[s.filterChip, active && s.filterChipActive]}
+                    activeOpacity={0.7}
+                    onPress={() => { setActivityFilter(f.key); setActivityPage(0); }}
+                  >
+                    <Text style={[s.filterChipText, active && s.filterChipTextActive]}>
+                      {f.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* Timeline */}
+          {activities.length === 0 ? (
+            <View style={s.emptyInline}>
+              <FontAwesome name="clock-o" size={20} color={Colors.textFaint} />
+              <Text style={s.emptyTitleInline}>No activity yet</Text>
+              <Text style={s.emptyDescInline}>Activity will appear here as your team works.</Text>
+            </View>
+          ) : (() => {
+            const totalPages = Math.max(1, Math.ceil(activities.length / ACTIVITIES_PER_PAGE));
+            const currentPage = Math.min(activityPage, totalPages - 1);
+            const pageStart = currentPage * ACTIVITIES_PER_PAGE;
+            const pageEnd = pageStart + ACTIVITIES_PER_PAGE;
+            const pagedActivities = activities.slice(pageStart, pageEnd);
+            return (
+            <>
+            <View style={s.timeline}>
+              {/* Vertical line */}
+              <View style={s.timelineLine} />
+              {pagedActivities.map((act, i) => {
+                const entityIconName = ENTITY_ICON[act.entityType] || 'file-text-o';
+                const actionStyle = ACTION_STYLE[act.action] || ACTION_STYLE.UPDATED;
+                const timeLabel = timeAgo(act.createdAt);
+                const canDrillDown = !!act.entity || act.entityType === 'PROJECT';
+
+                return (
+                  <TouchableOpacity
+                    key={act.id}
+                    style={[s.activityRow, i < pagedActivities.length - 1 && { marginBottom: Spacing.md }]}
+                    activeOpacity={canDrillDown ? 0.7 : 1}
+                    onPress={() => {
+                      if (act.entityType === 'TASK' && act.entityId) {
+                        router.push(`/issue/${act.entityId}`);
+                      } else if (act.entityType === 'PROJECT' && act.entityId) {
+                        router.push(`/project/${act.entityId}`);
+                      } else if (act.entityType === 'GOAL') {
+                        router.push('/goals' as any);
+                      }
+                    }}
+                    disabled={!canDrillDown}
+                  >
+                    {/* Timeline icon dot */}
+                    <View style={s.timelineDot}>
+                      <FontAwesome name={entityIconName as any} size={14} color={Colors.primaryLight} />
+                    </View>
+
+                    {/* Card */}
+                    <View style={s.activityCardNew}>
+                      <View style={s.activityTopRow}>
+                        <View style={s.activityUserBlock}>
+                          <Avatar name={act.user?.name || act.user?.email || 'U'} size={32} />
+                          <View style={s.activityUserText}>
+                            <Text style={s.activityUser} numberOfLines={1}>
+                              {act.user?.name || act.user?.email || 'Unknown'}
+                            </Text>
+                            <View style={[s.actionBadge, { backgroundColor: actionStyle.bg }]}>
+                              <FontAwesome name={actionStyle.icon as any} size={9} color={actionStyle.color} />
+                              <Text style={[s.actionBadgeText, { color: actionStyle.color }]}>
+                                {act.action.toLowerCase().replace(/_/g, ' ')}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                        <View style={s.activityTimeBox}>
+                          <FontAwesome name="clock-o" size={9} color={Colors.textFaint} />
+                          <Text style={s.activityTimeNew}>{timeLabel}</Text>
+                        </View>
+                      </View>
+
+                      {/* Entity row — project badge + key + title */}
+                      {act.entity ? (
+                        <View style={s.entityRow}>
+                          {act.entity.project && (
+                            <View
+                              style={[
+                                s.projectSquare,
+                                { backgroundColor: act.entity.project.color || '#3B82F6' },
+                              ]}
+                            >
+                              <Text style={s.projectSquareText}>
+                                {act.entity.project.key?.slice(0, 2)}
+                              </Text>
+                            </View>
+                          )}
+                          <Text style={s.entityKey}>{act.entity.key}</Text>
+                          <Text style={s.entityDot}>·</Text>
+                          <Text style={s.entityTitle} numberOfLines={1}>
+                            {act.entity.title}
+                          </Text>
+                        </View>
+                      ) : act.aiSummary ? (
+                        <Text style={s.activitySummary} numberOfLines={2}>{act.aiSummary}</Text>
+                      ) : null}
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Pagination controls — only show if more than one page */}
+            {totalPages > 1 && (
+              <View style={s.paginationRow}>
+                <TouchableOpacity
+                  style={[s.pageBtn, currentPage === 0 && s.pageBtnDisabled]}
+                  onPress={() => setActivityPage((p) => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  activeOpacity={0.7}
+                >
+                  <FontAwesome name="chevron-left" size={11} color={currentPage === 0 ? Colors.textFaint : Colors.textPrimary} />
+                  <Text style={[s.pageBtnText, currentPage === 0 && s.pageBtnTextDisabled]}>Previous</Text>
+                </TouchableOpacity>
+
+                <View style={s.pageIndicator}>
+                  <Text style={s.pageIndicatorText}>
+                    {pageStart + 1}–{Math.min(pageEnd, activities.length)} of {activities.length}
                   </Text>
-                  <Text style={s.activityTime}>
-                    {act.timeAgo || (act.timestamp ? timeAgo(act.timestamp) : act.createdAt ? timeAgo(act.createdAt) : '')}
-                  </Text>
                 </View>
+
+                <TouchableOpacity
+                  style={[s.pageBtn, currentPage >= totalPages - 1 && s.pageBtnDisabled]}
+                  onPress={() => setActivityPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[s.pageBtnText, currentPage >= totalPages - 1 && s.pageBtnTextDisabled]}>Next</Text>
+                  <FontAwesome name="chevron-right" size={11} color={currentPage >= totalPages - 1 ? Colors.textFaint : Colors.textPrimary} />
+                </TouchableOpacity>
               </View>
-            ))}
-          </View>
-        ) : (
-          <View style={s.emptyCard}>
-            <FontAwesome name="clock-o" size={24} color={Colors.textFaint} />
-            <Text style={s.emptyTitle}>No recent activity</Text>
-            <Text style={s.emptyDesc}>Activity from your workspace appears here</Text>
-          </View>
-        )}
+            )}
+            </>
+            );
+          })()}
+        </View>
 
         {/* ════ PROJECTS OVERVIEW ════ */}
         {projects.length > 0 && (
@@ -681,20 +855,133 @@ const s = StyleSheet.create({
   issueBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.full },
   issueBadgeText: { fontSize: 9, fontWeight: '600' },
 
-  /* ── Activity ── */
-  activityCard: {
+  /* ── Activity Timeline (AI-Powered, card-based with drill-down) ── */
+  activitySection: {
     backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.xl, overflow: 'hidden', marginBottom: Spacing.lg,
+    borderRadius: BorderRadius.xl, padding: Spacing.lg, marginBottom: Spacing.lg,
   },
-  activityItem: { flexDirection: 'row', gap: Spacing.md, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md },
-  activityBorder: { borderBottomWidth: 1, borderBottomColor: Colors.border },
-  activityLeft: { alignItems: 'center', width: 12 },
-  activityDot: { width: 10, height: 10, borderRadius: 5, marginTop: 4 },
-  activityLine: { width: 2, flex: 1, backgroundColor: 'rgba(255,255,255,0.06)', marginTop: 4 },
-  activityContent: { flex: 1 },
-  activityText: { fontSize: FontSize.sm, color: Colors.textSecondary, lineHeight: 20 },
-  activityBold: { fontWeight: '600', color: Colors.textPrimary },
-  activityTime: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 2 },
+  activityHeaderRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  aiPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: 'rgba(28,140,125,0.08)',
+    paddingHorizontal: Spacing.sm, paddingVertical: 3, borderRadius: BorderRadius.full,
+  },
+  aiPillText: { fontSize: 10, fontWeight: '600', color: Colors.primaryLight },
+  activitySubtitle: {
+    fontSize: FontSize.xs, color: Colors.textFaint,
+    marginBottom: Spacing.lg, lineHeight: 16,
+  },
+  filterRow: {
+    flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm,
+    paddingBottom: Spacing.md,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+    marginBottom: Spacing.lg,
+  },
+  filterLabel: {
+    fontSize: FontSize.xs, color: Colors.textSecondary, fontWeight: '500',
+    marginTop: 7,
+  },
+  filterChips: {
+    flex: 1, flexDirection: 'row', flexWrap: 'wrap', gap: 6,
+  },
+  filterChip: {
+    paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  filterChipActive: {
+    backgroundColor: Colors.primary, borderColor: Colors.primary,
+  },
+  filterChipText: { fontSize: 11, fontWeight: '500', color: Colors.textSecondary },
+  filterChipTextActive: { color: '#fff' },
+
+  timeline: { position: 'relative' },
+  timelineLine: {
+    position: 'absolute',
+    left: 15,
+    top: 15,
+    bottom: 15,
+    width: 2,
+    backgroundColor: 'rgba(28,140,125,0.2)',
+  },
+  activityRow: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md },
+  timelineDot: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 2, borderColor: Colors.primaryLight,
+    justifyContent: 'center', alignItems: 'center',
+    zIndex: 1,
+  },
+  activityCardNew: {
+    flex: 1,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    gap: 8,
+  },
+  activityTopRow: {
+    flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: Spacing.sm,
+  },
+  activityUserBlock: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  activityUserText: { flex: 1, gap: 4 },
+  activityUser: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textWhite },
+  actionBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 6, paddingVertical: 2,
+    borderRadius: 4,
+  },
+  actionBadgeText: { fontSize: 10, fontWeight: '600', textTransform: 'capitalize' },
+  activityTimeBox: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    paddingTop: 4,
+  },
+  activityTimeNew: { fontSize: 10, color: Colors.textFaint },
+
+  entityRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingTop: 2,
+  },
+  projectSquare: {
+    width: 18, height: 18, borderRadius: 4,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  projectSquareText: { fontSize: 9, fontWeight: '700', color: '#fff' },
+  entityKey: { fontSize: 11, fontWeight: '700', color: Colors.primaryLight, fontFamily: 'Courier' },
+  entityDot: { fontSize: 11, color: Colors.textFaint },
+  entityTitle: { flex: 1, fontSize: FontSize.xs, color: Colors.textSecondary },
+
+  activitySummary: { fontSize: FontSize.xs, color: Colors.textSecondary, lineHeight: 16 },
+
+  emptyInline: {
+    alignItems: 'center', paddingVertical: Spacing['3xl'], gap: Spacing.sm,
+  },
+  emptyTitleInline: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  emptyDescInline: { fontSize: FontSize.xs, color: Colors.textFaint, textAlign: 'center' },
+
+  /* ── Pagination controls ── */
+  paginationRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginTop: Spacing.lg, paddingTop: Spacing.md,
+    borderTopWidth: 1, borderTopColor: Colors.border,
+  },
+  pageBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.full,
+  },
+  pageBtnDisabled: { opacity: 0.45 },
+  pageBtnText: { fontSize: FontSize.xs, fontWeight: '500', color: Colors.textPrimary },
+  pageBtnTextDisabled: { color: Colors.textFaint },
+  pageIndicator: { flex: 1, alignItems: 'center' },
+  pageIndicatorText: { fontSize: FontSize.xs, color: Colors.textFaint },
 
   /* ── Empty ── */
   emptyCard: {

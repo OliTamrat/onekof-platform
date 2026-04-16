@@ -61,8 +61,12 @@ export async function GET(request: NextRequest) {
 
     // Smart entity type filtering:
     // "COMMENT" is stored as entityType=TASK with action=COMMENTED
+    // "PROJECT" filter includes tasks within projects (tasks always belong to a project,
+    // so showing TASK + PROJECT events gives full project-scoped activity — matches Jira/Linear UX)
     if (entityType === 'COMMENT') {
       where.action = 'COMMENTED';
+    } else if (entityType === 'PROJECT') {
+      where.entityType = { in: ['PROJECT', 'TASK'] };
     } else if (entityType) {
       where.entityType = entityType;
     }
