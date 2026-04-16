@@ -300,3 +300,126 @@ All items are gated to "before first real customer," not urgent pre-launch.
 - Sentry DSN + error monitoring.
 - Archive & grace-period deletion workflow.
 - Amharic-native LLM task parsing (needs product scoping).
+
+## Notifications Roadmap — Phase 2, 3, 4 (deferred from 2026-04-16)
+
+**Phase 1 shipped 2026-04-16** (web + mobile parity):
+- Mobile `(tabs)/notifications.tsx` rewritten with Jira-style cards (avatar + action-badge overlay, project color tag, drill-down to issue)
+- Filter chips (All / Assigned / Comments / Watching) with count badges — mobile + web
+- Date grouping (Today / Yesterday / This week / Older) — mobile + web
+- API `/api/notifications` scope broadened: now includes tasks where user is assignee OR reporter (not just watcher)
+- Duplicate standalone mobile screen `app/notifications/index.tsx` deleted
+- Non-functional mark-as-read UI removed from mobile (endpoints didn't exist)
+- Web `dashboard/notifications/page.tsx` gained filter chips + date grouping to match mobile
+
+**Architecture gap:** The `/api/notifications` endpoint still returns `unreadCount: notifications.length` (everything treated as unread) because there is no persistent read-state in the database. All three remaining phases build on closing this gap.
+
+### Phase 2 — Real read tracking (schema change)
+
+**Effort estimate:** ~1.5 hr across migration + endpoints + web + mobile wiring.
+
+**Schema migration:** Add new `Notification` Prisma model (separate from `UserActivity`):
+```prisma
+model Notification {
+  id             String        @id @default(cuid())
+  userId         String        @map("user_id")
+  organizationId String        @map("organization_id")
+  activityId     String        @map("activity_id") // FK to UserActivity.id
+  readAt         DateTime?     @map("read_at")
+  archivedAt     DateTime?     @map("archived_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  activity     UserActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, activityId])
+  @@index([userId, readAt, createdAt])
+  @@index([organizationId])
+  @@map("notifications")
+}
+```
+
+**Backfill strategy:** When the migration runs, seed `Notification` rows for each user × their watched/assigned/reported task activities from the last 30 days, with `readAt = NULL`. After backfill, wire `logActivity` (in `lib/activity-logger.ts`) to also create `Notification` rows for each relevant recipient (watcher/assignee/reporter, excluding self).
+
+**New endpoints:**
+- `PATCH /api/notifications/[id]/read` — set `readAt = now()` for the current user's notification row
+- `POST /api/notifications/read-all` — bulk set `readAt = now()` where `userId = currentUser AND readAt IS NULL`
+- Update `GET /api/notifications` to JOIN against `Notification` and return `readAt`, compute real `unreadCount`
+
+**Mobile + web wiring:** Restore the mark-as-read mutations (currently removed from mobile, never existed on web). Badge on More tab should light up only when `unreadCount > 0`. Dashboard header bell should show unread badge when > 0.
+
+**Testing:** Run migration on Supabase, verify backfill of existing orgs (Ministry, Olink Technologies, etc.), confirm mark-as-read persists across sessions.
+
+### Phase 3 — Jira-level UX enhancements
+
+**Effort estimate:** ~2-3 hr, split across mobile + web.
+
+**New features (require Phase 2 data model):**
+
+1. **Three semantic tabs** (replace the current four filter chips):
+   - **Direct** = actions where user is mentioned OR assigned
+   - **Watching** = activities on tasks user explicitly watches (via `TaskWatcher`)
+   - **Updates** = activities in user's projects (broader catch-all)
+
+2. **Thread collapsing:** when the same user performs multiple actions of the same type on the same entity within 10 minutes, collapse into one card with "+N more" chip. E.g., "Ministry commented on WEBDEV-4 (+3 more)". Requires a client-side reducer step after fetching.
+
+3. **Swipe actions on mobile:** swipe left → Archive, swipe right → Mark as read. Use `react-native-gesture-handler` + `Swipeable`. Already a dep in `apps/mobile/package.json`.
+
+4. **Snooze menu** (long-press on card): Snooze 1hr / 4hr / tomorrow / next week. Requires a new `snoozedUntil` column on `Notification`.
+
+5. **@mention parsing:** when a user writes `@someone` in a comment, create a `Notification` for the mentioned user with `activityType = 'MENTIONED'`. Needs a regex-based mention parser on the comment-creation API.
+
+6. **Badge count on bottom nav tab icon** (mobile) and on header bell (web). Expo Router's `Tabs.Screen` supports `tabBarBadge`. Wire it to the `unreadCount` from `/api/notifications`.
+
+### Phase 4 — Delivery infrastructure (push + email + preferences)
+
+**Effort estimate:** ~3-4 hr, touches multiple systems.
+
+1. **Push notifications via Expo Notifications:**
+   - New Prisma model `PushNotificationToken { id, userId, token, platform (ios|android), deviceName, lastUsedAt, revokedAt }`
+   - On mobile app boot, register for push via `expo-notifications`, POST token to `/api/push/register`
+   - Server-side push: when creating a `Notification` row, also fetch the user's active tokens and enqueue an Expo push via `expo-server-sdk`
+   - Handle badge count, deep linking (tapping a push opens the issue slideout), and token revocation on sign-out
+   - Package `expo-server-sdk` is NOT yet installed — `pnpm add -w expo-server-sdk` at implementation time
+
+2. **Email digest:**
+   - Daily or weekly digest of unread notifications
+   - Cron endpoint `/api/cron/notification-digest` (scheduled via Vercel Cron)
+   - Uses existing email provider from password-reset flow
+   - Template: "You have N unread notifications since [last digest]. Top 5: [...]". Link to `onekof.com/dashboard/notifications`
+   - Skip sending if `unreadCount === 0` or user has `digestEnabled = false`
+
+3. **Notification preferences** (Prisma model):
+   ```prisma
+   model NotificationPreference {
+     id             String  @id @default(cuid())
+     userId         String  @unique
+     organizationId String
+
+     // Channels
+     inAppEnabled   Boolean @default(true)
+     pushEnabled    Boolean @default(true)
+     emailEnabled   Boolean @default(true)
+     digestFrequency String @default("DAILY")  // NONE | DAILY | WEEKLY
+
+     // Per-type toggles
+     mentions       Boolean @default(true)
+     assignments    Boolean @default(true)
+     comments       Boolean @default(true)
+     statusChanges  Boolean @default(true)
+     dueDate        Boolean @default(true)
+
+     // Per-project mutes (JSON array of project IDs)
+     mutedProjects  Json    @default("[]")
+   }
+   ```
+   - Settings page: `/dashboard/settings/notifications` (web), `/settings/notifications` (mobile)
+   - Respect preferences in the `logActivity` → `Notification` creation path (skip if muted)
+
+**Order of operations when resuming:**
+1. Run Phase 2 in its own PR (schema migration is the risky part — needs clean rollback plan if it fails against Supabase)
+2. Run Phase 3 after Phase 2 is stable in production (the UX upgrades depend on read state existing)
+3. Run Phase 4 last — push infrastructure is a separate concern with its own failure modes (device token expiry, Apple/Google API limits, quiet hours)
+
+**Mobile app blocker for Phase 4:** Need an Apple Developer membership ($99/yr) for real iOS push. Android push via FCM is free. See `apps/mobile/app.json` for EAS project config and update `expo.notification` section when Phase 4 starts.
