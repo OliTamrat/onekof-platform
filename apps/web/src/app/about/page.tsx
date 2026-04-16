@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
@@ -22,7 +22,18 @@ import {
   Lock,
   Cpu,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Play,
 } from 'lucide-react';
+
+/* ─── Product Demo Videos ─── */
+const productVideos = [
+  { src: '/videos/demo-1.mp4', label: 'Product Tour' },
+  { src: '/videos/demo-2.mp4', label: 'Feature Walkthrough' },
+  { src: '/videos/demo-3.mp4', label: 'Quick Demo' },
+  { src: '/videos/demo-4.mp4', label: 'Watch Demo' },
+];
 
 /* ─── Grain Overlay ─── */
 function GrainOverlay() {
@@ -57,6 +68,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export default function AboutPage() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [videoIdx, setVideoIdx] = useState(0);
+
+  // Auto-rotate product video every 6s
+  useEffect(() => {
+    const timer = setInterval(() => setVideoIdx((prev) => (prev + 1) % productVideos.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const navLinks = [
     { label: 'Features', href: '/#features' },
@@ -421,6 +439,86 @@ export default function AboutPage() {
                 <p className="text-[13px] leading-relaxed text-white/50">{item.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ═══ PRODUCT IN ACTION ═══ */}
+      <section className="py-20 sm:py-32">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <SectionLabel>See It In Action</SectionLabel>
+            <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
+              The Onekof{' '}
+              <span className="font-serif italic text-[#2BB5A2]">product experience</span>
+            </h2>
+            <p className="mt-5 text-[17px] leading-[1.75] text-white/50">
+              From budget tracking to sprint planning — see how Ethiopian teams get work done with
+              Onekof every day.
+            </p>
+          </div>
+
+          {/* Video carousel */}
+          <div className="relative mx-auto max-w-[960px]">
+            {/* Glow */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[350px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1C8C7D]/[0.05] blur-[100px]" />
+
+            {/* Video player */}
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12161B] shadow-2xl"
+              style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
+            >
+              <video
+                key={productVideos[videoIdx].src}
+                className="aspect-video w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src={productVideos[videoIdx].src} type="video/mp4" />
+              </video>
+            </div>
+
+            {/* Controls bar */}
+            <div className="mt-5 flex items-center justify-between">
+              {/* Arrows */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setVideoIdx((prev) => (prev - 1 + productVideos.length) % productVideos.length)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setVideoIdx((prev) => (prev + 1) % productVideos.length)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Dots + label */}
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  {productVideos.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setVideoIdx(i)}
+                      className={`h-2 rounded-full transition-all ${i === videoIdx ? 'w-6 bg-[#2BB5A2]' : 'w-2 bg-white/20 hover:bg-white/40'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-[13px] font-medium text-white/50">{productVideos[videoIdx].label}</span>
+              </div>
+
+              {/* Play label */}
+              <div className="flex items-center gap-1.5 text-[12px] font-medium text-white/30">
+                <Play className="h-3 w-3" />
+                Auto-playing
+              </div>
+            </div>
           </div>
         </div>
       </section>
