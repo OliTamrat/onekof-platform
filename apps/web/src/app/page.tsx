@@ -83,32 +83,33 @@ function Counter({ end, suffix = '', duration = 2 }: { end: number; suffix?: str
 
 /* ─── Demo Videos ─── */
 const demoVideos = [
-  { src: '/videos/demo-1.mp4', label: 'Product Tour' },
-  { src: '/videos/demo-2.mp4', label: 'Feature Walkthrough' },
-  { src: '/videos/demo-3.mp4', label: 'Quick Demo' },
-  { src: '/videos/demo-4.mp4', label: 'Watch Demo' },
+  { src: '/videos/demo-budget.mp4', poster: '/videos/demo-budget-poster.jpg', label: 'Budget' },
+  { src: '/videos/demo-1.mp4', poster: '/videos/demo-1-poster.jpg', label: 'Product Tour' },
+  { src: '/videos/demo-2.mp4', poster: '/videos/demo-2-poster.jpg', label: 'Feature Walkthrough' },
+  { src: '/videos/demo-3.mp4', poster: '/videos/demo-3-poster.jpg', label: 'Quick Demo' },
+  { src: '/videos/demo-4.mp4', poster: '/videos/demo-4-poster.jpg', label: 'Watch Demo' },
 ];
 
 /* ─── Video Modal ─── */
-function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function VideoModal({ isOpen, onClose, startIndex = 0 }: { isOpen: boolean; onClose: () => void; startIndex?: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [modalVideoIdx, setModalVideoIdx] = useState(0);
+  const [modalVideoIdx, setModalVideoIdx] = useState(startIndex);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      videoRef.current?.play();
+      setModalVideoIdx(startIndex);
     } else {
       document.body.style.overflow = '';
       videoRef.current?.pause();
     }
     return () => { document.body.style.overflow = ''; };
-  }, [isOpen]);
+  }, [isOpen, startIndex]);
 
   useEffect(() => {
     if (isOpen && videoRef.current) {
       videoRef.current.load();
-      videoRef.current.play();
+      videoRef.current.play().catch(() => {});
     }
   }, [modalVideoIdx, isOpen]);
 
@@ -156,6 +157,7 @@ function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
                 controls
                 playsInline
                 autoPlay
+                preload="metadata"
               >
                 <source src={demoVideos[modalVideoIdx].src} type="video/mp4" />
               </video>
@@ -398,9 +400,11 @@ export default function HomePage() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('yearly');
   const [heroTyped, setHeroTyped] = useState('');
   const [videoOpen, setVideoOpen] = useState(false);
-  const [showcaseIdx, setShowcaseIdx] = useState(0);
+  const [videoStartIdx, setVideoStartIdx] = useState(0);
   const [heroIdx, setHeroIdx] = useState(0);
+  const [showcaseIdx, setShowcaseIdx] = useState(0);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const showcaseVideoRef = useRef<HTMLVideoElement>(null);
 
   const heroWords = [t('landing.hero.words.shipFaster'), t('landing.hero.words.trackBudgets'), t('landing.hero.words.planSprints'), t('landing.hero.words.collaborate')];
   const [heroWordIndex, setHeroWordIndex] = useState(0);
@@ -506,15 +510,33 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-rotate hero video every 6s
+  // Hero video: update src via ref when heroIdx changes (no remount = no reload glitch)
   useEffect(() => {
-    const timer = setInterval(() => setHeroIdx((prev) => (prev + 1) % demoVideos.length), 6000);
+    const v = heroVideoRef.current;
+    if (!v) return;
+    v.src = demoVideos[heroIdx].src;
+    v.load();
+    v.play().catch(() => {});
+  }, [heroIdx]);
+
+  // Showcase video: same ref-based swap
+  useEffect(() => {
+    const v = showcaseVideoRef.current;
+    if (!v) return;
+    v.src = demoVideos[showcaseIdx].src;
+    v.load();
+    v.play().catch(() => {});
+  }, [showcaseIdx]);
+
+  // Auto-rotate hero every 10s (longer = less disruptive, gives time for full keyframe cycle)
+  useEffect(() => {
+    const timer = setInterval(() => setHeroIdx((prev) => (prev + 1) % demoVideos.length), 10000);
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-rotate showcase video every 6s
+  // Auto-rotate showcase every 10s
   useEffect(() => {
-    const timer = setInterval(() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length), 6000);
+    const timer = setInterval(() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length), 10000);
     return () => clearInterval(timer);
   }, []);
 
@@ -530,7 +552,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white/85 selection:bg-primary-500/20">
       <GrainOverlay />
-      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
+      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} startIndex={videoStartIdx} />
 
       {/* ═══ NAVBAR ═══ */}
       <motion.nav
@@ -719,20 +741,22 @@ export default function HomePage() {
               <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/[0.06] blur-[100px]" />
 
               <div className="relative">
-                {/* Main hero video */}
+                {/* Main hero video — ref-based src swap (no remount) */}
                 <div className="overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12161B] shadow-2xl"
                   style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.4), 0 0 80px rgba(28,140,125,0.06)' }}
                 >
                   <video
-                    key={demoVideos[heroIdx].src}
+                    ref={heroVideoRef}
+                    src={demoVideos[heroIdx].src}
+                    poster={demoVideos[heroIdx].poster}
                     className="aspect-video w-full object-cover"
                     autoPlay
                     muted
                     loop
                     playsInline
-                  >
-                    <source src={demoVideos[heroIdx].src} type="video/mp4" />
-                  </video>
+                    preload="auto"
+                    disablePictureInPicture
+                  />
                 </div>
 
                 {/* Video controls bar */}
@@ -768,7 +792,7 @@ export default function HomePage() {
 
                   {/* Watch with sound */}
                   <button
-                    onClick={() => setVideoOpen(true)}
+                    onClick={() => { setVideoStartIdx(heroIdx); setVideoOpen(true); }}
                     className="flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-[#12161B] px-3 py-1.5 text-[11px] font-medium text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
                   >
                     <Play className="h-3 w-3" />
@@ -819,23 +843,25 @@ export default function HomePage() {
               </button>
             </div>
 
-            {/* Main showcase video */}
+            {/* Main showcase video — ref-based src swap (no remount) */}
             <div className="relative overflow-hidden rounded-2xl shadow-2xl"
               style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
             >
               <video
-                key={demoVideos[showcaseIdx].src}
+                ref={showcaseVideoRef}
+                src={demoVideos[showcaseIdx].src}
+                poster={demoVideos[showcaseIdx].poster}
                 className="aspect-video w-full object-cover"
                 autoPlay
                 muted
                 loop
                 playsInline
-              >
-                <source src={demoVideos[showcaseIdx].src} type="video/mp4" />
-              </video>
+                preload="metadata"
+                disablePictureInPicture
+              />
               {/* Play full button overlay */}
               <button
-                onClick={() => setVideoOpen(true)}
+                onClick={() => { setVideoStartIdx(showcaseIdx); setVideoOpen(true); }}
                 className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-[13px] font-medium text-white/80 backdrop-blur-sm transition-all hover:bg-black/80 hover:text-white"
               >
                 <Play className="h-3.5 w-3.5" />
