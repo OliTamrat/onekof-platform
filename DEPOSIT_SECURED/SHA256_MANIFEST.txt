@@ -1,0 +1,32 @@
+ONEKOF PLATFORM — SECURED DEPOSIT SHA-256 MANIFEST
+============================================================
+
+Generated: April 11, 2026
+Author:    Oli Tamrat Oli <oli.oli@udc.edu>
+Files:     10
+
+Use this manifest to verify that no file on the CD-ROM has been
+modified after the deposit was generated. To verify a file:
+
+  Windows (PowerShell):
+    Get-FileHash -Algorithm SHA256 <filename>
+
+  Linux / macOS:
+    sha256sum <filename>      (Linux)
+    shasum -a 256 <filename>  (macOS)
+
+------------------------------------------------------------
+
+54248de3300307b47bc2edf530f610919b835bc88e9a415904819a3e9e21279b         38520  00_FORMS/Filing_Agent_NDA.docx
+9294dfd5bd36ae19d089fed0c8521cdf2ae75caa69d82de9fc927143296e4b7e         38327  00_FORMS/Form_C-1_Application.docx
+656db8514019e1fce70c98739f5473e86f0fd64aff5bbf67b83a2ab79d83fd30         37419  00_FORMS/Publication_Date.docx
+b26b8849fbf68b6d545c0cc80e5a082b3abcb698d922e30d74ecaf181aa0d546         38663  00_FORMS/Software_Description.docx
+8497ed8ce0a371f77460607a87476e083fa69508ca62cd5cbeadb3a04fc64efd         38031  00_FORMS/Source_Code_Deposit_Cover.docx
+09140667f61c0ff069821275d103f937f2c0364f446572ae5446eadd22380ed1         54163  01_MINIMAL_SOURCE/First_25_Pages.docx
+097af4c6b9eac2ef8e884c338dcd03745091ca5bf8759785d72d03f770444ea0         51357  01_MINIMAL_SOURCE/Last_25_Pages.docx
+09cc68b59e7d4428cab45db7bdcd503c3c9be21b94df1642d944da2dff847c25           639  01_MINIMAL_SOURCE/Minimal_Source_README.txt
+aa083f77146bc27dded56d8e5476e13a3e35437cadfd545c76519cebe78e2502      61589865  onekof-platform-source.zip.aes
+be9b60714610fc49a76223b05e5a83df8c590b07fea8dbd1d0b719cc47a989ec          4577  README.txt
+
+------------------------------------------------------------
+End of manifest.

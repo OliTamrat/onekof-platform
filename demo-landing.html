@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onekof — Demo Landing Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Base ─────────────────────────────────── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg:        #0B0E11;
+    --bg-card:   #12161B;
+    --bg-elevated: #181D23;
+    --teal:      #1C8C7D;
+    --teal-light:#2BB5A2;
+    --teal-glow: rgba(28,140,125,0.25);
+    --violet:    #8B5CF6;
+    --text:      rgba(255,255,255,0.85);
+    --text-dim:  rgba(255,255,255,0.50);
+    --text-faint:rgba(255,255,255,0.30);
+    --border:    rgba(255,255,255,0.08);
+    --serif:     'Playfair Display', Georgia, serif;
+    --sans:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --max-w:     1200px;
+    --gap:       clamp(3rem, 6vw, 6rem);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* ── Grain overlay ────────────────────────────────── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Reveal animations ────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── Container ────────────────────────────────────── */
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* ── Nav ───────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem 0;
+    transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(11,14,17,0.85);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom-color: var(--border);
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { display: flex; align-items: center; gap: 0.625rem; font-weight: 700; font-size: 1.25rem; }
+  .nav-logo .icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--teal), var(--violet));
+    display: grid; place-items: center;
+    font-weight: 700; color: #fff; font-size: 1rem;
+  }
+  .nav-links { display: flex; align-items: center; gap: 2.25rem; }
+  .nav-links a {
+    font-size: 0.875rem; font-weight: 500; color: var(--text-dim);
+    transition: color 0.3s;
+    letter-spacing: 0.02em;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+  /* ── Buttons ──────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    cursor: pointer; border: none; font-family: var(--sans);
+    letter-spacing: 0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    color: #fff;
+    box-shadow: 0 0 0 0 var(--teal-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--teal-glow), 0 0 60px rgba(28,140,125,0.12);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+  .btn-outline {
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-outline:hover {
+    border-color: var(--teal);
+    box-shadow: 0 0 20px var(--teal-glow);
+  }
+  .btn-large { padding: 1rem 2.5rem; font-size: 1rem; }
+
+  /* ── Section labels ───────────────────────────────── */
+  .section-label {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--teal-light);
+    margin-bottom: 1.25rem;
+  }
+  .section-label::before {
+    content: ''; width: 24px; height: 1px; background: var(--teal);
+  }
+
+  /* ── Typography ───────────────────────────────────── */
+  .heading-xl {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    line-height: 1.08; letter-spacing: -0.02em;
+  }
+  .heading-lg {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.15; letter-spacing: -0.01em;
+  }
+  .heading-md {
+    font-family: var(--sans); font-weight: 600;
+    font-size: 1.25rem; line-height: 1.35;
+  }
+  .body-lg { font-size: 1.125rem; color: var(--text-dim); line-height: 1.7; max-width: 560px; }
+  .body-md { font-size: 0.9375rem; color: var(--text-dim); line-height: 1.65; }
+  .serif-italic { font-family: var(--serif); font-style: italic; color: var(--teal-light); }
+
+  /* ── Dividers ─────────────────────────────────────── */
+  .section-divider {
+    height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════ */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 8rem 0 6rem;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -20%; right: -15%; width: 700px; height: 700px;
+    background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+    filter: blur(100px);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -10%; left: -10%; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .hero .container { position: relative; z-index: 1; }
+  .hero-content { max-width: 700px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 1rem 0.4rem 0.5rem;
+    border-radius: 100px;
+    background: rgba(28,140,125,0.1);
+    border: 1px solid rgba(28,140,125,0.2);
+    font-size: 0.8125rem; font-weight: 500; color: var(--teal-light);
+    margin-bottom: 2rem;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal-light);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--teal-glow); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 8px transparent; }
+  }
+  .hero h1 { margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: normal; }
+  .hero h1 .teal-text {
+    background: linear-gradient(135deg, var(--teal-light), var(--teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-desc { margin-bottom: 2.5rem; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3.5rem; }
+  .hero-social-proof { display: flex; align-items: center; gap: 1rem; }
+  .avatar-stack { display: flex; }
+  .avatar-stack span {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid var(--bg);
+    display: grid; place-items: center;
+    font-size: 0.7rem; font-weight: 600;
+    margin-left: -8px;
+  }
+  .avatar-stack span:first-child { margin-left: 0; }
+  .avatar-stack span:nth-child(1) { background: #1C8C7D; }
+  .avatar-stack span:nth-child(2) { background: #8B5CF6; }
+  .avatar-stack span:nth-child(3) { background: #F59E0B; }
+  .avatar-stack span:nth-child(4) { background: #EF4444; }
+  .social-proof-text { font-size: 0.8125rem; color: var(--text-dim); }
+  .social-proof-text strong { color: #fff; }
+
+  /* ── Hero Dashboard Preview ───────────────────────── */
+  .hero-preview {
+    margin-top: 4rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 25px 80px rgba(0,0,0,0.5),
+      0 0 100px var(--teal-glow);
+    position: relative;
+  }
+  .preview-toolbar {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+  }
+  .preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .preview-dot:nth-child(1) { background: #EF4444; }
+  .preview-dot:nth-child(2) { background: #F59E0B; }
+  .preview-dot:nth-child(3) { background: #22C55E; }
+  .preview-url {
+    margin-left: 1rem; padding: 0.3rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px; font-size: 0.75rem; color: var(--text-dim);
+  }
+  .preview-body { padding: 1.5rem; display: flex; gap: 1.5rem; min-height: 360px; }
+
+  /* Sidebar in preview */
+  .preview-sidebar {
+    width: 200px; flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding-right: 1.5rem;
+    display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .sidebar-item {
+    padding: 0.5rem 0.75rem; border-radius: 8px;
+    font-size: 0.8125rem; color: var(--text-dim);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .sidebar-item.active {
+    background: rgba(28,140,125,0.12); color: var(--teal-light);
+  }
+  .sidebar-icon { width: 16px; height: 16px; border-radius: 4px; background: var(--border); }
+  .sidebar-item.active .sidebar-icon { background: var(--teal); }
+
+  /* Main content in preview */
+  .preview-main { flex: 1; }
+  .preview-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .preview-title { font-size: 1rem; font-weight: 600; }
+  .preview-tabs { display: flex; gap: 1.5rem; margin-bottom: 1.25rem; }
+  .preview-tab {
+    font-size: 0.75rem; color: var(--text-dim);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+  }
+  .preview-tab.active { color: var(--teal-light); border-bottom-color: var(--teal); }
+
+  /* Kanban columns */
+  .kanban { display: flex; gap: 1rem; flex: 1; }
+  .kanban-col { flex: 1; }
+  .kanban-col-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.6875rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim);
+  }
+  .kanban-col-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .kanban-col:nth-child(1) .kanban-col-dot { background: #F59E0B; }
+  .kanban-col:nth-child(2) .kanban-col-dot { background: #3B82F6; }
+  .kanban-col:nth-child(3) .kanban-col-dot { background: #22C55E; }
+  .kanban-card {
+    padding: 0.75rem; border-radius: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+  .kanban-card-title { font-size: 0.8125rem; font-weight: 500; margin-bottom: 0.375rem; }
+  .kanban-card-meta { display: flex; align-items: center; gap: 0.5rem; }
+  .kanban-tag {
+    font-size: 0.625rem; padding: 0.15rem 0.5rem;
+    border-radius: 100px; font-weight: 500;
+  }
+  .tag-teal { background: rgba(28,140,125,0.15); color: var(--teal-light); }
+  .tag-violet { background: rgba(139,92,246,0.15); color: #A78BFA; }
+  .tag-amber { background: rgba(245,158,11,0.15); color: #FBBF24; }
+
+  /* ═══════════════════════════════════════════════════
+     TRUSTED BY
+     ═══════════════════════════════════════════════════ */
+  .trusted {
+    padding: 4rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .trusted-label { text-align: center; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 2rem; }
+  .trusted-logos {
+    display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap;
+  }
+  .trusted-logo {
+    font-size: 1.125rem; font-weight: 600; color: var(--text-faint);
+    transition: color 0.3s;
+    letter-spacing: 0.05em;
+  }
+  .trusted-logo:hover { color: var(--text-dim); }
+
+  /* ═══════════════════════════════════════════════════
+     WHY ONEKOF (FEATURES)
+     ═══════════════════════════════════════════════════ */
+  .features { padding: var(--gap) 0; }
+  .features-header { text-align: center; margin-bottom: 4rem; }
+  .features-header .body-lg { margin: 0 auto; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .feature-card {
+    padding: 2rem;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, var(--teal-glow), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    border-color: rgba(28,140,125,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: grid; place-items: center;
+    margin-bottom: 1.25rem; font-size: 1.25rem;
+    background: rgba(28,140,125,0.1);
+    border: 1px solid rgba(28,140,125,0.15);
+  }
+  .feature-card:nth-child(2) .feature-icon,
+  .feature-card:nth-child(5) .feature-icon {
+    background: rgba(139,92,246,0.1);
+    border-color: rgba(139,92,246,0.15);
+  }
+  .feature-card:nth-child(3) .feature-icon,
+  .feature-card:nth-child(6) .feature-icon {
+    background: rgba(245,158,11,0.1);
+    border-color: rgba(245,158,11,0.15);
+  }
+  .feature-card h3 { margin-bottom: 0.625rem; }
+  .feature-card p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* ── Highlight Feature (large card) ───────────────── */
+  .highlight-section { padding: var(--gap) 0; }
+  .highlight-card {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: center;
+    padding: 3.5rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .highlight-card::after {
+    content: '';
+    position: absolute; top: -50%; right: -20%; width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--teal-glow), transparent 70%);
+    filter: blur(60px); pointer-events: none;
+  }
+  .highlight-content { position: relative; z-index: 1; }
+  .highlight-visual {
+    position: relative; z-index: 1;
+    background: var(--bg); border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .highlight-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .highlight-stat {
+    padding: 1.25rem; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  }
+  .highlight-stat .number {
+    font-family: var(--serif); font-size: 2rem; font-weight: 600; color: var(--teal-light);
+  }
+  .highlight-stat .label { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .highlight-chart {
+    margin-top: 1rem; height: 80px;
+    background: linear-gradient(to top, rgba(28,140,125,0.1), transparent);
+    border-radius: 8px; position: relative; overflow: hidden;
+  }
+  .chart-line {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+    border-top: 2px solid var(--teal);
+    clip-path: polygon(0% 80%, 10% 60%, 20% 70%, 30% 40%, 40% 50%, 50% 20%, 60% 35%, 70% 15%, 80% 25%, 90% 5%, 100% 10%, 100% 100%, 0% 100%);
+    background: linear-gradient(to bottom, rgba(28,140,125,0.2), transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PRODUCT SHOWCASE (Tabs)
+     ═══════════════════════════════════════════════════ */
+  .showcase { padding: var(--gap) 0; }
+  .showcase-header { text-align: center; margin-bottom: 3rem; }
+  .showcase-header .body-lg { margin: 0 auto; }
+  .showcase-tabs {
+    display: flex; justify-content: center; gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+  .showcase-tab {
+    padding: 0.625rem 1.5rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 500;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-dim); cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.3s;
+  }
+  .showcase-tab.active {
+    background: var(--teal); border-color: var(--teal); color: #fff;
+    box-shadow: 0 0 20px var(--teal-glow);
+  }
+  .showcase-tab:hover:not(.active) { border-color: rgba(255,255,255,0.2); color: #fff; }
+  .showcase-panel {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 3rem;
+    display: none;
+  }
+  .showcase-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .showcase-visual {
+    background: var(--bg); border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .showcase-feature-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+  .showcase-feature-list li {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    font-size: 0.9375rem; color: var(--text-dim);
+  }
+  .check-icon {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(28,140,125,0.15); color: var(--teal-light);
+    display: grid; place-items: center; flex-shrink: 0;
+    font-size: 0.6875rem; margin-top: 0.15rem;
+  }
+
+  /* Mockup elements inside showcase */
+  .mockup-budget-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 0; border-bottom: 1px solid var(--border);
+    font-size: 0.8125rem;
+  }
+  .mockup-budget-row:last-child { border-bottom: none; }
+  .mockup-budget-label { color: var(--text-dim); }
+  .mockup-budget-amount { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .mockup-budget-bar { height: 4px; border-radius: 2px; background: var(--border); flex: 1; margin: 0 1rem; }
+  .mockup-budget-bar-fill { height: 100%; border-radius: 2px; background: var(--teal); }
+
+  .mockup-calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+  .cal-cell {
+    aspect-ratio: 1; display: grid; place-items: center;
+    font-size: 0.6875rem; color: var(--text-dim);
+    border-radius: 6px;
+  }
+  .cal-cell.today { background: var(--teal); color: #fff; font-weight: 600; }
+  .cal-cell.event { background: rgba(139,92,246,0.15); color: #A78BFA; }
+  .cal-cell.header { font-weight: 600; color: var(--text-faint); font-size: 0.625rem; text-transform: uppercase; }
+
+  .mockup-lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .lang-card {
+    padding: 1rem; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    font-size: 0.8125rem;
+  }
+  .lang-flag { font-size: 1.25rem; margin-bottom: 0.375rem; }
+  .lang-name { font-weight: 600; margin-bottom: 0.25rem; }
+  .lang-sample { font-size: 0.75rem; color: var(--text-dim); }
+
+  /* ═══════════════════════════════════════════════════
+     STATS
+     ═══════════════════════════════════════════════════ */
+  .stats { padding: var(--gap) 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  .stat-card {
+    text-align: center; padding: 2.5rem 1.5rem;
+    border-radius: 16px;
+    background: var(--bg-card); border: 1px solid var(--border);
+  }
+  .stat-number {
+    font-family: var(--serif); font-size: clamp(2rem, 3vw, 2.75rem);
+    font-weight: 600; color: var(--teal-light);
+    margin-bottom: 0.375rem;
+  }
+  .stat-label { font-size: 0.8125rem; color: var(--text-dim); }
+
+  /* ═══════════════════════════════════════════════════
+     PRICING
+     ═══════════════════════════════════════════════════ */
+  .pricing { padding: var(--gap) 0; }
+  .pricing-header { text-align: center; margin-bottom: 2.5rem; }
+  .pricing-header .body-lg { margin: 0 auto; }
+  .pricing-toggle {
+    display: flex; justify-content: center; gap: 0.25rem;
+    margin-bottom: 3rem;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 100px; padding: 0.25rem;
+    width: fit-content; margin-left: auto; margin-right: auto;
+  }
+  .pricing-toggle button {
+    padding: 0.5rem 1.5rem; border-radius: 100px;
+    font-size: 0.875rem; font-weight: 500;
+    background: transparent; border: none;
+    color: var(--text-dim); cursor: pointer;
+    font-family: var(--sans); transition: all 0.3s;
+  }
+  .pricing-toggle button.active {
+    background: var(--teal); color: #fff;
+  }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: start; }
+  .pricing-card {
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    transition: all 0.4s;
+  }
+  .pricing-card.featured {
+    border-color: var(--teal);
+    box-shadow: 0 0 40px var(--teal-glow);
+    position: relative;
+    transform: scale(1.02);
+  }
+  .pricing-card.featured::before {
+    content: 'Most Popular';
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    padding: 0.3rem 1rem; border-radius: 100px;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em;
+    background: var(--teal); color: #fff;
+  }
+  .pricing-name { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .pricing-desc { font-size: 0.8125rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+  .pricing-price {
+    display: flex; align-items: baseline; gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .pricing-amount {
+    font-family: var(--serif); font-size: 3rem; font-weight: 600;
+  }
+  .pricing-currency { font-size: 1.25rem; color: var(--text-dim); }
+  .pricing-period { font-size: 0.8125rem; color: var(--text-dim); margin-bottom: 2rem; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+  .pricing-features li {
+    display: flex; align-items: center; gap: 0.625rem;
+    font-size: 0.875rem; color: var(--text-dim);
+  }
+  .pricing-features li .check { color: var(--teal-light); font-size: 0.875rem; }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ═══════════════════════════════════════════════════
+     CTA
+     ═══════════════════════════════════════════════════ */
+  .cta {
+    padding: var(--gap) 0;
+  }
+  .cta-card {
+    text-align: center;
+    padding: 5rem 3rem;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(28,140,125,0.08), rgba(139,92,246,0.05));
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, var(--teal-glow), transparent 70%);
+    filter: blur(60px); pointer-events: none;
+  }
+  .cta-card > * { position: relative; z-index: 1; }
+  .cta h2 { margin-bottom: 1rem; }
+  .cta .body-lg { margin: 0 auto 2.5rem; }
+
+  /* ═══════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════ */
+  footer {
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 3rem;
+  }
+  .footer-brand { max-width: 300px; }
+  .footer-brand .nav-logo { margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.7; }
+  .footer-col h4 {
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-faint); margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; }
+  .footer-col a { font-size: 0.875rem; color: var(--text-dim); transition: color 0.3s; }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+  }
+  .footer-bottom p { font-size: 0.8125rem; color: var(--text-faint); }
+  .footer-legal { display: flex; gap: 1.5rem; }
+  .footer-legal a { font-size: 0.8125rem; color: var(--text-faint); transition: color 0.3s; }
+  .footer-legal a:hover { color: var(--text-dim); }
+
+  /* ═══════════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+    .pricing-card.featured { transform: none; }
+    .highlight-card { grid-template-columns: 1fr; }
+    .showcase-panel.active { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .hero-preview { display: none; }
+    .highlight-card { padding: 2rem; }
+    .showcase-tabs { flex-wrap: wrap; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+    .cta-card { padding: 3rem 1.5rem; }
+  }
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .pricing-toggle { flex-direction: row; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="icon">O</span> Onekof
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#product">Product</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/about">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/auth/signin" class="btn btn-ghost">Sign In</a>
+      <a href="/auth/signup" class="btn btn-primary">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content reveal">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Now in early access
+      </div>
+      <h1 class="heading-xl">
+        Where African teams do their <span class="serif-italic teal-text">best work</span>
+      </h1>
+      <p class="body-lg hero-desc">
+        The project management platform built for Ethiopian and East African organizations.
+        Ethiopian calendar. Five languages. ETB budgets. Your way.
+      </p>
+      <div class="hero-actions">
+        <a href="/auth/signup" class="btn btn-primary btn-large">
+          Start for free
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#product" class="btn btn-outline btn-large">See it in action</a>
+      </div>
+      <div class="hero-social-proof">
+        <div class="avatar-stack">
+          <span>OT</span><span>AB</span><span>FH</span><span>MK</span>
+        </div>
+        <div class="social-proof-text">
+          <strong>500+ teams</strong> already building with Onekof
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Preview -->
+    <div class="hero-preview reveal reveal-delay-2">
+      <div class="preview-toolbar">
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+        <span class="preview-url">app.onekof.com/projects/board</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-sidebar">
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Dashboard</div>
+          <div class="sidebar-item active"><span class="sidebar-icon"></span> Projects</div>
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Issues</div>
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Calendar</div>
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Budget</div>
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Documents</div>
+          <div class="sidebar-item"><span class="sidebar-icon"></span> Analytics</div>
+        </div>
+        <div class="preview-main">
+          <div class="preview-header-row">
+            <span class="preview-title">Product Launch Q3</span>
+            <span class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.75rem;">+ New Issue</span>
+          </div>
+          <div class="preview-tabs">
+            <span class="preview-tab active">Board</span>
+            <span class="preview-tab">List</span>
+            <span class="preview-tab">Timeline</span>
+            <span class="preview-tab">Calendar</span>
+          </div>
+          <div class="kanban">
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span class="kanban-col-dot"></span> To Do <span style="color:var(--text-faint)">3</span></div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">Design system audit</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-teal">Design</span></div>
+              </div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">API rate limit config</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-violet">Backend</span></div>
+              </div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span class="kanban-col-dot"></span> In Progress <span style="color:var(--text-faint)">2</span></div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">User onboarding flow</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-amber">UX</span></div>
+              </div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">ETB budget module</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-teal">Feature</span></div>
+              </div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span class="kanban-col-dot"></span> Done <span style="color:var(--text-faint)">4</span></div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">i18n Amharic support</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-violet">i18n</span></div>
+              </div>
+              <div class="kanban-card">
+                <div class="kanban-card-title">Auth middleware</div>
+                <div class="kanban-card-meta"><span class="kanban-tag tag-teal">Security</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TRUSTED BY ═══════════════ -->
+<section class="trusted reveal">
+  <div class="container">
+    <p class="trusted-label">Trusted by forward-thinking organizations</p>
+    <div class="trusted-logos">
+      <span class="trusted-logo">Ethio Telecom</span>
+      <span class="trusted-logo">Dashen Bank</span>
+      <span class="trusted-logo">INSA</span>
+      <span class="trusted-logo">Safaricom ET</span>
+      <span class="trusted-logo">Awash Bank</span>
+      <span class="trusted-logo">Zemen Bank</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-label">Why Onekof</div>
+      <h2 class="heading-lg" style="margin-bottom:1rem;">Built for how <span class="serif-italic">you</span> actually work</h2>
+      <p class="body-lg">
+        Not another Silicon Valley clone. Onekof is designed from the ground up for
+        Ethiopian and East African teams, calendars, currencies, and languages.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128197;</div>
+        <h3 class="heading-md">Ethiopian Calendar</h3>
+        <p>Native Ethiopian calendar support with automatic Gregorian conversion. Plan sprints, set deadlines, and track milestones in the calendar your team knows.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">&#127760;</div>
+        <h3 class="heading-md">5 Languages</h3>
+        <p>Full interface in English, Amharic, Afan Oromo, Tigrinya, and Somali. Switch instantly. Every button, label, and notification — translated.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">&#128176;</div>
+        <h3 class="heading-md">ETB Budgets</h3>
+        <p>Track project budgets in Ethiopian Birr with department allocation, expense tracking, and fiscal year alignment starting in July.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">&#129302;</div>
+        <h3 class="heading-md">AI Documents</h3>
+        <p>Generate meeting notes, project briefs, and reports with AI assistance. Understands your project context and team structure.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">&#9889;</div>
+        <h3 class="heading-md">Automations</h3>
+        <p>Automate repetitive workflows: auto-assign issues, trigger notifications, update statuses. Build rules without writing code.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">&#128274;</div>
+        <h3 class="heading-md">Data Sovereignty</h3>
+        <p>Your data stays where you need it. Three-tier hosting: global cloud, private on-premise in Ethiopia, or government-grade EthioTelecom Cloud.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ HIGHLIGHT ═══════════════ -->
+<section class="highlight-section">
+  <div class="container">
+    <div class="highlight-card reveal">
+      <div class="highlight-content">
+        <div class="section-label">Analytics</div>
+        <h2 class="heading-lg" style="margin-bottom:1rem;">See the full picture, <span class="serif-italic">instantly</span></h2>
+        <p class="body-md" style="margin-bottom:1.5rem;">
+          Real-time dashboards that show team velocity, budget burn rate, sprint health, and
+          project progress — all from data your team is already creating.
+        </p>
+        <a href="#" class="btn btn-outline">Explore analytics</a>
+      </div>
+      <div class="highlight-visual">
+        <div class="highlight-stat-grid">
+          <div class="highlight-stat"><div class="number">40%</div><div class="label">Faster delivery</div></div>
+          <div class="highlight-stat"><div class="number">99.9%</div><div class="label">Uptime SLA</div></div>
+          <div class="highlight-stat"><div class="number">12k</div><div class="label">Issues resolved</div></div>
+          <div class="highlight-stat"><div class="number">5</div><div class="label">Languages</div></div>
+        </div>
+        <div class="highlight-chart"><div class="chart-line"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ PRODUCT SHOWCASE ═══════════════ -->
+<section class="showcase" id="product">
+  <div class="container">
+    <div class="showcase-header reveal">
+      <div class="section-label">Product</div>
+      <h2 class="heading-lg" style="margin-bottom:1rem;">Everything your team needs, <span class="serif-italic">nothing it doesn't</span></h2>
+      <p class="body-lg">One platform. Kanban boards, budgets, calendars, documents, and analytics — all connected.</p>
+    </div>
+
+    <div class="showcase-tabs reveal">
+      <button class="showcase-tab active" onclick="showTab('budget')">Budget</button>
+      <button class="showcase-tab" onclick="showTab('calendar')">Calendar</button>
+      <button class="showcase-tab" onclick="showTab('languages')">Languages</button>
+    </div>
+
+    <!-- Budget Panel -->
+    <div class="showcase-panel active" id="tab-budget">
+      <div>
+        <h3 class="heading-md" style="margin-bottom:0.75rem;">ETB Budget Tracking</h3>
+        <p class="body-md" style="margin-bottom:1.5rem;">
+          Allocate budgets per department, track expenses in real-time, and align everything to the Ethiopian fiscal year starting July.
+        </p>
+        <ul class="showcase-feature-list">
+          <li><span class="check-icon">&#10003;</span> Department-level budget allocation</li>
+          <li><span class="check-icon">&#10003;</span> Real-time expense tracking in ETB</li>
+          <li><span class="check-icon">&#10003;</span> July fiscal year alignment</li>
+          <li><span class="check-icon">&#10003;</span> Budget vs. actual reports</li>
+        </ul>
+      </div>
+      <div class="showcase-visual">
+        <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-faint);margin-bottom:1rem;">Q3 Budget Overview</div>
+        <div class="mockup-budget-row">
+          <span class="mockup-budget-label">Engineering</span>
+          <div class="mockup-budget-bar"><div class="mockup-budget-bar-fill" style="width:72%"></div></div>
+          <span class="mockup-budget-amount" style="color:var(--teal-light)">ETB 450,000</span>
+        </div>
+        <div class="mockup-budget-row">
+          <span class="mockup-budget-label">Marketing</span>
+          <div class="mockup-budget-bar"><div class="mockup-budget-bar-fill" style="width:45%"></div></div>
+          <span class="mockup-budget-amount" style="color:var(--teal-light)">ETB 280,000</span>
+        </div>
+        <div class="mockup-budget-row">
+          <span class="mockup-budget-label">Operations</span>
+          <div class="mockup-budget-bar"><div class="mockup-budget-bar-fill" style="width:88%"></div></div>
+          <span class="mockup-budget-amount" style="color:var(--teal-light)">ETB 620,000</span>
+        </div>
+        <div class="mockup-budget-row">
+          <span class="mockup-budget-label">Design</span>
+          <div class="mockup-budget-bar"><div class="mockup-budget-bar-fill" style="width:33%"></div></div>
+          <span class="mockup-budget-amount" style="color:var(--teal-light)">ETB 180,000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Panel -->
+    <div class="showcase-panel" id="tab-calendar">
+      <div>
+        <h3 class="heading-md" style="margin-bottom:0.75rem;">Ethiopian Calendar</h3>
+        <p class="body-md" style="margin-bottom:1.5rem;">
+          Plan and track work in the Ethiopian calendar natively. Automatic Gregorian conversion keeps global teams in sync.
+        </p>
+        <ul class="showcase-feature-list">
+          <li><span class="check-icon">&#10003;</span> Native Ethiopian date picker</li>
+          <li><span class="check-icon">&#10003;</span> Automatic Gregorian conversion</li>
+          <li><span class="check-icon">&#10003;</span> Ethiopian holiday awareness</li>
+          <li><span class="check-icon">&#10003;</span> Sprint planning with dual dates</li>
+        </ul>
+      </div>
+      <div class="showcase-visual">
+        <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-faint);margin-bottom:1rem;">Miazia 2018</div>
+        <div class="mockup-calendar">
+          <div class="cal-cell header">Mon</div><div class="cal-cell header">Tue</div><div class="cal-cell header">Wed</div><div class="cal-cell header">Thu</div><div class="cal-cell header">Fri</div><div class="cal-cell header">Sat</div><div class="cal-cell header">Sun</div>
+          <div class="cal-cell">1</div><div class="cal-cell">2</div><div class="cal-cell event">3</div><div class="cal-cell">4</div><div class="cal-cell">5</div><div class="cal-cell">6</div><div class="cal-cell">7</div>
+          <div class="cal-cell">8</div><div class="cal-cell event">9</div><div class="cal-cell">10</div><div class="cal-cell">11</div><div class="cal-cell today">12</div><div class="cal-cell">13</div><div class="cal-cell">14</div>
+          <div class="cal-cell">15</div><div class="cal-cell">16</div><div class="cal-cell">17</div><div class="cal-cell event">18</div><div class="cal-cell">19</div><div class="cal-cell">20</div><div class="cal-cell">21</div>
+          <div class="cal-cell">22</div><div class="cal-cell">23</div><div class="cal-cell">24</div><div class="cal-cell">25</div><div class="cal-cell">26</div><div class="cal-cell event">27</div><div class="cal-cell">28</div>
+          <div class="cal-cell">29</div><div class="cal-cell">30</div><div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Languages Panel -->
+    <div class="showcase-panel" id="tab-languages">
+      <div>
+        <h3 class="heading-md" style="margin-bottom:0.75rem;">Five Languages</h3>
+        <p class="body-md" style="margin-bottom:1.5rem;">
+          Every screen, every button, every notification — available in the language your team thinks in.
+        </p>
+        <ul class="showcase-feature-list">
+          <li><span class="check-icon">&#10003;</span> Instant language switching</li>
+          <li><span class="check-icon">&#10003;</span> Right-to-left layout ready</li>
+          <li><span class="check-icon">&#10003;</span> Ge'ez script rendering</li>
+          <li><span class="check-icon">&#10003;</span> Per-user language preference</li>
+        </ul>
+      </div>
+      <div class="showcase-visual">
+        <div class="mockup-lang-grid">
+          <div class="lang-card">
+            <div class="lang-flag">&#127468;&#127463;</div>
+            <div class="lang-name">English</div>
+            <div class="lang-sample">"Start a new project"</div>
+          </div>
+          <div class="lang-card" style="border-color:rgba(28,140,125,0.3);">
+            <div class="lang-flag">&#127466;&#127481;</div>
+            <div class="lang-name">&#4768;&#4635;&#4653;&#4763;</div>
+            <div class="lang-sample">"&#4768;&#4851;&#4661; &#4929;&#4693;&#4901; &#4845;&#4901;&#4624;&#4649;"</div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-flag">&#127466;&#127481;</div>
+            <div class="lang-name">Afan Oromo</div>
+            <div class="lang-sample">"Pirojektii haaraa jalqabi"</div>
+          </div>
+          <div class="lang-card">
+            <div class="lang-flag">&#127466;&#127479;</div>
+            <div class="lang-name">&#4725;&#4877;&#4653;&#4763;</div>
+            <div class="lang-sample">"&#4627;&#4851;&#4661; &#4929;&#4693;&#4901; &#4845;&#4901;&#4624;&#4649;"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-number" data-target="500">0</div>
+        <div class="stat-label">Teams onboarded</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-number" data-target="40" data-suffix="%">0</div>
+        <div class="stat-label">Faster project delivery</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-number" data-target="99.9" data-suffix="%" data-decimal="true">0</div>
+        <div class="stat-label">Uptime guarantee</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-number" data-target="5">0</div>
+        <div class="stat-label">Languages supported</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ PRICING ═══════════════ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-label">Pricing</div>
+      <h2 class="heading-lg" style="margin-bottom:1rem;">Simple, <span class="serif-italic">transparent</span> pricing</h2>
+      <p class="body-lg">Start free. Scale as you grow. No hidden fees. Cancel anytime.</p>
+    </div>
+
+    <div class="pricing-toggle reveal">
+      <button class="active" onclick="togglePricing(this, 'monthly')">Monthly</button>
+      <button onclick="togglePricing(this, 'yearly')">Yearly <span style="color:var(--teal-light);font-size:0.75rem;">-20%</span></button>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Free</div>
+        <div class="pricing-desc">For small teams getting started</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">0</span>
+          <span class="pricing-currency">ETB</span>
+        </div>
+        <div class="pricing-period">Free forever</div>
+        <ul class="pricing-features">
+          <li><span class="check">&#10003;</span> Up to 5 team members</li>
+          <li><span class="check">&#10003;</span> 3 active projects</li>
+          <li><span class="check">&#10003;</span> Kanban boards</li>
+          <li><span class="check">&#10003;</span> Ethiopian calendar</li>
+          <li><span class="check">&#10003;</span> 5 languages</li>
+          <li><span class="check">&#10003;</span> Basic analytics</li>
+        </ul>
+        <a href="/auth/signup" class="btn btn-outline">Get started free</a>
+      </div>
+
+      <!-- Pro (Featured) -->
+      <div class="pricing-card featured reveal reveal-delay-1">
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-desc">For growing teams that need more</div>
+        <div class="pricing-price">
+          <span class="pricing-amount monthly-price">499</span>
+          <span class="pricing-currency">ETB</span>
+        </div>
+        <div class="pricing-period"><span class="period-text">per user / month</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">&#10003;</span> Unlimited team members</li>
+          <li><span class="check">&#10003;</span> Unlimited projects</li>
+          <li><span class="check">&#10003;</span> ETB budget tracking</li>
+          <li><span class="check">&#10003;</span> AI document generation</li>
+          <li><span class="check">&#10003;</span> Automations &amp; workflows</li>
+          <li><span class="check">&#10003;</span> Advanced analytics</li>
+          <li><span class="check">&#10003;</span> Priority support</li>
+        </ul>
+        <a href="/auth/signup" class="btn btn-primary">Start Pro trial</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card reveal reveal-delay-2">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-desc">For organizations with compliance needs</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">Custom</span>
+        </div>
+        <div class="pricing-period">Tailored to your organization</div>
+        <ul class="pricing-features">
+          <li><span class="check">&#10003;</span> Everything in Pro</li>
+          <li><span class="check">&#10003;</span> On-premise hosting option</li>
+          <li><span class="check">&#10003;</span> Data sovereignty (Ethiopia)</li>
+          <li><span class="check">&#10003;</span> INSA compliance ready</li>
+          <li><span class="check">&#10003;</span> SSO &amp; RBAC</li>
+          <li><span class="check">&#10003;</span> Dedicated account manager</li>
+          <li><span class="check">&#10003;</span> Custom SLA</li>
+        </ul>
+        <a href="mailto:hello@onekof.com" class="btn btn-outline">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2 class="heading-lg">Ready to transform how your<br>team <span class="serif-italic">works together</span>?</h2>
+      <p class="body-lg">Join hundreds of Ethiopian teams already using Onekof to ship faster, collaborate better, and stay organized.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/auth/signup" class="btn btn-primary btn-large">
+          Get started for free
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="mailto:hello@onekof.com" class="btn btn-outline btn-large">Talk to sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <span class="icon">O</span> Onekof
+        </a>
+        <p>The project management platform built for Ethiopian and East African teams. Where African teams do their best work.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">API</a></li>
+          <li><a href="#">Community</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Onekof. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/cookies">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Nav scroll effect ──
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ── Reveal on scroll ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // ── Counter animation ──
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const isDecimal = el.dataset.decimal === 'true';
+        const duration = 2000;
+        const start = performance.now();
+        function animate(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const val = isDecimal ? (target * eased).toFixed(1) : Math.floor(target * eased);
+          el.textContent = val + (progress >= 1 ? '+' : '') + suffix;
+          if (progress < 1) requestAnimationFrame(animate);
+          else el.textContent = (isDecimal ? target.toFixed(1) : target) + '+' + suffix;
+        }
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => counterObserver.observe(el));
+
+  // ── Showcase tabs ──
+  function showTab(name) {
+    document.querySelectorAll('.showcase-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.showcase-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // ── Pricing toggle ──
+  function togglePricing(btn, period) {
+    document.querySelectorAll('.pricing-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const prices = document.querySelectorAll('.monthly-price');
+    prices.forEach(p => {
+      p.textContent = period === 'yearly' ? '399' : '499';
+    });
+    const periodTexts = document.querySelectorAll('.period-text');
+    periodTexts.forEach(p => {
+      p.textContent = period === 'yearly' ? 'per user / month (billed yearly)' : 'per user / month';
+    });
+  }
+</script>
+
+</body>
+</html>
