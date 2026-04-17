@@ -25,6 +25,8 @@ interface AuthContextType {
   currentOrg: Organization | null;
   isLoading: boolean;
   isLocked: boolean;
+  isOnline: boolean;
+  isSyncing: boolean;
   offlineQueueCount: number;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -47,10 +49,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentOrg, setCurrentOrg] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLocked, setIsLocked] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [offlineQueueCount, setOfflineQueueCount] = useState(0);
   const router = useRouter();
   const segments = useSegments();
   const appState = useRef(AppState.currentState);
+
+  // Subscribe to online-state observer (updated by apiFetch on every success/network error)
+  useEffect(() => {
+    return api.subscribeOnlineState(setIsOnline);
+  }, []);
+
+  // Auto-sync when transitioning from offline → online (if queue has items)
+  const prevOnline = useRef(true);
+  useEffect(() => {
+    if (!prevOnline.current && isOnline && offlineQueueCount > 0) {
+      syncOfflineQueue();
+    }
+    prevOnline.current = isOnline;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline]);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -174,19 +193,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const syncOfflineQueue = useCallback(async () => {
     const queue = await getOfflineQueue();
-    for (const item of queue) {
-      try {
-        await api.apiFetch(item.path, {
-          method: item.method,
-          body: item.body,
-        });
-        await removeFromQueue(item.id);
-      } catch {
-        // Still offline or request failed — stop trying
-        break;
+    if (queue.length === 0) return;
+    setIsSyncing(true);
+    try {
+      for (const item of queue) {
+        try {
+          await api.apiFetch(item.path, {
+            method: item.method,
+            body: item.body,
+          });
+          await removeFromQueue(item.id);
+          // Refresh count after each successful drain so banner updates live
+          checkOfflineQueue();
+        } catch {
+          // Still offline or request failed — stop trying
+          break;
+        }
       }
+    } finally {
+      setIsSyncing(false);
+      checkOfflineQueue();
     }
-    checkOfflineQueue();
   }, [checkOfflineQueue]);
 
   return (
@@ -197,6 +224,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         currentOrg,
         isLoading,
         isLocked,
+        isOnline,
+        isSyncing,
         offlineQueueCount,
         signIn: handleSignIn,
         signOut: handleSignOut,

@@ -4,7 +4,7 @@ import {
   RefreshControl, ActivityIndicator, Alert,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import {
@@ -15,10 +15,14 @@ import { Avatar } from '../../src/components/Avatar';
 import { FAB } from '../../src/components/FAB';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+/* Kanban columns in horizontal order */
+const BOARD_COLUMNS: TaskStatus[] = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
+
 export default function ProjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'overview' | 'issues' | 'members'>('overview');
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState<'overview' | 'board' | 'issues' | 'members'>('overview');
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: project, isLoading, refetch } = useQuery({
@@ -43,6 +47,53 @@ export default function ProjectDetailScreen() {
 
   const issues = issuesData?.issues || [];
   const members = membersData?.members || [];
+
+  /* Optimistic status-change mutation (long-press Move-to menu on board) */
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ issueId, status }: { issueId: string; status: TaskStatus }) =>
+      apiFetch(`/api/issues/${issueId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+      }),
+    onMutate: async ({ issueId, status }) => {
+      // Optimistic update — snapshot prior state for rollback
+      await queryClient.cancelQueries({ queryKey: ['project-issues', id] });
+      const prev = queryClient.getQueryData<{ issues: Issue[] }>(['project-issues', id]);
+      if (prev) {
+        queryClient.setQueryData(['project-issues', id], {
+          ...prev,
+          issues: prev.issues.map((i) => (i.id === issueId ? { ...i, status } : i)),
+        });
+      }
+      return { prev };
+    },
+    onError: (err, _vars, ctx) => {
+      // Offline queue capture is actually success from the user's POV — keep optimistic update
+      if ((err as Error)?.message?.includes('Saved offline')) return;
+      if (ctx?.prev) queryClient.setQueryData(['project-issues', id], ctx.prev);
+      Alert.alert('Failed to move', 'Could not update status. Please try again.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['project-issues', id] });
+      queryClient.invalidateQueries({ queryKey: ['all-issues'] });
+    },
+  });
+
+  const openMoveToMenu = useCallback((issue: Issue) => {
+    const currentStatus = issue.status;
+    const others = BOARD_COLUMNS.filter((s) => s !== currentStatus);
+    Alert.alert(
+      `Move "${issue.key || issue.title?.slice(0, 30)}"`,
+      'Select a new status',
+      [
+        ...others.map((status) => ({
+          text: STATUS_CONFIG[status].label,
+          onPress: () => updateStatusMutation.mutate({ issueId: issue.id, status }),
+        })),
+        { text: 'Cancel', style: 'cancel' as const },
+      ],
+    );
+  }, [updateStatusMutation]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -93,7 +144,7 @@ export default function ProjectDetailScreen() {
 
       {/* ── Tabs ── */}
       <View style={styles.tabs}>
-        {(['overview', 'issues', 'members'] as const).map((tab) => (
+        {(['overview', 'board', 'issues', 'members'] as const).map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.tabActive]}
@@ -106,6 +157,97 @@ export default function ProjectDetailScreen() {
         ))}
       </View>
 
+      {/* ── Board Tab — horizontal Kanban (outside outer ScrollView so columns scroll independently) ── */}
+      {activeTab === 'board' && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.boardScroll}
+          style={{ flex: 1 }}
+        >
+          {BOARD_COLUMNS.map((status) => {
+            const cfg = STATUS_CONFIG[status];
+            const columnIssues = issues.filter((i) => i.status === status);
+            return (
+              <View key={status} style={styles.boardColumn}>
+                {/* Column header */}
+                <View style={styles.boardColumnHeader}>
+                  <View style={styles.boardColumnHeaderLeft}>
+                    <View style={[styles.boardStatusDot, { backgroundColor: cfg.color }]} />
+                    <Text style={styles.boardColumnTitle}>{cfg.label}</Text>
+                  </View>
+                  <View style={styles.boardCountPill}>
+                    <Text style={styles.boardCountText}>{columnIssues.length}</Text>
+                  </View>
+                </View>
+
+                {/* Column body — vertical scrollable card list */}
+                <ScrollView
+                  style={styles.boardColumnBody}
+                  contentContainerStyle={styles.boardColumnBodyContent}
+                  showsVerticalScrollIndicator={false}
+                >
+                  {columnIssues.length === 0 ? (
+                    <View style={styles.boardColumnEmpty}>
+                      <Text style={styles.boardColumnEmptyText}>No issues</Text>
+                    </View>
+                  ) : (
+                    columnIssues.map((issue) => {
+                      const typeCfg = TYPE_CONFIG[(issue.type || 'TASK') as TaskType] || TYPE_CONFIG.TASK;
+                      const priorityCfg = PRIORITY_CONFIG[(issue.priority || 'MEDIUM') as TaskPriority] || PRIORITY_CONFIG.MEDIUM;
+                      return (
+                        <TouchableOpacity
+                          key={issue.id}
+                          style={styles.boardCard}
+                          activeOpacity={0.7}
+                          onPress={() => router.push(`/issue/${issue.id}`)}
+                          onLongPress={() => openMoveToMenu(issue)}
+                          delayLongPress={300}
+                        >
+                          <View style={styles.boardCardTop}>
+                            <View style={styles.boardCardTopLeft}>
+                              <FontAwesome name={typeCfg.icon as any} size={10} color={typeCfg.color} />
+                              {issue.key && <Text style={styles.boardCardKey}>{issue.key}</Text>}
+                            </View>
+                            <FontAwesome
+                              name={priorityCfg.icon as any}
+                              size={10}
+                              color={priorityCfg.color}
+                            />
+                          </View>
+                          <Text style={styles.boardCardTitle} numberOfLines={3}>
+                            {issue.title}
+                          </Text>
+                          <View style={styles.boardCardFooter}>
+                            {issue.assignee ? (
+                              <Avatar name={issue.assignee.name || ''} size={20} />
+                            ) : (
+                              <View style={styles.boardCardUnassigned}>
+                                <FontAwesome name="user-o" size={9} color={Colors.textFaint} />
+                              </View>
+                            )}
+                            {issue.dueDate && (
+                              <View style={styles.boardCardDue}>
+                                <FontAwesome name="clock-o" size={9} color={Colors.textFaint} />
+                                <Text style={styles.boardCardDueText}>
+                                  {new Date(issue.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })
+                  )}
+                </ScrollView>
+              </View>
+            );
+          })}
+        </ScrollView>
+      )}
+
+      {/* ── Other tabs — outer vertical ScrollView ── */}
+      {activeTab !== 'board' && (
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -250,9 +392,10 @@ export default function ProjectDetailScreen() {
           </>
         )}
       </ScrollView>
+      )}
 
-      {/* FAB for creating issues */}
-      {activeTab === 'issues' && (
+      {/* FAB for creating issues — visible on issues + board tabs */}
+      {(activeTab === 'issues' || activeTab === 'board') && (
         <FAB icon="plus" onPress={() => router.push(`/create-issue?projectId=${id}`)} />
       )}
     </View>
@@ -368,4 +511,79 @@ const styles = StyleSheet.create({
   emptyBlock: { alignItems: 'center', paddingVertical: Spacing['5xl'], gap: Spacing.sm },
   emptyTitle: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary },
   emptyDesc: { fontSize: FontSize.sm, color: Colors.textFaint },
+
+  /* ── Kanban Board ── */
+  boardScroll: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingBottom: 100,
+    gap: Spacing.sm,
+  },
+  boardColumn: {
+    width: 280,
+    marginRight: Spacing.sm,
+    backgroundColor: Colors.bgCard,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden',
+  },
+  boardColumnHeader: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+    backgroundColor: Colors.bgElevated,
+  },
+  boardColumnHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  boardStatusDot: { width: 8, height: 8, borderRadius: 4 },
+  boardColumnTitle: {
+    fontSize: FontSize.xs, fontWeight: '700',
+    color: Colors.textWhite, textTransform: 'uppercase', letterSpacing: 0.8,
+  },
+  boardCountPill: {
+    minWidth: 22, height: 20, paddingHorizontal: 6,
+    borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.08)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  boardCountText: { fontSize: 10, fontWeight: '700', color: Colors.textSecondary },
+  boardColumnBody: { maxHeight: 600 },
+  boardColumnBodyContent: { padding: Spacing.sm, gap: Spacing.sm },
+  boardColumnEmpty: { alignItems: 'center', paddingVertical: Spacing['3xl'] },
+  boardColumnEmptyText: { fontSize: FontSize.xs, color: Colors.textFaint },
+
+  boardCard: {
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    gap: 6,
+  },
+  boardCardTop: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+  },
+  boardCardTopLeft: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  boardCardKey: {
+    fontSize: 10, fontWeight: '700', color: Colors.textFaint,
+    fontFamily: 'Courier',
+  },
+  boardCardTitle: {
+    fontSize: FontSize.sm, fontWeight: '500', color: Colors.textPrimary,
+    lineHeight: 18,
+  },
+  boardCardFooter: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  boardCardUnassigned: {
+    width: 20, height: 20, borderRadius: 10,
+    borderWidth: 1, borderColor: Colors.border, borderStyle: 'dashed',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  boardCardDue: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    paddingHorizontal: 5, paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgCard,
+  },
+  boardCardDueText: { fontSize: 9, color: Colors.textFaint },
 });

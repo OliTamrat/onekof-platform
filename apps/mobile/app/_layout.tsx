@@ -53,7 +53,6 @@ export default function RootLayout() {
             <Stack.Screen name="budget/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="documents/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="calendar/index" options={{ animation: 'slide_from_right' }} />
-            <Stack.Screen name="notifications/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="profile/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="search/index" options={{ animation: 'fade' }} />
           </Stack>

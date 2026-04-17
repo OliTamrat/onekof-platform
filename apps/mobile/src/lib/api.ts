@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import NetInfo from '@react-native-community/netinfo';
 import { cacheResponse, getCachedResponse, queueOfflineMutation } from './offline';
 
 // Always use production API — mobile connects over the network
@@ -6,6 +7,43 @@ const API_BASE = 'https://onekof.com';
 
 const TOKEN_KEY = 'onekof_session_token';
 const ORG_SLUG_KEY = 'onekof_org_slug';
+
+/* ─── Online-state observer ───
+ * Primary signal: NetInfo (true OS-level network state — detects airplane mode,
+ * wifi off, cellular loss instantly without polling).
+ * Secondary signal: apiFetch success/failure (corroborates, flips to offline
+ * faster if server unreachable even when OS reports "connected").
+ * Components subscribe via subscribeOnlineState to surface the state in the UI.
+ */
+let currentIsOnline = true;
+const onlineListeners: Array<(isOnline: boolean) => void> = [];
+
+export function getIsOnline(): boolean {
+  return currentIsOnline;
+}
+
+export function subscribeOnlineState(cb: (isOnline: boolean) => void): () => void {
+  onlineListeners.push(cb);
+  // Push current state immediately so subscriber has latest
+  cb(currentIsOnline);
+  return () => {
+    const idx = onlineListeners.indexOf(cb);
+    if (idx >= 0) onlineListeners.splice(idx, 1);
+  };
+}
+
+function setOnlineState(isOnline: boolean) {
+  if (currentIsOnline === isOnline) return;
+  currentIsOnline = isOnline;
+  onlineListeners.forEach((cb) => cb(isOnline));
+}
+
+// Subscribe to OS-level network changes — fires immediately on airplane mode / wifi off
+NetInfo.addEventListener((state) => {
+  // `isInternetReachable` can be null on first call; treat as connected if isConnected is true
+  const online = !!state.isConnected && state.isInternetReachable !== false;
+  setOnlineState(online);
+});
 
 /**
  * Store the session token securely
@@ -69,6 +107,10 @@ export async function apiFetch<T = any>(
       headers,
     });
 
+    // A successful response (even a 4xx/5xx) means we reached the server
+    // → we're online. Auth errors don't imply offline.
+    setOnlineState(true);
+
     if (!res.ok) {
       const errorBody = await res.text().catch(() => '');
       throw new Error(`API ${res.status}: ${errorBody}`);
@@ -83,6 +125,12 @@ export async function apiFetch<T = any>(
 
     return data;
   } catch (error) {
+    const msg = (error as Error)?.message || '';
+    const isNetworkError = msg.includes('Network request failed') || msg.includes('Failed to fetch');
+
+    // Only flip to offline on real network errors, not API error responses
+    if (isNetworkError) setOnlineState(false);
+
     // If GET request fails, try to return cached data
     if (isRead) {
       const cached = await getCachedResponse<T>(path);
@@ -90,7 +138,7 @@ export async function apiFetch<T = any>(
     }
 
     // If mutation fails (likely offline), queue it
-    if (!isRead && (error as Error)?.message?.includes('Network request failed')) {
+    if (!isRead && isNetworkError) {
       await queueOfflineMutation(path, method, options.body as string);
       throw new Error('Saved offline — will sync when reconnected');
     }

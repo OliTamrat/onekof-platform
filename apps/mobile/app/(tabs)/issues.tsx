@@ -64,10 +64,30 @@ export default function IssuesScreen() {
   const moveMutation = useMutation({
     mutationFn: ({ issueId, status }: { issueId: string; status: string }) =>
       apiFetch(`/api/issues/${issueId}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+    // Optimistic update — card moves immediately, even while offline
+    onMutate: async ({ issueId, status }) => {
+      await queryClient.cancelQueries({ queryKey: ['issues'] });
+      const prev = queryClient.getQueryData<{ issues: Issue[] }>(['issues']);
+      if (prev) {
+        queryClient.setQueryData(['issues'], {
+          ...prev,
+          issues: prev.issues.map((i) => (i.id === issueId ? { ...i, status: status as TaskStatus } : i)),
+        });
+      }
+      return { prev };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] });
     },
-    onError: (e: Error) => Alert.alert('Error', e.message || 'Failed to move issue'),
+    onError: (e: Error, _vars, ctx) => {
+      // "Saved offline — will sync when reconnected" is actually a success from the
+      // user's perspective — the offline queue captured the change. Keep the optimistic
+      // update and don't show an error alert.
+      if (e.message?.includes('Saved offline')) return;
+      // Real error — roll back and notify
+      if (ctx?.prev) queryClient.setQueryData(['issues'], ctx.prev);
+      Alert.alert('Error', e.message || 'Failed to move issue');
+    },
   });
 
   const onRefresh = useCallback(async () => {
