@@ -1,20 +1,20 @@
 {
   "common": {
     "loading": "Waa la soo rarayaa...",
-    "save": "Keydi",
-    "cancel": "Jooji",
+    "save": "Kaydi",
+    "cancel": "Ka noqo",
     "delete": "Tirtir",
-    "edit": "Wax ka badal",
+    "edit": "Wax ka bedel",
     "create": "Samee",
     "search": "Raadi",
     "back": "Dib u noqo",
     "submit": "Gudbi",
     "confirm": "Xaqiiji",
-    "close": "Xir",
+    "close": "Xidh",
     "yes": "Haa",
     "no": "Maya",
     "all": "Dhammaan",
-    "noResults": "Natiijo la ma helin",
+    "noResults": "Natiijo lama helin",
     "viewAll": "Dhammaan arag",
     "signIn": "Soo gal",
     "signOut": "Ka bax",
@@ -29,20 +29,20 @@
     "email": "Iimaylka",
     "add": "Ku dar",
     "remove": "Ka saar",
-    "invite": "Caasimad",
-    "saving": "Waa la keydiyaa...",
+    "invite": "Casuumid",
+    "saving": "Waa la kaydiyaa...",
     "adding": "Waa lagu darayaa...",
     "sending": "Waa la dirayaa...",
-    "creating": "Waa la sameynayaa...",
-    "uploading": "Waa la soo geliyaa..."
+    "creating": "Waa la samaynayaa...",
+    "uploading": "Waa la soo rarayaa..."
   },
   "tabs": {
     "home": "Guriga",
-    "projects": "Mashruucyo",
-    "issues": "Shaqada oo dhan",
-    "dashboards": "Dashboorka",
-    "notifications": "Ogeysiisyo",
-    "more": "Wax kale"
+    "projects": "Mashruucyada",
+    "issues": "Shaqada Oo Dhan",
+    "dashboards": "Dashboorkii",
+    "notifications": "Ogeysiisyada",
+    "more": "Wax Dheeraad ah"
   },
   "dashboard": {
     "greeting": {
@@ -50,46 +50,46 @@
       "afternoon": "Galab wanaagsan",
       "evening": "Fiid wanaagsan"
     },
-    "totalIssues": "{count} arimo guud ah {projects} mashruuc gudahood",
-    "completed": "La dhameeyay",
-    "inProgress": "Socda",
-    "toDo": "La qabanayo",
+    "totalIssues": "{count} arrimaha guud ee {projects} mashruucyada",
+    "completed": "La dhammeeyey",
+    "inProgress": "Wuu socdaa",
+    "toDo": "La qaban doono",
     "overdue": "Wakhtigiisii dhaafay",
-    "statusOverview": "Guud ahaan Xaaladda",
-    "priorityBreakdown": "Falanqeynta Mudnaanta",
-    "typesOfWork": "Noocyada Shaqada",
-    "myIssues": "Arimahayga",
-    "seeAll": "Dhammaan arag",
-    "recentActivity": "Dhaqdhaqaaq dhowaan",
+    "statusOverview": "Guud mar ka eeg xaaladda",
+    "priorityBreakdown": "Kala soocidda mudnaanta",
+    "typesOfWork": "Noocyada shaqada",
+    "myIssues": "Arrimahayga",
+    "seeAll": "Dhamaan arag",
+    "recentActivity": "Dhaqdhaqaaqyada dhowaan",
     "noActivity": "Dhaqdhaqaaq ma jiro",
-    "noIssuesAssigned": "Arimaha kuu xilsaaray ma jiraan"
+    "noIssuesAssigned": "Arrin kuugu meel marnin"
   },
   "issues": {
-    "title": "Arimo",
+    "title": "Arrimaha",
     "createIssue": "Arrin Cusub",
     "noIssues": "Arrin ma jirto",
     "assignee": "Qofka loo xilsaaray",
-    "reporter": "War bixiyaha",
-    "dueDate": "Taariikhda ugu dambeeysa",
-    "labels": "Summado",
+    "reporter": "Soo sheegaha",
+    "dueDate": "Taariikhda dhammaadka",
+    "labels": "Summadaha",
     "comments": "Faallooyinka",
-    "subtasks": "Hawlo yar yar",
+    "subtasks": "Hawlaha hoose",
     "addComment": "Faallo ku dar...",
     "deleteConfirm": "Arrintan tirtir?",
-    "deleteMessage": "Ficilkani lama celin karo."
+    "deleteMessage": "Ficilkan dib looma celin karo."
   },
   "projects": {
-    "title": "Mashruucyo",
+    "title": "Mashruucyada",
     "createProject": "Mashruuc Cusub",
     "noProjects": "Mashruuc ma jiro",
-    "board": "Boorkada",
+    "board": "Sambalka",
     "list": "Liiska",
     "members": "Xubnaha"
   },
   "teams": {
     "title": "Kooxaha",
     "addMember": "Xubin Koox ku dar",
-    "addMemberHint": "Iimaylka xubin hay'adda geli. Haddii aysan hay'adda ku jirin, caasimad ayaa loo diri doonaa.",
+    "addMemberHint": "Iimaylka xubinka hay'adda geli. Haddii aanay hay'adda ku jirin, casuumaad ayaa loo diri.",
     "removeMember": "Xubin ka saar",
     "removeConfirm": "{name} kooxdan ka saar?",
     "noTeams": "Koox ma jirto",
@@ -98,84 +98,84 @@
   },
   "budget": {
     "title": "Miisaaniyad",
-    "addExpense": "Kharash ku dar",
+    "addExpense": "Kharash Ku dar",
     "totalBudget": "Miisaaniyad",
     "spent": "La bixiyey",
     "income": "Dakhli",
-    "remaining": "Haray",
-    "transactions": "Macaamiilad",
+    "remaining": "Hadhay",
+    "transactions": "Macaamiilada",
     "noTransactions": "Macaamiilad ma jirto",
     "budgetUsage": "Isticmaalka Miisaaniyada",
-    "vendor": "Bixiyaha",
+    "vendor": "Iibiyaha",
     "vendorHint": "Shirkadda ama qofka la bixiyey"
   },
   "goals": {
-    "title": "Hadafyo",
+    "title": "Hadafyada",
     "noGoals": "Hadaf ma jiro",
-    "noGoalsDesc": "Hadafyo dhig si aad u raacdo horumarka kooxdaada",
+    "noGoalsDesc": "Horuumarka kooxdaada xagga natiijooyinka muhiimka ah oo la raaco, hadafyo sameey",
     "progress": "Horumar",
     "active": "Firfircoon",
-    "onTrack": "Waddada ku jira",
-    "atRisk": "Khatarta ku jira",
-    "behind": "Ka dambeeya",
-    "completed": "La dhameeyay",
+    "onTrack": "Wadada saxda ah",
+    "atRisk": "Khatar ku jira",
+    "behind": "Ka dambaysa",
+    "completed": "La dhammeeyey",
     "avgProgress": "Celcelis"
   },
   "documents": {
-    "title": "Dukumeentiyo",
+    "title": "Dukumentiyada",
     "upload": "Soo geli",
-    "noDocuments": "Dukumeenti ma jiro",
-    "uploadHint": "Si aad dukumeentiyo u ku darto badhanka soo gelinta riix",
-    "processing": "Waa la habeynayaa",
+    "noDocuments": "Dukumenti ma jiro",
+    "uploadHint": "Dukumentiyada ku daruuf badhanka soo gelinta taabo",
+    "processing": "Waa la habeeynayaa",
     "ready": "Diyaar",
-    "failed": "Guul darreysey"
+    "failed": "Guuldaraysatay"
   },
   "calendar": {
-    "title": "Kalandariga",
-    "newEvent": "Dhacdada Cusub",
-    "selectDate": "Marka hore kalandariga ka dooro taariikh",
-    "eventTitle": "Cinwaanka dhacdada ama hawsha",
-    "noIssuesDue": "Maalintani arrin ma jirto"
+    "title": "Kalandar",
+    "newEvent": "Munaasabad Cusub",
+    "selectDate": "Marka hore kalandarka ka dooro taariikh",
+    "eventTitle": "Cinwaanka munaasabadda ama hawsha",
+    "noIssuesDue": "Maalintaan arrin ma jirto"
   },
   "notifications": {
-    "title": "Ogeysiisyo",
-    "unread": "{count} aan la aqrin",
+    "title": "Ogeysiisyada",
+    "unread": "{count} aan la akhriyin",
     "allCaughtUp": "Wax walba waad la socdaa",
-    "readAll": "Dhammaan aqri",
+    "readAll": "Dhamaan akhri",
     "noNotifications": "Wax walba waad la socdaa",
-    "noNotificationsDesc": "Warbixinnada hawlaha aad daawanayso, kuu xilsaaray, ama ka war bixisay halkan ayay ku soo muuqan doonaan.",
+    "noNotificationsDesc": "Cusboonaysiinta hawlaha aad la socoto, laguu xilsaaray, ama ka warbixiso halkan ayay ka muuqanayaan.",
     "today": "Maanta",
     "yesterday": "Shalay",
-    "thisWeek": "Todobaadkan",
-    "older": "Hore"
+    "thisWeek": "Usbuucan",
+    "older": "Kuwa hore"
   },
   "members": {
     "title": "Xubnaha",
-    "inviteMember": "Xubin Caasimad",
-    "inviteHint": "Ciwaanka iimaylkooda geli. Caasimad ayaa loogu diri doonaa si ay {org} ugu soo biiraan.",
-    "sendInvite": "Caasimad Dir"
+    "inviteMember": "Xubin Casuumid",
+    "inviteHint": "Cinwaankooda iimaylka geli. {org} ku biiraanshaha casuumaad ayaa loo diri.",
+    "sendInvite": "Casuumaad Dir"
   },
   "settings": {
     "title": "Dejinta",
-    "account": "Akoon",
-    "language": "Luqadda",
+    "account": "Koontada",
+    "language": "Luuqadda",
     "security": "Amniga",
-    "notifications": "Ogeysiisyo",
+    "notifications": "Ogeysiisyada",
     "organization": "Hay'adda",
-    "assignments": "Xilsaarista",
+    "assignments": "Hawl-gelinta",
     "comments": "Faallooyinka",
-    "mentions": "@Xusid",
-    "dueDates": "Taariikhaha ugu dambeeya",
-    "signOutConfirm": "Ma hubtaa inaad ka baxdid?"
+    "mentions": "@Xusuus",
+    "dueDates": "Taariikhaha dhammaadka",
+    "signOutConfirm": "Ka bixitaanka ma hubtaa?"
   },
   "profile": {
-    "title": "Astaamaha",
-    "switchOrg": "Hay'ad Kale u Beddel"
+    "title": "Bogga shakhsiga",
+    "switchOrg": "Hay'adda Beddel"
   },
   "search": {
     "title": "Raadi",
-    "placeholder": "Arimo, mashruucyo raadi...",
-    "noResults": "Natiijo ma jirto",
-    "tryDifferent": "Eray kale isku day"
+    "placeholder": "Arrimaha, mashruucyada raadi...",
+    "noResults": "Natiijo lama helin",
+    "tryDifferent": "Erey raadin kale isku day"
   }
 }
