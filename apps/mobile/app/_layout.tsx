@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/contexts/auth-context';
 import { BiometricLock } from '../src/components/BiometricLock';
 import { OfflineBanner } from '../src/components/OfflineBanner';
+import { GlobalFAB } from '../src/components/GlobalFAB';
 import { Colors } from '../src/constants/theme';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
@@ -56,6 +57,7 @@ export default function RootLayout() {
             <Stack.Screen name="profile/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="search/index" options={{ animation: 'fade' }} />
           </Stack>
+          <GlobalFAB />
           <BiometricLock />
         </AuthProvider>
       </QueryClientProvider>

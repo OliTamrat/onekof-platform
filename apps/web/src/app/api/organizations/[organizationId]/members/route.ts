@@ -1,47 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/organizations/[organizationId]/members
- * Returns all members of an organization
+ * Returns all members of an organization.
+ * Auth: supports both web session (NextAuth cookie) and mobile Bearer JWT.
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: { organizationId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // resolveUserOrganization handles both web sessions + mobile Bearer JWT
+    const { data: ctx, error } = await resolveUserOrganization();
+    if (error || !ctx) return error!;
 
     const { organizationId } = params;
-
-    // Verify user has access to this organization
-    const userMembership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-
-    if (!userMembership) {
-      return NextResponse.json(
-        { error: 'You do not have access to this organization' },
-        { status: 403 }
-      );
-    }
 
     // Fetch all members of the organization
     const members = await prisma.organizationMember.findMany({

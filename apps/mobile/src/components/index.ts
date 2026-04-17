@@ -10,4 +10,5 @@ export { BottomSheet } from './BottomSheet';
 export { CardSkeleton, ListSkeleton } from './SkeletonLoader';
 export { BiometricLock } from './BiometricLock';
 export { OfflineBanner } from './OfflineBanner';
+export { GlobalFAB } from './GlobalFAB';
 export { ErrorBoundaryView } from './ErrorBoundaryView';

@@ -9,7 +9,7 @@ import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import {
   STATUS_CONFIG, PRIORITY_CONFIG, TYPE_CONFIG,
-  type Issue, type TaskStatus, type TaskPriority, type TaskType,
+  type Issue, type Project, type TaskStatus, type TaskPriority, type TaskType,
 } from '../../src/types';
 import { SearchBar } from '../../src/components/SearchBar';
 import { Avatar } from '../../src/components/Avatar';
@@ -28,6 +28,7 @@ export default function IssuesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
   const [search, setSearch] = useState('');
+  const [projectFilter, setProjectFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<TaskStatus | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<TaskPriority | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -36,6 +37,13 @@ export default function IssuesScreen() {
     queryKey: ['issues'],
     queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues'),
   });
+
+  // Projects for the project-filter chip row
+  const { data: projectsData } = useQuery({
+    queryKey: ['projects'],
+    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects'),
+  });
+  const projects = projectsData?.projects || [];
 
   const issues = data?.issues || [];
   const q = search.toLowerCase().trim();
@@ -48,10 +56,11 @@ export default function IssuesScreen() {
         (i.key && i.key.toLowerCase().includes(q)),
       );
     }
+    if (projectFilter) result = result.filter((i) => i.projectId === projectFilter);
     if (statusFilter) result = result.filter((i) => i.status === statusFilter);
     if (priorityFilter) result = result.filter((i) => i.priority === priorityFilter);
     return result;
-  }, [issues, q, statusFilter, priorityFilter]);
+  }, [issues, q, projectFilter, statusFilter, priorityFilter]);
 
   const boardColumns = useMemo(() =>
     STATUSES.map((status) => ({
@@ -97,12 +106,13 @@ export default function IssuesScreen() {
   }, [refetch]);
 
   const clearFilters = () => {
+    setProjectFilter(null);
     setStatusFilter(null);
     setPriorityFilter(null);
     setSearch('');
   };
 
-  const hasFilters = !!statusFilter || !!priorityFilter || !!q;
+  const hasFilters = !!projectFilter || !!statusFilter || !!priorityFilter || !!q;
 
   // ── List Item ──
   const renderIssueCard = useCallback(({ item }: { item: Issue }) => {
@@ -226,7 +236,88 @@ export default function IssuesScreen() {
         </View>
       </View>
 
-      {/* ── Filters ── */}
+      {/* ── Project filter — always visible when multiple projects exist (matches web UX) ── */}
+      {projects.length > 1 && (
+        <View style={styles.projectBar}>
+          <View style={styles.projectBarLabelRow}>
+            <Text style={styles.projectBarLabel}>PROJECTS</Text>
+            {projectFilter && (
+              <TouchableOpacity onPress={() => setProjectFilter(null)} hitSlop={8}>
+                <Text style={styles.projectBarReset}>Clear</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.projectBarContent}
+          >
+            {/* "All" chip */}
+            <TouchableOpacity
+              style={[styles.projectChip, !projectFilter && styles.projectChipActive]}
+              onPress={() => setProjectFilter(null)}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.projectChipIcon, !projectFilter && styles.projectChipIconActive]}>
+                <FontAwesome
+                  name="th-large"
+                  size={10}
+                  color={!projectFilter ? '#fff' : Colors.textSecondary}
+                />
+              </View>
+              <Text style={[styles.projectChipText, !projectFilter && styles.projectChipTextActive]}>
+                All
+              </Text>
+              <View style={[styles.projectChipBadge, !projectFilter && styles.projectChipBadgeActive]}>
+                <Text style={[styles.projectChipBadgeText, !projectFilter && styles.projectChipBadgeTextActive]}>
+                  {issues.length}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Divider */}
+            <View style={styles.projectBarDivider} />
+
+            {/* Project chips */}
+            {projects.map((p) => {
+              const active = projectFilter === p.id;
+              const count = issues.filter((i) => i.projectId === p.id).length;
+              const color = p.color || Colors.primary;
+              return (
+                <TouchableOpacity
+                  key={p.id}
+                  style={[
+                    styles.projectChip,
+                    active && styles.projectChipActive,
+                    active && { borderColor: color, shadowColor: color },
+                  ]}
+                  onPress={() => setProjectFilter(active ? null : p.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.projectChipIcon, { backgroundColor: color }]}>
+                    <Text style={styles.projectChipIconText}>
+                      {p.key?.slice(0, 2).toUpperCase() || 'PR'}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[styles.projectChipText, active && styles.projectChipTextActive]}
+                    numberOfLines={1}
+                  >
+                    {p.name}
+                  </Text>
+                  <View style={[styles.projectChipBadge, active && styles.projectChipBadgeActive]}>
+                    <Text style={[styles.projectChipBadgeText, active && styles.projectChipBadgeTextActive]}>
+                      {count}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* ── Filters (Search / Status / Priority — collapsible) ── */}
       {showFilters && (
         <View style={styles.filterSection}>
           <SearchBar value={search} onChangeText={setSearch} placeholder="Search issues..." />
@@ -356,6 +447,78 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
   headerActions: { flexDirection: 'row', gap: Spacing.xs },
   headerBtn: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center' },
+
+  /* Always-visible project filter bar — Nocturne premium */
+  projectBar: {
+    backgroundColor: Colors.bgCard,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingTop: Spacing.sm,
+  },
+  projectBarLabelRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.xl, paddingBottom: 4,
+  },
+  projectBarLabel: {
+    fontSize: 10, fontWeight: '700', color: Colors.textFaint,
+    letterSpacing: 1.2,
+  },
+  projectBarReset: {
+    fontSize: 11, fontWeight: '600', color: Colors.primaryLight,
+  },
+  projectBarContent: {
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.md,
+    gap: 6,
+    alignItems: 'center',
+  },
+  projectBarDivider: {
+    width: 1, height: 18,
+    backgroundColor: Colors.border,
+    marginHorizontal: 4,
+  },
+  projectChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingLeft: 4, paddingRight: 8, paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    maxWidth: 200,
+  },
+  projectChipActive: {
+    backgroundColor: 'rgba(28,140,125,0.12)',
+    borderColor: Colors.primaryLight,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  projectChipIcon: {
+    width: 22, height: 22, borderRadius: 6,
+    backgroundColor: Colors.bgCard,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  projectChipIconActive: {
+    backgroundColor: Colors.primary,
+  },
+  projectChipIconText: {
+    fontSize: 9, fontWeight: '800', color: '#fff',
+    letterSpacing: 0.3,
+  },
+  projectChipText: {
+    fontSize: 12, fontWeight: '600', color: Colors.textPrimary, maxWidth: 110,
+  },
+  projectChipTextActive: { color: Colors.textWhite },
+  projectChipBadge: {
+    minWidth: 18, height: 18, paddingHorizontal: 5,
+    borderRadius: 9,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  projectChipBadgeActive: {
+    backgroundColor: 'rgba(28,140,125,0.25)',
+  },
+  projectChipBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.textFaint },
+  projectChipBadgeTextActive: { color: Colors.primaryLight },
 
   filterSection: {
     backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,

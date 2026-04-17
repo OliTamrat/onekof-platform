@@ -16,6 +16,7 @@ import {
 } from '../../src/types';
 import { BottomSheet } from '../../src/components/BottomSheet';
 import { Avatar } from '../../src/components/Avatar';
+import { useAuth } from '../../src/contexts/auth-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /* ─── Constants ─── */
@@ -28,6 +29,15 @@ const PRIORITY_OPTIONS = (['HIGHEST', 'HIGH', 'MEDIUM', 'LOW', 'LOWEST'] as cons
 const TYPE_OPTIONS = (['TASK', 'STORY', 'BUG', 'EPIC'] as const).map((t) => ({
   value: t, label: TYPE_CONFIG[t].label, icon: TYPE_CONFIG[t].icon as any, color: TYPE_CONFIG[t].color,
 }));
+
+/* Role badge styling for @mention picker */
+const ROLE_BADGE_STYLE = {
+  OWNER:      { label: 'Owner',      color: '#A78BFA', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.3)' },
+  ADMIN:      { label: 'Admin',      color: '#FCD34D', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
+  MEMBER:     { label: 'Member',     color: '#5EEAD4', bg: 'rgba(28,140,125,0.12)', border: 'rgba(28,140,125,0.3)' },
+  CONTRACTOR: { label: 'Contractor', color: '#F97316', bg: 'rgba(249,115,22,0.12)', border: 'rgba(249,115,22,0.3)' },
+  GUEST:      { label: 'Guest',      color: '#9CA3AF', bg: 'rgba(156,163,175,0.12)', border: 'rgba(156,163,175,0.3)' },
+} as const;
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function fmtDate(d: string | null | undefined): string {
@@ -111,12 +121,18 @@ export default function IssueDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
+  const { currentOrg } = useAuth();
 
   // UI state
   const [refreshing, setRefreshing] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [newSubtask, setNewSubtask] = useState('');
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+  // @mention state
+  const [mentionOpen, setMentionOpen] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [mentionStart, setMentionStart] = useState(0);
 
   // Bottom sheet state
   const [showStatus, setShowStatus] = useState(false);
@@ -172,10 +188,68 @@ export default function IssueDetailScreen() {
       apiFetch(`/api/issues/${id}/comments`, { method: 'POST', body: JSON.stringify({ content }) }),
     onSuccess: () => {
       setNewComment('');
+      setMentionOpen(false);
       queryClient.invalidateQueries({ queryKey: ['issue', id] });
     },
     onError: (e: Error) => showError(e.message || 'Failed to post comment'),
   });
+
+  // Org members for @mentions — fetched from org endpoint (all members incl.
+  // contractors), NOT project-members (which is only those explicitly added).
+  // Response shape is FLAT: { members: [{ id, name, email, avatar, role }] }
+  const { data: orgMembersData } = useQuery({
+    queryKey: ['org-members-mentions', currentOrg?.id],
+    queryFn: () => apiFetch(`/api/organizations/${currentOrg?.id}/members`).catch(() => ({ members: [] })),
+    enabled: !!currentOrg?.id,
+  });
+
+  type MentionMember = User & { role?: string };
+
+  const mentionableUsers: MentionMember[] = useMemo(() => {
+    const raw = ((orgMembersData as any)?.members || []) as any[];
+    return raw
+      .filter((m) => m && m.id)
+      .map((m) => ({
+        id: m.id,
+        name: m.name ?? null,
+        email: m.email ?? '',
+        avatar: m.avatar ?? null,
+        role: m.role,
+      }));
+  }, [orgMembersData]);
+
+  const filteredMembers = useMemo(() => {
+    if (!mentionQuery) return mentionableUsers.slice(0, 6);
+    const q = mentionQuery.toLowerCase();
+    return mentionableUsers
+      .filter((m) => (m.name || '').toLowerCase().includes(q) || (m.email || '').toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [mentionableUsers, mentionQuery]);
+
+  // Detect @ in comment input and open member picker
+  const handleCommentChange = useCallback((value: string) => {
+    setNewComment(value);
+    const lastAt = value.lastIndexOf('@');
+    if (lastAt >= 0) {
+      const afterAt = value.slice(lastAt + 1);
+      if (!/\s/.test(afterAt) && afterAt.length <= 30) {
+        setMentionStart(lastAt);
+        setMentionQuery(afterAt);
+        setMentionOpen(true);
+        return;
+      }
+    }
+    setMentionOpen(false);
+  }, []);
+
+  const insertMention = useCallback((member: User) => {
+    const displayName = (member.name || member.email || '').replace(/\s+/g, '');
+    const before = newComment.slice(0, mentionStart);
+    const after = newComment.slice(mentionStart + 1 + mentionQuery.length);
+    setNewComment(`${before}@${displayName} ${after}`);
+    setMentionOpen(false);
+    setMentionQuery('');
+  }, [newComment, mentionStart, mentionQuery]);
 
   const subtaskMutation = useMutation({
     mutationFn: (title: string) =>
@@ -530,13 +604,51 @@ export default function IssueDetailScreen() {
         <View style={{ height: 80 }} />
       </ScrollView>
 
+      {/* ════ @MENTION PICKER (floats above comment bar) ════ */}
+      {mentionOpen && filteredMembers.length > 0 && (
+        <View style={[s.mentionPicker, { bottom: insets.bottom + 68 }]}>
+          <View style={s.mentionHeader}>
+            <FontAwesome name="at" size={11} color={Colors.primaryLight} />
+            <Text style={s.mentionHeaderText}>
+              {mentionQuery ? `Mention matching "${mentionQuery}"` : 'Mention someone'}
+            </Text>
+          </View>
+          <ScrollView style={s.mentionList} keyboardShouldPersistTaps="handled">
+            {filteredMembers.map((m) => {
+              const roleStyle = ROLE_BADGE_STYLE[m.role as keyof typeof ROLE_BADGE_STYLE] || ROLE_BADGE_STYLE.MEMBER;
+              return (
+                <TouchableOpacity
+                  key={m.id}
+                  style={s.mentionRow}
+                  activeOpacity={0.7}
+                  onPress={() => insertMention(m)}
+                >
+                  <Avatar name={m.name || m.email || 'U'} size={30} />
+                  <View style={s.mentionText}>
+                    <Text style={s.mentionName} numberOfLines={1}>{m.name || 'Unnamed'}</Text>
+                    <Text style={s.mentionEmail} numberOfLines={1}>{m.email}</Text>
+                  </View>
+                  {m.role && (
+                    <View style={[s.roleBadge, { backgroundColor: roleStyle.bg, borderColor: roleStyle.border }]}>
+                      <Text style={[s.roleBadgeText, { color: roleStyle.color }]}>
+                        {roleStyle.label}
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
       {/* ════ STICKY COMMENT INPUT (always visible like Jira) ════ */}
       <View style={[s.commentBar, { paddingBottom: insets.bottom + 8 }]}>
         <TextInput
           style={s.commentInput}
           value={newComment}
-          onChangeText={setNewComment}
-          placeholder="Add a comment..."
+          onChangeText={handleCommentChange}
+          placeholder="Add a comment... Type @ to mention"
           placeholderTextColor={Colors.textFaint}
           multiline
         />
@@ -754,5 +866,48 @@ const s = StyleSheet.create({
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center',
     marginBottom: 2,
+  },
+
+  /* @mention picker (floats above comment bar) */
+  mentionPicker: {
+    position: 'absolute',
+    left: Spacing.lg,
+    right: Spacing.lg,
+    backgroundColor: Colors.bgCard,
+    borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 10,
+    maxHeight: 240,
+  },
+  mentionHeader: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: Spacing.md, paddingVertical: 8,
+    backgroundColor: Colors.bgElevated,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+  },
+  mentionHeaderText: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
+  mentionList: { maxHeight: 200 },
+  mentionRow: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
+    paddingHorizontal: Spacing.md, paddingVertical: 8,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+  },
+  mentionText: { flex: 1 },
+  mentionName: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textWhite },
+  mentionEmail: { fontSize: 11, color: Colors.textFaint },
+  roleBadge: {
+    paddingHorizontal: 7, paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  roleBadgeText: {
+    fontSize: 9, fontWeight: '700',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
 });
