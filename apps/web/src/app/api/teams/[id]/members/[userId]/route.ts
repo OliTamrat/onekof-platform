@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import logger from '@/lib/logger';
 
@@ -12,9 +11,9 @@ export async function DELETE(
   { params }: { params: { id: string; userId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -35,7 +34,7 @@ export async function DELETE(
     const currentUserTeamMembership = await prisma.teamMember.findFirst({
       where: {
         teamId,
-        userId: session.user.id,
+        userId: authUser.id,
       },
     });
 
@@ -43,7 +42,7 @@ export async function DELETE(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -52,7 +51,7 @@ export async function DELETE(
     const isTeamLead = currentUserTeamMembership?.role === 'LEAD';
 
     // Allow users to remove themselves
-    const isSelf = session.user.id === userIdToRemove;
+    const isSelf = authUser.id === userIdToRemove;
 
     if (!isAdmin && !isTeamLead && !isSelf) {
       return NextResponse.json(
@@ -99,9 +98,9 @@ export async function PATCH(
   { params }: { params: { id: string; userId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -132,7 +131,7 @@ export async function PATCH(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
