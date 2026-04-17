@@ -194,12 +194,11 @@ export default function IssueDetailScreen() {
     onError: (e: Error) => showError(e.message || 'Failed to post comment'),
   });
 
-  // Org members for @mentions — fetched from org endpoint (all members incl.
-  // contractors), NOT project-members (which is only those explicitly added).
-  // Response shape is FLAT: { members: [{ id, name, email, avatar, role }] }
+  // Org members for @mentions — uses dedicated mobile endpoint with Bearer JWT auth.
+  // Response shape: { members: [{ id, name, email, avatar, role }] }
   const { data: orgMembersData } = useQuery({
     queryKey: ['org-members-mentions', currentOrg?.id],
-    queryFn: () => apiFetch(`/api/organizations/${currentOrg?.id}/members`).catch(() => ({ members: [] })),
+    queryFn: () => apiFetch('/api/auth/mobile/members').catch(() => ({ members: [] })),
     enabled: !!currentOrg?.id,
   });
 
