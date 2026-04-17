@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
@@ -14,9 +13,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -37,7 +36,7 @@ export async function GET(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -102,9 +101,9 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -133,7 +132,7 @@ export async function POST(
     const currentUserTeamMembership = await prisma.teamMember.findFirst({
       where: {
         teamId,
-        userId: session.user.id,
+        userId: authUser.id,
       },
     });
 
@@ -141,7 +140,7 @@ export async function POST(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -195,7 +194,7 @@ export async function POST(
           email: userEmail,
           role: 'MEMBER',
           tokenHash,
-          invitedBy: session.user.id,
+          invitedBy: authUser.id,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
@@ -203,7 +202,7 @@ export async function POST(
       // Send invitation email
       const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
       const invitationUrl = `${baseUrl}/auth/accept-invite?token=${invitationToken}`;
-      const inviterName = session.user.name || session.user.email || 'A team member';
+      const inviterName = authUser.name || authUser.email || 'A team member';
 
       // Fetch organization name for the email
       const org = await prisma.organization.findUnique({
@@ -273,14 +272,14 @@ export async function POST(
           email: userEmail,
           role: 'MEMBER',
           tokenHash: invHash,
-          invitedBy: session.user.id,
+          invitedBy: authUser.id,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
 
       const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
       const invUrl = `${baseUrl}/auth/accept-invite?token=${invToken}`;
-      const inviterName = session.user.name || session.user.email || 'A team member';
+      const inviterName = authUser.name || authUser.email || 'A team member';
 
       try {
         await sendInvitationEmail(
@@ -321,7 +320,7 @@ export async function POST(
         teamId,
         userId: userToAdd.id,
         role,
-        addedBy: session.user.id,
+        addedBy: authUser.id,
       },
     });
 

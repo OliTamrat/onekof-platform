@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -15,25 +14,12 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      );
-    }
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
       );
     }
 
@@ -98,7 +84,7 @@ export async function POST(
         projectId: parentTask.projectId,
         parentId: params.id,
         assigneeId: assigneeId || null,
-        reporterId: user.id,
+        reporterId: authUser.id,
       },
       include: {
         assignee: {

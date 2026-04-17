@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
@@ -14,9 +13,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -37,7 +36,7 @@ export async function GET(
       where: {
         organizationId_userId: {
           organizationId: project.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -102,9 +101,9 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -127,7 +126,7 @@ export async function POST(
       where: {
         organizationId_userId: {
           organizationId: project.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -135,7 +134,7 @@ export async function POST(
     const currentUserProjectMembership = await prisma.projectMember.findFirst({
       where: {
         projectId,
-        userId: session.user.id,
+        userId: authUser.id,
       },
     });
 
@@ -188,7 +187,7 @@ export async function POST(
               projectId,
               userId: existingUser.id,
               role,
-              addedBy: session.user.id,
+              addedBy: authUser.id,
             },
           });
 
@@ -240,14 +239,14 @@ export async function POST(
           email: normalizedEmail,
           role: 'MEMBER',
           tokenHash,
-          invitedBy: session.user.id,
+          invitedBy: authUser.id,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
 
       const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
       const invitationUrl = `${baseUrl}/auth/accept-invite?token=${invitationToken}`;
-      const inviterName = session.user.name || session.user.email || 'A team member';
+      const inviterName = authUser.name || authUser.email || 'A team member';
 
       try {
         await sendInvitationEmail(
@@ -331,7 +330,7 @@ export async function POST(
         projectId,
         userId: userToAdd.id,
         role,
-        addedBy: session.user.id,
+        addedBy: authUser.id,
       },
     });
 
