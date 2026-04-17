@@ -1,7 +1,7 @@
 {
   "common": {
-    "loading": "ይጽዓን ኣሎ...",
-    "save": "ዓቅብ",
+    "loading": "ይጸዓን ኣሎ...",
+    "save": "ኣቐምጥ",
     "cancel": "ሰርዝ",
     "delete": "ደምስስ",
     "edit": "ኣርትዕ",
@@ -12,15 +12,15 @@
     "confirm": "ኣረጋግጽ",
     "close": "ዕጸው",
     "yes": "እወ",
-    "no": "ኣይ",
+    "no": "ኣይፋል",
     "all": "ኩሉ",
-    "noResults": "ዝኾነ ውጽኢት ኣይተረኽበን",
+    "noResults": "ውጽኢት ኣይተረኽበን",
     "viewAll": "ኩሉ ርአ",
     "signIn": "እቶ",
     "signOut": "ውጻእ",
-    "refresh": "ሓድስ",
+    "refresh": "ኣሐድስ",
     "status": "ኩነታ",
-    "name": "ሽም",
+    "name": "ስም",
     "description": "መግለጺ",
     "date": "ዕለት",
     "type": "ዓይነት",
@@ -28,55 +28,55 @@
     "amount": "መጠን",
     "email": "ኢመይል",
     "add": "ወስኽ",
-    "remove": "ኣውጽእ",
-    "invite": "ዕደም",
-    "saving": "ይዕቅብ ኣሎ...",
+    "remove": "ኣልግስ",
+    "invite": "ዓድም",
+    "saving": "ይቕመጥ ኣሎ...",
     "adding": "ይውስኽ ኣሎ...",
     "sending": "ይልእኽ ኣሎ...",
-    "creating": "ይፈጥር ኣሎ...",
-    "uploading": "ይጽዓን ኣሎ..."
+    "creating": "ይፍጠር ኣሎ...",
+    "uploading": "ይጸዓን ኣሎ..."
   },
   "tabs": {
     "home": "መበገሲ",
     "projects": "ፕሮጀክትታት",
     "issues": "ኩሉ ስራሕ",
     "dashboards": "ዳሽቦርድ",
-    "notifications": "ምልክታ",
+    "notifications": "ምልክታታት",
     "more": "ተወሳኺ"
   },
   "dashboard": {
     "greeting": {
-      "morning": "ከመይ ሓዲርካ",
-      "afternoon": "ከመይ ዊዕልካ",
-      "evening": "ከመይ ኣምሲኻ"
+      "morning": "ከመይ ሓዲርኩም",
+      "afternoon": "ከመይ ኣዊልኩም",
+      "evening": "ከመይ ኣምሲኹም"
     },
     "totalIssues": "{count} ጠቕላላ ጉዳያት ኣብ {projects} ፕሮጀክትታት",
-    "completed": "ዝተዛዘመ",
+    "completed": "ዝተወድኡ",
     "inProgress": "ኣብ ሂደት",
-    "toDo": "ክግበር ዘለዎ",
-    "overdue": "ዝሓለፎ",
-    "statusOverview": "ጠቕላላ ኩነታ",
-    "priorityBreakdown": "ትንተና ቀዳምነት",
-    "typesOfWork": "ዓይነት ስራሕ",
+    "toDo": "ዝግበር",
+    "overdue": "ግዜኡ ዝሓለፈ",
+    "statusOverview": "ሓፈሻዊ ኩነታት",
+    "priorityBreakdown": "ናይ ቀዳምነት ክፍፍል",
+    "typesOfWork": "ዓይነታት ስራሕ",
     "myIssues": "ጉዳያተይ",
     "seeAll": "ኩሉ ርአ",
-    "recentActivity": "ናይ ቀረባ ንጥፈት",
-    "noActivity": "ዝኾነ ንጥፈት የለን",
-    "noIssuesAssigned": "ዝተመደበልካ ጉዳይ የለን"
+    "recentActivity": "ናይ ቀረባ ግዜ ንጥፈታት",
+    "noActivity": "ንጥፈት የለን",
+    "noIssuesAssigned": "ዝተመደበልኩም ጉዳይ የለን"
   },
   "issues": {
     "title": "ጉዳያት",
     "createIssue": "ሓድሽ ጉዳይ",
     "noIssues": "ጉዳይ የለን",
     "assignee": "ተመዳቢ",
-    "reporter": "ሪፖርተር",
-    "dueDate": "ናይ መወዳእታ ዕለት",
+    "reporter": "ሓባሪ",
+    "dueDate": "ናይ ምውዳእ ዕለት",
     "labels": "መለለዪታት",
     "comments": "ርእይቶታት",
-    "subtasks": "ንኡስ ስራሕቲ",
+    "subtasks": "ንኡሳን ተግባራት",
     "addComment": "ርእይቶ ወስኽ...",
-    "deleteConfirm": "እዚ ጉዳይ ደምስስ?",
-    "deleteMessage": "እዚ ተግባር ክምለስ ኣይክእልን።"
+    "deleteConfirm": "ነዚ ጉዳይ ደምስስ?",
+    "deleteMessage": "እዚ ስጉምቲ ክምለስ ኣይክእልን።"
   },
   "projects": {
     "title": "ፕሮጀክትታት",
@@ -89,9 +89,9 @@
   "teams": {
     "title": "ጋንታታት",
     "addMember": "ኣባል ጋንታ ወስኽ",
-    "addMemberHint": "ኢመይል ኣባል ትካል ኣእትው። ኣብ ትካል እንተዘየለዉ ዕድመ ይልኣኸሎም።",
-    "removeMember": "ኣባል ኣውጽእ",
-    "removeConfirm": "{name} ካብዚ ጋንታ ኣውጽእ?",
+    "addMemberHint": "ናይ ኣባል ትካል ኢመይል ኣእትው። ኣብ ትካል እንተዘየለዉ ዕድመ ይልኣኸሎም።",
+    "removeMember": "ኣባል ኣልግስ",
+    "removeConfirm": "{name} ካብዚ ጋንታ ክውገድ?",
     "noTeams": "ጋንታ የለን",
     "lead": "መራሒ",
     "member": "ኣባል"
@@ -100,7 +100,7 @@
     "title": "በጀት",
     "addExpense": "ወጻኢ ወስኽ",
     "totalBudget": "በጀት",
-    "spent": "ዝወጸ",
+    "spent": "ዝወጸአ",
     "income": "ኣታዊ",
     "remaining": "ዝተረፈ",
     "transactions": "ግብይታት",
@@ -112,61 +112,61 @@
   "goals": {
     "title": "ዕላማታት",
     "noGoals": "ዕላማ የለን",
-    "noGoalsDesc": "ቀንዲ ውጽኢታት ጋንታኻ ንምክትታል ዕላማ ኣቐምጥ",
-    "progress": "ሂደት",
+    "noGoalsDesc": "ናይ ጋንታኹም ዕቤት ናብ ቀንዲ ውጽኢታት ንምክትታል ዕላማ ኣቐምጡ",
+    "progress": "ምዕባለ",
     "active": "ንጡፍ",
-    "onTrack": "ኣብ መስመር",
+    "onTrack": "ኣብ ቅኑዕ መስመር",
     "atRisk": "ኣብ ሓደጋ",
     "behind": "ድሕሪት",
-    "completed": "ዝተዛዘመ",
+    "completed": "ዝተወድአ",
     "avgProgress": "ማእከላይ"
   },
   "documents": {
     "title": "ሰነዳት",
-    "upload": "ጽዓን",
+    "upload": "ጸዓን",
     "noDocuments": "ሰነድ የለን",
-    "uploadHint": "ሰነዳት ንምውሳኽ ናይ ጽዓን ቁልፊ ጠውቕ",
+    "uploadHint": "ሰነዳት ንምውሳኽ ናይ ጽዓን ቁልፊ ጠውቑ",
     "processing": "ኣብ ሂደት",
     "ready": "ድሉው",
-    "failed": "ዘይተዓወተ"
+    "failed": "ኣይተዓወተን"
   },
   "calendar": {
-    "title": "መዓልቲ መቑጸሪ",
+    "title": "ዓውደ-ኣዋርሕ",
     "newEvent": "ሓድሽ ፍጻመ",
-    "selectDate": "ቅድም ካብ መዓልቲ መቑጸሪ ዕለት ምረጽ",
-    "eventTitle": "ኣርእስቲ ፍጻመ ወይ ስራሕ",
+    "selectDate": "ቅድም ካብ ዓውደ-ኣዋርሕ ዕለት ምረጹ",
+    "eventTitle": "ናይ ፍጻመ ወይ ተግባር ኣርእስቲ",
     "noIssuesDue": "ኣብዚ ዕለት ጉዳይ የለን"
   },
   "notifications": {
-    "title": "ምልክታ",
-    "unread": "{count} ዘይተነብበ",
-    "allCaughtUp": "ኩሉ ተኸታቲልካ",
+    "title": "ምልክታታት",
+    "unread": "{count} ዘይተነብቡ",
+    "allCaughtUp": "ኩሉ ተኸታቲልኩም",
     "readAll": "ኩሉ ኣንብብ",
-    "noNotifications": "ኩሉ ተኸታቲልካ",
-    "noNotificationsDesc": "ኣብ ትከታተሎም፣ ዝተመደበልካ ወይ ዝሓበርካዮም ስራሕቲ ለውጥታት ኣብዚ ይረአ።",
+    "noNotifications": "ኩሉ ተኸታቲልኩም",
+    "noNotificationsDesc": "ኣብ ዝትከታተልዎ፣ ዝተመደበልኩም ወይ ዝሓበርኩሞ ተግባራት ሓደሽቲ ኣብዚ ይርኣዩ።",
     "today": "ሎሚ",
     "yesterday": "ትማሊ",
     "thisWeek": "ኣብዚ ሰሙን",
-    "older": "ናይ ቀደም"
+    "older": "ኣረጊት"
   },
   "members": {
     "title": "ኣባላት",
-    "inviteMember": "ኣባል ዕደም",
-    "inviteHint": "ኢመይል ኣድራሻኦም ኣእትው። {org} ንምጽንባር ዕድመ ይልኣኸሎም።",
-    "sendInvite": "ዕድመ ልኣኽ"
+    "inviteMember": "ኣባል ዓድም",
+    "inviteHint": "ናይ ኢመይል ኣድራሻኦም ኣእትው። {org} ንምጽንባር ዕድመ ይልኣኸሎም።",
+    "sendInvite": "ዕድመ ስደድ"
   },
   "settings": {
-    "title": "ኣቀማምጣ",
-    "account": "ኣካውንት",
+    "title": "ቅጥዒታት",
+    "account": "ሕሳብ",
     "language": "ቋንቋ",
     "security": "ድሕነት",
-    "notifications": "ምልክታ",
+    "notifications": "ምልክታታት",
     "organization": "ትካል",
     "assignments": "ምምዳብ",
     "comments": "ርእይቶታት",
-    "mentions": "@ምጥቃስ",
+    "mentions": "@ጥቕሲታት",
     "dueDates": "ናይ መወዳእታ ዕለታት",
-    "signOutConfirm": "ክትወጽእ ርግጸኛ ዲኻ?"
+    "signOutConfirm": "ክትወጹ ከም ዝደለኹም ርግጸኛ ዲኹም?"
   },
   "profile": {
     "title": "ፕሮፋይል",
@@ -176,6 +176,6 @@
     "title": "ድለ",
     "placeholder": "ጉዳያት፣ ፕሮጀክትታት ድለ...",
     "noResults": "ውጽኢት የለን",
-    "tryDifferent": "ካልእ ቃል ፈትን"
+    "tryDifferent": "ካልእ ናይ ድሊት ቃል ፈትኑ"
   }
 }
