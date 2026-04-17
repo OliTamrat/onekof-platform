@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  RefreshControl, ActivityIndicator, Alert,
+  RefreshControl, ActivityIndicator, Alert, Modal, Pressable, Platform,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -79,21 +79,18 @@ export default function ProjectDetailScreen() {
     },
   });
 
+  const [moveIssue, setMoveIssue] = useState<Issue | null>(null);
+
   const openMoveToMenu = useCallback((issue: Issue) => {
-    const currentStatus = issue.status;
-    const others = BOARD_COLUMNS.filter((s) => s !== currentStatus);
-    Alert.alert(
-      `Move "${issue.key || issue.title?.slice(0, 30)}"`,
-      'Select a new status',
-      [
-        ...others.map((status) => ({
-          text: STATUS_CONFIG[status].label,
-          onPress: () => updateStatusMutation.mutate({ issueId: issue.id, status }),
-        })),
-        { text: 'Cancel', style: 'cancel' as const },
-      ],
-    );
-  }, [updateStatusMutation]);
+    setMoveIssue(issue);
+  }, []);
+
+  const handleMoveTo = (status: TaskStatus) => {
+    if (moveIssue) {
+      updateStatusMutation.mutate({ issueId: moveIssue.id, status });
+      setMoveIssue(null);
+    }
+  };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -398,6 +395,54 @@ export default function ProjectDetailScreen() {
       {(activeTab === 'issues' || activeTab === 'board') && (
         <FAB icon="plus" onPress={() => router.push(`/create-issue?projectId=${id}`)} />
       )}
+
+      {/* ═══ Move-to Bottom Sheet ═══ */}
+      <Modal
+        visible={!!moveIssue}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setMoveIssue(null)}
+      >
+        <Pressable style={styles.moveOverlay} onPress={() => setMoveIssue(null)}>
+          <Pressable style={styles.moveSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.moveDragHandle} />
+            <Text style={styles.moveTitle} numberOfLines={1}>
+              Move {moveIssue?.key || moveIssue?.title?.slice(0, 30)}
+            </Text>
+
+            <View style={styles.moveColumns}>
+              {BOARD_COLUMNS.map((status) => {
+                const cfg = STATUS_CONFIG[status];
+                const isCurrent = moveIssue?.status === status;
+                return (
+                  <TouchableOpacity
+                    key={status}
+                    style={[styles.moveOption, isCurrent && styles.moveOptionCurrent]}
+                    onPress={() => !isCurrent && handleMoveTo(status)}
+                    disabled={isCurrent}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.moveStatusDot, { backgroundColor: cfg.color }]} />
+                    <Text style={[styles.moveOptionText, isCurrent && styles.moveOptionTextCurrent]}>
+                      {cfg.label}
+                    </Text>
+                    {isCurrent && (
+                      <Text style={styles.moveCurrentLabel}>Current</Text>
+                    )}
+                    {!isCurrent && (
+                      <FontAwesome name="chevron-right" size={10} color={Colors.textFaint} />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <TouchableOpacity style={styles.moveCancelBtn} onPress={() => setMoveIssue(null)}>
+              <Text style={styles.moveCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -586,4 +631,39 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgCard,
   },
   boardCardDueText: { fontSize: 9, color: Colors.textFaint },
+
+  /* ═══ Move-to bottom sheet ═══ */
+  moveOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+  moveSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: Spacing.lg, paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.lg,
+  },
+  moveDragHandle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: Colors.textFaint, alignSelf: 'center', marginBottom: Spacing.lg,
+  },
+  moveTitle: {
+    fontSize: FontSize.md, fontWeight: '700', color: Colors.textWhite, marginBottom: Spacing.lg,
+  },
+  moveColumns: { gap: 4, marginBottom: Spacing.lg },
+  moveOption: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
+    padding: Spacing.md, borderRadius: BorderRadius.lg,
+  },
+  moveOptionCurrent: { backgroundColor: 'rgba(255,255,255,0.04)' },
+  moveStatusDot: { width: 12, height: 12, borderRadius: 6 },
+  moveOptionText: { flex: 1, fontSize: FontSize.sm, fontWeight: '600', color: Colors.textWhite },
+  moveOptionTextCurrent: { color: Colors.textFaint },
+  moveCurrentLabel: {
+    fontSize: 10, fontWeight: '600', color: Colors.textFaint,
+    backgroundColor: Colors.bgElevated, paddingHorizontal: 8, paddingVertical: 2,
+    borderRadius: BorderRadius.full, overflow: 'hidden',
+  },
+  moveCancelBtn: {
+    paddingVertical: 14, borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  moveCancelText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
 });
