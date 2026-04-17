@@ -194,8 +194,7 @@ export default function IssueDetailScreen() {
     onError: (e: Error) => showError(e.message || 'Failed to post comment'),
   });
 
-  // Org members for @mentions — uses dedicated mobile endpoint with Bearer JWT auth.
-  // Response shape: { members: [{ id, name, email, avatar, role }] }
+  // Org members for @mentions — uses dedicated mobile endpoint with Bearer JWT auth
   const { data: orgMembersData } = useQuery({
     queryKey: ['org-members-mentions', currentOrg?.id],
     queryFn: () => apiFetch('/api/auth/mobile/members').catch(() => ({ members: [] })),
@@ -603,67 +602,68 @@ export default function IssueDetailScreen() {
         <View style={{ height: 80 }} />
       </ScrollView>
 
-      {/* ════ @MENTION PICKER (floats above comment bar) ════ */}
-      {mentionOpen && filteredMembers.length > 0 && (
-        <View style={[s.mentionPicker, { bottom: insets.bottom + 68 }]}>
-          <View style={s.mentionHeader}>
-            <FontAwesome name="at" size={11} color={Colors.primaryLight} />
-            <Text style={s.mentionHeaderText}>
-              {mentionQuery ? `Mention matching "${mentionQuery}"` : 'Mention someone'}
-            </Text>
-          </View>
-          <ScrollView style={s.mentionList} keyboardShouldPersistTaps="handled">
-            {filteredMembers.map((m) => {
-              const roleStyle = ROLE_BADGE_STYLE[m.role as keyof typeof ROLE_BADGE_STYLE] || ROLE_BADGE_STYLE.MEMBER;
-              return (
-                <TouchableOpacity
-                  key={m.id}
-                  style={s.mentionRow}
-                  activeOpacity={0.7}
-                  onPress={() => insertMention(m)}
-                >
-                  <Avatar name={m.name || m.email || 'U'} size={30} />
-                  <View style={s.mentionText}>
-                    <Text style={s.mentionName} numberOfLines={1}>{m.name || 'Unnamed'}</Text>
-                    <Text style={s.mentionEmail} numberOfLines={1}>{m.email}</Text>
-                  </View>
-                  {m.role && (
-                    <View style={[s.roleBadge, { backgroundColor: roleStyle.bg, borderColor: roleStyle.border }]}>
-                      <Text style={[s.roleBadgeText, { color: roleStyle.color }]}>
-                        {roleStyle.label}
-                      </Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-      )}
-
-      {/* ════ STICKY COMMENT INPUT (always visible like Jira) ════ */}
+      {/* ════ STICKY COMMENT INPUT + @MENTION PICKER ════ */}
       <View style={[s.commentBar, { paddingBottom: insets.bottom + 8 }]}>
-        <TextInput
-          style={s.commentInput}
-          value={newComment}
-          onChangeText={handleCommentChange}
-          placeholder="Add a comment... Type @ to mention"
-          placeholderTextColor={Colors.textFaint}
-          multiline
-        />
-        {newComment.trim().length > 0 && (
-          <TouchableOpacity
-            style={s.sendBtn}
-            onPress={() => newComment.trim() && commentMutation.mutate(newComment.trim())}
-            disabled={commentMutation.isPending}
-          >
-            {commentMutation.isPending ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <FontAwesome name="send" size={13} color="#fff" />
-            )}
-          </TouchableOpacity>
+        {/* @mention picker — rendered INSIDE commentBar so it moves with the keyboard */}
+        {mentionOpen && filteredMembers.length > 0 && (
+          <View style={s.mentionPicker}>
+            <View style={s.mentionHeader}>
+              <FontAwesome name="at" size={11} color={Colors.primaryLight} />
+              <Text style={s.mentionHeaderText}>
+                {mentionQuery ? `Matching "${mentionQuery}"` : 'Mention someone'}
+              </Text>
+            </View>
+            <ScrollView style={s.mentionList} keyboardShouldPersistTaps="handled">
+              {filteredMembers.map((m) => {
+                const roleStyle = ROLE_BADGE_STYLE[m.role as keyof typeof ROLE_BADGE_STYLE] || ROLE_BADGE_STYLE.MEMBER;
+                return (
+                  <TouchableOpacity
+                    key={m.id}
+                    style={s.mentionRow}
+                    activeOpacity={0.7}
+                    onPress={() => insertMention(m)}
+                  >
+                    <Avatar name={m.name || m.email || 'U'} size={30} />
+                    <View style={s.mentionText}>
+                      <Text style={s.mentionName} numberOfLines={1}>{m.name || 'Unnamed'}</Text>
+                      <Text style={s.mentionEmail} numberOfLines={1}>{m.email}</Text>
+                    </View>
+                    {m.role && (
+                      <View style={[s.roleBadge, { backgroundColor: roleStyle.bg, borderColor: roleStyle.border }]}>
+                        <Text style={[s.roleBadgeText, { color: roleStyle.color }]}>
+                          {roleStyle.label}
+                        </Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
         )}
+        <View style={s.commentInputRow}>
+          <TextInput
+            style={s.commentInput}
+            value={newComment}
+            onChangeText={handleCommentChange}
+            placeholder="Add a comment... Type @ to mention"
+            placeholderTextColor={Colors.textFaint}
+            multiline
+          />
+          {newComment.trim().length > 0 && (
+            <TouchableOpacity
+              style={s.sendBtn}
+              onPress={() => newComment.trim() && commentMutation.mutate(newComment.trim())}
+              disabled={commentMutation.isPending}
+            >
+              {commentMutation.isPending ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <FontAwesome name="send" size={13} color="#fff" />
+              )}
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* ════ MORE MENU (Jira-style) ════ */}
@@ -851,11 +851,13 @@ const s = StyleSheet.create({
   emptyComments: { alignItems: 'center', paddingVertical: Spacing['3xl'] },
   emptyCommentsText: { fontSize: FontSize.sm, color: Colors.textFaint },
 
-  /* Sticky comment bar */
+  /* Sticky comment bar — vertical stack: [picker if open] + [input row] */
   commentBar: {
-    flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.sm,
     paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm,
     backgroundColor: Colors.bgCard, borderTopWidth: 1, borderTopColor: Colors.border,
+  },
+  commentInputRow: {
+    flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.sm,
   },
   commentInput: {
     flex: 1, fontSize: FontSize.base, color: Colors.textWhite,
@@ -867,21 +869,14 @@ const s = StyleSheet.create({
     marginBottom: 2,
   },
 
-  /* @mention picker (floats above comment bar) */
+  /* @mention picker (rendered inside commentBar, sits above the TextInput) */
   mentionPicker: {
-    position: 'absolute',
-    left: Spacing.lg,
-    right: Spacing.lg,
-    backgroundColor: Colors.bgCard,
+    backgroundColor: Colors.bgElevated,
     borderWidth: 1, borderColor: Colors.border,
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 10,
-    maxHeight: 240,
+    marginBottom: Spacing.sm,
+    maxHeight: 220,
   },
   mentionHeader: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
