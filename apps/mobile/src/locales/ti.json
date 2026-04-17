@@ -1,0 +1,181 @@
+{
+  "common": {
+    "loading": "ይጽዓን ኣሎ...",
+    "save": "ዓቅብ",
+    "cancel": "ሰርዝ",
+    "delete": "ደምስስ",
+    "edit": "ኣርትዕ",
+    "create": "ፍጠር",
+    "search": "ድለ",
+    "back": "ተመለስ",
+    "submit": "ኣእቱ",
+    "confirm": "ኣረጋግጽ",
+    "close": "ዕጸው",
+    "yes": "እወ",
+    "no": "ኣይ",
+    "all": "ኩሉ",
+    "noResults": "ዝኾነ ውጽኢት ኣይተረኽበን",
+    "viewAll": "ኩሉ ርአ",
+    "signIn": "እቶ",
+    "signOut": "ውጻእ",
+    "refresh": "ሓድስ",
+    "status": "ኩነታ",
+    "name": "ሽም",
+    "description": "መግለጺ",
+    "date": "ዕለት",
+    "type": "ዓይነት",
+    "priority": "ቀዳምነት",
+    "amount": "መጠን",
+    "email": "ኢመይል",
+    "add": "ወስኽ",
+    "remove": "ኣውጽእ",
+    "invite": "ዕደም",
+    "saving": "ይዕቅብ ኣሎ...",
+    "adding": "ይውስኽ ኣሎ...",
+    "sending": "ይልእኽ ኣሎ...",
+    "creating": "ይፈጥር ኣሎ...",
+    "uploading": "ይጽዓን ኣሎ..."
+  },
+  "tabs": {
+    "home": "መበገሲ",
+    "projects": "ፕሮጀክትታት",
+    "issues": "ኩሉ ስራሕ",
+    "dashboards": "ዳሽቦርድ",
+    "notifications": "ምልክታ",
+    "more": "ተወሳኺ"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "ከመይ ሓዲርካ",
+      "afternoon": "ከመይ ዊዕልካ",
+      "evening": "ከመይ ኣምሲኻ"
+    },
+    "totalIssues": "{count} ጠቕላላ ጉዳያት ኣብ {projects} ፕሮጀክትታት",
+    "completed": "ዝተዛዘመ",
+    "inProgress": "ኣብ ሂደት",
+    "toDo": "ክግበር ዘለዎ",
+    "overdue": "ዝሓለፎ",
+    "statusOverview": "ጠቕላላ ኩነታ",
+    "priorityBreakdown": "ትንተና ቀዳምነት",
+    "typesOfWork": "ዓይነት ስራሕ",
+    "myIssues": "ጉዳያተይ",
+    "seeAll": "ኩሉ ርአ",
+    "recentActivity": "ናይ ቀረባ ንጥፈት",
+    "noActivity": "ዝኾነ ንጥፈት የለን",
+    "noIssuesAssigned": "ዝተመደበልካ ጉዳይ የለን"
+  },
+  "issues": {
+    "title": "ጉዳያት",
+    "createIssue": "ሓድሽ ጉዳይ",
+    "noIssues": "ጉዳይ የለን",
+    "assignee": "ተመዳቢ",
+    "reporter": "ሪፖርተር",
+    "dueDate": "ናይ መወዳእታ ዕለት",
+    "labels": "መለለዪታት",
+    "comments": "ርእይቶታት",
+    "subtasks": "ንኡስ ስራሕቲ",
+    "addComment": "ርእይቶ ወስኽ...",
+    "deleteConfirm": "እዚ ጉዳይ ደምስስ?",
+    "deleteMessage": "እዚ ተግባር ክምለስ ኣይክእልን።"
+  },
+  "projects": {
+    "title": "ፕሮጀክትታት",
+    "createProject": "ሓድሽ ፕሮጀክት",
+    "noProjects": "ፕሮጀክት የለን",
+    "board": "ቦርድ",
+    "list": "ዝርዝር",
+    "members": "ኣባላት"
+  },
+  "teams": {
+    "title": "ጋንታታት",
+    "addMember": "ኣባል ጋንታ ወስኽ",
+    "addMemberHint": "ኢመይል ኣባል ትካል ኣእትው። ኣብ ትካል እንተዘየለዉ ዕድመ ይልኣኸሎም።",
+    "removeMember": "ኣባል ኣውጽእ",
+    "removeConfirm": "{name} ካብዚ ጋንታ ኣውጽእ?",
+    "noTeams": "ጋንታ የለን",
+    "lead": "መራሒ",
+    "member": "ኣባል"
+  },
+  "budget": {
+    "title": "በጀት",
+    "addExpense": "ወጻኢ ወስኽ",
+    "totalBudget": "በጀት",
+    "spent": "ዝወጸ",
+    "income": "ኣታዊ",
+    "remaining": "ዝተረፈ",
+    "transactions": "ግብይታት",
+    "noTransactions": "ግብይት የለን",
+    "budgetUsage": "ኣጠቓቕማ በጀት",
+    "vendor": "ኣቕራቢ",
+    "vendorHint": "ዝተኸፈሎ ትካል ወይ ሰብ"
+  },
+  "goals": {
+    "title": "ዕላማታት",
+    "noGoals": "ዕላማ የለን",
+    "noGoalsDesc": "ቀንዲ ውጽኢታት ጋንታኻ ንምክትታል ዕላማ ኣቐምጥ",
+    "progress": "ሂደት",
+    "active": "ንጡፍ",
+    "onTrack": "ኣብ መስመር",
+    "atRisk": "ኣብ ሓደጋ",
+    "behind": "ድሕሪት",
+    "completed": "ዝተዛዘመ",
+    "avgProgress": "ማእከላይ"
+  },
+  "documents": {
+    "title": "ሰነዳት",
+    "upload": "ጽዓን",
+    "noDocuments": "ሰነድ የለን",
+    "uploadHint": "ሰነዳት ንምውሳኽ ናይ ጽዓን ቁልፊ ጠውቕ",
+    "processing": "ኣብ ሂደት",
+    "ready": "ድሉው",
+    "failed": "ዘይተዓወተ"
+  },
+  "calendar": {
+    "title": "መዓልቲ መቑጸሪ",
+    "newEvent": "ሓድሽ ፍጻመ",
+    "selectDate": "ቅድም ካብ መዓልቲ መቑጸሪ ዕለት ምረጽ",
+    "eventTitle": "ኣርእስቲ ፍጻመ ወይ ስራሕ",
+    "noIssuesDue": "ኣብዚ ዕለት ጉዳይ የለን"
+  },
+  "notifications": {
+    "title": "ምልክታ",
+    "unread": "{count} ዘይተነብበ",
+    "allCaughtUp": "ኩሉ ተኸታቲልካ",
+    "readAll": "ኩሉ ኣንብብ",
+    "noNotifications": "ኩሉ ተኸታቲልካ",
+    "noNotificationsDesc": "ኣብ ትከታተሎም፣ ዝተመደበልካ ወይ ዝሓበርካዮም ስራሕቲ ለውጥታት ኣብዚ ይረአ።",
+    "today": "ሎሚ",
+    "yesterday": "ትማሊ",
+    "thisWeek": "ኣብዚ ሰሙን",
+    "older": "ናይ ቀደም"
+  },
+  "members": {
+    "title": "ኣባላት",
+    "inviteMember": "ኣባል ዕደም",
+    "inviteHint": "ኢመይል ኣድራሻኦም ኣእትው። {org} ንምጽንባር ዕድመ ይልኣኸሎም።",
+    "sendInvite": "ዕድመ ልኣኽ"
+  },
+  "settings": {
+    "title": "ኣቀማምጣ",
+    "account": "ኣካውንት",
+    "language": "ቋንቋ",
+    "security": "ድሕነት",
+    "notifications": "ምልክታ",
+    "organization": "ትካል",
+    "assignments": "ምምዳብ",
+    "comments": "ርእይቶታት",
+    "mentions": "@ምጥቃስ",
+    "dueDates": "ናይ መወዳእታ ዕለታት",
+    "signOutConfirm": "ክትወጽእ ርግጸኛ ዲኻ?"
+  },
+  "profile": {
+    "title": "ፕሮፋይል",
+    "switchOrg": "ትካል ቀይር"
+  },
+  "search": {
+    "title": "ድለ",
+    "placeholder": "ጉዳያት፣ ፕሮጀክትታት ድለ...",
+    "noResults": "ውጽኢት የለን",
+    "tryDifferent": "ካልእ ቃል ፈትን"
+  }
+}

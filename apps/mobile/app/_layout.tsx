@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/contexts/auth-context';
+import { LanguageProvider } from '../src/contexts/language-context';
 import { BiometricLock } from '../src/components/BiometricLock';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { GlobalFAB } from '../src/components/GlobalFAB';
@@ -33,6 +34,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+        <LanguageProvider>
           <StatusBar style="light" backgroundColor={Colors.bg} />
           <OfflineBanner />
           <Stack
@@ -55,10 +57,14 @@ export default function RootLayout() {
             <Stack.Screen name="documents/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="calendar/index" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="profile/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="settings/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="members/index" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="team/[id]" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="search/index" options={{ animation: 'fade' }} />
           </Stack>
           <GlobalFAB />
           <BiometricLock />
+        </LanguageProvider>
         </AuthProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
