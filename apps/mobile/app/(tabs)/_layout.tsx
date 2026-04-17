@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Colors } from '../../src/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLanguage } from '../../src/contexts/language-context';
 
 function TabIcon({ name, color }: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
   return <FontAwesome size={19} name={name} color={color} />;
@@ -10,6 +11,7 @@ function TabIcon({ name, color }: { name: React.ComponentProps<typeof FontAwesom
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
 
   return (
     <Tabs
@@ -37,35 +39,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('tabs.home'),
           tabBarIcon: ({ color }) => <TabIcon name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="projects"
         options={{
-          title: 'Projects',
+          title: t('tabs.projects'),
           tabBarIcon: ({ color }) => <TabIcon name="folder-o" color={color} />,
         }}
       />
       <Tabs.Screen
         name="issues"
         options={{
-          title: 'All Work',
+          title: t('tabs.issues'),
           tabBarIcon: ({ color }) => <TabIcon name="check-square-o" color={color} />,
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
-          title: 'Dashboards',
+          title: t('tabs.dashboards'),
           tabBarIcon: ({ color }) => <TabIcon name="th-large" color={color} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: 'Notifications',
+          title: t('tabs.notifications'),
           tabBarIcon: ({ color }) => <TabIcon name="bell-o" color={color} />,
         }}
       />
