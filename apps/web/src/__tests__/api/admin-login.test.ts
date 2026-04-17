@@ -1,6 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
+// Mock database to avoid tsconfig resolution failure in packages/database
+vi.mock('@onekof/database', () => ({
+  prisma: {
+    adminAuditLog: {
+      create: vi.fn().mockResolvedValue({}),
+    },
+  },
+}));
+
 // Mock rate limiting — allow all requests by default
 vi.mock('@/lib/security/rate-limit', () => ({
   checkRateLimit: vi.fn().mockResolvedValue(null),
@@ -18,9 +27,10 @@ function createRequest(body: Record<string, unknown>): NextRequest {
   });
 }
 
+// Bcrypt hashes for 'test-pass-123' and 'view-pass-456' (cost factor 10)
 const TEST_ADMIN_USERS = JSON.stringify([
-  { username: 'admin', password: 'test-pass-123', role: 'OWNER', name: 'Test Admin' },
-  { username: 'viewer', password: 'view-pass-456', role: 'VIEWER', name: 'Test Viewer' },
+  { username: 'admin', password: '$2b$10$sv1cxRrEllcoxnwa/g/s4eIphnbSANLT6uuwFXquORIwYsFOnY3d6', role: 'OWNER', name: 'Test Admin' },
+  { username: 'viewer', password: '$2b$10$J6hdr1mwxysULduXa.9O4.QT0UoDbbrTkCwVvXTtBd13NdNdmcPyC', role: 'VIEWER', name: 'Test Viewer' },
 ]);
 
 describe('POST /api/admin/login', () => {
