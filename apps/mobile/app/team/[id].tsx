@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -193,39 +193,41 @@ export default function TeamDetailScreen() {
         onRequestClose={() => setShowAddModal(false)}
       >
         <Pressable style={s.modalOverlay} onPress={() => setShowAddModal(false)}>
-          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
-            <View style={s.dragHandle} />
-            <Text style={s.modalTitle}>Add Team Member</Text>
-            <Text style={s.modalHint}>
-              Enter the email of an organization member. If they're not in the org yet, an invitation will be sent.
-            </Text>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
+            <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+              <View style={s.dragHandle} />
+              <Text style={s.modalTitle}>Add Team Member</Text>
+              <Text style={s.modalHint}>
+                Enter the email of an organization member. If they're not in the org yet, an invitation will be sent.
+              </Text>
 
-            <TextInput
-              style={s.emailInput}
-              placeholder="member@example.com"
-              placeholderTextColor={Colors.textFaint}
-              value={addEmail}
-              onChangeText={setAddEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+              <TextInput
+                style={s.emailInput}
+                placeholder="member@example.com"
+                placeholderTextColor={Colors.textFaint}
+                value={addEmail}
+                onChangeText={setAddEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
 
-            <View style={s.modalActions}>
-              <TouchableOpacity style={s.cancelBtn} onPress={() => { setShowAddModal(false); setAddEmail(''); }}>
-                <Text style={s.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[s.saveBtn, addMutation.isPending && { opacity: 0.6 }]}
-                onPress={handleAdd}
-                disabled={addMutation.isPending}
-              >
-                <Text style={s.saveBtnText}>
-                  {addMutation.isPending ? 'Adding...' : 'Add Member'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
+              <View style={s.modalActions}>
+                <TouchableOpacity style={s.cancelBtn} onPress={() => { setShowAddModal(false); setAddEmail(''); }}>
+                  <Text style={s.cancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.saveBtn, addMutation.isPending && { opacity: 0.6 }]}
+                  onPress={handleAdd}
+                  disabled={addMutation.isPending}
+                >
+                  <Text style={s.saveBtnText}>
+                    {addMutation.isPending ? 'Adding...' : 'Add Member'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
     </View>
@@ -309,13 +311,13 @@ const s = StyleSheet.create({
     marginBottom: Spacing.xs,
   },
   modalHint: {
-    fontSize: FontSize.xs, color: Colors.textSecondary, lineHeight: 18,
+    fontSize: FontSize.sm, color: Colors.textPrimary, lineHeight: 20,
     marginBottom: Spacing.lg,
   },
   emailInput: {
     backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
     borderRadius: BorderRadius.lg, padding: Spacing.md,
-    fontSize: FontSize.sm, color: Colors.textWhite,
+    fontSize: FontSize.base, color: Colors.textWhite,
     marginBottom: Spacing.lg,
   },
   modalActions: {
