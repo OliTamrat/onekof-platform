@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../src/contexts/auth-context';
+import { useLanguage } from '../../src/contexts/language-context';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import {
@@ -18,11 +19,11 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Svg, { Circle } from 'react-native-svg';
 
 /* ─── Helpers ─── */
-function getGreeting(): string {
+function getGreetingKey(): string {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (h < 12) return 'dashboard.greeting.morning';
+  if (h < 17) return 'dashboard.greeting.afternoon';
+  return 'dashboard.greeting.evening';
 }
 
 function timeAgo(dateStr: string): string {
@@ -158,6 +159,7 @@ function PriorityBar({ label, count, max, color }: {
    ════════════════════════════════════════════ */
 export default function DashboardScreen() {
   const { user, currentOrg } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
@@ -258,10 +260,10 @@ export default function DashboardScreen() {
 
   /* ── Stat cards config ── */
   const statCards = [
-    { label: 'Completed', value: computed.completed, icon: 'check-circle' as const, color: Colors.success, bg: Colors.successBg },
-    { label: 'In Progress', value: computed.inProgress, icon: 'play-circle' as const, color: Colors.info, bg: Colors.infoBg },
-    { label: 'To Do', value: computed.todo, icon: 'circle-o' as const, color: Colors.primaryLight, bg: 'rgba(28,140,125,0.1)' },
-    { label: 'Overdue', value: computed.overdue, icon: 'exclamation-circle' as const, color: Colors.error, bg: Colors.errorBg },
+    { label: t('dashboard.completed'), value: computed.completed, icon: 'check-circle' as const, color: Colors.success, bg: Colors.successBg },
+    { label: t('dashboard.inProgress'), value: computed.inProgress, icon: 'play-circle' as const, color: Colors.info, bg: Colors.infoBg },
+    { label: t('dashboard.toDo'), value: computed.todo, icon: 'circle-o' as const, color: Colors.primaryLight, bg: 'rgba(28,140,125,0.1)' },
+    { label: t('dashboard.overdue'), value: computed.overdue, icon: 'exclamation-circle' as const, color: Colors.error, bg: Colors.errorBg },
   ];
 
   /* ── Status legend config ── */
@@ -301,8 +303,8 @@ export default function DashboardScreen() {
             <View style={s.orgDot} />
             <Text style={s.orgText}>{currentOrg?.name || 'Onekof'}</Text>
           </View>
-          <Text style={s.greeting}>{getGreeting()}, {firstName}</Text>
-          <Text style={s.subGreeting}>{computed.total} total issues across {projects.length} projects</Text>
+          <Text style={s.greeting}>{t(getGreetingKey())}, {firstName}</Text>
+          <Text style={s.subGreeting}>{t('dashboard.totalIssues', { count: computed.total, projects: projects.length })}</Text>
         </View>
         <View style={s.headerRight}>
           <TouchableOpacity style={s.headerBtn} onPress={() => router.push('/notifications' as any)}>
@@ -356,8 +358,8 @@ export default function DashboardScreen() {
         {/* ════ STATUS OVERVIEW (Donut Chart) ════ */}
         <View style={s.card}>
           <View style={s.cardHeader}>
-            <Text style={s.cardTitle}>Status Overview</Text>
-            <Text style={s.cardSubtitle}>Distribution of all issues</Text>
+            <Text style={s.cardTitle}>{t('dashboard.statusOverview')}</Text>
+            <Text style={s.cardSubtitle}>{t('dashboard.totalIssues', { count: computed.total, projects: projects.length })}</Text>
           </View>
 
           <View style={s.donutRow}>
@@ -395,7 +397,7 @@ export default function DashboardScreen() {
         {/* ════ PRIORITY BREAKDOWN ════ */}
         <View style={s.card}>
           <View style={s.cardHeader}>
-            <Text style={s.cardTitle}>Priority Breakdown</Text>
+            <Text style={s.cardTitle}>{t('dashboard.priorityBreakdown')}</Text>
           </View>
           <PriorityBar label="Highest" count={computed.priorityCounts.HIGHEST} max={maxPriority} color="#EF4444" />
           <PriorityBar label="High" count={computed.priorityCounts.HIGH} max={maxPriority} color="#F97316" />
@@ -407,7 +409,7 @@ export default function DashboardScreen() {
         {/* ════ TYPES OF WORK ════ */}
         <View style={s.card}>
           <View style={s.cardHeader}>
-            <Text style={s.cardTitle}>Types of Work</Text>
+            <Text style={s.cardTitle}>{t('dashboard.typesOfWork')}</Text>
           </View>
           {typeDisplay.map((td) => (
             <View key={td.key} style={s.typeRow}>
@@ -428,9 +430,9 @@ export default function DashboardScreen() {
 
         {/* ════ MY ISSUES ════ */}
         <View style={s.sectionRow}>
-          <Text style={s.sectionTitle}>My Issues</Text>
+          <Text style={s.sectionTitle}>{t('dashboard.myIssues')}</Text>
           <TouchableOpacity onPress={() => router.push('/(tabs)/issues')}>
-            <Text style={s.seeAll}>See all</Text>
+            <Text style={s.seeAll}>{t('dashboard.seeAll')}</Text>
           </TouchableOpacity>
         </View>
         {computed.myIssues.length > 0 ? (
@@ -481,15 +483,15 @@ export default function DashboardScreen() {
         ) : (
           <View style={s.emptyCard}>
             <FontAwesome name="inbox" size={24} color={Colors.textFaint} />
-            <Text style={s.emptyTitle}>No issues assigned to you</Text>
-            <Text style={s.emptyDesc}>Issues assigned to you will appear here</Text>
+            <Text style={s.emptyTitle}>{t('dashboard.noIssuesAssigned')}</Text>
+            <Text style={s.emptyDesc}>{t('dashboard.noIssuesAssigned')}</Text>
           </View>
         )}
 
         {/* ════ RECENT ACTIVITY (AI-Powered Timeline with drill-down) ════ */}
         <View style={s.activitySection}>
           <View style={s.activityHeaderRow}>
-            <Text style={s.cardTitle}>Recent activity</Text>
+            <Text style={s.cardTitle}>{t('dashboard.recentActivity')}</Text>
             <View style={s.aiPill}>
               <FontAwesome name="magic" size={10} color={Colors.primaryLight} />
               <Text style={s.aiPillText}>AI-Powered</Text>
@@ -525,7 +527,7 @@ export default function DashboardScreen() {
           {activities.length === 0 ? (
             <View style={s.emptyInline}>
               <FontAwesome name="clock-o" size={20} color={Colors.textFaint} />
-              <Text style={s.emptyTitleInline}>No activity yet</Text>
+              <Text style={s.emptyTitleInline}>{t('dashboard.noActivity')}</Text>
               <Text style={s.emptyDescInline}>Activity will appear here as your team works.</Text>
             </View>
           ) : (() => {
@@ -658,9 +660,9 @@ export default function DashboardScreen() {
         {projects.length > 0 && (
           <>
             <View style={s.sectionRow}>
-              <Text style={s.sectionTitle}>Projects</Text>
+              <Text style={s.sectionTitle}>{t('projects.title')}</Text>
               <TouchableOpacity onPress={() => router.push('/(tabs)/projects')}>
-                <Text style={s.seeAll}>See all</Text>
+                <Text style={s.seeAll}>{t('dashboard.seeAll')}</Text>
               </TouchableOpacity>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.projectsScroll}>
