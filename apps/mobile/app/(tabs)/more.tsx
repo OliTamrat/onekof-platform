@@ -38,11 +38,17 @@ export default function MoreScreen() {
       ],
     },
     {
+      title: 'Organization',
+      items: [
+        { label: 'Members', icon: 'user-plus', route: '/members' },
+      ],
+    },
+    {
       title: 'Settings',
       items: [
         { label: 'Profile', icon: 'user', route: '/profile' },
+        { label: 'Settings', icon: 'cog', route: '/settings' },
         { label: 'Notifications', icon: 'bell', route: '/notifications', badge: unreadCount },
-        { label: 'Security', icon: 'shield', route: '/profile' },
       ],
     },
   ];

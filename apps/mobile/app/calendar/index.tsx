@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, StatusBadge, PRIORITY_CONFIG } from '../../src/components';
@@ -13,7 +13,7 @@ interface Issue {
   status: string;
   priority: string;
   dueDate: string | null;
-  project?: { key: string };
+  project?: { id?: string; key: string };
 }
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -21,9 +21,12 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 
 export default function CalendarScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -66,6 +69,28 @@ export default function CalendarScreen() {
 
   const selectedIssues = selectedDate ? (issuesByDate[selectedDate] || []) : [];
 
+  const createMutation = useMutation({
+    mutationFn: (data: { title: string; dueDate: string }) =>
+      apiFetch('/api/issues', {
+        method: 'POST',
+        body: JSON.stringify({ title: data.title, dueDate: data.dueDate, status: 'TODO', priority: 'MEDIUM' }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+      setShowCreate(false);
+      setEventTitle('');
+    },
+    onError: (err: any) => {
+      Alert.alert('Error', err?.message || 'Could not create event');
+    },
+  });
+
+  const handleCreate = () => {
+    if (!eventTitle.trim()) { Alert.alert('Missing', 'Enter a title'); return; }
+    if (!selectedDate) { Alert.alert('Missing', 'Select a date on the calendar first'); return; }
+    createMutation.mutate({ title: eventTitle.trim(), dueDate: new Date(selectedDate + 'T12:00:00').toISOString() });
+  };
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();
@@ -88,9 +113,14 @@ export default function CalendarScreen() {
             <FontAwesome name="chevron-left" size={14} color={Colors.textSecondary} />
           </TouchableOpacity>
           <Text style={styles.monthTitle}>{MONTHS[month]} {year}</Text>
-          <TouchableOpacity onPress={nextMonth} style={styles.navBtn}>
-            <FontAwesome name="chevron-right" size={14} color={Colors.textSecondary} />
-          </TouchableOpacity>
+          <View style={styles.navRight}>
+            <TouchableOpacity onPress={nextMonth} style={styles.navBtn}>
+              <FontAwesome name="chevron-right" size={14} color={Colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.addBtn} onPress={() => setShowCreate(true)}>
+              <FontAwesome name="plus" size={12} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Day headers */}
@@ -169,6 +199,53 @@ export default function CalendarScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* ═══ Create Event Modal ═══ */}
+      <Modal
+        visible={showCreate}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCreate(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setShowCreate(false)}>
+          <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.dragHandle} />
+            <Text style={styles.modalTitle}>New Event</Text>
+            {selectedDate && (
+              <Text style={styles.modalDate}>
+                {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+              </Text>
+            )}
+            {!selectedDate && (
+              <Text style={styles.modalHint}>Select a date on the calendar first</Text>
+            )}
+
+            <Text style={styles.inputLabel}>Title</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Event or task title"
+              placeholderTextColor={Colors.textFaint}
+              value={eventTitle}
+              onChangeText={setEventTitle}
+            />
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCreate(false)}>
+                <Text style={styles.cancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.saveBtn, (createMutation.isPending || !selectedDate) && { opacity: 0.6 }]}
+                onPress={handleCreate}
+                disabled={createMutation.isPending || !selectedDate}
+              >
+                <Text style={styles.saveBtnText}>
+                  {createMutation.isPending ? 'Creating...' : 'Create'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -221,4 +298,39 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm, overflow: 'hidden',
   },
   noIssues: { fontSize: FontSize.sm, color: Colors.textFaint, textAlign: 'center', paddingVertical: Spacing.xl },
+  navRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  addBtn: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
+
+  /* Modal */
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+  modalSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: Spacing.lg, paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.lg,
+  },
+  dragHandle: { width: 36, height: 4, borderRadius: 2, backgroundColor: Colors.textFaint, alignSelf: 'center', marginBottom: Spacing.lg },
+  modalTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.textWhite, marginBottom: Spacing.xs },
+  modalDate: { fontSize: FontSize.sm, color: Colors.primaryLight, marginBottom: Spacing.lg },
+  modalHint: { fontSize: FontSize.xs, color: Colors.textFaint, marginBottom: Spacing.lg },
+  inputLabel: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary, marginBottom: 4, marginTop: Spacing.sm },
+  input: {
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, padding: Spacing.md,
+    fontSize: FontSize.sm, color: Colors.textWhite, marginBottom: Spacing.lg,
+  },
+  modalActions: { flexDirection: 'row', gap: Spacing.sm },
+  cancelBtn: {
+    flex: 1, paddingVertical: 14, borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border, alignItems: 'center',
+  },
+  cancelBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  saveBtn: {
+    flex: 1, paddingVertical: 14, borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary, alignItems: 'center',
+  },
+  saveBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: '#fff' },
 });
