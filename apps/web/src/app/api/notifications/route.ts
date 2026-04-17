@@ -8,18 +8,13 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/notifications
  *
- * Returns personalized notifications for the current user. These are
- * derived from UserActivity + TaskWatcher (tasks the user is watching
- * and other users took action on).
- *
- * Notification sources:
- * 1. Activities on tasks the user watches (excluding self-actions)
- * 2. Activities where the user was the target (mentioned, assigned, etc.)
- * 3. Activities on the user's organization that touched them directly
+ * Returns personalized notifications for the current user with read state.
+ * Notifications are derived from UserActivity + TaskWatcher + assignment/reporter.
+ * Read state is tracked in the Notification table (Phase 2).
  *
  * Query params:
  * - limit (default 50)
- * - unreadOnly (bool)
+ * - unreadOnly (bool) — only return unread notifications
  */
 export async function GET(request: NextRequest) {
   try {
@@ -30,13 +25,12 @@ export async function GET(request: NextRequest) {
     const userId = ctx.user.id;
     const url = request.nextUrl;
     const limit = Math.min(100, parseInt(url.searchParams.get('limit') || '50'));
+    const unreadOnly = url.searchParams.get('unreadOnly') === 'true';
 
     // Gather all task IDs the user cares about:
     //   1. Tasks they're watching
     //   2. Tasks assigned to them
     //   3. Tasks they reported
-    // This matches Jira's notification scope — users shouldn't have to
-    // manually "watch" a task to hear about their own assignments.
     const [watchedTasks, relatedTasks] = await Promise.all([
       prisma.taskWatcher.findMany({
         where: { userId },
@@ -62,16 +56,14 @@ export async function GET(request: NextRequest) {
       ]),
     );
 
-    // Pull activities where:
-    // - The activity is on a task the user watches/owns/reported, AND
-    // - The activity was NOT performed by the user themselves
+    // Pull activities on relevant tasks, excluding self-actions
     const activities = relevantTaskIds.length > 0
       ? await prisma.userActivity.findMany({
           where: {
             organizationId,
             entityType: 'TASK',
             entityId: { in: relevantTaskIds },
-            userId: { not: userId }, // exclude self-actions
+            userId: { not: userId },
           },
           orderBy: { createdAt: 'desc' },
           take: limit,
@@ -83,8 +75,20 @@ export async function GET(request: NextRequest) {
         })
       : [];
 
-    // Enrich with task details (key, title, project) so the frontend can
-    // render clickable cards with proper context.
+    // Get read state for all these activities
+    const activityIds = activities.map((a: any) => a.id);
+    const readStates = activityIds.length > 0
+      ? await prisma.notification.findMany({
+          where: {
+            userId,
+            activityId: { in: activityIds },
+          },
+          select: { activityId: true, readAt: true },
+        })
+      : [];
+    const readMap = new Map(readStates.map((r: any) => [r.activityId, r.readAt]));
+
+    // Enrich with task details
     const taskIds = Array.from(new Set(activities.map((a: any) => a.entityId)));
     const tasks = taskIds.length > 0
       ? await prisma.task.findMany({
@@ -99,7 +103,7 @@ export async function GET(request: NextRequest) {
       : [];
     const tasksById = new Map(tasks.map((t: any) => [t.id, t]));
 
-    const notifications = activities.map((a: any) => ({
+    let notifications = activities.map((a: any) => ({
       id: a.id,
       action: a.action,
       activityType: a.activityType,
@@ -108,13 +112,21 @@ export async function GET(request: NextRequest) {
       aiSummary: a.aiSummary,
       impactScore: a.impactScore,
       createdAt: a.createdAt,
+      readAt: readMap.get(a.id) || null,
       user: a.user,
       task: tasksById.get(a.entityId) || null,
     }));
 
+    // Filter to unread only if requested
+    if (unreadOnly) {
+      notifications = notifications.filter((n: any) => !n.readAt);
+    }
+
+    const unreadCount = notifications.filter((n: any) => !n.readAt).length;
+
     return NextResponse.json({
       notifications,
-      unreadCount: notifications.length, // all are considered unread for now
+      unreadCount,
     });
   } catch (error) {
     logger.error('Notifications fetch error', {
