@@ -283,17 +283,123 @@ All items are gated to "before first real customer," not urgent pre-launch.
 ### Priority 4: Mobile App — full production build (IN PROGRESS)
 **Quality bar:** Match or exceed Jira Mobile. Not a companion app — a full production client.
 **Stack:** Expo SDK 54 + React Native + Expo Router in `apps/mobile/`
-- Full CRUD: projects, issues, epics, goals, teams
-- Kanban board with drag-and-drop
-- Issue detail with all fields (assignee, status, priority, labels, due date, subtasks, comments, activity, attachments)
-- Push notifications (Expo Notifications)
-- Ethiopian calendar native component
-- 5 language support (AM, OM, TI, SO, EN)
-- ETB budget views
-- Offline mode with sync
-- Biometric auth (Face ID / fingerprint)
-- Deep linking (open issue from notification)
-- App Store + Google Play submission
+
+**Shipped 2026-04-16 (8 commits):**
+- ~~Kanban board~~ — Board tab on project detail, 5 columns, long-press move-to, optimistic updates
+- ~~Issue detail with all fields~~ — assignee, status, priority, labels, due date, subtasks, comments, activity, type picker
+- ~~Offline mode with sync~~ — NetInfo detection, 4-state banner (offline/queue/syncing/synced), auto-sync on reconnect
+- ~~Biometric auth~~ — Face ID/fingerprint lock + escape hatches (sign-out, disable biometric)
+- ~~Deep linking~~ — Expo Router auto-wires `onekof://` scheme to all routes
+- ~~@mentions in comments~~ — type @, member picker with role badges (Owner/Admin/Member/Contractor/Guest)
+- ~~Notifications~~ — Jira-style cards, filter chips, date grouping, drill-down (Phase 1)
+- ~~Activity timeline~~ — AI-Powered, filter chips (All/Task/Project/Goal/Comment), paginated 4/page
+- ~~Project filter~~ — always-visible chip bar on Issues tab with project color + count badges
+- ~~Global FAB~~ — persistent + on all authenticated screens
+- ~~Hero video optimization~~ — QHD re-encode, 135MB→21.5MB, poster images
+
+**Shipped 2026-04-17:**
+- ~~Nocturne design pass~~ — Teams, Budget, Goals, Documents all redesigned with icon boxes, stat rows, badge pills, avatar stacks, compact filter chips
+- ~~Documents "Unknown - Invalid Date" bug~~ — fixed title/date field mapping + relative time
+- ~~API auth fix (P0 #3)~~ — 7 endpoints switched from `getServerSession` (web-only) to `resolveAuthUser` (web + mobile Bearer JWT): goals/[id], teams/[id], teams/[id]/members, documents/[id], projects/[id]/members, issues/[id]/subtasks, issues/[id]/watchers
+- ~~@mention endpoint~~ — `/api/auth/mobile/members` created with `force-dynamic`
+
+**Remaining — prioritized task list:**
+
+#### P0 — Critical (BROKEN, fix first)
+
+**P0 #1: Fix Budget screen — missing API endpoints**
+- `/api/budgets/summary` and `/api/budgets/transactions` don't exist (404)
+- Budget screen shows zeros because endpoints fail silently
+- **Fix:** Either create these 2 endpoints OR rewire mobile Budget screen to use `/api/budgets` which exists and uses `resolveUserOrganization` (mobile-compatible)
+- **Effort:** 30 min
+
+**P0 #2: Fix Goals update UI — auth fixed, UI missing**
+- `/api/goals/[id]` PATCH now works from mobile (auth fixed today)
+- But Goals screen has no edit button / update modal — cards are read-only
+- **Fix:** Add edit modal for progress update, status change, target date
+- **Effort:** 30 min
+
+#### P1 — High (missing CRUD on existing screens)
+
+**P1 #1: Teams — add/remove members**
+- Mobile can view teams but can't manage membership
+- Auth on `/api/teams/[id]/members` now fixed (today)
+- **Fix:** Add member picker + remove button on team detail
+- **Effort:** 45 min
+
+**P1 #2: Documents — upload + create**
+- Mobile can view documents but can't upload/create
+- Auth on `/api/documents/[id]` now fixed (today)
+- **Fix:** Add file picker / camera, upload to Vercel Blob, create doc record
+- **Effort:** 1 hr
+
+**P1 #3: Budget — create transaction**
+- After P0 #1 fix, add form to enter income/expense from mobile
+- **Effort:** 30 min
+
+**P1 #4: Goals — update progress inline**
+- After P0 #2 fix, add progress slider or quick-edit on goal cards
+- **Effort:** 30 min
+
+#### P2 — Medium (feature gaps)
+
+- **AI Document Processing** — camera/upload → AI extraction → results (2 hr)
+- **Calendar events** — dedicated event creation, not just issue due dates (1 hr)
+- **Members management** — invite/remove org members from mobile (1 hr)
+- **Settings screen** — notification prefs, language, theme, account (1 hr)
+- **Notifications Phase 2** — real read tracking via schema migration (1.5 hr)
+
+#### P3 — Polish (quality bar)
+
+- **i18n — 5 languages** — port web's 3,200 keys to mobile (multi-session)
+- **Ethiopian calendar component** — dual Gregorian/Ethiopian display (2 hr)
+- **Real drag-and-drop on kanban** — react-native-reanimated (2-3 hr)
+- **Push notifications (Phase 4)** — server-side delivery (3-4 hr)
+- **App Store + Play Store submission** — EAS Build, screenshots, metadata (2 hr)
+  - Blockers: Apple Dev $99/yr, Google Play $25
+
+#### P4 — Infrastructure
+
+- **Cloudflare Full Strict SSL** — $10/mo ACM or DNS move (blocks gov contracts)
+- **Tier 2 test server** (Massano rig) — follow runbook, ~1 day
+- **EIPA final deposit** — blocked on Co-Owner agreement paperwork
+
+#### 4b. Issues tab Kanban improvements
+- Real drag-and-drop between columns (requires `react-native-reanimated` Shared Values + `react-native-gesture-handler` Pan). Current: long-press action sheet (functional but not tactile)
+- Swimlane grouping (group by assignee, priority, or epic within board view)
+
+#### 4c. i18n — 5 language support
+**Status:** Mobile has ZERO i18n. Web has 3,200+ keys across 5 locales (EN, AM, OM, TI, SO).
+- Set up locale JSON files in `apps/mobile/src/locales/` (port from `apps/web/src/locales/`)
+- Create `useLanguage()` hook for mobile (or port from web)
+- Add language switcher in More tab / Settings
+- Wrap all user-facing strings in `t()` calls
+- **Multi-session project** — don't mix with design work
+
+#### 4d. Ethiopian calendar native component
+- Dual calendar display (Gregorian + Ethiopian) for date pickers
+- Ethiopian month names, year offset (7-8 years behind Gregorian)
+- Use `@react-native-community/datetimepicker` (already installed) as base + Ethiopian conversion layer
+
+#### 4e. ETB budget views
+- Wire Budget screen to real project budget API (`/api/projects/[id]/budget`)
+- Show per-project budget allocation, spent, remaining in ETB
+- Transaction list with category filters
+- Budget charts (donut or bar, matching Dashboard style)
+
+#### 4f. Search improvements
+- Global search across issues, projects, members, documents
+- Recent searches history
+- Search results grouped by type with type icons
+
+#### 4g. App Store + Google Play submission
+- EAS Build configuration (`eas.json`)
+- App Store screenshots (auto-generate from Expo)
+- Privacy policy + Terms links in app settings
+- Apple Developer membership ($99/yr) — **blocker for iOS App Store**
+- Google Play Developer account ($25 one-time) — **blocker for Play Store**
+- Review `app.json` for store metadata, splash screen, adaptive icon
+- Pin `@react-native-community/netinfo` to Expo 54 canonical version: `npx expo install @react-native-community/netinfo`
 
 ### Priority 5: Product polish
 - Bulk operations (bulk status change / delete / label for issues).
@@ -423,3 +529,75 @@ model Notification {
 3. Run Phase 4 last — push infrastructure is a separate concern with its own failure modes (device token expiry, Apple/Google API limits, quiet hours)
 
 **Mobile app blocker for Phase 4:** Need an Apple Developer membership ($99/yr) for real iOS push. Android push via FCM is free. See `apps/mobile/app.json` for EAS project config and update `expo.notification` section when Phase 4 starts.
+
+## EIPA Final Deposit — PAUSED pending Co-Owner agreement (2026-04-16)
+
+**Status:** The 2026-04-11 `DEPOSIT/` and `DEPOSIT_SECURED/` folders are NOT the final filing version. Ethiopian representative confirmed EIPA's exact requirements on 2026-04-16. A new `DEPOSIT_FINAL_EIPA/` must be generated — but BLOCKED until Oli obtains the original Co-Owner/Co-Founder agreement between Oli and DAPS Analytics.
+
+### Why the pause
+Oli is **NOT an employee** of DAPS Analytics — he is a **Co-Owner / Co-Founder**. The EIPA rep's guidance assumed employment ("only ID and proof of employment with DAPS are required"), which does not apply. The correct documentation for Oli is:
+1. Government ID (Ethiopian / US — TBD which EIPA accepts)
+2. **Co-Owner / Co-Founder Agreement** between Oli Tamrat Oli and DAPS Analytics (original paperwork — not yet drafted/signed)
+3. Official letter from DAPS Analytics authorizing the filing AND acknowledging Oli's co-founder status
+
+Do not proceed with deposit regeneration until Oli confirms all three documents are in hand.
+
+### EIPA Representative's confirmed requirements (2026-04-16)
+
+**Section A — Deposit format:**
+- Source code may be submitted with **PII, API keys, and trade-secret algorithms removed** prior to registration
+- Format: `.docx` text format
+- Media: **CD or USB flash drive**
+- **One single file** (not multiple volumes)
+- Encryption / password protection: not specifically required by EIPA, but permitted
+
+**Section B — Authorship:**
+- **DAPS Analytics** = rights holder (commercial rights)
+- **Oli Tamrat Oli** = author (moral rights, non-transferable per Proclamation 410/2004)
+- DAPS agrees in the IP Assignment Agreement not to transfer the IP to any third party — protects Oli as author
+- The Copyright Assignment Agreement (Oli ↔ DAPS) is a private contract — **not filed with EIPA**
+- Moral rights (attribution + integrity) are non-transferable and cannot be waived
+
+**Section C — Registration scope:**
+- **One registration covers source code + UI designs + database schema** — no separate filings needed
+- New registration required for significant updates (e.g., v2.0) — treated as derivative works
+- Berne Convention signatory — Ethiopian registration provides a basis for asserting copyright in other member countries
+
+**Section D — Practical:**
+- DAPS authorization + DAPS-appointed representative are sufficient for filing
+- For Oli specifically: **ID + proof of relationship to DAPS** (employment OR co-founder agreement)
+- Foreign-notarized power of attorney acceptable if POA is required
+
+### Three decisions still pending Oli's confirmation (once paperwork is ready)
+
+**1. Trade-secret exclusion scope:**
+- **A. Conservative (recommended default):** Strip only actual secrets — API keys, env values, bcrypt hashes, test-user PII. Keep all source logic → maximum copyright coverage.
+- **B. Dual-protection:** Also exclude the 4 innovations in `ONEKOF_IP_CLAIMS_ASSESSMENT.md` (multi-tenant subdomain routing, Ethiopian calendar, three-tier federation dispatch, Amharic LLM task parsing) to preserve trade-secret / patent options.
+- **C. Aggressive:** B + AI prompts + automation rules engine + RBAC filter logic.
+
+**2. Handle the 2026-04-11 deposit folders:**
+- Rename `DEPOSIT/` → `DEPOSIT_ARCHIVE_20260411/`
+- Rename `DEPOSIT_SECURED/` → `DEPOSIT_SECURED_ARCHIVE_20260411/`
+- Generate new `DEPOSIT_FINAL_EIPA/` containing: single consolidated `.docx`, README, SHA-256 manifest, DAPS authorization letter, Co-Founder agreement, Oli ID cover sheet
+
+**3. Word document protection method:**
+- Recommended: **Restrict Editing** with password + file `attrib +R` + SHA-256 manifest + burn to CD-R (physically write-once)
+
+### Planned generator (not yet built)
+
+`generate-eipa-final-deposit.py` — consolidates everything into ONE `.docx`:
+- Sanitizes PII, API keys, `.env*` contents, bcrypt hashes, OAuth secrets, test-user emails
+- Optional exclusion of trade-secret files per chosen scope
+- Applies Word "Restrict Editing" password protection
+- Generates SHA-256 manifest of the final file
+- Outputs `DEPOSIT_FINAL_EIPA/` with: single `.docx`, `SHA256_MANIFEST.txt`, `README.txt`, DAPS authorization letter placeholder, Co-Founder agreement slot, ID cover sheet
+
+### Resume checklist (when paperwork arrives)
+
+1. Oli confirms Co-Owner/Co-Founder agreement + DAPS authorization letter in hand
+2. Oli picks trade-secret scope (A/B/C) from decision 1 above
+3. Claude archives the 2026-04-11 deposit folders (decision 2)
+4. Claude builds `generate-eipa-final-deposit.py` and runs it
+5. Sanity-check single `.docx` opens, restrict-editing holds, SHA-256 matches
+6. Burn CD-R or load read-only USB, attach to filing package
+7. Ship to Ethiopia representative

@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, Alert, Platform } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
@@ -27,6 +27,8 @@ const STATUS_CFG: Record<string, { color: string; bg: string; icon: string; labe
   COMPLETED: { color: '#22C55E', bg: 'rgba(34,197,94,0.12)',   icon: 'check-circle',          label: 'Completed' },
 };
 
+const ALL_STATUSES = ['ACTIVE', 'ON_TRACK', 'AT_RISK', 'BEHIND', 'COMPLETED'] as const;
+
 const FILTERS: Array<{ key: string | null; label: string }> = [
   { key: null,        label: 'All' },
   { key: 'ACTIVE',    label: 'Active' },
@@ -35,19 +37,40 @@ const FILTERS: Array<{ key: string | null; label: string }> = [
   { key: 'AT_RISK',   label: 'At Risk' },
 ];
 
+/* ─── Progress presets for quick tap ─── */
+const PROGRESS_PRESETS = [0, 10, 25, 50, 75, 90, 100];
+
 export default function GoalsScreen() {
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [editGoal, setEditGoal] = useState<Goal | null>(null);
+  const [editProgress, setEditProgress] = useState(0);
+  const [editStatus, setEditStatus] = useState('ACTIVE');
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['goals'],
     queryFn: () => apiFetch<{ goals: Goal[] }>('/api/goals').catch(() => ({ goals: [] })),
   });
 
+  const updateMutation = useMutation({
+    mutationFn: (updates: { id: string; status?: string; progress?: number }) =>
+      apiFetch(`/api/goals/${updates.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: updates.status, progress: updates.progress }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      setEditGoal(null);
+    },
+    onError: (err: any) => {
+      Alert.alert('Update failed', err?.message || 'Could not update goal');
+    },
+  });
+
   const allGoals = data?.goals || [];
   const goals = allGoals.filter((g) => !statusFilter || g.status === statusFilter);
 
-  // Summary stats
   const stats = useMemo(() => ({
     total: allGoals.length,
     active: allGoals.filter((g) => g.status === 'ACTIVE' || g.status === 'ON_TRACK').length,
@@ -63,6 +86,17 @@ export default function GoalsScreen() {
     await refetch();
     setRefreshing(false);
   }, [refetch]);
+
+  const openEdit = (goal: Goal) => {
+    setEditGoal(goal);
+    setEditProgress(goal.progress || 0);
+    setEditStatus(goal.status || 'ACTIVE');
+  };
+
+  const saveEdit = () => {
+    if (!editGoal) return;
+    updateMutation.mutate({ id: editGoal.id, status: editStatus, progress: editProgress });
+  };
 
   return (
     <View style={s.container}>
@@ -137,8 +171,8 @@ export default function GoalsScreen() {
             : null;
 
           return (
-            <View style={s.card}>
-              {/* Top row: icon + title + status badge */}
+            <TouchableOpacity style={s.card} onPress={() => openEdit(item)} activeOpacity={0.7}>
+              {/* Top row: icon + title + status badge + edit icon */}
               <View style={s.cardTop}>
                 <View style={[s.goalIcon, { backgroundColor: cfg.bg }]}>
                   <FontAwesome name={cfg.icon as any} size={16} color={cfg.color} />
@@ -149,6 +183,9 @@ export default function GoalsScreen() {
                     <Text style={[s.statusBadgeText, { color: cfg.color }]}>{cfg.label}</Text>
                   </View>
                 </View>
+                <TouchableOpacity style={s.editBtn} onPress={() => openEdit(item)} hitSlop={8}>
+                  <FontAwesome name="pencil" size={14} color={Colors.textSecondary} />
+                </TouchableOpacity>
               </View>
 
               {/* Description */}
@@ -182,7 +219,7 @@ export default function GoalsScreen() {
                   </View>
                 )}
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
@@ -194,6 +231,105 @@ export default function GoalsScreen() {
           />
         }
       />
+
+      {/* ═══ Edit Goal Modal — bottom sheet style ═══ */}
+      <Modal
+        visible={!!editGoal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setEditGoal(null)}
+      >
+        <Pressable style={s.modalOverlay} onPress={() => setEditGoal(null)}>
+          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+            {/* Drag handle */}
+            <View style={s.dragHandle} />
+
+            {/* Title */}
+            <Text style={s.modalTitle} numberOfLines={2}>{editGoal?.title}</Text>
+
+            {/* ── Progress ── */}
+            <View style={s.modalSection}>
+              <Text style={s.modalSectionLabel}>PROGRESS</Text>
+              <Text style={s.modalProgressValue}>{editProgress}%</Text>
+              <View style={s.progressTrackLg}>
+                <View style={[s.progressFillLg, {
+                  width: `${editProgress}%`,
+                  backgroundColor: editProgress >= 100 ? '#22C55E' : Colors.primaryLight,
+                }]} />
+              </View>
+              {/* Preset buttons */}
+              <View style={s.presetRow}>
+                {PROGRESS_PRESETS.map((p) => (
+                  <TouchableOpacity
+                    key={p}
+                    style={[s.presetBtn, editProgress === p && s.presetBtnActive]}
+                    onPress={() => setEditProgress(p)}
+                  >
+                    <Text style={[s.presetBtnText, editProgress === p && s.presetBtnTextActive]}>{p}%</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {/* Fine-tune +/- buttons */}
+              <View style={s.fineRow}>
+                <TouchableOpacity
+                  style={s.fineBtn}
+                  onPress={() => setEditProgress(Math.max(0, editProgress - 5))}
+                >
+                  <FontAwesome name="minus" size={12} color={Colors.textSecondary} />
+                  <Text style={s.fineBtnText}>5%</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={s.fineBtn}
+                  onPress={() => setEditProgress(Math.min(100, editProgress + 5))}
+                >
+                  <FontAwesome name="plus" size={12} color={Colors.textSecondary} />
+                  <Text style={s.fineBtnText}>5%</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* ── Status ── */}
+            <View style={s.modalSection}>
+              <Text style={s.modalSectionLabel}>STATUS</Text>
+              <View style={s.statusGrid}>
+                {ALL_STATUSES.map((st) => {
+                  const cfg = STATUS_CFG[st];
+                  const active = editStatus === st;
+                  return (
+                    <TouchableOpacity
+                      key={st}
+                      style={[s.statusOption, active && { backgroundColor: cfg.bg, borderColor: cfg.color + '40' }]}
+                      onPress={() => {
+                        setEditStatus(st);
+                        if (st === 'COMPLETED') setEditProgress(100);
+                      }}
+                    >
+                      <FontAwesome name={cfg.icon as any} size={12} color={active ? cfg.color : Colors.textFaint} />
+                      <Text style={[s.statusOptionText, active && { color: cfg.color }]}>{cfg.label}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* ── Actions ── */}
+            <View style={s.modalActions}>
+              <TouchableOpacity style={s.cancelBtn} onPress={() => setEditGoal(null)}>
+                <Text style={s.cancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.saveBtn, updateMutation.isPending && { opacity: 0.6 }]}
+                onPress={saveEdit}
+                disabled={updateMutation.isPending}
+              >
+                <Text style={s.saveBtnText}>
+                  {updateMutation.isPending ? 'Saving...' : 'Save'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -252,6 +388,10 @@ const s = StyleSheet.create({
   },
   statusBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
   goalDesc: { fontSize: FontSize.xs, color: Colors.textSecondary, lineHeight: 18 },
+  editBtn: {
+    width: 32, height: 32, borderRadius: BorderRadius.md,
+    backgroundColor: Colors.bgElevated, justifyContent: 'center', alignItems: 'center',
+  },
 
   /* ── Progress bar ── */
   progressSection: { gap: 6 },
@@ -269,4 +409,92 @@ const s = StyleSheet.create({
   ownerName: { fontSize: FontSize.xs, color: Colors.textSecondary, maxWidth: 120 },
   dateRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   dateText: { fontSize: FontSize.xs, color: Colors.textFaint },
+
+  /* ═══ Edit Modal — bottom sheet ═══ */
+  modalOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: Spacing.lg, paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.lg,
+    maxHeight: '85%',
+  },
+  dragHandle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: Colors.textFaint, alignSelf: 'center',
+    marginBottom: Spacing.lg,
+  },
+  modalTitle: {
+    fontSize: FontSize.lg, fontWeight: '700', color: Colors.textWhite,
+    marginBottom: Spacing.lg,
+  },
+  modalSection: { marginBottom: Spacing.lg },
+  modalSectionLabel: {
+    fontSize: 10, fontWeight: '700', color: Colors.textFaint,
+    letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: Spacing.sm,
+  },
+  modalProgressValue: {
+    fontSize: 28, fontWeight: '700', color: Colors.primaryLight,
+    marginBottom: Spacing.sm,
+  },
+  progressTrackLg: { height: 10, borderRadius: 5, backgroundColor: Colors.bgElevated },
+  progressFillLg: { height: 10, borderRadius: 5 },
+  presetRow: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: Spacing.md,
+  },
+  presetBtn: {
+    paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  presetBtnActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  presetBtnText: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary },
+  presetBtnTextActive: { color: '#fff' },
+  fineRow: {
+    flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.sm,
+  },
+  fineBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  fineBtnText: { fontSize: 11, fontWeight: '500', color: Colors.textSecondary },
+
+  /* ── Status grid ── */
+  statusGrid: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 8,
+  },
+  statusOption: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 12, paddingVertical: 8,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  statusOptionText: { fontSize: 12, fontWeight: '600', color: Colors.textFaint },
+
+  /* ── Actions ── */
+  modalActions: {
+    flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.sm,
+  },
+  cancelBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  cancelBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  saveBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+  },
+  saveBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: '#fff' },
 });
