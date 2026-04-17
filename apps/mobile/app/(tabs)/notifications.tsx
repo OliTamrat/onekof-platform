@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } fr
 import { useState, useCallback, useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { Avatar } from '../../src/components/Avatar';
@@ -32,6 +32,7 @@ interface Notification {
   aiSummary: string | null;
   impactScore: number;
   createdAt: string;
+  readAt: string | null;
   user: NotificationUser;
   task: NotificationTask | null;
 }
@@ -82,6 +83,7 @@ type GroupedItem =
 
 export default function NotificationsTab() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<'all' | 'mentions' | 'assigned' | 'watching'>('all');
@@ -95,6 +97,18 @@ export default function NotificationsTab() {
   });
 
   const notifications = data?.notifications || [];
+  const unreadCount = data?.unreadCount ?? 0;
+
+  const markReadMutation = useMutation({
+    mutationFn: (activityId: string) =>
+      apiFetch(`/api/notifications/${activityId}/read`, { method: 'PATCH' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+
+  const markAllReadMutation = useMutation({
+    mutationFn: () => apiFetch('/api/notifications/read-all', { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+  });
 
   const filtered = useMemo(() => {
     if (filter === 'assigned') return notifications.filter((n) => n.action === 'ASSIGNED');
@@ -125,6 +139,8 @@ export default function NotificationsTab() {
   }, [refetch]);
 
   const handlePress = (n: Notification) => {
+    // Mark as read on tap
+    if (!n.readAt) markReadMutation.mutate(n.id);
     if (n.task?.id) router.push(`/issue/${n.task.id}`);
   };
 
@@ -139,12 +155,24 @@ export default function NotificationsTab() {
     <View style={[s.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={s.header}>
-        <View>
+        <View style={s.headerLeft}>
           <Text style={s.headerTitle}>Notifications</Text>
           <Text style={s.headerSub}>
-            {notifications.length} {notifications.length === 1 ? 'update' : 'updates'}
+            {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
+            {' · '}{notifications.length} total
           </Text>
         </View>
+        {unreadCount > 0 && (
+          <TouchableOpacity
+            style={s.markAllBtn}
+            onPress={() => markAllReadMutation.mutate()}
+            disabled={markAllReadMutation.isPending}
+            activeOpacity={0.7}
+          >
+            <FontAwesome name="check-double" size={11} color={Colors.primaryLight} />
+            <Text style={s.markAllText}>Read all</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Filter chips */}
@@ -192,7 +220,7 @@ export default function NotificationsTab() {
 
           return (
             <TouchableOpacity
-              style={s.card}
+              style={[s.card, !n.readAt && s.cardUnread]}
               activeOpacity={0.7}
               onPress={() => handlePress(n)}
               disabled={!n.task}
@@ -262,12 +290,21 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
 
   header: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: Spacing.xl, paddingVertical: Spacing.lg,
     borderBottomWidth: 1, borderBottomColor: Colors.border,
     backgroundColor: Colors.bgCard,
   },
+  headerLeft: { flex: 1 },
   headerTitle: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
   headerSub: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 2 },
+  markAllBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 10, paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: 'rgba(28,140,125,0.12)',
+  },
+  markAllText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight },
 
   /* Filter chips */
   filterRow: {
@@ -309,7 +346,11 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
     backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
     borderRadius: BorderRadius.lg, padding: Spacing.md,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.sm, opacity: 0.7,
+  },
+  cardUnread: {
+    opacity: 1,
+    borderLeftWidth: 3, borderLeftColor: Colors.primaryLight,
   },
   avatarCol: { position: 'relative' },
   actionBadgeOverlay: {

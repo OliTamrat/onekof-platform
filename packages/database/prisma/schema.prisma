@@ -80,6 +80,7 @@ model Organization {
   goals                Goal[]
   automationRules      AutomationRule[]
   activities           UserActivity[] // 🚀 NEW: All activities in this organization
+  notifications        Notification[] @relation("OrgNotifications")
   organizationSettings OrganizationSettings? // Feature flags and customization
 
   @@map("organizations")
@@ -189,6 +190,7 @@ model User {
   taskWatchers   TaskWatcher[]   @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
+  notifications  Notification[]  @relation("UserNotifications")
   taskLinks      TaskLink[]      @relation("TaskLinkCreator") // Task relationships created by this user
 
   // 🚀 PERFORMANCE: Critical indexes for authentication and queries
@@ -1113,6 +1115,9 @@ model UserActivity {
 
   createdAt DateTime @default(now()) @map("created_at")
 
+  // Relations
+  notifications Notification[]
+
   // 🚀 PERFORMANCE: Comprehensive indexes for all query patterns
   @@index([userId, createdAt]) // User activity timeline
   @@index([organizationId, createdAt]) // Org activity feed
@@ -1124,6 +1129,27 @@ model UserActivity {
   @@index([userId, entityType, createdAt]) // User-specific filtered feeds
   @@index([organizationId, activityType, createdAt]) // Org-specific filtered feeds
   @@map("user_activities")
+  @@schema("public")
+}
+
+// Notification — persistent read state for each user × activity pair
+model Notification {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  organizationId String    @map("organization_id")
+  activityId     String    @map("activity_id")
+  readAt         DateTime? @map("read_at")
+  archivedAt     DateTime? @map("archived_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  user         User         @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation("OrgNotifications", fields: [organizationId], references: [id], onDelete: Cascade)
+  activity     UserActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, activityId])
+  @@index([userId, readAt, createdAt])
+  @@index([organizationId])
+  @@map("notifications")
   @@schema("public")
 }
 
