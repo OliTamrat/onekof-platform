@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -240,94 +240,96 @@ export default function GoalsScreen() {
         onRequestClose={() => setEditGoal(null)}
       >
         <Pressable style={s.modalOverlay} onPress={() => setEditGoal(null)}>
-          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
-            {/* Drag handle */}
-            <View style={s.dragHandle} />
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
+            <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+              {/* Drag handle */}
+              <View style={s.dragHandle} />
 
-            {/* Title */}
-            <Text style={s.modalTitle} numberOfLines={2}>{editGoal?.title}</Text>
+              {/* Title */}
+              <Text style={s.modalTitle} numberOfLines={2}>{editGoal?.title}</Text>
 
-            {/* ── Progress ── */}
-            <View style={s.modalSection}>
-              <Text style={s.modalSectionLabel}>PROGRESS</Text>
-              <Text style={s.modalProgressValue}>{editProgress}%</Text>
-              <View style={s.progressTrackLg}>
-                <View style={[s.progressFillLg, {
-                  width: `${editProgress}%`,
-                  backgroundColor: editProgress >= 100 ? '#22C55E' : Colors.primaryLight,
-                }]} />
-              </View>
-              {/* Preset buttons */}
-              <View style={s.presetRow}>
-                {PROGRESS_PRESETS.map((p) => (
-                  <TouchableOpacity
-                    key={p}
-                    style={[s.presetBtn, editProgress === p && s.presetBtnActive]}
-                    onPress={() => setEditProgress(p)}
-                  >
-                    <Text style={[s.presetBtnText, editProgress === p && s.presetBtnTextActive]}>{p}%</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              {/* Fine-tune +/- buttons */}
-              <View style={s.fineRow}>
-                <TouchableOpacity
-                  style={s.fineBtn}
-                  onPress={() => setEditProgress(Math.max(0, editProgress - 5))}
-                >
-                  <FontAwesome name="minus" size={12} color={Colors.textSecondary} />
-                  <Text style={s.fineBtnText}>5%</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={s.fineBtn}
-                  onPress={() => setEditProgress(Math.min(100, editProgress + 5))}
-                >
-                  <FontAwesome name="plus" size={12} color={Colors.textSecondary} />
-                  <Text style={s.fineBtnText}>5%</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* ── Status ── */}
-            <View style={s.modalSection}>
-              <Text style={s.modalSectionLabel}>STATUS</Text>
-              <View style={s.statusGrid}>
-                {ALL_STATUSES.map((st) => {
-                  const cfg = STATUS_CFG[st];
-                  const active = editStatus === st;
-                  return (
+              {/* ── Progress ── */}
+              <View style={s.modalSection}>
+                <Text style={s.modalSectionLabel}>PROGRESS</Text>
+                <Text style={s.modalProgressValue}>{editProgress}%</Text>
+                <View style={s.progressTrackLg}>
+                  <View style={[s.progressFillLg, {
+                    width: `${editProgress}%`,
+                    backgroundColor: editProgress >= 100 ? '#22C55E' : Colors.primaryLight,
+                  }]} />
+                </View>
+                {/* Preset buttons */}
+                <View style={s.presetRow}>
+                  {PROGRESS_PRESETS.map((p) => (
                     <TouchableOpacity
-                      key={st}
-                      style={[s.statusOption, active && { backgroundColor: cfg.bg, borderColor: cfg.color + '40' }]}
-                      onPress={() => {
-                        setEditStatus(st);
-                        if (st === 'COMPLETED') setEditProgress(100);
-                      }}
+                      key={p}
+                      style={[s.presetBtn, editProgress === p && s.presetBtnActive]}
+                      onPress={() => setEditProgress(p)}
                     >
-                      <FontAwesome name={cfg.icon as any} size={12} color={active ? cfg.color : Colors.textFaint} />
-                      <Text style={[s.statusOptionText, active && { color: cfg.color }]}>{cfg.label}</Text>
+                      <Text style={[s.presetBtnText, editProgress === p && s.presetBtnTextActive]}>{p}%</Text>
                     </TouchableOpacity>
-                  );
-                })}
+                  ))}
+                </View>
+                {/* Fine-tune +/- buttons */}
+                <View style={s.fineRow}>
+                  <TouchableOpacity
+                    style={s.fineBtn}
+                    onPress={() => setEditProgress(Math.max(0, editProgress - 5))}
+                  >
+                    <FontAwesome name="minus" size={12} color={Colors.textSecondary} />
+                    <Text style={s.fineBtnText}>5%</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={s.fineBtn}
+                    onPress={() => setEditProgress(Math.min(100, editProgress + 5))}
+                  >
+                    <FontAwesome name="plus" size={12} color={Colors.textSecondary} />
+                    <Text style={s.fineBtnText}>5%</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
 
-            {/* ── Actions ── */}
-            <View style={s.modalActions}>
-              <TouchableOpacity style={s.cancelBtn} onPress={() => setEditGoal(null)}>
-                <Text style={s.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[s.saveBtn, updateMutation.isPending && { opacity: 0.6 }]}
-                onPress={saveEdit}
-                disabled={updateMutation.isPending}
-              >
-                <Text style={s.saveBtnText}>
-                  {updateMutation.isPending ? 'Saving...' : 'Save'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
+              {/* ── Status ── */}
+              <View style={s.modalSection}>
+                <Text style={s.modalSectionLabel}>STATUS</Text>
+                <View style={s.statusGrid}>
+                  {ALL_STATUSES.map((st) => {
+                    const cfg = STATUS_CFG[st];
+                    const active = editStatus === st;
+                    return (
+                      <TouchableOpacity
+                        key={st}
+                        style={[s.statusOption, active && { backgroundColor: cfg.bg, borderColor: cfg.color + '40' }]}
+                        onPress={() => {
+                          setEditStatus(st);
+                          if (st === 'COMPLETED') setEditProgress(100);
+                        }}
+                      >
+                        <FontAwesome name={cfg.icon as any} size={12} color={active ? cfg.color : Colors.textFaint} />
+                        <Text style={[s.statusOptionText, active && { color: cfg.color }]}>{cfg.label}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* ── Actions ── */}
+              <View style={s.modalActions}>
+                <TouchableOpacity style={s.cancelBtn} onPress={() => setEditGoal(null)}>
+                  <Text style={s.cancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.saveBtn, updateMutation.isPending && { opacity: 0.6 }]}
+                  onPress={saveEdit}
+                  disabled={updateMutation.isPending}
+                >
+                  <Text style={s.saveBtnText}>
+                    {updateMutation.isPending ? 'Saving...' : 'Save'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
     </View>
@@ -432,7 +434,7 @@ const s = StyleSheet.create({
   },
   modalSection: { marginBottom: Spacing.lg },
   modalSectionLabel: {
-    fontSize: 10, fontWeight: '700', color: Colors.textFaint,
+    fontSize: FontSize.sm, fontWeight: '700', color: Colors.textPrimary,
     letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: Spacing.sm,
   },
   modalProgressValue: {

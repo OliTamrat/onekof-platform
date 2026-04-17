@@ -1,6 +1,6 @@
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  RefreshControl, Dimensions,
+  RefreshControl,
 } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,8 +16,6 @@ import {
 import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Svg, { Circle } from 'react-native-svg';
-
-const { width: SCREEN_W } = Dimensions.get('window');
 
 /* ─── Helpers ─── */
 function getGreeting(): string {
@@ -324,40 +322,36 @@ export default function DashboardScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />
         }
       >
-        {/* ════ STATS GRID ════ */}
-        <View style={s.statsGrid}>
-          {statCards.map((stat) => (
-            <TouchableOpacity
-              key={stat.label}
-              style={s.statCard}
-              activeOpacity={0.7}
-              onPress={() => router.push('/(tabs)/issues')}
-            >
-              <View style={[s.statIconBox, { backgroundColor: stat.bg }]}>
-                <FontAwesome name={stat.icon} size={15} color={stat.color} />
-              </View>
-              <Text style={s.statValue}>{stat.value}</Text>
+        {/* ════ STATS ROW — compact single row ════ */}
+        <TouchableOpacity
+          style={s.statsRow}
+          activeOpacity={0.7}
+          onPress={() => router.push('/(tabs)/issues')}
+        >
+          {statCards.map((stat, i) => (
+            <View key={stat.label} style={[s.statCell, i < statCards.length - 1 && s.statCellBorder]}>
+              <Text style={[s.statValue, { color: stat.color }]}>{stat.value}</Text>
               <Text style={s.statLabel}>{stat.label}</Text>
-            </TouchableOpacity>
+            </View>
           ))}
-        </View>
+        </TouchableOpacity>
 
-        {/* ════ QUICK ACTIONS ════ */}
-        <View style={s.quickGrid}>
+        {/* ════ QUICK ACTIONS — horizontal scroll strip ════ */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.quickStrip} contentContainerStyle={s.quickStripContent}>
           {quickActions.map((a) => (
             <TouchableOpacity
               key={a.label}
-              style={s.quickItem}
+              style={s.quickChip}
               activeOpacity={0.7}
               onPress={() => router.push(a.route as any)}
             >
-              <View style={[s.quickIcon, { backgroundColor: a.color + '18' }]}>
-                <FontAwesome name={a.icon} size={17} color={a.color} />
+              <View style={[s.quickChipIcon, { backgroundColor: a.color + '18' }]}>
+                <FontAwesome name={a.icon} size={13} color={a.color} />
               </View>
-              <Text style={s.quickLabel}>{a.label}</Text>
+              <Text style={s.quickChipLabel}>{a.label}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
 
         {/* ════ STATUS OVERVIEW (Donut Chart) ════ */}
         <View style={s.card}>
@@ -747,38 +741,36 @@ const s = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { padding: Spacing.lg, paddingBottom: 100 },
 
-  /* ── Stats Grid ── */
-  statsGrid: {
-    flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.lg,
-  },
-  statCard: {
-    width: (SCREEN_W - Spacing.lg * 2 - Spacing.sm) / 2 - 1,
+  /* ── Stats Row — compact single row ── */
+  statsRow: {
+    flexDirection: 'row',
     backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.xl, padding: Spacing.lg,
+    borderRadius: BorderRadius.xl, marginBottom: Spacing.md,
+    paddingVertical: Spacing.lg,
   },
-  statIconBox: {
-    width: 34, height: 34, borderRadius: BorderRadius.md,
-    justifyContent: 'center', alignItems: 'center', marginBottom: Spacing.sm,
+  statCell: {
+    flex: 1, alignItems: 'center',
   },
-  statValue: { fontSize: FontSize['2xl'], fontWeight: '700', color: Colors.textWhite },
-  statLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
+  statCellBorder: {
+    borderRightWidth: 1, borderRightColor: Colors.border,
+  },
+  statValue: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
+  statLabel: { fontSize: 10, color: Colors.textSecondary, marginTop: 2 },
 
-  /* ── Quick Actions ── */
-  quickGrid: {
-    flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm,
-    marginBottom: Spacing.xl,
+  /* ── Quick Actions — horizontal strip ── */
+  quickStrip: { marginBottom: Spacing.lg },
+  quickStripContent: { gap: Spacing.sm },
+  quickChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 14, paddingVertical: 10,
   },
-  quickItem: {
-    width: (SCREEN_W - Spacing.lg * 2 - Spacing.sm * 2) / 3 - 1,
-    alignItems: 'center', paddingVertical: Spacing.md,
-    backgroundColor: Colors.bgCard, borderRadius: BorderRadius.lg,
-    borderWidth: 1, borderColor: Colors.border,
+  quickChipIcon: {
+    width: 28, height: 28, borderRadius: 14,
+    justifyContent: 'center', alignItems: 'center',
   },
-  quickIcon: {
-    width: 42, height: 42, borderRadius: BorderRadius.lg,
-    justifyContent: 'center', alignItems: 'center', marginBottom: 6,
-  },
-  quickLabel: { fontSize: 11, color: Colors.textSecondary, fontWeight: '500' },
+  quickChipLabel: { fontSize: 12, color: Colors.textWhite, fontWeight: '500' },
 
   /* ── Card (shared) ── */
   card: {

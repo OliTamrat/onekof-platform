@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -228,42 +228,44 @@ export default function CalendarScreen() {
         onRequestClose={() => setShowCreate(false)}
       >
         <Pressable style={styles.modalOverlay} onPress={() => setShowCreate(false)}>
-          <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
-            <View style={styles.dragHandle} />
-            <Text style={styles.modalTitle}>New Event</Text>
-            {selectedDate && (
-              <Text style={styles.modalDate}>
-                {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-              </Text>
-            )}
-            {!selectedDate && (
-              <Text style={styles.modalHint}>Select a date on the calendar first</Text>
-            )}
-
-            <Text style={styles.inputLabel}>Title</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Event or task title"
-              placeholderTextColor={Colors.textFaint}
-              value={eventTitle}
-              onChangeText={setEventTitle}
-            />
-
-            <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCreate(false)}>
-                <Text style={styles.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.saveBtn, (createMutation.isPending || !selectedDate) && { opacity: 0.6 }]}
-                onPress={handleCreate}
-                disabled={createMutation.isPending || !selectedDate}
-              >
-                <Text style={styles.saveBtnText}>
-                  {createMutation.isPending ? 'Creating...' : 'Create'}
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
+            <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+              <View style={styles.dragHandle} />
+              <Text style={styles.modalTitle}>New Event</Text>
+              {selectedDate && (
+                <Text style={styles.modalDate}>
+                  {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
+              )}
+              {!selectedDate && (
+                <Text style={styles.modalHint}>Select a date on the calendar first</Text>
+              )}
+
+              <Text style={styles.inputLabel}>Title</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Event or task title"
+                placeholderTextColor={Colors.textFaint}
+                value={eventTitle}
+                onChangeText={setEventTitle}
+              />
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCreate(false)}>
+                  <Text style={styles.cancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.saveBtn, (createMutation.isPending || !selectedDate) && { opacity: 0.6 }]}
+                  onPress={handleCreate}
+                  disabled={createMutation.isPending || !selectedDate}
+                >
+                  <Text style={styles.saveBtnText}>
+                    {createMutation.isPending ? 'Creating...' : 'Create'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
     </View>
@@ -341,12 +343,12 @@ const styles = StyleSheet.create({
   dragHandle: { width: 36, height: 4, borderRadius: 2, backgroundColor: Colors.textFaint, alignSelf: 'center', marginBottom: Spacing.lg },
   modalTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.textWhite, marginBottom: Spacing.xs },
   modalDate: { fontSize: FontSize.sm, color: Colors.primaryLight, marginBottom: Spacing.lg },
-  modalHint: { fontSize: FontSize.xs, color: Colors.textFaint, marginBottom: Spacing.lg },
-  inputLabel: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary, marginBottom: 4, marginTop: Spacing.sm },
+  modalHint: { fontSize: FontSize.sm, color: Colors.textPrimary, marginBottom: Spacing.lg },
+  inputLabel: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary, marginBottom: 4, marginTop: Spacing.sm },
   input: {
     backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
     borderRadius: BorderRadius.lg, padding: Spacing.md,
-    fontSize: FontSize.sm, color: Colors.textWhite, marginBottom: Spacing.lg,
+    fontSize: FontSize.base, color: Colors.textWhite, marginBottom: Spacing.lg,
   },
   modalActions: { flexDirection: 'row', gap: Spacing.sm },
   cancelBtn: {

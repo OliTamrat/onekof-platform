@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -248,61 +248,63 @@ export default function BudgetScreen() {
         onRequestClose={() => setShowCreate(false)}
       >
         <Pressable style={s.modalOverlay} onPress={() => setShowCreate(false)}>
-          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
-            <View style={s.dragHandle} />
-            <Text style={s.modalTitle}>Add Expense</Text>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
+            <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+              <View style={s.dragHandle} />
+              <Text style={s.modalTitle}>Add Expense</Text>
 
-            {/* Budget selector (show which budget) */}
-            {budgets.length > 0 && (
-              <View style={s.budgetTag}>
-                <FontAwesome name="folder-o" size={11} color={Colors.primaryLight} />
-                <Text style={s.budgetTagText}>{budgets[0].project?.name || 'Budget'}</Text>
+              {/* Budget selector (show which budget) */}
+              {budgets.length > 0 && (
+                <View style={s.budgetTag}>
+                  <FontAwesome name="folder-o" size={11} color={Colors.primaryLight} />
+                  <Text style={s.budgetTagText}>{budgets[0].project?.name || 'Budget'}</Text>
+                </View>
+              )}
+
+              <Text style={s.inputLabel}>Description</Text>
+              <TextInput
+                style={s.input}
+                placeholder="What was this expense for?"
+                placeholderTextColor={Colors.textFaint}
+                value={desc}
+                onChangeText={setDesc}
+              />
+
+              <Text style={s.inputLabel}>Amount (ETB)</Text>
+              <TextInput
+                style={s.input}
+                placeholder="0.00"
+                placeholderTextColor={Colors.textFaint}
+                value={amount}
+                onChangeText={setAmount}
+                keyboardType="decimal-pad"
+              />
+
+              <Text style={s.inputLabel}>Vendor (optional)</Text>
+              <TextInput
+                style={s.input}
+                placeholder="Company or person paid"
+                placeholderTextColor={Colors.textFaint}
+                value={vendor}
+                onChangeText={setVendor}
+              />
+
+              <View style={s.modalActions}>
+                <TouchableOpacity style={s.cancelBtn} onPress={() => setShowCreate(false)}>
+                  <Text style={s.cancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.saveBtn, createMutation.isPending && { opacity: 0.6 }]}
+                  onPress={handleCreate}
+                  disabled={createMutation.isPending}
+                >
+                  <Text style={s.saveBtnText}>
+                    {createMutation.isPending ? 'Saving...' : 'Add Expense'}
+                  </Text>
+                </TouchableOpacity>
               </View>
-            )}
-
-            <Text style={s.inputLabel}>Description</Text>
-            <TextInput
-              style={s.input}
-              placeholder="What was this expense for?"
-              placeholderTextColor={Colors.textFaint}
-              value={desc}
-              onChangeText={setDesc}
-            />
-
-            <Text style={s.inputLabel}>Amount (ETB)</Text>
-            <TextInput
-              style={s.input}
-              placeholder="0.00"
-              placeholderTextColor={Colors.textFaint}
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType="decimal-pad"
-            />
-
-            <Text style={s.inputLabel}>Vendor (optional)</Text>
-            <TextInput
-              style={s.input}
-              placeholder="Company or person paid"
-              placeholderTextColor={Colors.textFaint}
-              value={vendor}
-              onChangeText={setVendor}
-            />
-
-            <View style={s.modalActions}>
-              <TouchableOpacity style={s.cancelBtn} onPress={() => setShowCreate(false)}>
-                <Text style={s.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[s.saveBtn, createMutation.isPending && { opacity: 0.6 }]}
-                onPress={handleCreate}
-                disabled={createMutation.isPending}
-              >
-                <Text style={s.saveBtnText}>
-                  {createMutation.isPending ? 'Saving...' : 'Add Expense'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
+            </Pressable>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
     </View>
@@ -427,13 +429,13 @@ const s = StyleSheet.create({
   },
   budgetTagText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight },
   inputLabel: {
-    fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary,
+    fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary,
     marginBottom: 4, marginTop: Spacing.sm,
   },
   input: {
     backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
     borderRadius: BorderRadius.lg, padding: Spacing.md,
-    fontSize: FontSize.sm, color: Colors.textWhite,
+    fontSize: FontSize.base, color: Colors.textWhite,
   },
   modalActions: {
     flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.lg,
