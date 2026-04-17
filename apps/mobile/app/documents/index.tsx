@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, Alert, Platform, ActivityIndicator } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
-import { apiFetch } from '../../src/lib/api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as DocumentPicker from 'expo-document-picker';
+import { apiFetch, apiUpload } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton, SearchBar } from '../../src/components';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -12,13 +13,17 @@ interface Document {
   id: string;
   title?: string;
   name?: string;
+  fileName?: string;
   type: string;
+  fileType?: string;
   updatedAt?: string;
   createdAt?: string;
+  uploadedAt?: string;
   createdBy?: { name?: string; email?: string };
   author?: { name?: string; email?: string };
   content?: string;
   size?: number;
+  fileSize?: number;
   status?: string;
 }
 
@@ -37,6 +42,18 @@ const DOC_TYPE: Record<string, { icon: string; color: string; label: string }> =
   WIKI: { icon: 'book', color: '#8B5CF6', label: 'Wiki' },
   TEMPLATE: { icon: 'copy', color: '#F59E0B', label: 'Template' },
   SHARED: { icon: 'share-alt', color: '#22C55E', label: 'Shared' },
+  invoice: { icon: 'file-text-o', color: '#3B82F6', label: 'Invoice' },
+  receipt: { icon: 'file-text-o', color: '#F59E0B', label: 'Receipt' },
+  contract: { icon: 'file-text-o', color: '#8B5CF6', label: 'Contract' },
+  report: { icon: 'file-text-o', color: '#22C55E', label: 'Report' },
+  other: { icon: 'file-o', color: Colors.textSecondary, label: 'File' },
+};
+
+/* ─── Status config ─── */
+const STATUS_CFG: Record<string, { color: string; label: string }> = {
+  PROCESSING: { color: '#F59E0B', label: 'Processing' },
+  COMPLETED: { color: '#22C55E', label: 'Ready' },
+  FAILED: { color: '#EF4444', label: 'Failed' },
 };
 
 /* ─── Relative time ─── */
@@ -57,9 +74,11 @@ function timeAgo(dateStr?: string): string {
 
 export default function DocumentsScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [uploading, setUploading] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['documents'],
@@ -70,9 +89,9 @@ export default function DocumentsScreen() {
 
   const filtered = useMemo(() => {
     return allDocs.filter((d) => {
-      const title = d.title || d.name || '';
+      const title = d.title || d.name || d.fileName || '';
       const matchSearch = !search || title.toLowerCase().includes(search.toLowerCase());
-      const matchType = !typeFilter || d.type === typeFilter;
+      const matchType = !typeFilter || d.type === typeFilter || d.fileType === typeFilter;
       return matchSearch && matchType;
     });
   }, [allDocs, search, typeFilter]);
@@ -90,6 +109,43 @@ export default function DocumentsScreen() {
     setRefreshing(false);
   }, [refetch]);
 
+  const pickAndUpload = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: [
+          'application/pdf',
+          'image/jpeg',
+          'image/png',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/msword',
+          'text/plain',
+        ],
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled || !result.assets?.[0]) return;
+
+      const asset = result.assets[0];
+      setUploading(true);
+
+      const formData = new FormData();
+      formData.append('file', {
+        uri: asset.uri,
+        name: asset.name,
+        type: asset.mimeType || 'application/octet-stream',
+      } as any);
+
+      await apiUpload('/api/documents/upload', formData);
+
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      Alert.alert('Uploaded', `${asset.name} uploaded successfully. AI processing will begin shortly.`);
+    } catch (err: any) {
+      Alert.alert('Upload failed', err?.message || 'Could not upload document');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <View style={s.container}>
       <ScreenHeader title="Documents" showBack />
@@ -103,9 +159,22 @@ export default function DocumentsScreen() {
         }
         ListHeaderComponent={
           <>
-            {/* Search */}
+            {/* Search + upload button */}
             <View style={s.searchRow}>
-              <SearchBar value={search} onChangeText={setSearch} placeholder="Search documents..." />
+              <View style={s.searchWrap}>
+                <SearchBar value={search} onChangeText={setSearch} placeholder="Search documents..." />
+              </View>
+              <TouchableOpacity
+                style={[s.uploadBtn, uploading && { opacity: 0.6 }]}
+                onPress={pickAndUpload}
+                disabled={uploading}
+              >
+                {uploading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <FontAwesome name="cloud-upload" size={16} color="#fff" />
+                )}
+              </TouchableOpacity>
             </View>
 
             {/* Filter chips — compact horizontal row */}
@@ -143,10 +212,12 @@ export default function DocumentsScreen() {
           </>
         }
         renderItem={({ item }) => {
-          const docCfg = DOC_TYPE[item.type] || DOC_TYPE.DOCUMENT;
-          const title = item.title || item.name || 'Untitled';
+          const docType = item.fileType || item.type || 'other';
+          const docCfg = DOC_TYPE[docType] || DOC_TYPE[item.type] || DOC_TYPE.other;
+          const title = item.title || item.name || item.fileName || 'Untitled';
           const author = item.createdBy?.name || item.createdBy?.email || item.author?.name || item.author?.email || '';
-          const updated = timeAgo(item.updatedAt || item.createdAt);
+          const updated = timeAgo(item.updatedAt || item.uploadedAt || item.createdAt);
+          const statusCfg = item.status ? STATUS_CFG[item.status] : null;
 
           return (
             <TouchableOpacity style={s.card} activeOpacity={0.7}>
@@ -163,6 +234,12 @@ export default function DocumentsScreen() {
                   <View style={[s.typeBadge, { backgroundColor: docCfg.color + '12', borderColor: docCfg.color + '30' }]}>
                     <Text style={[s.typeBadgeText, { color: docCfg.color }]}>{docCfg.label}</Text>
                   </View>
+                  {/* Status badge if processing */}
+                  {statusCfg && item.status !== 'COMPLETED' && (
+                    <View style={[s.typeBadge, { backgroundColor: statusCfg.color + '12', borderColor: statusCfg.color + '30' }]}>
+                      <Text style={[s.typeBadgeText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
+                    </View>
+                  )}
                   {/* Author + time */}
                   {(author || updated) && (
                     <Text style={s.metaText}>
@@ -181,7 +258,7 @@ export default function DocumentsScreen() {
           <EmptyState
             icon="file-text-o"
             title={search ? 'No matching documents' : 'No documents yet'}
-            description={search ? 'Try a different search term' : 'Documents and wiki articles will appear here'}
+            description={search ? 'Try a different search term' : 'Tap the upload button to add documents'}
           />
         }
       />
@@ -192,7 +269,16 @@ export default function DocumentsScreen() {
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
   list: { paddingBottom: 100 },
-  searchRow: { paddingHorizontal: Spacing.xl, paddingTop: Spacing.md, paddingBottom: Spacing.sm },
+  searchRow: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
+    paddingHorizontal: Spacing.xl, paddingTop: Spacing.md, paddingBottom: Spacing.sm,
+  },
+  searchWrap: { flex: 1 },
+  uploadBtn: {
+    width: 42, height: 42, borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
 
   /* Filter chips — compact inline row */
   filterRow: {

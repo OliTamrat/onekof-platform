@@ -171,6 +171,35 @@ export async function signIn(email: string, password: string): Promise<{
 }
 
 /**
+ * Upload a file via FormData (no JSON Content-Type header).
+ * Used for document uploads where the API expects multipart/form-data.
+ */
+export async function apiUpload<T = any>(
+  path: string,
+  formData: FormData,
+): Promise<T> {
+  const token = await getToken();
+  const orgSlug = await getOrgSlug();
+
+  const headers: Record<string, string> = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (orgSlug) headers['x-organization-slug'] = orgSlug;
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.text().catch(() => '');
+    throw new Error(`Upload ${res.status}: ${errorBody}`);
+  }
+
+  return res.json();
+}
+
+/**
  * Sign out — clear all stored credentials
  */
 export async function signOut() {
