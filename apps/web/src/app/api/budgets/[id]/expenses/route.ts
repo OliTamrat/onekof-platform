@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
-import { checkBudgetAccess, canApproveExpense } from '@/lib/budget-access';
+import { resolveAuthUser } from '@/lib/api-organization';
+import { checkBudgetAccess } from '@/lib/budget-access';
 import { BudgetAccess } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -17,18 +16,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Get budget to find project
@@ -42,7 +33,7 @@ export async function GET(
     }
 
     // Check budget access
-    const hasAccess = await checkBudgetAccess(user.id, budget.projectId, BudgetAccess.VIEW_ONLY);
+    const hasAccess = await checkBudgetAccess(authUser.id, budget.projectId, BudgetAccess.VIEW_ONLY);
 
     if (!hasAccess) {
       return NextResponse.json(
@@ -93,18 +84,10 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Get budget to find project
@@ -118,7 +101,7 @@ export async function POST(
     }
 
     // Check budget edit access
-    const hasAccess = await checkBudgetAccess(user.id, budget.projectId, BudgetAccess.EDIT);
+    const hasAccess = await checkBudgetAccess(authUser.id, budget.projectId, BudgetAccess.EDIT);
 
     if (!hasAccess) {
       return NextResponse.json(
@@ -171,7 +154,7 @@ export async function POST(
         receiptUrl,
         notes,
         status: 'PENDING',
-        submittedBy: user.id
+        submittedBy: authUser.id
       },
       include: {
         category: {

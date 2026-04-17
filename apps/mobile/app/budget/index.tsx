@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, ScrollView } from 'react-native';
 import { useState, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
@@ -24,6 +24,12 @@ interface Transaction {
   createdBy?: { name: string };
 }
 
+interface BudgetItem {
+  id: string;
+  totalBudget: number;
+  project?: { id: string; name: string };
+}
+
 /* ─── Stat card config (matches Dashboard pattern with icon boxes) ─── */
 const STAT_CARDS = [
   { key: 'budget', label: 'Budget', icon: 'briefcase' as const, color: Colors.textWhite, bg: 'rgba(255,255,255,0.06)' },
@@ -39,8 +45,13 @@ const TX_FILTERS: Array<{ key: string | null; label: string }> = [
 ];
 
 export default function BudgetScreen() {
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [desc, setDesc] = useState('');
+  const [amount, setAmount] = useState('');
+  const [vendor, setVendor] = useState('');
 
   const { data: summary, refetch: refetchSummary } = useQuery({
     queryKey: ['budget-summary'],
@@ -54,6 +65,38 @@ export default function BudgetScreen() {
     queryFn: () => apiFetch<{ transactions: Transaction[] }>('/api/budgets/transactions').catch(() => ({ transactions: [] })),
   });
 
+  // Fetch budgets list to get a budget ID for expense creation
+  const { data: budgetsData } = useQuery({
+    queryKey: ['budgets-list'],
+    queryFn: () => apiFetch<{ budgets: BudgetItem[] }>('/api/budgets').catch(() => ({ budgets: [] })),
+  });
+
+  const budgets = budgetsData?.budgets || [];
+
+  const createMutation = useMutation({
+    mutationFn: (data: { budgetId: string; description: string; amount: number; vendor?: string }) =>
+      apiFetch(`/api/budgets/${data.budgetId}/expenses`, {
+        method: 'POST',
+        body: JSON.stringify({
+          description: data.description,
+          amount: data.amount,
+          transactionDate: new Date().toISOString(),
+          vendor: data.vendor || undefined,
+        }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['budget-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['budget-transactions'] });
+      setShowCreate(false);
+      setDesc('');
+      setAmount('');
+      setVendor('');
+    },
+    onError: (err: any) => {
+      Alert.alert('Error', err?.message || 'Could not create expense');
+    },
+  });
+
   const transactions = (txData?.transactions || []).filter(
     (t) => !typeFilter || t.type === typeFilter
   );
@@ -64,8 +107,8 @@ export default function BudgetScreen() {
     setRefreshing(false);
   }, [refetchSummary, refetchTx]);
 
-  const fmt = (amount: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'ETB', maximumFractionDigits: 0 }).format(amount);
+  const fmt = (val: number) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'ETB', maximumFractionDigits: 0 }).format(val);
 
   const spentPct = summary?.totalBudget ? Math.min((summary.totalSpent / summary.totalBudget) * 100, 100) : 0;
 
@@ -74,6 +117,14 @@ export default function BudgetScreen() {
     spent: summary?.totalSpent || 0,
     income: summary?.totalIncome || 0,
     remaining: summary?.remaining || 0,
+  };
+
+  const handleCreate = () => {
+    const parsedAmount = parseFloat(amount);
+    if (!desc.trim()) { Alert.alert('Missing', 'Enter a description'); return; }
+    if (!parsedAmount || parsedAmount <= 0) { Alert.alert('Missing', 'Enter a valid amount'); return; }
+    if (budgets.length === 0) { Alert.alert('No budgets', 'Create a budget on the web app first'); return; }
+    createMutation.mutate({ budgetId: budgets[0].id, description: desc.trim(), amount: parsedAmount, vendor: vendor.trim() });
   };
 
   return (
@@ -89,7 +140,7 @@ export default function BudgetScreen() {
         }
         ListHeaderComponent={
           <>
-            {/* ═══ Stat Cards — 2×2 grid with icon boxes (matches Dashboard) ═══ */}
+            {/* ═══ Stat Cards — 2x2 grid with icon boxes (matches Dashboard) ═══ */}
             <View style={s.statsGrid}>
               {STAT_CARDS.map((stat) => (
                 <View key={stat.key} style={s.statCard}>
@@ -133,23 +184,25 @@ export default function BudgetScreen() {
               </View>
             )}
 
-            {/* ═══ Transactions header + filter ═══ */}
+            {/* ═══ Transactions header + filter + add button ═══ */}
             <View style={s.sectionHeader}>
               <Text style={s.sectionLabel}>TRANSACTIONS</Text>
-              <Text style={s.sectionCount}>{transactions.length}</Text>
+              <View style={s.sectionRight}>
+                <Text style={s.sectionCount}>{transactions.length}</Text>
+                <TouchableOpacity style={s.addBtn} onPress={() => setShowCreate(true)}>
+                  <FontAwesome name="plus" size={10} color="#fff" />
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={s.filterRow}>
               {TX_FILTERS.map((f) => {
                 const active = typeFilter === f.key;
                 return (
-                  <View key={f.key ?? 'all'} style={[s.filterChip, active && s.filterChipActive]}>
-                    <Text
-                      style={[s.filterChipText, active && s.filterChipTextActive]}
-                      onPress={() => setTypeFilter(f.key)}
-                    >
+                  <TouchableOpacity key={f.key ?? 'all'} style={[s.filterChip, active && s.filterChipActive]} onPress={() => setTypeFilter(f.key)}>
+                    <Text style={[s.filterChipText, active && s.filterChipTextActive]}>
                       {f.label}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </View>
@@ -186,6 +239,72 @@ export default function BudgetScreen() {
           <EmptyState icon="money" title="No transactions" description="Budget entries will appear here" />
         }
       />
+
+      {/* ═══ Create Expense Modal ═══ */}
+      <Modal
+        visible={showCreate}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCreate(false)}
+      >
+        <Pressable style={s.modalOverlay} onPress={() => setShowCreate(false)}>
+          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={s.dragHandle} />
+            <Text style={s.modalTitle}>Add Expense</Text>
+
+            {/* Budget selector (show which budget) */}
+            {budgets.length > 0 && (
+              <View style={s.budgetTag}>
+                <FontAwesome name="folder-o" size={11} color={Colors.primaryLight} />
+                <Text style={s.budgetTagText}>{budgets[0].project?.name || 'Budget'}</Text>
+              </View>
+            )}
+
+            <Text style={s.inputLabel}>Description</Text>
+            <TextInput
+              style={s.input}
+              placeholder="What was this expense for?"
+              placeholderTextColor={Colors.textFaint}
+              value={desc}
+              onChangeText={setDesc}
+            />
+
+            <Text style={s.inputLabel}>Amount (ETB)</Text>
+            <TextInput
+              style={s.input}
+              placeholder="0.00"
+              placeholderTextColor={Colors.textFaint}
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="decimal-pad"
+            />
+
+            <Text style={s.inputLabel}>Vendor (optional)</Text>
+            <TextInput
+              style={s.input}
+              placeholder="Company or person paid"
+              placeholderTextColor={Colors.textFaint}
+              value={vendor}
+              onChangeText={setVendor}
+            />
+
+            <View style={s.modalActions}>
+              <TouchableOpacity style={s.cancelBtn} onPress={() => setShowCreate(false)}>
+                <Text style={s.cancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.saveBtn, createMutation.isPending && { opacity: 0.6 }]}
+                onPress={handleCreate}
+                disabled={createMutation.isPending}
+              >
+                <Text style={s.saveBtnText}>
+                  {createMutation.isPending ? 'Saving...' : 'Add Expense'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -194,7 +313,7 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
   scrollContent: { padding: Spacing.lg, gap: Spacing.sm, paddingBottom: 100 },
 
-  /* ── Stat cards — 2×2 grid with icon boxes ── */
+  /* ── Stat cards — 2x2 grid with icon boxes ── */
   statsGrid: {
     flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm,
     marginBottom: Spacing.md,
@@ -237,7 +356,13 @@ const s = StyleSheet.create({
     fontSize: 10, fontWeight: '700', color: Colors.textFaint,
     letterSpacing: 1.2, textTransform: 'uppercase',
   },
+  sectionRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   sectionCount: { fontSize: FontSize.xs, color: Colors.textFaint },
+  addBtn: {
+    width: 26, height: 26, borderRadius: 13,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
 
   /* ── Filter chips ── */
   filterRow: {
@@ -274,4 +399,58 @@ const s = StyleSheet.create({
   txDate: { fontSize: FontSize.xs, color: Colors.textFaint },
   txAuthor: { fontSize: FontSize.xs, color: Colors.textFaint },
   txAmount: { fontSize: FontSize.sm, fontWeight: '700' },
+
+  /* ═══ Modal ═══ */
+  modalOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: Spacing.lg, paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.lg,
+  },
+  dragHandle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: Colors.textFaint, alignSelf: 'center',
+    marginBottom: Spacing.lg,
+  },
+  modalTitle: {
+    fontSize: FontSize.lg, fontWeight: '700', color: Colors.textWhite,
+    marginBottom: Spacing.md,
+  },
+  budgetTag: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: BorderRadius.full, backgroundColor: 'rgba(28,140,125,0.1)',
+    alignSelf: 'flex-start', marginBottom: Spacing.lg,
+  },
+  budgetTagText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight },
+  inputLabel: {
+    fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary,
+    marginBottom: 4, marginTop: Spacing.sm,
+  },
+  input: {
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, padding: Spacing.md,
+    fontSize: FontSize.sm, color: Colors.textWhite,
+  },
+  modalActions: {
+    flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.lg,
+  },
+  cancelBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  cancelBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  saveBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+  },
+  saveBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: '#fff' },
 });

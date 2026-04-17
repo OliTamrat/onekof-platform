@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -26,6 +27,7 @@ interface Team {
 }
 
 export default function TeamsScreen() {
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -91,7 +93,7 @@ export default function TeamsScreen() {
           const overflowCount = Math.max(0, count - displayMembers.length);
 
           return (
-            <TouchableOpacity style={s.card} activeOpacity={0.7}>
+            <TouchableOpacity style={s.card} activeOpacity={0.7} onPress={() => router.push(`/team/${item.id}`)}>
               {/* Team icon */}
               <View style={[s.teamIcon, { backgroundColor: (item.color || Colors.primary) + '15' }]}>
                 <FontAwesome name="users" size={18} color={item.color || Colors.primaryLight} />
