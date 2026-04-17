@@ -4,9 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
-import { authOptions } from '@/lib/auth';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -20,8 +19,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const authUser = await resolveAuthUser();
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -46,16 +45,16 @@ export async function GET(
     }
 
     // Verify user has access to this document's organization
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        organizations: {
-          where: { organizationId: document.organizationId },
+    const membership = await prisma.organizationMember.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: document.organizationId,
+          userId: authUser.id,
         },
       },
     });
 
-    if (!user || !user.organizations.length) {
+    if (!membership) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
@@ -110,8 +109,8 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const authUser = await resolveAuthUser();
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -150,8 +149,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const authUser = await resolveAuthUser();
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

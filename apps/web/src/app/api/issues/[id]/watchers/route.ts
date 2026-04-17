@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import logger from '@/lib/logger';
@@ -16,25 +15,12 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      );
-    }
-
-    // Get current user
-    const currentUser = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
       );
     }
 
@@ -116,25 +102,12 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.email) {
+    if (!authUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      );
-    }
-
-    // Get current user
-    const currentUser = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
       );
     }
 
@@ -151,7 +124,7 @@ export async function POST(
     } = body;
 
     // If no userId provided, use current user
-    const targetUserId = userId || currentUser.id;
+    const targetUserId = userId || authUser.id;
 
     // Verify issue exists
     const issue = await prisma.task.findUnique({
@@ -204,7 +177,7 @@ export async function POST(
         notifyOnAssignment,
         notifyOnPriorityChange,
         notifyOnDueDate,
-        addedBy: currentUser.id,
+        addedBy: authUser.id,
       },
       include: {
         user: {
@@ -220,7 +193,7 @@ export async function POST(
 
     // Log activity
     await ActivityLogger.log({
-      userId: currentUser.id,
+      userId: authUser.id,
       organizationId: issue.project.organizationId,
       activityType: 'TASK_WATCHED',
       entityType: 'TASK',
@@ -231,7 +204,7 @@ export async function POST(
         watchReason,
       },
       metadata: {
-        addedByCurrentUser: targetUserId === currentUser.id,
+        addedByCurrentUser: targetUserId === authUser.id,
       },
     });
 

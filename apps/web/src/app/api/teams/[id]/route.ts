@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import logger from '@/lib/logger';
 
@@ -12,9 +11,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -53,7 +52,7 @@ export async function GET(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -101,9 +100,9 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -127,7 +126,7 @@ export async function PATCH(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -136,7 +135,7 @@ export async function PATCH(
       where: {
         teamId_userId: {
           teamId: params.id,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
@@ -201,9 +200,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const authUser = await resolveAuthUser();
 
-    if (!session?.user?.id) {
+    if (!authUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -232,7 +231,7 @@ export async function DELETE(
       where: {
         organizationId_userId: {
           organizationId: team.organizationId,
-          userId: session.user.id,
+          userId: authUser.id,
         },
       },
     });
