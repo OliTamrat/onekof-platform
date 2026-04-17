@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, StatusBadge, PRIORITY_CONFIG } from '../../src/components';
+import { toEthiopian, formatEthiopian } from '../../src/utils/ethiopian-calendar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface Issue {
@@ -63,6 +64,13 @@ export default function CalendarScreen() {
     return days;
   }, [year, month]);
 
+  // Ethiopian date for the 1st and 15th of the displayed month (to show month range)
+  const ethFirst = toEthiopian(year, month + 1, 1);
+  const ethMid = toEthiopian(year, month + 1, 15);
+  const ethLabel = ethFirst.monthName === ethMid.monthName
+    ? `${ethFirst.monthName} ${ethFirst.year}`
+    : `${ethFirst.monthName} – ${ethMid.monthName} ${ethMid.year}`;
+
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
   const today = new Date().toISOString().split('T')[0];
@@ -112,7 +120,10 @@ export default function CalendarScreen() {
           <TouchableOpacity onPress={prevMonth} style={styles.navBtn}>
             <FontAwesome name="chevron-left" size={14} color={Colors.textSecondary} />
           </TouchableOpacity>
-          <Text style={styles.monthTitle}>{MONTHS[month]} {year}</Text>
+          <View style={styles.monthCenter}>
+            <Text style={styles.monthTitle}>{MONTHS[month]} {year}</Text>
+            <Text style={styles.ethMonthTitle}>{ethLabel}</Text>
+          </View>
           <View style={styles.navRight}>
             <TouchableOpacity onPress={nextMonth} style={styles.navBtn}>
               <FontAwesome name="chevron-right" size={14} color={Colors.textSecondary} />
@@ -154,6 +165,9 @@ export default function CalendarScreen() {
                 ]}>
                   {item.day}
                 </Text>
+                <Text style={styles.ethDay}>
+                  {toEthiopian(year, month + 1, item.day).day}
+                </Text>
                 {hasIssues && (
                   <View style={styles.dotRow}>
                     {issuesByDate[item.dateKey].slice(0, 3).map((issue, j) => (
@@ -174,6 +188,12 @@ export default function CalendarScreen() {
           <View style={styles.selectedSection}>
             <Text style={styles.selectedTitle}>
               {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </Text>
+            <Text style={styles.selectedEthDate}>
+              {(() => {
+                const [sy, sm, sd] = selectedDate.split('-').map(Number);
+                return formatEthiopian(toEthiopian(sy, sm, sd));
+              })()}
             </Text>
             {selectedIssues.length > 0 ? (
               selectedIssues.map((issue) => (
@@ -258,7 +278,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   navBtn: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
+  monthCenter: { alignItems: 'center' },
   monthTitle: { fontSize: FontSize.lg, fontWeight: '600', color: Colors.textWhite },
+  ethMonthTitle: { fontSize: FontSize.xs, color: Colors.primaryLight, marginTop: 2 },
   dayHeaders: { flexDirection: 'row', marginBottom: Spacing.sm },
   dayHeader: {
     flex: 1, textAlign: 'center', fontSize: FontSize.xs, fontWeight: '500', color: Colors.textFaint,
@@ -277,11 +299,15 @@ const styles = StyleSheet.create({
   dayNumber: { fontSize: FontSize.sm, color: Colors.textSecondary },
   dayNumberToday: { color: Colors.primaryLight, fontWeight: '700' },
   dayNumberSelected: { color: Colors.textWhite, fontWeight: '700' },
-  dotRow: { flexDirection: 'row', gap: 2, marginTop: 2 },
+  ethDay: { fontSize: 8, color: Colors.primaryLight, opacity: 0.6, marginTop: -1 },
+  dotRow: { flexDirection: 'row', gap: 2, marginTop: 1 },
   issueDot: { width: 4, height: 4, borderRadius: 2 },
   selectedSection: { marginTop: Spacing['2xl'] },
   selectedTitle: {
-    fontSize: FontSize.md, fontWeight: '600', color: Colors.textWhite, marginBottom: Spacing.lg,
+    fontSize: FontSize.md, fontWeight: '600', color: Colors.textWhite, marginBottom: 2,
+  },
+  selectedEthDate: {
+    fontSize: FontSize.xs, color: Colors.primaryLight, marginBottom: Spacing.lg,
   },
   issueCard: {
     flexDirection: 'row', alignItems: 'flex-start',
