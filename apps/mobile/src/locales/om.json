@@ -1,0 +1,181 @@
+{
+  "common": {
+    "loading": "Fe'aa jira...",
+    "save": "Olchi",
+    "cancel": "Haquu",
+    "delete": "Haqi",
+    "edit": "Gulaali",
+    "create": "Uumi",
+    "search": "Barbaadi",
+    "back": "Duubatti",
+    "submit": "Galchi",
+    "confirm": "Mirkaneessi",
+    "close": "Cufi",
+    "yes": "Eeyyee",
+    "no": "Lakki",
+    "all": "Hunda",
+    "noResults": "Bu'aan hin argamne",
+    "viewAll": "Hunda ilaali",
+    "signIn": "Seeni",
+    "signOut": "Ba'i",
+    "refresh": "Haaromsi",
+    "status": "Haala",
+    "name": "Maqaa",
+    "description": "Ibsa",
+    "date": "Guyyaa",
+    "type": "Gosa",
+    "priority": "Dursa",
+    "amount": "Hamma",
+    "email": "Imeelii",
+    "add": "Dabali",
+    "remove": "Haqi",
+    "invite": "Affeeraa",
+    "saving": "Olchaa jira...",
+    "adding": "Dabalaa jira...",
+    "sending": "Ergaa jira...",
+    "creating": "Uumaa jira...",
+    "uploading": "Olkaa'aa jira..."
+  },
+  "tabs": {
+    "home": "Mana",
+    "projects": "Pirojektota",
+    "issues": "Hojii Hunda",
+    "dashboards": "Daashboordii",
+    "notifications": "Beeksisa",
+    "more": "Dabalataa"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Akkam bultee",
+      "afternoon": "Akkam ooltee",
+      "evening": "Galgala gaarii"
+    },
+    "totalIssues": "Dhimma {count} pirojektii {projects} keessatti",
+    "completed": "Xumuraman",
+    "inProgress": "Hojjatamaa jira",
+    "toDo": "Hojjatamuu qaba",
+    "overdue": "Yeroon darbe",
+    "statusOverview": "Haala Waliigalaa",
+    "priorityBreakdown": "Qoodama Dursaa",
+    "typesOfWork": "Gosa Hojii",
+    "myIssues": "Dhimma Koo",
+    "seeAll": "Hunda ilaali",
+    "recentActivity": "Sochii dhiyoo",
+    "noActivity": "Sochiin hin jiru",
+    "noIssuesAssigned": "Dhimmi siif ramadame hin jiru"
+  },
+  "issues": {
+    "title": "Dhimmoota",
+    "createIssue": "Dhimma Haaraa",
+    "noIssues": "Dhimmi hin jiru",
+    "assignee": "Nama ramadame",
+    "reporter": "Gabaasaa",
+    "dueDate": "Guyyaa xumuraa",
+    "labels": "Moggaasa",
+    "comments": "Yaada",
+    "subtasks": "Hojii xiqqaa",
+    "addComment": "Yaada dabali...",
+    "deleteConfirm": "Dhimma kana haquu?",
+    "deleteMessage": "Tarkaanfiin kun deebi'uu hin danda'u."
+  },
+  "projects": {
+    "title": "Pirojektota",
+    "createProject": "Pirojektii Haaraa",
+    "noProjects": "Pirojektiin hin jiru",
+    "board": "Boordii",
+    "list": "Tarree",
+    "members": "Miseensota"
+  },
+  "teams": {
+    "title": "Gareelee",
+    "addMember": "Miseensa Garee Dabali",
+    "addMemberHint": "Imeelii miseensa dhaabbataa galchaa. Yoo dhaabbaticha keessa hin jirre, affeeraan ergama.",
+    "removeMember": "Miseensa haqi",
+    "removeConfirm": "{name} garee kana keessaa haquu?",
+    "noTeams": "Gareen hin jiru",
+    "lead": "Hoogganaa",
+    "member": "Miseensa"
+  },
+  "budget": {
+    "title": "Bajata",
+    "addExpense": "Baasii Dabali",
+    "totalBudget": "Bajata",
+    "spent": "Ba'e",
+    "income": "Galii",
+    "remaining": "Hafe",
+    "transactions": "Daldalaa",
+    "noTransactions": "Daldalaan hin jiru",
+    "budgetUsage": "Itti Fayyadama Bajataa",
+    "vendor": "Dhiyeessaa",
+    "vendorHint": "Dhaabbata ykn nama kaffalame"
+  },
+  "goals": {
+    "title": "Galma",
+    "noGoals": "Galmni hin jiru",
+    "noGoalsDesc": "Galma garee keessanii hordofuuf galma kaa'aa",
+    "progress": "Adeemsa",
+    "active": "Hojii irra",
+    "onTrack": "Karaa irra",
+    "atRisk": "Balaa irra",
+    "behind": "Duuba",
+    "completed": "Xumuraman",
+    "avgProgress": "Giddu galeessa"
+  },
+  "documents": {
+    "title": "Sanada",
+    "upload": "Olkaa'i",
+    "noDocuments": "Sananni hin jiru",
+    "uploadHint": "Sanada dabaluuf qabduu olkaa'uu tuqi",
+    "processing": "Hojjatamaa jira",
+    "ready": "Qophaa'e",
+    "failed": "Hin milkoofne"
+  },
+  "calendar": {
+    "title": "Kaaleendarii",
+    "newEvent": "Taateewwan Haaraa",
+    "selectDate": "Dursa kaaleendarii irraa guyyaa filadhu",
+    "eventTitle": "Mata duree taateewwaa ykn hojii",
+    "noIssuesDue": "Guyyaa kana dhimmi hin jiru"
+  },
+  "notifications": {
+    "title": "Beeksisa",
+    "unread": "{count} hin dubbifamne",
+    "allCaughtUp": "Hunda hordofteetta",
+    "readAll": "Hunda dubbisi",
+    "noNotifications": "Hunda hordofteetta",
+    "noNotificationsDesc": "Hojii hordoftuu, ramadamtee ykn gabaastee irratti jijjiiramni as mul'ata.",
+    "today": "Har'a",
+    "yesterday": "Kaleessa",
+    "thisWeek": "Torbee kana",
+    "older": "Durii"
+  },
+  "members": {
+    "title": "Miseensota",
+    "inviteMember": "Miseensa Affeeraa",
+    "inviteHint": "Teessoo imeelii isaanii galchaa. {org} makuuf affeeraan isaanif ergama.",
+    "sendInvite": "Affeeraa Ergi"
+  },
+  "settings": {
+    "title": "Qindaa'ina",
+    "account": "Herrega",
+    "language": "Afaan",
+    "security": "Nageenya",
+    "notifications": "Beeksisa",
+    "organization": "Dhaabbata",
+    "assignments": "Ramaddii",
+    "comments": "Yaada",
+    "mentions": "@Waamicha",
+    "dueDates": "Guyyaa xumuraa",
+    "signOutConfirm": "Ba'uu barbaaddaa?"
+  },
+  "profile": {
+    "title": "Eenyummaa",
+    "switchOrg": "Dhaabbata Jijjiiri"
+  },
+  "search": {
+    "title": "Barbaadi",
+    "placeholder": "Dhimma, pirojektii barbaadi...",
+    "noResults": "Bu'aan hin jiru",
+    "tryDifferent": "Jecha biraa yaalaa"
+  }
+}

@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../src/contexts/auth-context';
+import { useLanguage, LOCALE_NAMES, type Locale } from '../../src/contexts/language-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, Avatar } from '../../src/components';
 import { isBiometricAvailable, isBiometricEnabled, setBiometricEnabled, getBiometricType } from '../../src/lib/biometric';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /* ─── Language options ─── */
-const LANGUAGES = [
+const LANGUAGES: { code: Locale; label: string; native: string }[] = [
   { code: 'en', label: 'English', native: 'English' },
   { code: 'am', label: 'Amharic', native: 'አማርኛ' },
   { code: 'om', label: 'Oromo', native: 'Afaan Oromoo' },
@@ -17,10 +18,10 @@ const LANGUAGES = [
 
 export default function SettingsScreen() {
   const { user, currentOrg, signOut } = useAuth();
+  const { locale, setLocale, t } = useLanguage();
   const [bioAvailable, setBioAvailable] = useState(false);
   const [bioEnabled, setBioEnabled] = useState(false);
   const [bioLabel, setBioLabel] = useState('Biometric');
-  const [selectedLang, setSelectedLang] = useState('en');
   const [showLangPicker, setShowLangPicker] = useState(false);
 
   // Notification prefs (local state for now — Phase 2 will persist)
@@ -47,7 +48,7 @@ export default function SettingsScreen() {
     ]);
   };
 
-  const currentLang = LANGUAGES.find((l) => l.code === selectedLang) || LANGUAGES[0];
+  const currentLang = LANGUAGES.find((l) => l.code === locale) as typeof LANGUAGES[0];
 
   return (
     <View style={s.container}>
@@ -86,14 +87,14 @@ export default function SettingsScreen() {
               {LANGUAGES.map((lang) => (
                 <TouchableOpacity
                   key={lang.code}
-                  style={[s.langOption, selectedLang === lang.code && s.langOptionActive]}
-                  onPress={() => { setSelectedLang(lang.code); setShowLangPicker(false); }}
+                  style={[s.langOption, locale === lang.code && s.langOptionActive]}
+                  onPress={() => { setLocale(lang.code); setShowLangPicker(false); }}
                 >
-                  <Text style={[s.langText, selectedLang === lang.code && s.langTextActive]}>
+                  <Text style={[s.langText, locale === lang.code && s.langTextActive]}>
                     {lang.native}
                   </Text>
                   <Text style={s.langSub}>{lang.label}</Text>
-                  {selectedLang === lang.code && (
+                  {locale === lang.code && (
                     <FontAwesome name="check" size={12} color={Colors.primaryLight} />
                   )}
                 </TouchableOpacity>

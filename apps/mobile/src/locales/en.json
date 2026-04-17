@@ -1,0 +1,181 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "back": "Back",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "noResults": "No results found",
+    "viewAll": "View all",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "refresh": "Refresh",
+    "status": "Status",
+    "name": "Name",
+    "description": "Description",
+    "date": "Date",
+    "type": "Type",
+    "priority": "Priority",
+    "amount": "Amount",
+    "email": "Email",
+    "add": "Add",
+    "remove": "Remove",
+    "invite": "Invite",
+    "saving": "Saving...",
+    "adding": "Adding...",
+    "sending": "Sending...",
+    "creating": "Creating...",
+    "uploading": "Uploading..."
+  },
+  "tabs": {
+    "home": "Home",
+    "projects": "Projects",
+    "issues": "All Work",
+    "dashboards": "Dashboards",
+    "notifications": "Notifications",
+    "more": "More"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "totalIssues": "{count} total issues across {projects} projects",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "toDo": "To Do",
+    "overdue": "Overdue",
+    "statusOverview": "Status Overview",
+    "priorityBreakdown": "Priority Breakdown",
+    "typesOfWork": "Types of Work",
+    "myIssues": "My Issues",
+    "seeAll": "See all",
+    "recentActivity": "Recent activity",
+    "noActivity": "No activity yet",
+    "noIssuesAssigned": "No issues assigned to you"
+  },
+  "issues": {
+    "title": "Issues",
+    "createIssue": "New Issue",
+    "noIssues": "No issues yet",
+    "assignee": "Assignee",
+    "reporter": "Reporter",
+    "dueDate": "Due date",
+    "labels": "Labels",
+    "comments": "Comments",
+    "subtasks": "Subtasks",
+    "addComment": "Add a comment...",
+    "deleteConfirm": "Delete this issue?",
+    "deleteMessage": "This action cannot be undone."
+  },
+  "projects": {
+    "title": "Projects",
+    "createProject": "New Project",
+    "noProjects": "No projects yet",
+    "board": "Board",
+    "list": "List",
+    "members": "Members"
+  },
+  "teams": {
+    "title": "Teams",
+    "addMember": "Add Team Member",
+    "addMemberHint": "Enter the email of an organization member. If they're not in the org yet, an invitation will be sent.",
+    "removeMember": "Remove member",
+    "removeConfirm": "Remove {name} from this team?",
+    "noTeams": "No teams yet",
+    "lead": "Lead",
+    "member": "Member"
+  },
+  "budget": {
+    "title": "Budget",
+    "addExpense": "Add Expense",
+    "totalBudget": "Budget",
+    "spent": "Spent",
+    "income": "Income",
+    "remaining": "Remaining",
+    "transactions": "Transactions",
+    "noTransactions": "No transactions",
+    "budgetUsage": "Budget Usage",
+    "vendor": "Vendor",
+    "vendorHint": "Company or person paid"
+  },
+  "goals": {
+    "title": "Goals",
+    "noGoals": "No goals yet",
+    "noGoalsDesc": "Set goals to track your team's progress toward key outcomes",
+    "progress": "Progress",
+    "active": "Active",
+    "onTrack": "On Track",
+    "atRisk": "At Risk",
+    "behind": "Behind",
+    "completed": "Completed",
+    "avgProgress": "Avg"
+  },
+  "documents": {
+    "title": "Documents",
+    "upload": "Upload",
+    "noDocuments": "No documents yet",
+    "uploadHint": "Tap the upload button to add documents",
+    "processing": "Processing",
+    "ready": "Ready",
+    "failed": "Failed"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "newEvent": "New Event",
+    "selectDate": "Select a date on the calendar first",
+    "eventTitle": "Event or task title",
+    "noIssuesDue": "No issues due on this date"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "{count} unread",
+    "allCaughtUp": "All caught up",
+    "readAll": "Read all",
+    "noNotifications": "You're all caught up",
+    "noNotificationsDesc": "Updates on tasks you watch, are assigned, or report will appear here.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This week",
+    "older": "Older"
+  },
+  "members": {
+    "title": "Members",
+    "inviteMember": "Invite Member",
+    "inviteHint": "Enter their email address. They'll receive an invitation to join {org}.",
+    "sendInvite": "Send Invite"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "language": "Language",
+    "security": "Security",
+    "notifications": "Notifications",
+    "organization": "Organization",
+    "assignments": "Assignments",
+    "comments": "Comments",
+    "mentions": "@Mentions",
+    "dueDates": "Due dates",
+    "signOutConfirm": "Are you sure you want to sign out?"
+  },
+  "profile": {
+    "title": "Profile",
+    "switchOrg": "Switch Organization"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search issues, projects...",
+    "noResults": "No results",
+    "tryDifferent": "Try a different search term"
+  }
+}

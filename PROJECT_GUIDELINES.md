@@ -303,56 +303,31 @@ All items are gated to "before first real customer," not urgent pre-launch.
 - ~~API auth fix (P0 #3)~~ — 7 endpoints switched from `getServerSession` (web-only) to `resolveAuthUser` (web + mobile Bearer JWT): goals/[id], teams/[id], teams/[id]/members, documents/[id], projects/[id]/members, issues/[id]/subtasks, issues/[id]/watchers
 - ~~@mention endpoint~~ — `/api/auth/mobile/members` created with `force-dynamic`
 
+**Shipped 2026-04-17 (late session — 8 commits):**
+- ~~P0 #1: Budget summary + transactions~~ — created GET `/api/budgets/summary` and `/api/budgets/transactions` endpoints
+- ~~P0 #2: Goals edit modal~~ — bottom sheet with progress presets, status picker, auto-complete
+- ~~P1 #1: Team member management~~ — team detail screen, add/remove members, email invite
+- ~~P1 #2: Document upload~~ — expo-document-picker, FormData upload, AI processing
+- ~~P1 #3: Budget expense creation~~ — create expense modal with description/amount/vendor
+- ~~P1 #4: Goals inline progress~~ — covered by P0 #2 edit modal
+- ~~P2: Settings screen~~ — language picker (5 langs), biometric toggle, notification prefs
+- ~~P2: Members management~~ — org-level member list with roles, invite by email
+- ~~P2: Calendar events~~ — create events on selected date via issue creation
+- ~~P2: Notifications Phase 2~~ — Notification model, read tracking, mark-as-read on tap, "Read all" button
+- ~~P3: Ethiopian calendar~~ — dual Gregorian/Ethiopian display with Ge'ez month names
+- ~~Fix: keyboard avoidance~~ — KeyboardAvoidingView on all 5 modal screens
+- ~~Fix: text visibility~~ — bumped hint/label text from 30-50% to 85% opacity
+- ~~Fix: homepage layout~~ — compact stat row + horizontal quick-action strip
+- ~~Auth fixes~~ — 3 more endpoints converted: teams/[id]/members/[userId] DELETE+PATCH, budgets/[id]/expenses GET+POST
+- ~~i18n infrastructure~~ — useLanguage hook, LanguageProvider, 5 locale files, AsyncStorage persistence
+
 **Remaining — prioritized task list:**
 
-#### P0 — Critical (BROKEN, fix first)
+#### P0/P1/P2 — ALL SHIPPED
 
-**P0 #1: Fix Budget screen — missing API endpoints**
-- `/api/budgets/summary` and `/api/budgets/transactions` don't exist (404)
-- Budget screen shows zeros because endpoints fail silently
-- **Fix:** Either create these 2 endpoints OR rewire mobile Budget screen to use `/api/budgets` which exists and uses `resolveUserOrganization` (mobile-compatible)
-- **Effort:** 30 min
+#### P3 — Polish (remaining)
 
-**P0 #2: Fix Goals update UI — auth fixed, UI missing**
-- `/api/goals/[id]` PATCH now works from mobile (auth fixed today)
-- But Goals screen has no edit button / update modal — cards are read-only
-- **Fix:** Add edit modal for progress update, status change, target date
-- **Effort:** 30 min
-
-#### P1 — High (missing CRUD on existing screens)
-
-**P1 #1: Teams — add/remove members**
-- Mobile can view teams but can't manage membership
-- Auth on `/api/teams/[id]/members` now fixed (today)
-- **Fix:** Add member picker + remove button on team detail
-- **Effort:** 45 min
-
-**P1 #2: Documents — upload + create**
-- Mobile can view documents but can't upload/create
-- Auth on `/api/documents/[id]` now fixed (today)
-- **Fix:** Add file picker / camera, upload to Vercel Blob, create doc record
-- **Effort:** 1 hr
-
-**P1 #3: Budget — create transaction**
-- After P0 #1 fix, add form to enter income/expense from mobile
-- **Effort:** 30 min
-
-**P1 #4: Goals — update progress inline**
-- After P0 #2 fix, add progress slider or quick-edit on goal cards
-- **Effort:** 30 min
-
-#### P2 — Medium (feature gaps)
-
-- **AI Document Processing** — camera/upload → AI extraction → results (2 hr)
-- **Calendar events** — dedicated event creation, not just issue due dates (1 hr)
-- **Members management** — invite/remove org members from mobile (1 hr)
-- **Settings screen** — notification prefs, language, theme, account (1 hr)
-- **Notifications Phase 2** — real read tracking via schema migration (1.5 hr)
-
-#### P3 — Polish (quality bar)
-
-- **i18n — 5 languages** — port web's 3,200 keys to mobile (multi-session)
-- **Ethiopian calendar component** — dual Gregorian/Ethiopian display (2 hr)
+- **i18n — wrap screens in t()** — infrastructure done (hooks + 5 locales), need to wrap all user-facing strings in `t()` calls across screens (multi-session)
 - **Real drag-and-drop on kanban** — react-native-reanimated (2-3 hr)
 - **Push notifications (Phase 4)** — server-side delivery (3-4 hr)
 - **App Store + Play Store submission** — EAS Build, screenshots, metadata (2 hr)
@@ -363,6 +338,7 @@ All items are gated to "before first real customer," not urgent pre-launch.
 - **Cloudflare Full Strict SSL** — $10/mo ACM or DNS move (blocks gov contracts)
 - **Tier 2 test server** (Massano rig) — follow runbook, ~1 day
 - **EIPA final deposit** — blocked on Co-Owner agreement paperwork
+- **Notifications Phase 2 migration** — run `prisma migrate deploy` against Supabase to create `notifications` table
 
 #### 4b. Issues tab Kanban improvements
 - Real drag-and-drop between columns (requires `react-native-reanimated` Shared Values + `react-native-gesture-handler` Pan). Current: long-press action sheet (functional but not tactile)

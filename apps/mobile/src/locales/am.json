@@ -1,0 +1,181 @@
+{
+  "common": {
+    "loading": "በመጫን ላይ...",
+    "save": "አስቀምጥ",
+    "cancel": "ሰርዝ",
+    "delete": "ሰርዝ",
+    "edit": "አርትዕ",
+    "create": "ፍጠር",
+    "search": "ፈልግ",
+    "back": "ተመለስ",
+    "submit": "አስገባ",
+    "confirm": "አረጋግጥ",
+    "close": "ዝጋ",
+    "yes": "አዎ",
+    "no": "አይ",
+    "all": "ሁሉም",
+    "noResults": "ምንም ውጤት አልተገኘም",
+    "viewAll": "ሁሉንም ይመልከቱ",
+    "signIn": "ግባ",
+    "signOut": "ውጣ",
+    "refresh": "አድስ",
+    "status": "ሁኔታ",
+    "name": "ስም",
+    "description": "ገለጻ",
+    "date": "ቀን",
+    "type": "ዓይነት",
+    "priority": "ቅድሚያ",
+    "amount": "መጠን",
+    "email": "ኢሜይል",
+    "add": "ጨምር",
+    "remove": "አስወግድ",
+    "invite": "ጋብዝ",
+    "saving": "በማስቀመጥ ላይ...",
+    "adding": "በመጨመር ላይ...",
+    "sending": "በመላክ ላይ...",
+    "creating": "በመፍጠር ላይ...",
+    "uploading": "በመስቀል ላይ..."
+  },
+  "tabs": {
+    "home": "መነሻ",
+    "projects": "ፕሮጀክቶች",
+    "issues": "ሁሉም ሥራ",
+    "dashboards": "ዳሽቦርዶች",
+    "notifications": "ማሳወቂያዎች",
+    "more": "ተጨማሪ"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "እንደምን አደርክ",
+      "afternoon": "እንደምን ዋልክ",
+      "evening": "እንደምን አመሸህ"
+    },
+    "totalIssues": "{count} ጠቅላላ ጉዳዮች በ{projects} ፕሮጀክቶች",
+    "completed": "የተጠናቀቁ",
+    "inProgress": "በሂደት ላይ",
+    "toDo": "ሊሰራ",
+    "overdue": "ያለፈበት",
+    "statusOverview": "የሁኔታ አጠቃላይ እይታ",
+    "priorityBreakdown": "የቅድሚያ ትንተና",
+    "typesOfWork": "የሥራ ዓይነቶች",
+    "myIssues": "የእኔ ጉዳዮች",
+    "seeAll": "ሁሉንም ይመልከቱ",
+    "recentActivity": "የቅርብ ጊዜ እንቅስቃሴ",
+    "noActivity": "ምንም እንቅስቃሴ የለም",
+    "noIssuesAssigned": "ለእርስዎ የተመደቡ ጉዳዮች የሉም"
+  },
+  "issues": {
+    "title": "ጉዳዮች",
+    "createIssue": "አዲስ ጉዳይ",
+    "noIssues": "ምንም ጉዳዮች የሉም",
+    "assignee": "ተመዳቢ",
+    "reporter": "ሪፖርተር",
+    "dueDate": "የመጨረሻ ቀን",
+    "labels": "መለያዎች",
+    "comments": "አስተያየቶች",
+    "subtasks": "ንዑስ ተግባራት",
+    "addComment": "አስተያየት ይጨምሩ...",
+    "deleteConfirm": "ይህን ጉዳይ ይሰረዝ?",
+    "deleteMessage": "ይህ እርምጃ ሊቀለበስ አይችልም።"
+  },
+  "projects": {
+    "title": "ፕሮጀክቶች",
+    "createProject": "አዲስ ፕሮጀክት",
+    "noProjects": "ምንም ፕሮጀክቶች የሉም",
+    "board": "ቦርድ",
+    "list": "ዝርዝር",
+    "members": "አባላት"
+  },
+  "teams": {
+    "title": "ቡድኖች",
+    "addMember": "የቡድን አባል ጨምር",
+    "addMemberHint": "የድርጅት አባል ኢሜይል ያስገቡ። በድርጅቱ ውስጥ ካልሆኑ ግብዣ ይላካል።",
+    "removeMember": "አባል አስወግድ",
+    "removeConfirm": "{name}ን ከዚህ ቡድን ያስወግዱ?",
+    "noTeams": "ምንም ቡድኖች የሉም",
+    "lead": "መሪ",
+    "member": "አባል"
+  },
+  "budget": {
+    "title": "በጀት",
+    "addExpense": "ወጪ ጨምር",
+    "totalBudget": "በጀት",
+    "spent": "የወጣ",
+    "income": "ገቢ",
+    "remaining": "ቀሪ",
+    "transactions": "ግብይቶች",
+    "noTransactions": "ምንም ግብይቶች የሉም",
+    "budgetUsage": "የበጀት አጠቃቀም",
+    "vendor": "አቅራቢ",
+    "vendorHint": "የተከፈለው ድርጅት ወይም ሰው"
+  },
+  "goals": {
+    "title": "ግቦች",
+    "noGoals": "ምንም ግቦች የሉም",
+    "noGoalsDesc": "የቡድንዎን ቁልፍ ውጤቶች ለመከታተል ግቦችን ያስቀምጡ",
+    "progress": "ሂደት",
+    "active": "ንቁ",
+    "onTrack": "በትክክል",
+    "atRisk": "አደጋ ላይ",
+    "behind": "ኋላ ቀር",
+    "completed": "የተጠናቀቀ",
+    "avgProgress": "አማካይ"
+  },
+  "documents": {
+    "title": "ሰነዶች",
+    "upload": "ስቀል",
+    "noDocuments": "ምንም ሰነዶች የሉም",
+    "uploadHint": "ሰነዶችን ለመጨመር የስቀል ቁልፍን ይጫኑ",
+    "processing": "በሂደት ላይ",
+    "ready": "ዝግጁ",
+    "failed": "ያልተሳካ"
+  },
+  "calendar": {
+    "title": "ቀን መቁጠሪያ",
+    "newEvent": "አዲስ ክስተት",
+    "selectDate": "መጀመሪያ ከቀን መቁጠሪያው ቀን ይምረጡ",
+    "eventTitle": "የክስተት ወይም ተግባር ርዕስ",
+    "noIssuesDue": "በዚህ ቀን ምንም ጉዳዮች የሉም"
+  },
+  "notifications": {
+    "title": "ማሳወቂያዎች",
+    "unread": "{count} ያልተነበቡ",
+    "allCaughtUp": "ሁሉንም ተከታትለዋል",
+    "readAll": "ሁሉንም አንብብ",
+    "noNotifications": "ሁሉንም ተከታትለዋል",
+    "noNotificationsDesc": "የሚከታተሏቸው፣ የተመደቡላቸው ወይም ያሪፖርቱ ተግባራት ዝማኔዎች እዚህ ይታያሉ።",
+    "today": "ዛሬ",
+    "yesterday": "ትላንት",
+    "thisWeek": "በዚህ ሳምንት",
+    "older": "ያረጁ"
+  },
+  "members": {
+    "title": "አባላት",
+    "inviteMember": "አባል ጋብዝ",
+    "inviteHint": "ኢሜይል አድራሻቸውን ያስገቡ። {org}ን ለመቀላቀል ግብዣ ይላካቸዋል።",
+    "sendInvite": "ግብዣ ላክ"
+  },
+  "settings": {
+    "title": "ቅንብሮች",
+    "account": "መለያ",
+    "language": "ቋንቋ",
+    "security": "ደህንነት",
+    "notifications": "ማሳወቂያዎች",
+    "organization": "ድርጅት",
+    "assignments": "ምድባዎች",
+    "comments": "አስተያየቶች",
+    "mentions": "@ማጣቀሻዎች",
+    "dueDates": "የመጨረሻ ቀኖች",
+    "signOutConfirm": "ለመውጣት እርግጠኛ ነዎት?"
+  },
+  "profile": {
+    "title": "መገለጫ",
+    "switchOrg": "ድርጅት ቀይር"
+  },
+  "search": {
+    "title": "ፈልግ",
+    "placeholder": "ጉዳዮችን፣ ፕሮጀክቶችን ይፈልጉ...",
+    "noResults": "ምንም ውጤት የለም",
+    "tryDifferent": "ሌላ የፍለጋ ቃል ይሞክሩ"
+  }
+}
