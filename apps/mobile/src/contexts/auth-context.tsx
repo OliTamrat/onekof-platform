@@ -4,6 +4,7 @@ import { useRouter, useSegments } from 'expo-router';
 import * as api from '../lib/api';
 import { isBiometricEnabled, authenticateWithBiometric } from '../lib/biometric';
 import { getOfflineQueue, removeFromQueue } from '../lib/offline';
+import { revokePushToken } from '../lib/push-notifications';
 
 interface User {
   id: string;
@@ -173,6 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleSignOut = useCallback(async () => {
+    await revokePushToken().catch(() => {});
     await api.signOut();
     setUser(null);
     setOrganizations([]);

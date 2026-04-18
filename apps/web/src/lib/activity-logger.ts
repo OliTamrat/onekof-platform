@@ -23,11 +23,12 @@ export interface LogActivityParams {
 }
 
 /**
- * Log an activity to the database
+ * Log an activity to the database.
+ * For TASK activities, also fires push notifications to watchers/assignees (async, non-blocking).
  */
 export async function logActivity(params: LogActivityParams) {
   try {
-    return await prisma.userActivity.create({
+    const activity = await prisma.userActivity.create({
       data: {
         organizationId: params.organizationId,
         userId: params.userId,
@@ -40,9 +41,63 @@ export async function logActivity(params: LogActivityParams) {
         userAgent: params.userAgent,
       },
     });
+
+    // Fire push notifications for task activities (non-blocking)
+    if (params.entityType === 'TASK' && activity) {
+      sendTaskPushNotifications(activity.id, params).catch(() => {});
+    }
+
+    return activity;
   } catch (error) {
     console.error('Failed to log activity:', error);
     return null;
+  }
+}
+
+/**
+ * Send push notifications to task watchers/assignees/reporters (async helper).
+ */
+async function sendTaskPushNotifications(activityId: string, params: LogActivityParams) {
+  try {
+    const { sendPushForActivity } = await import('@/lib/push/send-push');
+
+    // Find all users who should be notified: watchers + assignee + reporter
+    const [watchers, task, actor] = await Promise.all([
+      prisma.taskWatcher.findMany({
+        where: { taskId: params.entityId },
+        select: { userId: true },
+      }),
+      prisma.task.findUnique({
+        where: { id: params.entityId },
+        select: { title: true, key: true, assigneeId: true, reporterId: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: params.userId },
+        select: { name: true, email: true },
+      }),
+    ]);
+
+    if (!task) return;
+
+    const recipientIds = new Set<string>();
+    watchers.forEach((w: { userId: string }) => recipientIds.add(w.userId));
+    if (task.assigneeId) recipientIds.add(task.assigneeId);
+    if (task.reporterId) recipientIds.add(task.reporterId);
+
+    await sendPushForActivity({
+      activityId,
+      actorUserId: params.userId,
+      actorName: actor?.name || actor?.email || 'Someone',
+      action: params.action,
+      entityType: params.entityType,
+      entityId: params.entityId,
+      entityTitle: task.key ? `${task.key}: ${task.title}` : task.title,
+      organizationId: params.organizationId,
+      recipientUserIds: Array.from(recipientIds),
+    });
+  } catch (err) {
+    // Push failures should never break the activity log
+    console.error('Push notification error (non-fatal):', err);
   }
 }
 

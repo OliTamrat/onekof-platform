@@ -191,6 +191,7 @@ model User {
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
   notifications  Notification[]  @relation("UserNotifications")
+  pushTokens     PushToken[]     @relation("UserPushTokens")
   taskLinks      TaskLink[]      @relation("TaskLinkCreator") // Task relationships created by this user
 
   // 🚀 PERFORMANCE: Critical indexes for authentication and queries
@@ -1150,6 +1151,24 @@ model Notification {
   @@index([userId, readAt, createdAt])
   @@index([organizationId])
   @@map("notifications")
+  @@schema("public")
+}
+
+// Push notification device tokens
+model PushToken {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  token      String   @unique // Expo push token
+  platform   String   // "ios" | "android"
+  deviceName String?  @map("device_name")
+  lastUsedAt DateTime @default(now()) @map("last_used_at")
+  revokedAt  DateTime? @map("revoked_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation("UserPushTokens", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@map("push_tokens")
   @@schema("public")
 }
 
