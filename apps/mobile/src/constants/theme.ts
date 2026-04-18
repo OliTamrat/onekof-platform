@@ -23,10 +23,10 @@ export const Colors = {
   violet: '#8B5CF6',
   violet400: '#A78BFA',
 
-  // Text
-  textPrimary: 'rgba(255,255,255,0.85)',
-  textSecondary: 'rgba(255,255,255,0.50)',
-  textFaint: 'rgba(255,255,255,0.30)',
+  // Text — brightened for readability on dark backgrounds
+  textPrimary: 'rgba(255,255,255,0.92)',
+  textSecondary: 'rgba(255,255,255,0.65)',
+  textFaint: 'rgba(255,255,255,0.40)',
   textWhite: '#FFFFFF',
 
   // Borders
@@ -78,15 +78,15 @@ export const BorderRadius = {
 } as const;
 
 export const FontSize = {
-  xs: 11,
-  sm: 13,
-  base: 14,
-  md: 15,
-  lg: 17,
-  xl: 20,
-  '2xl': 24,
-  '3xl': 30,
-  '4xl': 36,
+  xs: 13,
+  sm: 15,
+  base: 16,
+  md: 17,
+  lg: 19,
+  xl: 22,
+  '2xl': 26,
+  '3xl': 32,
+  '4xl': 38,
 } as const;
 
 export const FontWeight = {
