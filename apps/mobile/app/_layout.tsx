@@ -8,6 +8,7 @@ import { LanguageProvider } from '../src/contexts/language-context';
 import { BiometricLock } from '../src/components/BiometricLock';
 import { OfflineBanner } from '../src/components/OfflineBanner';
 import { GlobalFAB } from '../src/components/GlobalFAB';
+import { PushNotificationRegistrar } from '../src/components/PushNotificationRegistrar';
 import { Colors } from '../src/constants/theme';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
@@ -63,6 +64,7 @@ export default function RootLayout() {
             <Stack.Screen name="search/index" options={{ animation: 'fade' }} />
           </Stack>
           <GlobalFAB />
+          <PushNotificationRegistrar />
           <BiometricLock />
         </LanguageProvider>
         </AuthProvider>
