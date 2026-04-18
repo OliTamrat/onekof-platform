@@ -5,60 +5,67 @@ import { Colors } from '../constants/theme';
 import { useAuth } from '../contexts/auth-context';
 
 /**
- * Global floating "+" button — quick-create issue from any authenticated screen.
- *
- * Hides on:
- *   - Auth screens (signin / signup)
- *   - Org selection
- *   - The create-issue / create-project screens themselves (circular)
- *   - Screens that already have their own FAB (to avoid overlap):
- *       (tabs)/projects — has create-project FAB
- *       (tabs)/issues   — has create-issue FAB
- *       project/[id]    — has contextual FAB on issues/board tabs
+ * Context-aware floating action button.
+ * Action changes based on the current screen:
+ * - Dashboard / Issues → Create Issue
+ * - Projects → Create Project
+ * - Documents → Upload Document (handled by screen's own button)
+ * - Budget → Add Expense (handled by screen's own button)
+ * - Others → Create Issue (default)
  */
+
+interface FABAction {
+  icon: React.ComponentProps<typeof FontAwesome>['name'];
+  route: string;
+  label: string;
+}
+
+function getFABAction(path: string): FABAction | null {
+  // Screens that handle their own FAB internally — hide global one
+  if (path.startsWith('(auth)')) return null;
+  if (path === 'select-org' || path.startsWith('select-org/')) return null;
+  if (path.startsWith('create-issue') || path.startsWith('create-project')) return null;
+  if (path === 'search' || path.startsWith('search/')) return null;
+  if (path === 'settings' || path.startsWith('settings/')) return null;
+  if (path === 'profile' || path.startsWith('profile/')) return null;
+
+  // Project detail has its own contextual FAB
+  if (path.startsWith('project/')) return null;
+
+  // Context-aware actions
+  if (path === '(tabs)/projects') return { icon: 'plus', route: '/create-project', label: 'Create project' };
+  if (path === 'teams' || path.startsWith('teams/')) return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
+  if (path.startsWith('team/')) return null; // team detail has add-member button
+  if (path === 'goals' || path.startsWith('goals/')) return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
+  if (path === 'budget' || path.startsWith('budget/')) return null; // has own add-expense button
+  if (path === 'documents' || path.startsWith('documents/')) return null; // has own upload button
+  if (path === 'calendar' || path.startsWith('calendar/')) return null; // has own create-event button
+  if (path === 'members' || path.startsWith('members/')) return null; // has own invite button
+
+  // Default: create issue (dashboard, notifications, issue detail, etc.)
+  return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
+}
+
 export function GlobalFAB() {
   const router = useRouter();
   const segments = useSegments();
   const { user, currentOrg, isLocked } = useAuth();
 
-  // Must be signed in + org selected + unlocked
   if (!user || !currentOrg || isLocked) return null;
 
   const path = segments.join('/');
+  const action = getFABAction(path);
 
-  // Hide on: auth, screens with own FAB, and screens where "+" doesn't make sense
-  const SKIP_PATHS = [
-    '(auth)',
-    'select-org',
-    'create-issue',
-    'create-project',
-    '(tabs)/projects',   // has own create-project FAB
-    '(tabs)/issues',     // has own create-issue FAB
-    '(tabs)/notifications', // not relevant
-    '(tabs)/more',       // menu screen
-    'project/[id]',      // has contextual FAB
-    'budget',            // has own add-expense button
-    'goals',             // has own edit modal
-    'teams',             // has own add-member
-    'team',              // team detail
-    'documents',         // has own upload button
-    'calendar',          // has own create-event button
-    'members',           // has own invite button
-    'settings',          // settings page
-    'profile',           // profile page
-    'search',            // search page
-  ];
-
-  if (SKIP_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) return null;
+  if (!action) return null;
 
   return (
     <TouchableOpacity
       style={styles.fab}
-      onPress={() => router.push('/create-issue')}
+      onPress={() => router.push(action.route as any)}
       activeOpacity={0.85}
-      accessibilityLabel="Create new issue"
+      accessibilityLabel={action.label}
     >
-      <FontAwesome name="plus" size={20} color="#fff" />
+      <FontAwesome name={action.icon} size={20} color="#fff" />
     </TouchableOpacity>
   );
 }
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 92, // above the bottom tab bar (~83pt on iPhone) with a little breathing room
+    bottom: 92,
     width: 56,
     height: 56,
     borderRadius: 28,
