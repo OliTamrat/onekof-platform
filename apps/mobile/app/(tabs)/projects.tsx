@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { type Project } from '../../src/types';
+import { useLanguage } from '../../src/contexts/language-context';
 import { SearchBar } from '../../src/components/SearchBar';
 import { FAB } from '../../src/components/FAB';
 import { CardSkeleton } from '../../src/components/SkeletonLoader';
@@ -12,6 +13,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ProjectsScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -83,7 +85,7 @@ export default function ProjectsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Projects</Text>
+        <Text style={styles.title}>{t('projects.title')}</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerBtn} onPress={() => setShowSearch(!showSearch)}>
             <FontAwesome name="search" size={15} color={showSearch ? Colors.primaryLight : Colors.textSecondary} />
@@ -100,7 +102,7 @@ export default function ProjectsScreen() {
 
       {showSearch && (
         <View style={styles.searchRow}>
-          <SearchBar value={search} onChangeText={setSearch} placeholder="Search projects..." />
+          <SearchBar value={search} onChangeText={setSearch} placeholder={t('common.search')} />
         </View>
       )}
 
@@ -123,7 +125,7 @@ export default function ProjectsScreen() {
             <View style={styles.empty}>
               <FontAwesome name="folder-open-o" size={32} color={Colors.textFaint} />
               <Text style={styles.emptyTitle}>
-                {q ? 'No matching projects' : 'No projects yet'}
+                {q ? t('common.noResults') : t('projects.noProjects')}
               </Text>
               <Text style={styles.emptyDesc}>
                 {q ? 'Try a different search' : 'Create your first project to get started'}

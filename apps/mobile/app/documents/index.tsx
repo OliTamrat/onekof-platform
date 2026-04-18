@@ -7,6 +7,7 @@ import { apiFetch, apiUpload } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton, SearchBar } from '../../src/components';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 /* ─── Types ─── */
 interface Document {
@@ -50,10 +51,10 @@ const DOC_TYPE: Record<string, { icon: string; color: string; label: string }> =
 };
 
 /* ─── Status config ─── */
-const STATUS_CFG: Record<string, { color: string; label: string }> = {
-  PROCESSING: { color: '#F59E0B', label: 'Processing' },
-  COMPLETED: { color: '#22C55E', label: 'Ready' },
-  FAILED: { color: '#EF4444', label: 'Failed' },
+const STATUS_CFG: Record<string, { color: string; statusKey: 'documents.processing' | 'documents.ready' | 'documents.failed' }> = {
+  PROCESSING: { color: '#F59E0B', statusKey: 'documents.processing' },
+  COMPLETED: { color: '#22C55E', statusKey: 'documents.ready' },
+  FAILED: { color: '#EF4444', statusKey: 'documents.failed' },
 };
 
 /* ─── Relative time ─── */
@@ -75,6 +76,7 @@ function timeAgo(dateStr?: string): string {
 export default function DocumentsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
@@ -148,7 +150,7 @@ export default function DocumentsScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Documents" showBack />
+      <ScreenHeader title={t('documents.title')} showBack />
 
       <FlatList
         data={filtered}
@@ -162,7 +164,7 @@ export default function DocumentsScreen() {
             {/* Search + upload button */}
             <View style={s.searchRow}>
               <View style={s.searchWrap}>
-                <SearchBar value={search} onChangeText={setSearch} placeholder="Search documents..." />
+                <SearchBar value={search} onChangeText={setSearch} placeholder={t('common.search')} />
               </View>
               <TouchableOpacity
                 style={[s.uploadBtn, uploading && { opacity: 0.6 }]}
@@ -237,7 +239,7 @@ export default function DocumentsScreen() {
                   {/* Status badge if processing */}
                   {statusCfg && item.status !== 'COMPLETED' && (
                     <View style={[s.typeBadge, { backgroundColor: statusCfg.color + '12', borderColor: statusCfg.color + '30' }]}>
-                      <Text style={[s.typeBadgeText, { color: statusCfg.color }]}>{statusCfg.label}</Text>
+                      <Text style={[s.typeBadgeText, { color: statusCfg.color }]}>{t(statusCfg.statusKey)}</Text>
                     </View>
                   )}
                   {/* Author + time */}
@@ -257,8 +259,8 @@ export default function DocumentsScreen() {
           isLoading ? <ListSkeleton count={5} /> :
           <EmptyState
             icon="file-text-o"
-            title={search ? 'No matching documents' : 'No documents yet'}
-            description={search ? 'Try a different search term' : 'Tap the upload button to add documents'}
+            title={search ? t('common.noResults') : t('documents.noDocuments')}
+            description={search ? 'Try a different search term' : t('documents.uploadHint')}
           />
         }
       />

@@ -6,6 +6,7 @@ import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, StatusBadge, PRIORITY_CONFIG } from '../../src/components';
 import { toEthiopian, formatEthiopian } from '../../src/utils/ethiopian-calendar';
+import { useLanguage } from '../../src/contexts/language-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface Issue {
@@ -23,6 +24,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 export default function CalendarScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -95,7 +97,7 @@ export default function CalendarScreen() {
 
   const handleCreate = () => {
     if (!eventTitle.trim()) { Alert.alert('Missing', 'Enter a title'); return; }
-    if (!selectedDate) { Alert.alert('Missing', 'Select a date on the calendar first'); return; }
+    if (!selectedDate) { Alert.alert('Missing', t('calendar.selectDate')); return; }
     createMutation.mutate({ title: eventTitle.trim(), dueDate: new Date(selectedDate + 'T12:00:00').toISOString() });
   };
 
@@ -107,7 +109,7 @@ export default function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Calendar" showBack />
+      <ScreenHeader title={t('calendar.title')} showBack />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -214,7 +216,7 @@ export default function CalendarScreen() {
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={styles.noIssues}>No issues due on this date</Text>
+              <Text style={styles.noIssues}>{t('calendar.noIssuesDue')}</Text>
             )}
           </View>
         )}
@@ -231,20 +233,20 @@ export default function CalendarScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
             <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
               <View style={styles.dragHandle} />
-              <Text style={styles.modalTitle}>New Event</Text>
+              <Text style={styles.modalTitle}>{t('calendar.newEvent')}</Text>
               {selectedDate && (
                 <Text style={styles.modalDate}>
                   {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 </Text>
               )}
               {!selectedDate && (
-                <Text style={styles.modalHint}>Select a date on the calendar first</Text>
+                <Text style={styles.modalHint}>{t('calendar.selectDate')}</Text>
               )}
 
               <Text style={styles.inputLabel}>Title</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Event or task title"
+                placeholder={t('calendar.eventTitle')}
                 placeholderTextColor={Colors.textFaint}
                 value={eventTitle}
                 onChangeText={setEventTitle}
@@ -252,7 +254,7 @@ export default function CalendarScreen() {
 
               <View style={styles.modalActions}>
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCreate(false)}>
-                  <Text style={styles.cancelBtnText}>Cancel</Text>
+                  <Text style={styles.cancelBtnText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.saveBtn, (createMutation.isPending || !selectedDate) && { opacity: 0.6 }]}
@@ -260,7 +262,7 @@ export default function CalendarScreen() {
                   disabled={createMutation.isPending || !selectedDate}
                 >
                   <Text style={styles.saveBtnText}>
-                    {createMutation.isPending ? 'Creating...' : 'Create'}
+                    {createMutation.isPending ? t('common.creating') : t('common.create')}
                   </Text>
                 </TouchableOpacity>
               </View>

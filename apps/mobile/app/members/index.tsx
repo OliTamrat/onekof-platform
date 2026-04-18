@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Mod
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../src/contexts/auth-context';
+import { useLanguage } from '../../src/contexts/language-context';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
@@ -28,6 +29,7 @@ const ROLE_CFG: Record<string, { color: string; bg: string; label: string }> = {
 
 export default function MembersScreen() {
   const { currentOrg } = useAuth();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
@@ -74,7 +76,7 @@ export default function MembersScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Members" showBack />
+      <ScreenHeader title={t('members.title')} showBack />
 
       <FlatList
         data={members}
@@ -93,7 +95,7 @@ export default function MembersScreen() {
               </View>
               <TouchableOpacity style={s.inviteBtn} onPress={() => setShowInvite(true)}>
                 <FontAwesome name="plus" size={10} color="#fff" />
-                <Text style={s.inviteBtnText}>Invite</Text>
+                <Text style={s.inviteBtnText}>{t('common.invite')}</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -130,9 +132,9 @@ export default function MembersScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
             <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
               <View style={s.dragHandle} />
-              <Text style={s.modalTitle}>Invite Member</Text>
+              <Text style={s.modalTitle}>{t('members.inviteMember')}</Text>
               <Text style={s.modalHint}>
-                Enter their email address. They'll receive an invitation to join {currentOrg?.name || 'the organization'}.
+                {t('members.inviteHint', { org: currentOrg?.name || 'the organization' })}
               </Text>
 
               <TextInput
@@ -148,7 +150,7 @@ export default function MembersScreen() {
 
               <View style={s.modalActions}>
                 <TouchableOpacity style={s.cancelBtn} onPress={() => { setShowInvite(false); setInviteEmail(''); }}>
-                  <Text style={s.cancelBtnText}>Cancel</Text>
+                  <Text style={s.cancelBtnText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[s.saveBtn, inviteMutation.isPending && { opacity: 0.6 }]}
@@ -156,7 +158,7 @@ export default function MembersScreen() {
                   disabled={inviteMutation.isPending}
                 >
                   <Text style={s.saveBtnText}>
-                    {inviteMutation.isPending ? 'Sending...' : 'Send Invite'}
+                    {inviteMutation.isPending ? t('common.sending') : t('members.sendInvite')}
                   </Text>
                 </TouchableOpacity>
               </View>

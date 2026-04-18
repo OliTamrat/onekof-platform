@@ -7,6 +7,7 @@ import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/the
 import { ScreenHeader, EmptyState, ListSkeleton, SearchBar } from '../../src/components';
 import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 /* ─── Types ─── */
 interface TeamMember {
@@ -28,6 +29,7 @@ interface Team {
 
 export default function TeamsScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -51,7 +53,7 @@ export default function TeamsScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Teams" showBack />
+      <ScreenHeader title={t('teams.title')} showBack />
 
       <FlatList
         data={teams}
@@ -64,7 +66,7 @@ export default function TeamsScreen() {
           <>
             {/* Search */}
             <View style={s.searchRow}>
-              <SearchBar value={search} onChangeText={setSearch} placeholder="Search teams..." />
+              <SearchBar value={search} onChangeText={setSearch} placeholder={t('common.search')} />
             </View>
 
             {/* Summary stat row */}
@@ -74,7 +76,7 @@ export default function TeamsScreen() {
                   <FontAwesome name="users" size={13} color="#3B82F6" />
                 </View>
                 <Text style={s.summaryValue}>{allTeams.length}</Text>
-                <Text style={s.summaryLabel}>Teams</Text>
+                <Text style={s.summaryLabel}>{t('teams.title')}</Text>
               </View>
               <View style={s.summaryCard}>
                 <View style={[s.summaryIcon, { backgroundColor: 'rgba(28,140,125,0.1)' }]}>
@@ -151,7 +153,7 @@ export default function TeamsScreen() {
           isLoading ? <ListSkeleton count={4} /> :
           <EmptyState
             icon="users"
-            title={search ? 'No matching teams' : 'No teams yet'}
+            title={t('teams.noTeams')}
             description={search ? 'Try a different search' : 'Teams will appear here when created'}
           />
         }

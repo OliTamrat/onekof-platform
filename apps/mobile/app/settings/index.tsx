@@ -42,9 +42,9 @@ export default function SettingsScreen() {
   };
 
   const confirmSignOut = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign Out', style: 'destructive', onPress: signOut },
+    Alert.alert(t('common.signOut'), t('settings.signOutConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.signOut'), style: 'destructive', onPress: signOut },
     ]);
   };
 
@@ -52,11 +52,11 @@ export default function SettingsScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Settings" showBack />
+      <ScreenHeader title={t('settings.title')} showBack />
 
       <ScrollView contentContainerStyle={s.scroll}>
         {/* ═══ Account ═══ */}
-        <Text style={s.sectionLabel}>ACCOUNT</Text>
+        <Text style={s.sectionLabel}>{t('settings.account')}</Text>
         <View style={s.card}>
           <View style={s.accountRow}>
             <Avatar name={user?.name || 'U'} size={44} />
@@ -68,17 +68,17 @@ export default function SettingsScreen() {
           <View style={s.divider} />
           <View style={s.row}>
             <FontAwesome name="building-o" size={14} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>Organization</Text>
+            <Text style={s.rowLabel}>{t('settings.organization')}</Text>
             <Text style={s.rowValue}>{currentOrg?.name || '-'}</Text>
           </View>
         </View>
 
         {/* ═══ Language ═══ */}
-        <Text style={s.sectionLabel}>LANGUAGE</Text>
+        <Text style={s.sectionLabel}>{t('settings.language')}</Text>
         <View style={s.card}>
           <TouchableOpacity style={s.row} onPress={() => setShowLangPicker(!showLangPicker)}>
             <FontAwesome name="globe" size={14} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>Language</Text>
+            <Text style={s.rowLabel}>{t('settings.language')}</Text>
             <Text style={s.rowValue}>{currentLang.native}</Text>
             <FontAwesome name={showLangPicker ? 'chevron-up' : 'chevron-down'} size={10} color={Colors.textFaint} />
           </TouchableOpacity>
@@ -104,7 +104,7 @@ export default function SettingsScreen() {
         </View>
 
         {/* ═══ Security ═══ */}
-        <Text style={s.sectionLabel}>SECURITY</Text>
+        <Text style={s.sectionLabel}>{t('settings.security')}</Text>
         <View style={s.card}>
           {bioAvailable && (
             <View style={s.row}>
@@ -121,11 +121,11 @@ export default function SettingsScreen() {
         </View>
 
         {/* ═══ Notifications ═══ */}
-        <Text style={s.sectionLabel}>NOTIFICATIONS</Text>
+        <Text style={s.sectionLabel}>{t('settings.notifications')}</Text>
         <View style={s.card}>
           <View style={s.row}>
             <FontAwesome name="user-plus" size={13} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>Assignments</Text>
+            <Text style={s.rowLabel}>{t('settings.assignments')}</Text>
             <Switch
               value={notifAssignments}
               onValueChange={setNotifAssignments}
@@ -136,7 +136,7 @@ export default function SettingsScreen() {
           <View style={s.divider} />
           <View style={s.row}>
             <FontAwesome name="comment-o" size={13} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>Comments</Text>
+            <Text style={s.rowLabel}>{t('settings.comments')}</Text>
             <Switch
               value={notifComments}
               onValueChange={setNotifComments}
@@ -147,7 +147,7 @@ export default function SettingsScreen() {
           <View style={s.divider} />
           <View style={s.row}>
             <FontAwesome name="at" size={13} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>@Mentions</Text>
+            <Text style={s.rowLabel}>{t('settings.mentions')}</Text>
             <Switch
               value={notifMentions}
               onValueChange={setNotifMentions}
@@ -158,7 +158,7 @@ export default function SettingsScreen() {
           <View style={s.divider} />
           <View style={s.row}>
             <FontAwesome name="calendar-check-o" size={13} color={Colors.textSecondary} style={s.rowIcon} />
-            <Text style={s.rowLabel}>Due dates</Text>
+            <Text style={s.rowLabel}>{t('settings.dueDates')}</Text>
             <Switch
               value={notifDueDates}
               onValueChange={setNotifDueDates}
@@ -171,7 +171,7 @@ export default function SettingsScreen() {
         {/* ═══ Sign Out ═══ */}
         <TouchableOpacity style={s.signOutBtn} onPress={confirmSignOut}>
           <FontAwesome name="sign-out" size={16} color={Colors.error} />
-          <Text style={s.signOutText}>Sign Out</Text>
+          <Text style={s.signOutText}>{t('common.signOut')}</Text>
         </TouchableOpacity>
 
         <Text style={s.version}>Onekof Mobile v1.0.0</Text>

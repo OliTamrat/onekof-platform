@@ -7,6 +7,7 @@ import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 /* ─── Types (match /api/notifications response) ─── */
 interface NotificationUser {
@@ -85,6 +86,7 @@ export default function NotificationsTab() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<'all' | 'mentions' | 'assigned' | 'watching'>('all');
 
@@ -156,9 +158,9 @@ export default function NotificationsTab() {
       {/* Header */}
       <View style={s.header}>
         <View style={s.headerLeft}>
-          <Text style={s.headerTitle}>Notifications</Text>
+          <Text style={s.headerTitle}>{t('notifications.title')}</Text>
           <Text style={s.headerSub}>
-            {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
+            {unreadCount > 0 ? t('notifications.unread', { count: unreadCount }) : t('notifications.allCaughtUp')}
             {' · '}{notifications.length} total
           </Text>
         </View>
@@ -170,7 +172,7 @@ export default function NotificationsTab() {
             activeOpacity={0.7}
           >
             <FontAwesome name="check-double" size={11} color={Colors.primaryLight} />
-            <Text style={s.markAllText}>Read all</Text>
+            <Text style={s.markAllText}>{t('notifications.readAll')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -273,10 +275,10 @@ export default function NotificationsTab() {
             <View style={s.emptyIconBox}>
               <FontAwesome name="bell-slash-o" size={32} color={Colors.textFaint} />
             </View>
-            <Text style={s.emptyTitle}>You're all caught up</Text>
+            <Text style={s.emptyTitle}>{t('notifications.noNotifications')}</Text>
             <Text style={s.emptyDesc}>
               {filter === 'all'
-                ? 'Updates on tasks you watch, are assigned, or report will appear here.'
+                ? t('notifications.noNotificationsDesc')
                 : `No ${filter} notifications right now.`}
             </Text>
           </View>

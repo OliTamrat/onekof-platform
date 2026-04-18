@@ -6,10 +6,12 @@ import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { Avatar } from '../../src/components';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 export default function MoreScreen() {
   const { user, currentOrg, signOut } = useAuth();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const { data: notifData } = useQuery({
     queryKey: ['notifications'],
@@ -28,27 +30,27 @@ export default function MoreScreen() {
 
   const menuSections: Array<{ title: string; items: MenuItem[] }> = [
     {
-      title: 'Workspace',
+      title: t('settings.organization'),
       items: [
-        { label: 'Teams', icon: 'users', route: '/teams' },
-        { label: 'Budget', icon: 'money', route: '/budget' },
-        { label: 'Calendar', icon: 'calendar', route: '/calendar' },
-        { label: 'Documents', icon: 'file-text-o', route: '/documents' },
-        { label: 'Goals', icon: 'bullseye', route: '/goals' },
+        { label: t('teams.title'), icon: 'users', route: '/teams' },
+        { label: t('budget.title'), icon: 'money', route: '/budget' },
+        { label: t('calendar.title'), icon: 'calendar', route: '/calendar' },
+        { label: t('documents.title'), icon: 'file-text-o', route: '/documents' },
+        { label: t('goals.title'), icon: 'bullseye', route: '/goals' },
       ],
     },
     {
-      title: 'Organization',
+      title: t('settings.organization'),
       items: [
-        { label: 'Members', icon: 'user-plus', route: '/members' },
+        { label: t('members.title'), icon: 'user-plus', route: '/members' },
       ],
     },
     {
-      title: 'Settings',
+      title: t('settings.title'),
       items: [
-        { label: 'Profile', icon: 'user', route: '/profile' },
-        { label: 'Settings', icon: 'cog', route: '/settings' },
-        { label: 'Notifications', icon: 'bell', route: '/notifications', badge: unreadCount },
+        { label: t('profile.title'), icon: 'user', route: '/profile' },
+        { label: t('settings.title'), icon: 'cog', route: '/settings' },
+        { label: t('notifications.title'), icon: 'bell', route: '/notifications', badge: unreadCount },
       ],
     },
   ];
@@ -56,7 +58,7 @@ export default function MoreScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>More</Text>
+        <Text style={styles.title}>{t('tabs.more')}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -73,8 +75,8 @@ export default function MoreScreen() {
         </TouchableOpacity>
 
         {/* Menu sections */}
-        {menuSections.map((section) => (
-          <View key={section.title} style={styles.section}>
+        {menuSections.map((section, sectionIdx) => (
+          <View key={`${section.title}-${sectionIdx}`} style={styles.section}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
             <View style={styles.sectionCard}>
               {section.items.map((item, index) => (
@@ -101,7 +103,7 @@ export default function MoreScreen() {
         {/* Sign out */}
         <TouchableOpacity style={styles.signOutBtn} onPress={signOut} activeOpacity={0.7}>
           <FontAwesome name="sign-out" size={16} color={Colors.error} />
-          <Text style={styles.signOutText}>Sign Out</Text>
+          <Text style={styles.signOutText}>{t('common.signOut')}</Text>
         </TouchableOpacity>
 
         <Text style={styles.version}>Onekof Mobile v1.0.0</Text>
