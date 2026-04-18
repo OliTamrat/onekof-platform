@@ -7,6 +7,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { useRouter } from 'expo-router';
@@ -50,9 +51,12 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   // Get Expo push token
   try {
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      projectId: undefined, // Uses the projectId from app.json extra.eas.projectId
-    });
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+    if (!projectId) {
+      console.log('No EAS projectId configured — push tokens disabled. Run: npx eas init');
+      return null;
+    }
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
     const token = tokenData.data;
 
     // Register with server
