@@ -75,18 +75,20 @@ export async function GET(request: NextRequest) {
         })
       : [];
 
-    // Get read state for all these activities
+    // Get read state for all these activities (graceful if table not yet migrated)
     const activityIds = activities.map((a: any) => a.id);
-    const readStates = activityIds.length > 0
-      ? await prisma.notification.findMany({
-          where: {
-            userId,
-            activityId: { in: activityIds },
-          },
+    let readMap = new Map<string, Date | null>();
+    try {
+      if (activityIds.length > 0) {
+        const readStates = await prisma.notification.findMany({
+          where: { userId, activityId: { in: activityIds } },
           select: { activityId: true, readAt: true },
-        })
-      : [];
-    const readMap = new Map(readStates.map((r: any) => [r.activityId, r.readAt]));
+        });
+        readMap = new Map(readStates.map((r: any) => [r.activityId, r.readAt]));
+      }
+    } catch {
+      // notifications table may not exist yet — treat all as unread
+    }
 
     // Enrich with task details
     const taskIds = Array.from(new Set(activities.map((a: any) => a.entityId)));

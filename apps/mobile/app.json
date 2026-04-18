@@ -17,7 +17,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.dapsanalytics.onekof",
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Use Face ID to unlock Onekof"
+        "NSFaceIDUsageDescription": "Use Face ID to unlock Onekof",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

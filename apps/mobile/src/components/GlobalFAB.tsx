@@ -26,15 +26,27 @@ export function GlobalFAB() {
 
   const path = segments.join('/');
 
-  // Screens that already have their own FAB — don't stack
+  // Hide on: auth, screens with own FAB, and screens where "+" doesn't make sense
   const SKIP_PATHS = [
     '(auth)',
     'select-org',
     'create-issue',
     'create-project',
-    '(tabs)/projects',
-    '(tabs)/issues',
-    'project/[id]',
+    '(tabs)/projects',   // has own create-project FAB
+    '(tabs)/issues',     // has own create-issue FAB
+    '(tabs)/notifications', // not relevant
+    '(tabs)/more',       // menu screen
+    'project/[id]',      // has contextual FAB
+    'budget',            // has own add-expense button
+    'goals',             // has own edit modal
+    'teams',             // has own add-member
+    'team',              // team detail
+    'documents',         // has own upload button
+    'calendar',          // has own create-event button
+    'members',           // has own invite button
+    'settings',          // settings page
+    'profile',           // profile page
+    'search',            // search page
   ];
 
   if (SKIP_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) return null;
