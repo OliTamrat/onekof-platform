@@ -16,6 +16,7 @@ import { Avatar } from '../../src/components/Avatar';
 import { FAB } from '../../src/components/FAB';
 import { CardSkeleton } from '../../src/components/SkeletonLoader';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 const SCREEN_W = Dimensions.get('window').width;
 const COLUMN_W = SCREEN_W * 0.75;
@@ -25,6 +26,7 @@ const PRIORITIES: TaskPriority[] = ['HIGHEST', 'HIGH', 'MEDIUM', 'LOW', 'LOWEST'
 export default function IssuesScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
   const [search, setSearch] = useState('');
@@ -222,7 +224,7 @@ export default function IssuesScreen() {
     <View style={styles.container}>
       {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Issues</Text>
+        <Text style={styles.headerTitle}>{t('issues.title')}</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search' as any)}>
             <FontAwesome name="search" size={15} color={Colors.textSecondary} />
@@ -390,7 +392,7 @@ export default function IssuesScreen() {
           ListEmptyComponent={
             <View style={styles.emptyCenter}>
               <FontAwesome name="check-circle-o" size={36} color={Colors.textFaint} />
-              <Text style={styles.emptyTitle}>{hasFilters ? 'No matching issues' : 'No issues'}</Text>
+              <Text style={styles.emptyTitle}>{hasFilters ? 'No matching issues' : t('issues.noIssues')}</Text>
               <Text style={styles.emptyDesc}>{hasFilters ? 'Try adjusting your filters' : 'Create your first issue to get started'}</Text>
             </View>
           }
@@ -422,7 +424,7 @@ export default function IssuesScreen() {
                 {col.issues.map((issue) => renderBoardCard(issue, colIdx))}
                 {col.issues.length === 0 && (
                   <View style={styles.boardEmpty}>
-                    <Text style={styles.boardEmptyText}>No issues</Text>
+                    <Text style={styles.boardEmptyText}>{t('issues.noIssues')}</Text>
                   </View>
                 )}
               </ScrollView>

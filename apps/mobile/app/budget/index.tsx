@@ -5,6 +5,7 @@ import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 /* ─── Types ─── */
 interface BudgetSummary {
@@ -32,10 +33,10 @@ interface BudgetItem {
 
 /* ─── Stat card config (matches Dashboard pattern with icon boxes) ─── */
 const STAT_CARDS = [
-  { key: 'budget', label: 'Budget', icon: 'briefcase' as const, color: Colors.textWhite, bg: 'rgba(255,255,255,0.06)' },
-  { key: 'spent', label: 'Spent', icon: 'arrow-circle-down' as const, color: Colors.error, bg: Colors.errorBg },
-  { key: 'income', label: 'Income', icon: 'arrow-circle-up' as const, color: Colors.success, bg: Colors.successBg },
-  { key: 'remaining', label: 'Remaining', icon: 'check-circle' as const, color: Colors.primaryLight, bg: 'rgba(28,140,125,0.1)' },
+  { key: 'budget', tKey: 'budget.totalBudget', icon: 'briefcase' as const, color: Colors.textWhite, bg: 'rgba(255,255,255,0.06)' },
+  { key: 'spent', tKey: 'budget.spent', icon: 'arrow-circle-down' as const, color: Colors.error, bg: Colors.errorBg },
+  { key: 'income', tKey: 'budget.income', icon: 'arrow-circle-up' as const, color: Colors.success, bg: Colors.successBg },
+  { key: 'remaining', tKey: 'budget.remaining', icon: 'check-circle' as const, color: Colors.primaryLight, bg: 'rgba(28,140,125,0.1)' },
 ];
 
 const TX_FILTERS: Array<{ key: string | null; label: string }> = [
@@ -46,6 +47,7 @@ const TX_FILTERS: Array<{ key: string | null; label: string }> = [
 
 export default function BudgetScreen() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -129,7 +131,7 @@ export default function BudgetScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Budget" showBack />
+      <ScreenHeader title={t('budget.title')} showBack />
 
       <FlatList
         data={transactions}
@@ -147,7 +149,7 @@ export default function BudgetScreen() {
                   <View style={[s.statIconBox, { backgroundColor: stat.bg }]}>
                     <FontAwesome name={stat.icon} size={15} color={stat.color} />
                   </View>
-                  <Text style={s.statLabel}>{stat.label}</Text>
+                  <Text style={s.statLabel}>{t(stat.tKey as any)}</Text>
                   <Text style={[s.statValue, { color: stat.color }]}>
                     {fmt(statValues[stat.key])}
                   </Text>
@@ -160,7 +162,7 @@ export default function BudgetScreen() {
               <View style={s.progressCard}>
                 <View style={s.progressHeader}>
                   <View>
-                    <Text style={s.progressTitle}>Budget Usage</Text>
+                    <Text style={s.progressTitle}>{t('budget.budgetUsage')}</Text>
                     <Text style={s.progressSub}>{fmt(summary?.totalSpent || 0)} of {fmt(summary?.totalBudget || 0)}</Text>
                   </View>
                   <View style={[
@@ -186,7 +188,7 @@ export default function BudgetScreen() {
 
             {/* ═══ Transactions header + filter + add button ═══ */}
             <View style={s.sectionHeader}>
-              <Text style={s.sectionLabel}>TRANSACTIONS</Text>
+              <Text style={s.sectionLabel}>{t('budget.transactions')}</Text>
               <View style={s.sectionRight}>
                 <Text style={s.sectionCount}>{transactions.length}</Text>
                 <TouchableOpacity style={s.addBtn} onPress={() => setShowCreate(true)}>
@@ -236,7 +238,7 @@ export default function BudgetScreen() {
         }}
         ListEmptyComponent={
           isLoading ? <ListSkeleton count={4} /> :
-          <EmptyState icon="money" title="No transactions" description="Budget entries will appear here" />
+          <EmptyState icon="money" title={t('budget.noTransactions')} description="Budget entries will appear here" />
         }
       />
 
@@ -251,17 +253,17 @@ export default function BudgetScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
             <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
               <View style={s.dragHandle} />
-              <Text style={s.modalTitle}>Add Expense</Text>
+              <Text style={s.modalTitle}>{t('budget.addExpense')}</Text>
 
               {/* Budget selector (show which budget) */}
               {budgets.length > 0 && (
                 <View style={s.budgetTag}>
                   <FontAwesome name="folder-o" size={11} color={Colors.primaryLight} />
-                  <Text style={s.budgetTagText}>{budgets[0].project?.name || 'Budget'}</Text>
+                  <Text style={s.budgetTagText}>{budgets[0].project?.name || t('budget.title')}</Text>
                 </View>
               )}
 
-              <Text style={s.inputLabel}>Description</Text>
+              <Text style={s.inputLabel}>{t('common.description')}</Text>
               <TextInput
                 style={s.input}
                 placeholder="What was this expense for?"
@@ -270,7 +272,7 @@ export default function BudgetScreen() {
                 onChangeText={setDesc}
               />
 
-              <Text style={s.inputLabel}>Amount (ETB)</Text>
+              <Text style={s.inputLabel}>{t('common.amount')} (ETB)</Text>
               <TextInput
                 style={s.input}
                 placeholder="0.00"
@@ -280,7 +282,7 @@ export default function BudgetScreen() {
                 keyboardType="decimal-pad"
               />
 
-              <Text style={s.inputLabel}>Vendor (optional)</Text>
+              <Text style={s.inputLabel}>{t('budget.vendor')} (optional)</Text>
               <TextInput
                 style={s.input}
                 placeholder="Company or person paid"
@@ -291,7 +293,7 @@ export default function BudgetScreen() {
 
               <View style={s.modalActions}>
                 <TouchableOpacity style={s.cancelBtn} onPress={() => setShowCreate(false)}>
-                  <Text style={s.cancelBtnText}>Cancel</Text>
+                  <Text style={s.cancelBtnText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[s.saveBtn, createMutation.isPending && { opacity: 0.6 }]}
@@ -299,7 +301,7 @@ export default function BudgetScreen() {
                   disabled={createMutation.isPending}
                 >
                   <Text style={s.saveBtnText}>
-                    {createMutation.isPending ? 'Saving...' : 'Add Expense'}
+                    {createMutation.isPending ? t('common.saving') : t('budget.addExpense')}
                   </Text>
                 </TouchableOpacity>
               </View>

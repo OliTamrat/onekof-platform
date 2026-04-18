@@ -6,6 +6,7 @@ import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/the
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
 import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useLanguage } from '../../src/contexts/language-context';
 
 /* ─── Types ─── */
 interface Goal {
@@ -42,6 +43,7 @@ const PROGRESS_PRESETS = [0, 10, 25, 50, 75, 90, 100];
 
 export default function GoalsScreen() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [editGoal, setEditGoal] = useState<Goal | null>(null);
@@ -100,7 +102,7 @@ export default function GoalsScreen() {
 
   return (
     <View style={s.container}>
-      <ScreenHeader title="Goals" showBack />
+      <ScreenHeader title={t('goals.title')} showBack />
 
       <FlatList
         data={goals}
@@ -119,28 +121,28 @@ export default function GoalsScreen() {
                     <FontAwesome name="bullseye" size={13} color="#3B82F6" />
                   </View>
                   <Text style={s.summaryValue}>{stats.active}</Text>
-                  <Text style={s.summaryLabel}>Active</Text>
+                  <Text style={s.summaryLabel}>{t('goals.active')}</Text>
                 </View>
                 <View style={s.summaryCard}>
                   <View style={[s.summaryIcon, { backgroundColor: 'rgba(34,197,94,0.1)' }]}>
                     <FontAwesome name="check-circle" size={13} color="#22C55E" />
                   </View>
                   <Text style={s.summaryValue}>{stats.completed}</Text>
-                  <Text style={s.summaryLabel}>Completed</Text>
+                  <Text style={s.summaryLabel}>{t('goals.completed')}</Text>
                 </View>
                 <View style={s.summaryCard}>
                   <View style={[s.summaryIcon, { backgroundColor: 'rgba(245,158,11,0.1)' }]}>
                     <FontAwesome name="exclamation-triangle" size={13} color="#F59E0B" />
                   </View>
                   <Text style={s.summaryValue}>{stats.atRisk}</Text>
-                  <Text style={s.summaryLabel}>At Risk</Text>
+                  <Text style={s.summaryLabel}>{t('goals.atRisk')}</Text>
                 </View>
                 <View style={s.summaryCard}>
                   <View style={[s.summaryIcon, { backgroundColor: 'rgba(28,140,125,0.1)' }]}>
                     <FontAwesome name="line-chart" size={13} color={Colors.primaryLight} />
                   </View>
                   <Text style={s.summaryValue}>{stats.avgProgress}%</Text>
-                  <Text style={s.summaryLabel}>Avg</Text>
+                  <Text style={s.summaryLabel}>{t('goals.avgProgress')}</Text>
                 </View>
               </View>
             )}
@@ -196,7 +198,7 @@ export default function GoalsScreen() {
               {/* Progress bar — prominent */}
               <View style={s.progressSection}>
                 <View style={s.progressHeader}>
-                  <Text style={s.progressLabel}>Progress</Text>
+                  <Text style={s.progressLabel}>{t('goals.progress')}</Text>
                   <Text style={[s.progressPct, { color: cfg.color }]}>{progress}%</Text>
                 </View>
                 <View style={s.progressTrack}>
@@ -226,8 +228,8 @@ export default function GoalsScreen() {
           isLoading ? <ListSkeleton count={4} /> :
           <EmptyState
             icon="bullseye"
-            title={statusFilter ? `No ${statusFilter.toLowerCase().replace('_', ' ')} goals` : 'No goals yet'}
-            description="Set goals to track your team's progress toward key outcomes"
+            title={statusFilter ? `No ${statusFilter.toLowerCase().replace('_', ' ')} goals` : t('goals.noGoals')}
+            description={t('goals.noGoalsDesc')}
           />
         }
       />
@@ -250,7 +252,7 @@ export default function GoalsScreen() {
 
               {/* ── Progress ── */}
               <View style={s.modalSection}>
-                <Text style={s.modalSectionLabel}>PROGRESS</Text>
+                <Text style={s.modalSectionLabel}>{t('goals.progress')}</Text>
                 <Text style={s.modalProgressValue}>{editProgress}%</Text>
                 <View style={s.progressTrackLg}>
                   <View style={[s.progressFillLg, {
@@ -291,7 +293,7 @@ export default function GoalsScreen() {
 
               {/* ── Status ── */}
               <View style={s.modalSection}>
-                <Text style={s.modalSectionLabel}>STATUS</Text>
+                <Text style={s.modalSectionLabel}>{t('common.status')}</Text>
                 <View style={s.statusGrid}>
                   {ALL_STATUSES.map((st) => {
                     const cfg = STATUS_CFG[st];
@@ -316,7 +318,7 @@ export default function GoalsScreen() {
               {/* ── Actions ── */}
               <View style={s.modalActions}>
                 <TouchableOpacity style={s.cancelBtn} onPress={() => setEditGoal(null)}>
-                  <Text style={s.cancelBtnText}>Cancel</Text>
+                  <Text style={s.cancelBtnText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[s.saveBtn, updateMutation.isPending && { opacity: 0.6 }]}
@@ -324,7 +326,7 @@ export default function GoalsScreen() {
                   disabled={updateMutation.isPending}
                 >
                   <Text style={s.saveBtnText}>
-                    {updateMutation.isPending ? 'Saving...' : 'Save'}
+                    {updateMutation.isPending ? t('common.saving') : t('common.save')}
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -12,12 +12,14 @@ import {
   type Issue, type Project, type TaskStatus, type TaskPriority, type TaskType,
 } from '../../src/types';
 import { Avatar } from '../../src/components/Avatar';
+import { useLanguage } from '../../src/contexts/language-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 type ResultType = 'all' | 'issues' | 'projects';
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<ResultType>('all');
 
@@ -135,7 +137,7 @@ export default function SearchScreen() {
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search issues, projects..."
+            placeholder={t('search.placeholder')}
             placeholderTextColor={Colors.textFaint}
             autoFocus
             returnKeyType="search"
@@ -169,7 +171,7 @@ export default function SearchScreen() {
       {!q ? (
         <View style={styles.emptyCenter}>
           <FontAwesome name="search" size={36} color={Colors.textFaint} />
-          <Text style={styles.emptyTitle}>Search Onekof</Text>
+          <Text style={styles.emptyTitle}>{t('search.title')}</Text>
           <Text style={styles.emptyDesc}>Find issues by title, key, or description</Text>
         </View>
       ) : isLoading ? (
@@ -179,8 +181,8 @@ export default function SearchScreen() {
       ) : !hasResults ? (
         <View style={styles.emptyCenter}>
           <FontAwesome name="inbox" size={36} color={Colors.textFaint} />
-          <Text style={styles.emptyTitle}>No results</Text>
-          <Text style={styles.emptyDesc}>Try a different search term</Text>
+          <Text style={styles.emptyTitle}>{t('search.noResults')}</Text>
+          <Text style={styles.emptyDesc}>{t('search.tryDifferent')}</Text>
         </View>
       ) : (
         <FlatList

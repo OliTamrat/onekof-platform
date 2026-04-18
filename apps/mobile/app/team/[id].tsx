@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
+import { useLanguage } from '../../src/contexts/language-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton } from '../../src/components';
 import { Avatar } from '../../src/components/Avatar';
@@ -37,6 +38,7 @@ const ROLE_CFG: Record<string, { color: string; bg: string; label: string }> = {
 
 export default function TeamDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -91,10 +93,10 @@ export default function TeamDetailScreen() {
 
   const confirmRemove = (member: TeamMember) => {
     Alert.alert(
-      'Remove member',
+      t('teams.removeMember'),
       `Remove ${member.name} from this team?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         { text: 'Remove', style: 'destructive', onPress: () => removeMutation.mutate(member.userId) },
       ],
     );
@@ -147,10 +149,10 @@ export default function TeamDetailScreen() {
 
             {/* Members header + add button */}
             <View style={s.sectionRow}>
-              <Text style={s.sectionLabel}>MEMBERS</Text>
+              <Text style={s.sectionLabel}>{t('projects.members')}</Text>
               <TouchableOpacity style={s.addBtn} onPress={() => setShowAddModal(true)}>
                 <FontAwesome name="plus" size={10} color="#fff" />
-                <Text style={s.addBtnText}>Add</Text>
+                <Text style={s.addBtnText}>{t('common.add')}</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -196,10 +198,8 @@ export default function TeamDetailScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
             <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
               <View style={s.dragHandle} />
-              <Text style={s.modalTitle}>Add Team Member</Text>
-              <Text style={s.modalHint}>
-                Enter the email of an organization member. If they're not in the org yet, an invitation will be sent.
-              </Text>
+              <Text style={s.modalTitle}>{t('teams.addMember')}</Text>
+              <Text style={s.modalHint}>{t('teams.addMemberHint')}</Text>
 
               <TextInput
                 style={s.emailInput}
@@ -214,7 +214,7 @@ export default function TeamDetailScreen() {
 
               <View style={s.modalActions}>
                 <TouchableOpacity style={s.cancelBtn} onPress={() => { setShowAddModal(false); setAddEmail(''); }}>
-                  <Text style={s.cancelBtnText}>Cancel</Text>
+                  <Text style={s.cancelBtnText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[s.saveBtn, addMutation.isPending && { opacity: 0.6 }]}
@@ -222,7 +222,7 @@ export default function TeamDetailScreen() {
                   disabled={addMutation.isPending}
                 >
                   <Text style={s.saveBtnText}>
-                    {addMutation.isPending ? 'Adding...' : 'Add Member'}
+                    {addMutation.isPending ? t('common.adding') : t('teams.addMember')}
                   </Text>
                 </TouchableOpacity>
               </View>
