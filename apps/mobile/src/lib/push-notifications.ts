@@ -51,11 +51,9 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   // Get Expo push token
   try {
-    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
-    if (!projectId) {
-      console.log('No EAS projectId configured — push tokens disabled. Run: npx eas init');
-      return null;
-    }
+    const projectId =
+      Constants.expoConfig?.extra?.eas?.projectId ||
+      'de51f86c-459c-4330-83df-7b481b9e9740'; // @olink/onekof
     const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
     const token = tokenData.data;
 
