@@ -198,7 +198,7 @@ export default function IssueDetailScreen() {
   // Watch/unwatch toggle
   const watchMutation = useMutation({
     mutationFn: () =>
-      apiFetch(`/api/issues/${id}/watchers`, { method: 'POST' }),
+      apiFetch(`/api/issues/${id}/watchers`, { method: 'POST', body: JSON.stringify({}) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issue', id] });
       Alert.alert('Watching', 'You are now watching this issue');

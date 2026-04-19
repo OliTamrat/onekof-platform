@@ -111,8 +111,13 @@ export async function POST(
       );
     }
 
-    // Parse request body
-    const body = await request.json();
+    // Parse request body (may be empty from mobile — default to {})
+    let body: Record<string, any> = {};
+    try {
+      body = await request.json();
+    } catch {
+      // Empty body is fine — defaults below handle it
+    }
     const {
       userId,
       watchReason = 'MANUAL',

@@ -56,14 +56,14 @@ export async function GET(request: NextRequest) {
       ]),
     );
 
-    // Pull activities on relevant tasks, excluding self-actions
+    // Pull activities on relevant tasks.
+    // Include self-actions so single-user orgs still see notifications (marked isSelf).
     const activities = relevantTaskIds.length > 0
       ? await prisma.userActivity.findMany({
           where: {
             organizationId,
             entityType: 'TASK',
             entityId: { in: relevantTaskIds },
-            userId: { not: userId },
           },
           orderBy: { createdAt: 'desc' },
           take: limit,
@@ -115,6 +115,7 @@ export async function GET(request: NextRequest) {
       impactScore: a.impactScore,
       createdAt: a.createdAt,
       readAt: readMap.get(a.id) || null,
+      isSelf: a.userId === userId,
       user: a.user,
       task: tasksById.get(a.entityId) || null,
     }));
