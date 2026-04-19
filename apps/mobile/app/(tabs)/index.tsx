@@ -172,14 +172,16 @@ export default function DashboardScreen() {
   // Fetch ALL issues (same as web) to compute real stats
   const { data: issueData, refetch: r1 } = useQuery({
     queryKey: ['all-issues'],
-    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues'),
+    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues')
+      .catch(() => ({ issues: [] })),
     enabled: !!currentOrg,
   });
 
   // Fetch projects
   const { data: projectData, refetch: r2 } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects'),
+    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects')
+      .catch(() => ({ projects: [] })),
     enabled: !!currentOrg,
   });
 
