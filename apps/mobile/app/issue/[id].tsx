@@ -7,7 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Clipboard from 'expo-clipboard';
-import { apiFetch } from '../../src/lib/api';
+import * as DocumentPicker from 'expo-document-picker';
+import { apiFetch, apiUpload } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import {
   STATUS_CONFIG, PRIORITY_CONFIG, TYPE_CONFIG,
@@ -194,6 +195,57 @@ export default function IssueDetailScreen() {
     onError: (e: Error) => showError(e.message || 'Failed to post comment'),
   });
 
+  // Watch/unwatch toggle
+  const watchMutation = useMutation({
+    mutationFn: () =>
+      apiFetch(`/api/issues/${id}/watchers`, { method: 'POST' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['issue', id] });
+      Alert.alert('Watching', 'You are now watching this issue');
+    },
+    onError: (e: Error) => {
+      const msg = e.message || '';
+      if (msg.includes('already watching') || msg.includes('409')) {
+        Alert.alert('Already watching', 'You are already watching this issue');
+      } else {
+        showError(msg || 'Failed to update watcher');
+      }
+    },
+  });
+
+  // Attach file — pick document and upload via /api/documents/upload
+  const handleAttach = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/jpeg', 'image/png',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/msword', 'text/plain'],
+        copyToCacheDirectory: true,
+      });
+      if (result.canceled || !result.assets?.[0]) return;
+
+      const asset = result.assets[0];
+      const formData = new FormData();
+      formData.append('file', {
+        uri: asset.uri,
+        name: asset.name,
+        type: asset.mimeType || 'application/octet-stream',
+      } as any);
+
+      // Link to the issue's project if available
+      const issue = issueData as any;
+      if (issue?.projectId) {
+        formData.append('projectId', issue.projectId);
+      }
+
+      await apiUpload('/api/documents/upload', formData);
+      Alert.alert('Uploaded', `${asset.name} uploaded successfully.`);
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+    } catch (err: any) {
+      Alert.alert('Upload failed', err?.message || 'Could not upload file');
+    }
+  };
+
   // Org members for @mentions — uses dedicated mobile endpoint with Bearer JWT auth
   const { data: orgMembersData } = useQuery({
     queryKey: ['org-members-mentions', currentOrg?.id],
@@ -340,10 +392,10 @@ export default function IssueDetailScreen() {
         </TouchableOpacity>
         <Text style={s.headerKey}>{issue.key || ''}</Text>
         <View style={s.headerActions}>
-          <TouchableOpacity style={s.headerBtn}>
-            <FontAwesome name="eye" size={15} color={Colors.textSecondary} />
+          <TouchableOpacity style={s.headerBtn} onPress={() => watchMutation.mutate()}>
+            <FontAwesome name="eye" size={15} color={watchMutation.isPending ? Colors.primaryLight : Colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={s.headerBtn}>
+          <TouchableOpacity style={s.headerBtn} onPress={handleAttach}>
             <FontAwesome name="paperclip" size={15} color={Colors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity style={s.headerBtn} onPress={() => setShowMoreMenu(true)}>
