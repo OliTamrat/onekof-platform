@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch, Linking, Modal, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/auth-context';
@@ -13,6 +13,7 @@ export default function ProfileScreen() {
   const [bioAvailable, setBioAvailable] = useState(false);
   const [bioEnabled, setBioEnabled] = useState(false);
   const [bioLabel, setBioLabel] = useState('Biometric');
+  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     isBiometricAvailable().then(setBioAvailable);
@@ -61,19 +62,7 @@ export default function ProfileScreen() {
     );
   };
 
-  const handleAbout = () => {
-    Alert.alert(
-      'About Onekof',
-      'Onekof Mobile v1.0.0\n\n' +
-      'The complete project management platform built for Ethiopian organizations.\n\n' +
-      'By DAPS Analytics\n' +
-      'https://onekof.com',
-      [
-        { text: 'Visit Website', onPress: () => Linking.openURL('https://onekof.com') },
-        { text: 'OK' },
-      ],
-    );
-  };
+  const handleAbout = () => setShowAbout(true);
 
   const settingsItems = [
     { label: 'Switch Organization', icon: 'building' as const, onPress: handleSwitchOrg, show: organizations.length > 1 },
@@ -156,6 +145,53 @@ export default function ProfileScreen() {
 
         <Text style={styles.version}>Onekof Mobile v1.0.0</Text>
       </ScrollView>
+
+      {/* ═══ About Onekof Modal ═══ */}
+      <Modal visible={showAbout} transparent animationType="fade" onRequestClose={() => setShowAbout(false)}>
+        <Pressable style={styles.aboutOverlay} onPress={() => setShowAbout(false)}>
+          <Pressable style={styles.aboutSheet} onPress={(e) => e.stopPropagation()}>
+            {/* Logo area */}
+            <View style={styles.aboutLogoBox}>
+              <View style={styles.aboutLogo}>
+                <Text style={styles.aboutLogoText}>O</Text>
+              </View>
+            </View>
+            <Text style={styles.aboutAppName}>Onekof</Text>
+            <Text style={styles.aboutVersion}>Mobile v1.0.0</Text>
+
+            <View style={styles.aboutDivider} />
+
+            <Text style={styles.aboutDesc}>
+              The complete project management platform built for Ethiopian organizations.
+            </Text>
+
+            <View style={styles.aboutInfoRow}>
+              <FontAwesome name="building-o" size={12} color={Colors.textSecondary} />
+              <Text style={styles.aboutInfoText}>DAPS Analytics</Text>
+            </View>
+            <View style={styles.aboutInfoRow}>
+              <FontAwesome name="globe" size={12} color={Colors.textSecondary} />
+              <Text style={styles.aboutInfoText}>onekof.com</Text>
+            </View>
+            <View style={styles.aboutInfoRow}>
+              <FontAwesome name="envelope-o" size={12} color={Colors.textSecondary} />
+              <Text style={styles.aboutInfoText}>support@onekof.com</Text>
+            </View>
+
+            <View style={styles.aboutDivider} />
+
+            <View style={styles.aboutActions}>
+              <TouchableOpacity style={styles.aboutActionBtn} onPress={() => Linking.openURL('https://onekof.com')} activeOpacity={0.7}>
+                <FontAwesome name="external-link" size={13} color={Colors.primaryLight} />
+                <Text style={styles.aboutActionText}>Visit Website</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.aboutCloseBtn} onPress={() => setShowAbout(false)} activeOpacity={0.7}>
+                <Text style={styles.aboutCloseBtnText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -213,4 +249,56 @@ const styles = StyleSheet.create({
   biometricRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.lg },
   biometricTitle: { fontSize: FontSize.base, fontWeight: '600', color: Colors.textPrimary },
   biometricDesc: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
+
+  /* ═══ About Modal ═══ */
+  aboutOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center', alignItems: 'center', padding: Spacing['3xl'],
+  },
+  aboutSheet: {
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.xl, padding: Spacing['2xl'],
+    width: '100%', maxWidth: 340, alignItems: 'center',
+  },
+  aboutLogoBox: { marginBottom: Spacing.md },
+  aboutLogo: {
+    width: 64, height: 64, borderRadius: 20,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  aboutLogoText: { fontSize: 28, fontWeight: '800', color: '#fff' },
+  aboutAppName: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
+  aboutVersion: { fontSize: FontSize.sm, color: Colors.textFaint, marginTop: 2 },
+  aboutDivider: {
+    width: '80%', height: 1, backgroundColor: Colors.border,
+    marginVertical: Spacing.lg,
+  },
+  aboutDesc: {
+    fontSize: FontSize.sm, color: Colors.textSecondary, textAlign: 'center',
+    lineHeight: 20, marginBottom: Spacing.lg,
+  },
+  aboutInfoRow: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  aboutInfoText: { fontSize: FontSize.sm, color: Colors.textSecondary },
+  aboutActions: {
+    flexDirection: 'row', gap: Spacing.sm, width: '100%',
+  },
+  aboutActionBtn: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: Spacing.sm, paddingVertical: 12,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary + '15',
+    borderWidth: 1, borderColor: Colors.primary + '30',
+  },
+  aboutActionText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primaryLight },
+  aboutCloseBtn: {
+    flex: 1, paddingVertical: 12,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  aboutCloseBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
 });

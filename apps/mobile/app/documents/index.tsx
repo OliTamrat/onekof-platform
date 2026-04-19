@@ -29,12 +29,13 @@ interface Document {
 }
 
 /* ─── Filter chips ─── */
+// fileType values from API: invoice, receipt, contract, report, proposal, rfp, other
 const TYPE_FILTERS = [
-  { key: undefined as string | undefined, label: 'All', icon: 'th-large' },
-  { key: 'DOCUMENT', label: 'Docs', icon: 'file-text-o' },
-  { key: 'WIKI', label: 'Wiki', icon: 'book' },
-  { key: 'TEMPLATE', label: 'Templates', icon: 'copy' },
-  { key: 'SHARED', label: 'Shared', icon: 'share-alt' },
+  { key: undefined as string | undefined, label: 'All', icon: 'th-large', match: undefined as string[] | undefined },
+  { key: 'financial', label: 'Financial', icon: 'file-text-o', match: ['invoice', 'receipt'] },
+  { key: 'legal', label: 'Legal', icon: 'book', match: ['contract', 'proposal', 'rfp'] },
+  { key: 'report', label: 'Reports', icon: 'copy', match: ['report'] },
+  { key: 'other', label: 'Other', icon: 'file-o', match: ['other'] },
 ];
 
 /* ─── Document type config ─── */
@@ -89,20 +90,29 @@ export default function DocumentsScreen() {
 
   const allDocs: Document[] = (data as any)?.documents || (data as any)?.articles || [];
 
+  const activeFilter = TYPE_FILTERS.find((f) => f.key === typeFilter);
+
   const filtered = useMemo(() => {
     return allDocs.filter((d) => {
       const title = d.title || d.name || d.fileName || '';
       const matchSearch = !search || title.toLowerCase().includes(search.toLowerCase());
-      const matchType = !typeFilter || d.type === typeFilter || d.fileType === typeFilter;
+      const ft = (d.fileType || d.type || 'other').toLowerCase();
+      const matchType = !activeFilter?.match || activeFilter.match.includes(ft);
       return matchSearch && matchType;
     });
-  }, [allDocs, search, typeFilter]);
+  }, [allDocs, search, activeFilter]);
 
-  // Stats
+  // Stats per filter group
   const stats = useMemo(() => {
-    const byType: Record<string, number> = {};
-    allDocs.forEach((d) => { byType[d.type] = (byType[d.type] || 0) + 1; });
-    return { total: allDocs.length, byType };
+    const counts: Record<string, number> = {};
+    TYPE_FILTERS.forEach((f) => {
+      if (!f.key) { counts['all'] = allDocs.length; return; }
+      counts[f.key] = allDocs.filter((d) => {
+        const ft = (d.fileType || d.type || 'other').toLowerCase();
+        return f.match?.includes(ft);
+      }).length;
+    });
+    return { total: allDocs.length, counts };
   }, [allDocs]);
 
   const onRefresh = useCallback(async () => {
@@ -183,7 +193,7 @@ export default function DocumentsScreen() {
             <View style={s.filterRow}>
               {TYPE_FILTERS.map((f) => {
                 const active = typeFilter === f.key;
-                const count = f.key ? (stats.byType[f.key] || 0) : stats.total;
+                const count = f.key ? (stats.counts[f.key] || 0) : stats.total;
                 return (
                   <TouchableOpacity
                     key={f.key ?? 'all'}
@@ -207,7 +217,7 @@ export default function DocumentsScreen() {
             {stats.total > 0 && (
               <View style={s.statBar}>
                 <Text style={s.statBarText}>
-                  {typeFilter ? `${filtered.length} ${DOC_TYPE[typeFilter]?.label || ''} documents` : `${stats.total} documents`}
+                  {typeFilter ? `${filtered.length} ${activeFilter?.label || ''} documents` : `${stats.total} documents`}
                 </Text>
               </View>
             )}
