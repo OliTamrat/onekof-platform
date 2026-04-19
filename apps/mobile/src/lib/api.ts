@@ -38,11 +38,18 @@ function setOnlineState(isOnline: boolean) {
   onlineListeners.forEach((cb) => cb(isOnline));
 }
 
-// Subscribe to OS-level network changes — fires immediately on airplane mode / wifi off
+// Subscribe to OS-level network changes — fires immediately on airplane mode / wifi off.
+// IMPORTANT: Only use `isConnected` for offline detection. `isInternetReachable` is unreliable
+// on many networks (returns false even when API calls work fine) and caused persistent
+// false-offline banners. Real API failures will set offline via the fetch catch block.
 NetInfo.addEventListener((state) => {
-  // `isInternetReachable` can be null on first call; treat as connected if isConnected is true
-  const online = !!state.isConnected && state.isInternetReachable !== false;
-  setOnlineState(online);
+  if (!state.isConnected) {
+    setOnlineState(false);
+  } else if (!currentIsOnline) {
+    // If NetInfo says connected but we were offline, optimistically go online.
+    // If the API is truly down, the next fetch will flip back to offline.
+    setOnlineState(true);
+  }
 });
 
 /**

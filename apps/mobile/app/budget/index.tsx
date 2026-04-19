@@ -54,6 +54,7 @@ export default function BudgetScreen() {
   const [desc, setDesc] = useState('');
   const [amount, setAmount] = useState('');
   const [vendor, setVendor] = useState('');
+  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
 
   const { data: summary, refetch: refetchSummary } = useQuery({
     queryKey: ['budget-summary'],
@@ -214,7 +215,7 @@ export default function BudgetScreen() {
           const isExp = item.type === 'EXPENSE';
           const dateStr = item.date ? new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
           return (
-            <View style={s.txCard}>
+            <TouchableOpacity style={s.txCard} activeOpacity={0.7} onPress={() => setSelectedTx(item)}>
               <View style={[s.txIcon, { backgroundColor: isExp ? '#3B141415' : '#0F3A1E15' }]}>
                 <FontAwesome name={isExp ? 'arrow-down' : 'arrow-up'} size={13} color={isExp ? Colors.error : Colors.success} />
               </View>
@@ -233,7 +234,7 @@ export default function BudgetScreen() {
               <Text style={[s.txAmount, { color: isExp ? Colors.error : Colors.success }]}>
                 {isExp ? '-' : '+'}{fmt(item.amount)}
               </Text>
-            </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
@@ -241,6 +242,74 @@ export default function BudgetScreen() {
           <EmptyState icon="money" title={t('budget.noTransactions')} description="Budget entries will appear here" />
         }
       />
+
+      {/* ═══ Transaction Detail Modal ═══ */}
+      <Modal
+        visible={!!selectedTx}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setSelectedTx(null)}
+      >
+        <Pressable style={s.modalOverlay} onPress={() => setSelectedTx(null)}>
+          <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={s.dragHandle} />
+            {selectedTx && (() => {
+              const isExp = selectedTx.type === 'EXPENSE';
+              const dateStr = selectedTx.date
+                ? new Date(selectedTx.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                : '';
+              return (
+                <>
+                  {/* Amount hero */}
+                  <View style={s.txDetailHero}>
+                    <View style={[s.txDetailIcon, { backgroundColor: isExp ? Colors.errorBg : Colors.successBg }]}>
+                      <FontAwesome name={isExp ? 'arrow-circle-down' : 'arrow-circle-up'} size={24} color={isExp ? Colors.error : Colors.success} />
+                    </View>
+                    <Text style={[s.txDetailAmount, { color: isExp ? Colors.error : Colors.success }]}>
+                      {isExp ? '-' : '+'}{fmt(selectedTx.amount)}
+                    </Text>
+                    <View style={[s.txDetailTypeBadge, { backgroundColor: isExp ? Colors.errorBg : Colors.successBg }]}>
+                      <Text style={[s.txDetailTypeText, { color: isExp ? Colors.error : Colors.success }]}>
+                        {selectedTx.type}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Detail fields */}
+                  <View style={s.txDetailFields}>
+                    <View style={s.txDetailField}>
+                      <Text style={s.txDetailLabel}>{t('common.description')}</Text>
+                      <Text style={s.txDetailValue}>{selectedTx.description}</Text>
+                    </View>
+                    <View style={s.txDetailField}>
+                      <Text style={s.txDetailLabel}>Category</Text>
+                      <View style={s.txCategoryBadge}>
+                        <Text style={s.txCategoryText}>{selectedTx.category}</Text>
+                      </View>
+                    </View>
+                    {dateStr ? (
+                      <View style={s.txDetailField}>
+                        <Text style={s.txDetailLabel}>Date</Text>
+                        <Text style={s.txDetailValue}>{dateStr}</Text>
+                      </View>
+                    ) : null}
+                    {selectedTx.createdBy?.name ? (
+                      <View style={s.txDetailField}>
+                        <Text style={s.txDetailLabel}>Created by</Text>
+                        <Text style={s.txDetailValue}>{selectedTx.createdBy.name}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+
+                  <TouchableOpacity style={s.txDetailCloseBtn} onPress={() => setSelectedTx(null)}>
+                    <Text style={s.txDetailCloseBtnText}>Close</Text>
+                  </TouchableOpacity>
+                </>
+              );
+            })()}
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* ═══ Create Expense Modal ═══ */}
       <Modal
@@ -457,4 +526,35 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   saveBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: '#fff' },
+
+  /* ═══ Transaction Detail ═══ */
+  txDetailHero: { alignItems: 'center', marginBottom: Spacing.xl },
+  txDetailIcon: {
+    width: 56, height: 56, borderRadius: 28,
+    justifyContent: 'center', alignItems: 'center', marginBottom: Spacing.md,
+  },
+  txDetailAmount: { fontSize: 28, fontWeight: '800' },
+  txDetailTypeBadge: {
+    paddingHorizontal: 12, paddingVertical: 4,
+    borderRadius: BorderRadius.full, marginTop: Spacing.sm,
+  },
+  txDetailTypeText: { fontSize: FontSize.xs, fontWeight: '700', textTransform: 'uppercase' },
+  txDetailFields: {
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.xl, overflow: 'hidden', marginBottom: Spacing.lg,
+  },
+  txDetailField: {
+    paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md,
+    borderBottomWidth: 1, borderBottomColor: Colors.border,
+  },
+  txDetailLabel: { fontSize: FontSize.xs, color: Colors.textFaint, marginBottom: 4 },
+  txDetailValue: { fontSize: FontSize.base, color: Colors.textWhite },
+  txDetailCloseBtn: {
+    paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  txDetailCloseBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
 });
