@@ -62,15 +62,15 @@ export default function MoreScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* User card */}
+        {/* User card — single-line truncation to prevent overflow */}
         <TouchableOpacity style={styles.userCard} onPress={() => router.push('/profile' as any)} activeOpacity={0.7}>
           <Avatar name={user?.name || 'User'} size={48} />
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user?.name || 'User'}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
+            <Text style={styles.userName} numberOfLines={1}>{user?.name || 'User'}</Text>
+            <Text style={styles.userEmail} numberOfLines={1}>{user?.email}</Text>
           </View>
           <View style={styles.orgBadge}>
-            <Text style={styles.orgBadgeText}>{currentOrg?.name}</Text>
+            <Text style={styles.orgBadgeText} numberOfLines={1}>{currentOrg?.name}</Text>
           </View>
         </TouchableOpacity>
 
@@ -123,15 +123,16 @@ const styles = StyleSheet.create({
   userCard: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
-    borderRadius: BorderRadius.xl, padding: Spacing.lg, gap: Spacing.lg,
+    borderRadius: BorderRadius.xl, padding: Spacing.lg, gap: Spacing.md,
     marginBottom: Spacing['3xl'],
   },
-  userInfo: { flex: 1 },
+  userInfo: { flex: 1, minWidth: 0 },
   userName: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textWhite },
   userEmail: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2 },
   orgBadge: {
     backgroundColor: Colors.primary + '15', borderRadius: BorderRadius.full,
     paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs,
+    maxWidth: 160, flexShrink: 1,
   },
   orgBadgeText: { fontSize: 10, fontWeight: '600', color: Colors.primaryLight },
   section: { marginBottom: Spacing['2xl'] },

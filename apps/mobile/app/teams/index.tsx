@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, TextInput, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, EmptyState, ListSkeleton, SearchBar } from '../../src/components';
@@ -30,8 +30,12 @@ interface Team {
 export default function TeamsScreen() {
   const router = useRouter();
   const { t } = useLanguage();
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newDesc, setNewDesc] = useState('');
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['teams'],
@@ -42,6 +46,52 @@ export default function TeamsScreen() {
   const teams = allTeams.filter((t) =>
     !search || t.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const createMutation = useMutation({
+    mutationFn: (payload: { name: string; description?: string }) =>
+      apiFetch('/api/teams', { method: 'POST', body: JSON.stringify(payload) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+      setShowCreate(false);
+      setNewName('');
+      setNewDesc('');
+      Alert.alert('Team created', 'Your new team has been created.');
+    },
+    onError: (err: Error) => {
+      Alert.alert('Error', err.message || 'Could not create team');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (teamId: string) =>
+      apiFetch(`/api/teams/${teamId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: (err: Error) => {
+      Alert.alert('Error', err.message || 'Could not delete team');
+    },
+  });
+
+  const handleCreate = () => {
+    const name = newName.trim();
+    if (!name) {
+      Alert.alert('Required', 'Team name is required');
+      return;
+    }
+    createMutation.mutate({ name, description: newDesc.trim() || undefined });
+  };
+
+  const confirmDelete = (team: Team) => {
+    Alert.alert(
+      'Delete Team',
+      `Are you sure you want to delete "${team.name}"? This cannot be undone.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => deleteMutation.mutate(team.id) },
+      ],
+    );
+  };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -95,7 +145,7 @@ export default function TeamsScreen() {
           const overflowCount = Math.max(0, count - displayMembers.length);
 
           return (
-            <TouchableOpacity style={s.card} activeOpacity={0.7} onPress={() => router.push(`/team/${item.id}`)}>
+            <TouchableOpacity style={s.card} activeOpacity={0.7} onPress={() => router.push(`/team/${item.id}`)} onLongPress={() => confirmDelete(item)}>
               {/* Team icon */}
               <View style={[s.teamIcon, { backgroundColor: (item.color || Colors.primary) + '15' }]}>
                 <FontAwesome name="users" size={18} color={item.color || Colors.primaryLight} />
@@ -154,10 +204,72 @@ export default function TeamsScreen() {
           <EmptyState
             icon="users"
             title={t('teams.noTeams')}
-            description={search ? 'Try a different search' : 'Teams will appear here when created'}
+            description={search ? 'Try a different search' : 'Tap + to create your first team'}
           />
         }
       />
+
+      {/* ═══ FAB ═══ */}
+      <TouchableOpacity
+        style={s.fab}
+        activeOpacity={0.8}
+        onPress={() => setShowCreate(true)}
+      >
+        <FontAwesome name="plus" size={20} color="#fff" />
+      </TouchableOpacity>
+
+      {/* ═══ Create Team Modal ═══ */}
+      <Modal
+        visible={showCreate}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCreate(false)}
+      >
+        <Pressable style={s.modalOverlay} onPress={() => setShowCreate(false)}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
+            <Pressable style={s.modalSheet} onPress={(e) => e.stopPropagation()}>
+              <View style={s.dragHandle} />
+              <Text style={s.modalTitle}>Create Team</Text>
+              <Text style={s.modalHint}>Create a new team and add members to collaborate on projects.</Text>
+
+              <Text style={s.inputLabel}>Team Name *</Text>
+              <TextInput
+                style={s.textInput}
+                placeholder="e.g. Engineering, Design, Marketing"
+                placeholderTextColor={Colors.textFaint}
+                value={newName}
+                onChangeText={setNewName}
+                autoFocus
+              />
+
+              <Text style={s.inputLabel}>Description</Text>
+              <TextInput
+                style={[s.textInput, { height: 72, textAlignVertical: 'top' }]}
+                placeholder="What does this team do?"
+                placeholderTextColor={Colors.textFaint}
+                value={newDesc}
+                onChangeText={setNewDesc}
+                multiline
+              />
+
+              <View style={s.modalActions}>
+                <TouchableOpacity style={s.cancelBtn} onPress={() => { setShowCreate(false); setNewName(''); setNewDesc(''); }}>
+                  <Text style={s.cancelBtnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.saveBtn, createMutation.isPending && { opacity: 0.6 }]}
+                  onPress={handleCreate}
+                  disabled={createMutation.isPending}
+                >
+                  <Text style={s.saveBtnText}>
+                    {createMutation.isPending ? 'Creating...' : 'Create Team'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -228,4 +340,67 @@ const s = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   avatarOverflowText: { fontSize: 9, fontWeight: '700', color: Colors.textFaint },
+
+  /* ═══ FAB ═══ */
+  fab: {
+    position: 'absolute', bottom: 32, right: 24,
+    width: 56, height: 56, borderRadius: 28,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 6,
+  },
+
+  /* ═══ Modal ═══ */
+  modalOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: Spacing.lg, paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.lg,
+  },
+  dragHandle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: Colors.textFaint, alignSelf: 'center',
+    marginBottom: Spacing.lg,
+  },
+  modalTitle: {
+    fontSize: FontSize.lg, fontWeight: '700', color: Colors.textWhite,
+    marginBottom: Spacing.xs,
+  },
+  modalHint: {
+    fontSize: FontSize.sm, color: Colors.textSecondary, lineHeight: 20,
+    marginBottom: Spacing.lg,
+  },
+  inputLabel: {
+    fontSize: FontSize.xs, fontWeight: '600', color: Colors.textFaint,
+    textTransform: 'uppercase', letterSpacing: 0.5,
+    marginBottom: Spacing.xs,
+  },
+  textInput: {
+    backgroundColor: Colors.bgElevated, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, padding: Spacing.md,
+    fontSize: FontSize.base, color: Colors.textWhite,
+    marginBottom: Spacing.lg,
+  },
+  modalActions: {
+    flexDirection: 'row', gap: Spacing.sm,
+  },
+  cancelBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
+    alignItems: 'center',
+  },
+  cancelBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  saveBtn: {
+    flex: 1, paddingVertical: 14,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+  },
+  saveBtnText: { fontSize: FontSize.sm, fontWeight: '700', color: '#fff' },
 });

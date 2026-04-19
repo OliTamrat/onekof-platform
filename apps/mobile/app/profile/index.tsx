@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch, Linking } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/auth-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, Avatar } from '../../src/components';
@@ -8,6 +9,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ProfileScreen() {
   const { user, currentOrg, organizations, signOut, selectOrganization } = useAuth();
+  const router = useRouter();
   const [bioAvailable, setBioAvailable] = useState(false);
   const [bioEnabled, setBioEnabled] = useState(false);
   const [bioLabel, setBioLabel] = useState('Biometric');
@@ -47,12 +49,38 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const handleHelpSupport = () => {
+    Alert.alert(
+      'Help & Support',
+      'How can we help?',
+      [
+        { text: 'Email Support', onPress: () => Linking.openURL('mailto:support@onekof.com') },
+        { text: 'Visit Website', onPress: () => Linking.openURL('https://onekof.com') },
+        { text: 'Cancel', style: 'cancel' },
+      ],
+    );
+  };
+
+  const handleAbout = () => {
+    Alert.alert(
+      'About Onekof',
+      'Onekof Mobile v1.0.0\n\n' +
+      'The complete project management platform built for Ethiopian organizations.\n\n' +
+      'By DAPS Analytics\n' +
+      'https://onekof.com',
+      [
+        { text: 'Visit Website', onPress: () => Linking.openURL('https://onekof.com') },
+        { text: 'OK' },
+      ],
+    );
+  };
+
   const settingsItems = [
     { label: 'Switch Organization', icon: 'building' as const, onPress: handleSwitchOrg, show: organizations.length > 1 },
-    { label: 'Account Settings', icon: 'cog' as const, onPress: () => {} },
-    { label: 'Privacy & Security', icon: 'shield' as const, onPress: () => {} },
-    { label: 'Help & Support', icon: 'question-circle' as const, onPress: () => {} },
-    { label: 'About Onekof', icon: 'info-circle' as const, onPress: () => {} },
+    { label: 'Account Settings', icon: 'cog' as const, onPress: () => router.push('/settings' as any) },
+    { label: 'Privacy & Security', icon: 'shield' as const, onPress: () => router.push('/settings' as any) },
+    { label: 'Help & Support', icon: 'question-circle' as const, onPress: handleHelpSupport },
+    { label: 'About Onekof', icon: 'info-circle' as const, onPress: handleAbout },
   ];
 
   return (
