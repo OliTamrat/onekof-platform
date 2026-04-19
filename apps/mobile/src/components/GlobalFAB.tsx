@@ -29,20 +29,21 @@ function getFABAction(path: string): FABAction | null {
   if (path === 'settings' || path.startsWith('settings/')) return null;
   if (path === 'profile' || path.startsWith('profile/')) return null;
 
-  // Project detail has its own contextual FAB
-  if (path.startsWith('project/')) return null;
+  // Screens that already have their own FAB/action button — hide global
+  if (path.startsWith('project/')) return null;  // project detail has own FAB
+  if (path === '(tabs)/projects') return null;   // has own create-project button in header
+  if (path === '(tabs)/issues') return null;     // has own create-issue FAB
+  if (path === '(tabs)/notifications') return null;
+  if (path === '(tabs)/more') return null;
+  if (path.startsWith('team/')) return null;
+  if (path === 'budget' || path.startsWith('budget/')) return null;
+  if (path === 'documents' || path.startsWith('documents/')) return null;
+  if (path === 'calendar' || path.startsWith('calendar/')) return null;
+  if (path === 'members' || path.startsWith('members/')) return null;
+  if (path === 'teams' || path.startsWith('teams/')) return null;
+  if (path === 'goals' || path.startsWith('goals/')) return null;
 
-  // Context-aware actions
-  if (path === '(tabs)/projects') return { icon: 'plus', route: '/create-project', label: 'Create project' };
-  if (path === 'teams' || path.startsWith('teams/')) return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
-  if (path.startsWith('team/')) return null; // team detail has add-member button
-  if (path === 'goals' || path.startsWith('goals/')) return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
-  if (path === 'budget' || path.startsWith('budget/')) return null; // has own add-expense button
-  if (path === 'documents' || path.startsWith('documents/')) return null; // has own upload button
-  if (path === 'calendar' || path.startsWith('calendar/')) return null; // has own create-event button
-  if (path === 'members' || path.startsWith('members/')) return null; // has own invite button
-
-  // Default: create issue (dashboard, notifications, issue detail, etc.)
+  // Default: create issue (dashboard, issue detail)
   return { icon: 'plus', route: '/create-issue', label: 'Create issue' };
 }
 
