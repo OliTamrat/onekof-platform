@@ -90,12 +90,10 @@ export default function NotificationsTab() {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<'all' | 'mentions' | 'assigned' | 'watching'>('all');
 
-  const { data, refetch } = useQuery({
-    queryKey: ['notifications'],
+  const { data, refetch, error: queryError } = useQuery({
+    queryKey: ['notifications-tab'],
     queryFn: () =>
-      apiFetch<{ notifications: Notification[]; unreadCount: number }>('/api/notifications').catch(
-        () => ({ notifications: [], unreadCount: 0 }),
-      ),
+      apiFetch<{ notifications: Notification[]; unreadCount: number }>('/api/notifications?limit=100'),
   });
 
   const notifications = data?.notifications || [];
@@ -273,13 +271,17 @@ export default function NotificationsTab() {
         ListEmptyComponent={
           <View style={s.empty}>
             <View style={s.emptyIconBox}>
-              <FontAwesome name="bell-slash-o" size={32} color={Colors.textFaint} />
+              <FontAwesome name={queryError ? 'exclamation-circle' : 'bell-slash-o'} size={32} color={queryError ? Colors.error : Colors.textFaint} />
             </View>
-            <Text style={s.emptyTitle}>{t('notifications.noNotifications')}</Text>
+            <Text style={s.emptyTitle}>
+              {queryError ? 'Could not load notifications' : t('notifications.noNotifications')}
+            </Text>
             <Text style={s.emptyDesc}>
-              {filter === 'all'
-                ? t('notifications.noNotificationsDesc')
-                : `No ${filter} notifications right now.`}
+              {queryError
+                ? `${queryError.message || 'Check your connection and pull to refresh.'}`
+                : filter === 'all'
+                  ? 'Notifications will appear here when team members make changes to issues you\'re watching, assigned to, or created.'
+                  : `No ${filter} notifications right now.`}
             </Text>
           </View>
         }
