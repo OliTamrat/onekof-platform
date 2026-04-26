@@ -185,6 +185,16 @@ export default function DashboardScreen() {
     enabled: !!currentOrg,
   });
 
+  // Fetch unread notification count for bell badge
+  const { data: notifData } = useQuery({
+    queryKey: ['notif-badge'],
+    queryFn: () => apiFetch<{ unreadCount: number }>('/api/notifications?limit=1')
+      .catch(() => ({ unreadCount: 0 })),
+    enabled: !!currentOrg,
+    staleTime: 60 * 1000,
+  });
+  const unreadCount = notifData?.unreadCount || 0;
+
   // Fetch activity (uses /api/activities — enriched with entity.key, entity.title, entity.project)
   const { data: activityData, refetch: r3 } = useQuery({
     queryKey: ['recent-activity', activityFilter],
@@ -296,25 +306,58 @@ export default function DashboardScreen() {
   ];
   const maxType = Math.max(...typeDisplay.map(t => t.count), 1);
 
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
   return (
-    <View style={[s.container, { paddingTop: insets.top }]}>
-      {/* ════ HEADER ════ */}
-      <View style={s.header}>
-        <View style={s.headerLeft}>
-          <View style={s.orgPill}>
-            <View style={s.orgDot} />
-            <Text style={s.orgText}>{currentOrg?.name || 'Onekof'}</Text>
-          </View>
-          <Text style={s.greeting}>{t(getGreetingKey())}, {firstName}</Text>
-          <Text style={s.subGreeting}>{t('dashboard.totalIssues', { count: computed.total, projects: projects.length })}</Text>
+    <View style={s.container}>
+      {/* ════ HEADER — fills status bar + nav area ════ */}
+      <View style={[s.header, { paddingTop: insets.top + Spacing.md }]}>
+        {/* Subtle teal accent layer behind header */}
+        <View style={s.headerAccent} pointerEvents="none" />
+
+        {/* Date chip — top right above avatar row */}
+        <View style={s.dateChip}>
+          <FontAwesome name="calendar-o" size={10} color={Colors.primaryLight} />
+          <Text style={s.dateChipText}>{today}</Text>
         </View>
-        <View style={s.headerRight}>
-          <TouchableOpacity style={s.headerBtn} onPress={() => router.push('/notifications' as any)}>
-            <FontAwesome name="bell-o" size={16} color={Colors.textSecondary} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/profile' as any)}>
-            <Avatar name={user?.name || ''} size={38} />
-          </TouchableOpacity>
+
+        {/* Main header row */}
+        <View style={s.headerRow}>
+          <View style={s.headerLeft}>
+            {/* Org pill */}
+            <View style={s.orgPill}>
+              <View style={s.orgDotOuter}>
+                <View style={s.orgDot} />
+              </View>
+              <Text style={s.orgText}>{currentOrg?.name || 'Onekof'}</Text>
+            </View>
+
+            {/* Greeting */}
+            <Text style={s.greeting}>{t(getGreetingKey())}, {firstName}</Text>
+            <Text style={s.subGreeting}>
+              {t('dashboard.totalIssues', { count: computed.total, projects: projects.length })}
+            </Text>
+          </View>
+
+          {/* Right side: bell + avatar */}
+          <View style={s.headerRight}>
+            {/* Bell with unread badge */}
+            <TouchableOpacity style={s.headerBtn} onPress={() => router.push('/notifications' as any)}>
+              <FontAwesome name="bell-o" size={17} color={Colors.textSecondary} />
+              {unreadCount > 0 && (
+                <View style={s.badge}>
+                  <Text style={s.badgeText}>{unreadCount > 99 ? '99+' : unreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {/* Avatar with teal ring */}
+            <TouchableOpacity onPress={() => router.push('/profile' as any)}>
+              <View style={s.avatarRing}>
+                <Avatar name={user?.name || ''} size={36} />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -717,29 +760,71 @@ const s = StyleSheet.create({
 
   /* ── Header ── */
   header: {
-    flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between',
-    paddingHorizontal: Spacing.xl, paddingTop: Spacing.md, paddingBottom: Spacing.lg,
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.xl,
     backgroundColor: Colors.bgCard,
     borderBottomWidth: 1, borderBottomColor: Colors.border,
+    overflow: 'hidden',
   },
-  headerLeft: { flex: 1 },
+  headerAccent: {
+    position: 'absolute', top: 0, left: 0, right: 0, height: 120,
+    backgroundColor: 'rgba(28,140,125,0.07)',
+    borderBottomLeftRadius: 60, borderBottomRightRadius: 60,
+  },
+  dateChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    alignSelf: 'flex-end',
+    backgroundColor: 'rgba(43,181,162,0.10)',
+    borderWidth: 1, borderColor: 'rgba(43,181,162,0.18)',
+    paddingHorizontal: 9, paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+    marginBottom: Spacing.md,
+    marginTop: Spacing.xs,
+  },
+  dateChipText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight, letterSpacing: 0.3 },
+  headerRow: {
+    flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between',
+  },
+  headerLeft: { flex: 1, paddingRight: Spacing.md },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   headerBtn: {
-    width: 38, height: 38, borderRadius: BorderRadius.full,
+    width: 40, height: 40, borderRadius: BorderRadius.full,
     backgroundColor: Colors.bgElevated,
+    borderWidth: 1, borderColor: Colors.border,
     justifyContent: 'center', alignItems: 'center',
   },
-  orgPill: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(28,140,125,0.12)',
-    paddingHorizontal: 10, paddingVertical: 3,
-    borderRadius: BorderRadius.full, marginBottom: 6,
+  badge: {
+    position: 'absolute', top: 4, right: 4,
+    minWidth: 16, height: 16, borderRadius: 8,
+    backgroundColor: Colors.error,
+    justifyContent: 'center', alignItems: 'center',
+    paddingHorizontal: 3,
+    borderWidth: 1.5, borderColor: Colors.bgCard,
   },
-  orgDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.primaryLight },
-  orgText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight, letterSpacing: 0.5 },
-  greeting: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
-  subGreeting: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 2 },
+  badgeText: { fontSize: 9, fontWeight: '700', color: '#fff' },
+  avatarRing: {
+    padding: 2.5,
+    borderRadius: BorderRadius.full,
+    borderWidth: 2,
+    borderColor: Colors.primaryLight,
+  },
+  orgPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 7,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(28,140,125,0.13)',
+    borderWidth: 1, borderColor: 'rgba(43,181,162,0.22)',
+    paddingHorizontal: 11, paddingVertical: 4,
+    borderRadius: BorderRadius.full, marginBottom: 10,
+  },
+  orgDotOuter: {
+    width: 10, height: 10, borderRadius: 5,
+    backgroundColor: 'rgba(43,181,162,0.25)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  orgDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: Colors.primaryLight },
+  orgText: { fontSize: 12, fontWeight: '600', color: Colors.primaryLight, letterSpacing: 0.4 },
+  greeting: { fontSize: FontSize['2xl'], fontWeight: '700', color: Colors.textWhite, letterSpacing: -0.3 },
+  subGreeting: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 4, lineHeight: 18 },
 
   /* ── Scroll ── */
   scroll: { flex: 1 },

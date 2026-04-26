@@ -169,7 +169,7 @@ export default function NotificationsTab() {
             disabled={markAllReadMutation.isPending}
             activeOpacity={0.7}
           >
-            <FontAwesome name="check-double" size={11} color={Colors.primaryLight} />
+            <FontAwesome name="check" size={11} color={Colors.primaryLight} />
             <Text style={s.markAllText}>{t('notifications.readAll')}</Text>
           </TouchableOpacity>
         )}
