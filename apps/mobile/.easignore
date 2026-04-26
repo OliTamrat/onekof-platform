@@ -1,0 +1,34 @@
+# EAS Build ignore file — reduces upload size
+# These files are not needed for the build process
+
+# Docs and markdown
+**/*.md
+**/*.txt
+**/*.pdf
+
+# Test files
+**/__tests__/**
+**/*.test.*
+**/*.spec.*
+
+# Git
+.git
+.gitignore
+
+# Editor config
+.vscode
+.idea
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
