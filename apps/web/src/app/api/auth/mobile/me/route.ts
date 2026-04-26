@@ -81,3 +81,35 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7);
+
+    let payload: { id: string; email: string };
+    try {
+      payload = verify(token, JWT_SECRET) as { id: string; email: string };
+    } catch {
+      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: payload.id } });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Remove org memberships first, then delete user (cascade handles the rest)
+    await prisma.organizationMember.deleteMany({ where: { userId: payload.id } });
+    await prisma.user.delete({ where: { id: payload.id } });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Delete account error:', error);
+    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
+  }
+}

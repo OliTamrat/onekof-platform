@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert, Linking } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../src/contexts/auth-context';
 import { useLanguage, LOCALE_NAMES, type Locale } from '../../src/contexts/language-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import { ScreenHeader, Avatar } from '../../src/components';
 import { isBiometricAvailable, isBiometricEnabled, setBiometricEnabled, getBiometricType } from '../../src/lib/biometric';
+import { apiFetch } from '../../src/lib/api';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /* ─── Language options ─── */
@@ -46,6 +47,28 @@ export default function SettingsScreen() {
       { text: t('common.cancel'), style: 'cancel' },
       { text: t('common.signOut'), style: 'destructive', onPress: signOut },
     ]);
+  };
+
+  const confirmDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and all associated data. This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete My Account',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await apiFetch('/api/auth/mobile/me', { method: 'DELETE' });
+              signOut();
+            } catch {
+              Alert.alert('Error', 'Failed to delete account. Please try again or contact support@onekof.com.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const currentLang = LANGUAGES.find((l) => l.code === locale) as typeof LANGUAGES[0];
@@ -168,10 +191,32 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* ═══ Legal ═══ */}
+        <Text style={s.sectionLabel}>Legal</Text>
+        <View style={s.card}>
+          <TouchableOpacity style={s.row} onPress={() => Linking.openURL('https://onekof.com/privacy')}>
+            <FontAwesome name="shield" size={14} color={Colors.textSecondary} style={s.rowIcon} />
+            <Text style={s.rowLabel}>Privacy Policy</Text>
+            <FontAwesome name="external-link" size={11} color={Colors.textFaint} />
+          </TouchableOpacity>
+          <View style={s.divider} />
+          <TouchableOpacity style={s.row} onPress={() => Linking.openURL('https://onekof.com/terms')}>
+            <FontAwesome name="file-text-o" size={14} color={Colors.textSecondary} style={s.rowIcon} />
+            <Text style={s.rowLabel}>Terms of Service</Text>
+            <FontAwesome name="external-link" size={11} color={Colors.textFaint} />
+          </TouchableOpacity>
+        </View>
+
         {/* ═══ Sign Out ═══ */}
         <TouchableOpacity style={s.signOutBtn} onPress={confirmSignOut}>
           <FontAwesome name="sign-out" size={16} color={Colors.error} />
           <Text style={s.signOutText}>{t('common.signOut')}</Text>
+        </TouchableOpacity>
+
+        {/* ═══ Delete Account ═══ */}
+        <TouchableOpacity style={s.deleteBtn} onPress={confirmDeleteAccount}>
+          <FontAwesome name="trash-o" size={15} color={Colors.error} />
+          <Text style={s.deleteBtnText}>Delete Account</Text>
         </TouchableOpacity>
 
         <Text style={s.version}>Onekof Mobile v1.0.0</Text>
@@ -225,6 +270,13 @@ const s = StyleSheet.create({
     gap: Spacing.sm, padding: Spacing.lg, marginTop: Spacing['2xl'],
   },
   signOutText: { fontSize: FontSize.sm, color: Colors.error, fontWeight: '600' },
+  deleteBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: Spacing.sm, padding: Spacing.md, marginTop: Spacing.sm,
+    borderWidth: 1, borderColor: Colors.error + '40',
+    borderRadius: BorderRadius.xl,
+  },
+  deleteBtnText: { fontSize: FontSize.sm, color: Colors.error, fontWeight: '500' },
   version: {
     fontSize: FontSize.xs, color: Colors.textFaint, textAlign: 'center',
     marginTop: Spacing.xl,
