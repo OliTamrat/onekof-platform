@@ -1,10 +1,18 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useRouter, useSegments } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as api from '../lib/api';
 import { isBiometricEnabled, authenticateWithBiometric } from '../lib/biometric';
 import { getOfflineQueue, removeFromQueue } from '../lib/offline';
 import { revokePushToken } from '../lib/push-notifications';
+
+const SESSION_CACHE_KEY = 'onekof_session_cache';
+
+function isNetworkError(err: unknown): boolean {
+  const msg = (err as Error)?.message || '';
+  return msg.includes('Network request failed') || msg.includes('Failed to fetch');
+}
 
 interface User {
   id: string;
@@ -132,26 +140,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const orgSlug = await api.getOrgSlug();
 
       if (token) {
-        // Validate token and get user data
-        const data = await api.apiFetch('/api/auth/mobile/me');
-        setUser(data.user);
-        setOrganizations(data.organizations || []);
+        try {
+          // Validate token and get user data
+          const data = await api.apiFetch('/api/auth/mobile/me');
+          setUser(data.user);
+          setOrganizations(data.organizations || []);
 
-        if (orgSlug) {
-          const org = (data.organizations || []).find(
-            (o: Organization) => o.slug === orgSlug
+          // Cache session for offline startup
+          await AsyncStorage.setItem(
+            SESSION_CACHE_KEY,
+            JSON.stringify({ user: data.user, organizations: data.organizations || [] })
           );
-          if (org) setCurrentOrg(org);
-        }
 
-        // Check if biometric lock should be active
-        const bioEnabled = await isBiometricEnabled();
-        if (bioEnabled) setIsLocked(true);
+          if (orgSlug) {
+            const org = (data.organizations || []).find(
+              (o: Organization) => o.slug === orgSlug
+            );
+            if (org) setCurrentOrg(org);
+          }
+
+          // Check if biometric lock should be active
+          const bioEnabled = await isBiometricEnabled();
+          if (bioEnabled) setIsLocked(true);
+        } catch (err) {
+          if (isNetworkError(err)) {
+            // Offline at startup — restore from cache so user stays logged in
+            const cached = await AsyncStorage.getItem(SESSION_CACHE_KEY);
+            if (cached) {
+              const { user: cachedUser, organizations: cachedOrgs } = JSON.parse(cached);
+              setUser(cachedUser);
+              setOrganizations(cachedOrgs);
+              if (orgSlug) {
+                const org = cachedOrgs.find((o: Organization) => o.slug === orgSlug);
+                if (org) setCurrentOrg(org);
+              }
+              const bioEnabled = await isBiometricEnabled();
+              if (bioEnabled) setIsLocked(true);
+            } else {
+              // No cache and offline — can't verify session, clear credentials
+              await api.clearToken();
+              await api.clearOrgSlug();
+            }
+          } else {
+            // Real auth failure (401/403) — clear credentials
+            await api.clearToken();
+            await api.clearOrgSlug();
+          }
+        }
       }
     } catch {
-      // Token invalid or expired
-      await api.clearToken();
-      await api.clearOrgSlug();
+      // Unexpected error reading SecureStore
     } finally {
       setIsLoading(false);
     }
@@ -166,6 +204,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const orgData = await api.apiFetch('/api/auth/mobile/me');
     setOrganizations(orgData.organizations || []);
 
+    // Cache session for offline startup
+    await AsyncStorage.setItem(
+      SESSION_CACHE_KEY,
+      JSON.stringify({ user: orgData.user || data.user, organizations: orgData.organizations || [] })
+    );
+
     if (orgData.organizations?.length === 1) {
       const org = orgData.organizations[0];
       await api.setOrgSlug(org.slug);
@@ -176,6 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignOut = useCallback(async () => {
     await revokePushToken().catch(() => {});
     await api.signOut();
+    await AsyncStorage.removeItem(SESSION_CACHE_KEY);
     setUser(null);
     setOrganizations([]);
     setCurrentOrg(null);

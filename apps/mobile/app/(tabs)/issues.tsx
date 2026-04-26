@@ -37,13 +37,13 @@ export default function IssuesScreen() {
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['issues'],
-    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues'),
+    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues').catch(() => ({ issues: [] })),
   });
 
   // Projects for the project-filter chip row
   const { data: projectsData } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects'),
+    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects').catch(() => ({ projects: [] })),
   });
   const projects = projectsData?.projects || [];
 
