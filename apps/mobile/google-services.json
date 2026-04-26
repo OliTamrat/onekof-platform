@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "73207826379",
+    "project_id": "onekof-pm-840af",
+    "storage_bucket": "onekof-pm-840af.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73207826379:android:1008be268afcb671a3d84e",
+        "android_client_info": {
+          "package_name": "com.dapsanalytics.onekof"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCId19HlidmXYhThCOCB3pAI2caRnMLfe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
