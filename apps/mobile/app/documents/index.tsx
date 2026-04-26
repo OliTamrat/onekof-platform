@@ -613,4 +613,78 @@ const s = StyleSheet.create({
   },
   typeBadgeText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
   metaText: { fontSize: FontSize.xs, color: Colors.textFaint },
+  aiSummaryText: { fontSize: FontSize.xs, color: Colors.textSecondary, fontStyle: 'italic' },
+
+  /* AI stats row */
+  aiStatsRow: {
+    flexDirection: 'row', gap: Spacing.sm,
+    paddingHorizontal: Spacing.xl, paddingTop: Spacing.sm, paddingBottom: Spacing.xs,
+  },
+  aiStatCard: {
+    flex: 1, alignItems: 'center', gap: 3,
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: Colors.border,
+    borderRadius: BorderRadius.lg, paddingVertical: Spacing.sm,
+  },
+  aiStatValue: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textWhite },
+  aiStatLabel: { fontSize: 9, fontWeight: '600', color: Colors.textFaint, textTransform: 'uppercase' },
+
+  /* AI banner */
+  aiBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
+    marginHorizontal: Spacing.xl, marginBottom: Spacing.sm,
+    backgroundColor: Colors.bgCard, borderWidth: 1, borderColor: 'rgba(139,92,246,0.25)',
+    borderRadius: BorderRadius.xl, padding: Spacing.md,
+  },
+  aiBannerIcon: {
+    width: 36, height: 36, borderRadius: BorderRadius.lg,
+    backgroundColor: 'rgba(139,92,246,0.12)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  aiBannerText: { flex: 1 },
+  aiBannerTitle: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textWhite },
+  aiBannerDesc: { fontSize: FontSize.xs, color: Colors.textFaint, marginTop: 1 },
+
+  /* Modal */
+  modalOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.65)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: Colors.bgCard,
+    borderTopLeftRadius: BorderRadius['2xl'], borderTopRightRadius: BorderRadius['2xl'],
+    padding: Spacing.xl, paddingBottom: 36,
+  },
+  dragHandle: {
+    width: 36, height: 4, borderRadius: 2,
+    backgroundColor: Colors.border, alignSelf: 'center', marginBottom: Spacing.lg,
+  },
+  detailHeader: { alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.lg },
+  detailIcon: {
+    width: 56, height: 56, borderRadius: BorderRadius.xl,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  detailTitle: { fontSize: FontSize.md, fontWeight: '700', color: Colors.textWhite, textAlign: 'center' },
+  detailSection: {
+    backgroundColor: Colors.bgElevated, borderRadius: BorderRadius.lg,
+    padding: Spacing.md, marginBottom: Spacing.sm,
+  },
+  detailSectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: Spacing.sm },
+  detailSectionTitle: { fontSize: FontSize.xs, fontWeight: '700', color: Colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 },
+  confidenceText: { fontSize: FontSize.xs, color: '#A78BFA', marginLeft: 'auto' },
+  detailSummary: { fontSize: FontSize.sm, color: Colors.textPrimary, lineHeight: 20 },
+  detailField: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
+  detailLabel: { fontSize: FontSize.xs, color: Colors.textFaint },
+  detailValue: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textPrimary },
+  extractedItem: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: Colors.border,
+  },
+  extractedDesc: { flex: 1, fontSize: FontSize.xs, color: Colors.textPrimary, marginRight: Spacing.sm },
+  extractedAmount: { fontSize: FontSize.xs, fontWeight: '700', color: Colors.success },
+  closeBtn: {
+    marginTop: Spacing.md,
+    backgroundColor: Colors.bgElevated, borderRadius: BorderRadius.xl,
+    padding: Spacing.md, alignItems: 'center',
+  },
+  closeBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textPrimary },
 });
