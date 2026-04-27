@@ -5,16 +5,18 @@
 
 ## WHERE WE LEFT OFF
 
-Android Studio is installed and a Pixel 6 emulator (API 33) was booting.
-Goal: Use the emulator to verify Google Play developer account.
+iOS TestFlight is working and confirmed stable:
+- Offline banner fixed (NetInfo removed, state driven by apiFetch results)
+- Notifications fixed (Prisma query now uses `project: { organizationId }`)
+- OTA updates live on production channel
+
+**Next priority: Android Play Store submission**
 
 **Pick up here after restart:**
-1. Open Android Studio → Device Manager → Start Pixel 6 emulator
-2. Sign in to Google with `olitamrat@gmail.com` on the emulator
-3. Install **Google Play Console** app from Play Store on the emulator
-4. Go to play.google.com/console → verify Android device
-5. After verification → create Onekof app in Play Console
-6. Run: `cd C:\Users\olita\onekof-platform\apps\mobile && eas submit --platform android --latest`
+1. Resolve Google Play Console device verification (Android emulator with Play Store, or use BlueStacks)
+2. Create Onekof app in Google Play Console
+3. Set up Google Play service account → `google-play-service-account.json`
+4. Run: `cd C:\Users\olita\onekof-platform\apps\mobile && eas submit --platform android --latest`
 
 ---
 
@@ -117,5 +119,12 @@ eas submit --platform android --latest
 ---
 
 ## GIT STATUS
-All changes committed. Last commit: `d2cbac8` — Add .easignore
+All changes committed. Last commit: `e1ed734` — Fix notifications 500
 Branch: master
+
+## WHAT WAS FIXED TODAY (2026-04-27)
+- Vercel builds restored: `serverComponentsExternalPackages: ['expo-server-sdk','undici']` in next.config.mjs
+- Metro crash on Windows fixed: `apps/mobile/metro.config.js` restricts watchFolders to mobile only
+- Offline banner fixed: NetInfo removed from api.ts, online state driven by apiFetch results
+- Notifications 500 fixed: `prisma.task.findMany()` now uses `project: { organizationId }` (Task has no direct organizationId)
+- OTA updates configured and working on production channel
