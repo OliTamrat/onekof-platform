@@ -313,23 +313,23 @@ export default function DashboardScreen() {
       {/* ════ HEADER — fills status bar + nav area ════ */}
       <View style={[s.header, { paddingTop: insets.top + Spacing.md }]}>
 
-        {/* Date chip — top right above avatar row */}
-        <View style={s.dateChip}>
-          <FontAwesome name="calendar-o" size={10} color={Colors.primaryLight} />
-          <Text style={s.dateChipText}>{today}</Text>
-        </View>
-
-        {/* Main header row */}
-        <View style={s.headerRow}>
-          <View style={s.headerLeft}>
-            {/* Org pill */}
-            <View style={s.orgPill}>
+        {/* Top row: org pill left, date chip right */}
+        <View style={s.headerTopRow}>
+          <View style={s.orgPill}>
               <View style={s.orgDotOuter}>
                 <View style={s.orgDot} />
               </View>
               <Text style={s.orgText}>{currentOrg?.name || 'Onekof'}</Text>
             </View>
+          <View style={s.dateChip}>
+            <FontAwesome name="calendar-o" size={10} color={Colors.primaryLight} />
+            <Text style={s.dateChipText}>{today}</Text>
+          </View>
+        </View>
 
+        {/* Main header row */}
+        <View style={s.headerRow}>
+          <View style={s.headerLeft}>
             {/* Greeting */}
             <Text style={s.greeting}>{t(getGreetingKey())}, {firstName}</Text>
             <Text style={s.subGreeting}>
@@ -764,15 +764,16 @@ const s = StyleSheet.create({
     borderBottomWidth: 1, borderBottomColor: Colors.border,
     overflow: 'hidden',
   },
+  headerTopRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+  },
   dateChip: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
-    alignSelf: 'flex-end',
     backgroundColor: 'rgba(43,181,162,0.10)',
     borderWidth: 1, borderColor: 'rgba(43,181,162,0.18)',
     paddingHorizontal: 9, paddingVertical: 4,
     borderRadius: BorderRadius.full,
-    marginBottom: Spacing.md,
-    marginTop: Spacing.xs,
   },
   dateChipText: { fontSize: 11, fontWeight: '600', color: Colors.primaryLight, letterSpacing: 0.3 },
   headerRow: {
