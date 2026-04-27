@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       }),
       prisma.task.findMany({
         where: {
-          organizationId,
+          project: { organizationId },
           deletedAt: null,
           OR: [
             { assigneeId: userId },
