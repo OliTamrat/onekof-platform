@@ -1,5 +1,4 @@
 import * as SecureStore from 'expo-secure-store';
-import NetInfo from '@react-native-community/netinfo';
 import { cacheResponse, getCachedResponse, queueOfflineMutation } from './offline';
 
 // Always use production API — mobile connects over the network
@@ -9,11 +8,11 @@ const TOKEN_KEY = 'onekof_session_token';
 const ORG_SLUG_KEY = 'onekof_org_slug';
 
 /* ─── Online-state observer ───
- * Primary signal: NetInfo (true OS-level network state — detects airplane mode,
- * wifi off, cellular loss instantly without polling).
- * Secondary signal: apiFetch success/failure (corroborates, flips to offline
- * faster if server unreachable even when OS reports "connected").
- * Components subscribe via subscribeOnlineState to surface the state in the UI.
+ * Determined solely by apiFetch results:
+ *   - Any HTTP response (even 4xx/5xx) → online (server was reachable)
+ *   - Network error ("Network request failed") → offline
+ * NetInfo was removed because it incorrectly reports isConnected=false
+ * on iOS even when the device has full WiFi connectivity.
  */
 let currentIsOnline = true;
 const onlineListeners: Array<(isOnline: boolean) => void> = [];
@@ -24,7 +23,6 @@ export function getIsOnline(): boolean {
 
 export function subscribeOnlineState(cb: (isOnline: boolean) => void): () => void {
   onlineListeners.push(cb);
-  // Push current state immediately so subscriber has latest
   cb(currentIsOnline);
   return () => {
     const idx = onlineListeners.indexOf(cb);
@@ -37,21 +35,6 @@ function setOnlineState(isOnline: boolean) {
   currentIsOnline = isOnline;
   onlineListeners.forEach((cb) => cb(isOnline));
 }
-
-// Subscribe to OS-level network changes — fires immediately on airplane mode / wifi off.
-// IMPORTANT: Only use `isConnected` for offline detection. `isInternetReachable` is unreliable
-// on many networks (returns false even when API calls work fine) and caused persistent
-// false-offline banners. Real API failures will set offline via the fetch catch block.
-NetInfo.addEventListener((state) => {
-  // Use strict === false check — isConnected can be null (unknown state) on iOS,
-  // which is falsy but does NOT mean offline. Only explicit false means offline.
-  if (state.isConnected === false) {
-    setOnlineState(false);
-  } else if (state.isConnected === true && !currentIsOnline) {
-    // Only go back online on explicit true, not null/undefined
-    setOnlineState(true);
-  }
-});
 
 /**
  * Store the session token securely
