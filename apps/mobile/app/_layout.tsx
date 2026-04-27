@@ -46,7 +46,7 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
-            <Stack.Screen name="select-org" options={{ animation: 'fade' }} />
+            <Stack.Screen name="select-org/index" options={{ animation: 'fade' }} />
             <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
             <Stack.Screen name="issue/[id]" options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="project/[id]" options={{ animation: 'slide_from_right' }} />
