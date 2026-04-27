@@ -760,7 +760,7 @@ const s = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.xl,
     paddingBottom: Spacing.xl,
-    backgroundColor: Colors.bgCard,
+    backgroundColor: Colors.bg,
     borderBottomWidth: 1, borderBottomColor: Colors.border,
     overflow: 'hidden',
   },
