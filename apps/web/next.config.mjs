@@ -11,6 +11,10 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/api/**/*': ['../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/**/*'],
     },
+    // expo-server-sdk (and its dep undici@7.x) uses private class field syntax
+    // (#target in this) that Next.js 14 webpack cannot parse. Mark as external
+    // so they are loaded at runtime by Node.js instead of bundled by webpack.
+    serverComponentsExternalPackages: ['expo-server-sdk', 'undici'],
   },
   // Transpile packages from monorepo
   transpilePackages: ['@onekof/database'],
