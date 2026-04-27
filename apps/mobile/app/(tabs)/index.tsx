@@ -312,8 +312,6 @@ export default function DashboardScreen() {
     <View style={s.container}>
       {/* ════ HEADER — fills status bar + nav area ════ */}
       <View style={[s.header, { paddingTop: insets.top + Spacing.md }]}>
-        {/* Subtle teal accent layer behind header */}
-        <View style={s.headerAccent} pointerEvents="none" />
 
         {/* Date chip — top right above avatar row */}
         <View style={s.dateChip}>
@@ -765,11 +763,6 @@ const s = StyleSheet.create({
     backgroundColor: Colors.bgCard,
     borderBottomWidth: 1, borderBottomColor: Colors.border,
     overflow: 'hidden',
-  },
-  headerAccent: {
-    position: 'absolute', top: 0, left: 0, right: 0, height: 120,
-    backgroundColor: 'rgba(28,140,125,0.07)',
-    borderBottomLeftRadius: 60, borderBottomRightRadius: 60,
   },
   dateChip: {
     flexDirection: 'row', alignItems: 'center', gap: 5,

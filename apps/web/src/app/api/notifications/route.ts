@@ -132,11 +132,11 @@ export async function GET(request: NextRequest) {
       unreadCount,
     });
   } catch (error) {
-    logger.error('Notifications fetch error', {
-      error: error instanceof Error ? error.message : error,
-    });
+    const msg = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? error.stack : undefined;
+    logger.error('Notifications fetch error', { error: msg, stack });
     return NextResponse.json(
-      { error: 'Failed to fetch notifications' },
+      { error: 'Failed to fetch notifications', detail: msg },
       { status: 500 }
     );
   }

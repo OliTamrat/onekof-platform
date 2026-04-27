@@ -43,11 +43,12 @@ function setOnlineState(isOnline: boolean) {
 // on many networks (returns false even when API calls work fine) and caused persistent
 // false-offline banners. Real API failures will set offline via the fetch catch block.
 NetInfo.addEventListener((state) => {
-  if (!state.isConnected) {
+  // Use strict === false check — isConnected can be null (unknown state) on iOS,
+  // which is falsy but does NOT mean offline. Only explicit false means offline.
+  if (state.isConnected === false) {
     setOnlineState(false);
-  } else if (!currentIsOnline) {
-    // If NetInfo says connected but we were offline, optimistically go online.
-    // If the API is truly down, the next fetch will flip back to offline.
+  } else if (state.isConnected === true && !currentIsOnline) {
+    // Only go back online on explicit true, not null/undefined
     setOnlineState(true);
   }
 });
