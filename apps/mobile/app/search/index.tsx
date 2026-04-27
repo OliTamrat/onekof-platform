@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity,
   ActivityIndicator, Keyboard,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -18,6 +19,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 type ResultType = 'all' | 'issues' | 'projects';
 
 export default function SearchScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { t } = useLanguage();
   const [query, setQuery] = useState('');
@@ -127,7 +129,7 @@ export default function SearchScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <FontAwesome name="chevron-left" size={16} color={Colors.textSecondary} />
         </TouchableOpacity>
@@ -217,8 +219,8 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
-    paddingHorizontal: Spacing.lg, paddingTop: 56, paddingBottom: Spacing.md,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.lg, paddingBottom: Spacing.md,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
   backBtn: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center' },
   searchBox: {
