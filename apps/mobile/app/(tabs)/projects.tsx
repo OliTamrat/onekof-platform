@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -12,6 +13,7 @@ import { CardSkeleton } from '../../src/components/SkeletonLoader';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ProjectsScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
@@ -84,7 +86,7 @@ export default function ProjectsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <Text style={styles.title}>{t('projects.title')}</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerBtn} onPress={() => setShowSearch(!showSearch)}>
@@ -145,8 +147,8 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: Spacing.xl, paddingTop: 60, paddingBottom: Spacing.lg,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.xl, paddingBottom: Spacing.lg,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
   title: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },

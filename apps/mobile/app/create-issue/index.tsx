@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput,
   ActivityIndicator, KeyboardAvoidingView, Platform, Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -70,6 +71,7 @@ function generateDateOptions(): { value: string; label: string }[] {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CreateIssueScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const queryClient = useQueryClient();
   const params = useLocalSearchParams<{ projectId?: string }>();
@@ -188,7 +190,7 @@ export default function CreateIssueScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {/* ── Header ── */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} hitSlop={8}>
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
@@ -475,8 +477,8 @@ const styles = StyleSheet.create({
   // Header
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg, paddingTop: 56, paddingBottom: Spacing.md,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.lg, paddingBottom: Spacing.md,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
   headerBtn: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.xs },
   cancelText: { fontSize: FontSize.base, color: Colors.textSecondary },

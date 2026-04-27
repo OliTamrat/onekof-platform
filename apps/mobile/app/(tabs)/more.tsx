@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../src/contexts/auth-context';
@@ -9,6 +10,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useLanguage } from '../../src/contexts/language-context';
 
 export default function MoreScreen() {
+  const insets = useSafeAreaInsets();
   const { user, currentOrg, signOut } = useAuth();
   const router = useRouter();
   const { t } = useLanguage();
@@ -57,7 +59,7 @@ export default function MoreScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <Text style={styles.title}>{t('tabs.more')}</Text>
       </View>
 
@@ -115,8 +117,8 @@ export default function MoreScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
   header: {
-    paddingHorizontal: Spacing.xl, paddingTop: 60, paddingBottom: Spacing.lg,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.xl, paddingBottom: Spacing.lg,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
   title: { fontSize: FontSize.xl, fontWeight: '600', color: Colors.textWhite },
   scrollContent: { padding: Spacing.xl, paddingBottom: Spacing['5xl'] },

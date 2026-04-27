@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl,
   ScrollView, Dimensions, Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../../src/lib/api';
@@ -24,6 +25,7 @@ const STATUSES: TaskStatus[] = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', '
 const PRIORITIES: TaskPriority[] = ['HIGHEST', 'HIGH', 'MEDIUM', 'LOW', 'LOWEST'];
 
 export default function IssuesScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useLanguage();
@@ -223,7 +225,7 @@ export default function IssuesScreen() {
   return (
     <View style={styles.container}>
       {/* ── Header ── */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <Text style={styles.headerTitle}>{t('issues.title')}</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search' as any)}>
@@ -443,8 +445,8 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: Spacing.xl, paddingTop: 60, paddingBottom: Spacing.md,
-    backgroundColor: Colors.bgCard, borderBottomWidth: 1, borderBottomColor: Colors.border,
+    paddingHorizontal: Spacing.xl, paddingBottom: Spacing.md,
+    backgroundColor: Colors.bg, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
   headerTitle: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textWhite },
   headerActions: { flexDirection: 'row', gap: Spacing.xs },
