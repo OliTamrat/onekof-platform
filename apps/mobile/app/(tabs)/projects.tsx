@@ -89,13 +89,15 @@ export default function ProjectsScreen() {
       <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <Text style={styles.title}>{t('projects.title')}</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerBtn} onPress={() => setShowSearch(!showSearch)}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => setShowSearch(!showSearch)} accessibilityLabel="Search projects" accessibilityRole="button">
             <FontAwesome name="search" size={15} color={showSearch ? Colors.primaryLight : Colors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addBtn}
             activeOpacity={0.7}
             onPress={() => router.push('/create-project' as any)}
+            accessibilityLabel="Create new project"
+            accessibilityRole="button"
           >
             <FontAwesome name="plus" size={14} color="#fff" />
           </TouchableOpacity>
