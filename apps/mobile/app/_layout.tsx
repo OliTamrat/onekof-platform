@@ -11,9 +11,16 @@ import { GlobalFAB } from '../src/components/GlobalFAB';
 import { PushNotificationRegistrar } from '../src/components/PushNotificationRegistrar';
 import { Colors } from '../src/constants/theme';
 import * as SplashScreen from 'expo-splash-screen';
+import { initSentry, Sentry } from '../src/lib/sentry';
 import 'react-native-reanimated';
 
+// Init crash reporting before anything renders
+initSentry();
+
 export { ErrorBoundary } from 'expo-router';
+
+// Sentry error boundary wraps the entire navigation tree
+export const unstable_settings = { initialRouteName: '(tabs)' };
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,7 +33,7 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function RootLayout() {
+function RootLayout() {
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
@@ -72,3 +79,5 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);

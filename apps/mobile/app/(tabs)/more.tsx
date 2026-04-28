@@ -42,7 +42,7 @@ export default function MoreScreen() {
       ],
     },
     {
-      title: t('settings.organization'),
+      title: t('members.title'),
       items: [
         { label: t('members.title'), icon: 'user-plus', route: '/members' },
       ],
