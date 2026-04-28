@@ -170,18 +170,16 @@ export default function DashboardScreen() {
   /* ── Data Queries ── */
 
   // Fetch ALL issues (same as web) to compute real stats
-  const { data: issueData, refetch: r1 } = useQuery({
+  const { data: issueData, refetch: r1, isError: issuesError } = useQuery({
     queryKey: ['all-issues'],
-    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues')
-      .catch(() => ({ issues: [] })),
+    queryFn: () => apiFetch<{ issues: Issue[] }>('/api/issues'),
     enabled: !!currentOrg,
   });
 
   // Fetch projects
-  const { data: projectData, refetch: r2 } = useQuery({
+  const { data: projectData, refetch: r2, isError: projectsError } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects')
-      .catch(() => ({ projects: [] })),
+    queryFn: () => apiFetch<{ projects: Project[] }>('/api/projects'),
     enabled: !!currentOrg,
   });
 
@@ -201,12 +199,12 @@ export default function DashboardScreen() {
     queryFn: () => {
       const params = new URLSearchParams({ limit: '20' });
       if (activityFilter) params.append('entityType', activityFilter);
-      return apiFetch<{ activities: Activity[] }>(`/api/activities?${params.toString()}`)
-        .catch(() => ({ activities: [] }));
+      return apiFetch<{ activities: Activity[] }>(`/api/activities?${params.toString()}`);
     },
     enabled: !!currentOrg,
   });
 
+  const hasDataError = issuesError || projectsError;
   const issues = issueData?.issues || [];
   const projects = projectData?.projects || [];
   const activities = activityData?.activities || [];
@@ -367,6 +365,18 @@ export default function DashboardScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primaryLight} />
         }
       >
+        {/* ════ DATA ERROR BANNER ════ */}
+        {hasDataError && (
+          <TouchableOpacity
+            style={s.errorBanner}
+            onPress={() => { r1(); r2(); }}
+            activeOpacity={0.8}
+          >
+            <FontAwesome name="exclamation-circle" size={14} color="#FCA5A5" />
+            <Text style={s.errorBannerText}>Failed to load data — tap to retry</Text>
+          </TouchableOpacity>
+        )}
+
         {/* ════ STATS ROW — compact single row ════ */}
         <TouchableOpacity
           style={s.statsRow}
@@ -823,6 +833,8 @@ const s = StyleSheet.create({
   /* ── Scroll ── */
   scroll: { flex: 1 },
   scrollContent: { padding: Spacing.lg, paddingBottom: 100 },
+  errorBanner: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(239,68,68,0.12)', borderWidth: 1, borderColor: 'rgba(239,68,68,0.2)', borderRadius: BorderRadius.md, padding: Spacing.md, marginBottom: Spacing.lg },
+  errorBannerText: { fontSize: FontSize.sm, color: '#FCA5A5', flex: 1 },
 
   /* ── Stats Row — compact single row ── */
   statsRow: {

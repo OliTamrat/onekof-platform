@@ -13,6 +13,8 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -106,8 +108,13 @@ export default function SignUpScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Password</Text>
-            <TextInput style={styles.input} value={password} onChangeText={setPassword}
-              placeholder="At least 8 characters" placeholderTextColor={Colors.textFaint} secureTextEntry />
+            <View style={styles.inputRow}>
+              <TextInput style={[styles.input, styles.inputFlex]} value={password} onChangeText={setPassword}
+                placeholder="At least 8 characters" placeholderTextColor={Colors.textFaint} secureTextEntry={!showPassword} />
+              <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword(v => !v)}>
+                <FontAwesome name={showPassword ? 'eye-slash' : 'eye'} size={18} color={Colors.textFaint} />
+              </TouchableOpacity>
+            </View>
             {password.length > 0 && (
               <View style={styles.checksRow}>
                 {passwordChecks.map((c) => (
@@ -121,8 +128,13 @@ export default function SignUpScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Confirm Password</Text>
-            <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword}
-              placeholder="Confirm your password" placeholderTextColor={Colors.textFaint} secureTextEntry />
+            <View style={styles.inputRow}>
+              <TextInput style={[styles.input, styles.inputFlex]} value={confirmPassword} onChangeText={setConfirmPassword}
+                placeholder="Confirm your password" placeholderTextColor={Colors.textFaint} secureTextEntry={!showConfirmPassword} />
+              <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowConfirmPassword(v => !v)}>
+                <FontAwesome name={showConfirmPassword ? 'eye-slash' : 'eye'} size={18} color={Colors.textFaint} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity
@@ -164,6 +176,9 @@ const styles = StyleSheet.create({
   form: { gap: Spacing.lg },
   inputGroup: { gap: Spacing.sm },
   label: { fontSize: FontSize.sm, fontWeight: '500', color: Colors.textSecondary },
+  inputRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.inputBg, borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.md },
+  inputFlex: { flex: 1, borderWidth: 0, backgroundColor: 'transparent' },
+  eyeBtn: { paddingHorizontal: Spacing.lg, height: 52, justifyContent: 'center' },
   input: { height: 52, backgroundColor: Colors.inputBg, borderWidth: 1, borderColor: Colors.border, borderRadius: BorderRadius.md, paddingHorizontal: Spacing.lg, fontSize: FontSize.base, color: Colors.textWhite },
   checksRow: { flexDirection: 'row', gap: Spacing.lg, marginTop: Spacing.xs },
   checkText: { fontSize: FontSize.xs, color: Colors.textFaint },

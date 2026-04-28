@@ -79,7 +79,10 @@ export async function registerForPushNotifications(): Promise<string | null> {
  */
 export async function revokePushToken(): Promise<void> {
   try {
-    const tokenData = await Notifications.getExpoPushTokenAsync();
+    const projectId =
+      Constants.expoConfig?.extra?.eas?.projectId ||
+      'de51f86c-459c-4330-83df-7b481b9e9740';
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
     await apiFetch('/api/push/register', {
       method: 'DELETE',
       body: JSON.stringify({ token: tokenData.data }),

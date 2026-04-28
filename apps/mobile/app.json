@@ -43,12 +43,12 @@
     },
     "updates": {
       "enabled": true,
-      "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 0,
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 3000,
       "url": "https://u.expo.dev/de51f86c-459c-4330-83df-7b481b9e9740"
     },
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "nativeVersion"
     },
     "plugins": [
       "expo-router",

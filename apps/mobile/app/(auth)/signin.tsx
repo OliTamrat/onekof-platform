@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Link } from 'expo-router';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAuth } from '../../src/contexts/auth-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 
@@ -18,6 +19,7 @@ export default function SignInScreen() {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,15 +87,20 @@ export default function SignInScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Enter your password"
-              placeholderTextColor={Colors.textFaint}
-              secureTextEntry
-              autoComplete="password"
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, styles.inputFlex]}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Enter your password"
+                placeholderTextColor={Colors.textFaint}
+                secureTextEntry={!showPassword}
+                autoComplete="password"
+              />
+              <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword(v => !v)}>
+                <FontAwesome name={showPassword ? 'eye-slash' : 'eye'} size={18} color={Colors.textFaint} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity
@@ -198,6 +205,24 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     fontWeight: '500',
     color: Colors.textSecondary,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.inputBg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.md,
+  },
+  inputFlex: {
+    flex: 1,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
+  eyeBtn: {
+    paddingHorizontal: Spacing.lg,
+    height: 52,
+    justifyContent: 'center',
   },
   input: {
     height: 52,
