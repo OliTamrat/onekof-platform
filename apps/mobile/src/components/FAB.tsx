@@ -1,6 +1,7 @@
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Colors, BorderRadius } from '../constants/theme';
+import { lightTap } from '../lib/haptics';
 
 interface FABProps {
   icon?: React.ComponentProps<typeof FontAwesome>['name'];
@@ -8,8 +9,9 @@ interface FABProps {
 }
 
 export function FAB({ icon = 'plus', onPress }: FABProps) {
+  const handlePress = () => { lightTap(); onPress(); };
   return (
-    <TouchableOpacity style={styles.fab} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.fab} onPress={handlePress} activeOpacity={0.8}>
       <FontAwesome name={icon} size={20} color="#fff" />
     </TouchableOpacity>
   );

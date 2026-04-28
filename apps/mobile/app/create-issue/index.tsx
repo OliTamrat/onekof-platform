@@ -15,6 +15,7 @@ import {
 import { BottomSheet } from '../../src/components/BottomSheet';
 import { Avatar } from '../../src/components/Avatar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { successNotification, errorNotification } from '../../src/lib/haptics';
 
 // ─── Selector Options ────────────────────────────────────────────────────────
 
@@ -142,6 +143,7 @@ export default function CreateIssueScreen() {
     mutationFn: (data: CreateIssuePayload) =>
       apiFetch('/api/issues', { method: 'POST', body: JSON.stringify(data) }),
     onSuccess: () => {
+      successNotification();
       queryClient.invalidateQueries({ queryKey: ['issues'] });
       queryClient.invalidateQueries({ queryKey: ['project-issues'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
@@ -149,6 +151,7 @@ export default function CreateIssueScreen() {
       router.back();
     },
     onError: (error: Error) => {
+      errorNotification();
       Alert.alert('Failed to create issue', error.message || 'Please try again.');
     },
   });
@@ -188,7 +191,7 @@ export default function CreateIssueScreen() {
   const canCreate = title.trim().length > 0 && !!selectedProject;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} hitSlop={8}>

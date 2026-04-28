@@ -102,12 +102,12 @@ export default function NotificationsTab() {
   const markReadMutation = useMutation({
     mutationFn: (activityId: string) =>
       apiFetch(`/api/notifications/${activityId}/read`, { method: 'PATCH' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications-tab'] }),
   });
 
   const markAllReadMutation = useMutation({
     mutationFn: () => apiFetch('/api/notifications/read-all', { method: 'POST' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications-tab'] }),
   });
 
   const filtered = useMemo(() => {

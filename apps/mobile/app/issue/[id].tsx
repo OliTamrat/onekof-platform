@@ -384,7 +384,7 @@ export default function IssueDetailScreen() {
   const totalSubtasks = issue.subtasks?.length || 0;
 
   return (
-    <KeyboardAvoidingView style={s.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={s.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       {/* ════ HEADER (Jira-style) ════ */}
       <View style={[s.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => router.back()} style={s.headerBtn} hitSlop={8}>

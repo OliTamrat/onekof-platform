@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'fallback-secret';
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Rate limit to prevent brute-force attacks
+    const rateLimitError = await checkRateLimit(request, 'mobileSignin');
+    if (rateLimitError) return rateLimitError;
+
     const { email, password } = await request.json();
 
     if (!email || !password) {

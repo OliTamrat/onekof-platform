@@ -93,10 +93,18 @@ export async function apiFetch<T = any>(
   const isRead = method === 'GET';
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      ...options,
-      headers,
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    let res: Response;
+    try {
+      res = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers,
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     // A successful response (even a 4xx/5xx) means we reached the server
     // → we're online. Auth errors don't imply offline.
@@ -117,7 +125,8 @@ export async function apiFetch<T = any>(
     return data;
   } catch (error) {
     const msg = (error as Error)?.message || '';
-    const isNetworkError = msg.includes('Network request failed') || msg.includes('Failed to fetch');
+    const isAbort = (error as Error)?.name === 'AbortError';
+    const isNetworkError = isAbort || msg.includes('Network request failed') || msg.includes('Failed to fetch');
 
     // Only flip to offline on real network errors, not API error responses
     if (isNetworkError) setOnlineState(false);
@@ -134,6 +143,7 @@ export async function apiFetch<T = any>(
       throw new Error('Saved offline — will sync when reconnected');
     }
 
+    if (isAbort) throw new Error('Request timed out — please try again');
     throw error;
   }
 }
@@ -176,11 +186,22 @@ export async function apiUpload<T = any>(
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (orgSlug) headers['x-organization-slug'] = orgSlug;
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers,
-    body: formData,
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000); // 30s for uploads
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers,
+      body: formData,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timeout);
+    if ((err as Error)?.name === 'AbortError') throw new Error('Upload timed out — please try again');
+    throw err;
+  }
+  clearTimeout(timeout);
 
   if (!res.ok) {
     const errorBody = await res.text().catch(() => '');
