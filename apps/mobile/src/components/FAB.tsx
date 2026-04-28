@@ -6,12 +6,13 @@ import { lightTap } from '../lib/haptics';
 interface FABProps {
   icon?: React.ComponentProps<typeof FontAwesome>['name'];
   onPress: () => void;
+  accessibilityLabel?: string;
 }
 
-export function FAB({ icon = 'plus', onPress }: FABProps) {
+export function FAB({ icon = 'plus', onPress, accessibilityLabel = 'Create new' }: FABProps) {
   const handlePress = () => { lightTap(); onPress(); };
   return (
-    <TouchableOpacity style={styles.fab} onPress={handlePress} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.fab} onPress={handlePress} activeOpacity={0.8} accessibilityLabel={accessibilityLabel} accessibilityRole="button">
       <FontAwesome name={icon} size={20} color="#fff" />
     </TouchableOpacity>
   );

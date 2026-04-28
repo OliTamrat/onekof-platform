@@ -726,11 +726,6 @@ export default function IssueDetailScreen() {
         options={[
           { value: 'copy', label: 'Copy link', icon: 'link' as any, color: Colors.textPrimary },
           { value: 'share', label: 'Share', icon: 'share-square-o' as any, color: Colors.textPrimary },
-          { value: 'flag', label: 'Flag', icon: 'flag-o' as any, color: Colors.textPrimary },
-          { value: 'link', label: 'Link work item', icon: 'external-link' as any, color: Colors.textPrimary },
-          { value: 'parent', label: 'Assign to parent work item', icon: 'level-up' as any, color: Colors.textPrimary },
-          { value: 'clone', label: 'Clone', icon: 'clone' as any, color: Colors.textPrimary },
-          { value: 'child', label: 'Create child work item', icon: 'sitemap' as any, color: Colors.textPrimary },
           { value: 'delete', label: 'Delete', icon: 'trash-o' as any, color: Colors.error },
         ]}
         selected=""

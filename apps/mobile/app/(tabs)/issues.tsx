@@ -228,13 +228,13 @@ export default function IssuesScreen() {
       <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
         <Text style={styles.headerTitle}>{t('issues.title')}</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search' as any)}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search' as any)} accessibilityLabel="Search issues" accessibilityRole="button">
             <FontAwesome name="search" size={15} color={Colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerBtn} onPress={() => setViewMode(viewMode === 'list' ? 'board' : 'list')}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => setViewMode(viewMode === 'list' ? 'board' : 'list')} accessibilityLabel={viewMode === 'list' ? 'Switch to board view' : 'Switch to list view'} accessibilityRole="button">
             <FontAwesome name={viewMode === 'list' ? 'columns' : 'list'} size={15} color={Colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerBtn} onPress={() => setShowFilters(!showFilters)}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => setShowFilters(!showFilters)} accessibilityLabel="Filter issues" accessibilityRole="button">
             <FontAwesome name="sliders" size={15} color={hasFilters ? Colors.primaryLight : Colors.textSecondary} />
           </TouchableOpacity>
         </View>

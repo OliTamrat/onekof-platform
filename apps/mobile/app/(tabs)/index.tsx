@@ -338,7 +338,7 @@ export default function DashboardScreen() {
           {/* Right side: bell + avatar */}
           <View style={s.headerRight}>
             {/* Bell with unread badge */}
-            <TouchableOpacity style={s.headerBtn} onPress={() => router.push('/notifications' as any)}>
+            <TouchableOpacity style={s.headerBtn} onPress={() => router.push('/notifications' as any)} accessibilityLabel={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'} accessibilityRole="button">
               <FontAwesome name="bell-o" size={17} color={Colors.textSecondary} />
               {unreadCount > 0 && (
                 <View style={s.badge}>
