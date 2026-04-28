@@ -1,6 +1,9 @@
 # EAS Build ignore file — reduces upload size
 # These files are not needed for the build process
 
+# Dependencies — EAS installs these in the cloud
+node_modules
+
 # Docs and markdown
 **/*.md
 **/*.txt
@@ -32,3 +35,12 @@ yarn-debug.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Android build artifacts
+android/.gradle
+android/build
+android/app/build
+
+# iOS build artifacts
+ios/build
+ios/Pods

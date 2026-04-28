@@ -121,9 +121,7 @@ export function usePushNotifications() {
     });
 
     return () => {
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
+      responseListener.current?.remove();
     };
   }, [router]);
 }

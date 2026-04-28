@@ -1,9 +1,15 @@
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAuth } from '../../src/contexts/auth-context';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 
 export default function SelectOrgScreen() {
   const { user, organizations, selectOrganization, signOut } = useAuth();
+
+  const handleCreateWorkspace = () => {
+    WebBrowser.openBrowserAsync('https://onekof.com/onboarding');
+  };
 
   return (
     <View style={styles.container}>
@@ -43,10 +49,15 @@ export default function SelectOrgScreen() {
         )}
         ListEmptyComponent={
           <View style={styles.emptyState}>
+            <FontAwesome name="building-o" size={40} color={Colors.textFaint} style={{ marginBottom: Spacing.xl }} />
             <Text style={styles.emptyTitle}>No workspaces yet</Text>
             <Text style={styles.emptyDesc}>
-              Create a workspace or ask someone to invite you.
+              Create a workspace on the web or ask your team admin to invite you.
             </Text>
+            <TouchableOpacity style={styles.createBtn} onPress={handleCreateWorkspace} activeOpacity={0.8}>
+              <FontAwesome name="plus" size={14} color="#fff" />
+              <Text style={styles.createBtnText}>Create Workspace</Text>
+            </TouchableOpacity>
           </View>
         }
       />
@@ -159,6 +170,22 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
     textAlign: 'center',
+    marginBottom: Spacing['2xl'],
+    paddingHorizontal: Spacing.xl,
+  },
+  createBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: Spacing['2xl'],
+    paddingVertical: Spacing.lg,
+    borderRadius: BorderRadius.full,
+  },
+  createBtnText: {
+    fontSize: FontSize.base,
+    fontWeight: '600',
+    color: '#fff',
   },
   signOutBtn: {
     alignItems: 'center',

@@ -48,7 +48,7 @@
       "url": "https://u.expo.dev/de51f86c-459c-4330-83df-7b481b9e9740"
     },
     "runtimeVersion": {
-      "policy": "nativeVersion"
+      "policy": "appVersion"
     },
     "plugins": [
       "expo-router",
