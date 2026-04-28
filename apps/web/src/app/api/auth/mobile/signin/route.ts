@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'fal
 export async function POST(request: NextRequest) {
   try {
     // SECURITY: Rate limit to prevent brute-force attacks
-    const rateLimitError = await checkRateLimit(request, 'mobileSignin');
+    const rateLimitError = await checkRateLimit(request, 'login');
     if (rateLimitError) return rateLimitError;
 
     const { email, password } = await request.json();
