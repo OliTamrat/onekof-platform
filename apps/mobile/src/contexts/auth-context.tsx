@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!user && !inAuthGroup) {
       router.replace('/(auth)/signin');
-    } else if (user && !currentOrg && !inOrgSelect && !inAuthGroup) {
+    } else if (user && !currentOrg && !inOrgSelect) {
       router.replace('/select-org');
     } else if (user && currentOrg && (inAuthGroup || inOrgSelect)) {
       router.replace('/(tabs)');
