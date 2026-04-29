@@ -3,12 +3,14 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function SignUpScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,7 +77,7 @@ export default function SignUpScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + Spacing['3xl'], paddingBottom: insets.bottom + Spacing['3xl'] }]} keyboardShouldPersistTaps="handled">
         <View style={styles.logoContainer}>
           <View style={styles.logoIcon}>
             <Text style={styles.logoLetter}>O</Text>
@@ -164,7 +166,7 @@ export default function SignUpScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bg },
-  scrollContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: Spacing['3xl'], paddingVertical: Spacing['5xl'] },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: Spacing['3xl'] },
   logoContainer: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing['3xl'] },
   logoIcon: { width: 40, height: 40, borderRadius: BorderRadius.md, backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center' },
   logoLetter: { fontSize: FontSize.lg, fontWeight: '900', color: '#fff' },
