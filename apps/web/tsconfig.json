@@ -1,29 +1,37 @@
 {
-  "extends": "@onekof/config/typescript/nextjs.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "target": "ES2017",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": false,
+    "jsx": "preserve",
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "incremental": true,
     "noEmit": true,
-    // Incremental strict mode migration
-    // Phase 1 (current): Enable core safety checks
     "strict": false,
     "noImplicitAny": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
-    // Phase 2: Null safety enabled
     "strictNullChecks": true,
-    // Phase 3 (final): Full strict mode
-    // "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
     "skipLibCheck": true
   },
   "include": [
