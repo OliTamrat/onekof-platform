@@ -924,7 +924,7 @@ docker compose exec -T postgres \
 [ ] Postgres and Redis passwords strong — set when Tier 2 VM provisioned
 [ ] SSH key-based auth only on server — when VM provisioned
 [ ] SSL Labs rating A or better — when onekof.et domain live
-[ ] Sentry DSN active — NEXT_PUBLIC_SENTRY_DSN needs to be added to Vercel
+[✓] Sentry DSN active — SENTRY_DSN + NEXT_PUBLIC_SENTRY_DSN in Vercel prod, onekof-web project live
 [ ] Backup restoration tested — when Tier 2 live
 ```
 
@@ -947,7 +947,7 @@ docker compose exec -T postgres \
 | OI-11 | Enable AI features (provision Anthropic key) | Oli | Post-launch | **Pending** |
 | OI-12 | Submit INSA certification (code-ready) | Oli | Before first contract | **Pending — Oli initiates** |
 | OI-13 | Ops runbook translated to Amharic for gov IT teams | Oli | Before gov pilot | **Pending** |
-| OI-14 | Add NEXT_PUBLIC_SENTRY_DSN to Vercel | Oli | Before beta | **Pending — needs Sentry DSN from account** |
+| OI-14 | Add NEXT_PUBLIC_SENTRY_DSN to Vercel | Oli | Before beta | **DONE ✓ 2026-05-23 — onekof-web Sentry project created** |
 | OI-15 | Add BLOB_ENCRYPTION_KEY to Vercel production | Oli | Before beta | **DONE ✓ 2026-05-23** |
 | OI-16 | Custom 404 not-found page | Oli | Before launch | **DONE ✓ 2026-05-23** |
 
@@ -986,7 +986,7 @@ TBD:     First sovereign/government deployment (post-INSA certification receipt)
 | Audit log | ✅ | Append-only, 10 routes instrumented, viewer page live |
 | i18n | ✅ | 5 languages (EN/AM/OM/TI/SO) fully aligned |
 | CI/CD | ✅ | GitHub Actions live, both workflows green |
-| Error tracking | ⚠️ | SENTRY_DSN set, NEXT_PUBLIC_SENTRY_DSN missing (Oli action) |
+| Error tracking | ✅ | SENTRY_DSN + NEXT_PUBLIC_SENTRY_DSN both in Vercel prod — onekof-web project live |
 | 404 page | ✅ | Custom not-found.tsx added |
 | Mobile app | ✅ | Feature-complete, EAS build linked |
 
@@ -1015,7 +1015,7 @@ TBD:     First sovereign/government deployment (post-INSA certification receipt)
 ### What Oli Needs to Do Next (in order)
 
 1. Register **onekof.et** domain — EthioTelecom
-2. Add **NEXT_PUBLIC_SENTRY_DSN** to Vercel (`vercel env add NEXT_PUBLIC_SENTRY_DSN production`)
+2. ~~Add **NEXT_PUBLIC_SENTRY_DSN** to Vercel~~ — DONE ✓
 3. Provision **EthioTelecom VM** and run `docs/deployment/tier-2-runbook.md`
 4. **Submit INSA certification** — code is 100% ready
 5. Apple Developer membership ($99/yr) for iOS App Store
