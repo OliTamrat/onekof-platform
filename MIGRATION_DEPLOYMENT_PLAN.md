@@ -638,7 +638,7 @@ docker compose exec onekof-web \
 ### Branch Strategy
 
 ```
-main        → auto-deploys to Vercel production (Tier 3)
+master      → auto-deploys to Vercel production (Tier 3)
 develop     → auto-deploys to Vercel preview
 feature/*   → PR builds only (no deploy)
 release/*   → used to tag Docker images for Tier 2 / Tier 1
