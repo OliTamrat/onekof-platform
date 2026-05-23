@@ -110,21 +110,57 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Theme:** Same Nocturne color tokens as web (`src/constants/theme.ts`)
 - **Quality bar:** Must match or exceed Jira Mobile — full CRUD, offline, push notifications, biometric auth
 
-## Current Status (as of 2026-04-15)
+## Current Status (as of 2026-05-23)
 
-**Launch stage:** Pre-launch. No paying customers. EIPA copyright deposit prepared 2026-04-11, submission pending representative's return with questionnaire answers.
+**Launch stage:** Pre-launch. No paying customers. EIPA copyright deposit in progress — Co-Owner agreement + DAPS authorization letter pending before final deposit generation.
 
 **Production deployment (Tier 3):** Live at `onekof.com` on Vercel serverless (fra1) + Supabase PostgreSQL 15 (aws-1-eu-central-1). 25 test/demo organizations, no real customer data.
 
-**Mobile app:** Foundation deployed (Expo/React Native). Auth working against production API. Building toward App Store + Google Play submission.
+**Mobile app:** Feature-complete (Expo/React Native). Push notifications, i18n 5 langs, EAS build linked. Known offline-mode bug on dashboard. App Store / Play Store submission pending Apple Dev membership ($99/yr).
+
+**Build health:** TypeScript strict — `ignoreBuildErrors: false`. Zero TS errors enforced at build time. All 141 API routes auth-guarded.
+
+**INSA compliance:** All P1–P6 security gaps closed (Wave 5, 2026-05-23):
+- P1: CSRF origin validation on all mutation APIs
+- P2: Admin rate limiting (60 req/min per IP)
+- P3: Audit log append-only (DELETE → 405)
+- P4: AES-256-GCM encryption on all uploaded files (`BLOB_ENCRYPTION_KEY` in Vercel prod)
+- P5: Session invalidation on password change
 
 **Architecture target:** Three-tier federated hosting (see `docs/architecture/three-tier-federation.md`):
 - **Tier 1 — Government:** EthioTelecom Cloud (or Raxio fallback), `*.gov.onekof.et`. **Not yet built.** Requires signed government LOI before coding begins.
-- **Tier 2 — Private:** On-premise Ethiopian server, `*.onekof.et`. **Code-ready** (Wave 1 + Wave 2 shipped). Docker image validated at 408 MB. Windows + Ubuntu deployment guides written. Test server build in progress on Massano/i7/64GB rig.
-- **Tier 3 — Global:** Vercel + Supabase, `*.onekof.com`. **Current production.** Unchanged by Wave 1/2.
-- **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage as cold recovery. **Deferred to Wave 3.**
+- **Tier 2 — Private:** On-premise Ethiopian server, `*.onekof.et`. **Code-ready** (Waves 1–5 shipped). Docker image 408 MB. Windows + Ubuntu deployment guides written. Test server build pending on Massano/i7/64GB rig.
+- **Tier 3 — Global:** Vercel + Supabase, `*.onekof.com`. **Current production.**
+- **DR:** Encrypted backups from Tiers 1/2 pushed to Vercel Blob / Supabase Storage. Deferred to Wave 6.
 
 ## Recently Shipped
+
+### Wave 5 — INSA Security Hardening + Full Codebase Audit (2026-05-23)
+
+**INSA P1–P6 security gaps closed:**
+- `middleware.ts`: CSRF Origin header validation on all POST/PUT/PATCH/DELETE API routes (exempt: webhooks, auth, push)
+- `middleware.ts`: Admin rate limiting — 60 req/min per IP on `/api/admin/*`
+- `api/organizations/[id]/audit-log`: DELETE handler returns 405 — audit log is append-only by design
+- `lib/storage/drivers/local-fs.ts`: AES-256-GCM encryption for all uploaded blobs — IV + authTag + ciphertext prepended format
+- `api/files/[...path]/route.ts`: decrypts blobs before serving using `decryptBlobBuffer()`
+- `api/user/change-password/route.ts`: calls `invalidateAllUserSessions()` after password update
+- `BLOB_ENCRYPTION_KEY` added to Vercel production env (64 hex chars = 32 bytes)
+- `.env.production.example`: added ADMIN_SECRET, ADMIN_USERS, CRON_SECRET, FIELD_ENCRYPTION_KEY with generation instructions
+
+**Full codebase audit (EIPA pre-registration):**
+- TypeScript: 5 errors fixed, `ignoreBuildErrors` set to `false` — zero errors enforced at build time
+- Fixed: `middleware.ts` method from nextUrl, `vercel-blob.ts` access: public, `admin-audit.ts` JSON cast, `audit-log/page.tsx` deps array, locale `auditLog` nav key in am/so/ti/om
+- `not-found.tsx`: custom 404 page added matching Nocturne design system
+- i18n: all 5 locales fully aligned — am/so match en exactly; ti/om have 6 harmless extra unused keys
+- Confirmed: all 141 API routes auth-guarded, all 5 debug routes behind requireSuperAdmin, security headers set
+
+### Wave 4 — Org Audit Log (2026-05-05)
+
+- `OrgAuditLog` Prisma model + migration `20260505_add_org_audit_log`
+- `lib/security/org-audit.ts`: `logOrgAction()`, 35-action catalogue, fire-and-forget
+- 10 routes instrumented: projects, members, invitations, teams, expenses approve/reject
+- Viewer page: `dashboard/settings/audit-log` — paginated, filterable, OWNER/ADMIN only
+- Sidebar nav link added in all 5 languages
 
 ### Nocturne UI/UX Redesign + Mobile App + SEO (2026-04-14/15)
 
@@ -251,34 +287,34 @@ Nine commits on `master` (`d014a9c..4c14a59`) that lift every hardcoded Vercel/.
 - Local Docker simulation: full Tier 2 stack boots on developer laptop, serves HTTP 200 on `http://localhost:3000`, local Postgres has all 41 tables and 32 enums, `hosting_tier` column present. Zero Vercel/Supabase involvement.
 - Supabase migration state: `20260411120000_portability_wave1` applied, `_prisma_migrations.0_init` marked applied via `prisma migrate resolve`.
 
-## Next Work Priorities (after Wave 1)
+## Next Work Priorities
 
-### Priority 0: Test server weekend — Massano/i7/64GB/1TB rig
-**Status:** Code-ready, hardware on hand, runbook written, Docker topology proven on laptop.
-**Goal:** Follow `docs/deployment/tier-2-runbook.md` end-to-end on bare Ubuntu 24.04 LTS. Produce a living Tier 2 reference deployment hosting a fake test tenant. Document every deviation from the runbook as a runbook update.
-**Effort:** ~1 focused day (down from 3 days of troubleshooting before the Docker simulation proved the stack).
-**Blockers:** None — Oli has time.
+### Priority 0: EIPA Final Deposit — blocked on paperwork
+**Status:** Code-clean and audit-passed. Blocked on Co-Owner/Co-Founder agreement + DAPS authorization letter.
+**When ready:** Run `generate-eipa-final-deposit.py` (to be built), burn to CD-R or read-only USB, ship to rep.
 
-### Priority 1: Wave 2 — medium-risk hardening
-All items are gated to "before first real customer," not urgent pre-launch.
-- ~~**B6 — Admin password bcrypt hashing**~~ — DONE 2026-04-12. Uses `bcrypt.compare()` with 12-round hashes.
-- **Cloudflare Full Strict SSL** — currently Flexible (HTTP CF↔Vercel). Blocks government contracts. Follow `PRODUCTION_SECURITY_UPGRADE_GUIDE.md`. **Oli action required.**
-- ~~**Disable `/api/debug/*` routes in production**~~ — DONE 2026-04-12. Middleware returns 404.
-- ~~**Tenant isolation validation in middleware**~~ — DONE 2026-04-12. JWT membership check at edge.
-- **Mandatory Upstash Redis for rate limiting in production** — in-memory fallback is broken under serverless multi-instance scaling. **Oli action required (Upstash dashboard).**
-- ~~**`output: 'standalone'` in `next.config.mjs`**~~ — DONE 2026-04-12. Docker image 2.6 GB → 408 MB.
+### Priority 1: Public Beta prep (target: Jun 1–14 2026)
+- **Register onekof.et domain** — Oli action. Required for Tier 2 go-live.
+- **Provision EthioTelecom VM** — follow `docs/deployment/tier-2-runbook.md` on Massano/i7/64GB rig.
+- **Submit INSA certification** — code is audit-ready. Oli initiates submission.
+- **Add NEXT_PUBLIC_SENTRY_DSN to Vercel** — needs DSN from Sentry account (Oli action).
+- **Cloudflare Full Strict SSL** — currently Flexible. Blocks government contracts. Needs $10/mo ACM or DNS move to Vercel. Oli action.
+- **Upstash Redis** — mandatory for production rate limiting at scale. Oli action (Upstash dashboard).
 
-### Priority 2: Wave 3 — data retention + DR
-- ~~`UserActivity` rolling 90-day retention~~ — DONE 2026-04-12. `/api/admin/cleanup` endpoint with configurable retention, supports Vercel Cron and system cron.
-- ~~`RateLimit` table → Redis~~ — DONE 2026-04-12. Removed dead `RateLimit` Prisma model. Rate limiting already uses Upstash Redis via `lib/security/rate-limit.ts`.
-- JWT refresh token rotation — **Deferred.** NextAuth JWT strategy with HttpOnly cookies is sufficient for current threat model. Revisit when session duration requirements change.
-- ~~Admin audit logging~~ — DONE 2026-04-12. `AdminAuditLog` model + `logAdminAction()` utility. Admin login/logout/cleanup instrumented. Migration created.
-- ~~Encrypted backup pipeline~~ — DONE 2026-04-12. `scripts/backup-database.sh` upgraded with GPG encryption, SHA-256 checksums, configurable retention, blob backup, and Shamir 3-of-5 key split documentation.
+### Priority 2: Mobile App — App Store + Play Store submission
+- ~~Push notifications~~ — DONE 2026-04-19
+- ~~i18n 5 languages infrastructure~~ — DONE 2026-04-19
+- **Apple Developer membership** ($99/yr) — blocker for iOS App Store
+- **Google Play account** ($25) — blocker for Android Play Store
+- **EAS Build** — screenshots, metadata, review `app.json`
+- **Real drag-and-drop kanban** — react-native-reanimated (~2-3 hr)
 
-### Priority 3: Async tracks (don't block on these)
-- **EthioTelecom Tier 1 evaluation** — send the letter from `docs/business/ethiotelecom-cloud-requirements-letter.md` once ready, then wait for their technical response. Keeps Tier 1 architecture dependencies unblocked without forcing synchronous work.
-- **Claim `onekof.et` domain** — required for Tier 2 production. Claim after EIPA registration completes.
-- **Ethiopian business entity formation for Olink Technologies** — required for government procurement, unrelated to the codebase but on the critical path for Tier 1 sales.
+### Priority 3: Notifications Phase 2/3/4 (deferred)
+Full spec in the Notifications Roadmap section below. Phase 2 (schema migration) is the gate.
+
+### Priority 4: Async tracks
+- **EthioTelecom Tier 1 evaluation** — send letter from `docs/business/ethiotelecom-cloud-requirements-letter.md`
+- **Ethiopian business entity for Olink Technologies** — required for government procurement
 
 ### Priority 4: Mobile App — full production build (IN PROGRESS)
 **Quality bar:** Match or exceed Jira Mobile. Not a companion app — a full production client.
