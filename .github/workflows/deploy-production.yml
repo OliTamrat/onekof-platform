@@ -36,20 +36,21 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
+      - name: Pull Vercel project settings + env vars
+        # Must run before `vercel build` — creates .vercel/project.json which
+        # build requires to know the framework and output settings.
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
       - name: Run DB migrations
         # DIRECT_URL = Session Pooler (port 5432, IPv4, supports DDL).
-        # DATABASE_URL = Transaction Pooler (port 5432 + pgbouncer params) for runtime.
-        # Both come from GitHub secrets — simpler and more reliable than env pull.
+        # Comes from GitHub secret — reliable, no env file parsing needed.
         run: pnpm --filter=database exec prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.DIRECT_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
-      - name: Pull Vercel environment variables
-        run: vercel env pull --yes --environment=production .env.production.ci --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build project artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
