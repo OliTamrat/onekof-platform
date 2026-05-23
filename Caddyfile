@@ -1,0 +1,43 @@
+# Onekof Platform — Caddy reverse proxy config
+# Handles SSL termination and security headers for Tier 2 / Tier 3 self-hosted
+#
+# Replace onekof.et with your actual domain before deploying.
+# Caddy automatically provisions Let's Encrypt certificates.
+
+onekof.et {
+    reverse_proxy onekof-web:3000
+
+    # Security headers
+    header {
+        # Force HTTPS for 1 year, include subdomains
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent MIME-type sniffing
+        X-Content-Type-Options "nosniff"
+        # Prevent clickjacking
+        X-Frame-Options "DENY"
+        # Control referrer information
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Disable FLoC / Topics API tracking
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        # Remove server fingerprint
+        -Server
+        -X-Powered-By
+    }
+
+    # Gzip compression
+    encode gzip
+
+    # Access logs
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb
+            roll_keep 7
+        }
+        format json
+    }
+}
+
+# Redirect www to apex domain
+www.onekof.et {
+    redir https://onekof.et{uri} permanent
+}

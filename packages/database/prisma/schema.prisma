@@ -14,6 +14,9 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
+  // directUrl bypasses PgBouncer for migrations (required for Supabase + Vercel).
+  // Set DIRECT_URL to the non-pooled connection string in .env / Vercel env vars.
+  directUrl  = env("DIRECT_URL")
   extensions = [vector]
   schemas    = ["public"]
 }
@@ -1831,6 +1834,48 @@ model BudgetAuditLog {
   @@index([action, createdAt]) // Action-specific queries
   @@index([entityType, entityId, createdAt]) // Entity audit trail
   @@map("budget_audit_logs")
+  @@schema("public")
+}
+
+// 🔒 SECURITY: Org-level audit log — tamper-proof record of all destructive
+// and privileged actions performed by org members. Append-only by design:
+// no UPDATE or DELETE permissions are granted to the application role.
+// Required for INSA government audit compliance.
+model OrgAuditLog {
+  id String @id @default(cuid())
+
+  // TENANT
+  organizationId String @map("organization_id")
+
+  // WHO (denormalized — record survives user deletion)
+  actorId    String @map("actor_id")
+  actorEmail String @map("actor_email")
+  actorRole  String @map("actor_role") // OWNER | ADMIN | MEMBER | GUEST at time of action
+
+  // WHAT
+  action       String  // PROJECT_DELETED | MEMBER_REMOVED | ROLE_CHANGED | INVITATION_SENT | etc.
+  resource     String  // "project" | "member" | "team" | "invitation" | "issue" | "expense" | etc.
+  resourceId   String? @map("resource_id")   // ID of the affected entity
+  resourceName String? @map("resource_name") // Human-readable name at time of action
+
+  // CHANGE DETAIL
+  before Json? // State before the action (PATCH/DELETE)
+  after  Json? // State after the action  (POST/PATCH)
+
+  // NETWORK CONTEXT
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+
+  outcome String @default("SUCCESS") // SUCCESS | FAILURE | DENIED
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, actorId, createdAt])
+  @@index([organizationId, action, createdAt])
+  @@index([resource, resourceId, createdAt])
+  @@index([createdAt])
+  @@map("org_audit_logs")
   @@schema("public")
 }
 
