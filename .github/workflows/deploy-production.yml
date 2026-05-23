@@ -36,20 +36,20 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
+      - name: Run DB migrations
+        # DIRECT_URL = Session Pooler (port 5432, IPv4, supports DDL).
+        # DATABASE_URL = Transaction Pooler (port 5432 + pgbouncer params) for runtime.
+        # Both come from GitHub secrets — simpler and more reliable than env pull.
+        run: pnpm --filter=database exec prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DIRECT_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
       - name: Pull Vercel environment variables
         run: vercel env pull --yes --environment=production .env.production.ci --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Run DB migrations
-        # Extracts only DATABASE_URL and DIRECT_URL from the pulled env file.
-        # Using grep+cut avoids xargs splitting values that contain spaces or
-        # special characters (e.g. ADMIN_USERS, SUPERADMIN_EMAILS).
-        run: |
-          export DATABASE_URL=$(grep '^DATABASE_URL=' .env.production.ci | cut -d= -f2- | tr -d '"')
-          export DIRECT_URL=$(grep '^DIRECT_URL=' .env.production.ci | cut -d= -f2- | tr -d '"')
-          pnpm --filter=database exec prisma migrate deploy
 
       - name: Build project artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
