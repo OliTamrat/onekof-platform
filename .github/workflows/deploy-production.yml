@@ -43,14 +43,13 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Run DB migrations
-        # Uses DIRECT_URL (non-pooled port 5432) pulled from Vercel env above.
-        # prisma migrate deploy requires a direct connection — PgBouncer blocks DDL.
+        # Extracts only DATABASE_URL and DIRECT_URL from the pulled env file.
+        # Using grep+cut avoids xargs splitting values that contain spaces or
+        # special characters (e.g. ADMIN_USERS, SUPERADMIN_EMAILS).
         run: |
-          export $(grep -v '^#' .env.production.ci | xargs)
+          export DATABASE_URL=$(grep '^DATABASE_URL=' .env.production.ci | cut -d= -f2- | tr -d '"')
+          export DIRECT_URL=$(grep '^DIRECT_URL=' .env.production.ci | cut -d= -f2- | tr -d '"')
           pnpm --filter=database exec prisma migrate deploy
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build project artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
