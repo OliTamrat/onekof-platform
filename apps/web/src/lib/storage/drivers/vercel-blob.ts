@@ -36,7 +36,7 @@ export class VercelBlobDriver implements StorageDriver {
     }
 
     const blob = await put(key, body, {
-      access: 'private',
+      access: 'public',
       addRandomSuffix: false,
       contentType: options.contentType,
     });

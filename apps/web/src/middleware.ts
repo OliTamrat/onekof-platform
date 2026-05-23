@@ -2,6 +2,113 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
+// ---------------------------------------------------------------------------
+// CSRF — Origin validation helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the set of allowed origins derived from PUBLIC_HOSTS + NEXTAUTH_URL.
+ * Rebuilt each call so env changes in tests/hot-reload take effect immediately.
+ */
+function getAllowedOrigins(): Set<string> {
+  const origins = new Set<string>();
+
+  // Always allow localhost in dev
+  if (process.env.NODE_ENV !== 'production') {
+    origins.add('http://localhost:3000');
+    origins.add('http://localhost');
+  }
+
+  // Derive from PUBLIC_HOSTS env var (e.g., "onekof.et,onekof.com")
+  const raw = process.env.PUBLIC_HOSTS || 'onekof.com,localhost';
+  for (const host of raw.split(',').map(h => h.trim()).filter(Boolean)) {
+    origins.add(`https://${host}`);
+    origins.add(`http://${host}`); // for Tier 2 local-network access before TLS
+  }
+
+  // Also allow the explicitly configured app URL
+  const appUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl) {
+    try {
+      const u = new URL(appUrl);
+      origins.add(u.origin);
+    } catch { /* ignore malformed URL */ }
+  }
+
+  return origins;
+}
+
+/**
+ * Webhook routes that legitimately receive cross-origin POST requests.
+ * These are excluded from CSRF Origin validation.
+ */
+const CSRF_EXEMPT_PREFIXES = [
+  '/api/integrations/github/webhook',
+  '/api/integrations/google-calendar/callback',
+  '/api/integrations/google/callback',
+  '/api/auth',        // NextAuth handles its own CSRF
+  '/api/push',        // push notification delivery
+];
+
+/**
+ * Validate the Origin header for state-mutating API requests.
+ * Returns a 403 response if the origin is not allowed, or null to continue.
+ */
+function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl;
+  const { method } = request;
+
+  // Only enforce on API mutation methods
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return null;
+
+  // Only enforce on /api/* routes
+  if (!pathname.startsWith('/api/')) return null;
+
+  // Skip webhook / callback / auth routes
+  if (CSRF_EXEMPT_PREFIXES.some(p => pathname.startsWith(p))) return null;
+
+  const origin = request.headers.get('origin');
+
+  // No Origin header — allow internal server-to-server calls (cron, health checks)
+  // but block if there IS an origin header that doesn't match.
+  if (!origin) return null;
+
+  const allowed = getAllowedOrigins();
+  if (!allowed.has(origin)) {
+    return NextResponse.json(
+      { error: 'Cross-origin request rejected' },
+      { status: 403 }
+    );
+  }
+
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Admin rate limiting — simple in-memory per-IP sliding window
+// (Upstash Redis is not available in middleware edge runtime without special setup)
+// ---------------------------------------------------------------------------
+
+const adminRateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const ADMIN_RATE_LIMIT_MAX = 60;       // requests per window
+const ADMIN_RATE_LIMIT_WINDOW = 60_000; // 1 minute in ms
+
+function checkAdminRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = adminRateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    adminRateLimitMap.set(ip, { count: 1, resetAt: now + ADMIN_RATE_LIMIT_WINDOW });
+    return true; // allowed
+  }
+
+  entry.count++;
+  if (entry.count > ADMIN_RATE_LIMIT_MAX) {
+    return false; // rate limited
+  }
+  return true;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get('host') || '';
@@ -9,6 +116,10 @@ export async function middleware(request: NextRequest) {
   // Extract organization slug from subdomain
   // Format: {org-slug}.onekof.com or {org-slug}.localhost:3000
   const organizationSlug = getOrganizationSlug(hostname);
+
+  // SECURITY (P1): CSRF — reject mutations from unexpected origins
+  const csrfError = enforceCsrfOrigin(request);
+  if (csrfError) return csrfError;
 
   // Block debug and diagnostic API routes in production — they expose env info and user data
   const blockedInProduction = ['/api/debug', '/api/env-check', '/api/test-db'];
@@ -24,6 +135,20 @@ export async function middleware(request: NextRequest) {
     const adminToken = request.cookies.get('onekof-admin-token');
     if (!adminToken) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
+  // SECURITY (P2): Rate-limit all /api/admin/* routes (excluding login, which has its own stricter limit)
+  if (isAdminApiRoute) {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+    if (!checkAdminRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests to admin API' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      );
     }
   }
 

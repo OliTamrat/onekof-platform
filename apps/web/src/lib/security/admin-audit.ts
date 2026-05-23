@@ -47,7 +47,7 @@ export async function logAdminAction(params: AuditLogParams): Promise<void> {
         action: params.action,
         resource: params.resource,
         resourceId: params.resourceId,
-        details: params.details || {},
+        details: (params.details ?? {}) as any,
         outcome: params.outcome || 'SUCCESS',
         ipAddress,
         userAgent,

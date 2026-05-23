@@ -24,8 +24,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Allow build despite type errors (to be fixed incrementally)
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   images: {
     domains: ['localhost'],
