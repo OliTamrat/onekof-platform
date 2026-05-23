@@ -23,7 +23,7 @@
 | Nginx / SSL | **None configured** | GAP |
 | .et Domain | **Not registered** | GAP |
 | GitHub Actions | **Not created** | GAP |
-| ACR Push | Bicep template pending UDC IT | In Progress |
+| ACR Push | For sovereign/INSA enterprise customers | Pending customer contracts |
 
 ### Monorepo Structure
 
@@ -73,7 +73,7 @@ Tier 2 — Self-Hosted Linux (Ethiopia / EthioTelecom VM)
   - SSL via Caddy (auto Let's Encrypt)
   - Used for: Ethiopian data-residency deployments
 
-Tier 1 — Air-Gapped / Sovereign (Dr. Tolessa / INSA)
+Tier 1 — Air-Gapped / Sovereign (Ethiopian Gov / INSA enterprise customers)
   - Docker image shipped via USB or ACR pull-token
   - Fully offline — no external DNS, no internet required
   - Used for: government-classified environments
@@ -105,7 +105,7 @@ Runtime behavior is controlled entirely by environment variables.
 | G8 | Email not verified end-to-end | Users may not receive emails | Test Resend with real domain |
 | G9 | AI features disabled | Feature gap vs. spec | Enable after Anthropic key provisioned |
 | G10 | No load testing | Unknown capacity | Run k6 tests before beta |
-| G11 | ACR Bicep template pending | Dr. Tolessa deploy blocked | Pending UDC IT confirmation |
+| G11 | ACR pull-token model for sovereign deploy | For INSA/gov enterprise customers | Pending first enterprise contract |
 
 ---
 
@@ -567,8 +567,8 @@ crontab -e
 
 ## 6. Phase 3 — Sovereign / Air-Gapped Deployment (Tier 1)
 
-**Goal:** Deploy Onekof on Dr. Tolessa's infrastructure (INSA-compliant, offline-capable).
-**Timeline:** After UDC IT confirms Bicep template
+**Goal:** Deploy Onekof on an enterprise customer's air-gapped infrastructure (INSA-compliant, offline-capable).
+**Timeline:** After first sovereign/government enterprise contract is signed
 **Model:** Docker image delivered via ACR pull-token (no source code transfer)
 
 ### Step 3.1 — Azure Container Registry Setup
@@ -589,21 +589,21 @@ az acr build \
 
 # Create scoped pull-token (read-only, expires in 1 year)
 az acr token create \
-  --name dr-tolessa-pull \
+  --name onekof-enterprise-pull \
   --registry onekofacr \
   --scope-map _repositories_pull \
   --status enabled
 
 # Get token password
 az acr token credential generate \
-  --name dr-tolessa-pull \
+  --name onekof-enterprise-pull \
   --registry onekofacr \
   --expiration-in-days 365
 ```
 
 ### Step 3.2 — Deliver to Sovereign Environment
 
-Hand off to Dr. Tolessa / UDC IT:
+Hand off to the enterprise customer's IT team:
 1. ACR login server: `onekofacr.azurecr.io`
 2. Pull token username + password (scoped, read-only)
 3. `docker-compose.prod.yml` (with image pointing to ACR)
@@ -611,12 +611,12 @@ Hand off to Dr. Tolessa / UDC IT:
 5. Prisma migration files (already in Docker image at `/app/packages/database/prisma`)
 6. This deployment runbook
 
-### Step 3.3 — On-Premise Startup (Dr. Tolessa's team)
+### Step 3.3 — On-Premise Startup (Enterprise customer's IT team)
 
 ```bash
 # Login to ACR
 docker login onekofacr.azurecr.io \
-  -u dr-tolessa-pull \
+  -u onekof-enterprise-pull \
   -p <token-password>
 
 # Pull image
@@ -903,7 +903,7 @@ docker compose exec -T postgres \
 | OI-3 | Create docker-compose.prod.yml | Oli | Week 2 | Pending |
 | OI-4 | Create Caddyfile for Tier 2 | Oli | Week 2 | Pending |
 | OI-5 | Configure GitHub repository secrets | Oli | Week 1 | Pending |
-| OI-6 | Confirm Bicep template with UDC IT | Oli | TBD | Blocked on UDC IT |
+| OI-6 | Define Tier 1 sovereign deploy package for enterprise customers | Oli | Post first contract | Pending |
 | OI-7 | Run load test (k6) before beta | Oli | Before beta | Pending |
 | OI-8 | Fix TypeScript errors (remove ignoreBuildErrors) | Oli | Before launch | Pending |
 | OI-9 | Provision Resend domain for onekof.et | Oli | After .et domain | Pending |
@@ -919,7 +919,7 @@ Week 2:  Create docker-compose.prod.yml (G2) + Caddyfile (G3) → Test locally
 Week 3:  Provision EthioTelecom VM → Deploy Tier 2 → DNS cutover to onekof.et
 Week 4:  Load testing → Fix remaining issues → Internal beta
 Week 5+: External beta → Data migration finalization → Public launch
-TBD:     Tier 1 sovereign deploy (Dr. Tolessa) — pending UDC IT
+TBD:     Tier 1 sovereign deploy — pending first enterprise/government contract
 ```
 
 ---
