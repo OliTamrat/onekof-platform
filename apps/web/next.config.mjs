@@ -4,11 +4,6 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  async redirects() {
-    return [
-      { source: '/support', destination: '/support.html', permanent: false },
-    ];
-  },
   experimental: {
     // Disabled until all type errors are resolved
     typedRoutes: false,
