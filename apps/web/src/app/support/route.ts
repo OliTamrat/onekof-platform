@@ -5,11 +5,10 @@ const SUPPORT_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Onekof PM Knowledge Management and Support Centre - FAQ, troubleshooting guides, and production readiness checklist for customer support agents.">
-<meta property="og:title" content="Onekof PM Support Centre">
-<meta property="og:description" content="Customer support knowledge base for Onekof PM - Ethiopian project management platform.">
-<link rel="canonical" href="https://onekof.com/support">
-<title>Onekof PM — Knowledge Management & Support Centre</title>
+<title>Onekof — Support Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --teal: #1C8C7D;
@@ -35,21 +34,24 @@ const SUPPORT_HTML = `<!DOCTYPE html>
     --sidebar-w: 280px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--light); color: var(--dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
   /* TOP BAR */
-  .topbar { background: var(--dark); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 100; }
+  .topbar { background: #0B0E11; color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 100; }
   .topbar-brand { display: flex; align-items: center; gap: 12px; }
-  .topbar-logo { width: 32px; height: 32px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -1px; }
-  .topbar-name { font-weight: 700; font-size: 17px; }
-  .topbar-sub { font-size: 12px; color: #9CA3AF; margin-left: 8px; }
+  .topbar-logo { width: 36px; height: 36px; background: linear-gradient(135deg, #1C8C7D, #7C3AED); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #fff; letter-spacing: -0.5px; box-shadow: 0 4px 12px rgba(28,140,125,0.35); }
+  .topbar-name { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+  .topbar-sub { font-size: 12px; color: rgba(255,255,255,0.35); margin-left: 10px; padding-left: 10px; border-left: 1px solid rgba(255,255,255,0.12); }
   .topbar-search { flex: 1; max-width: 520px; margin: 0 32px; position: relative; }
   .topbar-search input { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 14px 8px 38px; color: #fff; font-size: 14px; outline: none; transition: all 0.2s; }
   .topbar-search input::placeholder { color: rgba(255,255,255,0.45); }
   .topbar-search input:focus { background: rgba(255,255,255,0.15); border-color: var(--teal); }
   .topbar-search .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); font-size: 15px; }
-  .topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #9CA3AF; }
-  .topbar-meta a { color: var(--teal); text-decoration: none; }
+  .topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: rgba(255,255,255,0.4); }
+  .topbar-meta a { color: #2BB5A2; text-decoration: none; transition: color 0.15s; }
+  .topbar-meta a:hover { color: #1C8C7D; }
+  .topbar-back { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 12px; color: rgba(255,255,255,0.6) !important; font-size: 12px; font-weight: 500; text-decoration: none !important; transition: all 0.15s !important; }
+  .topbar-back:hover { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
 
   /* BODY LAYOUT */
   .body-wrap { display: flex; flex: 1; overflow: hidden; }
@@ -223,18 +225,18 @@ const SUPPORT_HTML = `<!DOCTYPE html>
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-brand">
-    <div class="topbar-logo">OK</div>
-    <span class="topbar-name">Onekof PM</span>
-    <span class="topbar-sub">Knowledge Management & Support Centre</span>
+    <div class="topbar-logo">O</div>
+    <span class="topbar-name">Onekof</span>
+    <span class="topbar-sub">Support Centre</span>
   </div>
   <div class="topbar-search">
     <span class="search-icon">🔍</span>
     <input type="text" id="globalSearch" placeholder="Search FAQs, guides, checklists… (Ctrl+K)" autocomplete="off">
   </div>
   <div class="topbar-meta">
-    <span><span class="status-dot green"></span>All Systems Operational</span>
     <a href="mailto:support@onekof.com">support@onekof.com</a>
-    <span>v1.0 · May 2026</span>
+    <span><span class="status-dot green"></span>All Systems Operational</span>
+    <a href="https://onekof.com" class="topbar-back">&#8592; Back to Onekof</a>
   </div>
 </div>
 
@@ -357,9 +359,9 @@ const SUPPORT_HTML = `<!DOCTYPE html>
     <div class="contact-card"><h4>📧 General Support</h4><p><a href="mailto:support@onekof.com">support@onekof.com</a><br>Mon–Sat 8AM–6PM EAT<br>4hr response (Pro), 2hr (P2 Enterprise)</p></div>
     <div class="contact-card"><h4>💳 Billing</h4><p><a href="mailto:billing@onekof.com">billing@onekof.com</a><br>Invoices, payment failures, VAT receipts, plan changes</p></div>
     <div class="contact-card"><h4>🔐 Security</h4><p><a href="mailto:security@onekof.com">security@onekof.com</a><br>Data breach reports, vulnerability disclosure, DPAs</p></div>
-    <div class="contact-card"><h4>📚 Help Centre</h4><p><a href="https://help.onekof.com" target="_blank">help.onekof.com</a><br>Searchable KB in English & Amharic</p></div>
-    <div class="contact-card"><h4>🌐 Status Page</h4><p><a href="https://status.onekof.com" target="_blank">status.onekof.com</a><br>Real-time health, 90-day incident history</p></div>
-    <div class="contact-card"><h4>👥 Community</h4><p><a href="https://community.onekof.com" target="_blank">community.onekof.com</a><br>Peer support from other Onekof teams</p></div>
+    <div class="contact-card"><h4>📚 Help Centre</h4><p><a href="#">help.onekof.com</a><br>Searchable KB in English & Amharic</p></div>
+    <div class="contact-card"><h4>🌐 Status Page</h4><p><a href="#">status.onekof.com</a><br>Real-time health, 90-day incident history</p></div>
+    <div class="contact-card"><h4>👥 Community</h4><p><a href="#">community.onekof.com</a><br>Peer support from other Onekof teams</p></div>
   </div>
 
   <h2>Plan Overview</h2>
@@ -1286,7 +1288,7 @@ const SUPPORT_HTML = `<!DOCTYPE html>
       <tr><td>Open quick switcher (jump to project)</td><td><kbd>Ctrl</kbd> + <kbd>J</kbd></td><td><kbd>&#8984;</kbd> + <kbd>J</kbd></td></tr>
       <tr><td>Save task detail / confirm edit</td><td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td><kbd>&#8984;</kbd> + <kbd>Enter</kbd></td></tr>
       <tr><td>Cancel / close modal</td><td><kbd>Esc</kbd></td><td><kbd>Esc</kbd></td></tr>
-      <tr><td>Expand / collapse sidebar</td><td><kbd>Ctrl</kbd> + <kbd>\\</kbd></td><td><kbd>&#8984;</kbd> + <kbd>\\</kbd></td></tr>
+      <tr><td>Expand / collapse sidebar</td><td><kbd>Ctrl</kbd> + <kbd>\</kbd></td><td><kbd>&#8984;</kbd> + <kbd>\</kbd></td></tr>
       <tr><td>Switch to Kanban view</td><td><kbd>G</kbd> then <kbd>K</kbd></td><td><kbd>G</kbd> then <kbd>K</kbd></td></tr>
       <tr><td>Switch to List view</td><td><kbd>G</kbd> then <kbd>L</kbd></td><td><kbd>G</kbd> then <kbd>L</kbd></td></tr>
       <tr><td>Switch to Timeline view</td><td><kbd>G</kbd> then <kbd>T</kbd></td><td><kbd>G</kbd> then <kbd>T</kbd></td></tr>
@@ -1318,9 +1320,9 @@ const SUPPORT_HTML = `<!DOCTYPE html>
       <tr><td class="label-cell">Support email</td><td>support@onekof.com</td></tr>
       <tr><td class="label-cell">Billing queries</td><td>billing@onekof.com</td></tr>
       <tr><td class="label-cell">Security / Data concerns</td><td>security@onekof.com</td></tr>
-      <tr><td class="label-cell">Help centre</td><td><a href="https://help.onekof.com" target="_blank">https://help.onekof.com</a> (English &amp; Amharic)</td></tr>
-      <tr><td class="label-cell">Status page</td><td><a href="https://status.onekof.com" target="_blank">https://status.onekof.com</a></td></tr>
-      <tr><td class="label-cell">Community forum</td><td><a href="https://community.onekof.com" target="_blank">https://community.onekof.com</a></td></tr>
+      <tr><td class="label-cell">Help centre</td><td>https://help.onekof.com (English &amp; Amharic)</td></tr>
+      <tr><td class="label-cell">Status page</td><td>https://status.onekof.com</td></tr>
+      <tr><td class="label-cell">Community forum</td><td>https://community.onekof.com</td></tr>
       <tr><td class="label-cell">Enterprise success manager</td><td>Provided in your onboarding welcome email</td></tr>
       <tr><td class="label-cell">Business hours</td><td>Monday&#8211;Saturday, 8 AM &#8211; 6 PM EAT</td></tr>
     </tbody>
@@ -1431,6 +1433,61 @@ searchInput.addEventListener('input', function() {
   document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
   searchResults.classList.add('active');
   document.getElementById('search-heading').textContent = \`Search: "\${this.value}"\`;
+
+  const results = searchData.filter(d =>
+    d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q)
+  ).slice(0, 20);
+
+  document.getElementById('search-meta').textContent = results.length
+    ? \`\${results.length} results found\`
+    : 'No results found. Try different keywords.';
+
+  searchOutput.innerHTML = results.map(r => {
+    const snippet = r.body.replace(/\s+/g, ' ').substring(0, 160);
+    const hl = (str) => str.replace(new RegExp(q.replace(/[.*+?^\${}()|[\]\\]/g,'\\$&'), 'gi'), m => \`<mark>\${m}</mark>\`);
+    return \`<div class="search-result-item" onclick="showSection('\${r.section}')">
+      <div class="sri-chapter">\${r.chapter}</div>
+      <div class="sri-title">\${hl(r.title)}</div>
+      <div class="sri-preview">\${hl(snippet)}...</div>
+    </div>\`;
+  }).join('');
+});
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+  if (e.key === 'Escape' && document.activeElement === searchInput) {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.blur();
+  }
+});
+
+// ==================== CHECKLIST ====================
+function updateChecklist() {
+  const allBoxes = document.querySelectorAll('#section-checklist input[type=checkbox]');
+  const checked = Array.from(allBoxes).filter(b => b.checked).length;
+  document.getElementById('checked-count').textContent = checked;
+
+  allBoxes.forEach(box => {
+    const item = box.closest('.cl-item');
+    const textEl = item.querySelector('.cl-text');
+    if (box.checked) {
+      item.classList.add('checked');
+      textEl.classList.add('checked-text');
+    } else {
+      item.classList.remove('checked');
+      textEl.classList.remove('checked-text');
+    }
+  });
+}
+</script>
+</body>
+</html>
+`;
 
   const results = searchData.filter(d =>
     d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q)
