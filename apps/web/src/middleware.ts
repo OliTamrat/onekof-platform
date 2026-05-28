@@ -84,8 +84,7 @@ function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
   const authHeader = request.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) return null;
 
-  const allowed = getAllowedOrigins();
-  if (!allowed.has(origin)) {
+  if (!isAllowedOrigin(origin)) {
     return NextResponse.json(
       { error: 'Cross-origin request rejected' },
       { status: 403 }
@@ -93,6 +92,27 @@ function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
   }
 
   return null;
+}
+
+/**
+ * Returns true if the origin is allowed.
+ * Allows:
+ *  - exact matches from getAllowedOrigins()
+ *  - subdomains of PUBLIC_HOSTS (e.g. myorg.onekof.com when onekof.com is a public host)
+ */
+function isAllowedOrigin(origin: string): boolean {
+  if (getAllowedOrigins().has(origin)) return true;
+
+  // Allow org subdomains: https://myorg.onekof.com when PUBLIC_HOSTS includes onekof.com
+  try {
+    const hostname = new URL(origin).hostname.toLowerCase();
+    const publicHosts = getPublicHosts();
+    for (const base of publicHosts) {
+      if (hostname === base || hostname.endsWith(`.${base}`)) return true;
+    }
+  } catch { /* ignore malformed origin */ }
+
+  return false;
 }
 
 // ---------------------------------------------------------------------------
