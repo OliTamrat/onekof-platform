@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   LayoutDashboard,
   Building2,
@@ -35,7 +35,7 @@ const ROLE_CONFIG = {
   VIEWER: { label: 'Viewer', icon: Eye, color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30' },
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }): ReactNode {
   const router = useRouter();
   const pathname = usePathname();
   const [admin, setAdmin] = useState<AdminInfo | null>(null);

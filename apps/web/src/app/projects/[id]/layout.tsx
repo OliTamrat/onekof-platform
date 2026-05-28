@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -51,7 +51,7 @@ const TAB_ITEMS = [
   { id: 'settings', label: 'Settings', icon: Settings, href: '/projects/[id]/settings' },
 ];
 
-export default function ProjectLayout({ children }: { children: React.ReactNode }) {
+export default function ProjectLayout({ children }: { children: ReactNode }): ReactNode {
   const params = useParams();
   const pathname = usePathname();
   const projectId = params.id as string;
