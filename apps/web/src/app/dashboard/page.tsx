@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState , type ReactNode } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { useLanguage } from '@/contexts/language-context';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -886,7 +886,7 @@ function StatCard({
   color,
   onClick,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   value: string;
   label: string;
   sublabel: string;

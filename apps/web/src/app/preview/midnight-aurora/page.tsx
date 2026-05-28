@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , type ReactNode } from 'react';
 import {
   ArrowRight, Check, Star, Zap, Shield, BarChart3, Users, FolderKanban,
   ChevronDown, Bell, Search, Plus, MoreHorizontal, Clock, CheckCircle2,
@@ -407,7 +407,7 @@ function DashboardPage() {
     low: 'text-slate-400 bg-slate-500/10',
   };
 
-  const statusIcons: Record<string, React.ReactNode> = {
+  const statusIcons: Record<string, ReactNode> = {
     'todo': <Circle className="h-4 w-4 text-slate-500" />,
     'in-progress': <Clock className="h-4 w-4 text-amber-400" />,
     'done': <CheckCircle2 className="h-4 w-4 text-[#2563EB]" />,

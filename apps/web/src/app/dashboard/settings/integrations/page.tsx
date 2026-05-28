@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback , type ReactNode } from 'react';
 import {
   Search,
   CheckCircle2,
@@ -671,7 +671,7 @@ function IntegrationSection({
   connections,
 }: {
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   integrations: Integration[];
   selected: Integration | null;
   onSelect: (i: Integration) => void;
@@ -1543,7 +1543,7 @@ function ToggleRow({
   enabled: boolean;
   onChange: (value: boolean) => void;
   disabled?: boolean;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }) {
   return (
     <Button

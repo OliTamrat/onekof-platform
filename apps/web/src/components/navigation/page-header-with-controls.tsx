@@ -5,7 +5,7 @@
  * Includes: Breadcrumbs, Search, Filter, Group By, View Settings, Insights
  */
 
-import { useState } from 'react';
+import { useState , type ReactNode } from 'react';
 import { ChevronRight, Search, Filter, LayoutGrid, Settings, Sparkles, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -25,7 +25,7 @@ interface PageHeaderWithControlsProps {
   title: string;
   description?: string;
   breadcrumbs?: Breadcrumb[];
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   iconColor?: string;
   showSearch?: boolean;
   showFilters?: boolean;

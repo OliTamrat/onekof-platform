@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 /**
  * App Layout Wrapper
  *
@@ -11,7 +12,7 @@ import { JiraStyleLayout } from './jira-style-layout';
 import { ThreeTierLayout } from './three-tier-layout';
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {

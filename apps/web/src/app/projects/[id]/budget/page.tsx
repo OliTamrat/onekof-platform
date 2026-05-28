@@ -17,7 +17,7 @@ import {
   MoreHorizontal,
   Users,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState , type ReactNode } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 
@@ -448,7 +448,7 @@ function StatCard({
   color,
   onClick,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   value: string;
   label: string;
   sublabel: string;

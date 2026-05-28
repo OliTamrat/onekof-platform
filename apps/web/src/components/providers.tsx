@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , type ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { ToastProvider } from '@/components/ui/toast-provider';
 import { LiveAnnouncerProvider } from '@/components/ui/live-announcer';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   // Register service worker for PWA
   useEffect(() => {
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
@@ -62,7 +62,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 
 // Wrapper to access workspace context
-function OrganizationSettingsWrapper({ children }: { children: React.ReactNode }) {
+function OrganizationSettingsWrapper({ children }: { children: ReactNode }) {
   // We can't use useWorkspace here directly because it would create a circular dependency
   // Instead, we'll let the OrganizationSettingsProvider handle fetching when needed
   // The sidebar component will pass the settings when available

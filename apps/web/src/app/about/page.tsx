@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , type ReactNode } from 'react';
 import Link from 'next/link';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
@@ -55,7 +55,7 @@ function SectionDivider() {
 }
 
 /* ─── Section Label ─── */
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <div className="mb-5 inline-flex items-center gap-2">
       <span className="h-px w-6 bg-[#1C8C7D]" />

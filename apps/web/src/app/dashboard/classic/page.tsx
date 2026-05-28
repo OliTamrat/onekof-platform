@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState , type ReactNode } from 'react';
 import {
   Home,
   LayoutDashboard,
@@ -391,7 +391,7 @@ export default function DashboardPage() {
   );
 }
 
-function NavItem({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
+function NavItem({ icon, label, active }: { icon: ReactNode; label: string; active?: boolean }) {
   return (
     <Button
       className={`mb-1 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
@@ -413,7 +413,7 @@ function StatCard({
   sublabel,
   color,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   value: string;
   label: string;
   sublabel: string;

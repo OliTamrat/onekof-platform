@@ -1,4 +1,5 @@
 'use client';
+import type { ReactNode } from 'react';
 
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
@@ -348,7 +349,7 @@ export default function ReportsAndAnalyticsPage() {
 }
 
 function MetricCard({ icon, label, value, subtitle, color, bgColor }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string | number;
   subtitle: string;

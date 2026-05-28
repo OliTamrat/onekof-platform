@@ -60,7 +60,7 @@ interface UnifiedPageHeaderProps {
   title: string;
   description?: string;
   breadcrumbs?: Breadcrumb[];
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   iconColor?: string;
   currentTab?: string;
   baseHref?: string;

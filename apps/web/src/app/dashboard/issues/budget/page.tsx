@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState , type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/toast-provider';
 import { useWorkspace } from '@/contexts/workspace-context';
@@ -1249,7 +1249,7 @@ function StatCard({
   color,
   onClick,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   value: string;
   label: string;
   sublabel: string;
