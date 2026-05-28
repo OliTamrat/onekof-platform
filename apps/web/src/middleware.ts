@@ -30,9 +30,15 @@ function getAllowedOrigins(): Set<string> {
   const appUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL;
   if (appUrl) {
     try {
-      const u = new URL(appUrl);
+      const u = new URL(appUrl.trim()); // trim handles trailing \n in env vars
       origins.add(u.origin);
     } catch { /* ignore malformed URL */ }
+  }
+
+  // Allow Vercel preview deployment URLs (set automatically per deployment)
+  const vercelUrl = process.env.VERCEL_URL;
+  if (vercelUrl) {
+    origins.add(`https://${vercelUrl}`);
   }
 
   return origins;
@@ -70,8 +76,13 @@ function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
   const origin = request.headers.get('origin');
 
   // No Origin header — allow internal server-to-server calls (cron, health checks)
-  // but block if there IS an origin header that doesn't match.
   if (!origin) return null;
+
+  // Bearer token requests (mobile app / API clients) are not susceptible to CSRF.
+  // CSRF attacks rely on the browser automatically attaching cookies — they cannot
+  // forge an Authorization header. Skip origin check for token-authenticated requests.
+  const authHeader = request.headers.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) return null;
 
   const allowed = getAllowedOrigins();
   if (!allowed.has(origin)) {
