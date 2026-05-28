@@ -1,5 +1,3 @@
-// Onekof PM Support Knowledge Base — embedded at build time
-
 const SUPPORT_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1487,61 +1485,7 @@ function updateChecklist() {
 </script>
 </body>
 </html>
-`;
 
-  const results = searchData.filter(d =>
-    d.title.toLowerCase().includes(q) || d.body.toLowerCase().includes(q)
-  ).slice(0, 20);
-
-  document.getElementById('search-meta').textContent = results.length
-    ? \`\${results.length} results found\`
-    : 'No results found. Try different keywords.';
-
-  searchOutput.innerHTML = results.map(r => {
-    const snippet = r.body.replace(/\\s+/g, ' ').substring(0, 160);
-    const hl = (str) => str.replace(new RegExp(q.replace(/[.*+?^\${}()|[\\]\\\\]/g,'\\\\$&'), 'gi'), m => \`<mark>\${m}</mark>\`);
-    return \`<div class="search-result-item" onclick="showSection('\${r.section}')">
-      <div class="sri-chapter">\${r.chapter}</div>
-      <div class="sri-title">\${hl(r.title)}</div>
-      <div class="sri-preview">\${hl(snippet)}...</div>
-    </div>\`;
-  }).join('');
-});
-
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-    e.preventDefault();
-    searchInput.focus();
-    searchInput.select();
-  }
-  if (e.key === 'Escape' && document.activeElement === searchInput) {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-    searchInput.blur();
-  }
-});
-
-// ==================== CHECKLIST ====================
-function updateChecklist() {
-  const allBoxes = document.querySelectorAll('#section-checklist input[type=checkbox]');
-  const checked = Array.from(allBoxes).filter(b => b.checked).length;
-  document.getElementById('checked-count').textContent = checked;
-
-  allBoxes.forEach(box => {
-    const item = box.closest('.cl-item');
-    const textEl = item.querySelector('.cl-text');
-    if (box.checked) {
-      item.classList.add('checked');
-      textEl.classList.add('checked-text');
-    } else {
-      item.classList.remove('checked');
-      textEl.classList.remove('checked-text');
-    }
-  });
-}
-</script>
-</body>
-</html>
 `;
 
 export const dynamic = 'force-static';
