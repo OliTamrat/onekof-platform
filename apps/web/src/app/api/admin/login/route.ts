@@ -74,8 +74,6 @@ function verifyToken(token: string, requestIp?: string): { username: string; rol
   }
 }
 
-// Export for use in middleware and other admin routes
-export { verifyToken, getClientIp };
 
 export async function POST(request: NextRequest) {
   if (!ADMIN_SECRET) {
