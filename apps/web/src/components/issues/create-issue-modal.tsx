@@ -13,15 +13,17 @@ interface CreateIssueModalProps {
   onClose: () => void;
   defaultProjectId?: string;
   defaultStatus?: string;
+  defaultParentId?: string;
+  defaultType?: string;
 }
 
-export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
+export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus, defaultParentId, defaultType }: CreateIssueModalProps) {
   const { t } = useLanguage();
   const toast = useToast();
   const { projects: workspaceProjects } = useWorkspace();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [type, setType] = useState<string>('TASK');
+  const [type, setType] = useState<string>(defaultType || 'TASK');
   const [status, setStatus] = useState<string>(defaultStatus || 'TODO');
   const [priority, setPriority] = useState<string>('MEDIUM');
   const [projectId, setProjectId] = useState<string>(defaultProjectId || '');
@@ -157,6 +159,7 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
       watchers: selectedWatchers.length > 0 ? selectedWatchers : undefined,
       dueDate: dueDate || undefined,
       estimate: estimate ? parseInt(estimate) : undefined,
+      parentId: defaultParentId || undefined,
     });
   };
 
