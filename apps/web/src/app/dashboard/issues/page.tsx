@@ -73,7 +73,12 @@ export default function IssuesPage() {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('create') === 'issue';
+    }
+    return false;
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [creatingInColumn, setCreatingInColumn] = useState<string | null>(null);
   const [newIssueTitle, setNewIssueTitle] = useState('');

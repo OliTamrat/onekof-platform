@@ -245,7 +245,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/members?invite=true")}>
                 <UserPlus className="mr-2 h-4 w-4" />
-                {t('members.inviteMember')}
+                {t('membersPage.inviteMember')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
