@@ -10,6 +10,7 @@ import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 interface Task {
   id: string;
@@ -108,15 +109,10 @@ export function DepartmentTaskList({
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [insightsOpen, setInsightsOpen] = useState(false);
 
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed');
-      return res.json();
-    },
-    enabled: !!session,
-  });
+  // Use workspace projects (unfiltered, subdomain-aware) so MEMBER-role users
+  // can create tasks — /api/projects applies buildProjectAccessFilter which
+  // returns nothing for members, causing silent create failures.
+  const { projects: workspaceProjects } = useWorkspace();
 
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
     queryKey: ['issues', 'department', title, scopedProjectId],
@@ -133,7 +129,7 @@ export function DepartmentTaskList({
 
   const createMutation = useMutation({
     mutationFn: async (taskTitle: string) => {
-      const projectId = scopedProjectId || projectsData?.projects?.[0]?.id;
+      const projectId = scopedProjectId || workspaceProjects?.[0]?.id;
       if (!projectId) throw new Error('No project available');
       const res = await fetch('/api/issues', {
         method: 'POST',
