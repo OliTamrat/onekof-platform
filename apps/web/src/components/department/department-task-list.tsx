@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { useWorkspace } from '@/contexts/workspace-context';
+import { useToast } from '@/components/ui/toast-provider';
 
 interface Task {
   id: string;
@@ -96,6 +97,7 @@ export function DepartmentTaskList({
   projectId: scopedProjectId,
 }: DepartmentTaskListProps) {
   const { t } = useLanguage();
+  const toast = useToast();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -130,7 +132,7 @@ export function DepartmentTaskList({
   const createMutation = useMutation({
     mutationFn: async (taskTitle: string) => {
       const projectId = scopedProjectId || workspaceProjects?.[0]?.id;
-      if (!projectId) throw new Error('No project available');
+      if (!projectId) throw new Error('No project found. Please create a project first.');
       const res = await fetch('/api/issues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,13 +144,17 @@ export function DepartmentTaskList({
           labels: defaultLabels,
         }),
       });
-      if (!res.ok) throw new Error('Failed to create');
+      if (!res.ok) throw new Error('Failed to create task');
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] });
       setNewTaskTitle('');
       setShowCreateForm(false);
+      toast.success('Task created');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create task');
     },
   });
 
