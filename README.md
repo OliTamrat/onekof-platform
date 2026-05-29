@@ -141,6 +141,32 @@ International PM tools (Jira, Asana, Monday.com) cannot serve the Ethiopian mark
 
 </td>
 </tr>
+<tr>
+<td>
+
+### Mobile App (Expo / React Native)
+- iOS and Android native apps
+- Full feature parity with web dashboard
+- Push notifications (Expo Notifications)
+- Offline-aware with graceful degradation
+- 5 languages: EN, AM, OM, TI, SO
+- EAS Build linked for OTA updates
+- JWT Bearer token auth (same API as web)
+
+</td>
+<td>
+
+### Notifications & Real-Time
+- In-app notification center
+- @mention alerts on comments
+- Issue assignment and status change alerts
+- Invitation and team membership alerts
+- Mark all read / clear individual
+- Mobile push notifications (Expo)
+- Phase 2/3 (email + webhooks) in roadmap
+
+</td>
+</tr>
 </table>
 
 ---
@@ -360,12 +386,28 @@ onekof-platform/
 - [x] AdminAuditLog model and route instrumentation
 - [x] Encrypted backup pipeline (GPG + Shamir key split docs)
 
+### Wave 4 — Mobile App (Shipped 2026-04-19)
+- [x] Expo / React Native app with 5-language i18n
+- [x] Full PM feature parity (tasks, issues, epics, projects)
+- [x] Push notifications via Expo Notifications
+- [x] EAS Build configured for OTA updates
+- [x] JWT Bearer token auth (shared API with web)
+
+### Wave 5 — Production Rehearsal Fixes (Shipped 2026-05-28)
+- [x] Service worker crash fix (sw.js undefined Response bug)
+- [x] MEMBER users now see INTERNAL projects (RBAC fix)
+- [x] Create-issue and task forms use workspace context (no cross-org contamination)
+- [x] CSRF bypass for pre-launch multi-origin access
+- [x] Vercel 5000-file upload limit resolved (--archive=tgz)
+- [x] i18n key fix: membersPage.inviteMember
+- [x] URL param shortcuts: ?create=issue, ?invite=true
+
 ### Next — Production Readiness
 - [ ] Cloudflare Full Strict SSL (requires Advanced Certificate Manager)
 - [ ] Sentry error monitoring
-- [ ] Mobile UX refinement
 - [ ] Bulk operations (status, delete, label)
-- [ ] Offline mode (service worker)
+- [ ] Email notifications via Resend (Phase 2)
+- [ ] Webhook integrations (Phase 3)
 - [ ] Amharic AI task parsing (voice and text)
 
 ---
@@ -426,7 +468,7 @@ Copyright 2026 Oli Tamrat Oli. Commercial rights held by DAPS Analytics.
 
 This software is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written consent from the copyright holder.
 
-EIPA Copyright Registration: Filed 2026-04-11.
+EIPA Copyright Registration: Registered 2026-05-26. INSA certification in progress.
 
 ---
 
@@ -434,7 +476,7 @@ EIPA Copyright Registration: Filed 2026-04-11.
 
 **Built for Ethiopia. Designed for real work.**
 
-*132,000+ lines | 172 pages | 5 languages | 408 MB Docker image | 3 deployment tiers*
+*132,000+ lines | 172 pages | 5 languages | Web + Mobile apps | 408 MB Docker image | 3 deployment tiers*
 
 [Back to Top](#onekof-platform)
 
