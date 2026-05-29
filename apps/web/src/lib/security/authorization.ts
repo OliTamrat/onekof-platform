@@ -152,14 +152,15 @@ export async function requireProjectAccess(
   }
 
   // SECURITY: Even without a required project role, enforce project visibility.
-  // PUBLIC projects are visible to all org members. INTERNAL/PRIVATE/CONFIDENTIAL
-  // require explicit project membership — with ONE exception: org OWNERs and
-  // ADMINs have implicit access to non-CONFIDENTIAL projects.
+  // PUBLIC and INTERNAL projects are visible to all org members — consistent
+  // with buildProjectAccessFilter used in list endpoints. PRIVATE/CONFIDENTIAL
+  // require explicit project membership.
+  // Org OWNERs and ADMINs always have implicit access to non-CONFIDENTIAL projects.
   if (!requiredRole) {
     const isOrgAdmin = orgAuth.membership?.role === 'OWNER' || orgAuth.membership?.role === 'ADMIN';
     const isLeadOrOwner = project.leadId === userId || project.ownerId === userId;
 
-    if (project.visibility === 'PUBLIC') {
+    if (project.visibility === 'PUBLIC' || project.visibility === 'INTERNAL') {
       // Open to all org members — allow
       return { authorized: true, membership: orgAuth.membership };
     }
@@ -169,11 +170,11 @@ export async function requireProjectAccess(
     }
 
     if (project.visibility !== 'CONFIDENTIAL' && isOrgAdmin) {
-      // Org admins have implicit access to INTERNAL/PRIVATE (but NOT CONFIDENTIAL)
+      // Org admins have implicit access to PRIVATE (but NOT CONFIDENTIAL)
       return { authorized: true, membership: orgAuth.membership };
     }
 
-    // Otherwise require explicit project membership
+    // PRIVATE / CONFIDENTIAL — require explicit project membership
     const projectMember = await prisma.projectMember.findUnique({
       where: {
         projectId_userId: { projectId, userId },
@@ -203,9 +204,14 @@ export async function requireProjectAccess(
     });
 
     if (!projectMember) {
-      // If not a direct project member, check if org admin
+      // Org admins always have implicit access
       if (orgAuth.membership?.role === 'OWNER' || orgAuth.membership?.role === 'ADMIN') {
-        // Org admins have implicit access
+        return { authorized: true, membership: orgAuth.membership };
+      }
+
+      // Org members can edit tasks on PUBLIC / INTERNAL projects without an
+      // explicit ProjectMember record — consistent with list-view access.
+      if (project.visibility === 'PUBLIC' || project.visibility === 'INTERNAL') {
         return { authorized: true, membership: orgAuth.membership };
       }
 
