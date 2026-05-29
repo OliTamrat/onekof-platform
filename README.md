@@ -404,10 +404,10 @@ onekof-platform/
 
 ### Next — Production Readiness
 - [ ] Cloudflare Full Strict SSL (requires Advanced Certificate Manager)
-- [ ] Sentry error monitoring
+- [x] Sentry error tracking (web: @sentry/nextjs, mobile: @sentry/react-native)
 - [ ] Bulk operations (status, delete, label)
-- [ ] Email notifications via Resend (Phase 2)
-- [ ] Webhook integrations (Phase 3)
+- [x] Email notifications via Resend (password reset, verification, welcome, security alerts)
+- [x] Webhook integrations (outbound webhooks + GitHub webhook integration)
 - [ ] Amharic AI task parsing (voice and text)
 
 ---
