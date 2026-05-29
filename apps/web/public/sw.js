@@ -60,6 +60,12 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       })
-      .catch(() => caches.match(request))
+      .catch(async () => {
+        // Return cached version if available, otherwise a plain 503.
+        // Never return undefined — event.respondWith(undefined) throws TypeError
+        // and kills all subsequent fetch events on the page.
+        const cached = await caches.match(request);
+        return cached || new Response('', { status: 503, statusText: 'Service Unavailable' });
+      })
   );
 });
