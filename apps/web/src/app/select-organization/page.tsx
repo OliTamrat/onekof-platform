@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, FolderKanban, User } from 'lucide-react';
+import { Building2, ArrowRight, Loader2, Users, Crown, Shield, Sparkles, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -270,23 +270,6 @@ export default function SelectOrganizationPage() {
                 );
               })}
 
-              {/* Create New Project Card */}
-              <button
-                onClick={() => router.push('/dashboard/projects?create=true')}
-                className="group relative rounded-2xl border-2 border-dashed border-white/[0.08] p-6 text-center transition-all hover:border-[#1C8C7D]/50 hover:bg-[#12161B]"
-              >
-                <div className="flex flex-col items-center justify-center h-full min-h-[200px]">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/30 mb-4 group-hover:bg-[#1C8C7D]/20 transition-colors">
-                    <FolderKanban className="h-7 w-7 text-[#2BB5A2]" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#2BB5A2] transition-colors">
-                    Create Project
-                  </h3>
-                  <p className="text-sm text-white/30">
-                    Start a new project
-                  </p>
-                </div>
-              </button>
             </div>
           )}
 

@@ -72,17 +72,11 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
     },
   });
 
-  // Fetch current org to get its ID, then fetch members
-  const { data: orgData } = useQuery({
-    queryKey: ['current-org'],
-    queryFn: async () => {
-      const res = await fetch('/api/organizations');
-      if (!res.ok) return null;
-      return res.json();
-    },
-  });
-
-  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+  // Use workspace context to get the correct current org (subdomain-aware)
+  // instead of fetching /api/organizations which returns all orgs and would
+  // pick the wrong one for invited users.
+  const { currentOrganization } = useWorkspace();
+  const currentOrgId = currentOrganization?.id;
 
   const { data: membersData } = useQuery({
     queryKey: ['organization-members', currentOrgId],
