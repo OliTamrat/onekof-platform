@@ -50,6 +50,7 @@ import { Button } from '@/components/ui/button';
 import { AlertModal } from '@/components/ui/alert-modal';
 import { SkeletonIssueDetail } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 // Types
 interface Issue {
@@ -154,16 +155,10 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch org + members for assignee picker and role-based delete permission
-  const { data: orgData } = useQuery({
-    queryKey: ['current-org-for-issue-detail'],
-    queryFn: async () => {
-      const res = await fetch('/api/organizations');
-      if (!res.ok) return null;
-      return res.json();
-    },
-  });
-  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+  // Use workspace context (subdomain-aware) to get the correct org —
+  // avoids cross-org contamination when user belongs to multiple orgs.
+  const { currentOrganization } = useWorkspace();
+  const currentOrgId = currentOrganization?.id;
 
   const { data: membersData } = useQuery({
     queryKey: ['org-members-for-issue-detail', currentOrgId],
@@ -1306,16 +1301,9 @@ function CommentsSection({ issue, commentContent, setCommentContent }: { issue: 
   const [mentionStart, setMentionStart] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Fetch org members for @mentions
-  const { data: orgData } = useQuery({
-    queryKey: ['current-org-for-mentions'],
-    queryFn: async () => {
-      const res = await fetch('/api/organizations');
-      if (!res.ok) return null;
-      return res.json();
-    },
-  });
-  const currentOrgId = orgData?.organizations?.[0]?.id || orgData?.organization?.id;
+  // Use workspace context (subdomain-aware) for @mention member list
+  const { currentOrganization } = useWorkspace();
+  const currentOrgId = currentOrganization?.id;
 
   const { data: membersData } = useQuery({
     queryKey: ['org-members-mentions', currentOrgId],
