@@ -1,130 +1,121 @@
-# Onekof Mobile — Session Briefing
-> Last updated: April 26, 2026 — Resume after PC restart
+# Onekof Web Platform — Session Briefing
+> Last updated: 2026-05-29 — Resume after disconnect
 
 ---
 
 ## WHERE WE LEFT OFF
 
-iOS TestFlight is working and confirmed stable:
-- Offline banner fixed (NetInfo removed, state driven by apiFetch results)
-- Notifications fixed (Prisma query now uses `project: { organizationId }`)
-- OTA updates live on production channel
+Web platform is live at **vision.onekof.com** (and other org subdomains).
 
-**Next priority: Android Play Store submission**
+**Session work completed today:**
+1. ✅ Investigated 403 errors on issue detail slideout and task status updates
+2. ✅ Fixed `requireProjectAccess` inconsistency in `authorization.ts` — MEMBER users on PUBLIC/INTERNAL projects can now open issue details, update status/priority, and change assignees without 403
+3. ✅ Confirmed department task creation fix (commits 188f2e1 + e4b1994) is working
+4. ✅ Build passed, pushed to master (`7a77fa7`), deployed to Vercel
 
-**Pick up here after restart:**
-1. Resolve Google Play Console device verification (Android emulator with Play Store, or use BlueStacks)
-2. Create Onekof app in Google Play Console
-3. Set up Google Play service account → `google-play-service-account.json`
-4. Run: `cd C:\Users\olita\onekof-platform\apps\mobile && eas submit --platform android --latest`
-
----
-
-## WHAT WAS COMPLETED TODAY
-
-### Mobile App Enhancements
-- **Dashboard header redesign** — SafeArea fills status bar (no black gap), teal accent layer, date chip, org pill with double-ring dot + border, greeting bumped to 26px, sub-greeting brighter
-- **Bell badge** — fetches unread count from `/api/notifications`, shows red badge
-- **Avatar ring** — 2px teal border around avatar
-- **Offline startup fix** — session cached in AsyncStorage, users stay logged in offline
-- **AI document analyzer** — receipt/invoice scanner with line item extraction, vendor info, confidence score, document detail modal
-- **Notification error state** — shows error UI instead of silently failing
-- **Issues offline fallback** — empty list instead of crash when offline
-- **Fixed missing styles** in documents.tsx (aiStatsRow, aiBanner, modals)
-- **Fixed bad icon** in notifications.tsx (check-double → check)
-
-### App Store Submission Prep
-- **Delete Account** — API endpoint (DELETE /api/auth/mobile/me) + UI in settings with double-confirm (Apple mandatory)
-- **Privacy Policy link** → onekof.com/privacy (confirmed live, 200)
-- **Terms of Service link** → onekof.com/terms (confirmed live, 200)
-- **google-services.json** — Firebase project `onekof-pm-840af` linked for Android FCM
-- **Icons verified** — all 1024×1024 (icon, adaptive-icon, splash)
-- **onekof.com confirmed live** — 405 on GET = server running
-- **.easignore created** — reduces future upload size
-
-### Store Metadata
-- Full App Store + Play Store copy written → `STORE_METADATA.md`
-- Reviewer demo account seeded → `reviewer@onekof.com` / `ReviewOnekof2026!`
-- 12 pre-populated tasks in "Onekof Demo" org
-
-### Builds & Submissions
-- **iOS production build** — submitted to TestFlight (build 3, version 1.0.0)
-  - Build: https://expo.dev/accounts/olink/projects/onekof/builds/c295977c-f2f4-4dfe-9e6b-3aded75242cd
-  - TestFlight: https://appstoreconnect.apple.com/apps/6763942879/testflight/ios
-- **Android production build** — compiled, ready to submit
-  - Build: https://expo.dev/accounts/olink/projects/onekof/builds/aafe7391-325c-4676-ac38-8693eb86c9ae
-  - AAB: https://expo.dev/artifacts/eas/n7F4ZbcJnocvGqAASv42Xd.aab
-  - **Blocked on**: Google Play developer account device verification
-
-### Config Updates
-- `eas.json` — added submit profile with ASC App ID `6763942879`
-- `google-services.json` — committed for Android FCM
-- `.easignore` — created to reduce upload size
+**Verified working:**
+- Issue detail slideout loads ✓
+- Task status updates (TODO → IN PROGRESS → DONE) ✓
+- Assignee changes ✓
+- Department page task creation across all 11 departments ✓
 
 ---
 
-## REMAINING TASKS
+## KNOWN REMAINING ISSUES
 
-| # | Task | Status |
+| # | Issue | Status |
 |---|---|---|
-| 1 | Verify Android device in Google Play Console (emulator) | In progress |
-| 2 | Create Onekof app in Google Play Console | Pending |
-| 3 | Set up Google Play service account for `eas submit` | Pending |
-| 4 | Submit Android build to Google Play internal track | Pending |
-| 5 | Add yourself as TestFlight internal tester (iOS) | Pending |
-| 6 | Screenshots — 6.7" iPhone + Android phone | Pending |
-| 7 | Fill App Store listing metadata | Pending |
-| 8 | Submit for App Store Review | Pending |
-| 9 | Submit for Google Play Review | Pending |
+| 1 | Assignee dropdown may show empty on some accounts (org-members 403) | To investigate |
+| 2 | Android Play Store submission | Pending (see mobile section) |
 
 ---
 
-## KEY CREDENTIALS & IDs
+## DEPARTMENT PAGES (11 total)
+
+All department pages use `DepartmentTaskList` component with task create/list/slideout:
+
+| Department | Sub-tabs |
+|---|---|
+| Development | Backlog, Releases, Code Review |
+| Marketing | Social Media, Analytics, Campaigns |
+| Operations | Incidents, Monitoring, Checklists |
+| Research | Data, Findings, Plans, Materials, Inspections |
+| Knowledge | AI Documents, Automation, Wiki, Docs |
+| Budget | Summary, Expenses, Income, Forecasting, Reports, Settings |
+| Teams | Summary, List, Board, Code, Forms, Timeline, Pages |
+| Goals | Summary, List, Board, Code, Forms, Timeline, Pages |
+| Documents | All Documents, Recent, Shared, Templates, Settings |
+| Issues | Summary, List, Backlog, Board, Epics, Timeline, Team, Settings |
+| Automations | Summary, List, Board, Workflows, Triggers, Templates, History, Code, Forms, Settings |
+
+---
+
+## KEY FILES TOUCHED THIS SESSION
+
+| File | What changed |
+|---|---|
+| `apps/web/src/lib/security/authorization.ts` | `requireProjectAccess` — INTERNAL projects now allowed for all org members (both read and write branches) |
+
+---
+
+## RECENT COMMITS (last 10)
+
+```
+7a77fa7  Fix 403 on issue detail and task updates for MEMBER-role users
+4a41fc1  Update roadmap: mark Sentry, Resend, and webhooks as shipped
+6b05203  Update README: add mobile app section, waves 4/5 roadmap, EIPA registration status
+725050a  Fix Vercel deploy hitting 5000-file upload limit
+ba6d191  Fix MEMBER users seeing 0 issues after creating them
+2cb1bf1  Fix service worker crash killing all page network requests
+e4b1994  Add error toast to department task create and surface silent failures
+188f2e1  Fix create task silently failing on all department sub-pages
+fd291b3  Fix cross-org member contamination in issue detail slideout
+1cdcca6  Fix nav create shortcuts and broken translation key
+```
+
+Branch: `master` | Total commits: 425
+
+---
+
+## SECURITY RULES (always check PROJECT_GUIDELINES.md before touching auth)
+
+- PUBLIC: all org members ✓
+- INTERNAL: all org members ✓ (aligned with buildProjectAccessFilter)
+- PRIVATE: explicit ProjectMember record required
+- CONFIDENTIAL: explicit ProjectMember record required + audit log
+- Default new project visibility: PUBLIC
+
+---
+
+## MOBILE APP STATUS (separate — apps/mobile)
+
+iOS TestFlight: ✅ Live (build 3, version 1.0.0)
+Android: ⏳ Blocked on Google Play Console device verification
+
+See `STORE_METADATA.md` for full App Store / Play Store copy.
 
 | Item | Value |
 |---|---|
 | Apple ASC App ID | 6763942879 |
 | Apple Bundle ID | com.dapsanalytics.onekof |
-| Apple Team | VMU339WDA5 (Oli T. Oli Individual) |
 | EAS Project ID | de51f86c-459c-4330-83df-7b481b9e9740 |
-| EAS Owner | olink |
 | Firebase Project | onekof-pm-840af |
-| Android Package | com.dapsanalytics.onekof |
-| Play Console Account | olitamrat@gmail.com |
 | Reviewer email | reviewer@onekof.com |
-| Reviewer password | ReviewOnekof2026! |
 
 ---
 
-## KEY COMMANDS TO REMEMBER
+## KEY COMMANDS
 
-```powershell
-# Start mobile dev server
+```bash
+# Web dev
+cd C:\Users\olita\onekof-platform\apps\web
+pnpm dev
+
+# Mobile dev
 cd C:\Users\olita\onekof-platform\apps\mobile
 npx expo start
 
-# Build iOS production
-eas build --platform ios --profile production
-
-# Build Android production
-eas build --platform android --profile production
-
-# Submit iOS to TestFlight
-eas submit --platform ios --latest
-
-# Submit Android to Play Store
-eas submit --platform android --latest
+# Push to Vercel
+cd C:\Users\olita\onekof-platform
+git push origin master
 ```
-
----
-
-## GIT STATUS
-All changes committed. Last commit: `e1ed734` — Fix notifications 500
-Branch: master
-
-## WHAT WAS FIXED TODAY (2026-04-27)
-- Vercel builds restored: `serverComponentsExternalPackages: ['expo-server-sdk','undici']` in next.config.mjs
-- Metro crash on Windows fixed: `apps/mobile/metro.config.js` restricts watchFolders to mobile only
-- Offline banner fixed: NetInfo removed from api.ts, online state driven by apiFetch results
-- Notifications 500 fixed: `prisma.task.findMany()` now uses `project: { organizationId }` (Task has no direct organizationId)
-- OTA updates configured and working on production channel
