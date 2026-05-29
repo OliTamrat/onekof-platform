@@ -6,6 +6,7 @@ import { X, Loader2, Upload, Link as LinkIcon, FileText, Trash2 } from 'lucide-r
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
 import { cn } from '@/lib/utils';
 
 interface CreateIssueModalProps {
@@ -17,6 +18,7 @@ interface CreateIssueModalProps {
 export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: CreateIssueModalProps) {
   const { t } = useLanguage();
   const toast = useToast();
+  const { projects: workspaceProjects } = useWorkspace();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<string>('TASK');
@@ -36,6 +38,10 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   const [showLinkPicker, setShowLinkPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Use workspace projects (same source as sidebar) so invited/MEMBER users
+  // see all org projects, not just ones filtered by buildProjectAccessFilter.
+  const projectsData = { projects: workspaceProjects };
+
   // Fetch all tasks for link picker
   const { data: allTasksData } = useQuery({
     queryKey: ['all-tasks-for-linking'],
@@ -47,15 +53,6 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus }: C
   });
 
   const queryClient = useQueryClient();
-
-  const { data: projectsData } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/projects');
-      if (!res.ok) throw new Error('Failed to fetch projects');
-      return res.json();
-    },
-  });
 
   const { data: teamsData } = useQuery({
     queryKey: ['teams'],
