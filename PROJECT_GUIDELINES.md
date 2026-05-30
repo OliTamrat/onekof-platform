@@ -85,6 +85,68 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Database**: Supabase Postgres 15
 - **Subdomain routing**: `{orgslug}.onekof.com` → middleware sets `x-organization-slug` header
 - **Commit attribution**: every commit is `Oli Tamrat Oli <oli.oli@udc.edu>` (for IP registration)
+- **Web**: https://onekof.com · **Support**: support@onekof.com
+- **IP**: Oli Teshome (author / moral rights) · DAPS Analytics (commercial rights)
+
+## Platform Overview
+
+| App | Stack | Status |
+|-----|-------|--------|
+| Web (`apps/web`) | Next.js 14, Prisma, Supabase, Vercel | Production |
+| Mobile (`apps/mobile`) | Expo SDK 54, React Native 0.81.5, Expo Router | TestFlight Build 8 — blocked on logo + screenshots |
+| Hakim (`hakim-saas-platform/`) | Next.js SaaS | Production |
+| Olink Fleet (`Olink-Fleet/`) | Next.js | Production |
+| Olink School Bus (`Olink-School-Bus/`) | React Native | Production |
+| UDC WQIS (`UDC/`) | Next.js, Azure | Production (Azure migration done) |
+| NOORUU (`nooruu-tube/`) | Next.js | Vercel deployed |
+
+## Infrastructure
+
+| Service | Purpose | Notes |
+|---------|---------|-------|
+| Vercel | Web hosting | Production — fra1 region |
+| Supabase | Database (Postgres 15) | pgbouncer=true&connection_limit=1 required |
+| Upstash Redis | Rate limiting | onekof-production, eu-west-1 |
+| EAS Build | iOS/Android builds | Project: @olink/onekof |
+| EAS Update | OTA updates | appVersion policy, channel: production |
+| Sentry | Crash reporting | web + mobile (org: olink-fleet-production) |
+| Cloudflare | DNS | Free plan — no wildcard SSL proxy (needs $10/mo ACM) |
+| Firebase/FCM | Push notifications (Android) | google-services.json in place |
+
+## Key Credentials & IDs
+
+| Item | Value |
+|------|-------|
+| EAS Project ID | `de51f86c-459c-4330-83df-7b481b9e9740` |
+| Bundle ID | `com.dapsanalytics.onekof` |
+| App Store Connect App ID | `6763942879` |
+| Apple Dev Team | `VMU339WDA5` (Oli T. Oli, Individual) |
+| Apple Dev Email | `thatismysweetangel@hotmail.com` |
+| Sentry Project | `onekof-mobile` |
+| OTA Channel | `production` / Runtime Version `1.0.0` |
+
+## App Store / Play Store
+
+### App Store Connect Metadata
+- **App Name:** Onekof · **Subtitle:** Project & Team Management
+- **Primary Category:** Business · **Secondary Category:** Productivity
+- **Bundle ID:** `com.dapsanalytics.onekof` · **SKU:** `onekof-ios-001`
+- **Copyright:** 2026 DAPS Analytics. All rights reserved. · **Age Rating:** 4+
+- **Keywords:** `project management,tasks,team,agile,budget,Amharic,Ethiopia,productivity,issues,sprints`
+- **Support URL:** https://onekof.com/support · **Marketing URL:** https://onekof.com
+
+### App Review Credentials
+- **Email:** reviewer@onekof.com · **Password:** ReviewerOnekof2026!
+- **Demo org:** Onekof Demo (slug: `reviewer-demo`) — status: ACTIVE
+- **Demo data:** 12 sample issues across all statuses, 1 project (Mobile App Launch — DEMO)
+
+### iOS Submission Blockers
+- [ ] Professional logo: 1024×1024 PNG, no transparency, no alpha
+- [ ] Screenshots: iPhone 16 Pro Max (1320×2868), no TestFlight bar
+
+### Android
+- `google-services.json` in place · `google-play-service-account.json` missing (needed for EAS auto-submit)
+- Resume after iOS submission is complete
 
 ## Design System
 
