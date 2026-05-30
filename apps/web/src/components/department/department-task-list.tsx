@@ -7,6 +7,7 @@ import { Plus, Clock, type LucideIcon } from 'lucide-react';
 import { UnifiedPageHeader, type TabDefinition, type FilterField, type GroupByField, type ViewMode } from '@/components/navigation/unified-page-header';
 import { AIInsightsPanel } from '@/components/department/ai-insights-panel';
 import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
+import { CreateIssueModal } from '@/components/issues/create-issue-modal';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
@@ -101,6 +102,7 @@ export function DepartmentTaskList({
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
@@ -327,7 +329,7 @@ export function DepartmentTaskList({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowCreateForm(true)}
+                onClick={() => setShowCreateModal(true)}
                 className="mt-3 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#282E33]"
               >
                 <Plus className="h-3.5 w-3.5" />
@@ -464,6 +466,17 @@ export function DepartmentTaskList({
         <IssueDetailSlideout
           issueId={selectedTaskId}
           onClose={() => setSelectedTaskId(null)}
+        />
+      )}
+
+      {/* Full create modal — opened from "Create your first task" empty state */}
+      {showCreateModal && (
+        <CreateIssueModal
+          onClose={() => {
+            setShowCreateModal(false);
+            queryClient.invalidateQueries({ queryKey: ['issues'] });
+          }}
+          defaultProjectId={scopedProjectId || workspaceProjects?.[0]?.id}
         />
       )}
     </div>
