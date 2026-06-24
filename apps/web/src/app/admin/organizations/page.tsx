@@ -80,7 +80,7 @@ export default function AdminOrganizationsPage() {
   const [planFilter, setPlanFilter] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useQuery<{ organizations: Organization[]; pagination: Pagination }>({
+  const { data, isLoading } = useQuery<{ data: Organization[]; pagination: Pagination }>({
     queryKey: ['admin', 'organizations', search, statusFilter, planFilter, page],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -107,7 +107,7 @@ export default function AdminOrganizationsPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'organizations'] }),
   });
 
-  const organizations = data?.organizations || [];
+  const organizations = data?.data || [];
   const pagination = data?.pagination;
 
   const activeCount = organizations.filter(o => o.status === 'ACTIVE').length;
