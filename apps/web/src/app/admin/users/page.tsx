@@ -71,7 +71,7 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useQuery<{ users: AdminUser[]; pagination: Pagination }>({
+  const { data, isLoading } = useQuery<{ data: AdminUser[]; pagination: Pagination }>({
     queryKey: ['admin', 'users', search, page],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'users'] }),
   });
 
-  const users = data?.users || [];
+  const users = data?.data || [];
   const pagination = data?.pagination;
 
   const lockedCount = users.filter(u => u.isLocked).length;
