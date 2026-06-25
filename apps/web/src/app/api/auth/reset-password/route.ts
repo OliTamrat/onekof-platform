@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { hash } from 'bcryptjs';
 import { hashToken, isTokenExpired } from '@/lib/security/tokens';
+import { passwordSchema } from '@/lib/validation/schemas';
 import { log, logSecurity } from '@/lib/logger';
 import { invalidateAllUserSessions } from '@/lib/security/session-manager';
 
@@ -16,9 +17,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (password.length < 8) {
+    // 🔒 SECURITY: Use strict password schema (min 8 chars + uppercase + lowercase + digit)
+    const passwordResult = passwordSchema.safeParse(password);
+    if (!passwordResult.success) {
       return NextResponse.json(
-        { error: 'Password must be at least 8 characters' },
+        { error: passwordResult.error.errors[0]?.message || 'Password does not meet requirements' },
         { status: 400 }
       );
     }

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
+import { emailSchema } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -102,16 +103,17 @@ export async function POST(
       );
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(normalizedEmail)) {
+    // 🔒 SECURITY (INSA Finding #3): Strict server-side email validation.
+    // The previous regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/ accepted HTML/JS
+    // payloads like "><svg/onload=confirm(1)>@x.y — stored XSS risk.
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
       return NextResponse.json(
         { error: 'Invalid email address' },
         { status: 400 }
       );
     }
+    const normalizedEmail = emailResult.data;
 
     // Validate role
     const validRoles = ['ADMIN', 'MEMBER', 'GUEST'];

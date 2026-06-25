@@ -162,6 +162,7 @@ model User {
   lastFailedLoginAt   DateTime? @map("last_failed_login_at")
   lockedUntil         DateTime? @map("locked_until")
   passwordChangedAt   DateTime? @map("password_changed_at")
+  sessionInvalidatedAt DateTime? @map("session_invalidated_at") // 🔒 SECURITY: Server-side JWT revocation (INSA finding #1)
 
   // 🔒 SECURITY: Two-Factor Authentication (TOTP)
   twoFactorEnabled     Boolean   @default(false) @map("two_factor_enabled")
