@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectSlack } from '@/lib/integrations/slack';
 import type { OAuthState } from '@/lib/integrations/types';
+import { sanitizeRedirectUrl } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
 
     await connectSlack(state.organizationId, state.userId, code);
 
-    const redirectUrl = state.redirectUrl || '/dashboard/settings/integrations';
+    const redirectUrl = sanitizeRedirectUrl(state.redirectUrl, '/dashboard/settings/integrations');
     return NextResponse.redirect(
       new URL(`${redirectUrl}?connected=slack`, req.nextUrl.origin)
     );

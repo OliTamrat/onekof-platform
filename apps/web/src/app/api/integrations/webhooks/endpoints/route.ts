@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { addWebhookEndpoint, removeWebhookEndpoint, updateWebhookEndpoint } from '@/lib/integrations/webhooks';
+import { avatarUrlSchema } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,15 @@ export async function POST(req: NextRequest) {
 
     if (!name || !url || !events?.length) {
       return NextResponse.json({ error: 'Missing required fields: name, url, events' }, { status: 400 });
+    }
+
+    // 🔒 SECURITY: Validate webhook URL to prevent Blind SSRF
+    const urlResult = avatarUrlSchema.safeParse(url);
+    if (!urlResult.success) {
+      return NextResponse.json(
+        { error: 'Webhook URL must be a valid HTTPS URL from a public host' },
+        { status: 400 }
+      );
     }
 
     const endpoint = await addWebhookEndpoint(org.id, { name, url, events });
@@ -46,6 +56,17 @@ export async function PUT(req: NextRequest) {
 
     if (!endpointId) {
       return NextResponse.json({ error: 'Missing endpointId' }, { status: 400 });
+    }
+
+    // 🔒 SECURITY: Validate webhook URL if being updated
+    if (updates.url) {
+      const urlResult = avatarUrlSchema.safeParse(updates.url);
+      if (!urlResult.success) {
+        return NextResponse.json(
+          { error: 'Webhook URL must be a valid HTTPS URL from a public host' },
+          { status: 400 }
+        );
+      }
     }
 
     await updateWebhookEndpoint(org.id, endpointId, updates);

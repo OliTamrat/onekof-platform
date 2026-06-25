@@ -206,10 +206,36 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  events: {
+    // 🔒 SECURITY (INSA Finding #1): Server-side session invalidation on logout.
+    // With JWT strategy, NextAuth only clears the client cookie by default.
+    // This event stamps the user so any outstanding JWTs are rejected in the
+    // jwt callback below (sessionInvalidatedAt > token.iat).
+    signOut: async ({ token }) => {
+      if (token?.id) {
+        try {
+          await prisma.user.update({
+            where: { id: token.id as string },
+            data: { sessionInvalidatedAt: new Date() },
+          });
+          logSecurity('session_server_invalidated', 'low', {
+            userId: token.id,
+          });
+        } catch (err) {
+          // Non-fatal — log but don't block logout
+          logSecurity('session_invalidation_failed', 'medium', {
+            userId: token.id,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+      }
+    },
+  },
   callbacks: {
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.iat = Math.floor(Date.now() / 1000);
 
         // Fetch user's organizations
         const organizations = await prisma.organizationMember.findMany({
@@ -235,6 +261,30 @@ export const authOptions: NextAuthOptions = {
           status: membership.organization.status,
           role: membership.role,
         }));
+      }
+
+      // 🔒 SECURITY (INSA Finding #1): Reject JWTs issued before the user's
+      // last logout. This ensures that replaying a captured session cookie
+      // after sign-out returns 401 instead of 200.
+      if (!user && token.id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { sessionInvalidatedAt: true },
+          });
+          if (
+            dbUser?.sessionInvalidatedAt &&
+            typeof token.iat === 'number' &&
+            dbUser.sessionInvalidatedAt.getTime() > token.iat * 1000
+          ) {
+            // Mark token as revoked — session callback will clear the user
+            token.id = '';
+            token.organizations = [];
+            return token;
+          }
+        } catch {
+          // If DB check fails, allow the request (fail-open to avoid lockout)
+        }
       }
 
       // Refresh organizations on update trigger
@@ -268,6 +318,10 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token && session.user) {
+        // If token was invalidated (id cleared to ''), signal unauthenticated
+        if (!token.id) {
+          return { ...session, user: undefined } as any;
+        }
         session.user.id = token.id as string;
         session.user.organizations = token.organizations as any[];
       }

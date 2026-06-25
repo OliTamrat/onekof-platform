@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectGoogle } from '@/lib/integrations/google';
 import type { OAuthState } from '@/lib/integrations/types';
+import { sanitizeRedirectUrl } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
 
     await connectGoogle(state.organizationId, state.userId, code);
 
-    const redirectUrl = state.redirectUrl || '/dashboard/settings/integrations';
+    const redirectUrl = sanitizeRedirectUrl(state.redirectUrl, '/dashboard/settings/integrations');
     return NextResponse.redirect(
       new URL(`${redirectUrl}?connected=google`, req.nextUrl.origin)
     );

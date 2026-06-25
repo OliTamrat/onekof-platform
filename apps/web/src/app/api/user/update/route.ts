@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { avatarUrlSchema } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -64,6 +65,18 @@ export async function PATCH(req: NextRequest) {
       if (existingUser && existingUser.id !== session.user.id) {
         return NextResponse.json(
           { error: 'Email is already in use by another account' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 🔒 SECURITY (INSA Finding #2): Validate avatar URL to prevent Blind SSRF.
+    // Blocks private IPs, localhost, and internal network ranges.
+    if (avatar !== undefined && avatar !== null && avatar !== '') {
+      const avatarResult = avatarUrlSchema.safeParse(avatar);
+      if (!avatarResult.success) {
+        return NextResponse.json(
+          { error: avatarResult.error.errors[0]?.message || 'Invalid avatar URL' },
           { status: 400 }
         );
       }
