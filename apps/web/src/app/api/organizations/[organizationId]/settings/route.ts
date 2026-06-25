@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
+import { avatarUrlSchema } from '@/lib/validation/schemas';
 import type { OrganizationSettings } from '@/types/organization-settings';
 import logger from '@/lib/logger';
 
@@ -146,6 +147,17 @@ export async function PUT(
     }
 
     const body: OrganizationSettings = await req.json();
+
+    // 🔒 SECURITY: Validate logo URL to prevent Blind SSRF
+    if (body.customization?.logoUrl) {
+      const logoResult = avatarUrlSchema.safeParse(body.customization.logoUrl);
+      if (!logoResult.success) {
+        return NextResponse.json(
+          { error: 'Logo URL must be a valid HTTPS URL from a public host' },
+          { status: 400 }
+        );
+      }
+    }
 
     // Update or create settings
     const settings = await db.organizationSettings.upsert({

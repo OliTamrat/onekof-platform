@@ -35,6 +35,64 @@ export const uuidSchema = z.string().uuid('Invalid ID format');
 
 export const urlSchema = z.string().url('Invalid URL format').max(2048, 'URL too long');
 
+/**
+ * 🔒 SECURITY (INSA Finding #2): Avatar URL validation to prevent Blind SSRF.
+ * Only allows HTTPS URLs from public hosts — blocks private IPs, localhost,
+ * and internal network ranges that could be used for server-side request forgery.
+ */
+const PRIVATE_HOSTNAME_PATTERNS = [
+  /^localhost$/i,
+  /^127\./,
+  /^10\./,
+  /^172\.(1[6-9]|2\d|3[01])\./,
+  /^192\.168\./,
+  /^0\.0\.0\.0$/,
+  /^169\.254\./, // link-local
+  /^\[::1\]$/,   // IPv6 loopback
+  /^\[fc/i,      // IPv6 ULA
+  /^\[fd/i,      // IPv6 ULA
+  /^\[fe80:/i,   // IPv6 link-local
+  /\.internal$/i,
+  /\.local$/i,
+  /\.localhost$/i,
+  /metadata\.google\.internal/i, // GCP metadata
+  /169\.254\.169\.254/,          // cloud metadata endpoint
+];
+
+export const avatarUrlSchema = z
+  .string()
+  .max(2048, 'URL too long')
+  .refine(
+    (val) => {
+      // Allow empty/null (clearing avatar)
+      if (!val || val.trim() === '') return true;
+      try {
+        const url = new URL(val);
+        // Must be HTTPS (or http in development)
+        if (url.protocol !== 'https:') {
+          if (!(process.env.NODE_ENV === 'development' && url.protocol === 'http:')) {
+            return false;
+          }
+        }
+        // Block private/internal hostnames
+        const hostname = url.hostname;
+        if (PRIVATE_HOSTNAME_PATTERNS.some((pattern) => pattern.test(hostname))) {
+          return false;
+        }
+        // Block URLs with authentication credentials
+        if (url.username || url.password) return false;
+        // Block non-standard ports (common for internal services)
+        if (url.port && url.port !== '443' && url.port !== '80') return false;
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: 'Avatar URL must be a valid HTTPS URL from a public host' }
+  )
+  .optional()
+  .nullable();
+
 export const slugSchema = z
   .string()
   .min(3, 'Slug must be at least 3 characters')
@@ -220,6 +278,19 @@ export const updateOrganizationSchema = z.object({
   website: urlSchema.optional(),
   logo: urlSchema.optional(),
 });
+
+/**
+ * 🔒 SECURITY: Sanitize OAuth redirect URL to prevent open redirect attacks.
+ * Only allows relative paths starting with / (no protocol-relative // or absolute URLs).
+ */
+export function sanitizeRedirectUrl(url: string | undefined, fallback: string): string {
+  if (!url) return fallback;
+  // Must start with a single / and not be protocol-relative (//)
+  if (!url.startsWith('/') || url.startsWith('//')) return fallback;
+  // Block any URL that contains a protocol marker
+  if (url.includes('://')) return fallback;
+  return url;
+}
 
 // Type exports for TypeScript
 export type SignupInput = z.infer<typeof signupSchema>;

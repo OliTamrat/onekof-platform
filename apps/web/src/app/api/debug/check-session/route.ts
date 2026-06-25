@@ -2,10 +2,15 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
+import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  // 🔒 SECURITY: Debug routes must require superadmin access
+  const { authorized, error } = await requireSuperAdmin();
+  if (!authorized) return error!;
+
   try {
     const session = await getServerSession(authOptions);
 

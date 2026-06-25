@@ -27,7 +27,23 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   images: {
-    domains: ['localhost'],
+    // 🔒 SECURITY (INSA Finding #2): Restrict image optimization to known hosts
+    // only. The deprecated `domains` array is replaced with `remotePatterns`
+    // which gives tighter control over protocol and pathname.
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.gravatar.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.githubusercontent.com',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   // Enable bundle analyzer in production
