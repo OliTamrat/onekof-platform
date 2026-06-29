@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -26,6 +26,14 @@ const CHAPA_METHODS: { id: PaymentMethod; name: string; icon: typeof Smartphone 
 ];
 
 export default function DemoCheckoutPage() {
+  return (
+    <Suspense>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
+function CheckoutContent() {
   const router = useRouter();
   const params = useSearchParams();
 
