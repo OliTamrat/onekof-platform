@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onekof Payment System Integration Plan - DAPS Analytics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --primary: #1C8C7D;
+    --primary-dark: #156b60;
+    --primary-light: #e6f5f2;
+    --text: #1a1a2e;
+    --text-secondary: #475569;
+    --border: #E2E8F0;
+    --code-bg: #F1F5F9;
+    --success: #10B981;
+    --success-bg: #ECFDF5;
+    --info: #3B82F6;
+    --info-bg: #EFF6FF;
+    --warning: #F59E0B;
+    --warning-bg: #FFFBEB;
+    --danger: #EF4444;
+    --danger-bg: #FEF2F2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #FAFBFC;
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== SAVE PDF BUTTON ===== */
+  .pdf-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(28,140,125,0.35);
+    transition: all 0.2s;
+  }
+  .pdf-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+  /* ===== COVER PAGE ===== */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #1C8C7D 100%) !important;
+    color: white !important;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .cover-logo {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 800; color: white;
+    margin-bottom: 32px;
+  }
+  .cover h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .cover .subtitle { font-size: 20px; color: rgba(255,255,255,0.7); margin-bottom: 48px; max-width: 600px; }
+  .cover-meta { display: flex; gap: 48px; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+  .cover-meta-item .value { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+  .cover-classification {
+    position: absolute; top: 24px; right: 32px;
+    background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+    color: #FCD34D; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 6px 16px; border-radius: 6px;
+  }
+
+  /* ===== CONTENT ===== */
+  .content { max-width: 900px; margin: 0 auto; padding: 60px 40px; }
+
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; background: var(--primary); color: white;
+    font-size: 15px; font-weight: 700; border-radius: 10px; margin-right: 14px;
+    flex-shrink: 0;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+
+  h2 {
+    font-size: 24px; font-weight: 800; letter-spacing: -0.02em;
+    margin-top: 48px; margin-bottom: 20px; display: flex; align-items: center;
+    padding-bottom: 14px; border-bottom: 2px solid var(--border);
+  }
+  h3 { font-size: 17px; font-weight: 700; margin-top: 28px; margin-bottom: 10px; }
+  h4 { font-size: 14px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 20px; margin-bottom: 6px; }
+  p { margin-bottom: 14px; color: var(--text-secondary); font-size: 13.5px; }
+
+  /* Cards */
+  .card {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 16px;
+  }
+  .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .card-icon.green { background: var(--success-bg); }
+  .card-icon.blue { background: var(--info-bg); }
+  .card-icon.amber { background: var(--warning-bg); }
+  .card-icon.teal { background: var(--primary-light); }
+  .card-title { font-size: 16px; font-weight: 700; }
+  .card-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 3px 9px; border-radius: 5px;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .badge.implemented { background: var(--success-bg); color: #059669; }
+  .badge.planned { background: var(--info-bg); color: #2563EB; }
+  .badge.phase2 { background: var(--warning-bg); color: #D97706; }
+  .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12.5px; }
+  thead th {
+    background: #F8FAFC; color: var(--text); font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px;
+    text-align: left; border-bottom: 2px solid var(--border);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+
+  /* Code */
+  .code-block {
+    background: #1e293b; color: #e2e8f0; border-radius: 10px;
+    padding: 20px; margin: 12px 0 20px;
+    font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; line-height: 1.6;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .code-block .comment { color: #64748b; }
+  .code-block .keyword { color: #7dd3fc; }
+  .code-block .string { color: #86efac; }
+  .code-block .type { color: #c4b5fd; }
+  .code-block .field { color: #fbbf24; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: 'Consolas', monospace; color: var(--primary-dark); }
+
+  /* Architecture Diagram */
+  .arch-diagram {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px 24px; margin: 20px 0; text-align: center;
+  }
+  .arch-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .arch-box {
+    background: white; border: 2px solid var(--border); border-radius: 10px;
+    padding: 12px 20px; min-width: 140px; text-align: center;
+  }
+  .arch-box.primary { border-color: var(--primary); background: var(--primary-light); }
+  .arch-box.gateway { border-color: var(--info); background: var(--info-bg); }
+  .arch-box.security { border-color: var(--danger); background: var(--danger-bg); }
+  .arch-box .box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 2px; }
+  .arch-box .box-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .arch-arrow { font-size: 20px; color: var(--text-secondary); margin: 4px 0; }
+
+  /* Flow Steps */
+  .flow-steps { counter-reset: step; }
+  .flow-step { display: flex; gap: 16px; margin-bottom: 18px; position: relative; }
+  .flow-step::before {
+    counter-increment: step; content: counter(step);
+    width: 28px; height: 28px; background: var(--primary); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .flow-step:not(:last-child)::after {
+    content: ''; position: absolute; left: 13px; top: 32px; bottom: -14px;
+    width: 2px; background: var(--border);
+  }
+  .flow-step-content h4 { margin-top: 0; text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--text); }
+  .flow-step-content p { font-size: 12.5px; margin-bottom: 0; }
+
+  /* Callout */
+  .callout { border-radius: 10px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .callout.info { background: var(--info-bg); border-left: 4px solid var(--info); }
+  .callout.success { background: var(--success-bg); border-left: 4px solid var(--success); }
+  .callout.security { background: var(--danger-bg); border-left: 4px solid var(--danger); }
+  .callout-icon { font-size: 18px; flex-shrink: 0; }
+  .callout-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
+  .callout-text strong { color: var(--text); }
+
+  /* Tier Grid */
+  .tier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+  .tier-card { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; }
+  .tier-card.recommended { border-color: var(--primary); }
+  .tier-card .tier-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .tier-card .tier-price { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+  .tier-card .tier-period { font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; }
+  .tier-card .tier-features { text-align: left; list-style: none; font-size: 11.5px; color: var(--text-secondary); padding-left: 0; }
+  .tier-card .tier-features li { padding: 3px 0 3px 16px; position: relative; }
+  .tier-card .tier-features li::before { content: '\2713'; position: absolute; left: 0; color: var(--success); font-weight: 700; }
+
+  /* Timeline */
+  .timeline { margin: 20px 0; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--primary), var(--info), var(--warning)); }
+  .timeline-item { display: flex; gap: 16px; margin-bottom: 20px; position: relative; }
+  .timeline-dot {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--primary);
+    border: 3px solid white; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 12px; font-weight: 700; z-index: 1;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .timeline-dot.phase2 { background: var(--info); }
+  .timeline-dot.phase3 { background: var(--warning); }
+  .timeline-content { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px; flex: 1; }
+  .timeline-content h4 { margin-top: 0; text-transform: none; letter-spacing: 0; color: var(--text); }
+
+  ul { margin: 6px 0 12px; padding-left: 20px; }
+  li { margin-bottom: 4px; font-size: 13px; color: var(--text-secondary); }
+  .divider { height: 1px; background: var(--border); margin: 36px 0; }
+
+  /* Footer */
+  .footer { text-align: center; padding: 32px; background: #f8fafc; border-top: 1px solid var(--border); margin-top: 40px; }
+  .footer p { font-size: 12px; color: var(--text-secondary); }
+  .footer .company { font-weight: 700; color: var(--primary); }
+
+  /* =========================================================
+     PRINT STYLES - Optimized for Ctrl+P > Save as PDF
+     ========================================================= */
+  @media print {
+    /* Hide the button */
+    .pdf-btn { display: none !important; }
+
+    /* Force print backgrounds */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body { background: white !important; font-size: 11px; line-height: 1.5; }
+
+    /* Cover page: full page in PDF */
+    .cover {
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 120px 40px 100px !important;
+      page-break-after: always;
+      page-break-inside: avoid !important;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #1C8C7D 100%) !important;
+      color: white !important;
+      margin: -0.5in !important;
+      padding-left: calc(0.5in + 40px) !important;
+      padding-right: calc(0.5in + 40px) !important;
+      padding-top: 140px !important;
+      padding-bottom: 120px !important;
+    }
+    .cover h1, .cover .subtitle, .cover-meta-item .label, .cover-meta-item .value,
+    .cover-classification, .cover-logo {
+      color: white !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .cover .subtitle { color: rgba(255,255,255,0.7) !important; }
+    .cover-meta-item .label { color: rgba(255,255,255,0.5) !important; }
+    .cover-meta-item .value { color: rgba(255,255,255,0.9) !important; }
+    .cover-classification { color: #FCD34D !important; background: rgba(245,158,11,0.15) !important; border-color: rgba(245,158,11,0.3) !important; }
+    .cover-logo { background: linear-gradient(135deg, #1C8C7D, #156b60) !important; color: white !important; }
+
+    .content { padding: 40px 50px !important; }
+
+    /* Page break sections - each major section starts on a new page */
+    .page-section {
+      page-break-before: always;
+    }
+    .page-section:first-child {
+      page-break-before: avoid;
+    }
+
+    /* Prevent splitting inside elements */
+    h2 { page-break-after: avoid !important; margin-top: 24px; }
+    h3 { page-break-after: avoid !important; }
+    h4 { page-break-after: avoid !important; }
+    .card { page-break-inside: avoid !important; }
+    .arch-diagram { page-break-inside: avoid !important; }
+    .code-block { page-break-inside: avoid !important; }
+    table { page-break-inside: avoid !important; }
+    thead { display: table-header-group; }
+    tbody { page-break-inside: avoid !important; }
+    .callout { page-break-inside: avoid !important; }
+    .flow-steps { page-break-inside: avoid !important; }
+    .flow-step { page-break-inside: avoid !important; }
+    .timeline { page-break-inside: avoid !important; }
+    .timeline-item { page-break-inside: avoid !important; }
+    .tier-grid { page-break-inside: avoid !important; }
+
+    /* Keep headings with their content */
+    h2 + p, h2 + .callout, h2 + .card, h2 + div,
+    h3 + p, h3 + .card, h3 + table, h3 + div,
+    h4 + p { page-break-before: avoid !important; }
+
+    /* Tighten spacing for PDF */
+    p { font-size: 12px; margin-bottom: 10px; }
+    li { font-size: 12px; }
+    .code-block { font-size: 10.5px; padding: 14px; }
+    table { font-size: 11px; }
+    thead th { font-size: 10px; padding: 8px 10px; }
+    tbody td { padding: 8px 10px; }
+    .card { padding: 18px; margin-bottom: 12px; box-shadow: none !important; }
+    .tier-card { box-shadow: none !important; }
+
+    .footer { page-break-before: auto; margin-top: 20px; padding: 20px; }
+
+    a { color: var(--primary) !important; text-decoration: none; }
+    .tier-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  }
+
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+</style>
+</head>
+<body>
+
+<!-- Save as PDF Button -->
+<button class="pdf-btn" onclick="window.print()">Save as PDF</button>
+
+<!-- Cover Page -->
+<div class="cover">
+  <div class="cover-classification">Confidential - INSA Review</div>
+  <div class="cover-logo">O</div>
+  <h1>Payment System Integration Plan</h1>
+  <p class="subtitle">Secure, Standards-Compliant Payment Architecture for the Onekof Multi-Tenant Project Management Platform</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="label">Author</div>
+      <div class="value">Oli T. Oli</div>
+      <div class="label" style="margin-top:4px;">Co-Founder & CTO, DAPS Analytics PLC</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Document Version</div>
+      <div class="value">v1.0 - June 2026</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Classification</div>
+      <div class="value">INSA Compliance Review</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+  <!-- Section 1 -->
+  <div class="page-section">
+  <h2><span class="section-number">1</span> Executive Summary</h2>
+
+  <p>This document presents the payment system integration architecture for the <strong>Onekof Platform</strong>, a multi-tenant project management system developed by DAPS Analytics PLC. The payment system is designed to serve Ethiopian organizations across government, private, NGO, and educational sectors with a security-first approach aligned to INSA compliance standards.</p>
+
+  <div class="callout info">
+    <span class="callout-icon">&#9432;</span>
+    <div class="callout-text">
+      <strong>Current Status:</strong> The platform's subscription data model, pricing tiers, billing terms, and multi-currency support are fully implemented in the database schema and user interface. Payment gateway integrations are architecturally planned with security controls defined in advance of activation, ensuring no payment processing occurs without full INSA-compliant audit controls in place.
+    </div>
+  </div>
+
+  <h3>Key Design Principles</h3>
+  <ul>
+    <li><strong>No direct card handling</strong> - All payment credentials are processed by PCI DSS-certified third-party gateways; Onekof never stores, processes, or transmits raw card numbers</li>
+    <li><strong>Ethiopian payment-first</strong> - Chapa (aggregator for Telebirr, CBE Birr, Amole, bank transfers) as the primary domestic gateway</li>
+    <li><strong>Multi-currency support</strong> - ETB for domestic customers, USD/EUR/GBP for international, with currency defined at the organization level</li>
+    <li><strong>Tiered deployment alignment</strong> - Payment routing respects the platform's 3-tier hosting model (EthioTelecom Cloud, On-Premise, Global Cloud)</li>
+    <li><strong>Auditable by design</strong> - Every payment event is logged with immutable audit trails, webhook signature verification, and idempotent processing</li>
+  </ul>
+
+  </div>
+
+  <!-- Section 2 -->
+  <div class="page-section">
+  <h2><span class="section-number">2</span> Implemented Foundation</h2>
+
+  <p>The following components are already built and deployed in the Onekof codebase, forming the structural foundation for payment integration:</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon teal">&#9874;</div>
+      <div>
+        <div class="card-title">Database Schema - Subscription Model</div>
+        <div class="card-subtitle">Prisma ORM / PostgreSQL</div>
+      </div>
+      <span class="badge implemented">Implemented</span>
+    </div>
+
+    <div class="code-block"><span class="comment">// Organization model - subscription & billing fields</span>
+<span class="keyword">model</span> <span class="type">Organization</span> {
+  <span class="field">plan</span>             <span class="type">Plan</span>      <span class="keyword">@default</span>(<span class="string">FREE</span>)
+  <span class="field">status</span>           <span class="type">OrgStatus</span> <span class="keyword">@default</span>(<span class="string">TRIAL</span>)
+  <span class="field">billingEmail</span>     <span class="type">String?</span>
+  <span class="field">subscriptionId</span>   <span class="type">String?</span>   <span class="comment">// External gateway reference</span>
+  <span class="field">trialEndsAt</span>      <span class="type">DateTime?</span>
+  <span class="field">currentPeriodEnd</span> <span class="type">DateTime?</span>
+  <span class="field">maxMembers</span>       <span class="type">Int</span>       <span class="keyword">@default</span>(<span class="string">10</span>)
+  <span class="field">maxProjects</span>      <span class="type">Int</span>       <span class="keyword">@default</span>(<span class="string">10</span>)
+  <span class="field">maxStorage</span>       <span class="type">Int</span>       <span class="keyword">@default</span>(<span class="string">5</span>)  <span class="comment">// GB</span>
+  <span class="field">hostingTier</span>      <span class="type">HostingTier</span> <span class="keyword">@default</span>(<span class="string">GLOBAL_CLOUD</span>)
+}
+
+<span class="keyword">enum</span> <span class="type">Plan</span>      { <span class="string">FREE</span> | <span class="string">STARTER</span> | <span class="string">PROFESSIONAL</span> | <span class="string">ENTERPRISE</span> }
+<span class="keyword">enum</span> <span class="type">OrgStatus</span> { <span class="string">ACTIVE</span> | <span class="string">TRIAL</span> | <span class="string">SUSPENDED</span> | <span class="string">CANCELLED</span> }
+<span class="keyword">enum</span> <span class="type">Currency</span>  { <span class="string">ETB</span> | <span class="string">USD</span> | <span class="string">EUR</span> | <span class="string">GBP</span> | <span class="string">CNY</span> }</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue">&#128176;</div>
+      <div>
+        <div class="card-title">Pricing Tier UI & Terms of Service</div>
+        <div class="card-subtitle">React Component + Legal Framework</div>
+      </div>
+      <span class="badge implemented">Implemented</span>
+    </div>
+    <p style="margin-top:8px">A fully localized pricing modal (English, Amharic, Afaan Oromo, Tigrinya, Somali) presents three subscription tiers with trial countdown tracking. Terms of Service define subscription auto-renewal, ETB/USD dual-currency billing, 30-day pricing change notice, and 14-day refund policy.</p>
+  </div>
+
+  <h3>Subscription Tiers</h3>
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-name">Free</div>
+      <div class="tier-price">$0</div>
+      <div class="tier-period">per user / month</div>
+      <ul class="tier-features">
+        <li>Up to 10 users</li>
+        <li>Basic project management</li>
+        <li>Ethiopian calendar</li>
+        <li>Community support</li>
+      </ul>
+    </div>
+    <div class="tier-card recommended">
+      <div class="tier-name">Standard</div>
+      <div class="tier-price">$5</div>
+      <div class="tier-period">per user / month</div>
+      <ul class="tier-features">
+        <li>Unlimited users</li>
+        <li>Advanced PM tools</li>
+        <li>User permissions</li>
+        <li>Priority support</li>
+      </ul>
+    </div>
+    <div class="tier-card">
+      <div class="tier-name">Premium</div>
+      <div class="tier-price">$10</div>
+      <div class="tier-period">per user / month</div>
+      <ul class="tier-features">
+        <li>AI task generation</li>
+        <li>Advanced planning</li>
+        <li>24/7 support</li>
+        <li>Unlimited storage</li>
+      </ul>
+    </div>
+    <div class="tier-card">
+      <div class="tier-name">Enterprise</div>
+      <div class="tier-price">Custom</div>
+      <div class="tier-period">negotiated pricing</div>
+      <ul class="tier-features">
+        <li>On-premise deployment</li>
+        <li>Dedicated support</li>
+        <li>SLA guarantee</li>
+        <li>Custom integrations</li>
+      </ul>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Section 3 -->
+  <div class="page-section">
+  <h2><span class="section-number">3</span> Payment System Architecture</h2>
+
+  <h3>3.1 High-Level Architecture</h3>
+
+  <div class="arch-diagram">
+    <div class="arch-row">
+      <div class="arch-box primary">
+        <div class="box-label">Client Layer</div>
+        <div class="box-title">Onekof Web / Mobile</div>
+      </div>
+    </div>
+    <div class="arch-arrow">&darr;</div>
+    <div class="arch-row">
+      <div class="arch-box security">
+        <div class="box-label">Security Layer</div>
+        <div class="box-title">API Gateway + Auth</div>
+      </div>
+    </div>
+    <div class="arch-arrow">&darr;</div>
+    <div class="arch-row">
+      <div class="arch-box">
+        <div class="box-label">Payment Service</div>
+        <div class="box-title">Subscription Manager</div>
+      </div>
+      <div class="arch-box">
+        <div class="box-label">Event Bus</div>
+        <div class="box-title">Webhook Processor</div>
+      </div>
+      <div class="arch-box">
+        <div class="box-label">Audit</div>
+        <div class="box-title">Payment Audit Log</div>
+      </div>
+    </div>
+    <div class="arch-arrow">&darr;</div>
+    <div class="arch-row">
+      <div class="arch-box gateway">
+        <div class="box-label">Domestic Gateway</div>
+        <div class="box-title">Chapa (ETB)</div>
+      </div>
+      <div class="arch-box gateway">
+        <div class="box-label">International Gateway</div>
+        <div class="box-title">Stripe (USD/EUR)</div>
+      </div>
+    </div>
+    <div class="arch-arrow">&darr;</div>
+    <div class="arch-row">
+      <div class="arch-box">
+        <div class="box-label">Telebirr</div>
+        <div class="box-title">Mobile Money</div>
+      </div>
+      <div class="arch-box">
+        <div class="box-label">CBE Birr</div>
+        <div class="box-title">Bank Mobile</div>
+      </div>
+      <div class="arch-box">
+        <div class="box-label">Bank Transfer</div>
+        <div class="box-title">Direct Deposit</div>
+      </div>
+      <div class="arch-box">
+        <div class="box-label">Visa / Mastercard</div>
+        <div class="box-title">Card Payments</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>3.2 Gateway Selection Rationale</h3>
+
+  <table>
+    <thead>
+      <tr><th>Gateway</th><th>Market</th><th>Methods Supported</th><th>Compliance</th><th>Role</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Chapa</strong></td>
+        <td>Ethiopia (Domestic)</td>
+        <td>Telebirr, CBE Birr, Amole, Awash Birr, Dashen Bank, Enat Bank, Bank Transfer</td>
+        <td>NBE Licensed, Ethiopian Data Residency</td>
+        <td>Primary - ETB transactions</td>
+      </tr>
+      <tr>
+        <td><strong>Stripe</strong></td>
+        <td>International</td>
+        <td>Visa, Mastercard, Amex, Apple Pay, Google Pay, SEPA, Wire Transfer</td>
+        <td>PCI DSS Level 1, SOC 2 Type II</td>
+        <td>International - USD/EUR/GBP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <span class="callout-icon">&#10003;</span>
+    <div class="callout-text">
+      <strong>Data Sovereignty Compliance:</strong> All Ethiopian Birr transactions are processed through Chapa, which is licensed by the National Bank of Ethiopia (NBE) and maintains transaction data within Ethiopian jurisdiction. No domestic financial data leaves the country.
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Section 4 -->
+  <div class="page-section">
+  <h2><span class="section-number">4</span> Payment Processing Flow</h2>
+
+  <h3>4.1 Subscription Checkout Flow</h3>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>User Selects Plan</h4>
+        <p>Organization admin selects a subscription tier from the pricing modal. The client sends a plan upgrade request to our API with the organization ID and selected plan.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>Gateway Router Determines Provider</h4>
+        <p>Based on the organization's <code>hostingTier</code> and preferred currency, the payment service routes to Chapa (ETB) or Stripe (USD/EUR). Government orgs on EthioTelecom Cloud are always routed domestically.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>Hosted Checkout Page</h4>
+        <p>The user is redirected to a <strong>gateway-hosted</strong> checkout page (Chapa Checkout or Stripe Checkout). Onekof never handles raw payment credentials - the gateway manages PCI-scoped input collection.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>Payment Confirmation via Webhook</h4>
+        <p>The gateway sends a signed webhook to our <code>/api/webhooks/payment</code> endpoint. The signature is verified using HMAC-SHA256 before any processing. Idempotency keys prevent duplicate processing.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>Subscription Activation</h4>
+        <p>Upon verified payment, the system updates the organization's <code>plan</code>, <code>status</code>, <code>subscriptionId</code>, <code>currentPeriodEnd</code>, and adjusts resource limits.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-content">
+        <h4>Audit Log & Notification</h4>
+        <p>A payment event is written to the immutable audit log with transaction ID, amount, currency, gateway, timestamp, and IP. A confirmation email is sent to the organization's <code>billingEmail</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>4.2 Renewal & Lifecycle Management</h3>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Trigger</th><th>System Action</th><th>User Notification</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Auto-Renewal Success</td><td>Gateway webhook</td><td>Extend <code>currentPeriodEnd</code>, log audit event</td><td>Receipt email to billing contact</td></tr>
+      <tr><td>Payment Failed</td><td>Gateway webhook</td><td>Retry 3x over 7 days (dunning), then suspend</td><td>Failure alert + retry notice</td></tr>
+      <tr><td>Subscription Cancelled</td><td>User action</td><td>Set status to <code>CANCELLED</code>, retain access until period end</td><td>Cancellation confirmation</td></tr>
+      <tr><td>Trial Expiry</td><td><code>trialEndsAt</code> reached</td><td>Downgrade to FREE tier, reduce limits</td><td>7-day, 3-day, 1-day warnings</td></tr>
+      <tr><td>Plan Upgrade</td><td>User action</td><td>Pro-rate billing, immediate plan activation</td><td>Upgrade confirmation + invoice</td></tr>
+      <tr><td>Plan Downgrade</td><td>User action</td><td>Schedule at end of current period</td><td>Downgrade scheduled notice</td></tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <!-- Section 5 -->
+  <div class="page-section">
+  <h2><span class="section-number">5</span> Security Architecture</h2>
+
+  <div class="callout security">
+    <span class="callout-icon">&#128274;</span>
+    <div class="callout-text">
+      <strong>Core Principle:</strong> Onekof is designed as a <strong>PCI DSS-exempt merchant</strong>. We never store, process, or transmit cardholder data. All payment credential handling is delegated to PCI DSS Level 1-certified gateways (Stripe) and NBE-licensed processors (Chapa). This eliminates the most critical attack surface for payment systems.
+    </div>
+  </div>
+
+  <h3>5.1 Security Controls Matrix</h3>
+
+  <table>
+    <thead>
+      <tr><th>Control</th><th>Implementation</th><th>Standard</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>No Raw Card Storage</strong></td><td>Gateway-hosted checkout; only tokenized <code>subscriptionId</code> stored</td><td>PCI DSS SAQ-A</td></tr>
+      <tr><td><strong>Webhook Signature Verification</strong></td><td>HMAC-SHA256 validation on every inbound webhook; reject unsigned events</td><td>OWASP API Security</td></tr>
+      <tr><td><strong>Idempotent Processing</strong></td><td>Unique transaction IDs tracked to prevent duplicate charges</td><td>Financial Transaction Integrity</td></tr>
+      <tr><td><strong>TLS 1.3 Encryption</strong></td><td>All API communication over HTTPS; HSTS enforced; cert pinning on mobile</td><td>INSA Network Security</td></tr>
+      <tr><td><strong>Rate Limiting</strong></td><td>Payment endpoints rate-limited (10 req/min per org)</td><td>OWASP Top 10 - A04</td></tr>
+      <tr><td><strong>RBAC for Billing</strong></td><td>Only <code>OWNER</code> and <code>ADMIN</code> roles can initiate payment</td><td>INSA Access Control</td></tr>
+      <tr><td><strong>Immutable Audit Log</strong></td><td>All payment events logged with actor, action, amount, timestamp, IP</td><td>INSA Audit Requirements</td></tr>
+      <tr><td><strong>Server-Side Validation</strong></td><td>Zod schemas validate all payment request payloads</td><td>OWASP Input Validation</td></tr>
+      <tr><td><strong>Environment Isolation</strong></td><td>Gateway API keys in env vars (never in source); separate keys per env</td><td>Secret Management</td></tr>
+      <tr><td><strong>Multi-Tenant Isolation</strong></td><td>Schema-based tenant isolation; billing data never cross-accessible</td><td>INSA Data Isolation</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Webhook Security Flow</h3>
+
+  <div class="code-block"><span class="comment">// Webhook verification (pseudo-code)</span>
+<span class="keyword">async function</span> handlePaymentWebhook(req: Request) {
+  <span class="comment">// 1. Extract signature from header</span>
+  <span class="keyword">const</span> signature = req.headers[<span class="string">'x-chapa-signature'</span>]
+
+  <span class="comment">// 2. Verify HMAC-SHA256 signature against raw body</span>
+  <span class="keyword">const</span> expectedSig = hmacSHA256(WEBHOOK_SECRET, req.rawBody)
+  <span class="keyword">if</span> (!timingSafeEqual(signature, expectedSig)) {
+    auditLog(<span class="string">'WEBHOOK_SIGNATURE_INVALID'</span>, { ip: req.ip })
+    <span class="keyword">return</span> Response(401, <span class="string">'Invalid signature'</span>)
+  }
+
+  <span class="comment">// 3. Check idempotency - prevent duplicate processing</span>
+  <span class="keyword">const</span> txId = req.body.transaction_id
+  <span class="keyword">if</span> (<span class="keyword">await</span> isAlreadyProcessed(txId)) {
+    <span class="keyword">return</span> Response(200, <span class="string">'Already processed'</span>)
+  }
+
+  <span class="comment">// 4. Process payment event & log to audit trail</span>
+  <span class="keyword">await</span> processPaymentEvent(req.body)
+  <span class="keyword">await</span> auditLog(<span class="string">'PAYMENT_RECEIVED'</span>, {
+    orgId, amount, currency, gateway, txId,
+    timestamp: <span class="keyword">new</span> Date().toISOString()
+  })
+}</div>
+
+  </div>
+
+  <!-- Section 6 -->
+  <div class="page-section">
+  <h2><span class="section-number">6</span> Deployment Tier Payment Routing</h2>
+
+  <p>Onekof supports three hosting tiers, each with specific payment routing requirements that respect data sovereignty and organizational policy:</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon green">&#127970;</div>
+      <div>
+        <div class="card-title">Tier 1: EthioTelecom Cloud (Government)</div>
+        <div class="card-subtitle">GOV_ETHIOTELECOM hosting tier</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Payment Gateway:</strong> Chapa only (ETB) - all financial data stays within Ethiopian infrastructure</li>
+      <li><strong>Methods:</strong> Telebirr, CBE Birr, Direct Bank Transfer, Government Purchase Order</li>
+      <li><strong>Billing Model:</strong> Annual invoicing with Purchase Order support for government procurement</li>
+      <li><strong>Data Residency:</strong> All transaction records stored on Ethiopian sovereign cloud</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue">&#127959;</div>
+      <div>
+        <div class="card-title">Tier 2: Private On-Premise</div>
+        <div class="card-subtitle">PRIVATE_ONPREM hosting tier</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Payment Gateway:</strong> Chapa (ETB) or offline invoice for air-gapped deployments</li>
+      <li><strong>Methods:</strong> Bank Transfer, Telebirr, Manual Invoice</li>
+      <li><strong>Billing Model:</strong> Annual licensing with optional monthly add-ons</li>
+      <li><strong>Special:</strong> License key validation for offline deployments</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon amber">&#9729;</div>
+      <div>
+        <div class="card-title">Tier 3: Global Cloud (Vercel + Supabase)</div>
+        <div class="card-subtitle">GLOBAL_CLOUD hosting tier</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Payment Gateway:</strong> Chapa (ETB domestic) + Stripe (USD/EUR international) - auto-routed by currency</li>
+      <li><strong>Methods:</strong> All digital methods (mobile money, cards, wallets, bank transfer)</li>
+      <li><strong>Billing Model:</strong> Monthly or annual subscriptions with auto-renewal</li>
+      <li><strong>Self-Service:</strong> Full customer portal for payment method management, invoices, and plan changes</li>
+    </ul>
+  </div>
+
+  </div>
+
+  <!-- Section 7 -->
+  <div class="page-section">
+  <h2><span class="section-number">7</span> Payment API Design</h2>
+
+  <h3>7.1 REST API Endpoints</h3>
+
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>POST</code></td><td><code>/api/subscriptions/checkout</code></td><td>Initiate checkout session for plan upgrade</td><td>OWNER / ADMIN</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/subscriptions/status</code></td><td>Get current subscription status and billing info</td><td>OWNER / ADMIN</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/subscriptions/cancel</code></td><td>Cancel subscription (effective at period end)</td><td>OWNER only</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/webhooks/chapa</code></td><td>Chapa payment event webhook</td><td>Signature verified</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/webhooks/stripe</code></td><td>Stripe payment event webhook</td><td>Signature verified</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/subscriptions/invoices</code></td><td>List invoices for the organization</td><td>OWNER / ADMIN</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/subscriptions/invoices/:id</code></td><td>Download invoice PDF</td><td>OWNER / ADMIN</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 Request/Response Schema Validation</h3>
+
+  <div class="code-block"><span class="comment">// Zod schema for checkout request validation</span>
+<span class="keyword">const</span> CheckoutSchema = z.object({
+  <span class="field">plan</span>:     z.enum([<span class="string">'STARTER'</span>, <span class="string">'PROFESSIONAL'</span>, <span class="string">'ENTERPRISE'</span>]),
+  <span class="field">interval</span>: z.enum([<span class="string">'monthly'</span>, <span class="string">'yearly'</span>]),
+  <span class="field">currency</span>: z.enum([<span class="string">'ETB'</span>, <span class="string">'USD'</span>, <span class="string">'EUR'</span>]).optional(),
+  <span class="field">seats</span>:    z.number().int().positive().max(10000),
+})
+
+<span class="comment">// Server-side: reject malformed input before reaching gateway</span>
+<span class="keyword">const</span> result = CheckoutSchema.safeParse(req.body)
+<span class="keyword">if</span> (!result.success) {
+  <span class="keyword">return</span> Response(400, { errors: result.error.issues })
+}</div>
+
+  </div>
+
+  <!-- Section 8 -->
+  <div class="page-section">
+  <h2><span class="section-number">8</span> Planned Data Model Extensions</h2>
+
+  <p>The following models will extend the existing Prisma schema to support full payment lifecycle tracking:</p>
+
+  <div class="code-block"><span class="comment">// Payment transaction record (append-only audit table)</span>
+<span class="keyword">model</span> <span class="type">PaymentTransaction</span> {
+  <span class="field">id</span>              <span class="type">String</span>   <span class="keyword">@id @default</span>(<span class="string">cuid()</span>)
+  <span class="field">organizationId</span>  <span class="type">String</span>
+  <span class="field">gateway</span>         <span class="type">PaymentGateway</span>  <span class="comment">// CHAPA | STRIPE</span>
+  <span class="field">gatewayTxId</span>     <span class="type">String</span>   <span class="keyword">@unique</span>  <span class="comment">// External reference</span>
+  <span class="field">type</span>            <span class="type">TxType</span>   <span class="comment">// SUBSCRIPTION | RENEWAL | REFUND</span>
+  <span class="field">amount</span>          <span class="type">Decimal</span>
+  <span class="field">currency</span>        <span class="type">Currency</span>
+  <span class="field">status</span>          <span class="type">TxStatus</span> <span class="comment">// PENDING | SUCCESS | FAILED | REFUNDED</span>
+  <span class="field">plan</span>            <span class="type">Plan</span>
+  <span class="field">seats</span>           <span class="type">Int</span>
+  <span class="field">metadata</span>        <span class="type">Json?</span>    <span class="comment">// Gateway-specific response data</span>
+  <span class="field">createdAt</span>       <span class="type">DateTime</span> <span class="keyword">@default</span>(<span class="string">now()</span>)
+  <span class="field">processedAt</span>     <span class="type">DateTime?</span>
+}
+
+<span class="comment">// Invoice record for billing history</span>
+<span class="keyword">model</span> <span class="type">Invoice</span> {
+  <span class="field">id</span>              <span class="type">String</span>   <span class="keyword">@id @default</span>(<span class="string">cuid()</span>)
+  <span class="field">organizationId</span>  <span class="type">String</span>
+  <span class="field">invoiceNumber</span>   <span class="type">String</span>   <span class="keyword">@unique</span>  <span class="comment">// ONK-2026-00001</span>
+  <span class="field">amount</span>          <span class="type">Decimal</span>
+  <span class="field">currency</span>        <span class="type">Currency</span>
+  <span class="field">status</span>          <span class="type">InvoiceStatus</span>  <span class="comment">// DRAFT | SENT | PAID | VOID</span>
+  <span class="field">periodStart</span>     <span class="type">DateTime</span>
+  <span class="field">periodEnd</span>       <span class="type">DateTime</span>
+  <span class="field">pdfUrl</span>          <span class="type">String?</span>
+  <span class="field">paidAt</span>          <span class="type">DateTime?</span>
+  <span class="field">createdAt</span>       <span class="type">DateTime</span> <span class="keyword">@default</span>(<span class="string">now()</span>)
+}</div>
+
+  </div>
+
+  <!-- Section 9 -->
+  <div class="page-section">
+  <h2><span class="section-number">9</span> Implementation Roadmap</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot">1</div>
+      <div class="timeline-content">
+        <h4>Phase 1: Foundation <span class="badge implemented">Complete</span></h4>
+        <p>Database schema with Plan/OrgStatus/Currency enums, Organization billing fields, pricing UI with 5-language localization, Terms of Service with subscription policies, multi-tenant schema-based isolation.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot phase2">2</div>
+      <div class="timeline-content">
+        <h4>Phase 2: Chapa Integration (Domestic) <span class="badge planned">Planned</span></h4>
+        <p>Chapa SDK integration, hosted checkout redirect flow, webhook endpoint with HMAC verification, PaymentTransaction model, ETB subscription billing, Telebirr/CBE Birr payment methods, invoice generation.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot phase2">3</div>
+      <div class="timeline-content">
+        <h4>Phase 3: Stripe Integration (International) <span class="badge planned">Planned</span></h4>
+        <p>Stripe Checkout Sessions, Customer Portal for self-service billing, USD/EUR/GBP subscription billing, automatic tax calculation, Stripe webhook handlers, payment method management.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot phase3">4</div>
+      <div class="timeline-content">
+        <h4>Phase 4: Enterprise & Government <span class="badge phase2">Future</span></h4>
+        <p>Purchase Order support for government procurement, annual invoicing with NET-30/NET-60 terms, license key system for offline Tier 1/2 deployments, usage metering for per-seat billing overages.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Section 10 -->
+  <div class="page-section">
+  <h2><span class="section-number">10</span> Compliance & Regulatory Alignment</h2>
+
+  <table>
+    <thead>
+      <tr><th>Requirement</th><th>Standard</th><th>Onekof Approach</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Payment Data Security</td><td>PCI DSS</td><td>SAQ-A exempt - no cardholder data stored or processed; delegated to certified gateways</td></tr>
+      <tr><td>Ethiopian Financial Regulation</td><td>NBE Directives</td><td>Chapa is NBE-licensed; ETB transactions processed domestically; no unauthorized foreign exchange</td></tr>
+      <tr><td>Data Sovereignty</td><td>INSA Data Protection</td><td>Government tenant payment data stored on Ethiopian infrastructure (Tier 1); no cross-border financial data transfer for domestic transactions</td></tr>
+      <tr><td>Audit Trail</td><td>INSA Audit Requirements</td><td>Immutable payment audit log with actor, action, amount, timestamp, IP; append-only; retained for 7 years</td></tr>
+      <tr><td>Access Control</td><td>INSA RBAC</td><td>Billing actions restricted to OWNER/ADMIN roles; enforced at API middleware level; logged</td></tr>
+      <tr><td>Encryption in Transit</td><td>INSA Network Security</td><td>TLS 1.3 enforced; HSTS preload; certificate pinning on mobile clients</td></tr>
+      <tr><td>Input Validation</td><td>OWASP Top 10</td><td>Zod schema validation on all payment endpoints; parameterized queries via Prisma ORM</td></tr>
+      <tr><td>Tax Compliance</td><td>ERCA (Ethiopian Revenue)</td><td>Invoice format aligned for future ERCA Electronic Fiscal Device (EFD) integration; VAT-ready</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <div class="callout info">
+    <span class="callout-icon">&#128203;</span>
+    <div class="callout-text">
+      <strong>Summary:</strong> The Onekof payment system is architecturally designed to be secure by default - leveraging PCI-certified gateways, NBE-licensed domestic processors, immutable audit trails, webhook signature verification, and strict RBAC enforcement. The subscription data model and pricing framework are already implemented. Gateway integration will be activated only after this INSA certification engagement confirms the security posture of the platform.
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p><span class="company">DAPS Analytics PLC</span></p>
+  <p>Confidential - Prepared for INSA Cyber Audit and Evaluation Directorate</p>
+  <p style="margin-top:8px; font-size:11px; color:#94a3b8;">Document ID: ONEKOF-PAY-2026-001 | Version 1.0 | June 2026</p>
+</div>
+
+</body>
+</html>
