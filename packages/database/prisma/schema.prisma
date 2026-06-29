@@ -85,6 +85,8 @@ model Organization {
   activities           UserActivity[] // 🚀 NEW: All activities in this organization
   notifications        Notification[] @relation("OrgNotifications")
   organizationSettings OrganizationSettings? // Feature flags and customization
+  subscriptions        Subscription[]
+  payments             Payment[]
 
   @@map("organizations")
   @@schema("public")
@@ -1951,6 +1953,116 @@ model WikiArticle {
   @@index([categoryId])
   @@index([createdBy])
   @@map("wiki_articles")
+  @@schema("public")
+}
+
+// ============================================================================
+// BILLING & SUBSCRIPTIONS
+// ============================================================================
+
+// Subscription records — tracks active/past subscriptions per organization
+model Subscription {
+  id             String             @id @default(cuid())
+  organizationId String             @map("organization_id")
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Plan details
+  plan           Plan
+  interval       BillingInterval    @default(MONTHLY)
+  status         SubscriptionStatus @default(ACTIVE)
+
+  // Provider details
+  provider         PaymentProvider
+  providerSubId    String?          @map("provider_sub_id")   // Stripe subscription ID or Chapa ref
+  providerCustId   String?          @map("provider_cust_id")  // Stripe customer ID
+
+  // Billing cycle
+  currentPeriodStart DateTime  @map("current_period_start")
+  currentPeriodEnd   DateTime  @map("current_period_end")
+  canceledAt         DateTime? @map("canceled_at")
+  cancelAtPeriodEnd  Boolean   @default(false) @map("cancel_at_period_end")
+
+  // Pricing (snapshot at time of subscription)
+  amount   Int    // cents (USD) or santim (ETB)
+  currency String @default("USD")
+
+  // Metadata
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  payments Payment[]
+
+  @@index([organizationId])
+  @@index([providerSubId])
+  @@map("subscriptions")
+  @@schema("public")
+}
+
+// Payment records — individual payment transactions
+model Payment {
+  id             String         @id @default(cuid())
+  organizationId String         @map("organization_id")
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptionId String?        @map("subscription_id")
+  subscription   Subscription?  @relation(fields: [subscriptionId], references: [id])
+
+  // Payment details
+  amount         Int            // cents (USD) or santim (ETB)
+  currency       String         @default("USD")
+  status         BillingPaymentStatus @default(PENDING)
+  provider       PaymentProvider
+  providerPayId  String?        @map("provider_pay_id") // Stripe payment intent ID or Chapa tx_ref
+  providerMethod String?        @map("provider_method") // card, telebirr, cbe_birr, etc.
+
+  // Invoice
+  invoiceUrl     String?        @map("invoice_url")
+  receiptUrl     String?        @map("receipt_url")
+
+  // Description
+  description    String?
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([organizationId])
+  @@index([subscriptionId])
+  @@index([providerPayId])
+  @@map("payments")
+  @@schema("public")
+}
+
+enum PaymentProvider {
+  STRIPE
+  CHAPA
+  MANUAL // admin-assigned plans
+
+  @@schema("public")
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+
+  @@schema("public")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+  TRIALING
+
+  @@schema("public")
+}
+
+enum BillingPaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+
   @@schema("public")
 }
 

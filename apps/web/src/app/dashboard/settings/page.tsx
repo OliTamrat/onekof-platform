@@ -19,6 +19,7 @@ import {
   Save,
   Loader2,
   Check,
+  CreditCard,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -248,6 +249,13 @@ export default function SettingsPage() {
                   <Shield className="h-4 w-4" />
                   Security
                 </button>
+                <a
+                  href="/dashboard/settings/billing"
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                >
+                  <CreditCard className="h-4 w-4" />
+                  Billing
+                </a>
               </div>
             </nav>
 
