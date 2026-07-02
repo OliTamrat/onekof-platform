@@ -1,23 +1,39 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-05-29 — Resume after disconnect
+> Last updated: 2026-07-02 — Infrastructure audit + Phase 2 pre-analysis complete
 
 ---
 
-## WHERE WE LEFT OFF
+## CURRENT STATUS (2026-07-02)
 
-Web platform is live at **vision.onekof.com** (and other org subdomains).
+### Tier 3 (Vercel + Supabase) — Live
+Web platform is live at **vision.onekof.com** and other org subdomains.
+204/204 unit tests passing. TypeScript strict build: 0 errors. Sentry active.
+INSA security code (P1-P6): implemented — but see CSRF note below.
 
-**Session work completed today:**
-1. ✅ Investigated 403 errors on issue detail slideout and task status updates
-2. ✅ Fixed `requireProjectAccess` inconsistency in `authorization.ts` — MEMBER users on PUBLIC/INTERNAL projects can now open issue details, update status/priority, and change assignees without 403
-3. ✅ Confirmed department task creation fix (commits 188f2e1 + e4b1994) is working
-4. ✅ Build passed, pushed to master (`7a77fa7`), deployed to Vercel
+### Phase 2 (EthioTelecom Tier 2) — PRE-LAUNCH
+INSA certification completing this week. Moving to Tier 2 deployment.
+Full infrastructure audit completed: `docs/deployment/INFRASTRUCTURE_AUDIT_2026_07.md`
 
-**Verified working:**
-- Issue detail slideout loads ✓
-- Task status updates (TODO → IN PROGRESS → DONE) ✓
-- Assignee changes ✓
-- Department page task creation across all 11 departments ✓
+---
+
+## CONFIRMED INFRASTRUCTURE BUGS (fix before Tier 2 deploy)
+
+These are verified in source files — not assumptions.
+
+| ID | File | Bug | Priority |
+|---|---|---|---|
+| BUG-1 | `docker-compose.prod.yml` | `postgres:15-alpine` missing pgvector — change to `ankane/pgvector:pg15` | P0 |
+| BUG-2 | `Caddyfile` | No wildcard `*.onekof.et` block; wildcard TLS needs DNS-01 + Cloudflare module in Caddy | P0 |
+| BUG-3 | `.github/workflows/docker-build.yml` | Docker image never published — no semver tags exist. Run `git tag v1.0.0 && git push origin v1.0.0` | P0 |
+| BUG-4 | `apps/web/src/middleware.ts` | CSRF enforcement function returns `null` unconditionally — bypassed. Must fix before INSA submission | P0 |
+| BUG-5 | `packages/database/index.ts` | `getTenantClient()` creates new PrismaClient per call — connection pool leak | P1 |
+| BUG-6 | `apps/web/.env.example` | `BLOB_ENCRYPTION_KEY` not in template — Tier 2 operators will skip INSA P4 | P1 |
+| BUG-7 | `scripts/setup-tier2-server.sh` | No `docker login ghcr.io` step — VM cannot pull private image | P1 |
+| BUG-8 | `docker-compose.prod.yml` | No volume for `/var/log/caddy` — logs lost on restart | P2 |
+
+**Correct Tier 2 launch sequence:**
+Fix BUG-1 through BUG-4 → tag v1.0.0 → smoke test on throwaway $5 VM →
+only then provision EthioTelecom VM. Full sequence in audit doc.
 
 ---
 
@@ -26,7 +42,10 @@ Web platform is live at **vision.onekof.com** (and other org subdomains).
 | # | Issue | Status |
 |---|---|---|
 | 1 | Assignee dropdown may show empty on some accounts (org-members 403) | To investigate |
-| 2 | Android Play Store submission | Pending (see mobile section) |
+| 2 | Android Play Store submission | Pending — Google Play $25 one-time |
+| 3 | Supabase on free tier | Upgrade to Pro $25/mo before first paying customer |
+| 4 | No automated backup scheduled for Tier 2 | Add cron to setup-tier2-server.sh |
+| 5 | Multi-schema tenant isolation | Declared in schema, not implemented — all data in public schema |
 
 ---
 
