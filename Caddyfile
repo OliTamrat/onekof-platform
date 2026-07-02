@@ -4,7 +4,11 @@
 # Replace onekof.et with your actual domain before deploying.
 # Caddy automatically provisions Let's Encrypt certificates.
 
-onekof.et {
+*.onekof.et, onekof.et {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
     reverse_proxy onekof-web:3000
 
     # Security headers

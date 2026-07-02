@@ -12,9 +12,10 @@
 #   5. Creates .env.production from the example template
 #   6. Creates /opt/backups directory for DB backups
 #   7. Installs the daily backup cron job
-#   8. Starts the full production stack
-#   9. Runs Prisma migrations
-#  10. Prints the smoke-test checklist
+#   8. Authenticates with GHCR (if GHCR_PAT is set)
+#   9. Starts the full production stack
+#  10. Runs Prisma migrations
+#  11. Prints the smoke-test checklist
 #
 # USAGE:
 #   1. SSH into the server as ubuntu (or any sudo user)
@@ -135,7 +136,19 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# 6. Start the production stack
+# 6. GHCR authentication (required if the Docker image is private)
+# -----------------------------------------------------------------------------
+if [[ -n "${GHCR_PAT:-}" ]]; then
+  log "Logging in to GitHub Container Registry..."
+  echo "$GHCR_PAT" | docker login ghcr.io -u "${GHCR_USER:-daps-analytics}" --password-stdin
+else
+  warn "GHCR_PAT not set — skipping docker login."
+  warn "If the image is private, export GHCR_PAT and GHCR_USER before running this script."
+  warn "Or make the package public: GitHub → Packages → Change visibility → Public."
+fi
+
+# -----------------------------------------------------------------------------
+# 7. Start the production stack
 # -----------------------------------------------------------------------------
 log "Pulling Docker images..."
 docker compose -f "$COMPOSE_FILE" pull
@@ -152,7 +165,7 @@ for i in $(seq 1 12); do
 done
 
 # -----------------------------------------------------------------------------
-# 7. Run Prisma migrations
+# 8. Run Prisma migrations
 # -----------------------------------------------------------------------------
 log "Running Prisma migrations..."
 docker compose -f "$COMPOSE_FILE" exec onekof-web \
@@ -160,7 +173,7 @@ docker compose -f "$COMPOSE_FILE" exec onekof-web \
   --schema /app/packages/database/prisma/schema.prisma
 
 # -----------------------------------------------------------------------------
-# 8. Final status
+# 9. Final status
 # -----------------------------------------------------------------------------
 echo ""
 log "=== Setup Complete ==="

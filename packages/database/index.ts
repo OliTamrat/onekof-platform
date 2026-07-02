@@ -21,13 +21,18 @@ if (process.env.NODE_ENV !== 'production') {
 // Export all types from Prisma
 export * from '@prisma/client';
 
-// Helper function to get tenant-specific Prisma client
-export function getTenantClient(schemaName: string) {
-  return new PrismaClient({
-    datasources: {
-      db: {
-        url: `${process.env.DATABASE_URL}?schema=${schemaName}`,
+// Cache tenant clients by schema name to avoid creating a new connection pool per call
+const tenantClients = new Map<string, PrismaClient>();
+
+export function getTenantClient(schemaName: string): PrismaClient {
+  if (!tenantClients.has(schemaName)) {
+    tenantClients.set(schemaName, new PrismaClient({
+      datasources: {
+        db: {
+          url: `${process.env.DATABASE_URL}?schema=${schemaName}`,
+        },
       },
-    },
-  });
+    }));
+  }
+  return tenantClients.get(schemaName)!;
 }

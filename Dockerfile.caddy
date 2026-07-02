@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.7
+#
+# Caddy with Cloudflare DNS module — required for wildcard TLS certificates.
+#
+# Standard caddy:2-alpine does not include the Cloudflare DNS plugin.
+# Wildcard certs (*.onekof.et) cannot use HTTP-01 ACME challenge — they
+# require DNS-01, which in turn requires this plugin and a Cloudflare API
+# token with DNS:Edit permission scoped to the onekof.et zone.
+#
+# Set CLOUDFLARE_API_TOKEN in .env.production before starting the stack.
+# The Caddyfile reads it via {env.CLOUDFLARE_API_TOKEN}.
+#
+# Build: docker build -f Dockerfile.caddy -t onekof-caddy:local .
+# Or built automatically via docker-compose.prod.yml (build: block).
+
+FROM caddy:2-builder AS builder
+
+RUN xcaddy build \
+    --with github.com/caddy-dns/cloudflare
+
+FROM caddy:2-alpine
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy

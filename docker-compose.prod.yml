@@ -39,7 +39,7 @@ services:
   # PostgreSQL 15 — primary database
   # ==========================================================================
   postgres:
-    image: postgres:15-alpine
+    image: ankane/pgvector:pg15
     container_name: onekof-postgres
     restart: always
     environment:
@@ -137,7 +137,9 @@ services:
   # Caddy — reverse proxy with automatic Let's Encrypt SSL
   # ==========================================================================
   caddy:
-    image: caddy:2-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
     container_name: onekof-caddy
     restart: always
     depends_on:
@@ -146,10 +148,13 @@ services:
       - "80:80"
       - "443:443"
       - "443:443/udp"  # HTTP/3
+    env_file:
+      - .env.production
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
+      - caddy_logs:/var/log/caddy
     networks:
       - onekof-prod
     logging:
@@ -172,6 +177,8 @@ volumes:
     name: onekof_prod_caddy_data
   caddy_config:
     name: onekof_prod_caddy_config
+  caddy_logs:
+    name: onekof_prod_caddy_logs
 
 # ============================================================================
 # NETWORK — internal bridge; only Caddy is exposed to the internet

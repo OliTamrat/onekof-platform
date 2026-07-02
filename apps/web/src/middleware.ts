@@ -65,8 +65,19 @@ const CSRF_EXEMPT_PREFIXES = [
  *   1. Delete the `return null` line below.
  *   2. Confirm PUBLIC_HOSTS and NEXTAUTH_URL are set correctly in Vercel env vars.
  */
-function enforceCsrfOrigin(_request: NextRequest): NextResponse | null {
-  // Pre-launch: bypass CSRF blocking so invite / create / mutation routes work.
+function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) return null;
+  const { pathname } = request.nextUrl;
+  if (!pathname.startsWith('/api/')) return null;
+  if (CSRF_EXEMPT_PREFIXES.some((prefix) => pathname.startsWith(prefix))) return null;
+  const origin = request.headers.get('origin');
+  if (!origin) return null;
+  if (!isAllowedOrigin(origin)) {
+    return NextResponse.json(
+      { error: 'Forbidden: cross-origin request blocked' },
+      { status: 403 }
+    );
+  }
   return null;
 }
 
