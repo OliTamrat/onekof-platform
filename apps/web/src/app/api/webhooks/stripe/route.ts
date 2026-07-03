@@ -24,13 +24,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
   }
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error('Stripe webhook: STRIPE_WEBHOOK_SECRET not configured');
+    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
+  }
+
   let event: any;
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET || ''
-    );
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err: any) {
     console.error('Stripe webhook signature verification failed:', err.message);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
@@ -74,7 +76,12 @@ async function handleCheckoutCompleted(session: any) {
 
   const amount = interval === 'yearly' ? plan.yearlyPriceUSD * 100 : plan.monthlyPriceUSD * 100;
 
-  // Create subscription record
+  // Idempotency: skip if subscription already exists for this Stripe sub ID
+  const existingSub = await prisma.subscription.findFirst({
+    where: { providerSubId: subscription.id },
+  });
+  if (existingSub) return;
+
   await prisma.subscription.create({
     data: {
       organizationId: orgId,
@@ -121,6 +128,13 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
 
   if (!sub) return;
 
+  // Idempotency: skip if payment already recorded for this invoice
+  const payId = invoice.payment_intent || invoice.id;
+  const existingPayment = await prisma.payment.findFirst({
+    where: { providerPayId: payId, provider: 'STRIPE' },
+  });
+  if (existingPayment) return;
+
   await prisma.payment.create({
     data: {
       organizationId: sub.organizationId,
@@ -129,7 +143,7 @@ async function handleInvoicePaymentSucceeded(invoice: any) {
       currency: (invoice.currency || 'usd').toUpperCase(),
       status: 'SUCCEEDED',
       provider: 'STRIPE',
-      providerPayId: invoice.payment_intent || invoice.id,
+      providerPayId: payId,
       invoiceUrl: invoice.hosted_invoice_url || null,
       receiptUrl: invoice.invoice_pdf || null,
       description: `Invoice ${invoice.number || invoice.id}`,

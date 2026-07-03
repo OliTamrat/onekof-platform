@@ -81,12 +81,12 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'organizationId required' }, { status: 400 });
   }
 
-  // Must be OWNER or ADMIN
+  // SECURITY: Only OWNER/ADMIN can cancel subscriptions
   const membership = await prisma.organizationMember.findFirst({
     where: {
       organizationId,
       userId: user.id,
-      role: { in: ['OWNER', 'ADMIN', 'MEMBER'] },
+      role: { in: ['OWNER', 'ADMIN'] },
     },
   });
   if (!membership) {

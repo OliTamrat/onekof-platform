@@ -2,39 +2,63 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
 import { getPlanById, getPlanLimits } from '@/lib/billing/plans';
+import { z } from 'zod';
+
+const isStripeConfigured = !!process.env.STRIPE_SECRET_KEY;
+const isChapaConfigured = !!process.env.CHAPA_SECRET_KEY;
+
+const DemoConfirmSchema = z.object({
+  organizationId: z.string().min(1),
+  planId: z.enum(['STARTER', 'PROFESSIONAL', 'ENTERPRISE']),
+  interval: z.enum(['monthly', 'yearly']),
+  provider: z.enum(['stripe', 'chapa']),
+  cardLast4: z.string().length(4).optional(),
+});
 
 /**
  * POST /api/billing/demo-confirm
  *
  * Demo mode payment confirmation. Creates real Subscription and Payment
  * records in the database and upgrades the organization plan.
- * This simulates what Stripe/Chapa webhooks would do.
  *
- * Body: { organizationId, planId, interval, provider, cardLast4 }
+ * SECURITY:
+ * - Disabled when real Stripe/Chapa keys are configured (production)
+ * - Restricted to OWNER/ADMIN roles only
+ * - Input validated with Zod schema
  */
 export async function POST(req: NextRequest) {
+  // P0: Block in production when real payment providers are configured
+  if (isStripeConfigured || isChapaConfigured) {
+    return NextResponse.json(
+      { error: 'Demo mode is disabled when payment providers are configured' },
+      { status: 403 }
+    );
+  }
+
   const user = await resolveAuthUser();
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { organizationId, planId, interval, provider, cardLast4 } = await req.json();
-
-  if (!organizationId || !planId || !interval || !provider) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  const body = await req.json();
+  const parsed = DemoConfirmSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten() }, { status: 400 });
   }
 
-  // Verify membership
+  const { organizationId, planId, interval, provider, cardLast4 } = parsed.data;
+
+  // P0: Restrict to OWNER/ADMIN only — MEMBER cannot upgrade billing
   const membership = await prisma.organizationMember.findFirst({
     where: {
       organizationId,
       userId: user.id,
-      role: { in: ['OWNER', 'ADMIN', 'MEMBER'] },
+      role: { in: ['OWNER', 'ADMIN'] },
     },
   });
 
   if (!membership) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    return NextResponse.json({ error: 'Forbidden — only org owners and admins can manage billing' }, { status: 403 });
   }
 
   const plan = getPlanById(planId);
@@ -56,7 +80,6 @@ export async function POST(req: NextRequest) {
   const demoSubId = `demo_sub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const demoPayId = `demo_pay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-  // Create subscription
   const subscription = await prisma.subscription.create({
     data: {
       organizationId,
@@ -73,7 +96,6 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Create payment record
   await prisma.payment.create({
     data: {
       organizationId,
@@ -88,7 +110,6 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Upgrade organization
   const limits = getPlanLimits(planId);
   await prisma.organization.update({
     where: { id: organizationId },

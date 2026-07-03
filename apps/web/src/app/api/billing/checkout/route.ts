@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
 import { getPlanById } from '@/lib/billing/plans';
+import { z } from 'zod';
+
+const CheckoutSchema = z.object({
+  organizationId: z.string().min(1),
+  planId: z.enum(['STARTER', 'PROFESSIONAL', 'ENTERPRISE']),
+  interval: z.enum(['monthly', 'yearly']),
+  provider: z.enum(['stripe', 'chapa']),
+});
 
 const isStripeConfigured = !!process.env.STRIPE_SECRET_KEY;
 const isChapaConfigured = !!process.env.CHAPA_SECRET_KEY;
@@ -20,24 +28,24 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { organizationId, planId, interval, provider } = body;
-
-  if (!organizationId || !planId || !interval || !provider) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  const parsed = CheckoutSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten() }, { status: 400 });
   }
 
+  const { organizationId, planId, interval, provider } = parsed.data;
+
   const plan = getPlanById(planId);
-  if (!plan || planId === 'FREE') {
+  if (!plan) {
     return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
   }
 
-  // Verify user has access (OWNER or ADMIN)
+  // SECURITY: Only OWNER/ADMIN can initiate billing changes
   const membership = await prisma.organizationMember.findFirst({
     where: {
       organizationId,
       userId: user.id,
-      // In production, restrict to OWNER/ADMIN. Relaxed for demo/testing.
-      role: { in: ['OWNER', 'ADMIN', 'MEMBER'] },
+      role: { in: ['OWNER', 'ADMIN'] },
     },
     include: { organization: true },
   });
