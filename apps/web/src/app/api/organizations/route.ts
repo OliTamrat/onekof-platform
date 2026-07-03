@@ -171,6 +171,7 @@ export async function POST(req: NextRequest) {
       // Create organization in a transaction
       const result = await prisma.$transaction(async (tx) => {
         // Create organization with categorization data
+        const isGovernment = type === 'government';
         const organization = await tx.organization.create({
           data: {
             name,
@@ -184,7 +185,9 @@ export async function POST(req: NextRequest) {
             primaryUseCases: primaryUseCases || [],
             language: language || 'english',
             calendarPreference: calendarPreference || 'gregorian',
-            // Owner tracked via OrganizationMember with role='OWNER'
+            // Trial: 7 days for non-government orgs; government orgs start ACTIVE
+            status: isGovernment ? 'ACTIVE' : 'TRIAL',
+            trialEndsAt: isGovernment ? null : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           },
         });
 
