@@ -656,7 +656,7 @@ export default function HomePage() {
           <div className="absolute -left-[10%] bottom-[10%] h-[500px] w-[500px] rounded-full bg-violet-500/[0.05] blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[1200px] px-6 pb-8 pt-32 sm:pt-40 lg:pt-44">
+        <div className="relative mx-auto max-w-[1200px] px-6 pb-6 pt-24 sm:pt-32 lg:pt-40">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             {/* LEFT — Text content */}
             <motion.div
@@ -693,17 +693,17 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
                   <Link
                     href="/auth/signup"
-                    className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[14px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
+                    className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[15px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
                   >
                     {t('landing.hero.getStartedFree')}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                   <button
                     onClick={() => setVideoOpen(true)}
-                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white"
+                    className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.1] px-7 py-3.5 text-[15px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white"
                   >
                     <div className="flex h-7 w-7 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 transition-colors group-hover:bg-primary-500/20">
                       <Play className="h-3 w-3 text-primary-400" />
@@ -813,14 +813,14 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="relative mx-auto max-w-[1200px] px-6 pb-28">
+          <div className="relative mx-auto max-w-[1200px] px-6 pb-12 sm:pb-20 lg:pb-28">
             <div className="absolute -inset-8 rounded-3xl bg-gradient-to-b from-primary-500/[0.06] via-primary-700/[0.03] to-transparent blur-3xl" />
 
             {/* Video controls — arrows + dots + label */}
-            <div className="relative mb-5 flex items-center justify-center gap-4">
+            <div className="relative mb-4 flex items-center justify-center gap-3 sm:gap-4">
               <button
                 onClick={() => setShowcaseIdx((prev) => (prev - 1 + demoVideos.length) % demoVideos.length)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
+                className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -840,14 +840,14 @@ export default function HomePage() {
 
               <button
                 onClick={() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
+                className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
 
             {/* Main showcase video — ref-based src swap (no remount) */}
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl"
+            <div className="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl"
               style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 100px rgba(28,140,125,0.08)' }}
             >
               <video
@@ -876,7 +876,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ TRUST STRIP — INSA + Built for Ethiopia ═══ */}
-      <section className="border-y border-white/[0.06] py-12 sm:py-14">
+      <section className="border-y border-white/[0.06] py-8 sm:py-12">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
@@ -890,13 +890,13 @@ export default function HomePage() {
                 const bgColor = item.color === 'emerald' ? 'bg-emerald-500/[0.08]' : item.color === 'violet' ? 'bg-violet-500/[0.08]' : 'bg-primary-500/[0.08]';
                 const iconColor = item.color === 'emerald' ? 'text-emerald-400' : item.color === 'violet' ? 'text-violet-400' : 'text-primary-400';
                 return (
-                  <div key={item.title} className="flex items-start gap-3.5">
-                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${borderColor} ${bgColor}`}>
-                      <item.icon className={`h-5 w-5 ${iconColor}`} />
+                  <div key={item.title} className="flex items-center gap-3">
+                    <div className={`flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl border ${borderColor} ${bgColor}`}>
+                      <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${iconColor}`} />
                     </div>
                     <div>
-                      <div className="text-[15px] font-semibold text-white">{item.title}</div>
-                      <div className="mt-0.5 text-[14px] leading-snug text-white/70">{item.desc}</div>
+                      <div className="text-[14px] sm:text-[15px] font-semibold text-white">{item.title}</div>
+                      <div className="text-[12px] sm:text-[13px] leading-snug text-white/70">{item.desc}</div>
                     </div>
                   </div>
                 );
