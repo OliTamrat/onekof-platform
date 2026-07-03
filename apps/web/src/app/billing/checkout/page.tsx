@@ -48,51 +48,19 @@ function CheckoutContent() {
 
   const isChapa = provider === 'chapa';
 
-  // Card form state
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvc, setCardCvc] = useState('');
-  const [cardName, setCardName] = useState('');
+  // SECURITY: Demo mode uses pre-filled test values only — no real card data accepted
+  // In production, Stripe.js Elements or Chapa SDK handles card tokenization client-side
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(isChapa ? 'telebirr' : 'card');
 
-  // Chapa mobile
+  // Chapa mobile (demo: accepts any phone format)
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
-  function formatCardNumber(val: string) {
-    const digits = val.replace(/\D/g, '').slice(0, 16);
-    return digits.replace(/(\d{4})(?=\d)/g, '$1 ');
-  }
-
-  function formatExpiry(val: string) {
-    const digits = val.replace(/\D/g, '').slice(0, 4);
-    if (digits.length > 2) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-    return digits;
-  }
-
   function validate(): boolean {
-    if (paymentMethod === 'card') {
-      const digits = cardNumber.replace(/\s/g, '');
-      if (digits.length !== 16) {
-        setError('Please enter a valid 16-digit card number');
-        return false;
-      }
-      if (!cardExpiry.match(/^\d{2}\/\d{2}$/)) {
-        setError('Please enter expiry as MM/YY');
-        return false;
-      }
-      if (cardCvc.length < 3) {
-        setError('Please enter a valid CVC');
-        return false;
-      }
-      if (!cardName.trim()) {
-        setError('Please enter the cardholder name');
-        return false;
-      }
-    } else {
-      // Mobile payment
+    if (paymentMethod !== 'card') {
+      // Mobile payment — basic phone check for demo
       const phone = phoneNumber.replace(/\D/g, '');
       if (phone.length < 9) {
         setError('Please enter a valid phone number');
@@ -110,7 +78,6 @@ function CheckoutContent() {
     setProcessing(true);
     setError('');
 
-    // Brief visual feedback
     await new Promise((r) => setTimeout(r, 300));
 
     try {
@@ -122,7 +89,8 @@ function CheckoutContent() {
           planId,
           interval,
           provider,
-          cardLast4: paymentMethod === 'card' ? cardNumber.replace(/\s/g, '').slice(-4) : undefined,
+          // Demo mode: always use test card last4 — never collect real card data
+          cardLast4: paymentMethod === 'card' ? '4242' : undefined,
         }),
       });
 
@@ -202,16 +170,7 @@ function CheckoutContent() {
                   </div>
 
                   {paymentMethod === 'card' ? (
-                    <CardForm
-                      cardNumber={cardNumber}
-                      cardExpiry={cardExpiry}
-                      cardCvc={cardCvc}
-                      cardName={cardName}
-                      onCardNumber={(v) => setCardNumber(formatCardNumber(v))}
-                      onExpiry={(v) => setCardExpiry(formatExpiry(v))}
-                      onCvc={(v) => setCardCvc(v.replace(/\D/g, '').slice(0, 4))}
-                      onName={setCardName}
-                    />
+                    <DemoCardDisplay />
                   ) : (
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/70">
@@ -237,16 +196,7 @@ function CheckoutContent() {
                 </>
               ) : (
                 /* Stripe — card only */
-                <CardForm
-                  cardNumber={cardNumber}
-                  cardExpiry={cardExpiry}
-                  cardCvc={cardCvc}
-                  cardName={cardName}
-                  onCardNumber={(v) => setCardNumber(formatCardNumber(v))}
-                  onExpiry={(v) => setCardExpiry(formatExpiry(v))}
-                  onCvc={(v) => setCardCvc(v.replace(/\D/g, '').slice(0, 4))}
-                  onName={setCardName}
-                />
+                <DemoCardDisplay />
               )}
 
               {error && (
@@ -358,81 +308,30 @@ function CheckoutContent() {
   );
 }
 
-function CardForm({
-  cardNumber,
-  cardExpiry,
-  cardCvc,
-  cardName,
-  onCardNumber,
-  onExpiry,
-  onCvc,
-  onName,
-}: {
-  cardNumber: string;
-  cardExpiry: string;
-  cardCvc: string;
-  cardName: string;
-  onCardNumber: (v: string) => void;
-  onExpiry: (v: string) => void;
-  onCvc: (v: string) => void;
-  onName: (v: string) => void;
-}) {
+/**
+ * Demo card display — shows pre-filled test card details (read-only).
+ * SECURITY: Never collects real card data. In production with real Stripe keys,
+ * users are redirected to Stripe Checkout (hosted page) which handles PCI compliance.
+ */
+function DemoCardDisplay() {
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/70">
-          Card Number
-        </label>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="4242 4242 4242 4242"
-            value={cardNumber}
-            onChange={(e) => onCardNumber(e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white pl-3 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-white/[0.1] dark:bg-[#12161B] dark:text-white dark:placeholder-white/30"
-          />
-          <CreditCard className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/30" />
+    <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800/30 dark:bg-blue-900/10">
+      <p className="text-xs font-medium text-blue-700 dark:text-blue-400">
+        Test Mode — Pre-filled test card
+      </p>
+      <div className="space-y-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-white/50">Card</span>
+          <span className="font-mono text-gray-900 dark:text-white">4242 4242 4242 4242</span>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/70">
-            Expiry
-          </label>
-          <input
-            type="text"
-            placeholder="MM/YY"
-            value={cardExpiry}
-            onChange={(e) => onExpiry(e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-white/[0.1] dark:bg-[#12161B] dark:text-white dark:placeholder-white/30"
-          />
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-white/50">Expiry</span>
+          <span className="font-mono text-gray-900 dark:text-white">12/28</span>
         </div>
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/70">
-            CVC
-          </label>
-          <input
-            type="text"
-            placeholder="123"
-            value={cardCvc}
-            onChange={(e) => onCvc(e.target.value)}
-            className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-white/[0.1] dark:bg-[#12161B] dark:text-white dark:placeholder-white/30"
-          />
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-white/50">CVC</span>
+          <span className="font-mono text-gray-900 dark:text-white">123</span>
         </div>
-      </div>
-
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/70">
-          Cardholder Name
-        </label>
-        <input
-          type="text"
-          placeholder="Name on card"
-          value={cardName}
-          onChange={(e) => onName(e.target.value)}
-          className="h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-white/[0.1] dark:bg-[#12161B] dark:text-white dark:placeholder-white/30"
-        />
       </div>
     </div>
   );

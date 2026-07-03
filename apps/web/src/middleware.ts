@@ -65,8 +65,33 @@ const CSRF_EXEMPT_PREFIXES = [
  *   1. Delete the `return null` line below.
  *   2. Confirm PUBLIC_HOSTS and NEXTAUTH_URL are set correctly in Vercel env vars.
  */
-function enforceCsrfOrigin(_request: NextRequest): NextResponse | null {
-  // Pre-launch: bypass CSRF blocking so invite / create / mutation routes work.
+function enforceCsrfOrigin(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl;
+  const method = request.method;
+
+  // Only enforce on state-mutating methods
+  if (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') return null;
+
+  // Exempt webhook routes — they come from external services (Stripe, Chapa)
+  if (pathname.startsWith('/api/webhooks/')) return null;
+
+  // Exempt cron routes — they come from Vercel Cron or curl
+  if (pathname.startsWith('/api/cron/')) return null;
+
+  // Exempt NextAuth routes — they handle their own CSRF
+  if (pathname.startsWith('/api/auth/')) return null;
+
+  const origin = request.headers.get('origin');
+  // If no origin header (e.g. same-origin requests from some browsers), allow
+  if (!origin) return null;
+
+  if (!isAllowedOrigin(origin)) {
+    return NextResponse.json(
+      { error: 'CSRF: origin not allowed' },
+      { status: 403 }
+    );
+  }
+
   return null;
 }
 
@@ -116,6 +141,29 @@ function checkAdminRateLimit(ip: string): boolean {
   return true;
 }
 
+// ---------------------------------------------------------------------------
+// Billing rate limiting — stricter per-IP limits for payment endpoints
+// ---------------------------------------------------------------------------
+const billingRateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const BILLING_RATE_LIMIT_MAX = 10;      // requests per window
+const BILLING_RATE_LIMIT_WINDOW = 60_000; // 1 minute in ms
+
+function checkBillingRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = billingRateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    billingRateLimitMap.set(ip, { count: 1, resetAt: now + BILLING_RATE_LIMIT_WINDOW });
+    return true;
+  }
+
+  entry.count++;
+  if (entry.count > BILLING_RATE_LIMIT_MAX) {
+    return false;
+  }
+  return true;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get('host') || '';
@@ -154,6 +202,20 @@ export async function middleware(request: NextRequest) {
     if (!checkAdminRateLimit(ip)) {
       return NextResponse.json(
         { error: 'Too many requests to admin API' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      );
+    }
+  }
+
+  // SECURITY (P0): Rate-limit billing API routes (10 requests/minute per IP)
+  if (pathname.startsWith('/api/billing/')) {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+    if (!checkBillingRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many billing requests. Please try again later.' },
         { status: 429, headers: { 'Retry-After': '60' } }
       );
     }
