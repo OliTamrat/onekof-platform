@@ -21,29 +21,33 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Onekof — Project Management Platform for African Teams',
+    default: 'Onekof — INSA Certified Project Management Platform for Ethiopian Teams',
     template: '%s | Onekof PM',
   },
   description:
-    'Onekof is the project management platform built for Ethiopian and East African teams. Ethiopian calendar, 5 languages (Amharic, Oromo, Tigrinya, Somali, English), ETB budget tracking, AI-powered documents, and data sovereignty with on-premise deployment.',
+    'Onekof is Ethiopia\'s first INSA-certified project management platform. Ethiopian calendar, Amharic & Oromo UI, budget tracking in ETB via Telebirr & CBE, on-premise deployment, and 7-day free trial. Built for how Ethiopian teams actually work.',
   keywords: [
     'Onekof',
     'Onekof PM',
-    'Onekof project management',
+    'INSA certified software',
+    'INSA certified project management',
     'Ethiopian project management',
     'project management Ethiopia',
     'project management Africa',
     'Ethiopian calendar project management',
     'Amharic project management',
     'ETB budget tracking',
+    'budget management Ethiopia',
+    'Telebirr payment',
+    'CBE Birr payment',
     'Jira alternative Ethiopia',
     'Jira alternative Africa',
     'project management platform',
     'kanban board Ethiopia',
-    'agile project management',
-    'collaboration platform Africa',
     'data sovereignty Ethiopia',
+    'on-premise deployment Ethiopia',
     'DAPS Analytics',
+    'Ethiopian software',
   ],
   authors: [{ name: 'DAPS Analytics' }],
   creator: 'DAPS Analytics',
@@ -62,9 +66,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: '/',
     siteName: 'Onekof',
-    title: 'Onekof — Project Management Platform for African Teams',
+    title: 'Onekof — INSA Certified Project Management for Ethiopian Teams',
     description:
-      'The project management platform built for Ethiopian and East African teams. Ethiopian calendar, 5 languages, ETB budgets, AI documents, and data sovereignty.',
+      'Ethiopia\'s first INSA-certified PM platform. Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE, on-premise deployment. 7-day free trial.',
     images: [
       {
         url: '/images/dashboard-desktop.png',
@@ -76,9 +80,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Onekof — Project Management Platform for African Teams',
+    title: 'Onekof — INSA Certified Project Management for Ethiopian Teams',
     description:
-      'Ethiopian calendar, 5 languages, ETB budgets, AI documents. Built for how African teams actually work.',
+      'INSA certified. Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE. 7-day free trial.',
     creator: '@onekof',
     images: ['/images/dashboard-desktop.png'],
   },
