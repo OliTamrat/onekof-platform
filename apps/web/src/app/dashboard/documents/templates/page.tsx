@@ -102,7 +102,7 @@ export default function DocumentsTemplatesPage() {
         ) : documents.length === 0 ? (
           <div className="text-center py-16">
             <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               {t('documents.noTemplates')}
             </p>
           </div>
@@ -121,10 +121,10 @@ export default function DocumentsTemplatesPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 truncate">
                       {doc.title || doc.fileName}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-white/50 mb-2">
+                    <p className="text-xs text-gray-600 dark:text-white/70 mb-2">
                       {doc.fileType}
                     </p>
-                    <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/70">
                       <Calendar className="h-3 w-3" />
                       {formatDate(doc.createdAt)}
                     </div>

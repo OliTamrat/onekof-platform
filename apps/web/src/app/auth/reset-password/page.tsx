@@ -149,7 +149,7 @@ function ResetPasswordContent() {
               <br />
               Secure Password
             </h1>
-            <p className="text-xl text-white/50 max-w-md">
+            <p className="text-xl text-white/70 max-w-md">
               Choose a strong password to keep your account safe and secure.
             </p>
           </div>
@@ -158,20 +158,20 @@ function ResetPasswordContent() {
           <div className="space-y-4 max-w-md">
             <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm">
               <div className="mt-0.5">
-                <Lock className="h-5 w-5 text-white/50" />
+                <Lock className="h-5 w-5 text-white/70" />
               </div>
               <div>
-                <p className="font-semibold text-white/85">Bank-level Security</p>
-                <p className="text-sm text-white/50 mt-1">Your password is encrypted with industry-standard protocols</p>
+                <p className="font-semibold text-white">Bank-level Security</p>
+                <p className="text-sm text-white/70 mt-1">Your password is encrypted with industry-standard protocols</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm">
               <div className="mt-0.5">
-                <CheckCircle2 className="h-5 w-5 text-white/50" />
+                <CheckCircle2 className="h-5 w-5 text-white/70" />
               </div>
               <div>
-                <p className="font-semibold text-white/85">One-time Use Link</p>
-                <p className="text-sm text-white/50 mt-1">This reset link expires after use for your protection</p>
+                <p className="font-semibold text-white">One-time Use Link</p>
+                <p className="text-sm text-white/70 mt-1">This reset link expires after use for your protection</p>
               </div>
             </div>
           </div>
@@ -196,7 +196,7 @@ function ResetPasswordContent() {
           {/* Back to signin link */}
           <Link
             href="/auth/signin"
-            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors"
+            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t('auth.backToSignIn')}
@@ -206,7 +206,7 @@ function ResetPasswordContent() {
             <h2 className="font-serif font-medium text-3xl text-white">
               {t('auth.resetPasswordTitle')}
             </h2>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-white/70">
               {t('resetPage.newPasswordDifferent')}
             </p>
           </div>
@@ -221,8 +221,8 @@ function ResetPasswordContent() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-white/85">{t('resetPage.success')}</p>
-                  <p className="text-sm text-white/50 mt-1">{message}</p>
+                  <p className="font-semibold text-white">{t('resetPage.success')}</p>
+                  <p className="text-sm text-white/70 mt-1">{message}</p>
                 </div>
               </div>
             </div>
@@ -237,8 +237,8 @@ function ResetPasswordContent() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-white/85">{t('resetPage.error')}</p>
-                  <p className="text-sm text-white/50 mt-1">{message}</p>
+                  <p className="font-semibold text-white">{t('resetPage.error')}</p>
+                  <p className="text-sm text-white/70 mt-1">{message}</p>
                 </div>
               </div>
             </div>
@@ -250,8 +250,8 @@ function ResetPasswordContent() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#181D23]">
                 <AlertCircle className="h-8 w-8 text-white/30" />
               </div>
-              <h3 className="text-lg font-semibold text-white/85 mb-2">{t('resetPage.invalidResetLink')}</h3>
-              <p className="text-sm text-white/50 mb-6">
+              <h3 className="text-lg font-semibold text-white mb-2">{t('resetPage.invalidResetLink')}</h3>
+              <p className="text-sm text-white/70 mb-6">
                 {t('resetPage.resetLinkExpiredOrInvalid')}
               </p>
               <Link
@@ -265,7 +265,7 @@ function ResetPasswordContent() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Password field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-white/85 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-white mb-2">
                   {t('auth.newPassword')}
                 </label>
                 <div className="relative">
@@ -277,7 +277,7 @@ function ResetPasswordContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={8}
-                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
+                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
                     placeholder={t('resetPage.enterNewPassword')}
                   />
                   <Button
@@ -285,7 +285,7 @@ function ResetPasswordContent() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/50"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/70"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </Button>
@@ -295,7 +295,7 @@ function ResetPasswordContent() {
                 {password && (
                   <div className="mt-3 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-white/50">{t('auth.passwordStrength')}:</span>
+                      <span className="text-xs font-medium text-white/70">{t('auth.passwordStrength')}:</span>
                       <span className={`text-xs font-semibold ${
                         passwordStrength === 'weak' ? 'text-red-400' :
                         passwordStrength === 'medium' ? 'text-yellow-400' :
@@ -317,7 +317,7 @@ function ResetPasswordContent() {
                 {/* Password requirements */}
                 {password && (
                   <div className="mt-4 space-y-2 rounded-lg border border-white/[0.08] bg-[#181D23] p-4">
-                    <p className="text-xs font-semibold text-white/50 mb-2">{t('resetPage.passwordMustContain')}</p>
+                    <p className="text-xs font-semibold text-white/70 mb-2">{t('resetPage.passwordMustContain')}</p>
                     {requirements.map((req, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <div className={`flex-shrink-0 flex items-center justify-center h-5 w-5 rounded-full transition-colors ${
@@ -329,7 +329,7 @@ function ResetPasswordContent() {
                             <X className="h-3 w-3 text-white/30" />
                           )}
                         </div>
-                        <span className={`text-xs ${req.met ? 'text-emerald-400 font-medium' : 'text-white/50'}`}>
+                        <span className={`text-xs ${req.met ? 'text-emerald-400 font-medium' : 'text-white/70'}`}>
                           {req.label}
                         </span>
                       </div>
@@ -340,7 +340,7 @@ function ResetPasswordContent() {
 
               {/* Confirm password field */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-white/85 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-white mb-2">
                   {t('auth.confirmNewPassword')}
                 </label>
                 <div className="relative">
@@ -351,7 +351,7 @@ function ResetPasswordContent() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
+                    className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-3 pl-10 pr-12 text-white placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-4 focus:ring-[#1C8C7D]/10 transition-all"
                     placeholder={t('resetPage.confirmNewPassword')}
                   />
                   <Button
@@ -359,7 +359,7 @@ function ResetPasswordContent() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/50"
+                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/70"
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </Button>
@@ -406,8 +406,8 @@ function ResetPasswordContent() {
                 <div className="flex gap-3">
                   <Lock className="h-5 w-5 text-[#2BB5A2] flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-white/85">{t('resetPage.securePasswordReset')}</p>
-                    <p className="text-xs text-white/50 mt-1">
+                    <p className="text-xs font-semibold text-white">{t('resetPage.securePasswordReset')}</p>
+                    <p className="text-xs text-white/70 mt-1">
                       {t('resetPage.passwordEncryptedOneTime')}
                     </p>
                   </div>
@@ -442,7 +442,7 @@ function ResetPasswordLoading() {
               <br />
               Secure Password
             </h1>
-            <p className="text-xl text-white/50 max-w-md">
+            <p className="text-xl text-white/70 max-w-md">
               Choose a strong password to keep your account safe and secure.
             </p>
           </div>

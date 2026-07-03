@@ -105,7 +105,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
         if (collapsed) {
           const activeClass = sectionActive
             ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-            : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]';
+            : 'text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.04]';
 
           if (!hasSubItems && section.href) {
             return (
@@ -161,7 +161,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                   'flex w-full items-center gap-2 h-auto px-3 py-2 text-sm font-medium justify-start',
                   sectionActive
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                    : 'text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -192,7 +192,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                   'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive(section.href!)
                     ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 dark:bg-primary-500/20'
-                    : 'text-gray-700 dark:text-white/85 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                    : 'text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -213,7 +213,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                         'flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         scopedProjectId
                           ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium'
-                          : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                          : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
                       )}
                     >
                       {scopedProject ? (
@@ -239,7 +239,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                             onClick={() => selectProject(null)}
                             className={cn(
                               'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors',
-                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white/85'
+                              !scopedProjectId ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white'
                             )}
                           >
                             {!scopedProjectId ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
@@ -252,7 +252,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                               onClick={() => selectProject(project.id)}
                               className={cn(
                                 'w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left hover:bg-slate-50 dark:hover:bg-[#181D23] transition-colors',
-                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white/85'
+                                scopedProjectId === project.id ? 'text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-white'
                               )}
                             >
                               {scopedProjectId === project.id ? <Check className="h-3.5 w-3.5 shrink-0" /> : <span className="w-3.5" />}
@@ -287,7 +287,7 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
                         'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
                         isActive(item.href)
                           ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium dark:bg-primary-500/20'
-                          : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white'
+                          : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white'
                       )}
                     >
                       {ItemIcon && <ItemIcon className="h-3.5 w-3.5 shrink-0" />}

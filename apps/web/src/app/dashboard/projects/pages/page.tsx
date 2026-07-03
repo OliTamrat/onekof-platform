@@ -47,7 +47,7 @@ export default function ProjectsPagesPage() {
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
-                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'}`}>
+                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'}`}>
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
                 </Link>
@@ -62,7 +62,7 @@ export default function ProjectsPagesPage() {
               <Book className="h-8 w-8 text-gray-400 dark:text-[#6B7684]" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t("projectPages.projectDocumentation")}</h2>
-            <p className="text-gray-600 dark:text-white/50 mb-6">{t("projectPages.projectDocumentationDesc")}</p>
+            <p className="text-gray-600 dark:text-white/70 mb-6">{t("projectPages.projectDocumentationDesc")}</p>
             <div className="grid grid-cols-1 gap-4 mt-8 max-w-md mx-auto">
               <div className="p-4 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08] text-left hover:border-primary-500 cursor-pointer transition-colors">
                 <div className="flex items-start gap-3">
@@ -71,7 +71,7 @@ export default function ProjectsPagesPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.blankPage")}</h3>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t("projectPages.blankPageDesc")}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t("projectPages.blankPageDesc")}</p>
                   </div>
                 </div>
               </div>
@@ -82,7 +82,7 @@ export default function ProjectsPagesPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.projectBrief")}</h3>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t("projectPages.projectBriefDesc")}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t("projectPages.projectBriefDesc")}</p>
                   </div>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function ProjectsPagesPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t("projectPages.technicalSpec")}</h3>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t("projectPages.technicalSpecDesc")}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t("projectPages.technicalSpecDesc")}</p>
                   </div>
                 </div>
               </div>

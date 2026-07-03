@@ -130,7 +130,7 @@ function BackButton() {
   return (
     <button
       onClick={handleBack}
-      className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg text-gray-500 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
+      className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg text-gray-500 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors shrink-0"
       title="Back"
       aria-label="Back"
     >
@@ -190,7 +190,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
               'flex items-center gap-1.5 px-2.5 md:px-3 py-2.5 text-xs md:text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap shrink-0',
               isActive
                 ? 'border-primary-500 text-primary-500'
-                : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
             )}
           >
             <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
@@ -208,7 +208,7 @@ function NavigationTabs({ tabs, baseHref, activeTab }: { tabs: TabDefinition[]; 
                 'flex items-center gap-1.5 px-2.5 h-auto py-2.5 text-xs md:text-sm font-medium rounded-none border-b-2 whitespace-nowrap shrink-0',
                 overflowTabs.some(tab => activeTab === tab.id)
                   ? 'border-primary-500 text-primary-500'
-                  : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#181D23]'
               )}
             >
               <MoreHorizontal className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0" />
@@ -332,7 +332,7 @@ export function UnifiedPageHeader({
               {crumb.href ? (
                 <Link
                   href={crumb.href}
-                  className="text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   {crumb.label}
                 </Link>
@@ -359,7 +359,7 @@ export function UnifiedPageHeader({
           <div className="flex-1 min-w-0">
             <h1 className="text-lg md:text-2xl font-bold text-gray-900 dark:text-white truncate">{title}</h1>
             {description && (
-              <p className="text-xs md:text-sm text-gray-600 dark:text-white/50 mt-1 line-clamp-1">{description}</p>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-white/70 mt-1 line-clamp-1">{description}</p>
             )}
           </div>
           {taskCounts && (
@@ -400,7 +400,7 @@ export function UnifiedPageHeader({
                   variant="ghost"
                   size="icon"
                   onClick={() => handleSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-white/85"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>

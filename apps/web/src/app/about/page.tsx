@@ -157,7 +157,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white/85 selection:bg-[#1C8C7D]/20">
+    <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white selection:bg-[#1C8C7D]/20">
       <GrainOverlay />
 
       {/* ═══ NAVBAR ═══ */}
@@ -176,7 +176,7 @@ export default function AboutPage() {
                 key={link.label}
                 href={link.href}
                 className={`rounded-lg px-4 py-2 text-[14px] font-medium tracking-[0.02em] transition-all hover:text-white ${
-                  link.href === '/about' ? 'text-white' : 'text-white/50'
+                  link.href === '/about' ? 'text-white' : 'text-white/70'
                 }`}
               >
                 {link.label}
@@ -188,7 +188,7 @@ export default function AboutPage() {
             <LanguageSwitcher />
             <Link
               href="/auth/signin"
-              className="rounded-full border border-white/[0.08] px-4 py-2 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"
+              className="rounded-full border border-white/[0.08] px-4 py-2 text-[13px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white"
             >
               Sign In
             </Link>
@@ -209,9 +209,9 @@ export default function AboutPage() {
             aria-label="Toggle menu"
           >
             {mobileOpen ? (
-              <X className="h-4 w-4 text-white/80" />
+              <X className="h-4 w-4 text-white" />
             ) : (
-              <Menu className="h-4 w-4 text-white/80" />
+              <Menu className="h-4 w-4 text-white" />
             )}
           </button>
         </div>
@@ -265,7 +265,7 @@ export default function AboutPage() {
               <span className="font-serif italic text-[#2BB5A2]">reimagined for Africa</span>
             </h1>
 
-            <p className="mx-auto mt-7 max-w-2xl text-[18px] leading-[1.75] text-white/50">
+            <p className="mx-auto mt-7 max-w-2xl text-[18px] leading-[1.75] text-white/70">
               We believe the best project management tools should understand how your teams actually
               work — in your language, your currency, your calendar, on your infrastructure.
             </p>
@@ -284,15 +284,15 @@ export default function AboutPage() {
               <SectionLabel>Our Mission</SectionLabel>
               <h2 className="font-serif text-[clamp(2rem,4vw,3rem)] font-medium leading-[1.15]">
                 Closing the productivity gap{' '}
-                <span className="font-serif italic text-white/40">for Ethiopian organizations</span>
+                <span className="font-serif italic text-white/60">for Ethiopian organizations</span>
               </h2>
-              <p className="mt-7 text-[16px] leading-[1.8] text-white/50">
+              <p className="mt-7 text-[16px] leading-[1.8] text-white/70">
                 Ethiopian organizations manage billions of Birr in projects using spreadsheets,
                 WhatsApp groups, and paper-based workflows. International tools don&apos;t serve
                 this market — they require constant internet, store data outside the country, and
                 only speak English.
               </p>
-              <p className="mt-5 text-[16px] leading-[1.8] text-white/50">
+              <p className="mt-5 text-[16px] leading-[1.8] text-white/70">
                 Onekof was purpose-built to change that. We deliver enterprise-grade project
                 management that runs on your own servers, speaks your language, and works even when
                 the internet doesn&apos;t.
@@ -327,7 +327,7 @@ export default function AboutPage() {
                   <p className="font-serif text-[2.25rem] font-semibold text-[#2BB5A2]">
                     {stat.number}
                   </p>
-                  <p className="mt-1 text-[13px] text-white/40">{stat.label}</p>
+                  <p className="mt-1 text-[13px] text-white/60">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -354,13 +354,13 @@ export default function AboutPage() {
                     software built from Ethiopian roots
                   </span>
                 </h2>
-                <p className="mt-7 text-[16px] leading-[1.8] text-white/50">
+                <p className="mt-7 text-[16px] leading-[1.8] text-white/70">
                   DAPS Analytics is the company behind Onekof. We were founded with a single
                   mandate: build the software infrastructure that Ethiopian and East African
                   organizations deserve — not adapted from tools designed for other markets, but
                   built from the ground up for ours.
                 </p>
-                <p className="mt-5 text-[16px] leading-[1.8] text-white/50">
+                <p className="mt-5 text-[16px] leading-[1.8] text-white/70">
                   Based in Maryland, USA, with Ethiopian roots at our core, we operate at the
                   intersection of diaspora perspective and on-the-ground African reality. We
                   understand both worlds, and we build software that bridges them.
@@ -396,8 +396,8 @@ export default function AboutPage() {
                       <item.icon className="h-4 w-4 text-[#1C8C7D]" />
                     </div>
                     <div>
-                      <p className="text-[14px] font-semibold text-white/85">{item.title}</p>
-                      <p className="mt-1 text-[13px] leading-relaxed text-white/50">
+                      <p className="text-[14px] font-semibold text-white">{item.title}</p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-white/70">
                         {item.description}
                       </p>
                     </div>
@@ -418,9 +418,9 @@ export default function AboutPage() {
             <SectionLabel>Why Onekof</SectionLabel>
             <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
               Built different,{' '}
-              <span className="font-serif italic text-white/40">on purpose</span>
+              <span className="font-serif italic text-white/60">on purpose</span>
             </h2>
-            <p className="mt-5 text-[17px] leading-[1.75] text-white/50">
+            <p className="mt-5 text-[17px] leading-[1.75] text-white/70">
               Every design decision in Onekof traces back to a specific failure mode we observed in
               how international tools serve African organizations.
             </p>
@@ -435,8 +435,8 @@ export default function AboutPage() {
                 <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#1C8C7D]/[0.08] transition-colors duration-300 group-hover:bg-[#1C8C7D]/[0.14]">
                   <item.icon className="h-5 w-5 text-[#1C8C7D] transition-colors duration-300 group-hover:text-[#2BB5A2]" />
                 </div>
-                <h3 className="mb-2.5 text-[15px] font-semibold text-white/85">{item.title}</h3>
-                <p className="text-[13px] leading-relaxed text-white/50">{item.description}</p>
+                <h3 className="mb-2.5 text-[15px] font-semibold text-white">{item.title}</h3>
+                <p className="text-[13px] leading-relaxed text-white/70">{item.description}</p>
               </div>
             ))}
           </div>
@@ -454,7 +454,7 @@ export default function AboutPage() {
               The Onekof{' '}
               <span className="font-serif italic text-[#2BB5A2]">product experience</span>
             </h2>
-            <p className="mt-5 text-[17px] leading-[1.75] text-white/50">
+            <p className="mt-5 text-[17px] leading-[1.75] text-white/70">
               From budget tracking to sprint planning — see how Ethiopian teams get work done with
               Onekof every day.
             </p>
@@ -487,13 +487,13 @@ export default function AboutPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setVideoIdx((prev) => (prev - 1 + productVideos.length) % productVideos.length)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setVideoIdx((prev) => (prev + 1) % productVideos.length)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-[#1C8C7D]/30 hover:text-white"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
@@ -510,7 +510,7 @@ export default function AboutPage() {
                     />
                   ))}
                 </div>
-                <span className="text-[13px] font-medium text-white/50">{productVideos[videoIdx].label}</span>
+                <span className="text-[13px] font-medium text-white/70">{productVideos[videoIdx].label}</span>
               </div>
 
               {/* Play label */}
@@ -547,10 +547,10 @@ export default function AboutPage() {
                   <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#1C8C7D]/[0.08]">
                     <value.icon className="h-5 w-5 text-[#1C8C7D]" />
                   </div>
-                  <h3 className="mb-3 font-serif text-[1.2rem] font-medium text-white/85">
+                  <h3 className="mb-3 font-serif text-[1.2rem] font-medium text-white">
                     {value.title}
                   </h3>
-                  <p className="text-[14px] leading-[1.8] text-white/50">{value.description}</p>
+                  <p className="text-[14px] leading-[1.8] text-white/70">{value.description}</p>
                 </div>
               </div>
             ))}
@@ -567,9 +567,9 @@ export default function AboutPage() {
             <SectionLabel>Deployment</SectionLabel>
             <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
               One platform,{' '}
-              <span className="font-serif italic text-white/40">three deployment tiers</span>
+              <span className="font-serif italic text-white/60">three deployment tiers</span>
             </h2>
-            <p className="mt-5 text-[17px] leading-[1.75] text-white/50">
+            <p className="mt-5 text-[17px] leading-[1.75] text-white/70">
               The same Onekof codebase runs across all three tiers. Zero code changes between
               environments.
             </p>
@@ -636,16 +636,16 @@ export default function AboutPage() {
                   >
                     {tier.tier}
                   </span>
-                  <h3 className="mt-4 font-serif text-[1.35rem] font-medium text-white/85">
+                  <h3 className="mt-4 font-serif text-[1.35rem] font-medium text-white">
                     {tier.name}
                   </h3>
-                  <p className="mt-1 text-[12px] font-medium text-white/40">{tier.audience}</p>
-                  <p className="mt-4 text-[13px] leading-relaxed text-white/50">
+                  <p className="mt-1 text-[12px] font-medium text-white/60">{tier.audience}</p>
+                  <p className="mt-4 text-[13px] leading-relaxed text-white/70">
                     {tier.description}
                   </p>
                   <ul className="mt-6 space-y-2.5">
                     {tier.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/50">
+                      <li key={f} className="flex items-center gap-2.5 text-[13px] text-white/70">
                         <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-[#2BB5A2]" />
                         {f}
                       </li>
@@ -679,7 +679,7 @@ export default function AboutPage() {
                   Start free, no credit card required.
                 </span>
               </h2>
-              <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
+              <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/70">
                 Join organizations across Ethiopia and the diaspora building a better way to work
                 together.
               </p>
@@ -715,7 +715,7 @@ export default function AboutPage() {
                 </div>
                 <span className="text-[16px] font-bold">Onekof</span>
               </div>
-              <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/50">
+              <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 Modern project management built for Ethiopian teams. Native calendar, local
                 languages, ETB budgets, and workflows designed for how you actually work.
               </p>
@@ -728,7 +728,7 @@ export default function AboutPage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-[#1C8C7D]/20 hover:bg-[#1C8C7D]/10 hover:text-[#1C8C7D]"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold text-white/70 transition-all hover:border-[#1C8C7D]/20 hover:bg-[#1C8C7D]/10 hover:text-[#1C8C7D]"
                   >
                     {social.letter}
                   </a>
@@ -777,7 +777,7 @@ export default function AboutPage() {
                     <li key={link.label}>
                       <a
                         href={link.href}
-                        className="text-[14px] text-white/50 transition-colors hover:text-white"
+                        className="text-[14px] text-white/70 transition-colors hover:text-white"
                       >
                         {link.label}
                       </a>
@@ -801,7 +801,7 @@ export default function AboutPage() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-[13px] text-white/30 transition-colors hover:text-white/50"
+                  className="text-[13px] text-white/30 transition-colors hover:text-white/70"
                 >
                   {link.label}
                 </a>

@@ -249,7 +249,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                 <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('common.total')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/70">{t('common.total')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
               {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
@@ -260,7 +260,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('budget.approved')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/70">{t('budget.approved')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-emerald-600 dark:text-emerald-400">
               {isLoading ? '...' : approvedCount}
@@ -271,7 +271,7 @@ export default function BudgetExpensesPage() {
               <div className="h-7 w-7 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-white/50">{t('budget.pending')}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/70">{t('budget.pending')}</span>
             </div>
             <div className="text-lg md:text-xl font-bold text-amber-600 dark:text-amber-400">
               {isLoading ? '...' : pendingCount}
@@ -327,7 +327,7 @@ export default function BudgetExpensesPage() {
           <div className="text-center py-16">
             <Receipt className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noExpensesFound')}</h3>
-            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
               {searchQuery || statusFilter !== 'all'
                 ? t('budget.tryAdjustingFilters')
                 : t('budget.uploadReceiptGetStarted')}
@@ -354,7 +354,7 @@ export default function BudgetExpensesPage() {
                           {expense.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/50">
+                      <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/70">
                         {expense.category?.name && (
                           <span className="flex items-center gap-1">
                             <Tag className="h-3 w-3" />

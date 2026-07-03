@@ -102,7 +102,7 @@ export default function DocumentsSharedPage() {
         ) : documents.length === 0 ? (
           <div className="text-center py-16">
             <Users className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               {t('documents.noSharedDocuments')}
             </p>
           </div>
@@ -119,7 +119,7 @@ export default function DocumentsSharedPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 truncate">
                       {doc.title || doc.fileName}
                     </h3>
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                       {doc.uploadedBy && (
                         <span className="flex items-center gap-1">
                           <User className="h-3 w-3" />

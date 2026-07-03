@@ -112,7 +112,7 @@ function VerifyEmailContent() {
                 </>
               )}
             </h1>
-            <p className="text-lg text-white/50">
+            <p className="text-lg text-white/70">
               {status === 'success'
                 ? t('verifyEmail.canAccessAllFeatures')
                 : t('verifyEmail.oneMoreStep')}
@@ -120,9 +120,9 @@ function VerifyEmailContent() {
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.06] p-4 backdrop-blur-sm">
-            <Mail className="h-8 w-8 text-white/50" />
+            <Mail className="h-8 w-8 text-white/70" />
             <div>
-              <div className="font-semibold text-white/85">{t('verifyEmail.checkYourInbox')}</div>
+              <div className="font-semibold text-white">{t('verifyEmail.checkYourInbox')}</div>
               <div className="text-sm text-white/30">
                 {t('verifyEmail.sentVerificationLink')}
               </div>
@@ -152,7 +152,7 @@ function VerifyEmailContent() {
               {status === 'success' && t('verifyEmail.emailVerified')}
               {status === 'error' && t('verifyEmail.verificationFailed')}
             </h2>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-white/70">
               {status === 'loading' && t('verifyEmail.pleaseWaitVerifying')}
               {status === 'success' && t('verifyEmail.accountVerified')}
               {status === 'error' && t('verifyEmail.couldNotVerify')}
@@ -164,7 +164,7 @@ function VerifyEmailContent() {
             {status === 'loading' && (
               <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
                 <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#2BB5A2]" />
-                <p className="text-sm text-white/50">{t('verifyEmail.verifyingEmailAddress')}</p>
+                <p className="text-sm text-white/70">{t('verifyEmail.verifyingEmailAddress')}</p>
               </div>
             )}
 
@@ -172,7 +172,7 @@ function VerifyEmailContent() {
               <div className="space-y-4">
                 <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
                   <CheckCircle2 className="mb-4 h-12 w-12 text-emerald-400" />
-                  <p className="text-center font-medium text-white/85">{message}</p>
+                  <p className="text-center font-medium text-white">{message}</p>
                 </div>
                 <Link
                   href="/auth/signin"
@@ -189,8 +189,8 @@ function VerifyEmailContent() {
                 <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#12161B] p-4">
                   <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-400 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-white/85">{message}</p>
-                    <p className="mt-1 text-xs text-white/50">
+                    <p className="text-sm font-medium text-white">{message}</p>
+                    <p className="mt-1 text-xs text-white/70">
                       {t('verifyEmail.linkExpiredOrUsed')}
                     </p>
                   </div>
@@ -198,12 +198,12 @@ function VerifyEmailContent() {
 
                 {/* Resend verification form */}
                 <div className="rounded-xl border border-white/[0.08] bg-[#12161B] p-6">
-                  <h3 className="mb-4 text-sm font-semibold text-white/85">
+                  <h3 className="mb-4 text-sm font-semibold text-white">
                     {t('verifyEmail.requestNewLink')}
                   </h3>
                   <form onSubmit={handleResendVerification} className="space-y-3">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-white/50">
+                      <label htmlFor="email" className="block text-sm font-medium text-white/70">
                         {t('verifyEmail.emailAddress')}
                       </label>
                       <div className="relative mt-1">
@@ -214,7 +214,7 @@ function VerifyEmailContent() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
-                          className="w-full rounded-lg border border-white/[0.08] bg-[#181D23] py-2.5 pl-10 pr-4 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
+                          className="w-full rounded-lg border border-white/[0.08] bg-[#181D23] py-2.5 pl-10 pr-4 text-white placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
                           placeholder="you@company.com"
                         />
                       </div>
@@ -274,15 +274,15 @@ function VerifyEmailLoading() {
               <br />
               Almost There.
             </h1>
-            <p className="text-lg text-white/50">
+            <p className="text-lg text-white/70">
               Just one more step to get started with Onekof.
             </p>
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.06] p-4 backdrop-blur-sm">
-            <Mail className="h-8 w-8 text-white/50" />
+            <Mail className="h-8 w-8 text-white/70" />
             <div>
-              <div className="font-semibold text-white/85">Check your inbox</div>
+              <div className="font-semibold text-white">Check your inbox</div>
               <div className="text-sm text-white/30">
                 We&apos;ve sent you a verification link
               </div>
@@ -308,14 +308,14 @@ function VerifyEmailLoading() {
 
           <div className="mb-8">
             <h2 className="font-serif font-medium text-3xl text-white">Verifying your email...</h2>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-white/70">
               Please wait while we verify your email address.
             </p>
           </div>
 
           <div className="flex flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#12161B] p-8">
             <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#2BB5A2]" />
-            <p className="text-sm text-white/50">Verifying your email address...</p>
+            <p className="text-sm text-white/70">Verifying your email address...</p>
           </div>
         </div>
       </div>

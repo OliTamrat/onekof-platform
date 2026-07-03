@@ -92,7 +92,7 @@ export default function ProjectsSettingsPage() {
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white"
+                  className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white"
                 >
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
@@ -116,7 +116,7 @@ export default function ProjectsSettingsPage() {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
                       activeSection === section.id
                         ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20'
-                        : 'text-gray-700 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                        : 'text-gray-700 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -136,7 +136,7 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.generalSettings")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.generalSettingsDesc")}
                     </p>
                   </div>
@@ -169,7 +169,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="autoArchive" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.autoArchive")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.autoArchiveDesc")}
                         </p>
                       </div>
@@ -187,7 +187,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="requireApproval" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.requireApproval")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.requireApprovalDesc")}
                         </p>
                       </div>
@@ -202,7 +202,7 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.notificationPreferences")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.notificationPreferencesDesc")}
                     </p>
                   </div>
@@ -220,7 +220,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.emailNotifications")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.emailNotificationsDesc")}
                         </p>
                       </div>
@@ -238,7 +238,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="notifyOnMention" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.notifyWhenMentioned")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.notifyWhenMentionedDesc")}
                         </p>
                       </div>
@@ -256,7 +256,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="notifyOnAssignment" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.notifyOnAssignment")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.notifyOnAssignmentDesc")}
                         </p>
                       </div>
@@ -274,7 +274,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="weeklyDigest" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.weeklyProjectDigest")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.weeklyProjectDigestDesc")}
                         </p>
                       </div>
@@ -289,13 +289,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.membersPermissions")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.membersPermissionsDesc")}
                     </p>
                   </div>
 
                   <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.membersComingSoon")}
                     </p>
                   </div>
@@ -308,13 +308,13 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.workflows")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.workflowsDesc")}
                     </p>
                   </div>
 
                   <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.workflowsComingSoon")}
                     </p>
                   </div>
@@ -327,7 +327,7 @@ export default function ProjectsSettingsPage() {
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {t("projectSettings.security")}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {t("projectSettings.securityDesc")}
                     </p>
                   </div>
@@ -345,7 +345,7 @@ export default function ProjectsSettingsPage() {
                         <label htmlFor="allowGuestAccess" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                           {t("projectSettings.allowGuestAccess")}
                         </label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {t("projectSettings.allowGuestAccessDesc")}
                         </p>
                       </div>

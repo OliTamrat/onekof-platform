@@ -490,7 +490,7 @@ export default function IntegrationsPage() {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('integrationsPage.title')}</h1>
-                  <p className="text-xs text-white/30 dark:text-white/50">
+                  <p className="text-xs text-white/30 dark:text-white/70">
                     {connectedCount > 0 && (
                       <span className="text-[#1C8C7D] font-medium">
                         {t('integrationsPage.connectedCount').replace('{count}', String(connectedCount))}
@@ -514,7 +514,7 @@ export default function IntegrationsPage() {
             {/* Search + filters */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1 max-w-lg">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                 <input
                   type="text"
                   placeholder={t('integrationsPage.searchPlaceholder')}
@@ -532,7 +532,7 @@ export default function IntegrationsPage() {
                       'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
                       categoryFilter === key
                         ? 'bg-primary-500 text-white'
-                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-600 dark:text-white/50 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-slate-100 dark:bg-[#181D23] text-slate-600 dark:text-white/70 hover:bg-slate-200 dark:hover:bg-slate-700'
                     )}
                   >
                     {categoryFilterLabels[key]}
@@ -587,7 +587,7 @@ export default function IntegrationsPage() {
                 {comingSoon.length > 0 && (
                   <IntegrationSection
                     title={t('integrationsPage.sectionComingSoon')}
-                    icon={<Clock className="h-4 w-4 text-white/50" />}
+                    icon={<Clock className="h-4 w-4 text-white/70" />}
                     integrations={comingSoon}
                     selected={selected}
                     onSelect={setSelected}
@@ -598,7 +598,7 @@ export default function IntegrationsPage() {
                 {filtered.length === 0 && (
                   <div className="text-center py-16">
                     <Search className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-                    <p className="text-sm text-white/30 dark:text-white/50">
+                    <p className="text-sm text-white/30 dark:text-white/70">
                       {t('integrationsPage.noMatch').replace('{search}', search)}
                     </p>
                   </div>
@@ -609,13 +609,13 @@ export default function IntegrationsPage() {
                   <div className="rounded-xl border border-slate-200 dark:border-white/[0.08] bg-gradient-to-r from-slate-50 to-white dark:from-[#12161B] dark:to-[#0B0E11] p-6">
                     <div className="flex items-start gap-4">
                       <div className="rounded-xl bg-slate-100 dark:bg-[#181D23] p-3">
-                        <Shield className="h-6 w-6 text-slate-600 dark:text-white/50" />
+                        <Shield className="h-6 w-6 text-slate-600 dark:text-white/70" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
                           {t('integrationsPage.buildCustomTitle')}
                         </h3>
-                        <p className="text-xs text-white/30 dark:text-white/50 leading-relaxed mb-3">
+                        <p className="text-xs text-white/30 dark:text-white/70 leading-relaxed mb-3">
                           {t('integrationsPage.buildCustomDesc')}
                         </p>
                         <div className="flex items-center gap-3">
@@ -682,7 +682,7 @@ function IntegrationSection({
       <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white mb-4">
         {icon}
         {title}
-        <span className="text-xs font-normal text-white/50">({integrations.length})</span>
+        <span className="text-xs font-normal text-white/70">({integrations.length})</span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {integrations.map(integration => (
@@ -757,13 +757,13 @@ function IntegrationCard({
                 {t('integrationsPage.statusConnected')}
               </span>
               {connection.externalAccountName && (
-                <span className="text-[10px] text-white/50 dark:text-white/30 truncate max-w-[120px]">
+                <span className="text-[10px] text-white/70 dark:text-white/30 truncate max-w-[120px]">
                   {connection.externalAccountName}
                 </span>
               )}
             </div>
           ) : isComingSoon ? (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-white/30 dark:bg-white/[0.08] dark:text-white/50">
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-white/30 dark:bg-white/[0.08] dark:text-white/70">
               <Clock className="h-3 w-3" />
               {t('integrationsPage.statusComingSoon')}
             </span>
@@ -775,23 +775,23 @@ function IntegrationCard({
           )}
         </div>
         <ChevronRight className={cn(
-          'h-4 w-4 shrink-0 mt-1 transition-transform text-white/50',
+          'h-4 w-4 shrink-0 mt-1 transition-transform text-white/70',
           isSelected ? 'text-primary-500 translate-x-0.5' : 'group-hover:translate-x-0.5'
         )} />
       </div>
 
-      <p className="text-xs text-white/30 dark:text-white/50 leading-relaxed mb-3 line-clamp-2">
+      <p className="text-xs text-white/30 dark:text-white/70 leading-relaxed mb-3 line-clamp-2">
         {t(`integrationsPage.${integration.descriptionKey}`)}
       </p>
 
       <div className="flex flex-wrap gap-1.5 overflow-hidden">
         {integration.featureKeys.slice(0, 2).map(key => (
-          <span key={key} className="text-[10px] font-medium bg-slate-100 dark:bg-[#181D23] text-slate-600 dark:text-white/50 px-2 py-0.5 rounded truncate max-w-[160px]">
+          <span key={key} className="text-[10px] font-medium bg-slate-100 dark:bg-[#181D23] text-slate-600 dark:text-white/70 px-2 py-0.5 rounded truncate max-w-[160px]">
             {t(`integrationsPage.${key}`)}
           </span>
         ))}
         {integration.featureKeys.length > 2 && (
-          <span className="text-[10px] text-white/50 dark:text-white/30 shrink-0">+{integration.featureKeys.length - 2}</span>
+          <span className="text-[10px] text-white/70 dark:text-white/30 shrink-0">+{integration.featureKeys.length - 2}</span>
         )}
       </div>
     </button>
@@ -846,7 +846,7 @@ function IntegrationDetailPanel({
             <div>
               <h2 className="text-base font-semibold text-slate-900 dark:text-white">{integration.name}</h2>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-white/30 dark:text-white/50 capitalize">{integration.category}</span>
+                <span className="text-xs text-white/30 dark:text-white/70 capitalize">{integration.category}</span>
                 {isConnected && (
                   <>
                     <span className="text-slate-300">·</span>
@@ -861,7 +861,7 @@ function IntegrationDetailPanel({
           </div>
           <Button variant="ghost" size="icon"
             onClick={onClose}
-            className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] text-white/50 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] text-white/70 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -875,7 +875,7 @@ function IntegrationDetailPanel({
               'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
               activeTab === 'overview'
                 ? 'bg-white dark:bg-[#181D23] text-slate-900 dark:text-white shadow-sm'
-                : 'text-white/30 dark:text-white/50 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-white/30 dark:text-white/70 hover:text-slate-700 dark:hover:text-slate-300'
             )}
           >
             {t('integrationsPage.tabOverview')}
@@ -888,7 +888,7 @@ function IntegrationDetailPanel({
                   'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
                   activeTab === 'config'
                     ? 'bg-white dark:bg-[#181D23] text-slate-900 dark:text-white shadow-sm'
-                    : 'text-white/30 dark:text-white/50 hover:text-slate-700 dark:hover:text-slate-300'
+                    : 'text-white/30 dark:text-white/70 hover:text-slate-700 dark:hover:text-slate-300'
                 )}
               >
                 {t('integrationsPage.tabConfigure')}
@@ -899,7 +899,7 @@ function IntegrationDetailPanel({
                   'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
                   activeTab === 'activity'
                     ? 'bg-white dark:bg-[#181D23] text-slate-900 dark:text-white shadow-sm'
-                    : 'text-white/30 dark:text-white/50 hover:text-slate-700 dark:hover:text-slate-300'
+                    : 'text-white/30 dark:text-white/70 hover:text-slate-700 dark:hover:text-slate-300'
                 )}
               >
                 {t('integrationsPage.tabActivity')}
@@ -913,7 +913,7 @@ function IntegrationDetailPanel({
                 'flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
                 activeTab === 'config'
                   ? 'bg-white dark:bg-[#181D23] text-slate-900 dark:text-white shadow-sm'
-                  : 'text-white/30 dark:text-white/50 hover:text-slate-700 dark:hover:text-slate-300'
+                  : 'text-white/30 dark:text-white/70 hover:text-slate-700 dark:hover:text-slate-300'
               )}
             >
               {t('integrationsPage.tabSetupGuide')}
@@ -1050,14 +1050,14 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-white/30 dark:text-white/50 mt-3 leading-relaxed">
+          <p className="text-[10px] text-white/30 dark:text-white/70 mt-3 leading-relaxed">
             Configure notification rules and sync settings in the Configure tab.
           </p>
         </div>
       )}
 
       <div>
-        <p className="text-sm text-slate-600 dark:text-white/50 leading-relaxed">
+        <p className="text-sm text-slate-600 dark:text-white/70 leading-relaxed">
           {t(`integrationsPage.${integration.descriptionKey}`)}
         </p>
       </div>
@@ -1087,14 +1087,14 @@ function OverviewTab({ integration, connection }: { integration: Integration; co
             {integration.status === 'coming_soon' ? (
               <>
                 <div className="h-2.5 w-2.5 rounded-full bg-slate-400 animate-pulse" />
-                <span className="text-sm text-slate-600 dark:text-white/50">
+                <span className="text-sm text-slate-600 dark:text-white/70">
                   {t('integrationsPage.statusInDevelopment')}
                 </span>
               </>
             ) : (
               <>
                 <div className="h-2.5 w-2.5 rounded-full bg-primary-500" />
-                <span className="text-sm text-slate-600 dark:text-white/50">
+                <span className="text-sm text-slate-600 dark:text-white/70">
                   {t('integrationsPage.statusReadyToConnect')}
                 </span>
               </>
@@ -1138,7 +1138,7 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
           <div className="rounded-lg bg-slate-900 dark:bg-[#0B0E11] p-4 text-xs font-mono space-y-1">
             {integration.provider === 'slack' && (
               <>
-                <div className="text-white/50"># Slack App credentials</div>
+                <div className="text-white/70"># Slack App credentials</div>
                 <div><span className="text-emerald-400">SLACK_CLIENT_ID</span>=<span className="text-white/30">your-slack-client-id</span></div>
                 <div><span className="text-emerald-400">SLACK_CLIENT_SECRET</span>=<span className="text-white/30">your-slack-client-secret</span></div>
                 <div><span className="text-emerald-400">SLACK_SIGNING_SECRET</span>=<span className="text-white/30">your-signing-secret</span></div>
@@ -1146,7 +1146,7 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
             )}
             {integration.provider === 'github' && (
               <>
-                <div className="text-white/50"># GitHub App credentials</div>
+                <div className="text-white/70"># GitHub App credentials</div>
                 <div><span className="text-emerald-400">GITHUB_APP_CLIENT_ID</span>=<span className="text-white/30">your-github-app-id</span></div>
                 <div><span className="text-emerald-400">GITHUB_APP_CLIENT_SECRET</span>=<span className="text-white/30">your-github-secret</span></div>
                 <div><span className="text-emerald-400">GITHUB_WEBHOOK_SECRET</span>=<span className="text-white/30">your-webhook-secret</span></div>
@@ -1154,7 +1154,7 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
             )}
             {integration.provider === 'google' && (
               <>
-                <div className="text-white/50"># Google OAuth (uses existing config)</div>
+                <div className="text-white/70"># Google OAuth (uses existing config)</div>
                 <div><span className="text-emerald-400">GOOGLE_CLIENT_ID</span>=<span className="text-white/30">your-google-client-id</span></div>
                 <div><span className="text-emerald-400">GOOGLE_CLIENT_SECRET</span>=<span className="text-white/30">your-google-secret</span></div>
                 <div><span className="text-emerald-400">GOOGLE_INTEGRATION_REDIRECT_URI</span>=<span className="text-white/30">callback-url</span></div>
@@ -1167,7 +1167,7 @@ function SetupGuideTab({ integration, isComingSoon }: { integration: Integration
       {isComingSoon && (
         <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-600 p-4 text-center">
           <Settings2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
-          <p className="text-xs text-white/30 dark:text-white/50">
+          <p className="text-xs text-white/30 dark:text-white/70">
             {t('integrationsPage.setupUnderDevelopment')}
           </p>
         </div>
@@ -1230,12 +1230,12 @@ function ConfigTab({
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#0B0E11] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configTeam')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configTeam')}</span>
                 <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).teamName as string}</span>
               </div>
               {!!(config as Record<string, unknown>).defaultChannelName && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configDefaultChannel')}</span>
+                  <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configDefaultChannel')}</span>
                   <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1">
                     <Hash className="h-3 w-3" />{(config as Record<string, unknown>).defaultChannelName as string}
                   </span>
@@ -1243,7 +1243,7 @@ function ConfigTab({
               )}
               {Array.isArray((config as Record<string, unknown>).channels) && ((config as Record<string, unknown>).channels as unknown[]).length > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configAvailableChannels')}</span>
+                  <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configAvailableChannels')}</span>
                   <span className="font-medium text-slate-900 dark:text-white">{((config as Record<string, unknown>).channels as unknown[]).length}</span>
                 </div>
               )}
@@ -1267,7 +1267,7 @@ function ConfigTab({
                 <ToggleRow
                   key={item.key}
                   label={t(`integrationsPage.${item.labelKey}`)}
-                  icon={<item.icon className="h-4 w-4 text-white/30 dark:text-white/50" />}
+                  icon={<item.icon className="h-4 w-4 text-white/30 dark:text-white/70" />}
                   enabled={(config as Record<string, Record<string, boolean>>).notifications?.[item.key] ?? false}
                   onChange={v => handleToggle(`notifications.${item.key}`, v)}
                   disabled={saving}
@@ -1287,18 +1287,18 @@ function ConfigTab({
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#0B0E11] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configAccount')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configAccount')}</span>
                 <span className="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
                   <GitBranch className="h-3 w-3" />
                   {(config as Record<string, unknown>).accountLogin as string}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configType')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configType')}</span>
                 <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).accountType as string}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configRepositories')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configRepositories')}</span>
                 <span className="font-medium text-slate-900 dark:text-white">
                   {Array.isArray((config as Record<string, unknown>).repositories) ? ((config as Record<string, unknown>).repositories as unknown[]).length : 0}
                 </span>
@@ -1337,10 +1337,10 @@ function ConfigTab({
               <div className="space-y-1 max-h-48 overflow-y-auto">
                 {(((config as Record<string, unknown>).repositories as Array<{ id: string; fullName: string; private: boolean }>)).slice(0, 20).map(repo => (
                   <div key={repo.id} className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-slate-50 dark:bg-[#0B0E11] text-sm">
-                    <GitBranch className="h-3 w-3 text-white/50 shrink-0" />
+                    <GitBranch className="h-3 w-3 text-white/70 shrink-0" />
                     <span className="text-slate-700 dark:text-slate-300 truncate">{repo.fullName}</span>
                     {repo.private && (
-                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/[0.08] text-white/30 dark:text-white/50 shrink-0">private</span>
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/[0.08] text-white/30 dark:text-white/70 shrink-0">private</span>
                     )}
                   </div>
                 ))}
@@ -1359,11 +1359,11 @@ function ConfigTab({
             </h3>
             <div className="rounded-lg bg-slate-50 dark:bg-[#0B0E11] p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configEmail')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configEmail')}</span>
                 <span className="font-medium text-slate-900 dark:text-white">{(config as Record<string, unknown>).email as string}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600 dark:text-white/50">{t('integrationsPage.configSyncDirection')}</span>
+                <span className="text-slate-600 dark:text-white/70">{t('integrationsPage.configSyncDirection')}</span>
                 <span className="font-medium text-slate-900 dark:text-white capitalize">
                   {((config as Record<string, unknown>).syncDirection as string)?.replace('_', '-')}
                 </span>
@@ -1429,8 +1429,8 @@ function ActivityTab({ events }: { events: IntegrationEvent[] }) {
     return (
       <div className="text-center py-12">
         <Activity className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600 mb-3" />
-        <p className="text-sm text-white/30 dark:text-white/50">{t('integrationsPage.activityNoEvents')}</p>
-        <p className="text-xs text-white/50 dark:text-white/30 mt-1">{t('integrationsPage.activityNoEventsDesc')}</p>
+        <p className="text-sm text-white/30 dark:text-white/70">{t('integrationsPage.activityNoEvents')}</p>
+        <p className="text-xs text-white/70 dark:text-white/30 mt-1">{t('integrationsPage.activityNoEventsDesc')}</p>
       </div>
     );
   }
@@ -1450,7 +1450,7 @@ function ActivityTab({ events }: { events: IntegrationEvent[] }) {
             <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
               {event.type}
             </p>
-            <p className="text-[10px] text-white/50">
+            <p className="text-[10px] text-white/70">
               {event.direction === 'inbound'
                 ? `\u2190 ${t('integrationsPage.activityReceived')}`
                 : `\u2192 ${t('integrationsPage.activitySent')}`}
@@ -1556,7 +1556,7 @@ function ToggleRow({
         <div className="min-w-0">
           <span className="text-sm text-slate-700 dark:text-slate-300 block truncate">{label}</span>
           {description && (
-            <span className="text-[10px] text-white/50 block truncate">{description}</span>
+            <span className="text-[10px] text-white/70 block truncate">{description}</span>
           )}
         </div>
       </div>

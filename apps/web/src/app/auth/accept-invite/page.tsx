@@ -110,7 +110,7 @@ function AcceptInviteContent() {
       <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#2BB5A2]" />
-          <p className="mt-4 text-sm text-white/50">{t('invite.validating')}</p>
+          <p className="mt-4 text-sm text-white/70">{t('invite.validating')}</p>
         </div>
       </div>
     );
@@ -123,8 +123,8 @@ function AcceptInviteContent() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-900/20">
             <XCircle className="h-8 w-8 text-red-400" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-white/85">{t('invite.invalidInvitation')}</h1>
-          <p className="mb-6 text-sm text-white/50">{error}</p>
+          <h1 className="mb-2 text-xl font-semibold text-white">{t('invite.invalidInvitation')}</h1>
+          <p className="mb-6 text-sm text-white/70">{error}</p>
           <Link href="/auth/signin">
             <Button className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity">
               {t('invite.goToSignIn')}
@@ -142,8 +142,8 @@ function AcceptInviteContent() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-900/20">
             <CheckCircle2 className="h-8 w-8 text-emerald-400" />
           </div>
-          <h1 className="mb-2 text-xl font-semibold text-white/85">{t('invite.welcome')}</h1>
-          <p className="mb-6 text-sm text-white/50">{resultMessage}</p>
+          <h1 className="mb-2 text-xl font-semibold text-white">{t('invite.welcome')}</h1>
+          <p className="mb-6 text-sm text-white/70">{resultMessage}</p>
           <Button
             onClick={() => router.push('/dashboard')}
             className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity"
@@ -165,17 +165,17 @@ function AcceptInviteContent() {
             <Users className="h-7 w-7 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-white">{t('invite.youreInvited')}</h1>
-          <p className="mt-1 text-sm text-white/80">{t('invite.joinTeamOnOnekof')}</p>
+          <p className="mt-1 text-sm text-white">{t('invite.joinTeamOnOnekof')}</p>
         </div>
 
         <div className="p-8">
           {invitation?.isExpired ? (
             <div className="mb-6 rounded-xl border border-white/[0.08] bg-[#181D23] p-4 text-center">
               <XCircle className="mx-auto mb-2 h-6 w-6 text-red-400" />
-              <p className="text-sm font-medium text-white/85">
+              <p className="text-sm font-medium text-white">
                 {t('invite.invitationExpired')}
               </p>
-              <p className="mt-1 text-xs text-white/50">
+              <p className="mt-1 text-xs text-white/70">
                 {t('invite.askNewInvitation')}
               </p>
             </div>
@@ -184,23 +184,23 @@ function AcceptInviteContent() {
               {/* Invitation detail rows */}
               <div className="mb-6 space-y-3">
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
-                  <span className="text-xs font-medium text-white/50">{t('invite.organization')}</span>
-                  <span className="text-sm font-semibold text-white/85">{invitation?.organizationName}</span>
+                  <span className="text-xs font-medium text-white/70">{t('invite.organization')}</span>
+                  <span className="text-sm font-semibold text-white">{invitation?.organizationName}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
-                  <span className="text-xs font-medium text-white/50">{t('invite.invitedBy')}</span>
-                  <span className="text-sm text-white/85">{invitation?.invitedBy}</span>
+                  <span className="text-xs font-medium text-white/70">{t('invite.invitedBy')}</span>
+                  <span className="text-sm text-white">{invitation?.invitedBy}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
-                  <span className="text-xs font-medium text-white/50">{t('invite.role')}</span>
+                  <span className="text-xs font-medium text-white/70">{t('invite.role')}</span>
                   <span className="inline-flex items-center gap-1 rounded-full bg-[#1C8C7D]/20 border border-[#1C8C7D]/30 px-2.5 py-0.5 text-xs font-medium text-[#2BB5A2]">
                     <Shield className="h-3 w-3" />
                     {invitation?.role}
                   </span>
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
-                  <span className="text-xs font-medium text-white/50">{t('invite.expires')}</span>
-                  <span className="inline-flex items-center gap-1 text-xs text-white/50">
+                  <span className="text-xs font-medium text-white/70">{t('invite.expires')}</span>
+                  <span className="inline-flex items-center gap-1 text-xs text-white/70">
                     <Clock className="h-3 w-3" />
                     {invitation?.expiresAt ? new Date(invitation.expiresAt).toLocaleDateString() : ''}
                   </span>
@@ -215,7 +215,7 @@ function AcceptInviteContent() {
 
               {sessionStatus === 'unauthenticated' ? (
                 <div className="space-y-3">
-                  <p className="text-center text-sm text-white/50">
+                  <p className="text-center text-sm text-white/70">
                     {t('invite.signInOrCreate')}
                   </p>
                   <Link
@@ -233,7 +233,7 @@ function AcceptInviteContent() {
                   >
                     <Button
                       variant="outline"
-                      className="w-full rounded-full border-white/[0.08] bg-transparent text-white/85 hover:bg-white/[0.06] hover:text-white"
+                      className="w-full rounded-full border-white/[0.08] bg-transparent text-white hover:bg-white/[0.06] hover:text-white"
                     >
                       {t('invite.createAccount')}
                     </Button>
@@ -273,7 +273,7 @@ export default function AcceptInvitePage() {
         <div className="flex min-h-screen items-center justify-center bg-[#0B0E11]">
           <div className="text-center">
             <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#2BB5A2]" />
-            <p className="mt-4 text-sm text-white/50">Loading...</p>
+            <p className="mt-4 text-sm text-white/70">Loading...</p>
           </div>
         </div>
       }

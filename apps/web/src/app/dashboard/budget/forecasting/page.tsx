@@ -160,7 +160,7 @@ export default function BudgetForecastingPage() {
           <div className="text-center py-16">
             <TrendingUp className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budget Data</h3>
-            <p className="text-sm text-slate-600 dark:text-white/50">Create a budget to see spending forecasts and projections.</p>
+            <p className="text-sm text-slate-600 dark:text-white/70">Create a budget to see spending forecasts and projections.</p>
           </div>
         ) : (
           <>
@@ -171,7 +171,7 @@ export default function BudgetForecastingPage() {
                   <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                     <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Monthly Burn Rate</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Monthly Burn Rate</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">ETB {formatCompact(monthlyBurnRate)}</div>
                 <div className="text-xs text-slate-500 mt-1">avg over {monthsElapsed.toFixed(1)} months</div>
@@ -182,7 +182,7 @@ export default function BudgetForecastingPage() {
                   <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                     <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Est. Runway</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Est. Runway</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                   {monthsRemaining > 0 ? `~${monthsRemaining} months` : 'N/A'}
@@ -195,7 +195,7 @@ export default function BudgetForecastingPage() {
                   <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                     <Target className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Projected Completion</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Projected Completion</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                   {monthlyBurnRate > 0
@@ -210,7 +210,7 @@ export default function BudgetForecastingPage() {
                   <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
                     <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Next Quarter Spend</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Next Quarter Spend</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">ETB {formatCompact(quarterlySpend)}</div>
                 <div className="text-xs text-slate-500 mt-1">leaves ETB {formatCompact(quarterlyRemaining)} remaining</div>
@@ -230,11 +230,11 @@ export default function BudgetForecastingPage() {
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-[#0B0E11]">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">Period</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">Projected Spend</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">Cumulative Spent</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">Remaining Budget</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">Confidence</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">Period</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">Projected Spend</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">Cumulative Spent</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">Remaining Budget</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">Confidence</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
@@ -265,7 +265,7 @@ export default function BudgetForecastingPage() {
                                 style={{ width: `${f.confidence}%` }}
                               />
                             </div>
-                            <span className="text-xs text-gray-600 dark:text-white/50">{f.confidence}%</span>
+                            <span className="text-xs text-gray-600 dark:text-white/70">{f.confidence}%</span>
                           </div>
                         </td>
                       </tr>
@@ -346,7 +346,7 @@ export default function BudgetForecastingPage() {
                 {/* Overall progress bar */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-slate-600 dark:text-white/50">Overall Budget</span>
+                    <span className="text-sm text-slate-600 dark:text-white/70">Overall Budget</span>
                     <span className="text-sm font-semibold text-slate-900 dark:text-white">
                       {totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : '0'}% consumed
                     </span>

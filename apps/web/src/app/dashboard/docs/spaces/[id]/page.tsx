@@ -115,7 +115,7 @@ export default function DocSpaceDetailPage() {
                     {category.name}
                   </h1>
                   {category.description && (
-                    <p className="text-sm text-gray-500 dark:text-white/50">{category.description}</p>
+                    <p className="text-sm text-gray-500 dark:text-white/70">{category.description}</p>
                   )}
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function DocSpaceDetailPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500 dark:text-white/50">
+            <p className="text-sm text-gray-500 dark:text-white/70">
               {!loading && `${articles.length} ${t('common.pages')}`}
             </p>
             <Link href={`/dashboard/docs/pages/new${category ? `?category=${category.id}` : ''}`}>
@@ -142,7 +142,7 @@ export default function DocSpaceDetailPage() {
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/70">
               {t('common.loading')}
             </div>
           )}
@@ -160,7 +160,7 @@ export default function DocSpaceDetailPage() {
               <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {t('emptyStates.noPages')}
               </p>
-              <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+              <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                 {t('emptyStates.noPagesDesc')}
               </p>
               <Link href={`/dashboard/docs/pages/new${category ? `?category=${category.id}` : ''}`}>
@@ -194,11 +194,11 @@ export default function DocSpaceDetailPage() {
                       {article.title}
                     </h3>
                     {article.excerpt && (
-                      <p className="text-xs text-gray-500 dark:text-white/50 line-clamp-2 mb-2">
+                      <p className="text-xs text-gray-500 dark:text-white/70 line-clamp-2 mb-2">
                         {article.excerpt}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/70">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {toRelativeTime(article.updatedAt)}

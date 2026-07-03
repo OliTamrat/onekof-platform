@@ -141,7 +141,7 @@ export default function DocumentsAllPage() {
         ) : filteredDocs.length === 0 ? (
           <div className="text-center py-16">
             <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               {searchQuery ? t('common.noResults') : t('documents.noDocuments')}
             </p>
           </div>
@@ -167,7 +167,7 @@ export default function DocumentsAllPage() {
                     </span>
                   </div>
                 </div>
-                <div className="space-y-1 text-xs text-gray-600 dark:text-white/50">
+                <div className="space-y-1 text-xs text-gray-600 dark:text-white/70">
                   {doc.uploadedBy && (
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />

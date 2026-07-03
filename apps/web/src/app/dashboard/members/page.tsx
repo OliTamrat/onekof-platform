@@ -167,7 +167,7 @@ export default function MembersPage() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t('membersPage.title')}</h1>
-                <p className="text-xs text-gray-600 dark:text-white/50">
+                <p className="text-xs text-gray-600 dark:text-white/70">
                   {members.length} {members.length === 1 ? t('membersPage.member') : t('membersPage.memberPlural')}
                   {pendingInvitations.length > 0 && ` · ${pendingInvitations.length} pending`}
                 </p>
@@ -202,7 +202,7 @@ export default function MembersPage() {
                 <Send className="h-4 w-4 text-primary-500" />
                 {t('membersPage.inviteByEmail')}
               </h3>
-              <p className="mb-3 text-xs text-gray-600 dark:text-white/50">
+              <p className="mb-3 text-xs text-gray-600 dark:text-white/70">
                 {t('membersPage.inviteDesc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -256,7 +256,7 @@ export default function MembersPage() {
           {/* Pending Invitations */}
           {pendingInvitations.length > 0 && (
             <div>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/50 flex items-center gap-2">
+              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/70 flex items-center gap-2">
                 <Clock className="h-3.5 w-3.5" />
                 {t('membersPage.pendingInvitations')} ({pendingInvitations.length})
               </h2>
@@ -268,11 +268,11 @@ export default function MembersPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 dark:bg-white/[0.08]">
-                        <Mail className="h-4 w-4 text-gray-500 dark:text-white/50" />
+                        <Mail className="h-4 w-4 text-gray-500 dark:text-white/70" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900 dark:text-white">{inv.email}</p>
-                        <p className="text-xs text-gray-500 dark:text-white/50">
+                        <p className="text-xs text-gray-500 dark:text-white/70">
                           Invited by {inv.invitedBy} · Expires {new Date(inv.expiresAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -306,13 +306,13 @@ export default function MembersPage() {
           ) : filteredMembers.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="h-12 w-12 text-gray-300 dark:text-slate-700 mb-3" />
-              <p className="text-sm text-gray-600 dark:text-white/50">
+              <p className="text-sm text-gray-600 dark:text-white/70">
                 {searchQuery ? t('membersPage.noMembersSearch') : t('membersPage.noMembers')}
               </p>
             </div>
           ) : (
             <div>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/50">
+              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/70">
                 {t('membersPage.activeMembers')} ({filteredMembers.length})
               </h2>
               <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] overflow-hidden">
@@ -320,16 +320,16 @@ export default function MembersPage() {
                 <table className="w-full min-w-[480px]">
                   <thead className="bg-gray-50 dark:bg-[#0B0E11] border-b border-gray-200 dark:border-white/[0.08]">
                     <tr>
-                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('membersPage.colMember')}
                       </th>
-                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('membersPage.colRole')}
                       </th>
-                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider hidden sm:table-cell">
+                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider hidden sm:table-cell">
                         {t('membersPage.colBudgetAccess')}
                       </th>
-                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider hidden md:table-cell">
+                      <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider hidden md:table-cell">
                         {t('membersPage.colJoined')}
                       </th>
                     </tr>
@@ -356,7 +356,7 @@ export default function MembersPage() {
                               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                 {member.name || t('membersPage.unknown')}
                               </p>
-                              <p className="text-xs text-gray-500 dark:text-white/50 truncate">
+                              <p className="text-xs text-gray-500 dark:text-white/70 truncate">
                                 {member.email}
                               </p>
                             </div>
@@ -368,11 +368,11 @@ export default function MembersPage() {
                             {member.role}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-white/50 hidden sm:table-cell">
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-white/70 hidden sm:table-cell">
                           {member.budgetAccess?.replace(/_/g, ' ') || t('membersPage.noAccess')}
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <span className="text-xs text-gray-500 dark:text-white/50">
+                          <span className="text-xs text-gray-500 dark:text-white/70">
                             {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : '—'}
                           </span>
                         </td>

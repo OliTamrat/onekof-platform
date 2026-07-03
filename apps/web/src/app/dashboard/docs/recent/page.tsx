@@ -60,11 +60,11 @@ function PageCard({ article }: { article: WikiArticle }) {
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{article.title}</h3>
           {article.excerpt && (
-            <p className="text-sm text-slate-500 dark:text-white/50 line-clamp-2 mb-2">
+            <p className="text-sm text-slate-500 dark:text-white/70 line-clamp-2 mb-2">
               {article.excerpt}
             </p>
           )}
-          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/50">
+          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/70">
             {article.category && (
               <div className="flex items-center gap-1">
                 <Folders className="h-3 w-3" />
@@ -141,7 +141,7 @@ export default function RecentPagesPage() {
     if (items.length === 0) return null;
     return (
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-slate-500 dark:text-white/50 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-slate-500 dark:text-white/70 uppercase tracking-wider mb-3">
           {label}
         </h2>
         <div className="space-y-2">
@@ -172,7 +172,7 @@ export default function RecentPagesPage() {
                   <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                     {t('docs.recentPages')}
                   </h1>
-                  <p className="text-sm text-slate-500 dark:text-white/50">
+                  <p className="text-sm text-slate-500 dark:text-white/70">
                     {t('docs.recentPagesDesc')}
                   </p>
                 </div>
@@ -194,7 +194,7 @@ export default function RecentPagesPage() {
 
         <div className="px-8 py-6">
           {loading && (
-            <div className="text-center py-12 text-sm text-slate-500 dark:text-white/50">
+            <div className="text-center py-12 text-sm text-slate-500 dark:text-white/70">
               {t('common.loading')}
             </div>
           )}
@@ -219,7 +219,7 @@ export default function RecentPagesPage() {
                   <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
                     {t('docs.noRecentPages')}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-white/50 mb-4">
+                  <p className="text-sm text-slate-500 dark:text-white/70 mb-4">
                     {searchQuery ? t('docs.tryAdjusting') : t('docs.browseSpacesHint')}
                   </p>
                   <Link href="/dashboard/docs">

@@ -73,7 +73,7 @@ export default function ProjectsPage() {
       <div className="flex h-screen items-center justify-center bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-          <p className="text-sm text-white/50">{t('common.loading')}</p>
+          <p className="text-sm text-white/70">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -126,7 +126,7 @@ export default function ProjectsPage() {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 {searchQuery ? t('common.noResults') : t('projects.noProjects')}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-white/50 mb-6 max-w-sm text-center">
+              <p className="text-sm text-gray-600 dark:text-white/70 mb-6 max-w-sm text-center">
                 {searchQuery
                   ? t('common.noResults')
                   : t('projects.createFirst')}
@@ -146,7 +146,7 @@ export default function ProjectsPage() {
               {/* Starred Projects */}
               {favoriteProjects.length > 0 && (
                 <div>
-                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/70">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {t('nav.starred')}
                   </h2>
@@ -182,7 +182,7 @@ export default function ProjectsPage() {
 
               {/* All Projects */}
               <div>
-                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/70">
                   {favoriteProjects.length > 0 ? t('nav.allProjects') : `${t('dashboard.yourProjects')} (${filteredProjects.length})`}
                 </h2>
                 {viewMode === 'grid' ? (
@@ -250,7 +250,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/50" />
+              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/70" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">
@@ -280,16 +280,16 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
         <h3 className="mb-1 text-base font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
           {project.name}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-white/50">{project.key}</p>
+        <p className="text-sm text-gray-600 dark:text-white/70">{project.key}</p>
       </div>
 
       {project.description && (
-        <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-white/50">
+        <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-white/70">
           {project.description}
         </p>
       )}
 
-      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
+      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/70">
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>{project.taskCount || 0} {t('projects.tasks')}</span>
@@ -323,19 +323,19 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
           <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
             {project.name}
           </h3>
-          <span className="text-sm text-gray-600 dark:text-white/50">{project.key}</span>
+          <span className="text-sm text-gray-600 dark:text-white/70">{project.key}</span>
           {project.isFavorite && (
             <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
           )}
         </div>
         {project.description && (
-          <p className="text-sm text-gray-600 dark:text-white/50 line-clamp-1">
+          <p className="text-sm text-gray-600 dark:text-white/70 line-clamp-1">
             {project.description}
           </p>
         )}
       </div>
 
-      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-white/50">
+      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-white/70">
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="h-4 w-4" />
           <span>{project.taskCount || 0}</span>
@@ -350,7 +350,7 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/50" />
+              <MoreHorizontal className="h-4 w-4 text-gray-500 dark:text-white/70" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">

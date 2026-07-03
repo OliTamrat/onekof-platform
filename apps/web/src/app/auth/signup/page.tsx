@@ -129,7 +129,7 @@ export default function SignUpPage() {
     <div className="flex min-h-screen bg-[#0B0E11]">
       {/* Top bar — back + language */}
       <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
-        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/50 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
+        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
           Back to home
         </Link>
@@ -156,7 +156,7 @@ export default function SignUpPage() {
               <br />
               <span className="text-white/30">with your team</span>
             </h2>
-            <p className="mt-5 text-[16px] leading-relaxed text-white/50">
+            <p className="mt-5 text-[16px] leading-relaxed text-white/70">
               Join hundreds of Ethiopian organizations using Onekof to
               manage projects, track budgets in ETB, and collaborate in
               their preferred language.
@@ -175,7 +175,7 @@ export default function SignUpPage() {
                   <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
                     <Check className="h-3 w-3 text-primary-400" />
                   </div>
-                  <span className="text-[13px] text-white/50">{item}</span>
+                  <span className="text-[13px] text-white/70">{item}</span>
                 </div>
               ))}
             </div>
@@ -208,7 +208,7 @@ export default function SignUpPage() {
 
           <div className="mb-8">
             <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
-            <p className="mt-2 text-[14px] text-white/50">
+            <p className="mt-2 text-[14px] text-white/70">
               {t('auth.hasAccount')}{' '}
               <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                 {t('common.signIn')}
@@ -225,7 +225,7 @@ export default function SignUpPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="mb-2 block text-[13px] font-medium text-white/50">
+              <label htmlFor="name" className="mb-2 block text-[13px] font-medium text-white/70">
                 {t('auth.fullName')}
               </label>
               <input
@@ -240,7 +240,7 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/50">
+              <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/70">
                 {t('auth.emailAddress')}
               </label>
               <input
@@ -255,7 +255,7 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-2 block text-[13px] font-medium text-white/50">
+              <label htmlFor="password" className="mb-2 block text-[13px] font-medium text-white/70">
                 {t('auth.password')}
               </label>
               <div className="relative">
@@ -273,7 +273,7 @@ export default function SignUpPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/40"
+                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/60"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -291,7 +291,7 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-medium text-white/50">
+              <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-medium text-white/70">
                 {t('auth.confirmPassword')}
               </label>
               <div className="relative">
@@ -309,7 +309,7 @@ export default function SignUpPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/40"
+                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/60"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -341,7 +341,7 @@ export default function SignUpPage() {
               <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary-400" />
               <div>
                 <p className="text-[13px] font-medium text-white/60">{t('auth.quickSetup')}</p>
-                <p className="text-[12px] text-white/40">
+                <p className="text-[12px] text-white/60">
                   {t('auth.afterSignup')}
                 </p>
               </div>

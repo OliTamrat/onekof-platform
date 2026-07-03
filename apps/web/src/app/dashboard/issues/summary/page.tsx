@@ -106,7 +106,7 @@ export default function IssuesSummaryPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
+          <p className="text-sm text-slate-500 dark:text-white/70">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -123,7 +123,7 @@ export default function IssuesSummaryPage() {
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
             {t("dashboard.sessionLoadingIssue")}
           </h2>
-          <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+          <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
             {t("dashboard.sessionLoadingDesc")}
           </p>
           <Button
@@ -365,7 +365,7 @@ export default function IssuesSummaryPage() {
                   {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/70">
                 {t('dashboard.statusDescription')}
               </p>
 
@@ -424,7 +424,7 @@ export default function IssuesSummaryPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-slate-500 dark:text-white/50">{t('dashboard.totalItems')}</div>
+                    <div className="text-xs md:text-sm text-slate-500 dark:text-white/70">{t('dashboard.totalItems')}</div>
                   </div>
                 </div>
 
@@ -490,7 +490,7 @@ export default function IssuesSummaryPage() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('dashboard.priorityDescription')}
                 </p>
                 <div className="space-y-2">
@@ -522,7 +522,7 @@ export default function IssuesSummaryPage() {
                     </div>
                   </div>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('dashboard.recentActivityDescription')}
                 </p>
                 <ActivityTimeline limit={20} showFilters={true} />
@@ -541,7 +541,7 @@ export default function IssuesSummaryPage() {
                     {t('dashboard.viewAllItems')}
                   </a>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('issuesSummary.typesOfWorkDesc')}
                 </p>
                 <div className="space-y-2">
@@ -592,7 +592,7 @@ export default function IssuesSummaryPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                           {project.name}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-white/50">
+                        <p className="text-xs text-slate-500 dark:text-white/70">
                           {project.key}
                         </p>
                       </div>
@@ -647,7 +647,7 @@ export default function IssuesSummaryPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-white">{filterTitle}</h2>
-                  <p className="text-sm text-white/80 mt-1">
+                  <p className="text-sm text-white mt-1">
                     {filteredTasks.length}{' '}
                     {filteredTasks.length === 1 ? t('issuesSummary.taskSingular') : t('issuesSummary.taskPlural')}{' '}
                     {t('issuesSummary.tasksFound')}
@@ -688,7 +688,7 @@ export default function IssuesSummaryPage() {
                     {overdue > 0 && (
                       <div className="flex items-center gap-1">
                         <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span>{' '}
                           {t('issuesSummary.overdue')}
                         </span>
@@ -697,7 +697,7 @@ export default function IssuesSummaryPage() {
                     {unassigned > 0 && (
                       <div className="flex items-center gap-1">
                         <User className="h-3.5 w-3.5 text-orange-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span>{' '}
                           {t('issuesSummary.unassigned')}
                         </span>
@@ -706,7 +706,7 @@ export default function IssuesSummaryPage() {
                     {highPriority > 0 && (
                       <div className="flex items-center gap-1">
                         <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span>{' '}
                           {t('issuesSummary.highPriority')}
                         </span>
@@ -715,7 +715,7 @@ export default function IssuesSummaryPage() {
                     {avgAge > 0 && (
                       <div className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-blue-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           {t('issuesSummary.avgDaysOld').replace('{{days}}', String(avgAge))}
                         </span>
                       </div>
@@ -723,7 +723,7 @@ export default function IssuesSummaryPage() {
                     {withAssignee > 0 && (
                       <div className="flex items-center gap-1">
                         <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span>{' '}
                           {t('issuesSummary.assigned')}
                         </span>
@@ -900,7 +900,7 @@ function StatCard({
         </div>
         <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
-        <div className="text-[10px] md:text-xs text-slate-500 dark:text-white/50 hidden sm:block mt-1">{sublabel}</div>
+        <div className="text-[10px] md:text-xs text-slate-500 dark:text-white/70 hidden sm:block mt-1">{sublabel}</div>
       </div>
     </div>
   );
@@ -1002,7 +1002,7 @@ function ActivityItem({
         <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${statusColors[status] || statusColors.TODO}`}>
           {status.replace('_', ' ')}
         </span>
-        <span className="text-xs text-slate-500 dark:text-white/50">{time}</span>
+        <span className="text-xs text-slate-500 dark:text-white/70">{time}</span>
       </div>
     </div>
   );

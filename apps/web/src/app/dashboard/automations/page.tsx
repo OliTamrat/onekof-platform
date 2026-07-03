@@ -202,7 +202,7 @@ export default function AutomationsPage() {
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.title')}</h1>
-                <p className="text-xs text-gray-600 dark:text-white/50">{t('automations.subtitle')}</p>
+                <p className="text-xs text-gray-600 dark:text-white/70">{t('automations.subtitle')}</p>
               </div>
             </div>
 
@@ -226,7 +226,7 @@ export default function AutomationsPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -239,7 +239,7 @@ export default function AutomationsPage() {
           {/* Search and Filter Bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-3 md:px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/70" />
               <input
                 type="text"
                 placeholder={t('automations.searchPlaceholder')}
@@ -258,7 +258,7 @@ export default function AutomationsPage() {
                     'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                     selectedFilter === filter.value
                       ? 'bg-primary-500 text-white'
-                      : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
+                      : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/70 hover:bg-gray-300 dark:hover:bg-slate-700'
                   )}
                 >
                   {filter.label} ({filter.count})
@@ -306,7 +306,7 @@ export default function AutomationsPage() {
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-white/50">{t('automations.loading')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">{t('automations.loading')}</p>
               </div>
             </div>
           ) : filteredAutomations.length > 0 ? (
@@ -336,7 +336,7 @@ export default function AutomationsPage() {
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 {t('automations.noAutomations')}
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
+              <p className="mt-1 text-sm text-gray-600 dark:text-white/70">
                 {t('automations.noAutomationsDesc')}
               </p>
               <Link
@@ -369,7 +369,7 @@ export default function AutomationsPage() {
               <div className="py-4 space-y-4">
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-2">{t('automations.description')}</h3>
-                  <p className="text-sm text-white/50">
+                  <p className="text-sm text-white/70">
                     {selectedAutomation.description || 'No description provided'}
                   </p>
                 </div>
@@ -377,11 +377,11 @@ export default function AutomationsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-sm font-semibold text-white mb-2">{t('automations.trigger')}</h3>
-                    <p className="text-sm text-white/50">{selectedAutomation.triggerEvent}</p>
+                    <p className="text-sm text-white/70">{selectedAutomation.triggerEvent}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-white mb-2">{t('automations.entityType')}</h3>
-                    <p className="text-sm text-white/50">{selectedAutomation.entityType}</p>
+                    <p className="text-sm text-white/70">{selectedAutomation.entityType}</p>
                   </div>
                 </div>
 
@@ -431,7 +431,7 @@ function StatsCard({ icon: Icon, label, value, iconColor, iconBg }: StatsCardPro
           <Icon className={cn('h-5 w-5', iconColor)} />
         </div>
         <div>
-          <p className="text-xs text-gray-600 dark:text-white/50">{label}</p>
+          <p className="text-xs text-gray-600 dark:text-white/70">{label}</p>
           <p className="text-xl font-bold text-gray-900 dark:text-white">{value}</p>
         </div>
       </div>
@@ -477,7 +477,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 )}
               </h3>
               {automation.description && (
-                <p className="text-xs text-gray-600 dark:text-white/50 line-clamp-1">
+                <p className="text-xs text-gray-600 dark:text-white/70 line-clamp-1">
                   {automation.description}
                 </p>
               )}
@@ -485,7 +485,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
           </div>
 
           {/* Metadata */}
-          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50 mt-2">
+          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70 mt-2">
             <span className="flex items-center gap-1">
               <Activity className="h-3 w-3" />
               {automation.executionCount} {t('automations.runs')}
@@ -500,7 +500,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 {new Date(automation.lastExecutedAt).toLocaleDateString()}
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-full bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+            <span className="px-2 py-0.5 rounded-full bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
               {automation.entityType}
             </span>
           </div>
@@ -517,7 +517,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
               'flex items-center gap-1 px-3 py-1 rounded-md text-xs font-medium transition-colors',
               automation.isEnabled
                 ? 'bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20'
-                : 'bg-gray-200 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
+                : 'bg-gray-200 dark:bg-[#181D23] text-gray-600 dark:text-white/70 hover:bg-gray-300 dark:hover:bg-slate-700'
             )}
             title={automation.isEnabled ? t('automations.disableAutomation') : t('automations.enableAutomation')}
           >
@@ -540,7 +540,7 @@ function AutomationCard({ automation, onClick, onToggle, onDelete }: AutomationC
                 onClick={(e) => e.stopPropagation()}
                 className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
               >
-                <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-white/50" />
+                <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-white/70" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">

@@ -136,7 +136,7 @@ export default function TeamsOverviewPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -157,7 +157,7 @@ export default function TeamsOverviewPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-white/50">
+              <div className="text-center py-12 text-gray-500 dark:text-white/70">
                 Loading teams analytics...
               </div>
             </div>
@@ -209,7 +209,7 @@ export default function TeamsOverviewPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -321,7 +321,7 @@ export default function TeamsOverviewPage() {
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
                               ? 'bg-primary-500 text-white'
-                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-slate-700'
+                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -349,7 +349,7 @@ export default function TeamsOverviewPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                        <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                           {data.day}
                         </span>
                       </div>
@@ -359,11 +359,11 @@ export default function TeamsOverviewPage() {
                   <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-primary-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Tasks Completed</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Tasks Completed</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-purple-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Meetings Held</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Meetings Held</span>
                     </div>
                   </div>
                 </div>
@@ -392,7 +392,7 @@ export default function TeamsOverviewPage() {
                             <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
                               {team.name}
                             </h4>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
+                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/70">
                               <Users className="h-3 w-3" />
                               {team.activeMembersCount} active
                             </div>
@@ -413,7 +413,7 @@ export default function TeamsOverviewPage() {
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {team.tasksCompleted}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-white/50">tasks done</div>
+                          <div className="text-xs text-gray-500 dark:text-white/70">tasks done</div>
                         </div>
                       </div>
                     ))}
@@ -443,7 +443,7 @@ export default function TeamsOverviewPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                        <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                           {data.month}
                         </span>
                       </div>
@@ -453,11 +453,11 @@ export default function TeamsOverviewPage() {
                   <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Teams</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Teams</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-primary-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Members</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Members</span>
                     </div>
                   </div>
                 </div>
@@ -479,7 +479,7 @@ export default function TeamsOverviewPage() {
                           index === 0 ? 'bg-yellow-500 text-white' :
                           index === 1 ? 'bg-gray-400 text-white' :
                           index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-white/50'
+                          'bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-white/70'
                         }`}>
                           {index + 1}
                         </div>
@@ -490,7 +490,7 @@ export default function TeamsOverviewPage() {
                           <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">
                             {contributor.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-white/50">
+                          <div className="text-xs text-gray-500 dark:text-white/70">
                             {contributor.team}
                           </div>
                         </div>
@@ -533,9 +533,9 @@ export default function TeamsOverviewPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-gray-900 dark:text-white">
                             <span className="font-medium">{activity.user}</span>{' '}
-                            <span className="text-gray-600 dark:text-white/50">{activity.action}</span>
+                            <span className="text-gray-600 dark:text-white/70">{activity.action}</span>
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-white/50 mt-1 flex items-center gap-1">
+                          <p className="text-xs text-gray-500 dark:text-white/70 mt-1 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {activity.time}
                           </p>
@@ -555,7 +555,7 @@ export default function TeamsOverviewPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         Collaboration Boost
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-white/50 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-white/70 leading-relaxed">
                         Cross-team collaboration increased by <span className="font-semibold text-green-600 dark:text-green-400">32%</span> this month! Engineering and Design teams are working together on 8 active projects.
                       </p>
                     </div>
@@ -606,7 +606,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
         {value}{suffix}
       </div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-white/50">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-white/70">{changeLabel}</div>
     </div>
   );
 }
@@ -629,7 +629,7 @@ function TeamTypeCard({ label, count, icon, color }: TeamTypeCardProps) {
         <IconRenderer iconName={icon} className="h-5 w-5" style={{ color }} />
       </div>
       <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{count}</div>
-      <div className="text-xs font-medium text-gray-600 dark:text-white/50">{label}</div>
+      <div className="text-xs font-medium text-gray-600 dark:text-white/70">{label}</div>
     </div>
   );
 }

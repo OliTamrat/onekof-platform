@@ -85,7 +85,7 @@ export default function TeamsActivityPage() {
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white`}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
@@ -129,7 +129,7 @@ export default function TeamsActivityPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-semibold text-gray-900 dark:text-white">{activity.user}</span>
-                        <span className="text-sm text-gray-600 dark:text-white/50">{activity.description}</span>
+                        <span className="text-sm text-gray-600 dark:text-white/70">{activity.description}</span>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">

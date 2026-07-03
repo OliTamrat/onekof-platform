@@ -183,7 +183,7 @@ export default function DashboardCustomizationPage() {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold text-gray-900 dark:text-white">{t("customization.title")}</h1>
-                  <p className="text-sm text-gray-600 dark:text-white/50">{t("customization.description")}</p>
+                  <p className="text-sm text-gray-600 dark:text-white/70">{t("customization.description")}</p>
                 </div>
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function DashboardCustomizationPage() {
             {/* Quick Presets */}
             <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("customization.quickStartPresets")}</h2>
-              <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+              <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                 {t("customization.quickStartPresetsDesc")}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -251,7 +251,7 @@ export default function DashboardCustomizationPage() {
                         <CheckCircle2 className="h-4 w-4 text-primary-500" />
                       )}
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-white/50 line-clamp-2">{t(preset.descriptionKey)}</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70 line-clamp-2">{t(preset.descriptionKey)}</p>
                     <div className="mt-3 flex flex-wrap gap-1">
                       {preset.enabledSections.slice(0, 3).map(section => (
                         <span key={section} className="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-white/[0.08] text-gray-700 dark:text-gray-300">
@@ -272,7 +272,7 @@ export default function DashboardCustomizationPage() {
             {/* Dashboard Sections */}
             <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("customization.dashboardSections")}</h2>
-              <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+              <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                 {t("customization.dashboardSectionsDesc")}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -295,7 +295,7 @@ export default function DashboardCustomizationPage() {
                           </div>
                           <div className="flex-1">
                             <h3 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">{t(info.labelKey)}</h3>
-                            <p className="text-xs text-gray-600 dark:text-white/50">{t(info.descKey)}</p>
+                            <p className="text-xs text-gray-600 dark:text-white/70">{t(info.descKey)}</p>
                           </div>
                         </div>
                         <Button
@@ -349,7 +349,7 @@ export default function DashboardCustomizationPage() {
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08]">
                   <div>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.aiAssistant")}</div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">{t("customization.aiAssistantDesc")}</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">{t("customization.aiAssistantDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, aiAssistant: !settings.features.aiAssistant } })}
@@ -363,7 +363,7 @@ export default function DashboardCustomizationPage() {
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08]">
                   <div>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.advancedAnalytics")}</div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">{t("customization.advancedAnalyticsDesc")}</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">{t("customization.advancedAnalyticsDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, analytics: !settings.features.analytics } })}
@@ -377,7 +377,7 @@ export default function DashboardCustomizationPage() {
                 <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-white/[0.08]">
                   <div>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">{t("customization.thirdPartyIntegrations")}</div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">{t("customization.thirdPartyIntegrationsDesc")}</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">{t("customization.thirdPartyIntegrationsDesc")}</div>
                   </div>
                   <Button
                     onClick={() => updateSettings({ ...settings, features: { ...settings.features, integrations: !settings.features.integrations } })}

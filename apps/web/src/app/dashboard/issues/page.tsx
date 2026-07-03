@@ -298,10 +298,10 @@ export default function IssuesPage() {
                   >
                     {/* Column Header */}
                     <div className="mb-3 flex items-center gap-2 px-1">
-                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/50">
+                      <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/70">
                         {t(column.labelKey)}
                       </h3>
-                      <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/50">
+                      <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/70">
                         {issuesByStatus[column.id]?.length || 0}
                       </span>
                     </div>
@@ -336,7 +336,7 @@ export default function IssuesPage() {
                           {/* Add Issue Button */}
                           <Button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white"
+                            className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white"
                           >
                             <Plus className="h-4 w-4" />
                             {t('common.create')}
@@ -396,7 +396,7 @@ function IssueCard({ issue }: { issue: Issue }) {
 
       {/* Due Date */}
       {issue.dueDate && (
-        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-white/50">
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-white/70">
           <Calendar className="h-3.5 w-3.5" />
           <span>{formatDate(issue.dueDate)}</span>
         </div>
@@ -407,7 +407,7 @@ function IssueCard({ issue }: { issue: Issue }) {
         {/* Issue Key */}
         <div className="flex items-center gap-2">
           <CheckSquare className="h-3.5 w-3.5 text-primary-500" />
-          <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+          <span className="text-xs font-medium text-gray-600 dark:text-white/70">
             {issue.key}
           </span>
         </div>

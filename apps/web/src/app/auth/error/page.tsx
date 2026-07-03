@@ -33,10 +33,10 @@ function AuthErrorContent() {
         <h1 className="mb-2 font-serif font-medium text-xl text-white">
           {t('auth.authError')}
         </h1>
-        <p className="mb-2 text-sm font-medium text-white/50">
+        <p className="mb-2 text-sm font-medium text-white/70">
           Error: {error}
         </p>
-        <p className="mb-8 text-sm text-white/50">
+        <p className="mb-8 text-sm text-white/70">
           {message}
         </p>
         <Link

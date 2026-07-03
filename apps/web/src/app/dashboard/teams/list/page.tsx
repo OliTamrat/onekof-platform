@@ -105,7 +105,7 @@ export default function TeamsListPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -151,22 +151,22 @@ export default function TeamsListPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-[#12161B] sticky top-0 border-b border-gray-200 dark:border-white/[0.08]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.team')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('teams.lead')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('teams.members')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('common.status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('teams.performance')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('teams.created')}
                 </th>
               </tr>
@@ -183,7 +183,7 @@ export default function TeamsListPage() {
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {team.name}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-white/50">
+                      <div className="text-sm text-gray-500 dark:text-white/70">
                         {team.description}
                       </div>
                     </div>
@@ -218,7 +218,7 @@ export default function TeamsListPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-white/70">
                       <Calendar className="h-4 w-4" />
                       {new Date(team.created).toLocaleDateString()}
                     </div>
@@ -230,7 +230,7 @@ export default function TeamsListPage() {
 
           {filteredTeams.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-white/50">{t('teams.noTeamsMatchingFilters')}</p>
+              <p className="text-gray-500 dark:text-white/70">{t('teams.noTeamsMatchingFilters')}</p>
             </div>
           )}
         </div>

@@ -153,7 +153,7 @@ export function SlideoutPanel({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-9 w-9 flex-shrink-0 rounded-lg text-gray-500 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/[0.06] hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
+            className="h-9 w-9 flex-shrink-0 rounded-lg text-gray-500 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/[0.06] hover:text-gray-900 dark:hover:text-white active:scale-95 transition-all"
             aria-label="Close panel"
           >
             <X className="h-5 w-5" />

@@ -530,7 +530,7 @@ function DashboardPage() {
                   <div key={task.title} className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
                     {statusIcons[task.status]}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-[13px] ${task.status === 'done' ? 'text-slate-500 line-through' : 'text-white/90'}`}>
+                      <p className={`text-[13px] ${task.status === 'done' ? 'text-slate-500 line-through' : 'text-white'}`}>
                         {task.title}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-0.5">{task.project}</p>

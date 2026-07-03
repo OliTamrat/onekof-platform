@@ -110,7 +110,7 @@ export default function DocsWikiPage() {
         </div>
 
         {loading && (
-          <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
+          <div className="text-center py-12 text-sm text-gray-500 dark:text-white/70">
             {t('common.loading')}
           </div>
         )}
@@ -125,7 +125,7 @@ export default function DocsWikiPage() {
         {!loading && !error && filtered.length === 0 && (
           <div className="text-center py-12">
             <FileText className="h-12 w-12 text-gray-300 dark:text-slate-700 mx-auto mb-4" />
-            <p className="text-sm text-gray-500 dark:text-white/50">{t('common.noResults')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/70">{t('common.noResults')}</p>
           </div>
         )}
 
@@ -150,7 +150,7 @@ export default function DocsWikiPage() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {t('common.lastUpdated')} {new Date(article.updatedAt).toLocaleDateString()}

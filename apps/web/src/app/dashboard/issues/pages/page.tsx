@@ -36,7 +36,7 @@ export default function IssuesPagesPage() {
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">{t("projectPages.title")}</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+              <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                 {t("underConstruction.description")}
               </p>
             </div>

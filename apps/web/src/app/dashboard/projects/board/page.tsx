@@ -93,7 +93,7 @@ export default function ProjectsBoardPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -106,7 +106,7 @@ export default function ProjectsBoardPage() {
           {/* Search */}
           <div className="flex items-center gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/70" />
               <input
                 type="text"
                 placeholder={t('projectsBoard.searchProjects')}
@@ -122,7 +122,7 @@ export default function ProjectsBoardPage() {
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-4">
           {isLoadingProjects ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-white/50">{t("common.loading")}</div>
+              <div className="text-gray-600 dark:text-white/70">{t("common.loading")}</div>
             </div>
           ) : (
             <div className="flex h-full gap-4">
@@ -130,10 +130,10 @@ export default function ProjectsBoardPage() {
                 <div key={column.id} className="flex w-80 flex-shrink-0 flex-col">
                   {/* Column Header */}
                   <div className="mb-3 flex items-center gap-2 px-1">
-                    <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/50">
+                    <h3 className="text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-white/70">
                       {t(column.labelKey)}
                     </h3>
-                    <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/50">
+                    <span className="rounded-sm bg-gray-200 dark:bg-white/[0.08] px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-white/70">
                       {projectsByStatus[column.id]?.length || 0}
                     </span>
                   </div>
@@ -160,7 +160,7 @@ export default function ProjectsBoardPage() {
                                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                                   {project.name}
                                 </h4>
-                                <p className="text-xs text-gray-500 dark:text-white/50">
+                                <p className="text-xs text-gray-500 dark:text-white/70">
                                   {project.key}
                                 </p>
                               </div>
@@ -172,13 +172,13 @@ export default function ProjectsBoardPage() {
 
                           {/* Description */}
                           {project.description && (
-                            <p className="text-sm text-gray-600 dark:text-white/50 line-clamp-2">
+                            <p className="text-sm text-gray-600 dark:text-white/70 line-clamp-2">
                               {project.description}
                             </p>
                           )}
 
                           {/* Stats */}
-                          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                             <div className="flex items-center gap-1">
                               <Users className="h-3.5 w-3.5" />
                               <span>{project._count?.members || 0} {t('projectsBoard.members')}</span>
@@ -195,7 +195,7 @@ export default function ProjectsBoardPage() {
                               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
                                 {project.lead.name?.charAt(0) || 'U'}
                               </div>
-                              <span className="text-xs text-gray-600 dark:text-white/50">
+                              <span className="text-xs text-gray-600 dark:text-white/70">
                                 {project.lead.name}
                               </span>
                             </div>
@@ -207,7 +207,7 @@ export default function ProjectsBoardPage() {
                     {/* Add Project Button */}
                     <Button
                       onClick={() => router.push('/dashboard/projects?create=true')}
-                      className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors"
+                      className="flex w-full items-center gap-2 rounded-md p-3 text-sm text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       {t('projectsBoard.addProject')}

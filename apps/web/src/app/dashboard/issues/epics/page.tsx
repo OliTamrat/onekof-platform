@@ -122,7 +122,7 @@ export default function EpicsListPage() {
                       >
                         {epic.project.key}
                       </span>
-                      <span className="text-xs font-mono text-gray-500 dark:text-white/50">
+                      <span className="text-xs font-mono text-gray-500 dark:text-white/70">
                         {epic.key}
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-purple-700 dark:text-purple-400">
@@ -140,7 +140,7 @@ export default function EpicsListPage() {
                       {epic.title}
                     </h3>
                     {epic.description && (
-                      <p className="mt-1 text-sm text-gray-600 dark:text-white/50 line-clamp-2">
+                      <p className="mt-1 text-sm text-gray-600 dark:text-white/70 line-clamp-2">
                         {epic.description}
                       </p>
                     )}
@@ -171,7 +171,7 @@ export default function EpicsListPage() {
                 {/* Progress bar */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-gray-500 dark:text-white/50">
+                    <span className="text-xs text-gray-500 dark:text-white/70">
                       {epic.childDoneCount} of {epic.childCount} tasks done
                     </span>
                     <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
@@ -188,7 +188,7 @@ export default function EpicsListPage() {
 
                 {/* Footer metadata */}
                 {epic.dueDate && (
-                  <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-500 dark:text-white/50">
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-500 dark:text-white/70">
                     <Calendar className="h-3 w-3" />
                     Due {new Date(epic.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </div>

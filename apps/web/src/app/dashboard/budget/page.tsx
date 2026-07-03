@@ -345,7 +345,7 @@ export default function BudgetPage() {
         <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-            <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
+            <p className="text-sm text-slate-500 dark:text-white/70">{t("common.loading")}</p>
           </div>
         </div>
       </AppLayout>
@@ -359,7 +359,7 @@ export default function BudgetPage() {
           <div className="text-center max-w-md p-3 md:p-6">
             <AlertCircle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('budget.sessionLoadingIssue')}</h2>
-            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
               {t('budget.sessionTakingLong')}
             </p>
             <Button onClick={() => router.push('/auth/signin')}>{t('budget.goToSignIn')}</Button>
@@ -399,12 +399,12 @@ export default function BudgetPage() {
               <h2 className="text-base md:text-lg font-bold text-white truncate">{budgets[0].project.name}</h2>
               <div className="flex items-center gap-3 mt-0.5 flex-wrap">
                 {budgets.length > 1 && (
-                  <span className="text-xs md:text-sm text-white/80 line-clamp-1">and {budgets.length - 1} other {budgets.length - 1 === 1 ? 'budget' : 'budgets'}</span>
+                  <span className="text-xs md:text-sm text-white line-clamp-1">and {budgets.length - 1} other {budgets.length - 1 === 1 ? 'budget' : 'budgets'}</span>
                 )}
                 {budgets[0].creatorName && (
                   <span className="flex items-center gap-1 text-xs text-white/70">
                     <User className="h-3 w-3" />
-                    {t('budget.owner')}: <span className="font-medium text-white/90">{budgets[0].creatorName}</span>
+                    {t('budget.owner')}: <span className="font-medium text-white">{budgets[0].creatorName}</span>
                   </span>
                 )}
                 {budgets[0].status && (
@@ -412,7 +412,7 @@ export default function BudgetPage() {
                     budgets[0].status === 'APPROVED' || budgets[0].status === 'ACTIVE' ? 'bg-white/20 text-white' :
                     budgets[0].status === 'DRAFT' ? 'bg-yellow-400/20 text-yellow-100' :
                     budgets[0].status === 'PENDING_APPROVAL' ? 'bg-orange-400/20 text-orange-100' :
-                    'bg-white/10 text-white/80'
+                    'bg-white/10 text-white'
                   }`}>
                     {budgets[0].status.replace('_', ' ')}
                   </span>
@@ -486,7 +486,7 @@ export default function BudgetPage() {
                   {t('budget.aiDocumentAnalysis')}
                 </h3>
               </div>
-              <p className="text-xs text-slate-500 dark:text-white/50 mt-0.5 hidden sm:block">
+              <p className="text-xs text-slate-500 dark:text-white/70 mt-0.5 hidden sm:block">
                 {t('budget.uploadDescription')}
               </p>
             </div>
@@ -526,7 +526,7 @@ export default function BudgetPage() {
                   <div className="text-center py-12">
                     <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budget.noBudgetsYet')}</h3>
-                    <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+                    <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
                       {t('budget.noBudgetsYetDesc')}
                     </p>
                     <Button
@@ -564,7 +564,7 @@ export default function BudgetPage() {
                           <div className="text-2xl font-bold text-slate-900 dark:text-white">
                             {overallUtilization.toFixed(0)}%
                           </div>
-                          <div className="text-sm text-slate-500 dark:text-white/50">{t('budget.utilized')}</div>
+                          <div className="text-sm text-slate-500 dark:text-white/70">{t('budget.utilized')}</div>
                         </div>
                       </div>
 
@@ -667,7 +667,7 @@ export default function BudgetPage() {
                             </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.budgetUtilization')}</h5>
                           </div>
-                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/70">
                             <li className="flex items-start gap-2">
                               {overallUtilization <= 85 ? (
                                 <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -705,7 +705,7 @@ export default function BudgetPage() {
                             </div>
                             <h5 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.categoryAllocation')}</h5>
                           </div>
-                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
+                          <ul className="space-y-2 text-sm text-slate-600 dark:text-white/70">
                             {categories.slice(0, 3).map(c => (
                               <li key={c.name} className="flex items-start gap-2">
                                 {c.budget > 0 && (c.spent / c.budget) > 0.9 ? (
@@ -757,7 +757,7 @@ export default function BudgetPage() {
                       </div>
 
                       {/* Report Footer */}
-                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/50 pt-2">
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/70 pt-2">
                         <span>{t('budget.analysisGeneratedOn').replace('{date}', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))}</span>
                         <span>{t('budget.budgetAnalysis')}</span>
                       </div>
@@ -843,7 +843,7 @@ export default function BudgetPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate leading-tight">
                           {expense.vendor || expense.description?.split(' — ')[0]}
                         </p>
-                        <p className="text-[11px] text-slate-500 dark:text-white/50 truncate mt-0.5">
+                        <p className="text-[11px] text-slate-500 dark:text-white/70 truncate mt-0.5">
                           {expense.category?.name}
                         </p>
                       </div>
@@ -908,7 +908,7 @@ export default function BudgetPage() {
                         <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11px] text-slate-500 dark:text-white/50">{item.label}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-white/70">{item.label}</p>
                         <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{item.value}</p>
                       </div>
                     </div>
@@ -935,7 +935,7 @@ export default function BudgetPage() {
                     {analysisType === 'budget_document' && t('budget.analyzeBudgetDocument')}
                     {analysisType === 'expense_report' && t('budget.analyzeExpenseReport')}
                   </h2>
-                  <p className="text-sm text-white/80">{t('budget.aiExtractDesc')}</p>
+                  <p className="text-sm text-white">{t('budget.aiExtractDesc')}</p>
                 </div>
               </div>
               <Button variant="ghost" onClick={() => { setIsUploadModalOpen(false); resetUploadState(); }} className="p-2 text-white hover:bg-white/20 rounded-md">
@@ -1285,13 +1285,13 @@ export default function BudgetPage() {
                           {item.status}
                         </span>
                         {item.category?.name && (
-                          <span className="text-xs text-slate-500 dark:text-white/50">{item.category.name}</span>
+                          <span className="text-xs text-slate-500 dark:text-white/70">{item.category.name}</span>
                         )}
                       </div>
                       <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                         {item.description || item.vendor || 'Expense'}
                       </p>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-white/50">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-white/70">
                         {item.budget?.project?.name && <span>{item.budget.project.name}</span>}
                         {item.vendor && <span>{item.vendor}</span>}
                         {item.transactionDate && (
@@ -1311,7 +1311,7 @@ export default function BudgetPage() {
           ) : (
             <div className="text-center py-12">
               <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-sm text-slate-600 dark:text-white/50">{t('common.noResults')}</p>
+              <p className="text-sm text-slate-600 dark:text-white/70">{t('common.noResults')}</p>
             </div>
           )}
         </SlideoutPanelContent>
@@ -1349,10 +1349,10 @@ function StatCard({
         <div className={`h-8 w-8 rounded-lg ${iconBg} flex items-center justify-center`}>
           <div className={color}>{icon}</div>
         </div>
-        <span className="text-xs font-medium text-slate-500 dark:text-white/50 capitalize">{label}</span>
+        <span className="text-xs font-medium text-slate-500 dark:text-white/70 capitalize">{label}</span>
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
-      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/50 truncate">{sublabel}</div>
+      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/70 truncate">{sublabel}</div>
     </div>
   );
 }
@@ -1367,7 +1367,7 @@ function CategoryBar({ label, value, budget, max, color }: {
       <div className="flex items-center justify-between text-sm">
         <span className="text-slate-700 dark:text-slate-300 truncate mr-2">{label}</span>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className={`text-xs font-medium ${utilization > 90 ? 'text-red-600 dark:text-red-400' : utilization > 75 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-white/50'}`}>
+          <span className={`text-xs font-medium ${utilization > 90 ? 'text-red-600 dark:text-red-400' : utilization > 75 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-white/70'}`}>
             {utilization.toFixed(0)}%
           </span>
           <span className="font-medium text-slate-900 dark:text-white">

@@ -68,7 +68,7 @@ export default function BudgetPage() {
         <div className="flex h-full items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-            <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
+            <p className="text-sm text-slate-500 dark:text-white/70">{t("common.loading")}</p>
           </div>
         </div>
       </AppLayout>
@@ -85,7 +85,7 @@ export default function BudgetPage() {
               <AlertCircle className="h-12 w-12 mx-auto" />
             </div>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
-            <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+            <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
               The session is taking longer than expected to load. This might be a configuration issue.
             </p>
             <Button
@@ -280,7 +280,7 @@ export default function BudgetPage() {
         <div className="flex h-64 items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-[#1C8C7D] mx-auto mb-3" />
-            <p className="text-sm text-slate-500 dark:text-white/50">Loading budget data...</p>
+            <p className="text-sm text-slate-500 dark:text-white/70">Loading budget data...</p>
           </div>
         </div>
       ) : !hasBudgets ? (
@@ -288,7 +288,7 @@ export default function BudgetPage() {
           <div className="text-center max-w-md">
             <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Budgets Yet</h3>
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               Create a budget in any project to start tracking expenses here.
             </p>
           </div>
@@ -355,7 +355,7 @@ export default function BudgetPage() {
                   Click to view details →
                 </div>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/70">
                 Track spending across all budget categories. Click anywhere to drill down.
               </p>
 
@@ -403,7 +403,7 @@ export default function BudgetPage() {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {((spent / totalBudget) * 100).toFixed(0)}%
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-white/50">Utilized</div>
+                    <div className="text-sm text-slate-500 dark:text-white/70">Utilized</div>
                   </div>
                 </div>
 
@@ -422,7 +422,7 @@ export default function BudgetPage() {
                           <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{category.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500 dark:text-white/50">{utilizationRate}%</span>
+                          <span className="text-xs text-slate-500 dark:text-white/70">{utilizationRate}%</span>
                           <span className="text-sm font-medium text-slate-900 dark:text-white">
                             ETB {(category.spent / 1000000).toFixed(1)}M
                           </span>
@@ -438,7 +438,7 @@ export default function BudgetPage() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-semibold text-slate-900 dark:text-white">Category spending breakdown</h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   Visual representation of spending levels across budget categories.
                 </p>
                 <div className="space-y-2">
@@ -509,7 +509,7 @@ export default function BudgetPage() {
                         <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Budget Performance</h5>
                       </div>
-                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/70">
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                           <span><span className="font-medium text-slate-900 dark:text-white">ETB {((totalBudget - spent) / 1000000).toFixed(1)}M</span> remaining in total budget</span>
@@ -531,7 +531,7 @@ export default function BudgetPage() {
                         <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                         <h5 className="text-sm font-semibold text-slate-900 dark:text-white">Top Spending Categories</h5>
                       </div>
-                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/50">
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-white/70">
                         {[...categories]
                           .sort((a, b) => b.spent - a.spent)
                           .slice(0, 3)
@@ -585,7 +585,7 @@ export default function BudgetPage() {
                   </div>
 
                   {/* Report Timestamp */}
-                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/50 pt-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-white/70 pt-2">
                     <span>Analysis generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     <span>Budget Analysis</span>
                   </div>
@@ -609,7 +609,7 @@ export default function BudgetPage() {
                   </div>
                 </div>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                 Stay up to date with what's happening across your organization.
               </p>
 
@@ -808,7 +808,7 @@ export default function BudgetPage() {
                   <span className="ml-2 text-sm font-normal text-slate-500">({budgetWatchers.length})</span>
                 </h2>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                 Team members monitoring budget activities.
               </p>
 
@@ -851,7 +851,7 @@ export default function BudgetPage() {
                                 watching
                               </span>
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-white/50">
+                            <p className="text-xs text-slate-500 dark:text-white/70">
                               {watcher.role} • {watcher.watching.length} {watcher.watching.length === 1 ? 'category' : 'categories'}
                             </p>
                           </div>
@@ -924,7 +924,7 @@ export default function BudgetPage() {
                         Action Required
                       </span>
                     </h4>
-                    <p className="text-sm text-slate-600 dark:text-white/50 leading-relaxed mb-4">
+                    <p className="text-sm text-slate-600 dark:text-white/70 leading-relaxed mb-4">
                       {categoriesAtRisk} {categoriesAtRisk === 1 ? 'category is' : 'categories are'} approaching budget limits at <span className="font-semibold text-orange-600 dark:text-orange-400">80%+ utilization</span>.
                     </p>
                     <div className="flex items-center gap-2">
@@ -951,7 +951,7 @@ export default function BudgetPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-white/50">Average Spending/Day</p>
+                      <p className="text-xs text-slate-500 dark:text-white/70">Average Spending/Day</p>
                       <p className="text-lg font-bold text-slate-900 dark:text-white">ETB {((spent / 30) / 1000).toFixed(0)}K</p>
                     </div>
                     <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -960,7 +960,7 @@ export default function BudgetPage() {
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#181D23]/50">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-white/50">Projected End Date</p>
+                      <p className="text-xs text-slate-500 dark:text-white/70">Projected End Date</p>
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">
                         {spent > 0 ? Math.ceil((totalBudget - spent) / (spent / 30)) : '—'} days remaining
                       </p>
@@ -992,7 +992,7 @@ export default function BudgetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-white">{filterTitle}</h2>
-                  <p className="text-sm text-white/80 mt-1">
+                  <p className="text-sm text-white mt-1">
                     {filteredTransactions.length} {filteredTransactions.length === 1 ? 'item' : 'items'} found
                   </p>
                 </div>
@@ -1021,7 +1021,7 @@ export default function BudgetPage() {
                     {totalAmount > 0 && (
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-3.5 w-3.5 text-blue-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           Total: <span className="font-semibold text-blue-600 dark:text-blue-400">ETB {(totalAmount / 1000000).toFixed(2)}M</span>
                         </span>
                       </div>
@@ -1029,7 +1029,7 @@ export default function BudgetPage() {
                     {approved > 0 && (
                       <div className="flex items-center gap-1">
                         <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-green-600 dark:text-green-400">{approved}</span> approved
                         </span>
                       </div>
@@ -1037,7 +1037,7 @@ export default function BudgetPage() {
                     {pending > 0 && (
                       <div className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-orange-500" />
-                        <span className="text-slate-600 dark:text-white/50">
+                        <span className="text-slate-600 dark:text-white/70">
                           <span className="font-semibold text-orange-600 dark:text-orange-400">{pending}</span> pending
                         </span>
                       </div>
@@ -1146,7 +1146,7 @@ export default function BudgetPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-white">Budget Watchers</h2>
-                  <p className="text-sm text-white/80 mt-1">
+                  <p className="text-sm text-white mt-1">
                     {budgetWatchers.length} team {budgetWatchers.length === 1 ? 'member' : 'members'} watching
                   </p>
                 </div>
@@ -1263,10 +1263,10 @@ function StatCard({
     >
       <div className="flex items-center gap-2.5 mb-2 md:mb-3">
         <div className={`p-1.5 rounded-lg bg-slate-100 dark:bg-[#181D23]/50 ${color}`}>{icon}</div>
-        <span className="text-xs font-medium text-slate-500 dark:text-white/50 capitalize">{label}</span>
+        <span className="text-xs font-medium text-slate-500 dark:text-white/70 capitalize">{label}</span>
       </div>
       <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">{value}</div>
-      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/50 truncate">{sublabel}</div>
+      <div className="mt-0.5 text-[11px] md:text-xs text-slate-500 dark:text-white/70 truncate">{sublabel}</div>
     </Button>
   );
 }

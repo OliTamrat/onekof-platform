@@ -334,10 +334,10 @@ export default function IssuesAutomationPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className={`h-2 w-2 rounded-full ${getStatusColor(rule.status)}`} />
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                           {categoryLabels[rule.category].toUpperCase()}
                         </span>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                           {rule.status.toUpperCase()}
                         </span>
                         {rule.priority === 'critical' && (
@@ -349,7 +349,7 @@ export default function IssuesAutomationPage() {
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                         {rule.name}
                       </h3>
-                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                         <span className="flex items-center gap-1">
                           <TrendingUp className="h-3 w-3" />
                           {rule.executionCount.toLocaleString()} executions
@@ -367,7 +367,7 @@ export default function IssuesAutomationPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <ChevronDown
-                        className={`h-4 w-4 text-gray-600 dark:text-white/50 transition-transform ${
+                        className={`h-4 w-4 text-gray-600 dark:text-white/70 transition-transform ${
                           isExpanded ? 'rotate-180' : ''
                         }`}
                       />
@@ -378,19 +378,19 @@ export default function IssuesAutomationPage() {
                   {isExpanded && (
                     <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/[0.08] space-y-2">
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Description:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/70 mb-1">Description:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.description}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Trigger:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/70 mb-1">Trigger:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.trigger}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">Action:</p>
+                        <p className="text-xs font-semibold text-gray-600 dark:text-white/70 mb-1">Action:</p>
                         <p className="text-xs text-gray-900 dark:text-white">{rule.action}</p>
                       </div>
                       {rule.nextScheduled && (
-                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/50">
+                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/70">
                           <Calendar className="h-3 w-3" />
                           Next scheduled: {formatDate(rule.nextScheduled)}
                         </div>
@@ -418,7 +418,7 @@ export default function IssuesAutomationPage() {
                 <div className="text-center">
                   <Zap className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No automation rules found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                     No rules match the selected filters.
                   </p>
                 </div>

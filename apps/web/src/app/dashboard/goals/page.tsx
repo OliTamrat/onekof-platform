@@ -402,7 +402,7 @@ export default function GoalsPage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-white/50">Loading goals...</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">Loading goals...</p>
               </div>
             </div>
           ) : filteredGoals.length > 0 ? (
@@ -426,7 +426,7 @@ export default function GoalsPage() {
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 No goals found
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
+              <p className="mt-1 text-sm text-gray-600 dark:text-white/70">
                 Create your first goal to start tracking progress
               </p>
               <Button
@@ -491,7 +491,7 @@ export default function GoalsPage() {
                       required
                       className="bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-white/50">A clear, measurable objective you want to achieve</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">A clear, measurable objective you want to achieve</p>
                   </div>
 
                   <div className="space-y-2">
@@ -506,7 +506,7 @@ export default function GoalsPage() {
                       <option value="TEAM">Team Goal - Shared team target</option>
                       <option value="INDIVIDUAL">Individual Goal - Personal objective</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Defines the scope and visibility of this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Defines the scope and visibility of this goal</p>
                   </div>
 
                   <div className="space-y-2">
@@ -519,7 +519,7 @@ export default function GoalsPage() {
                       rows={4}
                       className="bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-white/50">Provide context about the goal's purpose and expected outcomes</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Provide context about the goal's purpose and expected outcomes</p>
                   </div>
                 </div>
               </div>
@@ -556,7 +556,7 @@ export default function GoalsPage() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Person accountable for achieving this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Person accountable for achieving this goal</p>
                   </div>
 
                   <div className="space-y-2">
@@ -574,7 +574,7 @@ export default function GoalsPage() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Team responsible for collaborating on this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Team responsible for collaborating on this goal</p>
                   </div>
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function GoalsPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-600 dark:text-white/50">Link this goal to a broader objective to create goal hierarchies</p>
+                  <p className="text-xs text-gray-600 dark:text-white/70">Link this goal to a broader objective to create goal hierarchies</p>
                 </div>
               </div>
 
@@ -618,7 +618,7 @@ export default function GoalsPage() {
                       <option value="HIGH">High - Critical, needs attention</option>
                       <option value="CRITICAL">Critical - Highest priority, urgent</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Helps teams prioritize their focus and resources</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Helps teams prioritize their focus and resources</p>
                   </div>
 
                   <IconPicker
@@ -645,7 +645,7 @@ export default function GoalsPage() {
                         className="flex-1 bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white focus:border-primary-500"
                       />
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Visual identifier to quickly recognize this goal</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Visual identifier to quickly recognize this goal</p>
                   </div>
                 </div>
               </div>
@@ -694,7 +694,7 @@ export default function GoalsPage() {
                 <div className="mb-6">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-medium text-white">Progress</span>
-                    <span className="text-sm text-white/50">{selectedGoal.progress}%</span>
+                    <span className="text-sm text-white/70">{selectedGoal.progress}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-700">
                     <div
@@ -708,7 +708,7 @@ export default function GoalsPage() {
                 {selectedGoal.description && (
                   <div className="mb-6">
                     <h3 className="mb-2 text-sm font-semibold text-white">Description</h3>
-                    <p className="text-sm text-white/50">
+                    <p className="text-sm text-white/70">
                       {selectedGoal.description}
                     </p>
                   </div>
@@ -808,7 +808,7 @@ export default function GoalsPage() {
                           {kr.isCompleted ? (
                             <CheckCircle2 className="h-5 w-5 text-green-500" />
                           ) : (
-                            <Circle className="h-5 w-5 text-white/50" />
+                            <Circle className="h-5 w-5 text-white/70" />
                           )}
                           <div className="flex-1">
                             <p className="text-sm font-medium text-white">{kr.description}</p>
@@ -822,7 +822,7 @@ export default function GoalsPage() {
                                 }}
                                 className="h-7 w-20 text-xs bg-[#12161B] border-white/[0.08] text-white"
                               />
-                              <span className="text-xs text-white/50">/ {kr.target} {kr.unit}</span>
+                              <span className="text-xs text-white/70">/ {kr.target} {kr.unit}</span>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -844,7 +844,7 @@ export default function GoalsPage() {
                     </div>
                   ) : (
                     !isAddingKeyResult && (
-                      <div className="rounded-lg border border-white/[0.08] p-8 text-center text-sm text-white/50 bg-[#0B0E11]">
+                      <div className="rounded-lg border border-white/[0.08] p-8 text-center text-sm text-white/70 bg-[#0B0E11]">
                         <Target className="mx-auto mb-2 h-8 w-8 text-slate-700" />
                         <p>No key results defined yet</p>
                         <p className="text-xs mt-1">Add measurable outcomes to track your goal progress</p>
@@ -892,7 +892,7 @@ export default function GoalsPage() {
                             onChange={(e) => setContributionWeight(parseInt(e.target.value))}
                             className="w-full"
                           />
-                          <div className="mt-1 flex justify-between text-xs text-white/50">
+                          <div className="mt-1 flex justify-between text-xs text-white/70">
                             <span>0%</span>
                             <span>50%</span>
                             <span>100%</span>
@@ -945,7 +945,7 @@ export default function GoalsPage() {
                                 <p className="text-sm font-semibold text-white">
                                   {project.name}
                                 </p>
-                                <p className="text-xs text-white/50">{project.key}</p>
+                                <p className="text-xs text-white/70">{project.key}</p>
                               </div>
                               <Button
                                 variant="ghost"
@@ -965,14 +965,14 @@ export default function GoalsPage() {
                               </Button>
                             </div>
                             {project.description && (
-                              <p className="text-xs text-white/50 line-clamp-1 mb-2">
+                              <p className="text-xs text-white/70 line-clamp-1 mb-2">
                                 {project.description}
                               </p>
                             )}
                             <div className="flex items-center gap-3">
                               <div className="flex-1">
                                 <div className="flex items-center justify-between text-xs mb-1">
-                                  <span className="text-white/50">Contributes</span>
+                                  <span className="text-white/70">Contributes</span>
                                   <span className="font-medium text-primary-500">{project.contributionWeight}%</span>
                                 </div>
                                 <div className="h-1.5 w-full rounded-full bg-slate-700">
@@ -988,7 +988,7 @@ export default function GoalsPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-white/[0.08] p-8 text-center text-sm text-white/50 bg-[#0B0E11]">
+                    <div className="rounded-lg border border-white/[0.08] p-8 text-center text-sm text-white/70 bg-[#0B0E11]">
                       <Folder className="mx-auto mb-2 h-8 w-8 text-slate-700" />
                       <p>No projects linked to this goal yet</p>
                       <p className="text-xs mt-1">Link projects that contribute to achieving this goal</p>
@@ -1016,7 +1016,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
   const getStatusConfig = (status: Goal['status']) => {
     switch (status) {
       case 'NOT_STARTED':
-        return { icon: Circle, color: 'text-white/50', bg: 'bg-slate-700', label: t('goals.notStarted') };
+        return { icon: Circle, color: 'text-white/70', bg: 'bg-slate-700', label: t('goals.notStarted') };
       case 'IN_PROGRESS':
         return { icon: TrendingUp, color: 'text-primary-500', bg: 'bg-primary-500/20', label: t('status.inProgress') };
       case 'AT_RISK':
@@ -1024,7 +1024,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
       case 'COMPLETED':
         return { icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-500/20', label: t('goals.completed') };
       default:
-        return { icon: Circle, color: 'text-white/50', bg: 'bg-slate-700', label: status };
+        return { icon: Circle, color: 'text-white/70', bg: 'bg-slate-700', label: status };
     }
   };
 
@@ -1057,7 +1057,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
             {goal.title}
           </h3>
           {goal.description && (
-            <p className="mt-1 line-clamp-1 text-xs text-gray-600 dark:text-white/50">
+            <p className="mt-1 line-clamp-1 text-xs text-gray-600 dark:text-white/70">
               {goal.description}
             </p>
           )}
@@ -1069,7 +1069,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
               onClick={(e) => e.stopPropagation()}
               className="rounded p-1 hover:bg-gray-100 dark:hover:bg-slate-700 shrink-0 transition-colors"
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-white/50" />
+              <MoreHorizontal className="h-4 w-4 text-gray-600 dark:text-white/70" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">
@@ -1092,7 +1092,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
       {/* Progress Bar */}
       <div className="mb-3">
         <div className="mb-1 flex items-center justify-between text-xs">
-          <span className="text-gray-600 dark:text-white/50">Progress</span>
+          <span className="text-gray-600 dark:text-white/70">Progress</span>
           <span className="font-medium text-gray-900 dark:text-white">{goal.progress}%</span>
         </div>
         <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-white/[0.08]">
@@ -1119,7 +1119,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
 
         {/* Due Date */}
         {goal.dueDate && (
-          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/50 ml-auto">
+          <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-white/70 ml-auto">
             <Calendar className="h-3 w-3" />
             {new Date(goal.dueDate).toLocaleDateString()}
           </div>
@@ -1128,7 +1128,7 @@ function GoalCard({ goal, onClick, onDelete }: GoalCardProps) {
 
       {/* Team/Owner */}
       {(goal.team || goal.owner) && (
-        <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-white/50">
+        <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-white/70">
           {goal.team && (
             <>
               <Users className="h-3 w-3" />

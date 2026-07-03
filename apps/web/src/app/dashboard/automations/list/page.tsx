@@ -99,7 +99,7 @@ export default function AutomationsListPage() {
   const getStatusColor = (isEnabled: boolean) => {
     return isEnabled
       ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-      : 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50';
+      : 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70';
   };
 
   const getScopeColor = (scope: string) => {
@@ -151,7 +151,7 @@ export default function AutomationsListPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -164,7 +164,7 @@ export default function AutomationsListPage() {
           {/* Search Bar */}
           <div className="flex items-center gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/70" />
               <input
                 type="text"
                 placeholder={t('automations.searchAutomations')}
@@ -185,7 +185,7 @@ export default function AutomationsListPage() {
         <div className="flex-1 overflow-auto px-6 py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
+              <div className="text-gray-600 dark:text-white/70">{t('automations.loading')}</div>
             </div>
           ) : filteredAutomations.length === 0 ? (
             <div className="flex h-full items-center justify-center">
@@ -194,7 +194,7 @@ export default function AutomationsListPage() {
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
                   {t('automations.noAutomations')}
                 </h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+                <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                   {searchQuery ? t('automations.noAutomationsMatch') : t('automations.getStartedCreate')}
                 </p>
               </div>
@@ -204,28 +204,28 @@ export default function AutomationsListPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead className="bg-gray-50 dark:bg-[#181D23]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colName')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colEntityType')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colTrigger')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colScope')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colExecutions')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colSuccessRate')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colStatus')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('automations.colActions')}
                     </th>
                   </tr>
@@ -252,7 +252,7 @@ export default function AutomationsListPage() {
                                 {automation.aiGenerated && <Sparkles className="h-3 w-3 text-amber-500" />}
                               </div>
                               {automation.description && (
-                                <div className="text-xs text-gray-500 dark:text-white/50 line-clamp-1">
+                                <div className="text-xs text-gray-500 dark:text-white/70 line-clamp-1">
                                   {automation.description}
                                 </div>
                               )}
@@ -260,12 +260,12 @@ export default function AutomationsListPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-600 dark:text-white/50">
+                          <span className="text-sm text-gray-600 dark:text-white/70">
                             {automation.entityType}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-600 dark:text-white/50">
+                          <span className="text-sm text-gray-600 dark:text-white/70">
                             {automation.triggerEvent}
                           </span>
                         </td>
@@ -298,7 +298,7 @@ export default function AutomationsListPage() {
                             onClick={() => toggleMutation.mutate({ id: automation.id, isEnabled: automation.isEnabled })}
                             className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
                               automation.isEnabled
-                                ? 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                                ? 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                                 : 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/10'
                             }`}
                             title={automation.isEnabled ? t('common.disable') : t('common.enable')}

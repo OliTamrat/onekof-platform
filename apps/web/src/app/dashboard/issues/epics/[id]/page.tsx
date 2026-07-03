@@ -138,7 +138,7 @@ export default function EpicDetailPage() {
         <div className="flex min-h-full items-center justify-center bg-gray-50 dark:bg-[#0B0E11]">
           <div className="text-center">
             <Target className="h-12 w-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
-            <p className="text-gray-600 dark:text-white/50 mb-4">Epic not found or you don&apos;t have access.</p>
+            <p className="text-gray-600 dark:text-white/70 mb-4">Epic not found or you don&apos;t have access.</p>
             <Button onClick={() => router.back()} variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t('common.back')}
@@ -173,7 +173,7 @@ export default function EpicDetailPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => router.back()}
-                className="h-7 px-2 text-xs text-gray-500 dark:text-white/50 hover:text-gray-800 dark:hover:text-white"
+                className="h-7 px-2 text-xs text-gray-500 dark:text-white/70 hover:text-gray-800 dark:hover:text-white"
               >
                 <ArrowLeft className="h-3.5 w-3.5 mr-1" />
                 {t('common.back')}
@@ -185,7 +185,7 @@ export default function EpicDetailPage() {
               >
                 {epic.project.key}
               </span>
-              <span className="text-xs font-mono text-gray-400 dark:text-white/40">{epic.key}</span>
+              <span className="text-xs font-mono text-gray-400 dark:text-white/60">{epic.key}</span>
             </div>
 
             {/* Title row */}
@@ -214,7 +214,7 @@ export default function EpicDetailPage() {
                     {epic.title}
                   </h1>
                   {epic.description && (
-                    <p className="mt-1.5 text-sm text-gray-500 dark:text-white/50 max-w-2xl line-clamp-2">
+                    <p className="mt-1.5 text-sm text-gray-500 dark:text-white/70 max-w-2xl line-clamp-2">
                       {epic.description}
                     </p>
                   )}
@@ -247,7 +247,7 @@ export default function EpicDetailPage() {
                   Progress
                 </h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500 dark:text-white/50">
+                  <span className="text-xs text-gray-500 dark:text-white/70">
                     {stats.byStatus.DONE ?? 0} of {stats.total} done
                   </span>
                   <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
@@ -272,8 +272,8 @@ export default function EpicDetailPage() {
                     return (
                       <div key={s} className="flex items-center gap-1.5">
                         <span className={`h-2 w-2 rounded-full ${meta.dotColor}`} />
-                        <span className="text-xs text-gray-500 dark:text-white/50">{meta.label}</span>
-                        <span className="text-xs font-semibold text-gray-700 dark:text-white/80">{count}</span>
+                        <span className="text-xs text-gray-500 dark:text-white/70">{meta.label}</span>
+                        <span className="text-xs font-semibold text-gray-700 dark:text-white">{count}</span>
                       </div>
                     );
                   })}
@@ -285,7 +285,7 @@ export default function EpicDetailPage() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
-                  <ListChecks className="h-4 w-4 text-gray-500 dark:text-white/40" />
+                  <ListChecks className="h-4 w-4 text-gray-500 dark:text-white/60" />
                   Child tasks
                   <span className="ml-1 rounded-full bg-gray-100 dark:bg-white/[0.08] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600 dark:text-white/60">
                     {stats.total}
@@ -310,7 +310,7 @@ export default function EpicDetailPage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-white/[0.06] mb-3 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
                     <Plus className="h-5 w-5 text-gray-400 group-hover:text-purple-500 transition-colors" />
                   </div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-white/50 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <p className="text-sm font-medium text-gray-600 dark:text-white/70 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     No child tasks yet
                   </p>
                   <p className="text-xs text-gray-400 dark:text-white/30 mt-1">
@@ -328,7 +328,7 @@ export default function EpicDetailPage() {
                       <div key={status}>
                         <div className="flex items-center gap-2 mb-2 px-1">
                           <span className={`h-2 w-2 rounded-full ${meta.dotColor}`} />
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/50">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/70">
                             {meta.label}
                           </span>
                           <span className="text-xs text-gray-400 dark:text-white/30">({tasks.length})</span>
@@ -345,7 +345,7 @@ export default function EpicDetailPage() {
                               <span className="text-[11px] font-mono text-gray-400 dark:text-white/30 shrink-0 w-16">
                                 {task.key}
                               </span>
-                              <span className="flex-1 text-sm text-gray-800 dark:text-white/90 truncate group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                              <span className="flex-1 text-sm text-gray-800 dark:text-white truncate group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                                 {task.title}
                               </span>
                               {task.priority && (
@@ -405,21 +405,21 @@ export default function EpicDetailPage() {
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-lg bg-gray-50 dark:bg-[#0B0E11] border border-gray-100 dark:border-white/[0.05] px-3 py-3">
-                  <div className="text-[10px] text-gray-400 dark:text-white/40 uppercase tracking-wide">Total</div>
+                  <div className="text-[10px] text-gray-400 dark:text-white/60 uppercase tracking-wide">Total</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{stats.total}</div>
                 </div>
                 <div className="rounded-lg bg-gray-50 dark:bg-[#0B0E11] border border-gray-100 dark:border-white/[0.05] px-3 py-3">
-                  <div className="text-[10px] text-gray-400 dark:text-white/40 uppercase tracking-wide">Active</div>
+                  <div className="text-[10px] text-gray-400 dark:text-white/60 uppercase tracking-wide">Active</div>
                   <div className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-0.5">
                     {(stats.byStatus.IN_PROGRESS ?? 0) + (stats.byStatus.IN_REVIEW ?? 0)}
                   </div>
                 </div>
                 <div className="rounded-lg bg-gray-50 dark:bg-[#0B0E11] border border-gray-100 dark:border-white/[0.05] px-3 py-3">
-                  <div className="text-[10px] text-gray-400 dark:text-white/40 uppercase tracking-wide">Estimate</div>
+                  <div className="text-[10px] text-gray-400 dark:text-white/60 uppercase tracking-wide">Estimate</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{stats.estimateTotal}h</div>
                 </div>
                 <div className="rounded-lg bg-gray-50 dark:bg-[#0B0E11] border border-gray-100 dark:border-white/[0.05] px-3 py-3">
-                  <div className="text-[10px] text-gray-400 dark:text-white/40 uppercase tracking-wide">Spent</div>
+                  <div className="text-[10px] text-gray-400 dark:text-white/60 uppercase tracking-wide">Spent</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{stats.timeSpentTotal}h</div>
                 </div>
               </div>
@@ -434,7 +434,7 @@ export default function EpicDetailPage() {
 
                 {/* Status */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 dark:text-white/40">Status</span>
+                  <span className="text-xs text-gray-500 dark:text-white/60">Status</span>
                   {(() => {
                     const meta = STATUS_META[epic.status] || STATUS_META.TODO;
                     const Icon = meta.icon;
@@ -450,7 +450,7 @@ export default function EpicDetailPage() {
                 {/* Priority */}
                 {epic.priority && (
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 dark:text-white/40">Priority</span>
+                    <span className="text-xs text-gray-500 dark:text-white/60">Priority</span>
                     <span className={`flex items-center gap-1 text-xs font-medium ${PRIORITY_COLORS[epic.priority]}`}>
                       <Flag className="h-3 w-3" />
                       {epic.priority}
@@ -460,7 +460,7 @@ export default function EpicDetailPage() {
 
                 {/* Assignee */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 dark:text-white/40">Assignee</span>
+                  <span className="text-xs text-gray-500 dark:text-white/60">Assignee</span>
                   {epic.assignee ? (
                     <div className="flex items-center gap-1.5">
                       {epic.assignee.avatar ? (
@@ -470,7 +470,7 @@ export default function EpicDetailPage() {
                           {epic.assignee.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="text-xs text-gray-700 dark:text-white/80">{epic.assignee.name}</span>
+                      <span className="text-xs text-gray-700 dark:text-white">{epic.assignee.name}</span>
                     </div>
                   ) : (
                     <span className="text-xs text-gray-400 dark:text-white/30">Unassigned</span>
@@ -480,7 +480,7 @@ export default function EpicDetailPage() {
                 {/* Reporter */}
                 {epic.reporter && (
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 dark:text-white/40">Reporter</span>
+                    <span className="text-xs text-gray-500 dark:text-white/60">Reporter</span>
                     <div className="flex items-center gap-1.5">
                       {epic.reporter.avatar ? (
                         <img src={epic.reporter.avatar} alt={epic.reporter.name} className="h-5 w-5 rounded-full" />
@@ -489,7 +489,7 @@ export default function EpicDetailPage() {
                           {epic.reporter.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="text-xs text-gray-700 dark:text-white/80">{epic.reporter.name}</span>
+                      <span className="text-xs text-gray-700 dark:text-white">{epic.reporter.name}</span>
                     </div>
                   </div>
                 )}
@@ -497,8 +497,8 @@ export default function EpicDetailPage() {
                 {/* Due date */}
                 {epic.dueDate && (
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 dark:text-white/40">Due date</span>
-                    <span className="flex items-center gap-1 text-xs text-gray-700 dark:text-white/80">
+                    <span className="text-xs text-gray-500 dark:text-white/60">Due date</span>
+                    <span className="flex items-center gap-1 text-xs text-gray-700 dark:text-white">
                       <Calendar className="h-3 w-3 text-gray-400" />
                       {new Date(epic.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
@@ -507,7 +507,7 @@ export default function EpicDetailPage() {
 
                 {/* Project */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 dark:text-white/40">Project</span>
+                  <span className="text-xs text-gray-500 dark:text-white/60">Project</span>
                   <div className="flex items-center gap-1.5">
                     <span
                       className="h-4 w-4 rounded text-[8px] font-bold text-white flex items-center justify-center"
@@ -515,7 +515,7 @@ export default function EpicDetailPage() {
                     >
                       {epic.project.key?.slice(0, 1)}
                     </span>
-                    <span className="text-xs text-gray-700 dark:text-white/80 max-w-[120px] truncate">
+                    <span className="text-xs text-gray-700 dark:text-white max-w-[120px] truncate">
                       {epic.project.name}
                     </span>
                   </div>
@@ -523,8 +523,8 @@ export default function EpicDetailPage() {
 
                 {/* Created */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 dark:text-white/40">Created</span>
-                  <span className="text-xs text-gray-500 dark:text-white/40">
+                  <span className="text-xs text-gray-500 dark:text-white/60">Created</span>
+                  <span className="text-xs text-gray-500 dark:text-white/60">
                     {new Date(epic.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>

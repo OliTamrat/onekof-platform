@@ -223,14 +223,14 @@ export default function WikiPage() {
                 </div>
                 <div>
                   <h2 className="text-base font-semibold text-gray-900 dark:text-white">{activeCategory.name}</h2>
-                  <p className="text-xs text-gray-500 dark:text-white/50">{categoryArticles.length} articles</p>
+                  <p className="text-xs text-gray-500 dark:text-white/70">{categoryArticles.length} articles</p>
                 </div>
               </div>
 
               {categoryArticles.length === 0 ? (
                 <div className="text-center py-16">
                   <FileText className="mx-auto h-10 w-10 text-gray-300 dark:text-slate-600 mb-3" />
-                  <p className="text-sm text-gray-500 dark:text-white/50 mb-4">{t('emptyStates.noArticles')}</p>
+                  <p className="text-sm text-gray-500 dark:text-white/70 mb-4">{t('emptyStates.noArticles')}</p>
                   <Button
                     onClick={handleCreateArticle}
                     disabled={creating}
@@ -277,15 +277,15 @@ export default function WikiPage() {
               {/* Stats row */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">{t('wiki.totalArticles')}</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">{t('wiki.totalArticles')}</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{totalArticles}</div>
                 </div>
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">{t('wiki.categories')}</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">{t('wiki.categories')}</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{categories.length}</div>
                 </div>
                 <div className="hidden md:block bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">{t('wiki.updatedRecently')}</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">{t('wiki.updatedRecently')}</div>
                   <div className="text-xl font-bold text-[#1C8C7D] mt-0.5">{t('common.active')}</div>
                 </div>
               </div>
@@ -317,7 +317,7 @@ export default function WikiPage() {
                           </div>
                           <div className="flex items-center gap-3 mt-1">
                             {catArticles.slice(0, 2).map((article) => (
-                              <span key={article.id} className="text-xs text-gray-500 dark:text-white/50 truncate max-w-[180px]">
+                              <span key={article.id} className="text-xs text-gray-500 dark:text-white/70 truncate max-w-[180px]">
                                 {article.title}
                               </span>
                             ))}
@@ -335,7 +335,7 @@ export default function WikiPage() {
               ) : (
                 <div className="text-center py-16">
                   <Search className="mx-auto h-8 w-8 text-gray-300 dark:text-slate-600 mb-3" />
-                  <p className="text-sm text-gray-500 dark:text-white/50">
+                  <p className="text-sm text-gray-500 dark:text-white/70">
                     {search ? `${t('emptyStates.noArticles')} "${search}"` : t('emptyStates.noArticles')}
                   </p>
                 </div>

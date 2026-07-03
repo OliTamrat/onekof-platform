@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
             <h1 className="font-serif font-medium text-4xl leading-tight text-white">
               {t('auth.forgotPasswordTitle')}
             </h1>
-            <p className="text-lg text-white/50">
+            <p className="text-lg text-white/70">
               {t('auth.resetInstructions')}
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
           {/* Back to signin link */}
           <Link
             href="/auth/signin"
-            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors"
+            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t('auth.backToSignIn')}
@@ -105,7 +105,7 @@ export default function ForgotPasswordPage() {
             <h2 className="font-serif font-medium text-3xl text-white">
               {t('auth.resetPasswordTitle')}
             </h2>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-white/70">
               {t('resetPage.enterEmailInstructions')}
             </p>
           </div>
@@ -115,8 +115,8 @@ export default function ForgotPasswordPage() {
             <div className="mb-6 flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#12161B] p-4">
               <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-400 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-white/85">{message}</p>
-                <p className="mt-1 text-xs text-white/50">
+                <p className="text-sm font-medium text-white">{message}</p>
+                <p className="mt-1 text-xs text-white/70">
                   {t('resetPage.checkSpamFolder')}
                 </p>
               </div>
@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white/85 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-white mb-1">
                 {t('auth.emailAddress')}
               </label>
               <div className="relative mt-1">
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-2.5 pl-10 pr-4 text-white/85 placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
+                  className="w-full rounded-lg border border-white/[0.08] bg-[#12161B] py-2.5 pl-10 pr-4 text-white placeholder-white/30 focus:border-[#1C8C7D] focus:outline-none focus:ring-2 focus:ring-[#1C8C7D]/20"
                   placeholder="you@company.com"
                 />
               </div>
@@ -172,7 +172,7 @@ export default function ForgotPasswordPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-white/70">
               {t('auth.rememberPassword')}{' '}
               <Link href="/auth/signin" className="font-semibold text-[#2BB5A2] hover:text-[#1C8C7D] transition-colors">
                 {t('common.signIn')}

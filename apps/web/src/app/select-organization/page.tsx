@@ -102,7 +102,7 @@ export default function SelectOrganizationPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B0E11]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#2BB5A2] mx-auto mb-4" />
-          <p className="text-white/50 text-sm">{t('selectOrg.loadingOrgs')}</p>
+          <p className="text-white/70 text-sm">{t('selectOrg.loadingOrgs')}</p>
         </div>
       </div>
     );
@@ -152,7 +152,7 @@ export default function SelectOrganizationPage() {
               <h2 className="font-serif font-medium text-4xl text-white mb-3">
                 {t('selectOrg.welcomeBackName', { name: session?.user?.name?.split(' ')[0] || '' })}
               </h2>
-              <p className="text-lg text-white/50">
+              <p className="text-lg text-white/70">
                 {t('selectOrg.selectWorkspace')}
               </p>
             </div>
@@ -165,12 +165,12 @@ export default function SelectOrganizationPage() {
                 <Building2 className="h-10 w-10 text-[#1C8C7D]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">No Organizations Yet</h3>
-              <p className="text-white/50 mb-6">
+              <p className="text-white/70 mb-6">
                 You haven&apos;t been added to any organizations yet.
               </p>
               <div className="rounded-xl bg-[#1C8C7D]/10 border border-[#1C8C7D]/20 p-4 mb-6 text-left">
                 <p className="text-sm text-[#2BB5A2] font-medium mb-1">Have a pending invitation?</p>
-                <p className="text-sm text-white/50">
+                <p className="text-sm text-white/70">
                   Check your email for an invitation link to join an existing organization.
                   Click the link in the email to accept and join.
                 </p>
@@ -259,7 +259,7 @@ export default function SelectOrganizationPage() {
                       {/* Member count if available */}
                       {org.memberCount && (
                         <div className="mt-4 pt-4 border-t border-white/[0.08]">
-                          <div className="flex items-center gap-2 text-white/50">
+                          <div className="flex items-center gap-2 text-white/70">
                             <Users className="h-4 w-4" />
                             <span className="text-sm">{org.memberCount} members</span>
                           </div>
@@ -279,7 +279,7 @@ export default function SelectOrganizationPage() {
               <Button
                 variant="ghost"
                 onClick={handleSignOut}
-                className="text-sm text-white/50 hover:text-white hover:bg-transparent"
+                className="text-sm text-white/70 hover:text-white hover:bg-transparent"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Sign out</span>

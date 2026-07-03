@@ -210,7 +210,7 @@ export default function IssuesTimelinePage() {
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Project Timelines
               </h2>
-              <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+              <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                 Track project progress, budget, goals, and overall health
               </p>
             </div>
@@ -224,7 +224,7 @@ export default function IssuesTimelinePage() {
                   className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                     timeRange === range
                       ? 'bg-white dark:bg-[#12161B] text-gray-900 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {range === '30d' ? '30 Days' : range === '90d' ? '90 Days' : range === '6m' ? '6 Months' : '1 Year'}
@@ -240,7 +240,7 @@ export default function IssuesTimelinePage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#8B5CF6] dark:border-gray-700"></div>
-                <p className="text-sm text-gray-600 dark:text-white/50">Loading project timelines...</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">Loading project timelines...</p>
               </div>
             </div>
           ) : projects.length === 0 ? (
@@ -248,7 +248,7 @@ export default function IssuesTimelinePage() {
               <div className="text-center">
                 <Calendar className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">No Projects Yet</h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
+                <p className="mt-2 text-sm text-gray-500 dark:text-white/70">
                   Create projects to track their timelines, budget, and progress
                 </p>
               </div>
@@ -258,19 +258,19 @@ export default function IssuesTimelinePage() {
               {/* Summary Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">Total Projects</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">Total Projects</div>
                   <div className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{projects.length}</div>
                 </div>
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">On Track</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">On Track</div>
                   <div className="text-xl font-bold text-green-600 dark:text-green-400 mt-0.5">{projects.filter(p => p.status === 'ON_TRACK').length}</div>
                 </div>
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">At Risk / Delayed</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">At Risk / Delayed</div>
                   <div className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-0.5">{projects.filter(p => p.status === 'AT_RISK' || p.status === 'DELAYED').length}</div>
                 </div>
                 <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg px-4 py-3">
-                  <div className="text-xs text-gray-500 dark:text-white/50">Completed</div>
+                  <div className="text-xs text-gray-500 dark:text-white/70">Completed</div>
                   <div className="text-xl font-bold text-[#1C8C7D] mt-0.5">{projects.filter(p => p.status === 'COMPLETED').length}</div>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export default function IssuesTimelinePage() {
                                 </div>
                               </div>
                               {project.description && (
-                                <p className="text-sm text-gray-600 dark:text-white/50 line-clamp-2">
+                                <p className="text-sm text-gray-600 dark:text-white/70 line-clamp-2">
                                   {project.description}
                                 </p>
                               )}
@@ -337,7 +337,7 @@ export default function IssuesTimelinePage() {
                           <div>
                             <div className="flex items-center gap-2 mb-2">
                               <Activity className="h-4 w-4 text-gray-400" />
-                              <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                              <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                                 Progress
                               </span>
                             </div>
@@ -362,7 +362,7 @@ export default function IssuesTimelinePage() {
                             <div>
                               <div className="flex items-center gap-2 mb-2">
                                 <DollarSign className="h-4 w-4 text-gray-400" />
-                                <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                                <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                                   Budget
                                 </span>
                               </div>
@@ -374,7 +374,7 @@ export default function IssuesTimelinePage() {
                                   {' '}/ {formatCurrency(project.budget.allocated, project.budget.currency)}
                                 </span>
                               </div>
-                              <div className="text-xs text-gray-600 dark:text-white/50">
+                              <div className="text-xs text-gray-600 dark:text-white/70">
                                 {budgetUtilization.toFixed(1)}% utilized
                               </div>
                             </div>
@@ -384,7 +384,7 @@ export default function IssuesTimelinePage() {
                           <div>
                             <div className="flex items-center gap-2 mb-2">
                               <Calendar className="h-4 w-4 text-gray-400" />
-                              <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                              <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                                 Timeline
                               </span>
                             </div>
@@ -393,7 +393,7 @@ export default function IssuesTimelinePage() {
                                 {formatDate(project.startDate)}
                               </span>
                             </div>
-                            <div className="text-xs text-gray-600 dark:text-white/50">
+                            <div className="text-xs text-gray-600 dark:text-white/70">
                               {daysRemaining !== null ? (
                                 daysRemaining > 0 ? (
                                   <span className="text-blue-600 dark:text-blue-400">
@@ -418,7 +418,7 @@ export default function IssuesTimelinePage() {
                           <div>
                             <div className="flex items-center gap-2 mb-2">
                               <Users className="h-4 w-4 text-gray-400" />
-                              <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                              <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                                 Team
                               </span>
                             </div>
@@ -427,7 +427,7 @@ export default function IssuesTimelinePage() {
                                 {project.team?.memberCount || 0}
                               </span>
                             </div>
-                            <div className="text-xs text-gray-600 dark:text-white/50">
+                            <div className="text-xs text-gray-600 dark:text-white/70">
                               team members
                             </div>
                           </div>
@@ -467,7 +467,7 @@ export default function IssuesTimelinePage() {
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                           {selectedProject.name}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-white/50">
+                        <p className="text-sm text-gray-600 dark:text-white/70">
                           {selectedProject.description || 'No description'}
                         </p>
                       </div>
@@ -491,25 +491,25 @@ export default function IssuesTimelinePage() {
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {selectedProject.progress}%
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Progress</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Progress</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {calculateDaysRemaining(selectedProject.targetDate) || '--'}
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Days Left</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Days Left</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {selectedProject.team?.memberCount || 0}
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Team Members</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Team Members</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {selectedProject.budget ? `${formatCurrency(selectedProject.budget.spent, selectedProject.budget.currency)}` : '--'}
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Budget Spent</div>
+                    <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Budget Spent</div>
                   </div>
                 </div>
               </div>
@@ -576,13 +576,13 @@ export default function IssuesTimelinePage() {
                   {/* Date Range */}
                   <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div>
-                      <span className="text-xs text-gray-600 dark:text-white/50">Start Date</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Start Date</span>
                       <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                         {formatDate(selectedProject.startDate)}
                       </p>
                     </div>
                     <div>
-                      <span className="text-xs text-gray-600 dark:text-white/50">Target Date</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Target Date</span>
                       <p className="text-sm font-medium text-gray-900 dark:text-white mt-1">
                         {formatDate(selectedProject.targetDate)}
                       </p>
@@ -619,19 +619,19 @@ export default function IssuesTimelinePage() {
 
                     <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                       <div>
-                        <span className="text-xs text-gray-600 dark:text-white/50">Allocated</span>
+                        <span className="text-xs text-gray-600 dark:text-white/70">Allocated</span>
                         <p className="text-lg font-bold text-gray-900 dark:text-white mt-1">
                           {formatCurrency(selectedProject.budget.allocated, selectedProject.budget.currency)}
                         </p>
                       </div>
                       <div>
-                        <span className="text-xs text-gray-600 dark:text-white/50">Spent</span>
+                        <span className="text-xs text-gray-600 dark:text-white/70">Spent</span>
                         <p className="text-lg font-bold text-gray-900 dark:text-white mt-1">
                           {formatCurrency(selectedProject.budget.spent, selectedProject.budget.currency)}
                         </p>
                       </div>
                       <div>
-                        <span className="text-xs text-gray-600 dark:text-white/50">Remaining</span>
+                        <span className="text-xs text-gray-600 dark:text-white/70">Remaining</span>
                         <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-1">
                           {formatCurrency(selectedProject.budget.allocated - selectedProject.budget.spent, selectedProject.budget.currency)}
                         </p>
@@ -651,7 +651,7 @@ export default function IssuesTimelinePage() {
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
                     {selectedProject.team?.memberCount || 0}
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-white/50">
+                  <p className="text-sm text-gray-600 dark:text-white/70">
                     Active team members working on this project
                   </p>
                 </div>
@@ -672,7 +672,7 @@ export default function IssuesTimelinePage() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                         Project Health: {getProjectHealth(selectedProject).label}
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                      <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                         Current progress is at {selectedProject.progress}%.
                         {selectedProject.progress < 50 && ' Consider reviewing task priorities and team allocation.'}
                         {selectedProject.progress >= 50 && selectedProject.progress < 80 && ' Project is progressing well, maintain current pace.'}
@@ -688,7 +688,7 @@ export default function IssuesTimelinePage() {
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
                           Budget Status
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100).toFixed(1)}% of budget utilized.
                           {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100) > 80 && ' Monitor spending closely.'}
                           {((selectedProject.budget.spent / selectedProject.budget.allocated) * 100) <= 80 && ' Budget tracking is on target.'}
@@ -704,7 +704,7 @@ export default function IssuesTimelinePage() {
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
                           Timeline Status
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                           {calculateDaysRemaining(selectedProject.targetDate)! > 0
                             ? `${calculateDaysRemaining(selectedProject.targetDate)} days remaining until deadline.`
                             : `Project is ${Math.abs(calculateDaysRemaining(selectedProject.targetDate)!)} days overdue.`
@@ -730,7 +730,7 @@ export default function IssuesTimelinePage() {
                   onClick={() => {
                     window.location.href = `/dashboard/issues?projectId=${selectedProject.id}`;
                   }}
-                  className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-white/[0.08] text-gray-700 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors"
+                  className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-gray-300 dark:border-white/[0.08] text-gray-700 dark:text-white/70 hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors"
                 >
                   View Issues
                 </Button>

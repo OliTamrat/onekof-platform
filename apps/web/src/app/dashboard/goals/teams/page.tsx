@@ -68,23 +68,23 @@ export default function GoalsTeamsPage() {
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">Total Teams</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">Total Teams</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredTeams.length}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">Active Goals</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">Active Goals</div>
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">
               {filteredTeams.reduce((sum, team) => sum + team.activeGoals, 0)}
             </div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">Completed Goals</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">Completed Goals</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
               {filteredTeams.reduce((sum, team) => sum + team.completedGoals, 0)}
             </div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">Avg Progress</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">Avg Progress</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               {Math.round(filteredTeams.reduce((sum, team) => sum + team.totalProgress, 0) / filteredTeams.length)}%
             </div>
@@ -120,23 +120,23 @@ export default function GoalsTeamsPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{team.teamName}</h3>
-                    <p className="text-xs text-gray-600 dark:text-white/50">{team.members} members</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">{team.members} members</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-white/50">Active Goals</span>
+                  <span className="text-gray-600 dark:text-white/70">Active Goals</span>
                   <span className="font-semibold text-blue-600 dark:text-blue-400">{team.activeGoals}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-white/50">Completed</span>
+                  <span className="text-gray-600 dark:text-white/70">Completed</span>
                   <span className="font-semibold text-green-600 dark:text-green-400">{team.completedGoals}</span>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50 mb-1">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70 mb-1">
                     <span>Overall Progress</span>
                     <span className="font-medium">{team.totalProgress}%</span>
                   </div>
@@ -149,7 +149,7 @@ export default function GoalsTeamsPage() {
                 </div>
 
                 <div className="pt-2 border-t border-gray-200 dark:border-white/[0.08]">
-                  <div className="text-xs text-gray-600 dark:text-white/50 mb-1">Top Priority Goal</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70 mb-1">Top Priority Goal</div>
                   <div className="flex items-center gap-1">
                     <Target className="h-3 w-3 text-[#8B5CF6]" />
                     <span className="text-xs font-medium text-gray-900 dark:text-white truncate">{team.topGoal}</span>
@@ -189,7 +189,7 @@ export default function GoalsTeamsPage() {
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Overall Progress</label>
                 <div className="mt-2">
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50 mb-1">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70 mb-1">
                     <span>Team Progress</span>
                     <span className="font-medium">{selectedTeam?.totalProgress}%</span>
                   </div>

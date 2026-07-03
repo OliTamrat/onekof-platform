@@ -80,7 +80,7 @@ export default function IssuesListPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'TODO':
-        return 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50';
+        return 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70';
       case 'IN_PROGRESS':
         return 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
       case 'IN_REVIEW':
@@ -90,7 +90,7 @@ export default function IssuesListPage() {
       case 'BLOCKED':
         return 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400';
       default:
-        return 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50';
+        return 'bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70';
     }
   };
 
@@ -158,14 +158,14 @@ export default function IssuesListPage() {
         <div className="flex-1 overflow-auto px-3 md:px-6 py-3 md:py-4">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <div className="text-gray-600 dark:text-white/50">{t('issuesList.loadingIssues')}</div>
+              <div className="text-gray-600 dark:text-white/70">{t('issuesList.loadingIssues')}</div>
             </div>
           ) : filteredIssues.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <CheckSquare className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('issuesList.noIssues')}</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+                <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                   {searchQuery ? t('issuesList.noMatchSearch') : t('issuesList.getStarted')}
                 </p>
               </div>
@@ -176,25 +176,25 @@ export default function IssuesListPage() {
               <table className="min-w-[640px] w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead className="bg-gray-50 dark:bg-[#181D23]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       Key
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.title')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.type')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.status')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.priority')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.assignee')}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                       {t('common.dueDate')}
                     </th>
                   </tr>
@@ -219,7 +219,7 @@ export default function IssuesListPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-600 dark:text-white/50">
+                        <span className="text-sm text-gray-600 dark:text-white/70">
                           {issue.type}
                         </span>
                       </td>
@@ -257,7 +257,7 @@ export default function IssuesListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {issue.dueDate ? (
-                          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-white/50">
+                          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-white/70">
                             <Calendar className="h-3.5 w-3.5" />
                             <span>{formatDate(issue.dueDate)}</span>
                           </div>

@@ -272,7 +272,7 @@ export function BudgetSummaryWidget({
             </div>
             <div>
               <h3 className="font-semibold text-lg text-white">{t('budget.projectBudget')}</h3>
-              <p className="text-sm text-white/80">{t('budget.realTimeTracking')}</p>
+              <p className="text-sm text-white">{t('budget.realTimeTracking')}</p>
             </div>
           </div>
           <div className={`px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-2`}>
@@ -314,7 +314,7 @@ export function BudgetSummaryWidget({
               <span className="text-4xl font-bold text-white">
                 {utilization.percentageUsed.toFixed(1)}%
               </span>
-              <span className="text-sm text-white/80 mt-1">{t('budget.utilized')}</span>
+              <span className="text-sm text-white mt-1">{t('budget.utilized')}</span>
             </div>
           </div>
         </div>
