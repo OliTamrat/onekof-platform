@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UpgradeBanner, LimitBadge } from '@/components/upgrade-banner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -170,6 +171,7 @@ export default function MembersPage() {
                 <p className="text-xs text-gray-600 dark:text-white/70">
                   {members.length} {members.length === 1 ? t('membersPage.member') : t('membersPage.memberPlural')}
                   {pendingInvitations.length > 0 && ` · ${pendingInvitations.length} pending`}
+                  {' '}<LimitBadge resource="members" />
                 </p>
               </div>
             </div>
@@ -180,6 +182,10 @@ export default function MembersPage() {
               <UserPlus className="mr-2 h-4 w-4" />
               {t('membersPage.inviteMember')}
             </Button>
+          </div>
+
+          <div className="mt-3">
+            <UpgradeBanner resource="members" />
           </div>
 
           {/* Search */}
