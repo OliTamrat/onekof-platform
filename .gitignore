@@ -128,4 +128,22 @@ scripts/*.log
 
 # EIPA deposit package (generated, not versioned)
 DEPOSIT/
+DEPOSIT_SECURED/
 generate-eipa-deposit.py
+
+# Real env files (contain actual credentials)
+.env.pulled
+*.env.real
+**/.env.*.real
+
+# Docker image archives (too large for git)
+onekof-web-*.tar
+onekof-web-*.tar.gz
+onekof-web-*.zip
+
+# Word temp lock files
+~$*.docx
+~$*.xlsx
+
+# Mobile backup files
+*.bak
