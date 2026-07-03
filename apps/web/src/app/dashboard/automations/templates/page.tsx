@@ -180,7 +180,7 @@ export default function TemplatesPage() {
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">{t('automations.templatesTitle')}</h1>
-                <p className="text-xs text-gray-600 dark:text-white/50">
+                <p className="text-xs text-gray-600 dark:text-white/70">
                   {t('automations.templatesSubtitle')}
                 </p>
               </div>
@@ -206,7 +206,7 @@ export default function TemplatesPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.id === 'templates'
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -219,7 +219,7 @@ export default function TemplatesPage() {
           {/* Search and Filter Bar */}
           <div className="flex items-center justify-between gap-3 px-6 py-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/50" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/70" />
               <input
                 type="text"
                 placeholder={t('automations.templatesSearchPlaceholder')}
@@ -230,7 +230,7 @@ export default function TemplatesPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-gray-600 dark:text-white/50" />
+              <Filter className="h-4 w-4 text-gray-600 dark:text-white/70" />
               {categories.map((category, idx) => {
                 const isAll = idx === 0;
                 const key = isAll ? 'all' : category;
@@ -242,7 +242,7 @@ export default function TemplatesPage() {
                       'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
                       selectedCategory === (isAll ? 'all' : category)
                         ? 'bg-primary-500 text-white'
-                        : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/50 hover:bg-gray-300 dark:hover:bg-slate-700'
+                        : 'bg-gray-200 dark:bg-[#181D23] text-gray-700 dark:text-white/70 hover:bg-gray-300 dark:hover:bg-slate-700'
                     )}
                   >
                     {category}
@@ -259,7 +259,7 @@ export default function TemplatesPage() {
             <div className="flex h-64 items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-white/50">{t('automations.templatesLoadingTemplates')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">{t('automations.templatesLoadingTemplates')}</p>
               </div>
             </div>
           ) : filteredTemplates.length > 0 ? (
@@ -287,7 +287,7 @@ export default function TemplatesPage() {
               <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                 {t('automations.templatesNoTemplates')}
               </p>
-              <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
+              <p className="mt-1 text-sm text-gray-600 dark:text-white/70">
                 {t('automations.templatesNoTemplatesDesc')}
               </p>
             </div>
@@ -314,10 +314,10 @@ export default function TemplatesPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">{selectedTemplate.name}</h2>
-                    <p className="text-xs text-white/50">{selectedTemplate.category}</p>
+                    <p className="text-xs text-white/70">{selectedTemplate.category}</p>
                   </div>
                 </DialogTitle>
-                <DialogDescription className="text-sm text-white/50">
+                <DialogDescription className="text-sm text-white/70">
                   {selectedTemplate.description}
                 </DialogDescription>
               </DialogHeader>
@@ -355,7 +355,7 @@ export default function TemplatesPage() {
                     {t('automations.templatesWhen')}
                   </h3>
                   <div className="ml-8">
-                    <p className="text-sm text-white/50">
+                    <p className="text-sm text-white/70">
                       <span className="font-medium text-white">{selectedTemplate.entityType}</span>
                       {' → '}
                       <span className="font-medium text-white">{selectedTemplate.triggerEvent}</span>
@@ -372,7 +372,7 @@ export default function TemplatesPage() {
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.conditions.map((condition: any, index: number) => (
-                        <p key={index} className="text-sm text-white/50">
+                        <p key={index} className="text-sm text-white/70">
                           {condition.field}{' '}
                           <span className="font-medium text-white">{condition.operator}</span>{' '}
                           {condition.value !== null && <span className="font-medium text-white">{condition.value}</span>}
@@ -391,7 +391,7 @@ export default function TemplatesPage() {
                     </h3>
                     <div className="ml-8 space-y-2">
                       {selectedTemplate.actions.map((action: any, index: number) => (
-                        <p key={index} className="text-sm text-white/50">
+                        <p key={index} className="text-sm text-white/70">
                           <span className="font-medium text-white capitalize">{action.type.replace(/_/g, ' ')}</span>
                           {action.params && Object.keys(action.params).length > 0 && (
                             <span className="text-xs ml-2">
@@ -440,7 +440,7 @@ export default function TemplatesPage() {
                   </div>
                   {t('automations.templatesActivateConfirmTitle')}
                 </DialogTitle>
-                <DialogDescription className="text-sm text-white/50">
+                <DialogDescription className="text-sm text-white/70">
                   {t('automations.templatesActivateConfirmDesc').replace('{name}', templateToActivate.name)}
                 </DialogDescription>
               </DialogHeader>
@@ -462,8 +462,8 @@ export default function TemplatesPage() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-white mb-1">{templateToActivate.name}</h4>
-                      <p className="text-xs text-white/50 mb-2">{templateToActivate.description}</p>
-                      <div className="flex items-center gap-3 text-xs text-white/50">
+                      <p className="text-xs text-white/70 mb-2">{templateToActivate.description}</p>
+                      <div className="flex items-center gap-3 text-xs text-white/70">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-green-500" />
                           {templateToActivate.estimatedTimeSaved}h saved/week
@@ -547,17 +547,17 @@ function TemplateCard({ template, activateLabel, onClick, onActivate }: Template
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors line-clamp-1">
               {template.name}
             </h3>
-            <p className="text-xs text-gray-600 dark:text-white/50">{template.category}</p>
+            <p className="text-xs text-gray-600 dark:text-white/70">{template.category}</p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-gray-600 dark:text-white/50 line-clamp-2 mb-3">
+        <p className="text-xs text-gray-600 dark:text-white/70 line-clamp-2 mb-3">
           {template.description}
         </p>
 
         {/* Stats */}
-        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-white/50">
+        <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-white/70">
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 text-amber-500" />
             <span>{template.popularity}%</span>

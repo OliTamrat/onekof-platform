@@ -167,7 +167,7 @@ export default function NotificationsPage() {
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t('notifications.title') || 'Notifications'}
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-white/50">
+                <p className="text-sm text-gray-500 dark:text-white/70">
                   {unreadCount > 0
                     ? `${unreadCount} new ${unreadCount === 1 ? 'update' : 'updates'}`
                     : 'All caught up'}
@@ -234,7 +234,7 @@ export default function NotificationsPage() {
             ) : (
               grouped.map((group) => (
                 <div key={group.label} className="space-y-2">
-                  <h2 className="pt-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-white/40">
+                  <h2 className="pt-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-white/60">
                     {group.label}
                   </h2>
                   {group.items.map((n) => {

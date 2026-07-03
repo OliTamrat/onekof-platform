@@ -163,7 +163,7 @@ export default function TeamsTimelinePage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -182,7 +182,7 @@ export default function TeamsTimelinePage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'all'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               All Events
@@ -192,7 +192,7 @@ export default function TeamsTimelinePage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'team_created'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               Team Created
@@ -202,7 +202,7 @@ export default function TeamsTimelinePage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'member_added'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               Members Added
@@ -212,7 +212,7 @@ export default function TeamsTimelinePage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedFilter === 'milestone'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               Milestones
@@ -245,7 +245,7 @@ export default function TeamsTimelinePage() {
                               <h3 className="font-semibold text-gray-900 dark:text-white">
                                 {event.team}
                               </h3>
-                              <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                              <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                                 {event.description}
                               </p>
                             </div>
@@ -267,7 +267,7 @@ export default function TeamsTimelinePage() {
             {filteredEvents.length === 0 && (
               <div className="text-center py-16">
                 <Clock className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-white/50">No events found for the selected filter</p>
+                <p className="text-gray-500 dark:text-white/70">No events found for the selected filter</p>
               </div>
             )}
           </div>

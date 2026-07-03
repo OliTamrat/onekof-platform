@@ -21,17 +21,17 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
         <p className="mb-3 text-[13px] font-medium uppercase tracking-widest text-[#1C8C7D]">Legal</p>
         <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">Privacy Policy</h1>
-        <p className="mt-4 text-[14px] text-white/50">Last updated: April 13, 2026</p>
+        <p className="mt-4 text-[14px] text-white/70">Last updated: April 13, 2026</p>
 
         <div className="mt-10 space-y-8 text-[14px] leading-relaxed text-white/70">
           <section>
             <h2 className="mb-3 text-[17px] font-semibold text-white">1. Information We Collect</h2>
             <p>When you use Onekof, we collect information you provide directly:</p>
             <ul className="mt-3 list-disc space-y-2 pl-6">
-              <li><strong className="text-white/90">Account information:</strong> Name, email address, and password when you create an account.</li>
-              <li><strong className="text-white/90">Organization data:</strong> Organization name, team members, projects, tasks, budgets, and documents you create within the platform.</li>
-              <li><strong className="text-white/90">Usage data:</strong> Activity logs, feature usage patterns, and session information for analytics and security.</li>
-              <li><strong className="text-white/90">Device data:</strong> IP address, browser type, and operating system for security and rate limiting.</li>
+              <li><strong className="text-white">Account information:</strong> Name, email address, and password when you create an account.</li>
+              <li><strong className="text-white">Organization data:</strong> Organization name, team members, projects, tasks, budgets, and documents you create within the platform.</li>
+              <li><strong className="text-white">Usage data:</strong> Activity logs, feature usage patterns, and session information for analytics and security.</li>
+              <li><strong className="text-white">Device data:</strong> IP address, browser type, and operating system for security and rate limiting.</li>
             </ul>
           </section>
 
@@ -51,9 +51,9 @@ export default function PrivacyPage() {
             <h2 className="mb-3 text-[17px] font-semibold text-white">3. Data Sovereignty & Storage</h2>
             <p>Onekof operates a three-tier hosting architecture designed for data sovereignty:</p>
             <ul className="mt-3 list-disc space-y-2 pl-6">
-              <li><strong className="text-white/90">Tier 1 (Government):</strong> Data stored exclusively within Ethiopian government-controlled infrastructure.</li>
-              <li><strong className="text-white/90">Tier 2 (Private):</strong> Data stored on customer-owned or DAPS Analytics-managed servers within Ethiopia.</li>
-              <li><strong className="text-white/90">Tier 3 (Global Cloud):</strong> Data stored on Vercel (Frankfurt, Germany) and Supabase (EU region), compliant with GDPR.</li>
+              <li><strong className="text-white">Tier 1 (Government):</strong> Data stored exclusively within Ethiopian government-controlled infrastructure.</li>
+              <li><strong className="text-white">Tier 2 (Private):</strong> Data stored on customer-owned or DAPS Analytics-managed servers within Ethiopia.</li>
+              <li><strong className="text-white">Tier 3 (Global Cloud):</strong> Data stored on Vercel (Frankfurt, Germany) and Supabase (EU region), compliant with GDPR.</li>
             </ul>
             <p className="mt-3">Your organization&apos;s hosting tier determines where your data is stored. Data does not flow between tiers.</p>
           </section>

@@ -124,7 +124,7 @@ export default function DashboardPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-white/30 dark:text-white/50">{t("common.loading")}</p>
+          <p className="text-sm text-white/30 dark:text-white/70">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -139,7 +139,7 @@ export default function DashboardPage() {
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.sessionLoadingIssue')}</h2>
-          <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+          <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
             {t('dashboard.sessionLoadingDesc')}
           </p>
           <Button
@@ -327,7 +327,7 @@ export default function DashboardPage() {
                 onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
                 className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-[#1C8C7D] transition-colors"
               >
-                <Filter className="h-3.5 w-3.5 text-white/50" />
+                <Filter className="h-3.5 w-3.5 text-white/70" />
                 {selectedProject ? (
                   <span className="flex items-center gap-2">
                     <span
@@ -339,7 +339,7 @@ export default function DashboardPage() {
                 ) : (
                   <span>{t('nav.allProjects')}</span>
                 )}
-                <ChevronDown className="h-3.5 w-3.5 text-white/50" />
+                <ChevronDown className="h-3.5 w-3.5 text-white/70" />
               </button>
 
               {isProjectDropdownOpen && (
@@ -352,7 +352,7 @@ export default function DashboardPage() {
                         !selectedProjectId ? 'bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium' : 'text-slate-700 dark:text-slate-300'
                       }`}
                     >
-                      <Folder className="h-4 w-4 text-white/50" />
+                      <Folder className="h-4 w-4 text-white/70" />
                       {t('nav.allProjects')}
                     </button>
                     <div className="border-t border-slate-100 dark:border-white/[0.08]/50" />
@@ -371,7 +371,7 @@ export default function DashboardPage() {
                           {project.key?.slice(0, 2)}
                         </span>
                         <span className="truncate">{project.name}</span>
-                        <span className="ml-auto text-xs text-white/50">{project.key}</span>
+                        <span className="ml-auto text-xs text-white/70">{project.key}</span>
                       </button>
                     ))}
                   </div>
@@ -450,7 +450,7 @@ export default function DashboardPage() {
                   {t('dashboard.clickToViewDetails')}
                 </div>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/70">
                 {t('dashboard.statusDescription')}
               </p>
 
@@ -509,7 +509,7 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-white/30 dark:text-white/50">{t('dashboard.totalItems')}</div>
+                    <div className="text-xs md:text-sm text-white/30 dark:text-white/70">{t('dashboard.totalItems')}</div>
                   </div>
                 </div>
 
@@ -575,7 +575,7 @@ export default function DashboardPage() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('dashboard.priorityDescription')}
                 </p>
                 <div className="space-y-2">
@@ -607,7 +607,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('dashboard.recentActivityDescription')}
                 </p>
                 <div className="max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
@@ -628,7 +628,7 @@ export default function DashboardPage() {
                     {t('dashboard.viewAllItems')}
                   </a>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   {t('dashboard.statusDescription')}
                 </p>
                 <div className="space-y-2">
@@ -640,7 +640,7 @@ export default function DashboardPage() {
                       <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
                     </>
                   ) : (
-                    <p className="text-sm text-white/50">{t('common.noData')}</p>
+                    <p className="text-sm text-white/70">{t('common.noData')}</p>
                   )}
                 </div>
               </div>
@@ -679,7 +679,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                           {project.name}
                         </p>
-                        <p className="text-xs text-white/30 dark:text-white/50">
+                        <p className="text-xs text-white/30 dark:text-white/70">
                           {project.key}
                         </p>
                       </div>
@@ -741,7 +741,7 @@ export default function DashboardPage() {
                   {overdue > 0 && (
                     <div className="flex items-center gap-1.5">
                       <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                      <span className="text-slate-600 dark:text-white/50">
+                      <span className="text-slate-600 dark:text-white/70">
                         <span className="font-semibold text-red-600 dark:text-red-400">{overdue}</span> overdue
                       </span>
                     </div>
@@ -749,7 +749,7 @@ export default function DashboardPage() {
                   {unassigned > 0 && (
                     <div className="flex items-center gap-1.5">
                       <User className="h-3.5 w-3.5 text-orange-500" />
-                      <span className="text-slate-600 dark:text-white/50">
+                      <span className="text-slate-600 dark:text-white/70">
                         <span className="font-semibold text-orange-600 dark:text-orange-400">{unassigned}</span> unassigned
                       </span>
                     </div>
@@ -757,7 +757,7 @@ export default function DashboardPage() {
                   {highPriority > 0 && (
                     <div className="flex items-center gap-1.5">
                       <TrendingUp className="h-3.5 w-3.5 text-yellow-500" />
-                      <span className="text-slate-600 dark:text-white/50">
+                      <span className="text-slate-600 dark:text-white/70">
                         <span className="font-semibold text-yellow-600 dark:text-yellow-400">{highPriority}</span> high priority
                       </span>
                     </div>
@@ -765,7 +765,7 @@ export default function DashboardPage() {
                   {avgAge > 0 && (
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-blue-500" />
-                      <span className="text-slate-600 dark:text-white/50">
+                      <span className="text-slate-600 dark:text-white/70">
                         avg <span className="font-semibold text-blue-600 dark:text-blue-400">{avgAge}d</span> old
                       </span>
                     </div>
@@ -773,7 +773,7 @@ export default function DashboardPage() {
                   {withAssignee > 0 && (
                     <div className="flex items-center gap-1.5">
                       <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                      <span className="text-slate-600 dark:text-white/50">
+                      <span className="text-slate-600 dark:text-white/70">
                         <span className="font-semibold text-green-600 dark:text-green-400">{withAssignee}</span> assigned
                       </span>
                     </div>
@@ -801,7 +801,7 @@ export default function DashboardPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium text-white/30 dark:text-white/50">
+                        <span className="text-xs font-medium text-white/30 dark:text-white/70">
                           {task.key}
                         </span>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -828,7 +828,7 @@ export default function DashboardPage() {
                       <h3 className="text-sm font-medium text-slate-900 dark:text-white mb-2">
                         {task.title}
                       </h3>
-                      <div className="flex items-center gap-4 text-xs text-white/30 dark:text-white/50">
+                      <div className="flex items-center gap-4 text-xs text-white/30 dark:text-white/70">
                         <div className="flex items-center gap-1">
                           <User className="h-3 w-3" />
                           <span>{task.assignee?.name || t('common.unassigned')}</span>
@@ -868,7 +868,7 @@ export default function DashboardPage() {
           ) : (
             <div className="text-center py-12">
               <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-sm text-slate-600 dark:text-white/50">{t('dashboard.noTasks')}</p>
+              <p className="text-sm text-slate-600 dark:text-white/70">{t('dashboard.noTasks')}</p>
             </div>
           )}
         </SlideoutPanelContent>
@@ -920,7 +920,7 @@ function StatCard({
         </div>
         <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
-        <div className="text-[10px] md:text-xs text-white/30 dark:text-white/50 hidden sm:block mt-1">{sublabel}</div>
+        <div className="text-[10px] md:text-xs text-white/30 dark:text-white/70 hidden sm:block mt-1">{sublabel}</div>
       </div>
     </div>
   );
@@ -1022,7 +1022,7 @@ function ActivityItem({
         <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${statusColors[status] || statusColors.TODO}`}>
           {status.replace('_', ' ')}
         </span>
-        <span className="text-xs text-white/30 dark:text-white/50">{time}</span>
+        <span className="text-xs text-white/30 dark:text-white/70">{time}</span>
       </div>
     </div>
   );

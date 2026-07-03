@@ -21,7 +21,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
         <p className="mb-3 text-[13px] font-medium uppercase tracking-widest text-[#1C8C7D]">Legal</p>
         <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">Terms of Service</h1>
-        <p className="mt-4 text-[14px] text-white/50">Last updated: April 13, 2026</p>
+        <p className="mt-4 text-[14px] text-white/70">Last updated: April 13, 2026</p>
 
         <div className="mt-10 space-y-8 text-[14px] leading-relaxed text-white/70">
           <section>
@@ -72,7 +72,7 @@ export default function TermsPage() {
           <section>
             <h2 className="mb-3 text-[17px] font-semibold text-white">6. Data Ownership</h2>
             <ul className="list-disc space-y-2 pl-6">
-              <li><strong className="text-white/90">Your data is yours.</strong> You retain all rights to the content and data you create in Onekof.</li>
+              <li><strong className="text-white">Your data is yours.</strong> You retain all rights to the content and data you create in Onekof.</li>
               <li>We do not claim ownership over your projects, tasks, documents, or any organizational data.</li>
               <li>You grant us a limited license to process your data solely to provide the Service.</li>
               <li>Upon account termination, you may export your data. After a 30-day grace period, data is permanently deleted.</li>

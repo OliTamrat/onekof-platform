@@ -110,7 +110,7 @@ export default function GoalsListPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -156,25 +156,25 @@ export default function GoalsListPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-[#12161B] sticky top-0 border-b border-gray-200 dark:border-white/[0.08]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.goal')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.owner')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.team')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.progress')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.dueDate')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                   {t('goals.cycle')}
                 </th>
               </tr>
@@ -194,7 +194,7 @@ export default function GoalsListPage() {
                           {goal.title}
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-white/50 mt-1">
+                      <div className="text-sm text-gray-500 dark:text-white/70 mt-1">
                         {goal.description}
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export default function GoalsListPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-white/70">
                       <Users className="h-4 w-4" />
                       {goal.team}
                     </div>
@@ -234,13 +234,13 @@ export default function GoalsListPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-white/70">
                       <Calendar className="h-4 w-4" />
                       {new Date(goal.dueDate).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600 dark:text-white/50">
+                    <span className="text-sm text-gray-600 dark:text-white/70">
                       {goal.cycle}
                     </span>
                   </td>
@@ -251,7 +251,7 @@ export default function GoalsListPage() {
 
           {filteredGoals.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-white/50">{t('goals.noGoalsMatchingFilters')}</p>
+              <p className="text-gray-500 dark:text-white/70">{t('goals.noGoalsMatchingFilters')}</p>
             </div>
           )}
         </div>

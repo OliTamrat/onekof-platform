@@ -70,7 +70,7 @@ export default function TeamsCodePage() {
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
-                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'}`}>
+                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'}`}>
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
                 </Link>
@@ -85,22 +85,22 @@ export default function TeamsCodePage() {
               <GitBranch className="h-8 w-8 text-gray-400 dark:text-[#6B7684]" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.connectYourTeamRepos')}</h2>
-            <p className="text-gray-600 dark:text-white/50 mb-6">{t('codeConnect.teamsDescription')}</p>
+            <p className="text-gray-600 dark:text-white/70 mb-6">{t('codeConnect.teamsDescription')}</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
                 <GitCommit className="h-8 w-8 text-primary-500 mb-3" />
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.teamCommits')}</h3>
-                <p className="text-sm text-gray-600 dark:text-white/50">{t('codeConnect.teamCommitsDesc')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">{t('codeConnect.teamCommitsDesc')}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
                 <GitPullRequest className="h-8 w-8 text-primary-500 mb-3" />
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.pullRequests')}</h3>
-                <p className="text-sm text-gray-600 dark:text-white/50">{t('codeConnect.pullRequestsDesc')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">{t('codeConnect.pullRequestsDesc')}</p>
               </div>
               <div className="p-6 bg-white dark:bg-[#12161B] rounded-lg border border-gray-200 dark:border-white/[0.08]">
                 <Users className="h-8 w-8 text-primary-500 mb-3" />
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('codeConnect.contributors')}</h3>
-                <p className="text-sm text-gray-600 dark:text-white/50">{t('codeConnect.contributorsDesc')}</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">{t('codeConnect.contributorsDesc')}</p>
               </div>
             </div>
             <Button
@@ -125,7 +125,7 @@ export default function TeamsCodePage() {
               </div>
 
               <div className="p-6 space-y-4">
-                <p className="text-sm text-gray-600 dark:text-white/50">
+                <p className="text-sm text-gray-600 dark:text-white/70">
                   {t('codeConnect.chooseProviderTeams')}
                 </p>
 
@@ -144,7 +144,7 @@ export default function TeamsCodePage() {
                     <Github className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitHub</div>
-                      <div className="text-xs text-gray-600 dark:text-white/50">{t('codeConnect.connectGitHub')}</div>
+                      <div className="text-xs text-gray-600 dark:text-white/70">{t('codeConnect.connectGitHub')}</div>
                     </div>
                   </div>
 
@@ -162,7 +162,7 @@ export default function TeamsCodePage() {
                     <GitlabIcon className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">GitLab</div>
-                      <div className="text-xs text-gray-600 dark:text-white/50">{t('codeConnect.connectGitLab')}</div>
+                      <div className="text-xs text-gray-600 dark:text-white/70">{t('codeConnect.connectGitLab')}</div>
                     </div>
                   </div>
 
@@ -180,7 +180,7 @@ export default function TeamsCodePage() {
                     <GitBranch className="h-6 w-6" />
                     <div className="text-left">
                       <div className="font-semibold text-gray-900 dark:text-white">Bitbucket</div>
-                      <div className="text-xs text-gray-600 dark:text-white/50">{t('codeConnect.connectBitbucket')}</div>
+                      <div className="text-xs text-gray-600 dark:text-white/70">{t('codeConnect.connectBitbucket')}</div>
                     </div>
                   </div>
                 </div>

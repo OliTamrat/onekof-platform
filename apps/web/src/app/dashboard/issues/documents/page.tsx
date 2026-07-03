@@ -126,7 +126,7 @@ export default function DocumentsPage() {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               AI Document Processing
             </h1>
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               Upload documents for intelligent analysis powered by AI
             </p>
           </div>
@@ -153,7 +153,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-white/50">Total Documents</p>
+                <p className="text-xs text-slate-500 dark:text-white/70">Total Documents</p>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'COMPLETED').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-white/50">Processed</p>
+                <p className="text-xs text-slate-500 dark:text-white/70">Processed</p>
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.filter((d) => d.status === 'PROCESSING').length}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-white/50">Processing</p>
+                <p className="text-xs text-slate-500 dark:text-white/70">Processing</p>
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function DocumentsPage() {
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {documents.reduce((sum, d) => sum + (d.budgetItems || 0), 0)}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-white/50">Budget Items Extracted</p>
+                <p className="text-xs text-slate-500 dark:text-white/70">Budget Items Extracted</p>
               </div>
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function DocumentsPage() {
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
               Your Documents
             </h2>
-            <p className="text-sm text-slate-600 dark:text-white/50 mt-1">
+            <p className="text-sm text-slate-600 dark:text-white/70 mt-1">
               All uploaded documents with AI analysis results
             </p>
           </div>
@@ -220,7 +220,7 @@ export default function DocumentsPage() {
             ) : documents.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-                <p className="text-slate-600 dark:text-white/50">
+                <p className="text-slate-600 dark:text-white/70">
                   No documents yet. Upload your first document to get started!
                 </p>
               </div>
@@ -248,7 +248,7 @@ export default function DocumentsPage() {
                         ) : doc.status === 'FAILED' ? (
                           <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
                         ) : (
-                          <Clock className="h-6 w-6 text-slate-600 dark:text-white/50" />
+                          <Clock className="h-6 w-6 text-slate-600 dark:text-white/70" />
                         )}
                       </div>
 
@@ -263,10 +263,10 @@ export default function DocumentsPage() {
                               <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getDocumentTypeColor(doc.fileType)}`}>
                                 {doc.fileType}
                               </span>
-                              <span className="text-xs text-slate-500 dark:text-white/50">
+                              <span className="text-xs text-slate-500 dark:text-white/70">
                                 • {(doc.fileSize / 1024).toFixed(0)} KB
                               </span>
-                              <span className="text-xs text-slate-500 dark:text-white/50">
+                              <span className="text-xs text-slate-500 dark:text-white/70">
                                 • {formatDate(doc.uploadedAt)}
                               </span>
                             </div>
@@ -284,14 +284,14 @@ export default function DocumentsPage() {
 
                         {/* AI Summary */}
                         {doc.aiSummary && (
-                          <p className="text-sm text-slate-600 dark:text-white/50 mb-3 line-clamp-2">
+                          <p className="text-sm text-slate-600 dark:text-white/70 mb-3 line-clamp-2">
                             {doc.aiSummary}
                           </p>
                         )}
 
                         {/* Extracted Items */}
                         {doc.status === 'COMPLETED' && (
-                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/50">
+                          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-white/70">
                             {doc.budgetItems > 0 && (
                               <div className="flex items-center gap-1">
                                 <DollarSign className="h-3.5 w-3.5" />

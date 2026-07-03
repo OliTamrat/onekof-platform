@@ -97,7 +97,7 @@ export default function TeamsGoalsPage() {
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white`}
+                  className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
@@ -135,7 +135,7 @@ export default function TeamsGoalsPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Target className="h-5 w-5 text-[#10B981]" />
-                    <span className="text-xs font-medium text-gray-600 dark:text-white/50">{goal.teamName}</span>
+                    <span className="text-xs font-medium text-gray-600 dark:text-white/70">{goal.teamName}</span>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(goal.status)}`}>
                     {goal.status.replace('_', ' ')}
@@ -145,7 +145,7 @@ export default function TeamsGoalsPage() {
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{goal.goal}</h3>
 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70">
                     <span>Progress</span>
                     <span className="font-medium">{goal.progress}%</span>
                   </div>
@@ -157,11 +157,11 @@ export default function TeamsGoalsPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-xs pt-2">
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-white/70">
                       <Flag className="h-3 w-3" />
                       <span>{goal.completedResults}/{goal.keyResults} Key Results</span>
                     </div>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-white/70">
                       <Clock className="h-3 w-3" />
                       <span>{goal.dueDate}</span>
                     </div>
@@ -197,7 +197,7 @@ export default function TeamsGoalsPage() {
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</label>
                 <div className="mt-2">
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50 mb-1">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70 mb-1">
                     <span>Overall Progress</span>
                     <span className="font-medium">{selectedGoal?.progress}%</span>
                   </div>

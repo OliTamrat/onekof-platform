@@ -99,23 +99,23 @@ export default function GoalsActivePage() {
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.activeGoals')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.activeGoals')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredGoals.length}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.onTrack')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.onTrack')}</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
               {filteredGoals.filter(g => g.status === 'ON_TRACK').length}
             </div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.atRisk')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.atRisk')}</div>
             <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
               {filteredGoals.filter(g => g.status === 'AT_RISK').length}
             </div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.behind')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.behind')}</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
               {filteredGoals.filter(g => g.status === 'BEHIND').length}
             </div>
@@ -159,7 +159,7 @@ export default function GoalsActivePage() {
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">{goal.title}</h3>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50">
+                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70">
                   <span>{t('goals.progress')}</span>
                   <span className="font-medium">{goal.progress}%</span>
                 </div>
@@ -171,16 +171,16 @@ export default function GoalsActivePage() {
                 </div>
 
                 <div className="flex items-center justify-between text-xs pt-2">
-                  <div className="flex items-center gap-1 text-gray-600 dark:text-white/50">
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-white/70">
                     <Users className="h-3 w-3" />
                     <span>{goal.team}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-gray-600 dark:text-white/50">
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-white/70">
                     <Clock className="h-3 w-3" />
                     <span>{goal.dueDate}</span>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-white/50">
+                <div className="text-xs text-gray-600 dark:text-white/70">
                   <Flag className="h-3 w-3 inline mr-1" />
                   {goal.completedResults}/{goal.keyResults} {t('goals.keyResults')}
                 </div>
@@ -218,7 +218,7 @@ export default function GoalsActivePage() {
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('goals.progress')}</label>
                 <div className="mt-2">
-                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50 mb-1">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70 mb-1">
                     <span>{t('goals.overallProgress')}</span>
                     <span className="font-medium">{selectedGoal?.progress}%</span>
                   </div>

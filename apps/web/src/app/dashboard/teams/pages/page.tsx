@@ -83,7 +83,7 @@ export default function TeamsPagesPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -102,7 +102,7 @@ export default function TeamsPagesPage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedView === 'pages'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               {t('teamPages.allPages')}
@@ -112,7 +112,7 @@ export default function TeamsPagesPage() {
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 selectedView === 'templates'
                   ? 'bg-primary-500 text-white'
-                  : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                  : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
               }`}
             >
               {t('teamPages.templates')}
@@ -126,7 +126,7 @@ export default function TeamsPagesPage() {
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('teamPages.pageTemplates')}</h2>
-                <p className="text-gray-600 dark:text-white/50">
+                <p className="text-gray-600 dark:text-white/70">
                   {t('teamPages.templatesSubtitle')}
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function TeamsPagesPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {t(template.nameKey)}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                       {t(template.descKey)}
                     </p>
                     <div className="flex items-center gap-2 text-sm text-primary-500">
@@ -160,7 +160,7 @@ export default function TeamsPagesPage() {
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t('teamPages.title')}</h2>
-                <p className="text-gray-600 dark:text-white/50">
+                <p className="text-gray-600 dark:text-white/70">
                   {t('teamPages.browseAndManage')}
                 </p>
               </div>
@@ -169,16 +169,16 @@ export default function TeamsPagesPage() {
                 <table className="w-full">
                   <thead className="border-b border-gray-200 dark:border-white/[0.08]">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('teamPages.page')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('teamPages.team')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('teamPages.author')}
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white/70 uppercase tracking-wider">
                         {t('teamPages.lastModified')}
                       </th>
                     </tr>
@@ -198,12 +198,12 @@ export default function TeamsPagesPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm text-gray-600 dark:text-white/50">
+                          <span className="text-sm text-gray-600 dark:text-white/70">
                             {page.team}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm text-gray-600 dark:text-white/50">
+                          <span className="text-sm text-gray-600 dark:text-white/70">
                             {page.author}
                           </span>
                         </td>

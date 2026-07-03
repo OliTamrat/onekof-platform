@@ -96,7 +96,7 @@ export default function TeamsBoardPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -130,7 +130,7 @@ export default function TeamsBoardPage() {
                   <h3 className="font-semibold text-gray-900 dark:text-white">
                     {column.label}
                   </h3>
-                  <span className="text-sm text-gray-500 dark:text-white/50 bg-gray-100 dark:bg-[#181D23] px-2 py-0.5 rounded-full">
+                  <span className="text-sm text-gray-500 dark:text-white/70 bg-gray-100 dark:bg-[#181D23] px-2 py-0.5 rounded-full">
                     {teamsByStatus[column.id]?.length || 0}
                   </span>
                 </div>
@@ -150,7 +150,7 @@ export default function TeamsBoardPage() {
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-600 dark:text-white/50 mb-3">
+                      <p className="text-sm text-gray-600 dark:text-white/70 mb-3">
                         {team.description}
                       </p>
 
@@ -159,12 +159,12 @@ export default function TeamsBoardPage() {
                           <div className="h-6 w-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-semibold">
                             {team.lead.split(' ').map((n: string) => n[0]).join('')}
                           </div>
-                          <span className="text-xs text-gray-600 dark:text-white/50">
+                          <span className="text-xs text-gray-600 dark:text-white/70">
                             {team.lead}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
+                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/70">
                           <Users className="h-3 w-3" />
                           {team.members}
                         </div>

@@ -138,7 +138,7 @@ export default function BudgetIncomePage() {
           <div className="text-center py-16">
             <DollarSign className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Funding Sources</h3>
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               Create a budget with additional funding sources to track income here.
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function BudgetIncomePage() {
                   <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                     <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Total Funding</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Total Funding</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">ETB {formatCompact(totalFunding)}</div>
                 <div className="text-xs text-slate-500 mt-1">{sourceCount} funding sources</div>
@@ -162,7 +162,7 @@ export default function BudgetIncomePage() {
                   <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">External Funding</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">External Funding</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">ETB {formatCompact(externalFunding)}</div>
                 <div className="text-xs text-slate-500 mt-1">
@@ -175,7 +175,7 @@ export default function BudgetIncomePage() {
                   <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
                     <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-white/50">Active Budgets</div>
+                  <div className="text-xs text-slate-500 dark:text-white/70">Active Budgets</div>
                 </div>
                 <div className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400">{budgets.length}</div>
                 <div className="text-xs text-slate-500 mt-1">across projects</div>
@@ -219,7 +219,7 @@ export default function BudgetIncomePage() {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/50 ml-11">
+                        <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-white/70 ml-11">
                           <span className="flex items-center gap-1">
                             <Tag className="h-3 w-3" />
                             {source.projectName}

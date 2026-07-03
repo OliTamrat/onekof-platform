@@ -28,7 +28,7 @@ export default function NotFound() {
         <h1 className="mb-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Page not found
         </h1>
-        <p className="mb-8 max-w-sm text-[15px] leading-relaxed text-white/40">
+        <p className="mb-8 max-w-sm text-[15px] leading-relaxed text-white/60">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
 

@@ -158,7 +158,7 @@ function PricingContent() {
               </Link>
             ) : (
               <>
-                <Link href="/auth/signin" className="px-4 py-2 text-[13px] font-medium text-white/50 hover:text-white transition-all">
+                <Link href="/auth/signin" className="px-4 py-2 text-[13px] font-medium text-white/70 hover:text-white transition-all">
                   Sign In
                 </Link>
                 <Link href="/auth/signup" className="rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-5 py-2 text-[13px] font-semibold shadow-lg shadow-primary-500/20 hover:brightness-110 transition-all flex items-center gap-1.5">
@@ -179,7 +179,7 @@ function PricingContent() {
         <h1 className="mb-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
           Plans that scale with your team
         </h1>
-        <p className="mx-auto max-w-xl text-[16px] leading-[1.7] text-white/50">
+        <p className="mx-auto max-w-xl text-[16px] leading-[1.7] text-white/70">
           Start free. Upgrade when you need more. All plans include Ethiopian calendar, 5 languages, and ETB support.
         </p>
 
@@ -203,7 +203,7 @@ function PricingContent() {
               onClick={() => setBilling('monthly')}
               className={cn(
                 'rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300',
-                billing === 'monthly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                billing === 'monthly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
               )}
             >
               Monthly
@@ -212,7 +212,7 @@ function PricingContent() {
               onClick={() => setBilling('yearly')}
               className={cn(
                 'rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300',
-                billing === 'yearly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                billing === 'yearly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
               )}
             >
               Yearly
@@ -226,7 +226,7 @@ function PricingContent() {
               onClick={() => setCurrency('ETB')}
               className={cn(
                 'rounded-full px-4 py-2.5 text-[13px] font-medium transition-all duration-300',
-                currency === 'ETB' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                currency === 'ETB' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
               )}
             >
               ETB (Br)
@@ -235,7 +235,7 @@ function PricingContent() {
               onClick={() => setCurrency('USD')}
               className={cn(
                 'rounded-full px-4 py-2.5 text-[13px] font-medium transition-all duration-300',
-                currency === 'USD' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                currency === 'USD' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
               )}
             >
               USD ($)
@@ -271,7 +271,7 @@ function PricingContent() {
 
                 <div className="mb-5">
                   <h3 className="text-[16px] font-semibold">{plan.name}</h3>
-                  <p className="mt-1 text-[12px] text-white/50">{plan.description}</p>
+                  <p className="mt-1 text-[12px] text-white/70">{plan.description}</p>
                 </div>
 
                 <div className="mb-1">
@@ -280,13 +280,13 @@ function PricingContent() {
                       {formatPrice(price)}
                     </span>
                     {price > 0 && (
-                      <span className="ml-1 text-[14px] text-white/40">
+                      <span className="ml-1 text-[14px] text-white/60">
                         {currency === 'ETB' ? 'ETB' : ''}
                       </span>
                     )}
                   </div>
                 </div>
-                <p className="mb-6 text-[12px] text-white/40">
+                <p className="mb-6 text-[12px] text-white/60">
                   {price === 0
                     ? 'Free forever, no card required'
                     : `per ${billing === 'yearly' ? 'year' : 'month'}`}
@@ -338,7 +338,7 @@ function PricingContent() {
                 {/* Features */}
                 <ul className="flex-1 space-y-2.5">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-[13px] text-white/50">
+                    <li key={f} className="flex items-center gap-2 text-[13px] text-white/70">
                       <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#2BB5A2]" />
                       {f}
                     </li>
@@ -369,7 +369,7 @@ function PricingContent() {
             </button>
 
             <h3 className="mb-1 text-[16px] font-semibold">Choose payment method</h3>
-            <p className="mb-5 text-[13px] text-white/40">
+            <p className="mb-5 text-[13px] text-white/60">
               Select how you&apos;d like to pay for the{' '}
               <span className="font-medium text-white/70">
                 {PLANS.find((p) => p.id === showProviderModal)?.name}
@@ -388,7 +388,7 @@ function PricingContent() {
                 </div>
                 <div className="flex-1">
                   <div className="text-[14px] font-semibold">International Card</div>
-                  <div className="text-[12px] text-white/40">Visa, Mastercard, Amex — USD</div>
+                  <div className="text-[12px] text-white/60">Visa, Mastercard, Amex — USD</div>
                 </div>
                 <ArrowRight className="h-4 w-4 text-white/20" />
               </button>
@@ -403,14 +403,14 @@ function PricingContent() {
                 </div>
                 <div className="flex-1">
                   <div className="text-[14px] font-semibold">Ethiopian Payment</div>
-                  <div className="text-[12px] text-white/40">Telebirr, CBE Birr, Awash — ETB</div>
+                  <div className="text-[12px] text-white/60">Telebirr, CBE Birr, Awash — ETB</div>
                 </div>
                 <ArrowRight className="h-4 w-4 text-white/20" />
               </button>
             </div>
 
             {loadingPlan && (
-              <div className="mt-4 flex items-center justify-center gap-2 text-[12px] text-white/40">
+              <div className="mt-4 flex items-center justify-center gap-2 text-[12px] text-white/60">
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 Redirecting to payment...
               </div>

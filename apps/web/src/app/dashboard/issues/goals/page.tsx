@@ -294,7 +294,7 @@ export default function IssuesGoalsPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-gray-500 dark:text-white/50">Please sign in to view goals.</p>
+          <p className="text-gray-500 dark:text-white/70">Please sign in to view goals.</p>
         </div>
       </AppLayout>
     );
@@ -326,7 +326,7 @@ export default function IssuesGoalsPage() {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Goals & OKRs
                 </h2>
-                <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
+                <p className="mt-1 text-sm text-gray-600 dark:text-white/70">
                   Track objectives and key results across your organization
                 </p>
               </div>
@@ -355,7 +355,7 @@ export default function IssuesGoalsPage() {
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
                     statusFilter === value
                       ? 'bg-[#8B5CF6] text-white'
-                      : 'bg-white dark:bg-[#12161B] text-gray-700 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]'
+                      : 'bg-white dark:bg-[#12161B] text-gray-700 dark:text-white/70 hover:bg-gray-50 dark:hover:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -369,7 +369,7 @@ export default function IssuesGoalsPage() {
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#8B5CF6] dark:border-gray-700"></div>
-                  <p className="text-sm text-gray-600 dark:text-white/50">Loading goals...</p>
+                  <p className="text-sm text-gray-600 dark:text-white/70">Loading goals...</p>
                 </div>
               </div>
             ) : goals.length === 0 ? (
@@ -378,7 +378,7 @@ export default function IssuesGoalsPage() {
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                   No goals found
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
+                <p className="mt-2 text-sm text-gray-500 dark:text-white/70">
                   {statusFilter === 'all'
                     ? 'Get started by creating your first goal'
                     : `No goals with status "${statusFilter.replace('_', ' ').toLowerCase()}"`}
@@ -430,7 +430,7 @@ export default function IssuesGoalsPage() {
                                   </h3>
                                 </Button>
                                 {goal.description && (
-                                  <p className="mt-1 text-sm text-gray-600 dark:text-white/50 line-clamp-2 ml-6">
+                                  <p className="mt-1 text-sm text-gray-600 dark:text-white/70 line-clamp-2 ml-6">
                                     {goal.description}
                                   </p>
                                 )}
@@ -444,7 +444,7 @@ export default function IssuesGoalsPage() {
                             </div>
 
                             {/* Metadata Row */}
-                            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/50 ml-6">
+                            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-white/70 ml-6">
                               {goal.team && (
                                 <div className="flex items-center gap-1.5">
                                   <div
@@ -474,7 +474,7 @@ export default function IssuesGoalsPage() {
                             {/* Progress Bar */}
                             <div className="mt-4 ml-6">
                               <div className="flex items-center justify-between text-xs mb-1">
-                                <span className="font-medium text-gray-700 dark:text-white/50">
+                                <span className="font-medium text-gray-700 dark:text-white/70">
                                   Progress
                                 </span>
                                 <span className="font-semibold text-gray-900 dark:text-white">
@@ -523,11 +523,11 @@ export default function IssuesGoalsPage() {
                                       {/* KR Progress */}
                                       <div className="mt-3 ml-6">
                                         <div className="flex items-center gap-3 text-xs mb-1">
-                                          <span className="text-gray-600 dark:text-white/50">
+                                          <span className="text-gray-600 dark:text-white/70">
                                             Current: {kr.current} {kr.unit}
                                           </span>
                                           <span className="text-gray-400">•</span>
-                                          <span className="text-gray-600 dark:text-white/50">
+                                          <span className="text-gray-600 dark:text-white/70">
                                             Target: {kr.target} {kr.unit}
                                           </span>
                                           <span className="text-gray-400">•</span>
@@ -596,7 +596,7 @@ export default function IssuesGoalsPage() {
                 onClick={() => setShowCreateGoal(false)}
                 className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
               >
-                <Plus className="h-5 w-5 rotate-45 text-gray-600 dark:text-white/50" />
+                <Plus className="h-5 w-5 rotate-45 text-gray-600 dark:text-white/70" />
               </Button>
             </div>
 
@@ -606,7 +606,7 @@ export default function IssuesGoalsPage() {
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Objective</h3>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                     Title
                   </label>
                   <input
@@ -620,7 +620,7 @@ export default function IssuesGoalsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                     Description
                   </label>
                   <textarea
@@ -634,7 +634,7 @@ export default function IssuesGoalsPage() {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                       Priority
                     </label>
                     <select
@@ -650,7 +650,7 @@ export default function IssuesGoalsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                       Team
                     </label>
                     <select
@@ -668,7 +668,7 @@ export default function IssuesGoalsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-white/50 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                       Due Date
                     </label>
                     <input
@@ -721,7 +721,7 @@ export default function IssuesGoalsPage() {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-white/50 mb-1">
+                        <label className="block text-xs font-medium text-gray-600 dark:text-white/70 mb-1">
                           Unit
                         </label>
                         <input
@@ -734,7 +734,7 @@ export default function IssuesGoalsPage() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-white/50 mb-1">
+                        <label className="block text-xs font-medium text-gray-600 dark:text-white/70 mb-1">
                           Target
                         </label>
                         <input
@@ -753,7 +753,7 @@ export default function IssuesGoalsPage() {
                 <Button
                   type="button"
                   onClick={() => setShowCreateGoal(false)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   Cancel
                 </Button>

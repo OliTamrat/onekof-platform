@@ -121,12 +121,12 @@ export default function AutomationsTriggersPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
+            <div className="text-gray-600 dark:text-white/70">{t('automations.loading')}</div>
           </div>
         ) : filteredTriggers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Zap className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-3" />
-            <p className="text-sm text-gray-500 dark:text-white/50">{t('automations.noAutomations')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/70">{t('automations.noAutomations')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -148,8 +148,8 @@ export default function AutomationsTriggersPage() {
                         {trigger.type}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-white/50 mb-2">{trigger.condition}</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70 mb-2">{trigger.condition}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                       <span>{trigger.rawAutomation.entityType} — {trigger.rawAutomation.triggerEvent}</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />

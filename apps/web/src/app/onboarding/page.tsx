@@ -304,7 +304,7 @@ function OnboardingContent() {
               </div>
               <div className="text-left">
                 <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
-                <p className="text-xs text-white/50">{t('onboardingPage.enterprisePM')}</p>
+                <p className="text-xs text-white/70">{t('onboardingPage.enterprisePM')}</p>
               </div>
             </div>
 
@@ -315,7 +315,7 @@ function OnboardingContent() {
                 {currentStep === 2 && t('onboardingPage.tellUsAboutOrg')}
                 {currentStep === 3 && t('onboardingPage.finalStepCreate')}
               </h2>
-              <p className="text-white/50">
+              <p className="text-white/70">
                 {currentStep === 1 && t('onboardingPage.choosePersonalOrOrg')}
                 {currentStep === 2 && t('onboardingPage.personalizeExperience')}
                 {currentStep === 3 && t('onboardingPage.readyInSeconds')}
@@ -326,7 +326,7 @@ function OnboardingContent() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-medium text-white/50">{t('onboardingPage.step')} {currentStep} {t('onboardingPage.of')} {totalSteps}</span>
+              <span className="text-[13px] font-medium text-white/70">{t('onboardingPage.step')} {currentStep} {t('onboardingPage.of')} {totalSteps}</span>
               <span className="text-[13px] font-medium text-primary-400">{Math.round((currentStep / totalSteps) * 100)}% {t('onboardingPage.complete')}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-white/[0.06]">
@@ -372,14 +372,14 @@ function OnboardingContent() {
                           <Icon className={`h-5 w-5 ${colors.icon}`} />
                         </div>
 
-                        <div className="text-[16px] font-semibold text-white/85 mb-1.5">{type.label}</div>
-                        <p className="text-[13px] text-white/50 mb-3">{type.description}</p>
+                        <div className="text-[16px] font-semibold text-white mb-1.5">{type.label}</div>
+                        <p className="text-[13px] text-white/70 mb-3">{type.description}</p>
 
                         <div className="flex flex-wrap gap-1.5">
                           {type.features.slice(0, 2).map((feature) => (
                             <span
                               key={feature}
-                              className="text-xs rounded-full border border-white/[0.08] bg-white/[0.03] text-white/50 px-2.5 py-0.5"
+                              className="text-xs rounded-full border border-white/[0.08] bg-white/[0.03] text-white/70 px-2.5 py-0.5"
                             >
                               {feature}
                             </span>
@@ -396,7 +396,7 @@ function OnboardingContent() {
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-[13px] font-medium text-white/50 mb-2">
+                  <label className="block text-[13px] font-medium text-white/70 mb-2">
                     {t('onboardingPage.organizationName')}
                   </label>
                   <input
@@ -411,7 +411,7 @@ function OnboardingContent() {
                 {/* Conditional field for government */}
                 {organizationType === 'government' && (
                   <div>
-                    <label className="block text-[13px] font-medium text-white/50 mb-2">
+                    <label className="block text-[13px] font-medium text-white/70 mb-2">
                       {t('onboardingPage.departmentBureau')}
                     </label>
                     <input
@@ -427,7 +427,7 @@ function OnboardingContent() {
                 {/* Conditional field for private */}
                 {organizationType === 'private' && (
                   <div>
-                    <label className="block text-[13px] font-medium text-white/50 mb-2">
+                    <label className="block text-[13px] font-medium text-white/70 mb-2">
                       {t('onboardingPage.industry')}
                     </label>
                     <select
@@ -447,7 +447,7 @@ function OnboardingContent() {
                 )}
 
                 <div>
-                  <label className="block text-[13px] font-medium text-white/50 mb-2">
+                  <label className="block text-[13px] font-medium text-white/70 mb-2">
                     {t('onboardingPage.teamSize')}
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -459,7 +459,7 @@ function OnboardingContent() {
                         className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-300 ${
                           teamSize === size.value
                             ? 'border-primary-500 bg-primary-500/[0.06] text-white'
-                            : 'border-white/[0.08] bg-[#12161B] text-white/50 hover:border-white/[0.15] hover:text-white/80'
+                            : 'border-white/[0.08] bg-[#12161B] text-white/70 hover:border-white/[0.15] hover:text-white'
                         }`}
                       >
                         {size.label}
@@ -469,7 +469,7 @@ function OnboardingContent() {
                 </div>
 
                 <div>
-                  <label className="block text-[13px] font-medium text-white/50 mb-2">
+                  <label className="block text-[13px] font-medium text-white/70 mb-2">
                     {t('onboardingPage.workspaceUrl')}
                   </label>
                   <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
@@ -480,7 +480,7 @@ function OnboardingContent() {
                       className="w-full rounded-xl border border-white/[0.08] bg-[#12161B] py-3.5 px-4 text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-4 focus:ring-primary-500/10 sm:flex-1"
                       placeholder="my-organization"
                     />
-                    <span className="text-sm text-white/50 whitespace-nowrap">.onekof.com</span>
+                    <span className="text-sm text-white/70 whitespace-nowrap">.onekof.com</span>
                   </div>
                   {organizationSlug && (
                     <p className="mt-2 text-xs text-primary-400">
@@ -495,7 +495,7 @@ function OnboardingContent() {
             {currentStep === 3 && (
               <div className="space-y-8">
                 <div>
-                  <label className="block text-[13px] font-medium text-white/50 mb-3">
+                  <label className="block text-[13px] font-medium text-white/70 mb-3">
                     {t('onboardingPage.calendarPreference')}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -520,8 +520,8 @@ function OnboardingContent() {
                           <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.ethiopian')}</div>
-                      <div className="text-[13px] text-white/50">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u12D8\u1218\u1295 \u12A0\u1246\u1323\u1320\u122D'}</div>
+                      <div className="font-semibold text-white text-[15px] mb-1">{t('onboardingPage.ethiopian')}</div>
+                      <div className="text-[13px] text-white/70">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u12D8\u1218\u1295 \u12A0\u1246\u1323\u1320\u122D'}</div>
                     </div>
 
                     {/* Gregorian calendar tile */}
@@ -539,14 +539,14 @@ function OnboardingContent() {
                       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.08]">
-                          <Calendar className="h-4 w-4 text-white/50" />
+                          <Calendar className="h-4 w-4 text-white/70" />
                         </div>
                         {calendarPreference === 'gregorian' && (
                           <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.gregorian')}</div>
-                      <div className="text-[13px] text-white/50">{t('onboardingPage.international')}</div>
+                      <div className="font-semibold text-white text-[15px] mb-1">{t('onboardingPage.gregorian')}</div>
+                      <div className="text-[13px] text-white/70">{t('onboardingPage.international')}</div>
                     </div>
 
                     {/* Both calendars tile */}
@@ -570,8 +570,8 @@ function OnboardingContent() {
                           <CheckCircle2 className="h-5 w-5 text-primary-400" />
                         )}
                       </div>
-                      <div className="font-semibold text-white/85 text-[15px] mb-1">{t('onboardingPage.both')}</div>
-                      <div className="text-[13px] text-white/50">{t('onboardingPage.showBothCalendars')}</div>
+                      <div className="font-semibold text-white text-[15px] mb-1">{t('onboardingPage.both')}</div>
+                      <div className="text-[13px] text-white/70">{t('onboardingPage.showBothCalendars')}</div>
                     </div>
                   </div>
                 </div>
@@ -584,7 +584,7 @@ function OnboardingContent() {
                     </div>
                     <div>
                       <div className="font-bold text-white">{t('onboardingPage.downloadMobileApp')}</div>
-                      <div className="text-sm text-white/50">{t('onboardingPage.manageOnTheGo')}</div>
+                      <div className="text-sm text-white/70">{t('onboardingPage.manageOnTheGo')}</div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -603,7 +603,7 @@ function OnboardingContent() {
                     <Sparkles className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="font-semibold text-white mb-2">{t('onboardingPage.youreAllSet')}</p>
-                      <p className="text-sm text-white/50 mb-4">
+                      <p className="text-sm text-white/70 mb-4">
                         {t('onboardingPage.basedOnSelections')}{' '}
                         <strong className="text-white">{selectedOrgType?.label}</strong> {t('onboardingPage.organization')}.
                       </p>
@@ -627,7 +627,7 @@ function OnboardingContent() {
             {currentStep > 1 && (
               <Button variant="outline"
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0E11] px-4 py-2.5 text-[13px] font-medium text-white/50 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
+                className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0E11] px-4 py-2.5 text-[13px] font-medium text-white/70 transition-all hover:bg-white/[0.04] hover:border-white/[0.15] sm:px-6 sm:py-3"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>{t('onboardingPage.back')}</span>

@@ -80,7 +80,7 @@ export default function ProjectOverviewPage() {
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {project?.name || 'Project'} Dashboard
               </h1>
-              <p className="text-xs text-gray-500 dark:text-white/50">
+              <p className="text-xs text-gray-500 dark:text-white/70">
                 {project?.description || 'Foundational dashboard with all department tools'}
               </p>
             </div>
@@ -93,36 +93,36 @@ export default function ProjectOverviewPage() {
             <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4">
               <div className="flex items-center gap-2 mb-1">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <span className="text-xs font-medium text-gray-500 dark:text-white/50">Completed</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-white/70">Completed</span>
               </div>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.done}</p>
-              <p className="text-xs text-gray-500 dark:text-white/50">of {stats.total} tasks</p>
+              <p className="text-xs text-gray-500 dark:text-white/70">of {stats.total} tasks</p>
             </div>
             <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4">
               <div className="flex items-center gap-2 mb-1">
                 <Clock className="h-4 w-4 text-blue-500" />
-                <span className="text-xs font-medium text-gray-500 dark:text-white/50">{t("status.inProgress")}</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-white/70">{t("status.inProgress")}</span>
               </div>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.inProgress}</p>
             </div>
             <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4">
               <div className="flex items-center gap-2 mb-1">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <span className="text-xs font-medium text-gray-500 dark:text-white/50">Overdue</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-white/70">Overdue</span>
               </div>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.overdue}</p>
             </div>
             <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-4">
               <div className="flex items-center gap-2 mb-1">
                 <Users className="h-4 w-4 text-primary-500" />
-                <span className="text-xs font-medium text-gray-500 dark:text-white/50">Members</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-white/70">Members</span>
               </div>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">{project?.memberCount || project?._count?.members || 0}</p>
             </div>
           </div>
 
           {/* Department Cards */}
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/50">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-white/70">
             Department Tools
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -148,7 +148,7 @@ export default function ProjectOverviewPage() {
                         </h3>
                         <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-primary-500 transition-colors" />
                       </div>
-                      <p className="mt-0.5 text-xs text-gray-500 dark:text-white/50 line-clamp-1">
+                      <p className="mt-0.5 text-xs text-gray-500 dark:text-white/70 line-clamp-1">
                         {dept.description}
                       </p>
                       <div className="mt-2 flex flex-wrap gap-1">

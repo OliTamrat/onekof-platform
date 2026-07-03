@@ -309,7 +309,7 @@ export default function TeamsPage() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-                <p className="text-sm text-gray-600 dark:text-white/50">Loading teams...</p>
+                <p className="text-sm text-gray-600 dark:text-white/70">Loading teams...</p>
               </div>
             </div>
           ) : (
@@ -317,7 +317,7 @@ export default function TeamsPage() {
               {/* Favorite Teams */}
               {favoriteTeams.length > 0 && (
                 <div>
-                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
+                  <h2 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/70">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     STARRED TEAMS
                   </h2>
@@ -341,7 +341,7 @@ export default function TeamsPage() {
 
               {/* All Teams */}
               <div>
-                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/50">
+                <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-white/70">
                   {favoriteTeams.length > 0 ? 'ALL TEAMS' : `YOUR TEAMS (${filteredTeams.length})`}
                 </h2>
                 {otherTeams.length > 0 ? (
@@ -366,7 +366,7 @@ export default function TeamsPage() {
                     <p className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
                       No teams found
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-white/50">
+                    <p className="mt-1 text-sm text-gray-600 dark:text-white/70">
                       {t('emptyStates.noTeamsDesc')}
                     </p>
                     <Button
@@ -434,7 +434,7 @@ export default function TeamsPage() {
                       required
                       className="bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-white/50">A clear, descriptive name for your team</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">A clear, descriptive name for your team</p>
                   </div>
 
                   <div className="space-y-2">
@@ -454,7 +454,7 @@ export default function TeamsPage() {
                       <option value="HR">Human Resources</option>
                       <option value="OPERATIONS">Operations</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Helps organize teams by their primary function</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Helps organize teams by their primary function</p>
                   </div>
 
                   <div className="space-y-2">
@@ -467,7 +467,7 @@ export default function TeamsPage() {
                       rows={4}
                       className="bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:border-primary-500"
                     />
-                    <p className="text-xs text-gray-600 dark:text-white/50">Help members understand the team's mission</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Help members understand the team's mission</p>
                   </div>
                 </div>
               </div>
@@ -500,7 +500,7 @@ export default function TeamsPage() {
                         className="flex-1 bg-gray-50 dark:bg-[#12161B] border-gray-300 dark:border-white/[0.08] text-gray-900 dark:text-white focus:border-primary-500"
                       />
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Choose a color to identify this team</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Choose a color to identify this team</p>
                   </div>
                 </div>
               </div>
@@ -521,7 +521,7 @@ export default function TeamsPage() {
                       <option value="ADMIN">Admin - Can manage members and settings</option>
                       <option value="MEMBER">Member - Standard access</option>
                     </select>
-                    <p className="text-xs text-gray-600 dark:text-white/50">Role automatically assigned to new team members</p>
+                    <p className="text-xs text-gray-600 dark:text-white/70">Role automatically assigned to new team members</p>
                   </div>
 
                   <div className="flex items-center gap-3 rounded-md border border-gray-300 dark:border-white/[0.08] bg-gray-50 dark:bg-[#12161B] p-4">
@@ -536,7 +536,7 @@ export default function TeamsPage() {
                       <Label htmlFor="is-private" className="text-gray-900 dark:text-white font-medium cursor-pointer">
                         Private Team
                       </Label>
-                      <p className="text-xs text-gray-600 dark:text-white/50 mt-1">
+                      <p className="text-xs text-gray-600 dark:text-white/70 mt-1">
                         Only invited members can see and access this team
                       </p>
                     </div>
@@ -619,7 +619,7 @@ export default function TeamsPage() {
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                                   {member.name}
                                 </p>
-                                <p className="text-xs text-gray-600 dark:text-white/50">
+                                <p className="text-xs text-gray-600 dark:text-white/70">
                                   {member.email}
                                 </p>
                               </div>
@@ -633,7 +633,7 @@ export default function TeamsPage() {
                                 </div>
                               )}
                               {member.role === 'MEMBER' && (
-                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-white/[0.08] px-2 py-1 text-xs font-medium text-gray-700 dark:text-white/50">
+                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-white/[0.08] px-2 py-1 text-xs font-medium text-gray-700 dark:text-white/70">
                                   <Users className="h-3 w-3" />
                                   Member
                                 </div>
@@ -663,7 +663,7 @@ export default function TeamsPage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="p-8 text-center text-sm text-gray-600 dark:text-white/50">
+                      <div className="p-8 text-center text-sm text-gray-600 dark:text-white/70">
                         No members yet. Add your first team member!
                       </div>
                     )}
@@ -680,7 +680,7 @@ export default function TeamsPage() {
             <DialogContent className="bg-white dark:bg-[#12161B] border-gray-200 dark:border-white/[0.08]">
               <DialogHeader>
                 <DialogTitle className="text-gray-900 dark:text-white">Add Member to {selectedTeam.name}</DialogTitle>
-                <DialogDescription className="text-gray-600 dark:text-white/50">
+                <DialogDescription className="text-gray-600 dark:text-white/70">
                   Enter the email address of the user you want to add to this team.
                 </DialogDescription>
               </DialogHeader>
@@ -744,7 +744,7 @@ export default function TeamsPage() {
                 {invitationData?.invited ? 'Invitation Sent!' : 'Member Added!'}
               </DialogTitle>
 
-              <DialogDescription className="text-center text-gray-600 dark:text-white/50">
+              <DialogDescription className="text-center text-gray-600 dark:text-white/70">
                 {invitationData?.invited ? (
                   <>
                     <p className="mb-4">
@@ -764,7 +764,7 @@ export default function TeamsPage() {
 
                     {invitationData.token && (
                       <div className="mt-4">
-                        <Label className="text-xs text-gray-600 dark:text-white/50">Invitation Link</Label>
+                        <Label className="text-xs text-gray-600 dark:text-white/70">Invitation Link</Label>
                         <div className="mt-2 flex items-center gap-2">
                           <Input
                             readOnly
@@ -782,7 +782,7 @@ export default function TeamsPage() {
                             <Copy className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="mt-2 text-xs text-gray-600 dark:text-white/50">
+                        <p className="mt-2 text-xs text-gray-600 dark:text-white/70">
                           You can also share this link directly with the user.
                         </p>
                       </div>
@@ -837,7 +837,7 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
               className={`h-4 w-4 ${
                 team.isFavorite
                   ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-400 dark:text-white/50'
+                  : 'text-gray-400 dark:text-white/70'
               }`}
             />
           </Button>
@@ -845,7 +845,7 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded p-1 hover:bg-gray-200 dark:hover:bg-slate-700">
-                <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-white/50" />
+                <MoreHorizontal className="h-4 w-4 text-gray-400 dark:text-white/70" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white dark:bg-[#181D23] border border-gray-200 dark:border-white/[0.08]">
@@ -875,13 +875,13 @@ function TeamCard({ team, onManage, onToggleFavorite, onDelete }: TeamCardProps)
           {team.name}
         </h3>
         {team.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-white/50">
+          <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-white/70">
             {team.description}
           </p>
         )}
       </div>
 
-      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-white/50">
+      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-white/70">
         <div className="flex items-center gap-1.5">
           <Users className="h-4 w-4" />
           <span>{team.memberCount} members</span>

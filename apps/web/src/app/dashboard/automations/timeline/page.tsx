@@ -61,7 +61,7 @@ export default function AutomationsTimelinePage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -80,7 +80,7 @@ export default function AutomationsTimelinePage() {
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                 Automation Execution Timeline
               </h3>
-              <p className="mt-2 text-sm text-gray-600 dark:text-white/50">
+              <p className="mt-2 text-sm text-gray-600 dark:text-white/70">
                 View automation execution history in timeline view - coming soon!
               </p>
             </div>

@@ -185,10 +185,10 @@ export default function IssuesReportsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`h-2 w-2 rounded-full ${getStatusColor(report.status)}`} />
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                         {report.type.toUpperCase()}
                       </span>
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                         {report.frequency.toUpperCase()}
                       </span>
                       {report.priority === 'critical' && (
@@ -200,7 +200,7 @@ export default function IssuesReportsPage() {
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                       {report.title}
                     </h3>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                       <span>Period: {report.reportingPeriod}</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -216,10 +216,10 @@ export default function IssuesReportsPage() {
                     {report.status === 'submitted' || report.status === 'current' ? (
                       <>
                         <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#181D23]">
-                          <Eye className="h-4 w-4 text-gray-600 dark:text-white/50" />
+                          <Eye className="h-4 w-4 text-gray-600 dark:text-white/70" />
                         </Button>
                         <Button className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#181D23]">
-                          <Download className="h-4 w-4 text-gray-600 dark:text-white/50" />
+                          <Download className="h-4 w-4 text-gray-600 dark:text-white/70" />
                         </Button>
                       </>
                     ) : null}
@@ -244,7 +244,7 @@ export default function IssuesReportsPage() {
                 <div className="text-center">
                   <FileBarChart className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No reports found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                     No reports match the selected filters.
                   </p>
                 </div>

@@ -142,7 +142,7 @@ function VideoModal({ isOpen, onClose, startIndex = 0 }: { isOpen: boolean; onCl
                   <button
                     key={v.src}
                     onClick={() => setModalVideoIdx(i)}
-                    className={`rounded-full px-3 py-1 text-[12px] font-medium transition-all ${i === modalVideoIdx ? 'bg-primary-500/15 text-[#2BB5A2]' : 'text-white/40 hover:text-white/60'}`}
+                    className={`rounded-full px-3 py-1 text-[13px] font-medium transition-all ${i === modalVideoIdx ? 'bg-primary-500/15 text-[#2BB5A2]' : 'text-white/60 hover:text-white/70'}`}
                   >
                     {v.label}
                   </button>
@@ -150,7 +150,7 @@ function VideoModal({ isOpen, onClose, startIndex = 0 }: { isOpen: boolean; onCl
               </div>
               <button
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -190,7 +190,7 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-[13px] font-medium text-white/70">{t('landing.mockup.projectBudget')}</h4>
+        <h4 className="text-[14px] font-medium text-white/70">{t('landing.mockup.projectBudget')}</h4>
         <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">{t('landing.mockup.onTrack')}</span>
       </div>
       <div className="space-y-3">
@@ -202,7 +202,7 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
         ].map((item) => (
           <div key={item.key} className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[12px] font-medium text-white/80">{t(item.key)}</span>
+              <span className="text-[13px] font-medium text-white">{t(item.key)}</span>
               <span className="text-[11px] text-white/70">
                 {item.spent.toLocaleString()} / {item.budget.toLocaleString()} ETB
               </span>
@@ -220,12 +220,12 @@ function BudgetMockup({ t }: { t: (key: string) => string }) {
       </div>
       <div className="flex items-center justify-between rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
         <div>
-          <p className="text-[11px] text-white/80">{t('landing.mockup.totalSpent')}</p>
-          <p className="text-[16px] font-semibold text-white">377,000 ETB</p>
+          <p className="text-[11px] text-white">{t('landing.mockup.totalSpent')}</p>
+          <p className="text-[17px] font-semibold text-white">377,000 ETB</p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] text-white/80">{t('landing.mockup.remaining')}</p>
-          <p className="text-[16px] font-semibold text-emerald-400">273,000 ETB</p>
+          <p className="text-[11px] text-white">{t('landing.mockup.remaining')}</p>
+          <p className="text-[17px] font-semibold text-emerald-400">273,000 ETB</p>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ function AIDocsMockup({ t }: { t: (key: string) => string }) {
           <FileText className="h-5 w-5 text-purple-400" />
         </div>
         <div className="flex-1">
-          <p className="text-[12px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
+          <p className="text-[13px] font-medium text-white/70">Procurement_Contract_Q2.pdf</p>
           <p className="text-[11px] text-white/70">{t('landing.mockup.uploadedAgo')}</p>
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-primary-500/10 px-2 py-1">
@@ -251,9 +251,9 @@ function AIDocsMockup({ t }: { t: (key: string) => string }) {
       <div className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
           <Wand2 className="h-3.5 w-3.5 text-primary-400" />
-          <span className="text-[12px] font-medium text-white/80">{t('landing.mockup.aiSummary')}</span>
+          <span className="text-[13px] font-medium text-white">{t('landing.mockup.aiSummary')}</span>
         </div>
-        <p className="text-[12px] leading-relaxed text-white/80">
+        <p className="text-[13px] leading-relaxed text-white">
           {t('landing.mockup.aiSummaryText')}
         </p>
       </div>
@@ -300,11 +300,11 @@ function CalendarMockup({ t: _t }: { t: (key: string) => string }) {
           return (
             <div
               key={i}
-              className={`relative flex h-8 items-center justify-center rounded-md text-[12px] transition-all ${
+              className={`relative flex h-8 items-center justify-center rounded-md text-[13px] transition-all ${
                 isToday ? 'bg-primary-600 font-semibold text-white shadow-lg' :
                 isDeadline ? 'bg-red-500/10 font-medium text-red-400' :
                 isHoliday ? 'bg-amber-500/10 font-medium text-amber-400' :
-                'text-white/80 hover:bg-white/[0.04]'
+                'text-white hover:bg-white/[0.04]'
               }`}
             >
               {i + 1}
@@ -349,7 +349,7 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
           >
             <span className="text-lg">{item.flag}</span>
             <div className="flex-1">
-              <p className="text-[12px] font-medium text-white/70">{item.lang}</p>
+              <p className="text-[13px] font-medium text-white/70">{item.lang}</p>
               <p className="text-[11px] text-white/70">{item.sample}</p>
             </div>
             {i === 0 && (
@@ -359,19 +359,19 @@ function LanguageMockup({ t }: { t: (key: string) => string }) {
         ))}
       </div>
       <div className="rounded-lg border border-white/[0.12] bg-white/[0.02] p-3">
-        <p className="mb-2 text-[11px] font-medium text-white/80">{t('landing.mockup.uiPreview')}</p>
+        <p className="mb-2 text-[11px] font-medium text-white">{t('landing.mockup.uiPreview')}</p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <LayoutDashboard className="h-3.5 w-3.5 text-white/70" />
-            <span className="text-[12px] text-white/70">{'\u12F3\u123D\u1266\u122D\u12F5'}</span>
+            <span className="text-[13px] text-white/70">{'\u12F3\u123D\u1266\u122D\u12F5'}</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-primary-500/10 px-3 py-2">
             <Kanban className="h-3.5 w-3.5 text-primary-400" />
-            <span className="text-[12px] font-medium text-primary-400">{'\u1355\u122E\u1300\u12AD\u1276\u127D'}</span>
+            <span className="text-[13px] font-medium text-primary-400">{'\u1355\u122E\u1300\u12AD\u1276\u127D'}</span>
           </div>
           <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2">
             <Calendar className="h-3.5 w-3.5 text-white/70" />
-            <span className="text-[12px] text-white/70">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u1240\u1295 \u1218\u1281\u1320\u122A\u12EB'}</span>
+            <span className="text-[13px] text-white/70">{'\u12E8\u12A2\u1275\u12EE\u1335\u12EB \u1240\u1295 \u1218\u1281\u1320\u122A\u12EB'}</span>
           </div>
         </div>
       </div>
@@ -555,7 +555,7 @@ export default function HomePage() {
   const showcaseMockups = [<BudgetMockup t={t} />, <AIDocsMockup t={t} />, <CalendarMockup t={t} />, <LanguageMockup t={t} />];
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white/85 selection:bg-primary-500/20">
+    <div className="min-h-screen bg-[#0B0E11] font-sans antialiased text-white selection:bg-primary-500/20">
       <GrainOverlay />
       <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} startIndex={videoStartIdx} />
 
@@ -575,7 +575,7 @@ export default function HomePage() {
             <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg transition-shadow group-hover:shadow-xl">
               <span className="text-sm font-black text-white">O</span>
             </div>
-            <span className="text-[16px] font-bold tracking-[-0.01em]">Onekof</span>
+            <span className="text-[17px] font-bold tracking-[-0.01em]">Onekof</span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -583,7 +583,7 @@ export default function HomePage() {
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-4 py-2 text-[14px] font-medium text-white/50 tracking-[0.02em] transition-all hover:text-white"
+                className="rounded-lg px-4 py-2 text-[14px] font-medium text-white/70 tracking-[0.02em] transition-all hover:text-white"
               >
                 {link.label}
               </a>
@@ -594,13 +594,13 @@ export default function HomePage() {
             <LanguageSwitcher />
             <Link
               href="/auth/signin"
-              className="rounded-full border border-white/[0.08] px-4 py-2 text-[13px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"
+              className="rounded-full border border-white/[0.08] px-4 py-2 text-[14px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white"
             >
               {t('common.signIn')}
             </Link>
             <Link
               href="/auth/signup"
-              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-400 px-5 py-2 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/30 hover:brightness-110"
+              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-primary-500 to-primary-400 px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-primary-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/30 hover:brightness-110"
             >
               <span className="relative z-10 flex items-center gap-1.5">
                 {t('common.getStarted')}
@@ -610,7 +610,7 @@ export default function HomePage() {
           </div>
 
           <Button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" aria-label="Toggle menu">
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 text-white/80" />}
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 text-white" />}
           </Button>
         </div>
 
@@ -667,9 +667,9 @@ export default function HomePage() {
               <motion.div variants={heroChild}>
                 <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-4 py-2">
                   <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                  <span className="text-[13px] font-semibold text-emerald-400">INSA Certified</span>
+                  <span className="text-[14px] font-semibold text-emerald-400">INSA Certified</span>
                   <span className="h-3 w-px bg-white/10" />
-                  <span className="text-[13px] text-white/50">Ethiopia&apos;s First Certified PM Platform</span>
+                  <span className="text-[14px] text-white/70">Ethiopia&apos;s First Certified PM Platform</span>
                 </div>
               </motion.div>
 
@@ -687,7 +687,7 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <p className="mt-6 max-w-[480px] text-[17px] leading-[1.7] text-white/50">
+                <p className="mt-6 max-w-[480px] text-[18px] leading-[1.75] text-white/65">
                   {t('auth.projectsDescription')}
                 </p>
               </motion.div>
@@ -703,7 +703,7 @@ export default function HomePage() {
                   </Link>
                   <button
                     onClick={() => setVideoOpen(true)}
-                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/50 transition-all hover:border-white/[0.2] hover:text-white"
+                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/[0.1] px-7 py-3.5 text-[14px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white"
                   >
                     <div className="flex h-7 w-7 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 transition-colors group-hover:bg-primary-500/20">
                       <Play className="h-3 w-3 text-primary-400" />
@@ -714,31 +714,21 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  {/* INSA Trust Badge */}
-                  <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/15">
-                      <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                    </div>
-                    <div className="text-[12px] leading-tight">
-                      <div className="font-semibold text-white/80">INSA Certified</div>
-                      <div className="text-white/40">Gov-grade security</div>
-                    </div>
-                  </div>
-                  {/* Payment Methods */}
-                  <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-                    <div className="flex items-center gap-1.5">
-                      <Smartphone className="h-3.5 w-3.5 text-primary-400" />
-                      <Landmark className="h-3.5 w-3.5 text-primary-400" />
-                      <CreditCard className="h-3.5 w-3.5 text-primary-400" />
-                    </div>
-                    <span className="text-[12px] text-white/50">Pay in ETB via Telebirr, CBE, Card</span>
-                  </div>
-                  {/* Free Trial */}
-                  <div className="inline-flex items-center gap-1.5 text-[12px] text-white/40">
-                    <BadgeCheck className="h-3.5 w-3.5 text-primary-400" />
-                    <span>7-day free trial &middot; No credit card required</span>
-                  </div>
+                <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-[14px] text-white/55">
+                  <span className="inline-flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                    INSA Certified
+                  </span>
+                  <span className="hidden h-3.5 w-px bg-white/[0.12] sm:inline-block" />
+                  <span className="inline-flex items-center gap-2">
+                    <Wallet className="h-4 w-4 text-primary-400" />
+                    Pay in ETB
+                  </span>
+                  <span className="hidden h-3.5 w-px bg-white/[0.12] sm:inline-block" />
+                  <span className="inline-flex items-center gap-2">
+                    <BadgeCheck className="h-4 w-4 text-primary-400" />
+                    7-day free trial
+                  </span>
                 </div>
               </motion.div>
             </motion.div>
@@ -777,13 +767,13 @@ export default function HomePage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setHeroIdx((prev) => (prev - 1 + demoVideos.length) % demoVideos.length)}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => setHeroIdx((prev) => (prev + 1) % demoVideos.length)}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -791,7 +781,7 @@ export default function HomePage() {
 
                   {/* Dot indicators + label */}
                   <div className="flex items-center gap-3">
-                    <span className="text-[12px] font-medium text-white/50">{demoVideos[heroIdx].label}</span>
+                    <span className="text-[13px] font-medium text-white/70">{demoVideos[heroIdx].label}</span>
                     <div className="flex gap-1.5">
                       {demoVideos.map((_, i) => (
                         <button
@@ -806,7 +796,7 @@ export default function HomePage() {
                   {/* Watch with sound */}
                   <button
                     onClick={() => { setVideoStartIdx(heroIdx); setVideoOpen(true); }}
-                    className="flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-[#12161B] px-3 py-1.5 text-[11px] font-medium text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                    className="flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-[#12161B] px-3 py-1.5 text-[11px] font-medium text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
                   >
                     <Play className="h-3 w-3" />
                     Sound
@@ -830,7 +820,7 @@ export default function HomePage() {
             <div className="relative mb-5 flex items-center justify-center gap-4">
               <button
                 onClick={() => setShowcaseIdx((prev) => (prev - 1 + demoVideos.length) % demoVideos.length)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -845,12 +835,12 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
-                <span className="text-[13px] font-medium text-white/50">{demoVideos[showcaseIdx].label}</span>
+                <span className="text-[14px] font-medium text-white/70">{demoVideos[showcaseIdx].label}</span>
               </div>
 
               <button
                 onClick={() => setShowcaseIdx((prev) => (prev + 1) % demoVideos.length)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/50 transition-all hover:border-primary-500/30 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-[#12161B] text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -875,7 +865,7 @@ export default function HomePage() {
               {/* Play full button overlay */}
               <button
                 onClick={() => { setVideoStartIdx(showcaseIdx); setVideoOpen(true); }}
-                className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-[13px] font-medium text-white/80 backdrop-blur-sm transition-all hover:bg-black/80 hover:text-white"
+                className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-[14px] font-medium text-white backdrop-blur-sm transition-all hover:bg-black/80 hover:text-white"
               >
                 <Play className="h-3.5 w-3.5" />
                 Watch with sound
@@ -886,78 +876,50 @@ export default function HomePage() {
       </section>
 
       {/* ═══ TRUST STRIP — INSA + Built for Ethiopia ═══ */}
-      <section className="border-y border-white/[0.06] py-10">
+      <section className="border-y border-white/[0.06] py-12 sm:py-14">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-center sm:gap-12">
-              {/* INSA Badge */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08]">
-                  <ShieldCheck className="h-6 w-6 text-emerald-400" />
-                </div>
-                <div>
-                  <div className="text-[14px] font-semibold text-white/90">INSA Certified</div>
-                  <div className="text-[12px] text-white/40">National cybersecurity standard</div>
-                </div>
-              </div>
-
-              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
-
-              {/* Built for Ethiopia */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500/20 bg-primary-500/[0.08]">
-                  <Calendar className="h-6 w-6 text-primary-400" />
-                </div>
-                <div>
-                  <div className="text-[14px] font-semibold text-white/90">Built for Ethiopia</div>
-                  <div className="text-[12px] text-white/40">Ethiopian calendar, Amharic, Oromo</div>
-                </div>
-              </div>
-
-              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
-
-              {/* Ethiopian Payments */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500/20 bg-primary-500/[0.08]">
-                  <Wallet className="h-6 w-6 text-primary-400" />
-                </div>
-                <div>
-                  <div className="text-[14px] font-semibold text-white/90">Pay in Ethiopian Birr</div>
-                  <div className="text-[12px] text-white/40">Telebirr, CBE Birr, Awash, Card</div>
-                </div>
-              </div>
-
-              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
-
-              {/* Data Residency */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/[0.08]">
-                  <Shield className="h-6 w-6 text-violet-400" />
-                </div>
-                <div>
-                  <div className="text-[14px] font-semibold text-white/90">Data Residency</div>
-                  <div className="text-[12px] text-white/40">On-premise deployment available</div>
-                </div>
-              </div>
+            <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
+              {[
+                { icon: ShieldCheck, color: 'emerald', title: 'INSA Certified', desc: 'National cybersecurity standard' },
+                { icon: Calendar, color: 'primary', title: 'Built for Ethiopia', desc: 'Ethiopian calendar, Amharic, Oromo' },
+                { icon: Wallet, color: 'primary', title: 'Pay in Ethiopian Birr', desc: 'Telebirr, CBE Birr, Awash, Card' },
+                { icon: Shield, color: 'violet', title: 'Data Residency', desc: 'On-premise deployment available' },
+              ].map((item) => {
+                const borderColor = item.color === 'emerald' ? 'border-emerald-500/20' : item.color === 'violet' ? 'border-violet-500/20' : 'border-primary-500/20';
+                const bgColor = item.color === 'emerald' ? 'bg-emerald-500/[0.08]' : item.color === 'violet' ? 'bg-violet-500/[0.08]' : 'bg-primary-500/[0.08]';
+                const iconColor = item.color === 'emerald' ? 'text-emerald-400' : item.color === 'violet' ? 'text-violet-400' : 'text-primary-400';
+                return (
+                  <div key={item.title} className="flex items-start gap-3.5">
+                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${borderColor} ${bgColor}`}>
+                      <item.icon className={`h-5 w-5 ${iconColor}`} />
+                    </div>
+                    <div>
+                      <div className="text-[15px] font-semibold text-white">{item.title}</div>
+                      <div className="mt-0.5 text-[14px] leading-snug text-white/70">{item.desc}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* ═══ WHY ONEKOF ═══ */}
-      <section className="py-20 sm:py-32 lg:py-40" id="features">
+      <section className="py-16 sm:py-20 lg:py-24" id="features">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <div className="mx-auto mb-16 max-w-3xl text-center sm:mb-20">
+            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-14">
               <div className="mb-5 inline-flex items-center gap-2">
                 <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.whyOnekof.label')}</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.whyOnekof.label')}</span>
               </div>
               <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
                 {t('landing.whyOnekof.heading1')}{' '}
                 <span className="font-serif italic text-[#2BB5A2]">{t('landing.whyOnekof.heading2')}</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
+              <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/70">
                 {t('landing.whyOnekof.subtitle')}
               </p>
             </div>
@@ -1017,10 +979,10 @@ export default function HomePage() {
                   <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgba(28,140,125,0.25)] to-transparent opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
                   <div className="relative">
                     <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl border ${feature.iconBg}`}>
-                      <feature.icon className="h-5 w-5 text-white/85 transition-colors group-hover:text-primary-400" />
+                      <feature.icon className="h-5 w-5 text-white transition-colors group-hover:text-primary-400" />
                     </div>
                     <h3 className="mb-2.5 text-[20px] font-semibold leading-[1.35]">{feature.title}</h3>
-                    <p className="text-[14px] leading-[1.6] text-white/50">{feature.desc}</p>
+                    <p className="text-[14px] leading-[1.6] text-white/70">{feature.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -1032,7 +994,7 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ ANALYTICS HIGHLIGHT ═══ */}
-      <section className="py-20 sm:py-32">
+      <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-gradient-to-br from-[#12161B] to-[#181D23] p-8 sm:p-12 lg:p-14">
@@ -1041,18 +1003,18 @@ export default function HomePage() {
                 <div>
                   <div className="mb-5 inline-flex items-center gap-2">
                     <span className="h-px w-6 bg-primary-500" />
-                    <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">Analytics</span>
+                    <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">Analytics</span>
                   </div>
                   <h2 className="mb-4 font-serif text-[clamp(2rem,3.5vw,2.75rem)] font-medium leading-[1.15]">
                     See the full picture, <span className="font-serif italic text-[#2BB5A2]">instantly</span>
                   </h2>
-                  <p className="mb-6 max-w-md text-[15px] leading-[1.65] text-white/50">
+                  <p className="mb-6 max-w-md text-[15px] leading-[1.65] text-white/70">
                     Real-time dashboards that show team velocity, budget burn rate, sprint health, and
                     project progress — all from data your team is already creating.
                   </p>
                   <Link
                     href="/auth/signup"
-                    className="group inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white/60 transition-all hover:border-primary-500/30 hover:text-white"
+                    className="group inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-2.5 text-[14px] font-medium text-white/70 transition-all hover:border-primary-500/30 hover:text-white"
                   >
                     Explore analytics
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1076,18 +1038,18 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ PRODUCT SHOWCASE — Interactive Tabs ═══ */}
-      <section id="product" className="py-20 sm:py-32 lg:py-40">
+      <section id="product" className="py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <div className="mb-5 inline-flex items-center gap-2">
                 <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.showcase.label')}</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.showcase.label')}</span>
               </div>
               <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
                 {t('landing.showcase.heading')}
               </h2>
-              <p className="mx-auto mt-4 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
+              <p className="mx-auto mt-4 max-w-[560px] text-[18px] leading-[1.7] text-white/70">
                 {t('landing.showcase.subtitle')}
               </p>
             </div>
@@ -1101,13 +1063,13 @@ export default function HomePage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveShowcase(i)}
-                    className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
+                    className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-medium transition-all duration-300 ${
                       activeShowcase === i
                         ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                        : 'border border-white/[0.08] text-white/50 hover:border-white/[0.15] hover:text-white'
+                        : 'border border-white/[0.08] text-white/70 hover:border-white/[0.15] hover:text-white'
                     }`}
                   >
-                    <tab.icon className={`h-4 w-4 ${activeShowcase === i ? 'text-white' : 'text-white/50'}`} />
+                    <tab.icon className={`h-4 w-4 ${activeShowcase === i ? 'text-white' : 'text-white/70'}`} />
                     {tab.label}
                   </button>
                 ))}
@@ -1143,12 +1105,12 @@ export default function HomePage() {
                     <h3 className="mb-3 font-serif text-2xl font-medium tracking-[-0.01em] sm:text-[1.75rem]">
                       {showcaseTabs[activeShowcase].title}
                     </h3>
-                    <p className="mb-6 text-[15px] leading-[1.65] text-white/50">
+                    <p className="mb-6 text-[15px] leading-[1.65] text-white/70">
                       {showcaseTabs[activeShowcase].desc}
                     </p>
                     <ul className="mb-8 space-y-4">
                       {showcaseTabs[activeShowcase].features.map((f) => (
-                        <li key={f} className="flex items-start gap-3 text-[15px] text-white/50">
+                        <li key={f} className="flex items-start gap-3 text-[15px] text-white/70">
                           <div className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
                             <Check className="h-3 w-3 text-primary-400" />
                           </div>
@@ -1189,17 +1151,17 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ FEATURES GRID ═══ */}
-      <section className="py-20 sm:py-32 lg:py-40">
+      <section className="py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-16 max-w-2xl text-center">
               <div className="mb-5 inline-flex items-center gap-2">
                 <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.features.label')}</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.features.label')}</span>
               </div>
               <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                 {t('landing.features.heading1')}{' '}
-                <span className="font-serif italic text-white/60">{t('landing.features.heading2')}</span>
+                <span className="font-serif italic text-white/70">{t('landing.features.heading2')}</span>
               </h2>
             </div>
           </Reveal>
@@ -1226,9 +1188,9 @@ export default function HomePage() {
                 className="group"
               >
                 <div className="h-full border border-white/[0.03] bg-[#0B0E11] p-6 transition-all duration-500 hover:bg-white/[0.02] sm:p-7">
-                  <feature.icon className="mb-4 h-5 w-5 text-white/50 transition-colors duration-300 group-hover:text-primary-400" />
-                  <h3 className="mb-2 text-[15px] font-semibold text-white/85">{feature.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-white/50">{feature.desc}</p>
+                  <feature.icon className="mb-4 h-5 w-5 text-white/70 transition-colors duration-300 group-hover:text-primary-400" />
+                  <h3 className="mb-2 text-[15px] font-semibold text-white">{feature.title}</h3>
+                  <p className="text-[14px] leading-relaxed text-white/70">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -1237,7 +1199,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══ STATS ═══ */}
-      <section className="py-20 sm:py-28">
+      <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-[1200px] px-6">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
@@ -1257,7 +1219,7 @@ export default function HomePage() {
                   <div className="font-serif text-[clamp(2rem,3vw,2.75rem)] font-semibold text-[#2BB5A2]">
                     <Counter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="mt-1.5 text-[13px] text-white/50">{stat.label}</p>
+                  <p className="mt-1.5 text-[14px] text-white/70">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
@@ -1266,17 +1228,17 @@ export default function HomePage() {
       </section>
 
       {/* ═══ TESTIMONIALS ═══ */}
-      <section id="about" className="py-20 sm:py-32 lg:py-40">
+      <section id="about" className="py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
-            <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-16">
+            <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
               <div className="mb-5 inline-flex items-center gap-2">
                 <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.testimonials.label')}</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.testimonials.label')}</span>
               </div>
               <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                 {t('landing.testimonials.heading1')}{' '}
-                <span className="font-serif italic text-white/60">{t('landing.testimonials.heading2')}</span>
+                <span className="font-serif italic text-white/70">{t('landing.testimonials.heading2')}</span>
               </h2>
             </div>
           </Reveal>
@@ -1327,7 +1289,7 @@ export default function HomePage() {
                       <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
                     ))}
                   </div>
-                  <p className="mb-6 text-[14px] leading-relaxed text-white/50">
+                  <p className="mb-6 text-[14px] leading-relaxed text-white/70">
                     &ldquo;{testimonial.quote}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
@@ -1335,8 +1297,8 @@ export default function HomePage() {
                       {testimonial.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <p className="text-[13px] font-medium text-white/85">{testimonial.name}</p>
-                      <p className="text-[12px] text-white/50">{testimonial.role}</p>
+                      <p className="text-[14px] font-medium text-white">{testimonial.name}</p>
+                      <p className="text-[13px] text-white/70">{testimonial.role}</p>
                     </div>
                   </div>
                 </div>
@@ -1349,34 +1311,34 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ PRICING ═══ */}
-      <section id="pricing" className="py-20 sm:py-32 lg:py-40">
+      <section id="pricing" className="py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <div className="mx-auto mb-12 max-w-2xl text-center">
               <div className="mb-5 inline-flex items-center gap-2">
                 <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[12px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.pricing.label')}</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.pricing.label')}</span>
               </div>
               <h2 className="mb-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                 {t('landing.pricing.heading')}
               </h2>
-              <p className="text-[18px] leading-[1.7] text-white/50">
+              <p className="text-[18px] leading-[1.7] text-white/70">
                 {t('landing.pricing.subtitle')}
               </p>
 
               <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-[#12161B] p-1">
                 <button
                   onClick={() => setBilling('monthly')}
-                  className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'monthly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                  className={`rounded-full px-5 py-2.5 text-[14px] font-medium transition-all duration-300 ${
+                    billing === 'monthly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
                   }`}
                 >
                   {t('landing.pricing.monthly')}
                 </button>
                 <button
                   onClick={() => setBilling('yearly')}
-                  className={`rounded-full px-5 py-2.5 text-[13px] font-medium transition-all duration-300 ${
-                    billing === 'yearly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/50 hover:text-white'
+                  className={`rounded-full px-5 py-2.5 text-[14px] font-medium transition-all duration-300 ${
+                    billing === 'yearly' ? 'bg-primary-500 text-white shadow-md' : 'text-white/70 hover:text-white'
                   }`}
                 >
                   {t('landing.pricing.yearly')}
@@ -1413,7 +1375,7 @@ export default function HomePage() {
 
                   <div className="mb-6">
                     <h3 className="text-[18px] font-semibold">{plan.name}</h3>
-                    <p className="mt-1 text-[13px] text-white/50">{plan.desc}</p>
+                    <p className="mt-1 text-[14px] text-white/70">{plan.desc}</p>
                   </div>
 
                   <div className="mb-1">
@@ -1422,19 +1384,19 @@ export default function HomePage() {
                         <span className="font-serif text-[3rem] font-semibold">
                           {(billing === 'yearly' ? plan.yearlyPrice : plan.price)?.toLocaleString()}
                         </span>
-                        <span className="ml-1 text-[20px] text-white/50">ETB</span>
+                        <span className="ml-1 text-[20px] text-white/70">ETB</span>
                       </div>
                     ) : (
                       <div className="font-serif text-[3rem] font-semibold">{t('landing.pricing.custom')}</div>
                     )}
                   </div>
-                  <p className="mb-8 text-[13px] text-white/50">
+                  <p className="mb-8 text-[14px] text-white/70">
                     {plan.price === 0 ? t('landing.pricing.freeForeverNoCard') : plan.price !== null ? t('landing.pricing.etbPerUserMo') : 'Tailored to your organization'}
                   </p>
 
                   <ul className="mb-8 flex-1 space-y-3">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2.5 text-[14px] text-white/50">
+                      <li key={f} className="flex items-center gap-2.5 text-[14px] text-white/70">
                         <Check className="h-3.5 w-3.5 flex-shrink-0 text-[#2BB5A2]" />
                         {f}
                       </li>
@@ -1461,7 +1423,7 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ COMPARISON ═══ */}
-      <section className="py-20 sm:py-28">
+      <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-[1200px] px-6">
           <Reveal>
             <h3 className="mb-10 text-center font-serif text-xl font-medium sm:mb-14 sm:text-2xl">
@@ -1482,14 +1444,14 @@ export default function HomePage() {
                   </p>
                   <ul className="space-y-2.5">
                     {item.reasons.map((r) => (
-                      <li key={r} className="flex items-center gap-2.5 text-[14px] text-white/50">
+                      <li key={r} className="flex items-center gap-2.5 text-[14px] text-white/70">
                         <X className="h-3.5 w-3.5 flex-shrink-0 text-red-400/40" />
                         {r}
                       </li>
                     ))}
                   </ul>
                   <div className="mt-5 border-t border-white/[0.08] pt-5">
-                    <p className="flex items-center gap-2 text-[13px] font-medium text-emerald-400">
+                    <p className="flex items-center gap-2 text-[14px] font-medium text-emerald-400">
                       <Check className="h-4 w-4" />
                       {t('landing.comparison.onekofHandlesAll')}
                     </p>
@@ -1504,7 +1466,7 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ═══ FINAL CTA ═══ */}
-      <section className="py-20 sm:py-32 lg:py-40">
+      <section className="py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-[1200px] px-6">
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-primary-500/[0.06] to-violet-500/[0.03] px-6 py-16 text-center sm:px-12 sm:py-20">
             <div className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-primary-500/[0.08] blur-[80px]" />
@@ -1512,16 +1474,16 @@ export default function HomePage() {
               <Reveal>
                 <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-2">
                   <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-[13px] font-medium text-emerald-400">INSA Certified</span>
+                  <span className="text-[14px] font-medium text-emerald-400">INSA Certified</span>
                   <span className="h-3 w-px bg-white/10" />
-                  <span className="text-[13px] text-white/50">7-day free trial</span>
+                  <span className="text-[14px] text-white/70">7-day free trial</span>
                 </div>
                 <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                   {t('landing.cta.heading1')}
                   <br />
                   <span className="font-serif italic text-[#2BB5A2]">{t('landing.cta.heading2')}</span>
                 </h2>
-                <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/50">
+                <p className="mx-auto mt-5 max-w-[560px] text-[18px] leading-[1.7] text-white/70">
                   {t('landing.cta.subtitle')}
                 </p>
                 <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -1534,7 +1496,7 @@ export default function HomePage() {
                   </Link>
                   <a
                     href="mailto:hello@onekof.com"
-                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/[0.1] px-8 py-4 text-[15px] font-medium text-white/60 transition-all hover:border-white/[0.2] hover:text-white sm:w-auto"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/[0.1] px-8 py-4 text-[15px] font-medium text-white/70 transition-all hover:border-white/[0.2] hover:text-white sm:w-auto"
                   >
                     {t('landing.cta.talkToSales')}
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -1553,11 +1515,11 @@ export default function HomePage() {
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg">
-                  <span className="text-[12px] font-black text-white">O</span>
+                  <span className="text-[13px] font-black text-white">O</span>
                 </div>
-                <span className="text-[16px] font-bold">Onekof</span>
+                <span className="text-[17px] font-bold">Onekof</span>
               </div>
-              <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/50">
+              <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 {t('landing.footer.description')}
               </p>
               <div className="mt-6 flex gap-3">
@@ -1569,7 +1531,7 @@ export default function HomePage() {
                   <a
                     key={social.name}
                     href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold text-white/50 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold text-white/70 transition-all hover:border-primary-500/20 hover:bg-primary-500/10 hover:text-primary-400"
                   >
                     {social.letter}
                   </a>
@@ -1601,11 +1563,11 @@ export default function HomePage() {
               ]},
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="mb-5 text-[12px] font-semibold uppercase tracking-[0.1em] text-white/30">{col.title}</h4>
+                <h4 className="mb-5 text-[13px] font-semibold uppercase tracking-[0.1em] text-white/30">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href} className="text-[14px] text-white/50 transition-colors hover:text-white">{link.label}</a>
+                      <a href={link.href} className="text-[14px] text-white/70 transition-colors hover:text-white">{link.label}</a>
                     </li>
                   ))}
                 </ul>
@@ -1614,7 +1576,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-            <p className="text-[13px] text-white/30">
+            <p className="text-[14px] text-white/30">
               &copy; {new Date().getFullYear()} Onekof. {t('landing.footer.allRightsReserved')}
             </p>
             <div className="flex gap-6">
@@ -1623,7 +1585,7 @@ export default function HomePage() {
                 { label: t('landing.footer.terms'), href: '/terms' },
                 { label: t('landing.footer.cookies'), href: '/cookies' },
               ].map((link) => (
-                <a key={link.href} href={link.href} className="text-[13px] text-white/30 transition-colors hover:text-white/50">{link.label}</a>
+                <a key={link.href} href={link.href} className="text-[14px] text-white/30 transition-colors hover:text-white/70">{link.label}</a>
               ))}
             </div>
           </div>

@@ -200,7 +200,7 @@ export default function SettingsPage() {
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t('nav.settings')}
               </h1>
-              <p className="text-sm text-gray-500 dark:text-white/50">
+              <p className="text-sm text-gray-500 dark:text-white/70">
                 Manage your profile, preferences, and security
               </p>
             </div>
@@ -219,7 +219,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'profile'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                      : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <UserIcon className="h-4 w-4" />
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'notifications'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                      : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <Bell className="h-4 w-4" />
@@ -243,7 +243,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === 'security'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
-                      : 'text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'
+                      : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
                   }`}
                 >
                   <Shield className="h-4 w-4" />
@@ -251,7 +251,7 @@ export default function SettingsPage() {
                 </button>
                 <a
                   href="/dashboard/settings/billing"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   <CreditCard className="h-4 w-4" />
                   Billing
@@ -274,7 +274,7 @@ export default function SettingsPage() {
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                           Profile information
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
                           Update your personal details
                         </p>
                       </div>
@@ -316,7 +316,7 @@ export default function SettingsPage() {
                             Email
                           </label>
                           <Input value={user?.email || ''} disabled className="opacity-60" />
-                          <p className="text-xs text-gray-500 dark:text-white/50 mt-1">
+                          <p className="text-xs text-gray-500 dark:text-white/70 mt-1">
                             Contact support to change your email address.
                           </p>
                         </div>
@@ -399,7 +399,7 @@ export default function SettingsPage() {
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                           Email notifications
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
                           Choose what we email you about
                         </p>
                       </div>
@@ -416,7 +416,7 @@ export default function SettingsPage() {
                           <div key={item.key} className="flex items-start justify-between gap-4 px-6 py-4">
                             <div className="flex-1 min-w-0">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">{item.title}</div>
-                              <div className="text-xs text-gray-500 dark:text-white/50 mt-0.5">{item.desc}</div>
+                              <div className="text-xs text-gray-500 dark:text-white/70 mt-0.5">{item.desc}</div>
                             </div>
                             <button
                               type="button"
@@ -461,7 +461,7 @@ export default function SettingsPage() {
                           <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                             Change password
                           </h2>
-                          <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
                             At least 8 characters; use a unique password
                           </p>
                         </div>
@@ -526,7 +526,7 @@ export default function SettingsPage() {
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                           Two-factor authentication
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-white/50 mb-3">
+                        <p className="text-xs text-gray-500 dark:text-white/70 mb-3">
                           Add an extra layer of security to your account with TOTP (authenticator app).
                         </p>
                         <a

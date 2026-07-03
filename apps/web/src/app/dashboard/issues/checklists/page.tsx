@@ -238,10 +238,10 @@ export default function IssuesChecklistsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`h-2 w-2 rounded-full ${getStatusColor(checklist.status)}`} />
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                           {checklist.category.toUpperCase()}
                         </span>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/50">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 dark:bg-[#181D23] text-gray-700 dark:text-white/70">
                           {checklist.type.replace('-', ' ').toUpperCase()}
                         </span>
                         {checklist.priority === 'critical' && (
@@ -253,7 +253,7 @@ export default function IssuesChecklistsPage() {
                       <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
                         {checklist.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-white/50">
+                      <p className="text-sm text-gray-600 dark:text-white/70">
                         {checklist.description}
                       </p>
                     </div>
@@ -261,7 +261,7 @@ export default function IssuesChecklistsPage() {
 
                   {/* Progress Bar */}
                   <div className="mb-3">
-                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/50 mb-1">
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-white/70 mb-1">
                       <span>{checklist.completedItems} of {checklist.totalItems} tasks completed</span>
                       <span>{progress}%</span>
                     </div>
@@ -303,14 +303,14 @@ export default function IssuesChecklistsPage() {
                       </div>
                     ))}
                     {checklist.items.length > 5 && (
-                      <div className="text-xs text-gray-500 dark:text-white/50 pl-6">
+                      <div className="text-xs text-gray-500 dark:text-white/70 pl-6">
                         +{checklist.items.length - 5} more tasks
                       </div>
                     )}
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50 pt-3 border-t border-gray-200 dark:border-white/[0.08]">
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70 pt-3 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
                       <span>{checklist.assignedTo}</span>
@@ -343,7 +343,7 @@ export default function IssuesChecklistsPage() {
                 <div className="text-center">
                   <ClipboardCheck className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No checklists found</h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
                     No checklists match the selected filter.
                   </p>
                 </div>

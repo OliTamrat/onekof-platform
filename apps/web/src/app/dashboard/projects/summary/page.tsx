@@ -150,7 +150,7 @@ export default function ProjectsSummaryPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -171,7 +171,7 @@ export default function ProjectsSummaryPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-white/50">
+              <div className="text-center py-12 text-gray-500 dark:text-white/70">
                 {t("projectsSummary.loadingAnalyticsData")}
               </div>
             </div>
@@ -225,7 +225,7 @@ export default function ProjectsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -342,7 +342,7 @@ export default function ProjectsSummaryPage() {
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
                               ? 'bg-primary-500 text-white'
-                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-slate-700'
+                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range.charAt(0).toUpperCase() + range.slice(1)}
@@ -419,7 +419,7 @@ export default function ProjectsSummaryPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-white/50 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                        <span className="text-xs font-medium text-gray-600 dark:text-white/70 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                           {data.month}
                         </span>
                       </div>
@@ -430,11 +430,11 @@ export default function ProjectsSummaryPage() {
                   <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-primary-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">{t("projectsSummary.created")}</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">{t("projectsSummary.created")}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">{t("projectsSummary.completedLegend")}</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">{t("projectsSummary.completedLegend")}</span>
                     </div>
                   </div>
                 </div>
@@ -458,7 +458,7 @@ export default function ProjectsSummaryPage() {
                         onClick={() => setDetailModal({ open: true, type: 'project', project, data: project })}
                         className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors cursor-pointer"
                       >
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-[#181D23] text-sm font-semibold text-gray-600 dark:text-white/50">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-[#181D23] text-sm font-semibold text-gray-600 dark:text-white/70">
                           #{index + 1}
                         </div>
                         <div
@@ -472,7 +472,7 @@ export default function ProjectsSummaryPage() {
                             <h4 className="font-semibold text-sm text-gray-900 dark:text-white truncate">
                               {project.name}
                             </h4>
-                            <span className="text-xs text-gray-500 dark:text-white/50">
+                            <span className="text-xs text-gray-500 dark:text-white/70">
                               {project.completionRate}%
                             </span>
                           </div>
@@ -487,7 +487,7 @@ export default function ProjectsSummaryPage() {
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {project.tasksCompleted}/{project.totalTasks}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-white/50">{t("projectsSummary.tasks")}</div>
+                          <div className="text-xs text-gray-500 dark:text-white/70">{t("projectsSummary.tasks")}</div>
                         </div>
                       </div>
                     ))}
@@ -520,12 +520,12 @@ export default function ProjectsSummaryPage() {
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                               {milestone.title}
                             </h4>
-                            <p className="text-xs text-gray-600 dark:text-white/50 mb-2">
+                            <p className="text-xs text-gray-600 dark:text-white/70 mb-2">
                               {milestone.project}
                             </p>
                             <div className="flex items-center gap-2 text-xs">
                               <Calendar className="h-3 w-3 text-gray-400" />
-                              <span className="text-gray-600 dark:text-white/50">{milestone.date}</span>
+                              <span className="text-gray-600 dark:text-white/70">{milestone.date}</span>
                               <span className="text-orange-500">• {milestone.daysLeft} {t("projectsSummary.daysLeft")}</span>
                             </div>
                           </div>
@@ -551,7 +551,7 @@ export default function ProjectsSummaryPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-gray-900 dark:text-white">
                             <span className="font-medium">{activity.user}</span>{' '}
-                            <span className="text-gray-600 dark:text-white/50">
+                            <span className="text-gray-600 dark:text-white/70">
                               {activity.type === 'created' && 'created'}
                               {activity.type === 'completed' && 'completed'}
                               {activity.type === 'updated' && 'updated'}
@@ -559,7 +559,7 @@ export default function ProjectsSummaryPage() {
                             </span>{' '}
                             <span className="font-medium">{activity.project}</span>
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-white/50 mt-1">
+                          <p className="text-xs text-gray-500 dark:text-white/70 mt-1">
                             {activity.time}
                           </p>
                         </div>
@@ -578,7 +578,7 @@ export default function ProjectsSummaryPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         {t("projectsSummary.performanceInsight")}
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-white/50 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-white/70 leading-relaxed">
                         Your team completed <span className="font-semibold text-green-600 dark:text-green-400">15% more projects</span> this month compared to last month. Keep up the great work!
                       </p>
                     </div>
@@ -639,7 +639,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
       </div>
       <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-white/50">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-white/70">{changeLabel}</div>
     </div>
   );
 }
@@ -661,7 +661,7 @@ function HealthBar({ label, count, total, color, lightColor }: HealthBarProps) {
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-900 dark:text-white">{label}</span>
         <span className="text-sm font-semibold text-gray-900 dark:text-white">
-          {count} <span className="text-xs text-gray-500 dark:text-white/50">/ {total}</span>
+          {count} <span className="text-xs text-gray-500 dark:text-white/70">/ {total}</span>
         </span>
       </div>
       <div className={`w-full h-2 rounded-full ${lightColor}`}>

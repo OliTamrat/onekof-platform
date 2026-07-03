@@ -142,7 +142,7 @@ export default function ArticlePage() {
             <h1 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">
               {error === 'not_found' ? t('wiki.articleNotFound') : t('common.error')}
             </h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
+            <p className="mt-2 text-sm text-gray-500 dark:text-white/70">
               {error === 'not_found' ? t('wiki.articleNotFoundDesc') : t('wiki.fetchError')}
             </p>
             <Button
@@ -171,7 +171,7 @@ export default function ArticlePage() {
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => router.push('/dashboard/wiki')}
-                className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-white/50 hover:text-[#1C8C7D] transition-colors shrink-0"
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-white/70 hover:text-[#1C8C7D] transition-colors shrink-0"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {t('wiki.backToWiki')}
@@ -206,7 +206,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => { setEditing(false); setTitle(article.title); setContent(article.content); }}
-                    className="text-gray-600 dark:text-white/50"
+                    className="text-gray-600 dark:text-white/70"
                   >
                     {t('common.cancel')}
                   </Button>
@@ -226,7 +226,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => setEditing(true)}
-                    className="gap-1.5 text-gray-600 dark:text-white/50 hover:text-[#1C8C7D]"
+                    className="gap-1.5 text-gray-600 dark:text-white/70 hover:text-[#1C8C7D]"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     {t('common.edit')}
@@ -235,7 +235,7 @@ export default function ArticlePage() {
                     size="sm"
                     variant="ghost"
                     onClick={handlePublish}
-                    className="gap-1.5 text-gray-600 dark:text-white/50"
+                    className="gap-1.5 text-gray-600 dark:text-white/70"
                   >
                     <Eye className="h-3.5 w-3.5" />
                     {article.status === 'published' ? t('wiki.unpublish') : t('wiki.publish')}
@@ -273,7 +273,7 @@ export default function ArticlePage() {
             )}
 
             {/* Meta row */}
-            <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-500 dark:text-white/50">
+            <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-500 dark:text-white/70">
               <div className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
                 <span>{t('wiki.lastUpdated')} {formattedDate}</span>

@@ -40,7 +40,7 @@ export default function IssuesDataPage() {
             <div className="text-center">
               <FileSpreadsheet className="mx-auto h-12 w-12 text-gray-400 dark:text-[#6B7684]" />
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Data</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
+              <p className="mt-2 text-sm text-gray-500 dark:text-white/70">
                 This feature is coming soon. Stay tuned!
               </p>
             </div>

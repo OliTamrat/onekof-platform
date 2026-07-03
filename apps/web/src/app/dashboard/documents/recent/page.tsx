@@ -109,7 +109,7 @@ export default function DocumentsRecentPage() {
         ) : documents.length === 0 ? (
           <div className="text-center py-16">
             <Clock className="h-12 w-12 mx-auto text-slate-400 mb-3" />
-            <p className="text-sm text-slate-600 dark:text-white/50">
+            <p className="text-sm text-slate-600 dark:text-white/70">
               {t('documents.noDocuments')}
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function DocumentsRecentPage() {
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                         {doc.title || doc.fileName}
                       </h3>
-                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-white/50 mt-1">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-white/70 mt-1">
                         <span>{doc.fileType}</span>
                         {doc.uploadedBy && (
                           <>
@@ -141,7 +141,7 @@ export default function DocumentsRecentPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-white/50 flex-shrink-0">
+                  <div className="text-xs text-gray-600 dark:text-white/70 flex-shrink-0">
                     {formatRelativeTime(doc.updatedAt)}
                   </div>
                 </div>

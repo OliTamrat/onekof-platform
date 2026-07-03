@@ -86,14 +86,14 @@ export default function GoalsCompletedPage() {
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.completedGoals')}</div>
+              <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.completedGoals')}</div>
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{filteredGoals.length}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="h-5 w-5 text-[#10B981]" />
-              <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.exceededTarget')}</div>
+              <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.exceededTarget')}</div>
             </div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {filteredGoals.filter(g => g.achievement > 100).length}
@@ -102,7 +102,7 @@ export default function GoalsCompletedPage() {
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-5 w-5 text-[#3B82F6]" />
-              <div className="text-sm text-gray-600 dark:text-white/50">{t('goals.thisQuarter')}</div>
+              <div className="text-sm text-gray-600 dark:text-white/70">{t('goals.thisQuarter')}</div>
             </div>
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{filteredGoals.length}</div>
           </div>
@@ -139,7 +139,7 @@ export default function GoalsCompletedPage() {
                       <Trophy className="h-4 w-4 text-[#F59E0B]" />
                     )}
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                  <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                     <span className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
                       {goal.team}
@@ -156,7 +156,7 @@ export default function GoalsCompletedPage() {
                   <div className={`text-2xl font-bold ${getAchievementColor(goal.achievement)}`}>
                     {goal.achievement}%
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-white/50">{t('goals.achievement')}</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70">{t('goals.achievement')}</div>
                 </div>
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function GoalsCompletedPage() {
                   <div className={`text-4xl font-bold ${getAchievementColor(selectedGoal?.achievement)}`}>
                     {selectedGoal?.achievement}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-white/50 mt-1">{t('goals.goalAchievement')}</div>
+                  <div className="text-sm text-gray-600 dark:text-white/70 mt-1">{t('goals.goalAchievement')}</div>
                 </div>
               </div>
 

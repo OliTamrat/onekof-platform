@@ -119,15 +119,15 @@ export default function AutomationsHistoryPage() {
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historyTotalExecutions')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.historyTotalExecutions')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredHistory.length}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historySuccessful')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.historySuccessful')}</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{totalSuccessful}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.historyFailed')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.historyFailed')}</div>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{totalFailed}</div>
           </div>
         </div>
@@ -147,12 +147,12 @@ export default function AutomationsHistoryPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
+            <div className="text-gray-600 dark:text-white/70">{t('automations.loading')}</div>
           </div>
         ) : filteredHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Zap className="h-12 w-12 text-gray-400 dark:text-[#6B7684] mb-3" />
-            <p className="text-sm text-gray-500 dark:text-white/50">{t('automations.noAutomations')}</p>
+            <p className="text-sm text-gray-500 dark:text-white/70">{t('automations.noAutomations')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -172,7 +172,7 @@ export default function AutomationsHistoryPage() {
                           {item.status}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                         <span>{t('automations.historyTriggeredBy')} {item.triggeredBy}</span>
                         <span>{item.executedAt}</span>
                         <span>{item.executionCount} {t('automations.runs')}</span>

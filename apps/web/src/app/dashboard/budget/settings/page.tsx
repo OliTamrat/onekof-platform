@@ -138,7 +138,7 @@ export default function BudgetSettingsPage() {
           <div className="text-center py-16">
             <AlertCircle className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('budgetSettings.noBudgetsFound')}</h3>
-            <p className="text-sm text-slate-600 dark:text-white/50">{t('budgetSettings.noBudgetsFoundDesc')}</p>
+            <p className="text-sm text-slate-600 dark:text-white/70">{t('budgetSettings.noBudgetsFoundDesc')}</p>
           </div>
         ) : (
           <>

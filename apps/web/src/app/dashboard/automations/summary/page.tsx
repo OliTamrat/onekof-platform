@@ -102,7 +102,7 @@ export default function AutomationsSummaryPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -123,7 +123,7 @@ export default function AutomationsSummaryPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-white/50">
+              <div className="text-center py-12 text-gray-500 dark:text-white/70">
                 {t('automations.summaryLoadingAnalytics')}
               </div>
             </div>
@@ -177,7 +177,7 @@ export default function AutomationsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -272,7 +272,7 @@ export default function AutomationsSummaryPage() {
                       <Sparkles className="h-12 w-12 text-amber-500" />
                     </div>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{aiGeneratedAutomations}</p>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t('automations.summaryAiGeneratedCount')}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t('automations.summaryAiGeneratedCount')}</p>
                     <p className="text-xs text-gray-500 dark:text-[#6B7684] mt-2">
                       {totalAutomations > 0 ? Math.round((aiGeneratedAutomations / totalAutomations) * 100) : 0}{t('automations.summaryOfTotal')}
                     </p>
@@ -286,7 +286,7 @@ export default function AutomationsSummaryPage() {
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-6">{t('automations.summaryRecent')}</h3>
               <div className="space-y-3">
                 {automations.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500 dark:text-white/50">
+                  <div className="text-center py-8 text-gray-500 dark:text-white/70">
                     {t('automations.summaryNoAutomationsYet')}
                   </div>
                 ) : (
@@ -300,7 +300,7 @@ export default function AutomationsSummaryPage() {
                           {automation.name}
                           {automation.aiGenerated && <Sparkles className="h-3 w-3 text-amber-500" />}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-white/50 mt-1">
+                        <div className="text-xs text-gray-500 dark:text-white/70 mt-1">
                           {automation.entityType} • {automation.executionCount} {t('automations.runs')}
                         </div>
                       </div>
@@ -340,7 +340,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
   return (
     <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-gray-600 dark:text-white/50">{title}</span>
+        <span className="text-sm font-medium text-gray-600 dark:text-white/70">{title}</span>
         <div className={`flex h-8 w-8 items-center justify-center rounded ${iconColor}`}>
           <Icon className="h-4 w-4 text-white" />
         </div>
@@ -351,7 +351,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
           {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
           {Math.abs(change)}%
         </span>
-        <span className="text-gray-500 dark:text-white/50">{changeLabel}</span>
+        <span className="text-gray-500 dark:text-white/70">{changeLabel}</span>
       </div>
     </div>
   );
@@ -396,7 +396,7 @@ function ExecutionBar({ label, count, total, color, icon: Icon }: { label: strin
     <div>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-gray-600 dark:text-white/50" />
+          <Icon className="h-4 w-4 text-gray-600 dark:text-white/70" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">{label}</span>
         </div>
         <span className="text-sm font-semibold text-gray-900 dark:text-white">{count}</span>

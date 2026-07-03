@@ -114,7 +114,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive(item.href)
                     ? 'bg-slate-100 dark:bg-[#181D23] text-slate-900 dark:text-white'
-                    : 'text-slate-600 dark:text-white/50 hover:bg-slate-100 dark:hover:bg-[#181D23] hover:text-slate-900 dark:hover:text-white'
+                    : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-[#181D23] hover:text-slate-900 dark:hover:text-white'
                 )}
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 title={isSidebarCollapsed ? item.name : undefined}

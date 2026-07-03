@@ -142,7 +142,7 @@ export default function GoalsSummaryPage() {
                     className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                       tab.active
                         ? 'border-primary-500 text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                        : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
                     {Icon && <Icon className="h-4 w-4" />}
@@ -163,7 +163,7 @@ export default function GoalsSummaryPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-center py-12 text-gray-500 dark:text-white/50">
+              <div className="text-center py-12 text-gray-500 dark:text-white/70">
                 Loading goals analytics...
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function GoalsSummaryPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -287,19 +287,19 @@ export default function GoalsSummaryPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="text-center p-3 rounded-lg bg-green-500/10">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">{goalsByStatus.onTrack}</div>
-                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">On Track</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70 mt-1">On Track</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-orange-500/10">
                   <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{goalsByStatus.atRisk}</div>
-                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">At Risk</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70 mt-1">At Risk</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-red-500/10">
                   <div className="text-2xl font-bold text-red-600 dark:text-red-400">{goalsByStatus.behindSchedule}</div>
-                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Behind Schedule</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Behind Schedule</div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-purple-500/10">
                   <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{goalsByStatus.achieved}</div>
-                  <div className="text-xs text-gray-600 dark:text-white/50 mt-1">Achieved</div>
+                  <div className="text-xs text-gray-600 dark:text-white/70 mt-1">Achieved</div>
                 </div>
               </div>
             </div>
@@ -325,7 +325,7 @@ export default function GoalsSummaryPage() {
                               <h4 className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
                                 {kr.title}
                               </h4>
-                              <p className="text-xs text-gray-500 dark:text-white/50">
+                              <p className="text-xs text-gray-500 dark:text-white/70">
                                 {kr.goal}
                               </p>
                             </div>
@@ -334,7 +334,7 @@ export default function GoalsSummaryPage() {
                                 <div className="text-sm font-bold text-gray-900 dark:text-white">
                                   {kr.current.toLocaleString()} {kr.unit}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-white/50">
+                                <div className="text-xs text-gray-500 dark:text-white/70">
                                   of {kr.target.toLocaleString()}
                                 </div>
                               </div>
@@ -357,7 +357,7 @@ export default function GoalsSummaryPage() {
                           </div>
 
                           <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/50">
+                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-white/70">
                               <Calendar className="h-3 w-3" />
                               Due {kr.dueDate}
                             </div>
@@ -386,7 +386,7 @@ export default function GoalsSummaryPage() {
                           className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                             timeRange === range
                               ? 'bg-primary-500 text-white'
-                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/50 hover:bg-gray-200 dark:hover:bg-slate-700'
+                              : 'bg-gray-100 dark:bg-[#181D23] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
                         >
                           {range === 'quarter' ? 'Quarter' : range === 'year' ? 'Year' : 'All Time'}
@@ -421,7 +421,7 @@ export default function GoalsSummaryPage() {
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-600 dark:text-white/50">
+                        <span className="text-xs font-medium text-gray-600 dark:text-white/70">
                           {data.quarter.replace(' ', '\n')}
                         </span>
                       </div>
@@ -431,15 +431,15 @@ export default function GoalsSummaryPage() {
                   <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-blue-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Planned</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Planned</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-green-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">Achieved</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">Achieved</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded bg-orange-500" />
-                      <span className="text-xs text-gray-600 dark:text-white/50">{t("status.inProgress")}</span>
+                      <span className="text-xs text-gray-600 dark:text-white/70">{t("status.inProgress")}</span>
                     </div>
                   </div>
                 </div>
@@ -465,7 +465,7 @@ export default function GoalsSummaryPage() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-900 dark:text-white">{team.team}</span>
-                            <span className="text-sm text-gray-600 dark:text-white/50">
+                            <span className="text-sm text-gray-600 dark:text-white/70">
                               {team.completed}/{team.total} goals
                             </span>
                           </div>
@@ -514,11 +514,11 @@ export default function GoalsSummaryPage() {
                             {deadline.priority}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-white/50 mb-2 flex items-center gap-1">
+                        <p className="text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1">
                           <Users className="h-3 w-3" />
                           {deadline.team}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/50 mb-2">
+                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/70 mb-2">
                           <Clock className="h-3 w-3" />
                           <span>{deadline.dueDate}</span>
                           <span className="text-orange-500">• {deadline.daysLeft} days left</span>
@@ -553,7 +553,7 @@ export default function GoalsSummaryPage() {
                           index === 0 ? 'bg-yellow-500 text-white' :
                           index === 1 ? 'bg-gray-400 text-white' :
                           index === 2 ? 'bg-orange-600 text-white' :
-                          'bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-white/50'
+                          'bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-white/70'
                         }`}>
                           {index + 1}
                         </div>
@@ -561,7 +561,7 @@ export default function GoalsSummaryPage() {
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                             {goal.title}
                           </h4>
-                          <p className="text-xs text-gray-500 dark:text-white/50 mb-2">
+                          <p className="text-xs text-gray-500 dark:text-white/70 mb-2">
                             {goal.owner}
                           </p>
                           <div className="flex items-center gap-2">
@@ -610,10 +610,10 @@ export default function GoalsSummaryPage() {
                             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                               {achievement.title}
                             </h4>
-                            <p className="text-xs text-gray-600 dark:text-white/50">
+                            <p className="text-xs text-gray-600 dark:text-white/70">
                               {achievement.team}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-white/50 mt-1">
+                            <p className="text-xs text-gray-500 dark:text-white/70 mt-1">
                               {achievement.completedDate}
                             </p>
                           </div>
@@ -633,7 +633,7 @@ export default function GoalsSummaryPage() {
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                         Goal Achievement Trend
                       </h4>
-                      <p className="text-xs text-gray-600 dark:text-white/50 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-white/70 leading-relaxed">
                         You're on track to exceed this quarter's target! <span className="font-semibold text-blue-600 dark:text-blue-400">72% of goals</span> are making excellent progress.
                       </p>
                     </div>
@@ -681,7 +681,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, iconColor, 
       </div>
       <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</div>
       <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{title}</div>
-      <div className="text-xs text-gray-500 dark:text-white/50">{changeLabel}</div>
+      <div className="text-xs text-gray-500 dark:text-white/70">{changeLabel}</div>
     </div>
   );
 }

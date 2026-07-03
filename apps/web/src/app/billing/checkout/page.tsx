@@ -115,12 +115,12 @@ function CheckoutContent() {
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-6">
           <Link
             href="/pricing"
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-white/50 dark:hover:text-white/70"
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-white/70 dark:hover:text-white/70"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to pricing
           </Link>
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-white/50">
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-white/70">
             <Lock className="h-3.5 w-3.5" />
             Secure checkout
           </div>
@@ -134,7 +134,7 @@ function CheckoutContent() {
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
               {isChapa ? 'Pay with Chapa' : 'Pay with Card'}
             </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-white/50">
+            <p className="mt-1 text-sm text-gray-500 dark:text-white/70">
               Complete your subscription to the {planName} plan
             </p>
 
@@ -177,7 +177,7 @@ function CheckoutContent() {
                         Phone Number
                       </label>
                       <div className="flex gap-2">
-                        <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500 dark:border-white/[0.1] dark:bg-[#0B0E11] dark:text-white/50">
+                        <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500 dark:border-white/[0.1] dark:bg-[#0B0E11] dark:text-white/70">
                           +251
                         </div>
                         <input
@@ -245,15 +245,15 @@ function CheckoutContent() {
 
               <div className="mt-4 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-white/50">Plan</span>
+                  <span className="text-gray-600 dark:text-white/70">Plan</span>
                   <span className="font-medium text-gray-900 dark:text-white">{planName}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-white/50">Billing</span>
+                  <span className="text-gray-600 dark:text-white/70">Billing</span>
                   <span className="font-medium text-gray-900 dark:text-white capitalize">{interval}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-white/50">Organization</span>
+                  <span className="text-gray-600 dark:text-white/70">Organization</span>
                   <span className="font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{orgName}</span>
                 </div>
               </div>
@@ -264,7 +264,7 @@ function CheckoutContent() {
                 <span className="font-semibold text-gray-900 dark:text-white">Total</span>
                 <span className="text-lg font-bold text-gray-900 dark:text-white">
                   {currency === 'ETB' ? `${amount.toLocaleString()} ETB` : `$${amount}`}
-                  <span className="text-xs font-normal text-gray-500 dark:text-white/40">
+                  <span className="text-xs font-normal text-gray-500 dark:text-white/60">
                     /{interval === 'yearly' ? 'yr' : 'mo'}
                   </span>
                 </span>
@@ -292,7 +292,7 @@ function CheckoutContent() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
               Processing Payment
             </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-white/50">
+            <p className="mt-2 text-sm text-gray-500 dark:text-white/70">
               {isChapa
                 ? 'Verifying payment with Chapa...'
                 : 'Authorizing card with Stripe...'}
@@ -321,15 +321,15 @@ function DemoCardDisplay() {
       </p>
       <div className="space-y-2 text-sm">
         <div className="flex items-center justify-between">
-          <span className="text-gray-500 dark:text-white/50">Card</span>
+          <span className="text-gray-500 dark:text-white/70">Card</span>
           <span className="font-mono text-gray-900 dark:text-white">4242 4242 4242 4242</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-gray-500 dark:text-white/50">Expiry</span>
+          <span className="text-gray-500 dark:text-white/70">Expiry</span>
           <span className="font-mono text-gray-900 dark:text-white">12/28</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-gray-500 dark:text-white/50">CVC</span>
+          <span className="text-gray-500 dark:text-white/70">CVC</span>
           <span className="font-mono text-gray-900 dark:text-white">123</span>
         </div>
       </div>

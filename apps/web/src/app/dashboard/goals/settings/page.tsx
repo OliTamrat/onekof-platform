@@ -69,7 +69,7 @@ export default function GoalsSettingsPage() {
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
-                <Link key={tab.id} href={tab.href} className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white">
+                <Link key={tab.id} href={tab.href} className="flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white">
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
                 </Link>
@@ -84,7 +84,7 @@ export default function GoalsSettingsPage() {
               {SETTINGS_SECTIONS.map((section) => {
                 const Icon = section.icon;
                 return (
-                  <Button key={section.id} onClick={() => setActiveSection(section.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === section.id ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20' : 'text-gray-700 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-[#181D23]'}`}>
+                  <Button key={section.id} onClick={() => setActiveSection(section.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === section.id ? 'bg-primary-500/10 text-primary-500 dark:bg-primary-500/20' : 'text-gray-700 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'}`}>
                     <Icon className="h-4 w-4" />
                     {t(section.labelKey)}
                   </Button>
@@ -99,7 +99,7 @@ export default function GoalsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t("goalSettings.generalSettings")}</h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t("goalSettings.generalSettingsDesc")}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t("goalSettings.generalSettingsDesc")}</p>
                   </div>
                   <div className="space-y-4">
                     <div>
@@ -114,14 +114,14 @@ export default function GoalsSettingsPage() {
                       <input type="checkbox" id="autoRollover" checked={settings.autoRollover} onChange={(e) => setSettings({ ...settings, autoRollover: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
                         <label htmlFor="autoRollover" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.autoRollover")}</label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">{t("goalSettings.autoRolloverDesc")}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">{t("goalSettings.autoRolloverDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input type="checkbox" id="requireOwner" checked={settings.requireOwner} onChange={(e) => setSettings({ ...settings, requireOwner: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
                         <label htmlFor="requireOwner" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.requireGoalOwner")}</label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">{t("goalSettings.requireGoalOwnerDesc")}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">{t("goalSettings.requireGoalOwnerDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -132,28 +132,28 @@ export default function GoalsSettingsPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t("goalSettings.notificationPreferences")}</h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">{t("goalSettings.notificationPreferencesDesc")}</p>
+                    <p className="text-sm text-gray-600 dark:text-white/70">{t("goalSettings.notificationPreferencesDesc")}</p>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input type="checkbox" id="emailNotifications" checked={settings.emailNotifications} onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
                         <label htmlFor="emailNotifications" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.emailNotifications")}</label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">{t("goalSettings.emailNotificationsDesc")}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">{t("goalSettings.emailNotificationsDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input type="checkbox" id="notifyOnProgress" checked={settings.notifyOnProgress} onChange={(e) => setSettings({ ...settings, notifyOnProgress: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
                         <label htmlFor="notifyOnProgress" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.notifyOnProgress")}</label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">{t("goalSettings.notifyOnProgressDesc")}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">{t("goalSettings.notifyOnProgressDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-[#181D23] rounded-lg">
                       <input type="checkbox" id="weeklyReminders" checked={settings.weeklyReminders} onChange={(e) => setSettings({ ...settings, weeklyReminders: e.target.checked })} className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                       <div className="flex-1">
                         <label htmlFor="weeklyReminders" className="block text-sm font-medium text-gray-900 dark:text-white cursor-pointer">{t("goalSettings.weeklyGoalReminders")}</label>
-                        <p className="text-sm text-gray-600 dark:text-white/50 mt-1">{t("goalSettings.weeklyGoalRemindersDesc")}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/70 mt-1">{t("goalSettings.weeklyGoalRemindersDesc")}</p>
                       </div>
                     </div>
                   </div>

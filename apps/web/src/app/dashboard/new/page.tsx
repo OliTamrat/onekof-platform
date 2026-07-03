@@ -53,7 +53,7 @@ export default function DashboardPage() {
       <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0B0E11]">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent"></div>
-          <p className="text-sm text-slate-500 dark:text-white/50">{t("common.loading")}</p>
+          <p className="text-sm text-slate-500 dark:text-white/70">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ export default function DashboardPage() {
             <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Session Loading Issue</h2>
-          <p className="text-sm text-slate-600 dark:text-white/50 mb-4">
+          <p className="text-sm text-slate-600 dark:text-white/70 mb-4">
             The session is taking longer than expected to load. This might be a configuration issue.
           </p>
           <Button
@@ -101,7 +101,7 @@ export default function DashboardPage() {
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                 New Dashboard Experience
               </h3>
-              <p className="text-xs text-slate-600 dark:text-white/50">
+              <p className="text-xs text-slate-600 dark:text-white/70">
                 You're viewing the redesigned dashboard with modern layouts and dark mode support
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             value="0"
             label="completed"
             sublabel="in the last 7 days"
-            color="text-slate-500 dark:text-white/50"
+            color="text-slate-500 dark:text-white/70"
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
@@ -162,7 +162,7 @@ export default function DashboardPage() {
                   View all work items
                 </a>
               </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-6 text-sm text-slate-600 dark:text-white/70">
                 Get a snapshot of the status of your work items.
               </p>
 
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="text-3xl font-bold text-slate-900 dark:text-white">3</div>
-                    <div className="text-sm text-slate-500 dark:text-white/50">Total work items</div>
+                    <div className="text-sm text-slate-500 dark:text-white/70">Total work items</div>
                   </div>
                 </div>
 
@@ -238,7 +238,7 @@ export default function DashboardPage() {
                     How to manage priorities for spaces
                   </a>
                 </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                   Get a holistic view of how work is being prioritized.
                 </p>
                 <div className="space-y-2">
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                 Stay up to date with what's happening across the space.
               </p>
               <div className="space-y-3">
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                   View all items
                 </a>
               </div>
-              <p className="mb-4 text-sm text-slate-600 dark:text-white/50">
+              <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
                 Get a breakdown of work items by their types.
               </p>
               <div className="space-y-2">
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                           {project.name}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-white/50">
+                        <p className="text-xs text-slate-500 dark:text-white/70">
                           {project.key}
                         </p>
                       </div>
@@ -394,7 +394,7 @@ function StatCard({
       </div>
       <div className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white">{value}</div>
       <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-medium text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="text-[10px] md:text-xs text-slate-500 dark:text-white/50 hidden sm:block">{sublabel}</div>
+      <div className="text-[10px] md:text-xs text-slate-500 dark:text-white/70 hidden sm:block">{sublabel}</div>
     </div>
   );
 }
@@ -483,7 +483,7 @@ function ActivityItem({
         <span className="inline-block rounded bg-blue-100 dark:bg-blue-900 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
           {status}
         </span>
-        <span className="text-xs text-slate-500 dark:text-white/50">{time}</span>
+        <span className="text-xs text-slate-500 dark:text-white/70">{time}</span>
       </div>
     </div>
   );

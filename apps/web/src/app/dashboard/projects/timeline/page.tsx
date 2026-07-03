@@ -53,7 +53,7 @@ export default function ProjectsTimelinePage() {
             {TAB_ITEMS.map((tab) => {
               const Icon = tab.icon;
               return (
-                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'}`}>
+                <Link key={tab.id} href={tab.href} className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab.active ? 'border-primary-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'}`}>
                   {Icon && <Icon className="h-4 w-4" />}
                   {tab.label}
                 </Link>
@@ -76,7 +76,7 @@ export default function ProjectsTimelinePage() {
                     </div>
                     <div className="mb-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{monthYear}</h3>
-                      <p className="text-sm text-gray-600 dark:text-white/50">{monthProjects.length} {monthProjects.length === 1 ? t('projectTimeline.project') : t('projectTimeline.projects')}</p>
+                      <p className="text-sm text-gray-600 dark:text-white/70">{monthProjects.length} {monthProjects.length === 1 ? t('projectTimeline.project') : t('projectTimeline.projects')}</p>
                     </div>
                     <div className="space-y-3">
                       {monthProjects.map((project) => (
@@ -87,7 +87,7 @@ export default function ProjectsTimelinePage() {
                             </div>
                             <div className="flex-1">
                               <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-1">{project.name}</h4>
-                              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                                 <span>{project.key}</span>
                                 <span>•</span>
                                 <span>{project._count?.members || 0} {t('projectTimeline.members')}</span>

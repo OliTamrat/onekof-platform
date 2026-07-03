@@ -126,14 +126,14 @@ export default function IssuesSettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Show subtasks inline</label>
-                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Display subtasks under their parent in list views</p>
+                    <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Display subtasks under their parent in list views</p>
                   </div>
                   <Toggle checked={showSubtasks} onChange={() => setShowSubtasks(!showSubtasks)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Show completed issues</label>
-                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Include Done items in default lists</p>
+                    <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Include Done items in default lists</p>
                   </div>
                   <Toggle checked={showCompletedIssues} onChange={() => setShowCompletedIssues(!showCompletedIssues)} />
                 </div>
@@ -150,21 +150,21 @@ export default function IssuesSettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email when assigned to me</label>
-                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when an issue is assigned to you</p>
+                    <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Receive email when an issue is assigned to you</p>
                   </div>
                   <Toggle checked={emailOnAssign} onChange={() => setEmailOnAssign(!emailOnAssign)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email on @mention</label>
-                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when someone @mentions you</p>
+                    <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Receive email when someone @mentions you</p>
                   </div>
                   <Toggle checked={emailOnMention} onChange={() => setEmailOnMention(!emailOnMention)} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-slate-300">Email on status change</label>
-                    <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Receive email when issues you watch change status</p>
+                    <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Receive email when issues you watch change status</p>
                   </div>
                   <Toggle checked={emailOnStatusChange} onChange={() => setEmailOnStatusChange(!emailOnStatusChange)} />
                 </div>
@@ -177,7 +177,7 @@ export default function IssuesSettingsPage() {
                 <Workflow className="h-5 w-5 text-[#1C8C7D]" />
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Workflow & Labels</h2>
               </div>
-              <p className="text-sm text-gray-600 dark:text-white/50">
+              <p className="text-sm text-gray-600 dark:text-white/70">
                 Workflow statuses and labels are configured per project. Visit a project&apos;s settings page to customize them.
               </p>
             </div>

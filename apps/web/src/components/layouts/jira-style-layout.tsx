@@ -199,7 +199,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true });
               document.dispatchEvent(event);
             }}
-            className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#12161B] px-3 text-sm text-slate-500 dark:text-white/50 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#181D23] justify-start font-normal"
+            className="flex w-full h-9 items-center gap-2 border-slate-300 dark:border-white/[0.08] bg-slate-100 dark:bg-[#12161B] px-3 text-sm text-slate-500 dark:text-white/70 shadow-sm hover:border-slate-400 dark:hover:border-white/[0.12] hover:bg-slate-200/50 dark:hover:bg-[#181D23] justify-start font-normal"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left truncate hidden sm:block">{t('nav.searchPlaceholder')}</span>
@@ -450,7 +450,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 </div>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-1 text-[10px] text-white/50 hover:text-[#1C8C7D] transition-colors"
+                  className="flex items-center gap-1 text-[10px] text-white/70 hover:text-[#1C8C7D] transition-colors"
                 >
                   <X className="h-3 w-3" />
                   {t('nav.viewAllProjects')}
@@ -464,7 +464,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 <Button
                   variant="ghost"
                   onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
+                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/70 hover:text-slate-900 dark:hover:text-white"
                 >
                   <span>{t('nav.projects').toUpperCase()}</span>
                   <ChevronRight
@@ -483,7 +483,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                           <Link
                             key={project.id}
                             href={`/dashboard?projectId=${project.id}`}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85 group"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white group"
                           >
                             <div
                               className="flex h-5 w-5 items-center justify-center rounded shrink-0"
@@ -502,7 +502,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                       <Link
                         key={project.id}
                         href={`/dashboard?projectId=${project.id}`}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white"
                       >
                         <div
                           className="flex h-5 w-5 items-center justify-center rounded shrink-0"
@@ -515,7 +515,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                     ))}
                     <Link
                       href="/dashboard/projects"
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/50 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#181D23] mt-2"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/70 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#181D23] mt-2"
                     >
                       {t('nav.viewAllProjects')}
                     </Link>
@@ -530,7 +530,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                 <Button
                   variant="ghost"
                   onClick={() => setIsDocsExpanded(!isDocsExpanded)}
-                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white"
+                  className="flex items-center justify-between w-full h-auto px-3 py-2 text-xs font-semibold text-slate-500 dark:text-white/70 hover:text-slate-900 dark:hover:text-white"
                 >
                   <span>{t('nav.docs').toUpperCase()}</span>
                   <ChevronRight
@@ -545,14 +545,14 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
                   <div className="space-y-0.5 mt-1">
                     <Link
                       href="/dashboard/docs"
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white"
                     >
                       <Folders className="h-4 w-4" />
                       <span>{t('nav.allSpaces')}</span>
                     </Link>
                     <Link
                       href="/dashboard/docs/recent"
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white/85"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-[#181D23] text-slate-700 dark:text-white"
                     >
                       <FileText className="h-4 w-4" />
                       <span>{t('nav.recentPages')}</span>
@@ -587,7 +587,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
               variant="ghost"
               size="icon"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="h-8 w-8 text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06]"
+              className="h-8 w-8 text-slate-400 dark:text-white/60 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06]"
               title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {sidebarCollapsed ? (

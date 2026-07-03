@@ -115,7 +115,7 @@ export default function CalendarPage() {
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 dark:border-white/[0.08]"></div>
-              <p className="text-sm text-slate-500 dark:text-white/50">{t('dashboard.loadingCalendar')}</p>
+              <p className="text-sm text-slate-500 dark:text-white/70">{t('dashboard.loadingCalendar')}</p>
             </div>
           </div>
         ) : (

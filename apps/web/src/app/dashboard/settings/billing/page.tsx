@@ -198,7 +198,7 @@ export default function BillingSettingsPage() {
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Billing & Subscription
                 </h1>
-                <p className="text-xs text-gray-600 dark:text-white/50">
+                <p className="text-xs text-gray-600 dark:text-white/70">
                   Manage your plan, payment history, and billing details
                 </p>
               </div>
@@ -231,7 +231,7 @@ export default function BillingSettingsPage() {
             {isLoading ? (
               <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-12 text-center">
                 <Loader2 className="h-6 w-6 animate-spin text-primary-500 mx-auto" />
-                <p className="mt-2 text-xs text-gray-500 dark:text-white/40">Loading billing information...</p>
+                <p className="mt-2 text-xs text-gray-500 dark:text-white/60">Loading billing information...</p>
               </div>
             ) : (
               <>
@@ -266,12 +266,12 @@ export default function BillingSettingsPage() {
                           )}
                         </div>
                         {sub ? (
-                          <p className="text-xs text-gray-500 dark:text-white/40 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-white/60 mt-0.5">
                             {formatAmount(sub.amount, sub.currency)} / {sub.interval.toLowerCase()} via{' '}
                             {sub.provider === 'STRIPE' ? 'Stripe' : 'Chapa'}
                           </p>
                         ) : (
-                          <p className="text-xs text-gray-500 dark:text-white/40 mt-0.5">
+                          <p className="text-xs text-gray-500 dark:text-white/60 mt-0.5">
                             Free plan — upgrade to unlock more features
                           </p>
                         )}
@@ -300,7 +300,7 @@ export default function BillingSettingsPage() {
                     {/* Billing cycle */}
                     {sub && (
                       <div className="mt-3 flex items-center justify-between rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.04] px-3 py-2">
-                        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-white/40">
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-white/60">
                           <Calendar className="h-3.5 w-3.5" />
                           {sub.cancelAtPeriodEnd
                             ? `Access ends ${formatDate(sub.currentPeriodEnd)}`
@@ -434,7 +434,7 @@ export default function BillingSettingsPage() {
                 </div>
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white">Cancel subscription?</h3>
               </div>
-              <p className="text-xs text-gray-500 dark:text-white/40 leading-relaxed">
+              <p className="text-xs text-gray-500 dark:text-white/60 leading-relaxed">
                 Your subscription will remain active until the end of the current billing
                 period. After that, your organization will be downgraded to the Free plan.
               </p>
@@ -682,7 +682,7 @@ function ReceiptModal({
           {/* Header preview */}
           <div className="rounded-lg bg-gradient-to-r from-[#0f172a] to-[#1C8C7D] p-4 text-center text-white">
             <div className="text-lg font-extrabold">Onekof</div>
-            <div className="text-[10px] uppercase tracking-[0.12em] text-white/50 mt-0.5">Invoice / Receipt</div>
+            <div className="text-[10px] uppercase tracking-[0.12em] text-white/70 mt-0.5">Invoice / Receipt</div>
             <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-bold uppercase text-emerald-300">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
               {payment.status === 'SUCCEEDED' ? 'Paid' : payment.status}

@@ -246,7 +246,7 @@ export default function CreateAutomationPage() {
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Create Automation
                 </h1>
-                <p className="text-xs text-gray-600 dark:text-white/50">
+                <p className="text-xs text-gray-600 dark:text-white/70">
                   Build a custom automation rule step by step
                 </p>
               </div>
@@ -296,7 +296,7 @@ export default function CreateAutomationPage() {
                       ? 'bg-primary-500 text-white'
                       : step > s.num
                       ? 'bg-green-500/20 text-green-600 dark:text-green-400'
-                      : 'bg-gray-200 dark:bg-[#181D23] text-gray-600 dark:text-white/50'
+                      : 'bg-gray-200 dark:bg-[#181D23] text-gray-600 dark:text-white/70'
                   )}
                   onClick={() => setStep(s.num)}
                 >
@@ -397,7 +397,7 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                     Choose what event will trigger this automation to run
                   </p>
 
@@ -491,7 +491,7 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                     Conditions filter when the automation should run. Leave empty to run on every trigger.
                   </p>
 
@@ -501,7 +501,7 @@ export default function CreateAutomationPage() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
                         No conditions added
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                         This automation will run every time the trigger event occurs
                       </p>
                       <Button onClick={addCondition} variant="outline">
@@ -615,7 +615,7 @@ export default function CreateAutomationPage() {
                     </h2>
                   </div>
 
-                  <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                     Actions are what the automation will do when triggered and conditions are met
                   </p>
 
@@ -625,7 +625,7 @@ export default function CreateAutomationPage() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
                         No actions added
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                         Add at least one action for this automation to perform
                       </p>
                       <Button onClick={addAction}>
@@ -794,7 +794,7 @@ export default function CreateAutomationPage() {
                           {formData.name || 'Untitled Automation'}
                         </h3>
                         {formData.description && (
-                          <p className="text-sm text-gray-600 dark:text-white/50 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-white/70 mt-1">
                             {formData.description}
                           </p>
                         )}
@@ -837,7 +837,7 @@ export default function CreateAutomationPage() {
                         </h4>
                       </div>
                       {conditions.length === 0 ? (
-                        <p className="text-sm text-gray-600 dark:text-white/50 ml-8 italic">
+                        <p className="text-sm text-gray-600 dark:text-white/70 ml-8 italic">
                           No conditions - runs on every trigger
                         </p>
                       ) : (
@@ -872,7 +872,7 @@ export default function CreateAutomationPage() {
                               {ACTION_TYPES.find((a) => a.value === action.type)?.label}
                             </strong>
                             {Object.keys(action.params).length > 0 && (
-                              <span className="text-gray-600 dark:text-white/50 ml-1">
+                              <span className="text-gray-600 dark:text-white/70 ml-1">
                                 ({Object.entries(action.params).map(([key, val]) =>
                                   Array.isArray(val) ? `${key}: ${val.join(', ')}` : `${key}: ${val}`
                                 ).join(', ')})

@@ -90,7 +90,7 @@ export default function DocsSearchPage() {
           </div>
 
           {loading && (
-            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/50">
+            <div className="text-center py-12 text-sm text-gray-500 dark:text-white/70">
               {t('common.loading')}
             </div>
           )}
@@ -105,7 +105,7 @@ export default function DocsSearchPage() {
           {!loading && !error && searched && results.length === 0 && (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-white/50">
+              <p className="text-gray-600 dark:text-white/70">
                 {t('docs.noResultsFor')} &ldquo;{searchQuery}&rdquo;
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
@@ -117,13 +117,13 @@ export default function DocsSearchPage() {
           {!loading && !error && !searched && (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-white/50">{t('docs.startTyping')}</p>
+              <p className="text-gray-600 dark:text-white/70">{t('docs.startTyping')}</p>
             </div>
           )}
 
           {!loading && !error && results.length > 0 && (
             <div className="space-y-3">
-              <p className="text-xs text-gray-500 dark:text-white/50 mb-4">
+              <p className="text-xs text-gray-500 dark:text-white/70 mb-4">
                 {results.length} {t('common.results')}
               </p>
               {results.map((article) => {
@@ -146,11 +146,11 @@ export default function DocsSearchPage() {
                           {article.title}
                         </h3>
                         {article.excerpt && (
-                          <p className="text-sm text-gray-500 dark:text-white/50 line-clamp-2 mb-2">
+                          <p className="text-sm text-gray-500 dark:text-white/70 line-clamp-2 mb-2">
                             {article.excerpt}
                           </p>
                         )}
-                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/50">
+                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-white/70">
                           {article.category && (
                             <div className="flex items-center gap-1">
                               <Folders className="h-3 w-3" />

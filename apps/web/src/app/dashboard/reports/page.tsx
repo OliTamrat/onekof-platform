@@ -101,7 +101,7 @@ export default function ReportsAndAnalyticsPage() {
         <div className="flex h-64 items-center justify-center bg-white dark:bg-[#0B0E11]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-500 dark:text-white/50">{t("reports.loadingAnalytics")}</p>
+            <p className="text-sm text-slate-500 dark:text-white/70">{t("reports.loadingAnalytics")}</p>
           </div>
         </div>
       ) : (
@@ -159,7 +159,7 @@ export default function ReportsAndAnalyticsPage() {
                       const maxVal = Math.max(...stats.monthlyTrend.map((m: any) => Math.max(m.created, m.completed)), 1);
                       return (
                         <div key={month.month} className="flex items-center gap-3">
-                          <span className="w-10 text-xs font-medium text-slate-500 dark:text-white/50">{month.month}</span>
+                          <span className="w-10 text-xs font-medium text-slate-500 dark:text-white/70">{month.month}</span>
                           <div className="flex-1 flex items-center gap-2">
                             <div className="flex-1 h-5 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden flex gap-0.5">
                               <div
@@ -173,7 +173,7 @@ export default function ReportsAndAnalyticsPage() {
                                 title={`${month.completed} completed`}
                               />
                             </div>
-                            <span className="text-xs text-slate-500 dark:text-white/50 w-16 text-right">
+                            <span className="text-xs text-slate-500 dark:text-white/70 w-16 text-right">
                               {month.created}c / {month.completed}d
                             </span>
                           </div>
@@ -181,7 +181,7 @@ export default function ReportsAndAnalyticsPage() {
                       );
                     })}
                   </div>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-slate-500 dark:text-white/50">
+                  <div className="flex items-center gap-4 mt-3 text-xs text-slate-500 dark:text-white/70">
                     <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-500" /> {t("reports.created")}</span>
                     <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-500" /> {t("reports.completed")}</span>
                   </div>
@@ -212,7 +212,7 @@ export default function ReportsAndAnalyticsPage() {
                               }}
                             />
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-white/50 mt-1">
+                          <p className="text-xs text-slate-500 dark:text-white/70 mt-1">
                             {project.tasksCompleted}/{project.totalTasks} {t("reports.tasks")} · {project.memberCount} {t("reports.members")}
                           </p>
                         </div>
@@ -233,13 +233,13 @@ export default function ReportsAndAnalyticsPage() {
                     {stats?.atRiskProjects > 0 && (
                       <div>
                         <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats?.atRiskProjects}</p>
-                        <p className="text-xs text-slate-600 dark:text-white/50">{t("reports.projectsAtRisk")}</p>
+                        <p className="text-xs text-slate-600 dark:text-white/70">{t("reports.projectsAtRisk")}</p>
                       </div>
                     )}
                     {(stats?.taskStats?.overdue || 0) > 0 && (
                       <div>
                         <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats?.taskStats?.overdue}</p>
-                        <p className="text-xs text-slate-600 dark:text-white/50">{t("reports.overdueTasks")}</p>
+                        <p className="text-xs text-slate-600 dark:text-white/70">{t("reports.overdueTasks")}</p>
                       </div>
                     )}
                   </div>
@@ -251,7 +251,7 @@ export default function ReportsAndAnalyticsPage() {
                 <div className="rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-8 text-center">
                   <BarChart3 className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
                   <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t("reports.noDataYet")}</h3>
-                  <p className="text-sm text-slate-600 dark:text-white/50">
+                  <p className="text-sm text-slate-600 dark:text-white/70">
                     {t("reports.noDataYetDesc")}
                   </p>
                 </div>
@@ -279,7 +279,7 @@ export default function ReportsAndAnalyticsPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{milestone.title}</p>
-                          <p className="text-xs text-slate-500 dark:text-white/50">{milestone.project} · {milestone.daysLeft}{t("reports.daysLeft")}</p>
+                          <p className="text-xs text-slate-500 dark:text-white/70">{milestone.project} · {milestone.daysLeft}{t("reports.daysLeft")}</p>
                         </div>
                       </div>
                     ))}
@@ -302,7 +302,7 @@ export default function ReportsAndAnalyticsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{contributor.name || contributor.email}</p>
-                          <p className="text-xs text-slate-500 dark:text-white/50">{contributor.activityCount || contributor.contributions || 0} {t("reports.contributions")}</p>
+                          <p className="text-xs text-slate-500 dark:text-white/70">{contributor.activityCount || contributor.contributions || 0} {t("reports.contributions")}</p>
                         </div>
                       </div>
                     ))}
@@ -319,15 +319,15 @@ export default function ReportsAndAnalyticsPage() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-white/50">{t("reports.totalGoals")}</span>
+                      <span className="text-sm text-slate-600 dark:text-white/70">{t("reports.totalGoals")}</span>
                       <span className="text-sm font-semibold text-slate-900 dark:text-white">{goalStats.total}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-white/50">{t("reports.completed")}</span>
+                      <span className="text-sm text-slate-600 dark:text-white/70">{t("reports.completed")}</span>
                       <span className="text-sm font-semibold text-green-600 dark:text-green-400">{goalStats.completed}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-white/50">{t("status.inProgress")}</span>
+                      <span className="text-sm text-slate-600 dark:text-white/70">{t("status.inProgress")}</span>
                       <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{goalStats.inProgress}</span>
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden mt-2">
@@ -336,7 +336,7 @@ export default function ReportsAndAnalyticsPage() {
                         style={{ width: `${goalStats.avgProgress}%` }}
                       />
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-white/50 text-center">{Math.round(goalStats.avgProgress)}% {t("reports.averageProgress")}</p>
+                    <p className="text-xs text-slate-500 dark:text-white/70 text-center">{Math.round(goalStats.avgProgress)}% {t("reports.averageProgress")}</p>
                   </div>
                 </div>
               )}
@@ -364,7 +364,7 @@ function MetricCard({ icon, label, value, subtitle, color, bgColor }: {
         </div>
       </div>
       <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
-      <p className="text-xs font-medium text-slate-500 dark:text-white/50 mt-0.5">{label}</p>
+      <p className="text-xs font-medium text-slate-500 dark:text-white/70 mt-0.5">{label}</p>
       <p className="text-xs text-slate-400 dark:text-white/30">{subtitle}</p>
     </div>
   );

@@ -144,19 +144,19 @@ export default function AutomationsWorkflowsPage() {
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.workflowsTotalWorkflows')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.workflowsTotalWorkflows')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{filteredWorkflows.length}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.workflowsActive')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.workflowsActive')}</div>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{totalActive}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.inactive')}</div>
-            <div className="text-2xl font-bold text-gray-600 dark:text-white/50 mt-1">{totalInactive}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.inactive')}</div>
+            <div className="text-2xl font-bold text-gray-600 dark:text-white/70 mt-1">{totalInactive}</div>
           </div>
           <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-4">
-            <div className="text-sm text-gray-600 dark:text-white/50">{t('automations.workflowsTotalExecutions')}</div>
+            <div className="text-sm text-gray-600 dark:text-white/70">{t('automations.workflowsTotalExecutions')}</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{totalExecutions}</div>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function AutomationsWorkflowsPage() {
         {/* Workflows List */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-white/50">{t('automations.loading')}</div>
+            <div className="text-gray-600 dark:text-white/70">{t('automations.loading')}</div>
           </div>
         ) : (
           <div className="space-y-3">
@@ -201,8 +201,8 @@ export default function AutomationsWorkflowsPage() {
                         {workflow.status === 'ACTIVE' ? t('automations.active') : t('automations.inactive')}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-white/50 mb-3">{workflow.description}</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70 mb-3">{workflow.description}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-white/70">
                       <span className="flex items-center gap-1">
                         <GitBranch className="h-3 w-3" />
                         {workflow.triggerCount} {t('automations.workflowsTriggers')}

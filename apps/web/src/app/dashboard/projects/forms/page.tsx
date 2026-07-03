@@ -167,7 +167,7 @@ export default function ProjectsFormsPage() {
                   className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                     tab.active
                       ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'
+                      : 'border-transparent text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   {Icon && <Icon className="h-4 w-4" />}
@@ -185,7 +185,7 @@ export default function ProjectsFormsPage() {
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                 {t("projectForms.chooseTemplate")}
               </h2>
-              <p className="text-gray-600 dark:text-white/50">
+              <p className="text-gray-600 dark:text-white/70">
                 {t("projectForms.chooseTemplateDesc")}
               </p>
             </div>
@@ -206,7 +206,7 @@ export default function ProjectsFormsPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       {template.name}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-white/50 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-white/70 mb-4">
                       {template.description}
                     </p>
                     <div className="text-xs text-gray-500 dark:text-[#6B7684]">
@@ -233,7 +233,7 @@ export default function ProjectsFormsPage() {
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                       {selectedTemplate.name}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-white/50">
+                    <p className="text-sm text-gray-600 dark:text-white/70">
                       {selectedTemplate.description}
                     </p>
                   </div>
