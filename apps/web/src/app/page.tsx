@@ -12,6 +12,7 @@ import {
   Zap,
   Users,
   Shield,
+  ShieldCheck,
   BarChart3,
   Kanban,
   Menu,
@@ -40,6 +41,10 @@ import {
   LayoutDashboard,
   ListChecks,
   GanttChart,
+  BadgeCheck,
+  Smartphone,
+  Landmark,
+  CreditCard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -660,12 +665,11 @@ export default function HomePage() {
               variants={heroStagger}
             >
               <motion.div variants={heroChild}>
-                <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-primary-500/20 bg-primary-500/[0.06] px-4 py-2">
-                  <div className="relative h-2 w-2">
-                    <div className="absolute inset-0 animate-ping rounded-full bg-primary-400/60" />
-                    <div className="relative h-2 w-2 rounded-full bg-primary-400" />
-                  </div>
-                  <span className="text-[13px] font-medium text-[#2BB5A2]">{t('landing.hero.badge')}</span>
+                <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-4 py-2">
+                  <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                  <span className="text-[13px] font-semibold text-emerald-400">INSA Certified</span>
+                  <span className="h-3 w-px bg-white/10" />
+                  <span className="text-[13px] text-white/50">Ethiopia&apos;s First Certified PM Platform</span>
                 </div>
               </motion.div>
 
@@ -710,21 +714,30 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-10 flex items-center gap-4">
-                  <div className="flex -space-x-2">
-                    {[
-                      { bg: 'bg-primary-500', initials: 'OT' },
-                      { bg: 'bg-violet-500', initials: 'AB' },
-                      { bg: 'bg-amber-500', initials: 'FH' },
-                      { bg: 'bg-rose-500', initials: 'MK' },
-                    ].map((a) => (
-                      <div key={a.initials} className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#0B0E11] ${a.bg} text-[10px] font-bold text-white`}>
-                        {a.initials}
-                      </div>
-                    ))}
+                <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  {/* INSA Trust Badge */}
+                  <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/15">
+                      <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                    </div>
+                    <div className="text-[12px] leading-tight">
+                      <div className="font-semibold text-white/80">INSA Certified</div>
+                      <div className="text-white/40">Gov-grade security</div>
+                    </div>
                   </div>
-                  <div className="text-[13px] text-white/50">
-                    <strong className="text-white">500+ teams</strong> already building with Onekof
+                  {/* Payment Methods */}
+                  <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+                    <div className="flex items-center gap-1.5">
+                      <Smartphone className="h-3.5 w-3.5 text-primary-400" />
+                      <Landmark className="h-3.5 w-3.5 text-primary-400" />
+                      <CreditCard className="h-3.5 w-3.5 text-primary-400" />
+                    </div>
+                    <span className="text-[12px] text-white/50">Pay in ETB via Telebirr, CBE, Card</span>
+                  </div>
+                  {/* Free Trial */}
+                  <div className="inline-flex items-center gap-1.5 text-[12px] text-white/40">
+                    <BadgeCheck className="h-3.5 w-3.5 text-primary-400" />
+                    <span>7-day free trial &middot; No credit card required</span>
                   </div>
                 </div>
               </motion.div>
@@ -872,7 +885,64 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* spacing between hero and features */}
+      {/* ═══ TRUST STRIP — INSA + Built for Ethiopia ═══ */}
+      <section className="border-y border-white/[0.06] py-10">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <Reveal>
+            <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-center sm:gap-12">
+              {/* INSA Badge */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08]">
+                  <ShieldCheck className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <div className="text-[14px] font-semibold text-white/90">INSA Certified</div>
+                  <div className="text-[12px] text-white/40">National cybersecurity standard</div>
+                </div>
+              </div>
+
+              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
+
+              {/* Built for Ethiopia */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500/20 bg-primary-500/[0.08]">
+                  <Calendar className="h-6 w-6 text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-[14px] font-semibold text-white/90">Built for Ethiopia</div>
+                  <div className="text-[12px] text-white/40">Ethiopian calendar, Amharic, Oromo</div>
+                </div>
+              </div>
+
+              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
+
+              {/* Ethiopian Payments */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500/20 bg-primary-500/[0.08]">
+                  <Wallet className="h-6 w-6 text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-[14px] font-semibold text-white/90">Pay in Ethiopian Birr</div>
+                  <div className="text-[12px] text-white/40">Telebirr, CBE Birr, Awash, Card</div>
+                </div>
+              </div>
+
+              <div className="hidden h-8 w-px bg-white/[0.08] sm:block" />
+
+              {/* Data Residency */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/[0.08]">
+                  <Shield className="h-6 w-6 text-violet-400" />
+                </div>
+                <div>
+                  <div className="text-[14px] font-semibold text-white/90">Data Residency</div>
+                  <div className="text-[12px] text-white/40">On-premise deployment available</div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ═══ WHY ONEKOF ═══ */}
       <section className="py-20 sm:py-32 lg:py-40" id="features">
@@ -1171,8 +1241,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1200px] px-6">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
-              { value: 500, suffix: '+', label: t('landing.stats.teamsOnboarded') },
-              { value: 40, suffix: '%', label: t('landing.stats.fasterDelivery') },
+              { value: 70, suffix: '+', label: 'Database Models' },
+              { value: 49, suffix: '', label: 'INSA Security Tests Passed' },
               { value: 99, suffix: '.9%', label: t('landing.stats.platformUptime') },
               { value: 4, suffix: '', label: t('landing.stats.languagesSupported') },
             ].map((stat, index) => (
@@ -1440,9 +1510,11 @@ export default function HomePage() {
             <div className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-primary-500/[0.08] blur-[80px]" />
             <div className="relative">
               <Reveal>
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-2">
-                  <Sparkles className="h-3.5 w-3.5 text-primary-400" />
-                  <span className="text-[13px] text-white/60">{t('landing.cta.badge')}</span>
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-2">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                  <span className="text-[13px] font-medium text-emerald-400">INSA Certified</span>
+                  <span className="h-3 w-px bg-white/10" />
+                  <span className="text-[13px] text-white/50">7-day free trial</span>
                 </div>
                 <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
                   {t('landing.cta.heading1')}
