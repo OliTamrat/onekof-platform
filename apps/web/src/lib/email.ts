@@ -1162,11 +1162,116 @@ export async function sendTaskAssignmentEmail(params: {
 }
 
 // =============================================================================
-// Billing Lifecycle Emails
+// Trial Onboarding Drip Emails
 // =============================================================================
 
 const appUrl = () => process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const dashUrl = () => `${appUrl()}/dashboard`;
 const pricingUrl = () => `${appUrl()}/pricing`;
+
+export async function sendTrialDay1Email(email: string, userName: string, orgName: string) {
+  try {
+    if (!resend) {
+      console.log(`\n=== TRIAL DAY 1 EMAIL (dev) ===\nTo: ${email}\nUser: ${userName}\nOrg: ${orgName}\n===============================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Welcome to Onekof, ${userName} — here's how to get started`,
+      html: buildNotificationEmail({
+        accentColor: '#1C8C7D',
+        heading: `Welcome to Onekof, ${userName}`,
+        body: `
+          <p>Your workspace <strong>${orgName}</strong> is ready. Here's how to make the most of your 7-day trial:</p>
+          <div style="margin:20px 0;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:12px 16px;background-color:#0d1117;border-radius:8px 8px 0 0;border-bottom:1px solid #1e2530;">
+                  <span style="color:#2BB5A2;font-weight:600;font-size:14px;">Step 1</span>
+                  <span style="color:#e5e7eb;font-size:14px;margin-left:8px;">Create your first project</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;background-color:#0d1117;border-bottom:1px solid #1e2530;">
+                  <span style="color:#2BB5A2;font-weight:600;font-size:14px;">Step 2</span>
+                  <span style="color:#e5e7eb;font-size:14px;margin-left:8px;">Add tasks and set due dates</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;background-color:#0d1117;border-bottom:1px solid #1e2530;">
+                  <span style="color:#2BB5A2;font-weight:600;font-size:14px;">Step 3</span>
+                  <span style="color:#e5e7eb;font-size:14px;margin-left:8px;">Invite your team members</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;background-color:#0d1117;border-radius:0 0 8px 8px;">
+                  <span style="color:#2BB5A2;font-weight:600;font-size:14px;">Step 4</span>
+                  <span style="color:#e5e7eb;font-size:14px;margin-left:8px;">Set up your first budget</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <p style="font-size:14px;color:#9ca3af;">Your trial includes full access to all Professional features — budget tracking in ETB, Ethiopian calendar, Amharic UI, and more.</p>
+        `,
+        ctaLabel: 'Open your dashboard',
+        ctaUrl: dashUrl(),
+        footer: 'You received this because you created an Onekof workspace. Your 7-day trial started today.',
+      }),
+    });
+    console.log(`Trial Day 1 email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send trial day 1 email:', error);
+  }
+}
+
+export async function sendTrialDay3Email(email: string, userName: string, orgName: string) {
+  try {
+    if (!resend) {
+      console.log(`\n=== TRIAL DAY 3 EMAIL (dev) ===\nTo: ${email}\nUser: ${userName}\nOrg: ${orgName}\n===============================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `${userName}, have you tried these Onekof features?`,
+      html: buildNotificationEmail({
+        accentColor: '#1C8C7D',
+        heading: 'Make the most of your trial',
+        body: `
+          <p>Hi ${userName}, you're 3 days into your Onekof trial for <strong>${orgName}</strong>. Here are features teams love most:</p>
+          <div style="margin:20px 0;">
+            <div style="padding:16px;background-color:#0d1117;border-radius:8px;margin-bottom:8px;">
+              <div style="font-weight:600;color:#e5e7eb;font-size:15px;margin-bottom:4px;">Budget Management in ETB</div>
+              <div style="font-size:13px;color:#9ca3af;">Track expenses, allocations, and forecasts in Ethiopian Birr with full audit trail.</div>
+            </div>
+            <div style="padding:16px;background-color:#0d1117;border-radius:8px;margin-bottom:8px;">
+              <div style="font-weight:600;color:#e5e7eb;font-size:15px;margin-bottom:4px;">Ethiopian Calendar Toggle</div>
+              <div style="font-size:13px;color:#9ca3af;">Switch between Ethiopian and Gregorian calendars with one click — deadlines sync automatically.</div>
+            </div>
+            <div style="padding:16px;background-color:#0d1117;border-radius:8px;">
+              <div style="font-weight:600;color:#e5e7eb;font-size:15px;margin-bottom:4px;">Team Collaboration</div>
+              <div style="font-size:13px;color:#9ca3af;">Invite team members, assign tasks, and track progress in real-time — in Amharic or English.</div>
+            </div>
+          </div>
+          <p style="font-size:14px;color:#9ca3af;">4 days left in your trial. Upgrade anytime to keep all features.</p>
+        `,
+        ctaLabel: 'Explore your workspace',
+        ctaUrl: dashUrl(),
+        footer: 'You received this because you are on a 7-day Onekof trial. 4 days remaining.',
+      }),
+    });
+    console.log(`Trial Day 3 email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send trial day 3 email:', error);
+  }
+}
+
+// =============================================================================
+// Billing Lifecycle Emails
+// =============================================================================
 
 export async function sendTrialWarningEmail(email: string, orgName: string, daysRemaining: number) {
   try {

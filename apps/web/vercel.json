@@ -6,6 +6,7 @@
   "installCommand": "pnpm install --no-frozen-lockfile",
   "regions": ["fra1"],
   "crons": [
+    { "path": "/api/cron/trial-drip", "schedule": "0 5 * * *" },
     { "path": "/api/cron/trial-expiry", "schedule": "0 6 * * *" },
     { "path": "/api/cron/subscription-renewal", "schedule": "0 7 * * *" },
     { "path": "/api/cron/usage-enforcement", "schedule": "0 8 * * *" }
