@@ -1,0 +1,123 @@
+name: Deploy to Ethio Telecom VM
+
+on:
+  workflow_run:
+    workflows: ["Build Docker Image (Tier 2 / Tier 1)"]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to deploy (e.g. v1.0.0, latest)'
+        required: true
+        default: 'latest'
+
+concurrency:
+  group: deploy-et
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: daps-analytics/onekof-web
+  REMOTE_DIR: /opt/onekof
+  COMPOSE_FILE: docker-compose.prod.yml
+
+jobs:
+  deploy:
+    name: Deploy to ET VM
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Only run if the triggering workflow succeeded (or manual dispatch)
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Determine image tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.image_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            # Extract tag from the triggering workflow's head branch/tag
+            REF="${{ github.event.workflow_run.head_branch }}"
+            echo "tag=${REF}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ET_VM_SSH_KEY }}" > ~/.ssh/et_vm_key
+          chmod 600 ~/.ssh/et_vm_key
+          cat >> ~/.ssh/config <<EOF
+          Host et-vm
+            HostName ${{ secrets.ET_VM_HOST }}
+            User ${{ secrets.ET_VM_USER }}
+            IdentityFile ~/.ssh/et_vm_key
+            StrictHostKeyChecking no
+            ConnectTimeout 15
+          EOF
+
+      - name: Test SSH connection
+        run: ssh et-vm "echo 'SSH connection OK'"
+
+      - name: Pre-deploy database backup
+        run: |
+          ssh et-vm "cd ${{ env.REMOTE_DIR }} && \
+            docker compose -f ${{ env.COMPOSE_FILE }} exec -T postgres \
+            pg_dump -U \$(grep POSTGRES_USER .env.production | cut -d= -f2) \
+            --format=custom --compress=9 \
+            \$(grep POSTGRES_DB .env.production | cut -d= -f2) \
+            > /tmp/onekof-pre-deploy-\$(date +%Y%m%d-%H%M%S).dump" || \
+          echo "::warning::Database backup failed (first deploy or DB not running)"
+
+      - name: Pull new image
+        run: |
+          FULL_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}"
+          ssh et-vm "cd ${{ env.REMOTE_DIR }} && \
+            DOCKER_IMAGE=${FULL_IMAGE} docker compose -f ${{ env.COMPOSE_FILE }} pull onekof-web"
+
+      - name: Run database migrations
+        run: |
+          FULL_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}"
+          ssh et-vm "cd ${{ env.REMOTE_DIR }} && \
+            DOCKER_IMAGE=${FULL_IMAGE} docker compose -f ${{ env.COMPOSE_FILE }} run --rm --no-deps onekof-web \
+            npx prisma migrate deploy --schema /app/packages/database/prisma/schema.prisma"
+
+      - name: Update image tag and restart
+        run: |
+          FULL_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}"
+          ssh et-vm "cd ${{ env.REMOTE_DIR }} && \
+            sed -i 's|^DOCKER_IMAGE=.*|DOCKER_IMAGE=${FULL_IMAGE}|' .env.production && \
+            docker compose -f ${{ env.COMPOSE_FILE }} up -d"
+
+      - name: Health check
+        run: |
+          echo "Waiting for application to become healthy..."
+          for i in $(seq 1 30); do
+            if ssh et-vm "curl -sf http://127.0.0.1:3000/ > /dev/null 2>&1"; then
+              echo "Health check passed on attempt $i"
+              exit 0
+            fi
+            echo "Attempt $i/30 failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Health check failed after 30 attempts"
+          ssh et-vm "cd ${{ env.REMOTE_DIR }} && docker compose -f ${{ env.COMPOSE_FILE }} logs --tail=50 onekof-web"
+          exit 1
+
+      - name: Prune old images
+        run: ssh et-vm "docker image prune -f --filter 'until=168h'" || true
+
+      - name: Deploy summary
+        run: |
+          echo "## Deployment Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Image | \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Host | \`${{ secrets.ET_VM_HOST }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Status | Healthy |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/et_vm_key
