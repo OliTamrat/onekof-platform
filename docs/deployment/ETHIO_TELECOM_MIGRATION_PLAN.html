@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onekof PM — Ethio Telecom VM Migration Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a1a2e;
+    background: #ffffff;
+    line-height: 1.7;
+    font-size: 11pt;
+  }
+
+  @page {
+    size: A4;
+    margin: 20mm 22mm 25mm 22mm;
+  }
+
+  @media print {
+    body { font-size: 10pt; }
+    .cover-page { page-break-after: always; }
+    .section { page-break-inside: avoid; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+    .no-print { display: none; }
+  }
+
+  /* Cover Page */
+  .cover-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0B0E11 0%, #12161B 50%, #0B0E11 100%);
+    color: white;
+    text-align: center;
+    padding: 60px 40px;
+  }
+
+  .cover-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #1C8C7D, #8B5CF6);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 32px;
+    box-shadow: 0 20px 60px rgba(28, 140, 125, 0.3);
+  }
+
+  .cover-title {
+    font-size: 36pt;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .cover-subtitle {
+    font-size: 18pt;
+    font-weight: 500;
+    color: #2BB5A2;
+    margin-bottom: 48px;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 40px;
+    margin-top: 24px;
+  }
+
+  .cover-meta-item {
+    text-align: center;
+  }
+
+  .cover-meta-label {
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-value {
+    font-size: 11pt;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 24px;
+    padding: 8px 20px;
+    margin-bottom: 32px;
+    font-size: 10pt;
+    font-weight: 600;
+    color: #10b981;
+  }
+
+  .cover-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.4);
+    font-size: 9pt;
+  }
+
+  /* Content Pages */
+  .content { max-width: 700px; margin: 0 auto; padding: 40px 24px; }
+
+  h1 { font-size: 22pt; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: #0B0E11; }
+
+  h2 {
+    font-size: 16pt;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #1C8C7D;
+    color: #0B0E11;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    color: #1C8C7D;
+  }
+
+  p { margin-bottom: 12px; color: #374151; }
+
+  ul, ol { margin-bottom: 12px; padding-left: 24px; color: #374151; }
+  li { margin-bottom: 6px; }
+
+  strong { font-weight: 600; color: #1a1a2e; }
+
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9.5pt;
+    color: #1C8C7D;
+  }
+
+  pre {
+    background: #0B0E11;
+    color: #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 9pt;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 10pt;
+  }
+
+  th {
+    background: #0B0E11;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+  }
+
+  tr:nth-child(even) td { background: #f9fafb; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+  }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    color: #1C8C7D;
+    font-size: 14pt;
+  }
+
+  .callout {
+    background: #f0fdf4;
+    border-left: 4px solid #1C8C7D;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+
+  .callout-warn {
+    background: #fefce8;
+    border-left-color: #eab308;
+  }
+
+  .arch-diagram {
+    background: #0B0E11;
+    color: #e5e7eb;
+    padding: 20px 24px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  .section-number {
+    display: inline-block;
+    background: #1C8C7D;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 28px;
+    font-size: 12pt;
+    font-weight: 700;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 32px;
+  }
+
+  .doc-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14pt;
+    color: #0B0E11;
+  }
+
+  .doc-header-logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #1C8C7D, #8B5CF6);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 14px; font-weight: 800;
+  }
+
+  .doc-header-meta { text-align: right; font-size: 9pt; color: #6b7280; }
+
+  .page-footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 9pt;
+    color: #9ca3af;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ COVER PAGE ═══ -->
+<div class="cover-page">
+  <div class="cover-logo">O</div>
+  <div class="cover-badge">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    INSA Certified
+  </div>
+  <div class="cover-title">Ethio Telecom<br>VM Migration Plan</div>
+  <div class="cover-subtitle">Onekof PM Platform</div>
+
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Document Version</div>
+      <div class="cover-meta-value">1.0</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Date</div>
+      <div class="cover-meta-value">July 3, 2026</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Classification</div>
+      <div class="cover-meta-value">Confidential</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">INSA Status</div>
+      <div class="cover-meta-value">Certified (6 months)</div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <strong>Prepared by DAPS Analytics PLC</strong><br>
+    Oli Tamrat — Co-Founder &amp; CTO<br>
+    oli@dapsanalytics.com
+  </div>
+</div>
+
+<!-- ═══ CONTENT PAGES ═══ -->
+<div class="content">
+
+  <div class="doc-header">
+    <div class="doc-header-logo">
+      <div class="doc-header-logo-icon">O</div>
+      Onekof
+    </div>
+    <div class="doc-header-meta">
+      Ethio Telecom Migration Plan<br>
+      Version 1.0 &bull; July 3, 2026
+    </div>
+  </div>
+
+  <h2>Executive Summary</h2>
+  <p>Onekof PM received INSA certification on July 3, 2026, valid for 6 months. This document outlines the complete migration plan from Vercel + Supabase to Ethio Telecom-provided VMs, satisfying Ethiopian data residency requirements. The platform's Docker deployment infrastructure is production-ready.</p>
+
+  <!-- Section 1 -->
+  <h2><span class="section-number">1</span> VM Prerequisites</h2>
+  <h3>VM Specifications</h3>
+  <p>Request <strong>two VMs</strong> (production + staging/backup):</p>
+  <table>
+    <tr><th>Resource</th><th>Production VM</th><th>Staging VM</th></tr>
+    <tr><td>vCPU</td><td>8 cores</td><td>4 cores</td></tr>
+    <tr><td>RAM</td><td>32 GB</td><td>16 GB</td></tr>
+    <tr><td>OS Disk</td><td>100 GB SSD</td><td>50 GB SSD</td></tr>
+    <tr><td>Data Disk</td><td>500 GB SSD (separate mount)</td><td>200 GB SSD</td></tr>
+    <tr><td>OS</td><td>Ubuntu Server 24.04 LTS</td><td>Ubuntu Server 24.04 LTS</td></tr>
+    <tr><td>Network</td><td>Static public IPv4</td><td>Private or public</td></tr>
+  </table>
+
+  <h3>Network Requirements</h3>
+  <p><strong>Ports open inbound:</strong></p>
+  <ul>
+    <li>22 (SSH, IP-restricted to DAPS Analytics)</li>
+    <li>80 (HTTP)</li>
+    <li>443 (HTTPS)</li>
+  </ul>
+  <p><strong>Outbound access required to:</strong></p>
+  <ul>
+    <li><code>ghcr.io</code> — Docker image pulls</li>
+    <li><code>api.resend.com</code> — Transactional email</li>
+    <li><code>api.chapa.co</code> — Ethiopian payment gateway</li>
+    <li><code>acme-v02.api.letsencrypt.org</code> — SSL certificate issuance</li>
+    <li><code>archive.ubuntu.com</code> — OS security updates</li>
+    <li><code>sentry.io</code> — Error tracking (optional)</li>
+  </ul>
+  <p><strong>DNS:</strong> A record for <code>onekof.et</code> pointing to the VM public IP.</p>
+
+  <!-- Section 2 -->
+  <h2><span class="section-number">2</span> VM Setup &amp; Hardening</h2>
+  <ol>
+    <li><code>apt update && apt upgrade -y</code></li>
+    <li>Install <code>unattended-upgrades</code>, <code>fail2ban</code>, <code>ufw</code></li>
+    <li>SSH: disable root login, disable password auth, key-only access</li>
+    <li>UFW: deny all incoming, allow 22/80/443</li>
+    <li>Install Docker: <code>apt install -y docker.io docker-compose-plugin</code></li>
+    <li>Create <code>onekof</code> user, add to docker group</li>
+  </ol>
+
+  <!-- Section 3 -->
+  <h2><span class="section-number">3</span> Architecture — Production Stack</h2>
+  <p>All four services run via <code>docker-compose.prod.yml</code>:</p>
+  <div class="arch-diagram">Caddy (SSL/TLS)  →  Onekof Web (Next.js)  →  PostgreSQL 15  →  Redis 7
+    Port 80, 443        Port 3000 (~300 MB)       Internal only        Internal only
+         ↑                      ↑
+     Internet            Docker Network (onekof_prod_network)
+     (public)            (internal — DB/Redis not exposed)</div>
+  <ul>
+    <li><strong>Caddy:</strong> Automatic Let's Encrypt SSL, security headers, gzip, HTTP/3</li>
+    <li><strong>Onekof Web:</strong> Next.js standalone, ~300 MB Docker image</li>
+    <li><strong>PostgreSQL 15:</strong> 70+ Prisma models, 15+ migrations</li>
+    <li><strong>Redis 7:</strong> Rate limiting, caching, session store (512 MB, LRU eviction)</li>
+  </ul>
+
+  <!-- Section 4 -->
+  <h2><span class="section-number">4</span> Data Migration</h2>
+  <p>Since Onekof is <strong>pre-launch</strong> (no real customer data), use <strong>fresh schema deployment</strong>:</p>
+  <ol>
+    <li>Start PostgreSQL via docker-compose</li>
+    <li>Run <code>prisma migrate deploy</code> — applies all migrations in order</li>
+    <li>Seed admin user and demo data</li>
+  </ol>
+  <div class="callout">
+    <strong>If real data exists by migration day:</strong> Use <code>pg_dump --format=custom</code> from Supabase, transfer to VM, and <code>pg_restore</code>.
+  </div>
+
+  <!-- Section 5 -->
+  <h2><span class="section-number">5</span> DNS &amp; Domain</h2>
+  <ul>
+    <li>Register <code>onekof.et</code> through ETC (Ethiopian Telecommunications Corporation)</li>
+    <li>DNS records: <code>A onekof.et → VM_IP</code> and <code>A www.onekof.et → VM_IP</code></li>
+    <li>Caddy automatically provisions Let's Encrypt SSL certificates</li>
+    <li>If <code>.et</code> domain registration is slow, deploy with IP-based access first</li>
+  </ul>
+
+  <!-- Section 6 -->
+  <h2><span class="section-number">6</span> Deployment Pipeline</h2>
+  <h3>Phase 1 (July) — Manual SSH Deploy</h3>
+  <pre><code># Tag and push (triggers Docker image build on GitHub Actions)
+git tag v1.0.0 && git push origin v1.0.0
+
+# Deploy to VM
+./deploy-et.sh onekof@VM_IP v1.0.0</code></pre>
+  <p>The <code>deploy-et.sh</code> script handles: image pull, pre-deploy DB backup, Prisma migrations, service restart, and health check.</p>
+
+  <h3>Offline Fallback</h3>
+  <pre><code>OFFLINE=1 ./deploy-et.sh onekof@VM_IP v1.0.0</code></pre>
+  <p>Saves Docker image locally (~300 MB), transfers via SCP, and loads on the VM.</p>
+
+  <h3>Phase 2 (August+) — Automated CI/CD</h3>
+  <p><code>.github/workflows/deploy-et.yml</code> triggers automatically after Docker builds succeed. Requires GitHub Secrets:</p>
+  <ul>
+    <li><code>ET_VM_SSH_KEY</code> — SSH private key for VM access</li>
+    <li><code>ET_VM_HOST</code> — VM IP address or hostname</li>
+    <li><code>ET_VM_USER</code> — SSH username (e.g., <code>onekof</code>)</li>
+  </ul>
+
+  <!-- Section 7 -->
+  <h2><span class="section-number">7</span> Environment Configuration</h2>
+  <table>
+    <tr><th>Variable</th><th>ET VM Value</th></tr>
+    <tr><td><code>DATABASE_URL</code></td><td><code>postgresql://onekof:PASS@postgres:5432/onekof</code></td></tr>
+    <tr><td><code>DIRECT_URL</code></td><td>Same as DATABASE_URL</td></tr>
+    <tr><td><code>NEXTAUTH_URL</code></td><td><code>https://onekof.et</code></td></tr>
+    <tr><td><code>AUTH_COOKIE_DOMAIN</code></td><td><code>.onekof.et</code></td></tr>
+    <tr><td><code>APP_PLATFORM</code></td><td><code>self-hosted</code></td></tr>
+    <tr><td><code>APP_REGION</code></td><td><code>et-addis-1</code></td></tr>
+    <tr><td><code>STORAGE_DRIVER</code></td><td><code>local-fs</code></td></tr>
+    <tr><td><code>REDIS_URL</code></td><td><code>redis://:PASS@redis:6379</code></td></tr>
+  </table>
+
+  <h3>Secrets to Generate Fresh</h3>
+  <pre><code>NEXTAUTH_SECRET:      openssl rand -base64 32
+POSTGRES_PASSWORD:    openssl rand -hex 24
+REDIS_PASSWORD:       openssl rand -hex 24
+BLOB_ENCRYPTION_KEY:  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+ADMIN_SECRET:         openssl rand -hex 32
+CRON_SECRET:          openssl rand -hex 32</code></pre>
+
+  <div class="callout">
+    <strong>Dual-Stack Coexistence:</strong> During transition, Vercel serves <code>onekof.com</code> (international) while the ET VM serves <code>onekof.et</code> (Ethiopian data-resident production). Separate databases, separate secrets, no shared sessions.
+  </div>
+
+  <!-- Section 8 -->
+  <h2><span class="section-number">8</span> External Services</h2>
+  <table>
+    <tr><th>Service</th><th>Required?</th><th>Ethiopian Network Notes</th></tr>
+    <tr><td>Resend (email)</td><td>Yes</td><td>Test connectivity; fallback: local SMTP</td></tr>
+    <tr><td>Sentry (errors)</td><td>Optional</td><td>Disable or self-host GlitchTip</td></tr>
+    <tr><td>Stripe (payments)</td><td>Demo mode OK</td><td>Not operational in Ethiopia</td></tr>
+    <tr><td>Chapa (payments)</td><td>Yes</td><td>Native Ethiopian gateway</td></tr>
+    <tr><td>Anthropic (AI)</td><td>Optional</td><td>Disable via feature flag</td></tr>
+    <tr><td>Let's Encrypt</td><td>Yes</td><td>If blocked, use ZeroSSL or internal CA</td></tr>
+  </table>
+
+  <!-- Section 9 -->
+  <h2><span class="section-number">9</span> Monitoring, Backup &amp; DR</h2>
+  <h3>Health Checks (Built-in)</h3>
+  <ul>
+    <li><code>/api/health</code> — Unauthenticated, returns DB connectivity + uptime</li>
+    <li><code>/api/health/detailed</code> — Authenticated, returns full system status</li>
+  </ul>
+
+  <h3>Logging</h3>
+  <p>Docker Compose configures JSON logs with rotation:</p>
+  <table>
+    <tr><th>Service</th><th>Max Size</th><th>Max Files</th></tr>
+    <tr><td>PostgreSQL</td><td>50 MB</td><td>3</td></tr>
+    <tr><td>Redis</td><td>20 MB</td><td>3</td></tr>
+    <tr><td>Onekof Web</td><td>100 MB</td><td>5</td></tr>
+    <tr><td>Caddy</td><td>50 MB</td><td>3</td></tr>
+  </table>
+
+  <h3>Automated Backups</h3>
+  <ul>
+    <li><code>pg_dump</code> at 3:00 AM EAT daily, 7-day retention</li>
+    <li>rsync blob directory to staging VM nightly</li>
+  </ul>
+
+  <h3>Disaster Recovery</h3>
+  <table>
+    <tr><th>Metric</th><th>Target</th></tr>
+    <tr><td>RTO (Recovery Time)</td><td>4 hours</td></tr>
+    <tr><td>RPO (Recovery Point)</td><td>24 hours (nightly backup)</td></tr>
+  </table>
+
+  <!-- Section 10 -->
+  <h2><span class="section-number">10</span> Cutover Checklist</h2>
+
+  <h3>Day -7: Pre-flight</h3>
+  <ul class="checklist">
+    <li>VM access confirmed (SSH + sudo working)</li>
+    <li>Outbound connectivity tested</li>
+    <li><code>.et</code> domain registered and DNS propagated</li>
+    <li>Docker image <code>v1.0.0</code> pushed to GHCR</li>
+    <li><code>.env.production</code> prepared with all secrets</li>
+  </ul>
+
+  <h3>Day -1: Staging Test</h3>
+  <ul class="checklist">
+    <li>Full deployment on staging VM</li>
+    <li>Migrations applied, health endpoint returns 200</li>
+    <li>SSL certificate issued by Let's Encrypt</li>
+    <li>Test: signup, org creation, file upload/download</li>
+  </ul>
+
+  <h3>Day 0: Production Go-Live</h3>
+  <ul class="checklist">
+    <li>Deploy: <code>./deploy-et.sh onekof@VM_IP v1.0.0</code></li>
+    <li>Verify <code>https://onekof.et/api/health</code></li>
+    <li>Create admin user</li>
+    <li>Full user flow test: signup → org → project → file upload</li>
+    <li>Enable backup timer</li>
+    <li>Notify INSA of deployment location</li>
+  </ul>
+
+  <h3>Rollback</h3>
+  <ul>
+    <li><strong>Image rollback:</strong> Change tag, <code>docker compose pull && up -d</code></li>
+    <li><strong>DB rollback:</strong> Restore pre-deploy <code>pg_dump</code></li>
+    <li><strong>Full fallback:</strong> Vercel + Supabase on <code>onekof.com</code></li>
+  </ul>
+
+  <!-- Section 11 -->
+  <h2><span class="section-number">11</span> Timeline — July 2026</h2>
+  <table>
+    <tr><th>Week</th><th>Dates</th><th>Activities</th></tr>
+    <tr><td><strong>Week 1</strong></td><td>Jul 1–4</td><td>Submit VM specs, begin .et domain registration, tag v1.0.0</td></tr>
+    <tr><td><strong>Week 2</strong></td><td>Jul 7–11</td><td>Receive VM access, OS hardening, Docker install, test connectivity</td></tr>
+    <tr><td><strong>Week 3</strong></td><td>Jul 14–18</td><td>Staging deployment, full verification, backup/restore test</td></tr>
+    <tr><td><strong>Week 4</strong></td><td>Jul 21–25</td><td>Production cutover, monitoring enabled, INSA notification</td></tr>
+    <tr><td><strong>Week 5+</strong></td><td>Jul 28+</td><td>Stabilization, automated pipeline, performance tuning</td></tr>
+  </table>
+
+  <!-- Section 12 -->
+  <h2><span class="section-number">12</span> INSA Certification Maintenance</h2>
+  <ul>
+    <li><strong>Validity:</strong> 6 months (expires ~January 2027)</li>
+    <li><strong>Renewal:</strong> Start process at month 5 (~December 2026)</li>
+    <li><strong>Audit logs:</strong> Keep intact (<code>LOG_RETENTION_DAYS=30</code>)</li>
+    <li><strong>Security fixes:</strong> Ensure migration <code>20260625_insa_security_fixes</code> remains applied</li>
+  </ul>
+
+  <!-- Section 13 -->
+  <h2><span class="section-number">13</span> Risk Register</h2>
+  <table>
+    <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+    <tr><td>VM provisioning delayed</td><td>High</td><td>Timeline slip</td><td>Start request immediately; bare-metal backup</td></tr>
+    <tr><td>Outbound internet blocked</td><td>Medium</td><td>Services unavailable</td><td>Test first; offline deploy; local SMTP</td></tr>
+    <tr><td>.et domain registration slow</td><td>Medium</td><td>No SSL domain</td><td>IP-based access initially</td></tr>
+    <tr><td>Let's Encrypt blocked</td><td>Low</td><td>No auto-SSL</td><td>Manual cert from ZeroSSL</td></tr>
+    <tr><td>Power outage</td><td>Medium</td><td>Downtime</td><td>Request UPS info from Ethio Telecom</td></tr>
+  </table>
+
+  <!-- Section 14 -->
+  <h2><span class="section-number">14</span> Critical Files Reference</h2>
+  <table>
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>docker-compose.prod.yml</code></td><td>Production Docker stack (4 services)</td></tr>
+    <tr><td><code>.env.production.example</code></td><td>Complete env var template</td></tr>
+    <tr><td><code>docs/deployment/tier-2-runbook.md</code></td><td>672-line operational runbook</td></tr>
+    <tr><td><code>.github/workflows/docker-build.yml</code></td><td>Docker image CI pipeline</td></tr>
+    <tr><td><code>.github/workflows/deploy-et.yml</code></td><td>Automated SSH deploy to ET VMs</td></tr>
+    <tr><td><code>deploy-et.sh</code></td><td>One-command manual deploy script</td></tr>
+    <tr><td><code>apps/web/Dockerfile</code></td><td>Multi-stage build (~300 MB image)</td></tr>
+    <tr><td><code>Caddyfile</code></td><td>Reverse proxy + auto SSL + security headers</td></tr>
+  </table>
+
+  <div class="page-footer">
+    <strong>DAPS Analytics PLC</strong> &bull; Confidential<br>
+    Prepared for Ethio Telecom Implementation Phase &bull; July 2026<br>
+    &copy; 2026 DAPS Analytics PLC. All rights reserved.
+  </div>
+
+</div>
+</body>
+</html>
