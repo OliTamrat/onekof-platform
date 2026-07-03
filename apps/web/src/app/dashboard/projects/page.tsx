@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { AppLayout } from '@/components/layouts/app-layout';
+import { UpgradeBanner, LimitBadge } from '@/components/upgrade-banner';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { CreateProjectModal } from '@/components/create-project-modal';
 import { ProjectManagementDialog } from '@/components/project-management-dialog';
@@ -110,6 +111,11 @@ export default function ProjectsPage() {
           </div>
 
           {/* Navigation Tabs */}
+        </div>
+
+        {/* Upgrade Banner */}
+        <div className="px-3 md:px-6 pt-3">
+          <UpgradeBanner resource="projects" />
         </div>
 
         {/* Projects Content */}

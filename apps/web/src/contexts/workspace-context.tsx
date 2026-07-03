@@ -15,6 +15,12 @@ export interface Organization {
   createdAt: string;
   memberCount?: number;
   projectCount?: number;
+  plan?: string;
+  status?: string;
+  maxMembers?: number;
+  maxProjects?: number;
+  maxStorage?: number;
+  trialEndsAt?: string | null;
 }
 
 export interface Project {
