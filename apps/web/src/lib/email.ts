@@ -9,6 +9,7 @@
  * - Email verification emails
  * - Welcome emails
  * - Account locked security alerts
+ * - Billing lifecycle emails (trial, renewal, usage)
  */
 
 import { Resend } from 'resend';
@@ -1157,5 +1158,201 @@ export async function sendTaskAssignmentEmail(params: {
     console.log(`Task assignment email sent to ${params.to}`);
   } catch (error) {
     console.error('Failed to send task assignment email:', error);
+  }
+}
+
+// =============================================================================
+// Billing Lifecycle Emails
+// =============================================================================
+
+const appUrl = () => process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const pricingUrl = () => `${appUrl()}/pricing`;
+
+export async function sendTrialWarningEmail(email: string, orgName: string, daysRemaining: number) {
+  try {
+    if (!resend) {
+      console.log(`\n=== TRIAL WARNING EMAIL (dev) ===\nTo: ${email}\nOrg: ${orgName}\nDays left: ${daysRemaining}\n=================================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Your Onekof trial ends in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
+      html: buildNotificationEmail({
+        accentColor: '#d97706',
+        heading: `Your trial ends in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
+        body: `
+          <p>Your free trial for <strong>${orgName}</strong> is ending soon.</p>
+          <p>After the trial, your workspace will be moved to the <strong>Free plan</strong> with reduced limits (5 members, 3 projects, 1 GB storage).</p>
+          <p>Upgrade now to keep all your features and higher limits.</p>
+        `,
+        ctaLabel: 'Upgrade Now',
+        ctaUrl: pricingUrl(),
+        footer: 'You received this because you are the owner of this organization on Onekof.',
+      }),
+    });
+    console.log(`Trial warning email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send trial warning email:', error);
+  }
+}
+
+export async function sendTrialExpiredEmail(email: string, orgName: string) {
+  try {
+    if (!resend) {
+      console.log(`\n=== TRIAL EXPIRED EMAIL (dev) ===\nTo: ${email}\nOrg: ${orgName}\n=================================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Your Onekof trial has ended — ${orgName}`,
+      html: buildNotificationEmail({
+        accentColor: '#dc2626',
+        heading: 'Your trial has ended',
+        body: `
+          <p>The free trial for <strong>${orgName}</strong> has ended.</p>
+          <p>Your workspace has been moved to the <strong>Free plan</strong>:</p>
+          <ul style="margin:12px 0;padding-left:20px;font-size:14px;color:#374151;">
+            <li>Up to 5 team members</li>
+            <li>Up to 3 projects</li>
+            <li>1 GB storage</li>
+          </ul>
+          <p>All your data is safe. Upgrade anytime to unlock higher limits and premium features.</p>
+        `,
+        ctaLabel: 'Upgrade Plan',
+        ctaUrl: pricingUrl(),
+        footer: 'You received this because you are the owner of this organization on Onekof.',
+      }),
+    });
+    console.log(`Trial expired email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send trial expired email:', error);
+  }
+}
+
+export async function sendRenewalReminderEmail(
+  email: string,
+  orgName: string,
+  planName: string,
+  daysRemaining: number
+) {
+  try {
+    if (!resend) {
+      console.log(`\n=== RENEWAL REMINDER EMAIL (dev) ===\nTo: ${email}\nOrg: ${orgName}\nPlan: ${planName}\nDays left: ${daysRemaining}\n====================================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Renew your Onekof ${planName} plan in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
+      html: buildNotificationEmail({
+        accentColor: '#0070f3',
+        heading: `Subscription renewal in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
+        body: `
+          <p>Your <strong>${planName}</strong> plan for <strong>${orgName}</strong> expires in <strong>${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}</strong>.</p>
+          <p>Renew now to keep your current plan limits and avoid any interruption to your workspace.</p>
+          <p style="margin-top:12px;padding:12px;background-color:#eff6ff;border-radius:6px;font-size:13px;color:#1e40af;">
+            After the billing period ends, there is a <strong>3-day grace period</strong>. If no payment is received, your workspace will be downgraded to the Free plan.
+          </p>
+        `,
+        ctaLabel: 'Renew Now',
+        ctaUrl: pricingUrl(),
+        footer: 'You received this because your subscription uses a payment method that requires manual renewal.',
+      }),
+    });
+    console.log(`Renewal reminder email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send renewal reminder email:', error);
+  }
+}
+
+export async function sendPastDueEmail(
+  email: string,
+  orgName: string,
+  planName: string,
+  graceDaysRemaining: number
+) {
+  try {
+    if (!resend) {
+      console.log(`\n=== PAST DUE EMAIL (dev) ===\nTo: ${email}\nOrg: ${orgName}\nPlan: ${planName}\nGrace days: ${graceDaysRemaining}\n============================\n`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Action required: Payment overdue for ${orgName}`,
+      html: buildNotificationEmail({
+        accentColor: '#dc2626',
+        heading: 'Payment overdue',
+        body: `
+          <p>Your <strong>${planName}</strong> subscription for <strong>${orgName}</strong> has expired and payment is overdue.</p>
+          <p style="margin-top:12px;padding:16px;background-color:#fef2f2;border-left:3px solid #dc2626;border-radius:4px;font-size:14px;color:#991b1b;">
+            You have <strong>${graceDaysRemaining} day${graceDaysRemaining !== 1 ? 's' : ''}</strong> remaining in the grace period. After that, your workspace will be downgraded to the Free plan.
+          </p>
+          <p>Renew now to keep your current limits and avoid any data access restrictions.</p>
+        `,
+        ctaLabel: 'Update Payment',
+        ctaUrl: pricingUrl(),
+        footer: 'You received this because you are the billing contact for this organization.',
+      }),
+    });
+    console.log(`Past due email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send past due email:', error);
+  }
+}
+
+export async function sendUsageLimitWarningEmail(
+  email: string,
+  orgName: string,
+  violations: Array<{ type: string; current: number; max: number }>
+) {
+  try {
+    if (!resend) {
+      console.log(`\n=== USAGE LIMIT WARNING EMAIL (dev) ===\nTo: ${email}\nOrg: ${orgName}\nViolations: ${JSON.stringify(violations)}\n=======================================\n`);
+      return;
+    }
+
+    const violationRows = violations
+      .map(
+        (v) =>
+          `<tr>
+            <td style="padding:8px 12px;font-size:14px;color:#374151;border-bottom:1px solid #e5e7eb;">${v.type}</td>
+            <td style="padding:8px 12px;font-size:14px;font-weight:600;color:#dc2626;text-align:right;border-bottom:1px solid #e5e7eb;">${v.current} / ${v.max}</td>
+          </tr>`
+      )
+      .join('');
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Onekof <noreply@onekof.com>',
+      to: email,
+      subject: `Usage limit warning for ${orgName}`,
+      html: buildNotificationEmail({
+        accentColor: '#d97706',
+        heading: 'Usage limit warning',
+        body: `
+          <p>Your workspace <strong>${orgName}</strong> has exceeded one or more plan limits:</p>
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;">
+            <tr style="background-color:#f9fafb;">
+              <th style="padding:8px 12px;font-size:13px;color:#6b7280;text-align:left;">Resource</th>
+              <th style="padding:8px 12px;font-size:13px;color:#6b7280;text-align:right;">Current / Limit</th>
+            </tr>
+            ${violationRows}
+          </table>
+          <p>Consider upgrading your plan to increase limits, or remove unused resources to stay within your current plan.</p>
+        `,
+        ctaLabel: 'Manage Plan',
+        ctaUrl: pricingUrl(),
+        footer: 'You received this because you are the owner of this organization on Onekof.',
+      }),
+    });
+    console.log(`Usage limit warning email sent to ${email}`);
+  } catch (error) {
+    console.error('Failed to send usage limit warning email:', error);
   }
 }
