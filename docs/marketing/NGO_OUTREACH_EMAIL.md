@@ -7,7 +7,7 @@ Use this template for cold outreach to Ethiopian NGO operations managers and cou
 ## Subject Lines (A/B test)
 
 **A:** Budget tracking built for Ethiopian organizations — 7-day free trial
-**B:** The first INSA-certified project management platform for Ethiopia
+**B:** The first certified-secure project management platform built for Ethiopia
 **C:** Stop tracking budgets in spreadsheets — try Onekof free
 
 ---
@@ -22,7 +22,7 @@ That's why we built **Onekof** — a project and budget management platform desi
 
 **What makes Onekof different:**
 
-- **INSA Certified** — the first PM platform to pass Ethiopia's national cybersecurity assessment (49 security tests)
+- **Enterprise-Grade Security** — passed a rigorous 49-test security assessment for Ethiopian enterprise deployment
 - **Ethiopian Calendar** — toggle between Ethiopian and Gregorian with one click; all deadlines sync automatically
 - **Budget Tracking in ETB** — allocate, track expenses, and generate donor-ready reports in Ethiopian Birr
 - **Pay via Telebirr or CBE** — no USD credit card required; subscribe directly in ETB
