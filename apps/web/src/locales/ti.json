@@ -823,7 +823,13 @@
     "selectTrigger": "ኣበራታዒ ምረጽ",
     "selectAction": "ተግባር ምረጽ",
     "automationName": "ስም ኦቶሜሽን",
-    "workflowDesigner": "ናይ ስራሕ ፍሰት ዲዛይነር"
+    "workflowDesigner": "ናይ ስራሕ ፍሰት ዲዛይነር",
+    "saveAutomation": "ኦቶመይሽን ኣቐምጥ",
+    "addAction": "ተግባር ወስኽ",
+    "addCondition": "ኩነት ወስኽ",
+    "conditions": "ኩነታት",
+    "field": "ሜዳ",
+    "value": "ዋጋ"
   },
   "settings": {
     "title": "ቅጥዒታት",

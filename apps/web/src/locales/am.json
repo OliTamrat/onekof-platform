@@ -823,7 +823,13 @@
     "selectTrigger": "ቀስቃሽ ይምረጡ",
     "selectAction": "ድርጊት ይምረጡ",
     "automationName": "የአውቶሜሽን ስም",
-    "workflowDesigner": "የሥራ ፍሰት ገንቢ"
+    "workflowDesigner": "የሥራ ፍሰት ገንቢ",
+    "saveAutomation": "ኦቶሜሽን አስቀምጥ",
+    "addAction": "ድርጊት ጨምር",
+    "addCondition": "ሁኔታ ጨምር",
+    "conditions": "ሁኔታዎች",
+    "field": "መስክ",
+    "value": "ዋጋ"
   },
   "settings": {
     "title": "ቅንብሮች",

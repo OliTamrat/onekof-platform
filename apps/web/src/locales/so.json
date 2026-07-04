@@ -823,7 +823,13 @@
     "selectTrigger": "Kicin dooro",
     "selectAction": "Ficil dooro",
     "automationName": "Magaca otomaatikga",
-    "workflowDesigner": "Naqshadaynta socodka shaqada"
+    "workflowDesigner": "Naqshadaynta socodka shaqada",
+    "saveAutomation": "Otomaatiga Kaydi",
+    "addAction": "Ficil kudar",
+    "addCondition": "Xaalad kudar",
+    "conditions": "Xaaladaha",
+    "field": "Goob",
+    "value": "Qiimaha"
   },
   "settings": {
     "title": "Dejinta",

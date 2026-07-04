@@ -823,7 +823,13 @@
     "selectTrigger": "Select trigger",
     "selectAction": "Select action",
     "automationName": "Automation name",
-    "workflowDesigner": "Workflow Designer"
+    "workflowDesigner": "Workflow Designer",
+    "saveAutomation": "Save Automation",
+    "addAction": "Add action",
+    "addCondition": "Add condition",
+    "conditions": "Conditions",
+    "field": "Field",
+    "value": "Value"
   },
   "settings": {
     "title": "Settings",

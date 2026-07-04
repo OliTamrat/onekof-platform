@@ -823,7 +823,13 @@
     "selectTrigger": "Kakaasa fili",
     "selectAction": "Gocha fili",
     "automationName": "Maqaa ofumaan hojjachuu",
-    "workflowDesigner": "Dizaayinara Adeemsa Hojii"
+    "workflowDesigner": "Dizaayinara Adeemsa Hojii",
+    "saveAutomation": "Ofumaan Hojjachuu Olchi",
+    "addAction": "Gocha Dabali",
+    "addCondition": "Haala Dabali",
+    "conditions": "Haalawwan",
+    "field": "Dirree",
+    "value": "Gatii"
   },
   "settings": {
     "title": "Qindaa'ina",

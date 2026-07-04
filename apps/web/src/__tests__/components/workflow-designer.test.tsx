@@ -16,8 +16,8 @@ describe('WorkflowDesigner', () => {
 
   it('does not show conditions or actions before selecting trigger', () => {
     renderWithLanguage(<WorkflowDesigner />);
-    expect(screen.queryByText('Conditions (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Actions')).not.toBeInTheDocument();
+    expect(screen.queryByText('Conditions')).not.toBeInTheDocument();
+    expect(screen.queryByText('Action')).not.toBeInTheDocument();
   });
 
   it('shows conditions and actions after selecting a trigger', () => {
@@ -26,8 +26,8 @@ describe('WorkflowDesigner', () => {
     fireEvent.change(triggerSelect, { target: { value: 'CREATED' } });
 
     expect(screen.getByText('When item is created')).toBeInTheDocument();
-    expect(screen.getByText('Conditions (optional)')).toBeInTheDocument();
-    expect(screen.getByText('Actions')).toBeInTheDocument();
+    expect(screen.getByText('Conditions')).toBeInTheDocument();
+    expect(screen.getByText('Action')).toBeInTheDocument();
   });
 
   it('can add and remove conditions', () => {
@@ -51,7 +51,6 @@ describe('WorkflowDesigner', () => {
 
     const actionSelect = screen.getByLabelText('Add action');
     fireEvent.change(actionSelect, { target: { value: 'SEND_NOTIFICATION' } });
-    // Action should appear as a removable item (with Remove action button)
     expect(screen.getByLabelText('Remove action')).toBeInTheDocument();
   });
 
@@ -68,11 +67,9 @@ describe('WorkflowDesigner', () => {
   it('can remove a trigger', () => {
     renderWithLanguage(<WorkflowDesigner />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
-    // Trigger is set - remove button should be visible
     expect(screen.getByLabelText('Remove trigger')).toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText('Remove trigger'));
-    // After removal, the select trigger dropdown should reappear and no remove button
     expect(screen.queryByLabelText('Remove trigger')).not.toBeInTheDocument();
     expect(screen.getByLabelText('Select trigger')).toBeInTheDocument();
   });
@@ -82,7 +79,6 @@ describe('WorkflowDesigner', () => {
     renderWithLanguage(<WorkflowDesigner onSave={onSave} />);
     fireEvent.change(screen.getByLabelText('Select trigger'), { target: { value: 'CREATED' } });
 
-    // No save before action
     expect(screen.queryByText('Save Automation')).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Add action'), { target: { value: 'SEND_EMAIL' } });
@@ -103,7 +99,6 @@ describe('WorkflowDesigner', () => {
     };
     renderWithLanguage(<WorkflowDesigner initialRule={initialRule} />);
     expect(screen.getByText('When completed')).toBeInTheDocument();
-    // The action is loaded - verify by the remove button and trigger label
     expect(screen.getByLabelText('Remove trigger')).toBeInTheDocument();
     expect(screen.getByLabelText('Remove action')).toBeInTheDocument();
   });
