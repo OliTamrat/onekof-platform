@@ -132,10 +132,10 @@ export default function SettingsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['current-user-profile'] });
-      toast.success('Profile updated');
+      toast.success(t('common.success'));
     },
     onError: (err: Error) => {
-      toast.error('Update failed', err.message);
+      toast.error(t('errors.failedToUpdate'), err.message);
     },
   });
 
@@ -153,7 +153,7 @@ export default function SettingsPage() {
       return res.json();
     },
     onSuccess: () => {
-      toast.success('Password changed', 'Your new password is now active.');
+      toast.success(t('common.success'), 'Your new password is now active.');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -173,7 +173,7 @@ export default function SettingsPage() {
 
   const handleChangePassword = () => {
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t('auth.passwordsDontMatch'));
       return;
     }
     if (newPassword.length < 8) {
@@ -223,7 +223,7 @@ export default function SettingsPage() {
                   }`}
                 >
                   <UserIcon className="h-4 w-4" />
-                  Profile
+                  {t('settings.profile')}
                 </button>
                 <button
                   type="button"
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                   }`}
                 >
                   <Bell className="h-4 w-4" />
-                  Notifications
+                  {t('settings.notifications')}
                 </button>
                 <button
                   type="button"
@@ -247,14 +247,14 @@ export default function SettingsPage() {
                   }`}
                 >
                   <Shield className="h-4 w-4" />
-                  Security
+                  {t('settings.security')}
                 </button>
                 <a
                   href="/dashboard/settings/billing"
                   className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   <CreditCard className="h-4 w-4" />
-                  Billing
+                  {t('settings.billing')}
                 </a>
               </div>
             </nav>
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                     <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-                          Profile information
+                          {t('settings.profile')}
                         </h2>
                         <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
                           Update your personal details
@@ -305,7 +305,7 @@ export default function SettingsPage() {
                         {/* Name */}
                         <div>
                           <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                            Full name
+                            {t('auth.fullName')}
                           </label>
                           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
                         </div>
@@ -313,11 +313,11 @@ export default function SettingsPage() {
                         {/* Email (read-only) */}
                         <div>
                           <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                            Email
+                            {t('auth.email')}
                           </label>
                           <Input value={user?.email || ''} disabled className="opacity-60" />
                           <p className="text-xs text-gray-500 dark:text-white/70 mt-1">
-                            Contact support to change your email address.
+                            {t('errors.contactSupport')}
                           </p>
                         </div>
 
@@ -347,7 +347,7 @@ export default function SettingsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              Timezone
+                              {t('settings.timezone')}
                             </label>
                             <select
                               value={timezone}
@@ -361,7 +361,7 @@ export default function SettingsPage() {
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              Language
+                              {t('settings.language')}
                             </label>
                             <select
                               value={language}
@@ -383,9 +383,9 @@ export default function SettingsPage() {
                           className="bg-primary-500 hover:bg-primary-600 text-white"
                         >
                           {profileMutation.isPending ? (
-                            <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Saving</>
+                            <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> {t('common.saving')}</>
                           ) : (
-                            <><Save className="h-4 w-4 mr-1.5" /> Save changes</>
+                            <><Save className="h-4 w-4 mr-1.5" /> {t('common.save')}</>
                           )}
                         </Button>
                       </div>
@@ -397,7 +397,7 @@ export default function SettingsPage() {
                     <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                       <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                         <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-                          Email notifications
+                          {t('settings.emailNotifications')}
                         </h2>
                         <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
                           Choose what we email you about
@@ -444,9 +444,9 @@ export default function SettingsPage() {
                           className="bg-primary-500 hover:bg-primary-600 text-white"
                         >
                           {profileMutation.isPending ? (
-                            <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Saving</>
+                            <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> {t('common.saving')}</>
                           ) : (
-                            <><Save className="h-4 w-4 mr-1.5" /> Save preferences</>
+                            <><Save className="h-4 w-4 mr-1.5" /> {t('common.save')}</>
                           )}
                         </Button>
                       </div>
@@ -459,17 +459,17 @@ export default function SettingsPage() {
                       <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B]">
                         <div className="border-b border-gray-200 dark:border-white/[0.08] px-6 py-4">
                           <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-                            Change password
+                            {t('settings.changePassword')}
                           </h2>
                           <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">
-                            At least 8 characters; use a unique password
+                            {t('auth.atLeast8Chars')}
                           </p>
                         </div>
 
                         <div className="p-6 space-y-4">
                           <div>
                             <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              Current password
+                              {t('auth.password')}
                             </label>
                             <Input
                               type="password"
@@ -480,7 +480,7 @@ export default function SettingsPage() {
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              New password
+                              {t('auth.newPassword')}
                             </label>
                             <Input
                               type="password"
@@ -491,7 +491,7 @@ export default function SettingsPage() {
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              Confirm new password
+                              {t('auth.confirmNewPassword')}
                             </label>
                             <Input
                               type="password"
@@ -516,7 +516,7 @@ export default function SettingsPage() {
                             {passwordMutation.isPending ? (
                               <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Changing</>
                             ) : (
-                              <><Check className="h-4 w-4 mr-1.5" /> Change password</>
+                              <><Check className="h-4 w-4 mr-1.5" /> {t('settings.changePassword')}</>
                             )}
                           </Button>
                         </div>
@@ -524,7 +524,7 @@ export default function SettingsPage() {
 
                       <div className="rounded-lg border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-6">
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
-                          Two-factor authentication
+                          {t('settings.twoFactorAuth')}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-white/70 mb-3">
                           Add an extra layer of security to your account with TOTP (authenticator app).

@@ -146,7 +146,7 @@ export default function IssuesPage() {
       context?.previousQueries?.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
-      toast.error('Failed to update issue');
+      toast.error(t('errors.failedToUpdate'));
     },
     onSettled: () => {
       // Re-fetch once at the end to reconcile with server truth
@@ -251,7 +251,7 @@ export default function IssuesPage() {
     }
 
     if (!projectId) {
-      toast.warning('No projects found', 'Please create a project first from the Projects page.');
+      toast.warning(t('issues.noProjectsFound'), t('issues.createProjectFirst'));
       return;
     }
 

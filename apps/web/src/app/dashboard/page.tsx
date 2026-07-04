@@ -286,14 +286,14 @@ export default function DashboardPage() {
     const subtitle = insights.length > 0 ? insights.join(' • ') : `${totalTasks} tasks in ${statusLabel.toLowerCase()} status`;
 
     setFilteredTasks(filtered);
-    setFilterTitle(`${statusLabel} Tasks • ${totalTasks}`);
+    setFilterTitle(`${statusLabel} • ${totalTasks}`);
     setIsFilterModalOpen(true);
   };
 
   const handleShowAllStatusOverview = () => {
     // Show all tasks grouped by status
     setFilteredTasks(issues);
-    setFilterTitle(`Status Overview • ${totalIssues} Total Tasks`);
+    setFilterTitle(`${t('dashboard.statusOverview')} • ${totalIssues} ${t('dashboard.totalItems')}`);
     setIsFilterModalOpen(true);
   };
 
@@ -384,7 +384,7 @@ export default function DashboardPage() {
                 className="flex items-center gap-1 text-xs text-white/30 hover:text-[#1C8C7D] transition-colors"
               >
                 <X className="h-3 w-3" />
-                Clear filter
+                {t('common.clearFilters')}
               </button>
             )}
           </div>
@@ -518,8 +518,8 @@ export default function DashboardPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', t('status.todo')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', t('status.todo')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -531,8 +531,8 @@ export default function DashboardPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', t('status.inProgress')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', t('status.inProgress')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -544,8 +544,8 @@ export default function DashboardPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', t('status.inReview')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', t('status.inReview')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -557,8 +557,8 @@ export default function DashboardPage() {
                   <div
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
+                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', t('status.done')); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', t('status.done')); } }}
                     className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -634,10 +634,10 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   {totalIssues > 0 ? (
                     <>
-                      <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
-                      <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
-                      <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
-                      <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
+                      <TypeBar label={t('common.task')} percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
+                      <TypeBar label={t('common.story')} percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
+                      <TypeBar label={t('common.bug')} percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
+                      <TypeBar label={t('common.epic')} percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
                     </>
                   ) : (
                     <p className="text-sm text-white/70">{t('common.noData')}</p>

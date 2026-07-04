@@ -86,18 +86,18 @@ interface UnifiedPageHeaderProps {
 }
 
 const DEFAULT_NAV_TABS: TabDefinition[] = [
-  { id: 'summary', label: 'Summary', labelKey: 'tabs.summary', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', labelKey: 'tabs.list', icon: List, href: '/list' },
-  { id: 'board', label: 'Board', labelKey: 'tabs.board', icon: LayoutDashboard, href: '/board' },
-  { id: 'calendar', label: 'Calendar', labelKey: 'tabs.calendar', icon: Calendar, href: '/calendar' },
-  { id: 'timeline', label: 'Timeline', labelKey: 'tabs.timeline', icon: GitBranch, href: '/timeline' },
-  { id: 'team', label: 'Team', labelKey: 'tabs.team', icon: Users, href: '/team' },
-  { id: 'goals', label: 'Goals', labelKey: 'tabs.goals', icon: Target, href: '/goals' },
-  { id: 'budget', label: 'Budget', labelKey: 'tabs.budget', icon: DollarSign, href: '/budget' },
-  { id: 'documents', label: 'Docs', labelKey: 'tabs.docs', icon: FileText, href: '/documents' },
-  { id: 'automation', label: 'Automation', labelKey: 'tabs.automation', icon: Zap, href: '/automation' },
-  { id: 'wiki', label: 'Wiki', labelKey: 'tabs.wiki', icon: BookOpen, href: '/wiki' },
-  { id: 'settings', label: 'Settings', labelKey: 'tabs.settings', icon: SettingsIcon, href: '/settings' },
+  { id: 'summary', label: 'Summary', labelKey: 'nav.summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', labelKey: 'nav.list', icon: List, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'nav.board', icon: LayoutDashboard, href: '/board' },
+  { id: 'calendar', label: 'Calendar', labelKey: 'nav.calendar', icon: Calendar, href: '/calendar' },
+  { id: 'timeline', label: 'Timeline', labelKey: 'nav.timeline', icon: GitBranch, href: '/timeline' },
+  { id: 'team', label: 'Team', labelKey: 'nav.teams', icon: Users, href: '/team' },
+  { id: 'goals', label: 'Goals', labelKey: 'nav.goals', icon: Target, href: '/goals' },
+  { id: 'budget', label: 'Budget', labelKey: 'nav.budget', icon: DollarSign, href: '/budget' },
+  { id: 'documents', label: 'Docs', labelKey: 'nav.docs', icon: FileText, href: '/documents' },
+  { id: 'automation', label: 'Automation', labelKey: 'nav.automation', icon: Zap, href: '/automation' },
+  { id: 'wiki', label: 'Wiki', labelKey: 'nav.wiki', icon: BookOpen, href: '/wiki' },
+  { id: 'settings', label: 'Settings', labelKey: 'nav.settings', icon: SettingsIcon, href: '/settings' },
 ];
 
 const STATUS_OPTIONS = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED'];
@@ -390,7 +390,7 @@ export function UnifiedPageHeader({
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-gray-400 dark:text-white/30" />
               <input
                 type="text"
-                placeholder={t('common.searchPlaceholder')}
+                placeholder={t('header.search')}
                 value={searchVal}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="h-8 md:h-9 w-full rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] pl-8 md:pl-10 pr-8 text-xs md:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
@@ -542,7 +542,7 @@ export function UnifiedPageHeader({
                 title="AI Insights"
               >
                 <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="hidden md:inline">{t('nav.analytics')}</span>
+                <span className="hidden md:inline">{t('header.insights')}</span>
               </Button>
             )}
 
@@ -558,15 +558,15 @@ export function UnifiedPageHeader({
                   >
                     <SettingsIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     <span className="hidden md:inline">
-                      {viewMode === 'list' ? t('tabs.list') : viewMode === 'board' ? t('tabs.board') : t('common.view')}
+                      {viewMode === 'list' ? t('nav.list') : viewMode === 'board' ? t('nav.board') : t('common.compact')}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44">
                   {([
-                    { id: 'list' as ViewMode, label: t('common.listView'), icon: List },
-                    { id: 'board' as ViewMode, label: t('common.boardView'), icon: LayoutDashboard },
-                    { id: 'compact' as ViewMode, label: t('common.compactView'), icon: BarChart3 },
+                    { id: 'list' as ViewMode, label: t('header.listView'), icon: List },
+                    { id: 'board' as ViewMode, label: t('header.boardView'), icon: LayoutDashboard },
+                    { id: 'compact' as ViewMode, label: t('header.compactView'), icon: BarChart3 },
                   ]).map(v => (
                     <DropdownMenuItem
                       key={v.id}

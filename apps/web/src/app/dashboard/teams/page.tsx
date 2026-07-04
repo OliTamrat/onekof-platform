@@ -564,7 +564,7 @@ export default function TeamsPage() {
               {createTeamMutation.isError && (
                 <div className="rounded-md border border-red-500/50 bg-red-500/10 p-4">
                   <p className="text-sm text-red-400">
-                    {createTeamMutation.error?.message || 'Failed to create team'}
+                    {createTeamMutation.error?.message || t('errors.failedToCreate')}
                   </p>
                 </div>
               )}
@@ -697,7 +697,7 @@ export default function TeamsPage() {
                 />
                 {addMemberMutation.isError && (
                   <p className="mt-2 text-sm text-red-500">
-                    {addMemberMutation.error?.message || 'Failed to add member'}
+                    {addMemberMutation.error?.message || t('errors.failedToCreate')}
                   </p>
                 )}
               </div>
@@ -725,7 +725,7 @@ export default function TeamsPage() {
                   disabled={!newMemberEmail.trim() || addMemberMutation.isPending}
                   className="bg-primary-500 hover:bg-primary-600"
                 >
-                  {addMemberMutation.isPending ? 'Adding...' : 'Add Member'}
+                  {addMemberMutation.isPending ? t('common.creating') : t('teams.addMember')}
                 </Button>
               </DialogFooter>
             </DialogContent>

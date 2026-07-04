@@ -180,7 +180,7 @@ export function EmptyState({
   const config = preset ? presets[preset] : null;
   const Icon = customIcon || config?.icon || FileText;
   const title = customTitle || config?.title || t('emptyStates.nothingHereYet');
-  const description = customDescription || config?.description || t('emptyStates.getStartedDefault');
+  const description = customDescription || config?.description || t('emptyStates.getStartedDesc');
   const actionLabel = customActionLabel || config?.actionLabel;
 
   return (
