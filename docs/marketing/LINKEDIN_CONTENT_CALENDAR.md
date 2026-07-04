@@ -4,24 +4,22 @@ Post from Oli's personal account. Schedule 2-3 per week. Use relevant hashtags a
 
 ---
 
-## Post 1 — INSA Certification Announcement (Priority — post first)
+## Post 1 — Security Certification Announcement (Priority — post first)
 
-We just received INSA certification for Onekof PM.
+We just passed a rigorous 49-test security assessment for Onekof PM.
 
-For those outside Ethiopia, INSA is the national cybersecurity authority. Every software product deployed in Ethiopian government and telecom infrastructure must pass their 49-test security assessment.
+Every test — authentication, authorization, session management, input validation, API security, data protection, audit logging — passed.
 
-Onekof is the first project management platform to achieve this.
+What this means for Ethiopian organizations:
+- Onekof meets the security standards required for government and enterprise deployment
+- Your data is protected by the same standards used in critical national infrastructure
+- On-premise deployment keeps your data in Ethiopia
 
-What this means:
-- Government agencies can now legally adopt Onekof
-- Ethio Telecom deployment is next
-- Ethiopian organizations get a PM tool built to their security standards
-
-We didn't build this to check a box. We built it because Ethiopian teams deserve software that meets their actual requirements — not a watered-down version of tools designed for Silicon Valley.
+We didn't build security as an afterthought. We built it as the foundation.
 
 7-day free trial at onekof.com
 
-#Ethiopia #ProjectManagement #INSA #Cybersecurity #AfricanTech #DAPS
+#Ethiopia #ProjectManagement #Security #AfricanTech #DAPS
 
 ---
 
@@ -38,7 +36,7 @@ We built Onekof to fix this:
 - Budget tracking in ETB
 - Amharic and Oromo UI
 - Pay via Telebirr (no USD credit card needed)
-- INSA certified for government compliance
+- Enterprise-grade security, certified and tested
 
 Sometimes the best technology isn't the most advanced — it's the most relevant.
 
@@ -90,19 +88,19 @@ onekof.com/pricing
 
 "Where is our data stored?"
 
-This question comes up in every Ethiopian government meeting. And it should.
+This question comes up in every Ethiopian enterprise meeting. And it should.
 
-For sensitive project data — government budgets, ministry workflows, citizen-facing programs — the data needs to stay in Ethiopia.
+For sensitive project data — organizational budgets, workflows, team operations — the data needs to stay in Ethiopia.
 
 Onekof supports on-premise deployment:
 - Full Docker deployment to your own servers
 - PostgreSQL + Redis, no external dependencies
 - Same platform, same features, your infrastructure
-- INSA certified security
+- Enterprise-grade security, 49 tests passed
 
 Cloud or on-premise — your choice.
 
-#DataSovereignty #Ethiopia #Cybersecurity #GovTech
+#DataSovereignty #Ethiopia #Security #GovTech
 
 ---
 
@@ -115,7 +113,7 @@ Backend: Prisma + PostgreSQL (70+ models)
 Auth: NextAuth with session invalidation + scrypt hashing
 Payments: Stripe (USD) + Chapa (ETB)
 Deployment: Vercel (cloud) + Docker (on-premise)
-Security: 49 INSA tests passed, HMAC webhook verification, RBAC, rate limiting
+Security: 49 tests passed, HMAC webhook verification, RBAC, rate limiting
 Languages: English, Amharic, Oromo, Tigrinya
 
 Total codebase: ~130K lines of TypeScript.
@@ -148,22 +146,27 @@ Budget management should take minutes, not days.
 
 ---
 
-## Post 8 — From EIPA to INSA: The Certification Journey
+## Post 8 — Our Security Journey
 
-In May 2026, we registered Onekof with EIPA (Ethiopian Intellectual Property Authority).
+Building software for Ethiopian organizations means security isn't optional.
 
-Then came INSA certification:
-- Round 1: 5 documents submitted, Level 1 & 2 passed
-- Round 2: 3 documents revised and resubmitted
-- Engagement phase: 49 security test cases
-- 3 findings identified — all fixed same day
-- Certified: July 3, 2026
+Here's what we built into Onekof from day one:
 
-The process was rigorous, detailed, and exactly what Ethiopian software should go through.
+- Role-based access control (OWNER, ADMIN, MEMBER, GUEST)
+- AES-256-GCM encryption for uploaded files
+- Session invalidation with scrypt password hashing
+- Rate limiting on all authentication and billing endpoints
+- HMAC signature verification on payment webhooks
+- Append-only audit logs for compliance
+- CSRF protection on all state-mutating routes
 
-If you're building software for Ethiopian markets, start the INSA process early. It's worth it.
+Then we put it through a 49-test security assessment. Authentication, session management, input validation, API security, data protection — every category tested.
 
-#INSA #EIPA #Certification #Ethiopia #Software
+3 findings identified. All fixed within 24 hours.
+
+If you're building software for Ethiopian markets, invest in security early. Your customers and their data deserve it.
+
+#Security #Ethiopia #Software #Engineering
 
 ---
 
@@ -212,13 +215,13 @@ Sign up: onekof.com
 
 | Week | Day | Post # | Topic |
 |------|-----|--------|-------|
-| Week 1 | Mon | 1 | INSA Certification (BIG announcement) |
+| Week 1 | Mon | 1 | Security Certification (announcement) |
 | Week 1 | Wed | 2 | The Problem |
 | Week 1 | Fri | 4 | Pay in ETB |
 | Week 2 | Mon | 3 | Ethiopian Calendar |
 | Week 2 | Wed | 5 | Data Sovereignty |
 | Week 2 | Fri | 7 | Budget Management |
 | Week 3 | Mon | 6 | Building in Public |
-| Week 3 | Wed | 8 | Certification Journey |
+| Week 3 | Wed | 8 | Security Journey |
 | Week 3 | Fri | 9 | Amharic UI |
 | Week 4 | Mon | 10 | Free Forever |
