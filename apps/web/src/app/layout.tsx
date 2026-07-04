@@ -21,16 +21,14 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Onekof — INSA Certified Project Management Platform for Ethiopian Teams',
+    default: 'Onekof — Project Management Platform Built for Ethiopian Teams',
     template: '%s | Onekof PM',
   },
   description:
-    'Onekof is Ethiopia\'s first INSA-certified project management platform. Ethiopian calendar, Amharic & Oromo UI, budget tracking in ETB via Telebirr & CBE, on-premise deployment, and 7-day free trial. Built for how Ethiopian teams actually work.',
+    'Onekof is the project management platform built for Ethiopian teams. Ethiopian calendar, Amharic & Oromo UI, budget tracking in ETB via Telebirr & CBE, on-premise deployment, enterprise-grade security, and 7-day free trial.',
   keywords: [
     'Onekof',
     'Onekof PM',
-    'INSA certified software',
-    'INSA certified project management',
     'Ethiopian project management',
     'project management Ethiopia',
     'project management Africa',
@@ -66,9 +64,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: '/',
     siteName: 'Onekof',
-    title: 'Onekof — INSA Certified Project Management for Ethiopian Teams',
+    title: 'Onekof — Project Management Built for Ethiopian Teams',
     description:
-      'Ethiopia\'s first INSA-certified PM platform. Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE, on-premise deployment. 7-day free trial.',
+      'The PM platform built for Ethiopian teams. Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE, on-premise deployment. 7-day free trial.',
     images: [
       {
         url: '/images/dashboard-desktop.png',
@@ -80,9 +78,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Onekof — INSA Certified Project Management for Ethiopian Teams',
+    title: 'Onekof — Project Management Built for Ethiopian Teams',
     description:
-      'INSA certified. Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE. 7-day free trial.',
+      'Ethiopian calendar, Amharic UI, ETB budgets via Telebirr & CBE, enterprise-grade security. 7-day free trial.',
     creator: '@onekof',
     images: ['/images/dashboard-desktop.png'],
   },
