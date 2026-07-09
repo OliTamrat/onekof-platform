@@ -75,6 +75,16 @@ export default function DashboardPage() {
     }
   }, [status, router]);
 
+  // Redirect to org selection if on main domain without subdomain
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hostname = window.location.hostname;
+    const isMainDomain = hostname === 'onekof.com' || hostname === 'www.onekof.com';
+    if (isMainDomain && status === 'authenticated') {
+      router.push('/select-organization');
+    }
+  }, [status, router]);
+
   // Add timeout for loading state
   useEffect(() => {
     if (status === 'loading') {
