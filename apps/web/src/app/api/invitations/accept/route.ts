@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find all pending invitations (we need to check token against each hash)
     const pendingInvitations = await prisma.invitation.findMany({
       where: {
         acceptedAt: null,
@@ -43,7 +42,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Find the matching invitation by verifying the token hash
     let matchedInvitation: any = null;
     for (const inv of pendingInvitations) {
       try {
@@ -63,7 +61,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check expiration
     if (isTokenExpired(matchedInvitation.expiresAt)) {
       return NextResponse.json(
         { error: 'This invitation has expired. Please ask the sender for a new invitation.' },
@@ -71,10 +68,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Any authenticated user with a valid token can accept
-    // The token is the security — no email match required
-
-    // Check if already a member
     const existingMembership = await prisma.organizationMember.findUnique({
       where: {
         organizationId_userId: {
@@ -85,10 +78,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingMembership) {
-      // Mark invitation as accepted even if already a member
       await prisma.invitation.update({
         where: { id: matchedInvitation.id },
         data: { acceptedAt: new Date() },
+      });
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { defaultOrganizationId: matchedInvitation.organizationId },
       });
 
       return NextResponse.json({
@@ -98,7 +95,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create organization membership and mark invitation as accepted
     await prisma.$transaction([
       prisma.organizationMember.create({
         data: {
@@ -111,6 +107,10 @@ export async function POST(request: NextRequest) {
       prisma.invitation.update({
         where: { id: matchedInvitation.id },
         data: { acceptedAt: new Date() },
+      }),
+      prisma.user.update({
+        where: { id: session.user.id },
+        data: { defaultOrganizationId: matchedInvitation.organizationId },
       }),
     ]);
 
@@ -130,18 +130,12 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/invitations/accept?token=xxx
- * Validate an invitation token and return details (for the accept page)
+ * Validate an invitation token and return details.
+ * Does NOT require authentication — unauthenticated users need to see
+ * the invitation details so they can decide to sign in or sign up.
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'You must be signed in to view invitation details' },
-        { status: 401 }
-      );
-    }
-
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
 
@@ -152,7 +146,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Find matching invitation
     const pendingInvitations = await prisma.invitation.findMany({
       where: { acceptedAt: null },
       include: {
