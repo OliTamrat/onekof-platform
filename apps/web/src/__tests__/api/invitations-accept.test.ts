@@ -40,24 +40,26 @@ describe('GET /api/invitations/accept', () => {
     vi.clearAllMocks();
   });
 
-  it('returns 401 when user is not authenticated', async () => {
+  it('allows unauthenticated access for token validation', async () => {
     mockGetServerSession.mockResolvedValue(null);
+    mockFindMany.mockResolvedValue([]);
 
     const req = new NextRequest('http://localhost:3000/api/invitations/accept?token=abc123');
     const res = await GET(req);
     const data = await res.json();
 
-    expect(res.status).toBe(401);
-    expect(data.error).toContain('signed in');
+    expect(res.status).toBe(400);
+    expect(data.error).toContain('Invalid or expired');
   });
 
-  it('returns 401 when session has no user id', async () => {
+  it('allows access without user id for token validation', async () => {
     mockGetServerSession.mockResolvedValue({ user: {} });
+    mockFindMany.mockResolvedValue([]);
 
     const req = new NextRequest('http://localhost:3000/api/invitations/accept?token=abc123');
     const res = await GET(req);
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(400);
   });
 
   it('returns 400 when token is missing', async () => {
