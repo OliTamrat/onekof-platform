@@ -29,7 +29,7 @@ interface InvitationDetails {
 function AcceptInviteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus, update: updateSession } = useSession();
   const { t } = useLanguage();
   const token = searchParams.get('token');
 
@@ -96,6 +96,7 @@ function AcceptInviteContent() {
         return;
       }
 
+      await updateSession();
       setSuccess(true);
       setResultMessage(data.message);
       setResultOrg(data.organization);
@@ -145,7 +146,18 @@ function AcceptInviteContent() {
           <h1 className="mb-2 text-xl font-semibold text-white">{t('invite.welcome')}</h1>
           <p className="mb-6 text-sm text-white/70">{resultMessage}</p>
           <Button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => {
+              if (resultOrg?.slug) {
+                const isProduction = window.location.hostname.endsWith('.onekof.com') || window.location.hostname === 'onekof.com';
+                if (isProduction) {
+                  window.location.href = `https://${resultOrg.slug}.onekof.com/dashboard`;
+                } else {
+                  window.location.href = `/dashboard`;
+                }
+              } else {
+                router.push('/dashboard');
+              }
+            }}
             className="rounded-full bg-gradient-to-r from-[#1C8C7D] to-[#2BB5A2] text-white hover:opacity-90 transition-opacity"
           >
             {t('invite.goToDashboard')}

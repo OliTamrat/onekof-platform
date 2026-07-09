@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
@@ -23,6 +23,8 @@ interface OrganizationInfo {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const { t } = useLanguage();
 
   const [name, setName] = useState('');
@@ -105,11 +107,11 @@ export default function SignUpPage() {
         return;
       }
 
-      if (data.hasPendingInvitations) {
-        // Invited user — skip onboarding, go to select-organization to see/accept invitations
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      } else if (data.hasPendingInvitations) {
         router.push('/select-organization');
       } else {
-        // New user — proceed to onboarding to set up workspace
         router.push('/onboarding');
       }
     } catch (err: any) {
