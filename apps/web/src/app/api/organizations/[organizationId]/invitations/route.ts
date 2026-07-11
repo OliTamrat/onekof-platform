@@ -94,7 +94,8 @@ export async function POST(
 
     const { organizationId } = params;
     const body = await request.json();
-    const { email, role = 'MEMBER', projectId, projectRole } = body;
+    const { email, role: requestedRole, projectId, projectRole } = body;
+    const role = projectId ? (requestedRole || 'GUEST') : (requestedRole || 'MEMBER');
 
     if (!email || typeof email !== 'string') {
       return NextResponse.json(

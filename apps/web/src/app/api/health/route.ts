@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/health
  * Basic health check endpoint
