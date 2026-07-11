@@ -94,7 +94,7 @@ export async function POST(
 
     const { organizationId } = params;
     const body = await request.json();
-    const { email, role = 'MEMBER' } = body;
+    const { email, role = 'MEMBER', projectId, projectRole } = body;
 
     if (!email || typeof email !== 'string') {
       return NextResponse.json(
@@ -122,6 +122,29 @@ export async function POST(
         { error: 'Invalid role. Must be ADMIN, MEMBER, or GUEST' },
         { status: 400 }
       );
+    }
+
+    // Validate project role if project-scoped
+    if (projectId) {
+      const validProjectRoles = ['ADMIN', 'MEMBER', 'VIEWER'];
+      if (projectRole && !validProjectRoles.includes(projectRole)) {
+        return NextResponse.json(
+          { error: 'Invalid project role. Must be ADMIN, MEMBER, or VIEWER' },
+          { status: 400 }
+        );
+      }
+
+      const project = await prisma.project.findFirst({
+        where: { id: projectId, organizationId, deletedAt: null },
+        select: { id: true, name: true },
+      });
+
+      if (!project) {
+        return NextResponse.json(
+          { error: 'Project not found in this organization' },
+          { status: 404 }
+        );
+      }
     }
 
     // Verify current user is admin/owner of the organization
@@ -212,6 +235,8 @@ export async function POST(
         tokenHash,
         invitedBy: session.user.id,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        projectId: projectId || null,
+        projectRole: projectRole ? (projectRole as any) : null,
       },
     });
 

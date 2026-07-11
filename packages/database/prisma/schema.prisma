@@ -246,6 +246,9 @@ model Invitation {
   expiresAt  DateTime  @map("expires_at")
   acceptedAt DateTime? @map("accepted_at")
 
+  projectId   String?      @map("project_id")
+  projectRole ProjectRole? @map("project_role")
+
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("invitations")

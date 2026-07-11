@@ -24,6 +24,8 @@ interface InvitationDetails {
   invitedBy: string;
   expiresAt: string;
   isExpired: boolean;
+  projectName?: string;
+  projectRole?: string;
 }
 
 function AcceptInviteContent() {
@@ -210,6 +212,20 @@ function AcceptInviteContent() {
                     {invitation?.role}
                   </span>
                 </div>
+                {invitation?.projectName && (
+                  <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                    <span className="text-xs font-medium text-white/70">{t('invite.project')}</span>
+                    <span className="text-sm font-semibold text-white">{invitation.projectName}</span>
+                  </div>
+                )}
+                {invitation?.projectRole && (
+                  <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                    <span className="text-xs font-medium text-white/70">{t('invite.projectRole')}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/20 border border-blue-500/30 px-2.5 py-0.5 text-xs font-medium text-blue-400">
+                      {invitation.projectRole}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
                   <span className="text-xs font-medium text-white/70">{t('invite.expires')}</span>
                   <span className="inline-flex items-center gap-1 text-xs text-white/70">
