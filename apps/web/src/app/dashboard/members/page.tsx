@@ -49,7 +49,7 @@ interface PendingInvitation {
 
 export default function MembersPage() {
   const { t } = useLanguage();
-  const { currentOrganization, projects } = useWorkspace();
+  const { currentOrganization, projects, userRole } = useWorkspace();
   const queryClient = useQueryClient();
 
   const [inviteEmail, setInviteEmail] = useState('');
@@ -166,6 +166,20 @@ export default function MembersPage() {
   };
 
   const isLoading = loadingMembers || loadingInvitations;
+
+  if (userRole === 'GUEST') {
+    return (
+      <AppLayout>
+        <div className="flex h-full items-center justify-center bg-gray-50 dark:bg-[#0B0E11]">
+          <div className="text-center max-w-md p-8">
+            <Shield className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('membersPage.accessRestricted')}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{t('membersPage.guestNoAccess')}</p>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
