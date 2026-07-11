@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ interface OrganizationInfo {
   memberCount: number;
 }
 
-export default function SignUpPage() {
+function SignUpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -359,5 +359,14 @@ export default function SignUpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0E11]"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent" /></div>}>
+      <SignUpContent />
+    </Suspense>
   );
 }
