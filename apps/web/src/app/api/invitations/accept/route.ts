@@ -68,6 +68,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Enforce email matching — only the invited email can accept
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true },
+    });
+
+    if (user?.email?.toLowerCase() !== matchedInvitation.email.toLowerCase()) {
+      return NextResponse.json(
+        {
+          error: 'This invitation was sent to a different email address. Please sign out and sign in with the correct account.',
+          invitedEmail: matchedInvitation.email,
+          currentEmail: user?.email,
+          emailMismatch: true,
+        },
+        { status: 403 }
+      );
+    }
+
     const existingMembership = await prisma.organizationMember.findUnique({
       where: {
         organizationId_userId: {
