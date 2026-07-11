@@ -49,11 +49,13 @@ interface PendingInvitation {
 
 export default function MembersPage() {
   const { t } = useLanguage();
-  const { currentOrganization } = useWorkspace();
+  const { currentOrganization, projects } = useWorkspace();
   const queryClient = useQueryClient();
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'MEMBER' | 'ADMIN' | 'GUEST'>('MEMBER');
+  const [inviteProjectId, setInviteProjectId] = useState('');
+  const [inviteProjectRole, setInviteProjectRole] = useState<'MEMBER' | 'ADMIN' | 'VIEWER'>('MEMBER');
   const [showInviteForm, setShowInviteForm] = useState(() => {
     if (typeof window !== 'undefined') {
       return new URLSearchParams(window.location.search).get('invite') === 'true';
@@ -89,11 +91,11 @@ export default function MembersPage() {
 
   // Send invitation mutation
   const inviteMutation = useMutation({
-    mutationFn: async ({ email, role }: { email: string; role: string }) => {
+    mutationFn: async (payload: { email: string; role: string; projectId?: string; projectRole?: string }) => {
       const res = await fetch(`/api/organizations/${organizationId}/invitations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to send invitation');
@@ -102,6 +104,7 @@ export default function MembersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['organization-invitations'] });
       setInviteEmail('');
+      setInviteProjectId('');
       setShowInviteForm(false);
     },
   });
@@ -151,7 +154,15 @@ export default function MembersPage() {
 
   const handleInvite = () => {
     if (!inviteEmail.trim()) return;
-    inviteMutation.mutate({ email: inviteEmail.trim(), role: inviteRole });
+    const payload: { email: string; role: string; projectId?: string; projectRole?: string } = {
+      email: inviteEmail.trim(),
+      role: inviteRole,
+    };
+    if (inviteProjectId) {
+      payload.projectId = inviteProjectId;
+      payload.projectRole = inviteProjectRole;
+    }
+    inviteMutation.mutate(payload);
   };
 
   const isLoading = loadingMembers || loadingInvitations;
@@ -211,28 +222,60 @@ export default function MembersPage() {
               <p className="mb-3 text-xs text-gray-600 dark:text-white/70">
                 {t('membersPage.inviteDesc')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Input
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="colleague@example.com"
-                  className="flex-1 bg-white dark:bg-[#12161B] border-gray-200 dark:border-white/[0.08]"
-                  onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
-                />
-                <select
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as any)}
-                  className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
-                >
-                  <option value="MEMBER">{t('membersPage.roleMember')}</option>
-                  <option value="ADMIN">{t('membersPage.roleAdmin')}</option>
-                  <option value="GUEST">{t('membersPage.roleGuest')}</option>
-                </select>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="colleague@example.com"
+                    className="flex-1 bg-white dark:bg-[#12161B] border-gray-200 dark:border-white/[0.08]"
+                    onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+                  />
+                  <select
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value as any)}
+                    className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                  >
+                    <option value="MEMBER">{t('membersPage.roleMember')}</option>
+                    <option value="ADMIN">{t('membersPage.roleAdmin')}</option>
+                    <option value="GUEST">{t('membersPage.roleGuest')}</option>
+                  </select>
+                </div>
+
+                {projects.length > 0 && (
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <select
+                      value={inviteProjectId}
+                      onChange={(e) => {
+                        setInviteProjectId(e.target.value);
+                        if (e.target.value) setInviteRole('GUEST');
+                      }}
+                      className="flex-1 h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                    >
+                      <option value="">{t('membersPage.allProjects')}</option>
+                      {projects.map((p: any) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                    {inviteProjectId && (
+                      <select
+                        value={inviteProjectRole}
+                        onChange={(e) => setInviteProjectRole(e.target.value as any)}
+                        className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                      >
+                        <option value="VIEWER">{t('membersPage.projectViewer')}</option>
+                        <option value="MEMBER">{t('membersPage.projectMember')}</option>
+                        <option value="ADMIN">{t('membersPage.projectAdmin')}</option>
+                      </select>
+                    )}
+                  </div>
+                )}
+
                 <Button
                   onClick={handleInvite}
                   disabled={!inviteEmail.trim() || inviteMutation.isPending}
-                  className="bg-primary-500 hover:bg-primary-600 text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white w-full sm:w-auto self-end"
                 >
                   {inviteMutation.isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
