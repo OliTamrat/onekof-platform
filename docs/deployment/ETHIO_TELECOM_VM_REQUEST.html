@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onekof PM — VM Infrastructure Request</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #1a1a2e;
+    background: #ffffff;
+    line-height: 1.65;
+    font-size: 10.5pt;
+  }
+
+  @page { size: A4; margin: 18mm 20mm 20mm 20mm; }
+  @media print {
+    body { font-size: 10pt; }
+    .page { page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    min-height: 100vh;
+  }
+
+  /* Header Bar */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #1C8C7D;
+    margin-bottom: 28px;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 12px; }
+
+  .logo {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #1C8C7D, #8B5CF6);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800; color: white;
+  }
+
+  .brand-name { font-size: 20pt; font-weight: 800; color: #0B0E11; letter-spacing: -0.02em; }
+  .brand-sub { font-size: 9pt; color: #6b7280; font-weight: 500; margin-top: 1px; }
+
+  .header-right { text-align: right; font-size: 8.5pt; color: #6b7280; line-height: 1.6; }
+  .header-right strong { color: #1a1a2e; }
+
+  /* Document Title */
+  .doc-title {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #0B0E11;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .doc-subtitle {
+    font-size: 11pt;
+    color: #1C8C7D;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  /* Badge */
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+
+  .badge-green { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .badge-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .badge-purple { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+  /* Sections */
+  h2 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #0B0E11;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #e5e7eb;
+  }
+
+  h3 {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #1C8C7D;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  p { margin-bottom: 10px; color: #374151; }
+  ul { margin-bottom: 10px; padding-left: 20px; color: #374151; }
+  li { margin-bottom: 4px; }
+  strong { font-weight: 600; color: #1a1a2e; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f3f4f6;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9pt;
+    color: #1C8C7D;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 9.5pt;
+  }
+
+  th {
+    background: #0B0E11;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+  }
+
+  tr:nth-child(even) td { background: #f9fafb; }
+
+  .highlight-cell { font-weight: 600; color: #1C8C7D; }
+
+  /* Callout */
+  .callout {
+    background: #f0fdf4;
+    border-left: 3px solid #1C8C7D;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+
+  .callout-amber {
+    background: #fffbeb;
+    border-left-color: #d97706;
+  }
+
+  /* Architecture Box */
+  .arch-box {
+    background: #0B0E11;
+    color: #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    line-height: 1.6;
+    white-space: pre;
+    margin: 12px 0;
+    text-align: center;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding-top: 14px;
+    border-top: 1.5px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    color: #9ca3af;
+  }
+
+  /* Signature Block */
+  .sig-block {
+    margin-top: 32px;
+    display: flex;
+    gap: 60px;
+  }
+
+  .sig-item { flex: 1; }
+
+  .sig-line {
+    border-top: 1px solid #374151;
+    margin-top: 48px;
+    padding-top: 6px;
+    font-size: 9pt;
+    color: #374151;
+  }
+
+  .sig-role { font-size: 8pt; color: #6b7280; }
+</style>
+</head>
+<body>
+
+<!-- ═══ PAGE 1 ═══ -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">O</div>
+      <div>
+        <div class="brand-name">Onekof</div>
+        <div class="brand-sub">Project Management Platform</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>DAPS Analytics PLC</strong><br>
+      Date: July 6, 2026<br>
+      Document: VM-REQ-2026-001<br>
+      Classification: Confidential
+    </div>
+  </div>
+
+  <div class="doc-title">VM Infrastructure Request</div>
+  <div class="doc-subtitle">Ethio Telecom Partnership — Onekof PM Deployment</div>
+
+  <div class="badge-row">
+    <span class="badge badge-green">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Security Certified
+    </span>
+    <span class="badge badge-blue">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Ready to Deploy
+    </span>
+    <span class="badge badge-purple">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Docker Containerized
+    </span>
+  </div>
+
+  <h2>1. Executive Summary</h2>
+  <p>DAPS Analytics PLC requests <strong>two virtual machines</strong> from Ethio Telecom to host the <strong>Onekof PM</strong> platform — a project and budget management system built for Ethiopian organizations. The platform has passed a rigorous 49-test security assessment and is ready for immediate deployment upon VM provisioning.</p>
+
+  <h2>2. VM Specifications</h2>
+
+  <table>
+    <tr><th>Resource</th><th>Production VM</th><th>Staging / Backup VM</th></tr>
+    <tr><td><strong>vCPU</strong></td><td class="highlight-cell">8 cores</td><td>4 cores</td></tr>
+    <tr><td><strong>RAM</strong></td><td class="highlight-cell">32 GB</td><td>16 GB</td></tr>
+    <tr><td><strong>OS Disk</strong></td><td>100 GB SSD</td><td>50 GB SSD</td></tr>
+    <tr><td><strong>Data Disk</strong></td><td class="highlight-cell">500 GB SSD (separate mount)</td><td>200 GB SSD</td></tr>
+    <tr><td><strong>Operating System</strong></td><td colspan="2">Ubuntu Server 24.04 LTS</td></tr>
+    <tr><td><strong>Network</strong></td><td>Static public IPv4</td><td>Private (or public)</td></tr>
+    <tr><td><strong>Access</strong></td><td colspan="2">SSH key-based, root/sudo privileges</td></tr>
+  </table>
+
+  <div class="callout">
+    <strong>Why these specs:</strong> The production VM runs 4 containerized services (Next.js web app, PostgreSQL 15, Redis 7, Caddy reverse proxy). 32 GB RAM ensures stable database performance under concurrent load. The 500 GB data disk stores the database, file uploads, and automated backups with 7-day retention.
+  </div>
+
+  <h2>3. Network Requirements</h2>
+
+  <h3>Inbound Ports (Production VM)</h3>
+  <table>
+    <tr><th>Port</th><th>Protocol</th><th>Purpose</th><th>Source</th></tr>
+    <tr><td><strong>22</strong></td><td>TCP</td><td>SSH administration</td><td>DAPS Analytics IPs only</td></tr>
+    <tr><td><strong>80</strong></td><td>TCP</td><td>HTTP (redirects to HTTPS)</td><td>Public</td></tr>
+    <tr><td><strong>443</strong></td><td>TCP/UDP</td><td>HTTPS + HTTP/3</td><td>Public</td></tr>
+  </table>
+
+  <h3>Outbound Access Required</h3>
+  <table>
+    <tr><th>Destination</th><th>Purpose</th><th>Required?</th></tr>
+    <tr><td><code>ghcr.io</code></td><td>Docker image pulls (GitHub Container Registry)</td><td>Yes</td></tr>
+    <tr><td><code>api.chapa.co</code></td><td>Ethiopian payment processing (Telebirr, CBE)</td><td>Yes</td></tr>
+    <tr><td><code>api.resend.com</code></td><td>Transactional email delivery</td><td>Yes</td></tr>
+    <tr><td><code>acme-v02.api.letsencrypt.org</code></td><td>Automatic SSL certificate issuance</td><td>Yes</td></tr>
+    <tr><td><code>archive.ubuntu.com</code></td><td>OS security updates</td><td>Yes</td></tr>
+    <tr><td><code>sentry.io</code></td><td>Error monitoring</td><td>Optional</td></tr>
+  </table>
+
+  <div class="callout-amber callout">
+    <strong>Offline fallback:</strong> If outbound access to <code>ghcr.io</code> is not available, we can transfer Docker images (~300 MB) via SCP or USB. Our deployment script supports both online and offline modes.
+  </div>
+
+  <div class="footer">
+    <span>DAPS Analytics PLC &bull; Confidential</span>
+    <span>Page 1 of 2</span>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2 ═══ -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">O</div>
+      <div>
+        <div class="brand-name">Onekof</div>
+        <div class="brand-sub">Project Management Platform</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>VM Infrastructure Request</strong><br>
+      VM-REQ-2026-001<br>
+      Page 2 of 2
+    </div>
+  </div>
+
+  <h2>4. Platform Architecture</h2>
+  <p>Onekof runs as a self-contained Docker stack. Only the Caddy reverse proxy is exposed to the internet — the database and cache are on an internal Docker network, not accessible externally.</p>
+
+  <div class="arch-box">Internet → Caddy (SSL, :443) → Onekof Web (Next.js, :3000) → PostgreSQL 15 (:5432)
+                                                                          ↘ Redis 7 (:6379)
+
+All services on internal Docker network — only Caddy exposed to public</div>
+
+  <table>
+    <tr><th>Service</th><th>Image</th><th>Resources</th><th>Purpose</th></tr>
+    <tr><td><strong>Caddy</strong></td><td>caddy:2-alpine</td><td>~50 MB</td><td>SSL termination, reverse proxy, security headers</td></tr>
+    <tr><td><strong>Onekof Web</strong></td><td>onekof-web:v1.0</td><td>~300 MB</td><td>Next.js application (standalone)</td></tr>
+    <tr><td><strong>PostgreSQL</strong></td><td>postgres:15-alpine</td><td>512 MB RAM</td><td>Primary database (70+ tables)</td></tr>
+    <tr><td><strong>Redis</strong></td><td>redis:7-alpine</td><td>512 MB RAM</td><td>Rate limiting, caching, sessions</td></tr>
+  </table>
+
+  <h2>5. Security Posture</h2>
+  <ul>
+    <li><strong>49 security tests passed</strong> — authentication, authorization, session management, input validation, API security, data protection, audit logging</li>
+    <li><strong>AES-256-GCM encryption</strong> for all uploaded files at rest</li>
+    <li><strong>Role-based access control</strong> with cross-tenant isolation (OWNER, ADMIN, MEMBER, GUEST)</li>
+    <li><strong>Scrypt password hashing</strong> with timing-safe comparison</li>
+    <li><strong>Rate limiting</strong> on authentication, billing, and admin endpoints</li>
+    <li><strong>Append-only audit logs</strong> for organization, budget, and admin actions</li>
+    <li><strong>Automated backups</strong> — daily pg_dump at 03:00 EAT, 7-day retention</li>
+  </ul>
+
+  <h2>6. DNS Requirements</h2>
+  <table>
+    <tr><th>Record</th><th>Name</th><th>Value</th><th>Purpose</th></tr>
+    <tr><td>A</td><td><code>onekof.et</code></td><td>VM Public IP</td><td>Primary domain</td></tr>
+    <tr><td>A</td><td><code>www.onekof.et</code></td><td>VM Public IP</td><td>WWW redirect</td></tr>
+    <tr><td>A</td><td><code>*.onekof.et</code></td><td>VM Public IP</td><td>Tenant subdomains</td></tr>
+  </table>
+  <p>We request assistance with <code>.et</code> domain registration through ETC if possible.</p>
+
+  <h2>7. Operational Commitments</h2>
+  <ul>
+    <li><strong>DAPS Analytics manages</strong> all application deployment, updates, monitoring, and backups</li>
+    <li><strong>Ethio Telecom provides</strong> VM infrastructure, network connectivity, and datacenter operations</li>
+    <li><strong>Zero operational burden</strong> on ET staff — we handle everything above the VM layer</li>
+    <li><strong>Deployment ready within 48 hours</strong> of receiving VM access</li>
+  </ul>
+
+  <h2>8. Requested Timeline</h2>
+  <table>
+    <tr><th>Milestone</th><th>Target Date</th><th>Dependency</th></tr>
+    <tr><td>VM provisioning</td><td class="highlight-cell">July 7–11, 2026</td><td>ET approval</td></tr>
+    <tr><td>OS hardening + Docker setup</td><td>Within 48 hours of access</td><td>VM access</td></tr>
+    <tr><td>Staging deployment + testing</td><td>July 14–18, 2026</td><td>Network connectivity</td></tr>
+    <tr><td>Production go-live</td><td class="highlight-cell">July 21–25, 2026</td><td>.et domain (or IP fallback)</td></tr>
+  </table>
+
+  <h2>9. Contact Information</h2>
+  <table>
+    <tr><th>Role</th><th>Name</th><th>Email</th><th>Phone</th></tr>
+    <tr><td><strong>Technical Lead</strong></td><td>Oli Tamrat</td><td>oli@dapsanalytics.com</td><td>—</td></tr>
+    <tr><td><strong>Company</strong></td><td colspan="3">DAPS Analytics PLC — Software Development &amp; Analytics</td></tr>
+  </table>
+
+  <!-- Signature Block -->
+  <div class="sig-block">
+    <div class="sig-item">
+      <div class="sig-line">
+        <strong>Oli Tamrat</strong><br>
+        <span class="sig-role">Co-Founder &amp; CTO, DAPS Analytics PLC</span>
+      </div>
+    </div>
+    <div class="sig-item">
+      <div class="sig-line">
+        <strong>Ethio Telecom Representative</strong><br>
+        <span class="sig-role">Name / Title / Date</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>DAPS Analytics PLC &bull; Confidential</span>
+    <span>&copy; 2026 DAPS Analytics PLC. All rights reserved.</span>
+  </div>
+</div>
+
+</body>
+</html>
