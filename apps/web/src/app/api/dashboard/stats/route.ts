@@ -26,10 +26,14 @@ export async function GET(_request: NextRequest) {
     // RBAC: GUEST users only see stats from projects they're explicitly in
     const projectFilter: any = { organizationId, deletedAt: null };
     if (isGuest) {
-      projectFilter.OR = [
-        { members: { some: { userId } } },
-        { leadId: userId },
-        { ownerId: userId },
+      projectFilter.AND = [
+        {
+          OR: [
+            { members: { some: { userId } } },
+            { leadId: userId },
+            { ownerId: userId },
+          ],
+        },
       ];
     }
 

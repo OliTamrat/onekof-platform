@@ -323,10 +323,14 @@ export function buildProjectAccessFilter(params: {
   if (orgRole === 'GUEST') {
     return {
       ...base,
-      OR: [
-        { members: { some: { userId } } },
-        { leadId: userId },
-        { ownerId: userId },
+      AND: [
+        {
+          OR: [
+            { members: { some: { userId } } },
+            { leadId: userId },
+            { ownerId: userId },
+          ],
+        },
       ],
     };
   }

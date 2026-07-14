@@ -46,12 +46,23 @@ export async function GET(
       isArchived: false,
     };
     if (isGuest) {
-      projectWhere.OR = [
-        { members: { some: { userId: session.user.id } } },
-        { leadId: session.user.id },
-        { ownerId: session.user.id },
+      projectWhere.AND = [
+        {
+          OR: [
+            { members: { some: { userId: session.user.id } } },
+            { leadId: session.user.id },
+            { ownerId: session.user.id },
+          ],
+        },
       ];
     }
+
+    logger.info('Project access filter', {
+      userId: session.user.id,
+      role: membership.role,
+      isGuest,
+      filterApplied: !!projectWhere.AND,
+    });
 
     const projects = await prisma.project.findMany({
       where: projectWhere,
