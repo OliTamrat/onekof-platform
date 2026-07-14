@@ -15,15 +15,26 @@ export async function GET(_request: NextRequest) {
     if (error || !ctx) return error!;
 
     const organizationId = ctx.organizationId;
+    const userId = ctx.user.id;
+    const isGuest = ctx.role === 'GUEST';
 
     // Calculate date ranges
     const now = new Date();
     const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const next7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-    // Shared task scope: org's non-deleted tasks in non-deleted projects
+    // RBAC: GUEST users only see stats from projects they're explicitly in
+    const projectFilter: any = { organizationId, deletedAt: null };
+    if (isGuest) {
+      projectFilter.OR = [
+        { members: { some: { userId } } },
+        { leadId: userId },
+        { ownerId: userId },
+      ];
+    }
+
     const baseWhere = {
-      project: { organizationId, deletedAt: null },
+      project: projectFilter,
       deletedAt: null,
     };
 

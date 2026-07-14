@@ -41,6 +41,32 @@ export async function GET(request: NextRequest) {
       organizationId,
     };
 
+    // RBAC: GUEST users only see activities from their assigned projects
+    if (ctx.role === 'GUEST') {
+      const guestProjects = await prisma.project.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          OR: [
+            { members: { some: { userId: ctx.user.id } } },
+            { leadId: ctx.user.id },
+            { ownerId: ctx.user.id },
+          ],
+        },
+        select: { id: true },
+      });
+      const guestProjectIds = guestProjects.map((p: { id: string }) => p.id);
+      const guestTasks = await prisma.task.findMany({
+        where: { projectId: { in: guestProjectIds }, deletedAt: null },
+        select: { id: true },
+      });
+      const guestTaskIds = guestTasks.map((t: { id: string }) => t.id);
+      where.OR = [
+        { entityType: 'TASK', entityId: { in: guestTaskIds } },
+        { entityType: 'PROJECT', entityId: { in: guestProjectIds } },
+      ];
+    }
+
     if (userIdFilter) {
       where.userId = userIdFilter;
     }
