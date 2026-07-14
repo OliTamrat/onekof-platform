@@ -38,6 +38,14 @@ export async function GET(request: NextRequest) {
       orgRole: ctx.role,
     });
 
+    logger.info('Issues access filter', {
+      userId: ctx.user.id,
+      email: ctx.user.email,
+      orgRole: ctx.role,
+      isGuest: ctx.role === 'GUEST',
+      filterHasAND: !!projectAccessFilter.AND,
+    });
+
     const where: any = {
       deletedAt: null,
       project: projectAccessFilter,
