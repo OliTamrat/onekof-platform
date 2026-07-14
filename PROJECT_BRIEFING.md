@@ -1,18 +1,75 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-02 — Infrastructure audit + Phase 2 pre-analysis complete
+> Last updated: 2026-07-14 — QA testing infrastructure + invitation RBAC + multi-language
 
 ---
 
-## CURRENT STATUS (2026-07-02)
+## CURRENT STATUS (2026-07-14)
 
 ### Tier 3 (Vercel + Supabase) — Live
-Web platform is live at **vision.onekof.com** and other org subdomains.
+Web platform is live at **onekof.com** and org subdomains.
 204/204 unit tests passing. TypeScript strict build: 0 errors. Sentry active.
 INSA security code (P1-P6): implemented — but see CSRF note below.
 
 ### Phase 2 (EthioTelecom Tier 2) — PRE-LAUNCH
 INSA certification completing this week. Moving to Tier 2 deployment.
 Full infrastructure audit completed: `docs/deployment/INFRASTRUCTURE_AUDIT_2026_07.md`
+
+---
+
+## SESSION LOG (2026-07-14) — QA Testing + Invitation Flow + i18n
+
+### Completed
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 1 | Fixed all TypeScript errors (was 10+, now 0) | `auth.ts`, `reports/page.tsx`, `budget/page.tsx`, `issues/budget/page.tsx`, `create-sample-expenses/route.ts`, `superadmin.ts` |
+| 2 | Fixed ESLint config (broken `@onekof/config` path) | `.eslintrc.js` |
+| 3 | Added 2FA fields to Prisma schema + migrated production DB via SQL Editor | `schema.prisma` |
+| 4 | Fixed `entityType` column mapping (missing `@map`) | `schema.prisma` |
+| 5 | Created missing PostgreSQL enum types (`ProjectEntityType`, `ProjectVisibility`, `ProjectRiskLevel`, `ProjectPriority`) | Production DB via SQL Editor |
+| 6 | Added all missing enterprise project columns to production DB | Production DB via SQL Editor |
+| 7 | Created k6 load test scripts for QA team | `tests/k6/` (8 files) |
+| 8 | Built multi-language system (5 languages) | `src/locales/`, `src/contexts/language-context.tsx`, `src/components/language-switcher.tsx` |
+| 9 | Changed ETB as default currency | `src/lib/validation/schemas.ts` |
+| 10 | Fixed invitation acceptance flow — subdomain redirect, session refresh, defaultOrganizationId | `api/invitations/accept/route.ts`, `auth/accept-invite/page.tsx` |
+| 11 | Fixed signup Suspense boundary (was breaking CI build) | `auth/signup/page.tsx` |
+| 12 | Fixed `/api/health` build error (missing `force-dynamic`) | `api/health/route.ts` |
+| 13 | Built project-scoped invitations | `schema.prisma`, `api/invitations/`, `auth/accept-invite/page.tsx` |
+| 14 | GUEST role defaults for project-scoped invites | `api/organizations/[id]/invitations/route.ts` |
+| 15 | RBAC enforcement for GUEST users (project filter, sidebar hiding, members page blocked) | `api-organization.ts`, `collapsible-sidebar.tsx`, `members/page.tsx`, `workspace-context.tsx` |
+| 16 | Email matching on invitation acceptance | `api/invitations/accept/route.ts`, `auth/accept-invite/page.tsx` |
+| 17 | Project selector + role selector in invitation UI | `dashboard/members/page.tsx` |
+
+### Database Migrations Applied (via Supabase SQL Editor)
+
+These columns/types were added directly — `prisma db push` does not work through the Supabase pooler.
+
+| Table | Columns/Types Added |
+|-------|-------------------|
+| `users` | `two_factor_enabled`, `two_factor_secret`, `two_factor_backup_codes` |
+| `projects` | `owner_id`, `department`, `category`, `entity_type`, `visibility`, `risk_level`, `budget_code`, `tags`, `start_date`, `due_date`, `priority` |
+| `projects` | Enum types: `ProjectEntityType`, `ProjectVisibility`, `ProjectRiskLevel`, `ProjectPriority` |
+| `invitations` | `project_id`, `project_role` |
+
+### Pending Tasks
+
+| Priority | Task | Details |
+|----------|------|---------|
+| **P0** | Clean up test data | Remove incorrect GUEST memberships created when admin accepted invitations meant for other emails. Run SQL: check `organization_members` for mismatched GUEST entries |
+| **P0** | E2E test invitation flow | Full test: new email → incognito → signup → accept → GUEST-restricted dashboard. Verify RBAC enforcement live |
+| **P1** | Expand translation files | ~350 of ~1,020 keys done. AM, OM, TI, SO files need expansion to match full en.json. Dashboard page integrated; all other pages still hardcoded English |
+| **P1** | Integrate `t()` across all pages | Auth pages, sidebar nav, settings, projects, issues, budget, teams, goals, docs, onboarding, landing page |
+| **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
+| **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin. Scalability tests need k6 installed |
+
+### Key Architecture Notes for Next Session
+
+- **Supabase pooler cannot run DDL** — always use SQL Editor for ALTER TABLE / CREATE TYPE
+- **Schema change workflow**: edit schema → SQL Editor on production → `prisma generate` → commit
+- **Invitation email matching**: enforced — only the invited email can accept (403 if mismatch)
+- **GUEST RBAC**: `buildProjectAccessFilter()` in `api-organization.ts` restricts GUEST to explicit `ProjectMember` records only
+- **Sidebar filtering**: `collapsible-sidebar.tsx` hides Budget/Members/Settings/Automation/Reports for GUEST
+- **`userRole`**: exposed via `workspace-context.tsx` from `/api/organizations` response
 
 ---
 
