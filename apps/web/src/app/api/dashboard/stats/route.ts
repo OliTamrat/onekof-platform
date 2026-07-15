@@ -24,23 +24,27 @@ export async function GET(_request: NextRequest) {
     const next7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     // RBAC: GUEST users only see stats from projects they're explicitly in
-    const projectFilter: any = { organizationId, deletedAt: null };
+    let baseWhere: any = {
+      project: { organizationId, deletedAt: null },
+      deletedAt: null,
+    };
+
     if (isGuest) {
-      projectFilter.AND = [
-        {
+      const allowedProjects = await prisma.project.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
           OR: [
             { members: { some: { userId } } },
             { leadId: userId },
             { ownerId: userId },
           ],
         },
-      ];
+        select: { id: true },
+      });
+      const allowedIds = allowedProjects.map((p: { id: string }) => p.id);
+      baseWhere.projectId = { in: allowedIds };
     }
-
-    const baseWhere = {
-      project: projectFilter,
-      deletedAt: null,
-    };
 
     // All aggregations run in parallel — DB-side counting, no data transfer
     const [

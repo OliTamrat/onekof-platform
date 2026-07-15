@@ -322,15 +322,12 @@ export function buildProjectAccessFilter(params: {
   // GUEST: only see projects they're explicitly added to
   if (orgRole === 'GUEST') {
     return {
-      ...base,
-      AND: [
-        {
-          OR: [
-            { members: { some: { userId } } },
-            { leadId: userId },
-            { ownerId: userId },
-          ],
-        },
+      organizationId,
+      deletedAt: null,
+      OR: [
+        { members: { some: { userId } } },
+        { leadId: userId },
+        { ownerId: userId },
       ],
     };
   }
