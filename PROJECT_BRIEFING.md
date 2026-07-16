@@ -1,5 +1,5 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-14 — QA testing infrastructure + invitation RBAC + multi-language
+> Last updated: 2026-07-16 — RBAC enforcement, member management, issue hierarchy, timeline editing
 
 ---
 
@@ -51,24 +51,41 @@ These columns/types were added directly — `prisma db push` does not work throu
 | `projects` | Enum types: `ProjectEntityType`, `ProjectVisibility`, `ProjectRiskLevel`, `ProjectPriority` |
 | `invitations` | `project_id`, `project_role` |
 
+### Session Log (2026-07-15/16) — RBAC Enforcement + Member Management + Issue Improvements
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 18 | GUEST RBAC data filtering — explicit project ID list for issues/stats | `api/issues/route.ts`, `api/dashboard/stats/route.ts`, `api-organization.ts` |
+| 19 | Sidebar Projects badge shows actual project count (was nav item count) | `collapsible-sidebar.tsx` |
+| 20 | Org member role change API (PATCH) + removal API (DELETE) | `api/organization-members/route.ts` |
+| 21 | Members page: inline role dropdown + remove button for OWNER/ADMIN | `dashboard/members/page.tsx` |
+| 22 | Start date editing — API + UI (issue detail slideout) | `api/issues/[id]/route.ts`, `issue-detail-slideout.tsx` |
+| 23 | Issue type badges on kanban cards (Epic/Story/Bug/Task/Subtask) | `dashboard/issues/page.tsx` |
+| 24 | Issues API includes parent relation + subtask count | `api/issues/route.ts` |
+| 25 | Member checkbox fix — userId field mismatch in org members API | `api/organizations/[id]/members/route.ts`, `create-project-modal.tsx` |
+
 ### Pending Tasks
 
 | Priority | Task | Details |
 |----------|------|---------|
-| **P0** | Clean up test data | Remove incorrect GUEST memberships created when admin accepted invitations meant for other emails. Run SQL: check `organization_members` for mismatched GUEST entries |
-| **P0** | E2E test invitation flow | Full test: new email → incognito → signup → accept → GUEST-restricted dashboard. Verify RBAC enforcement live |
-| **P1** | Expand translation files | ~350 of ~1,020 keys done. AM, OM, TI, SO files need expansion to match full en.json. Dashboard page integrated; all other pages still hardcoded English |
+| **P0** | E2E test invitation flow | Full test: new email → incognito → signup → accept → GUEST-restricted dashboard |
+| **P1** | Expand translation files | ~350 of ~1,020 keys done. AM, OM, TI, SO files need expansion to match full en.json |
 | **P1** | Integrate `t()` across all pages | Auth pages, sidebar nav, settings, projects, issues, budget, teams, goals, docs, onboarding, landing page |
+| **P1** | Issue hierarchy tree view | Current kanban shows type badges + parent refs. Full tree view (Epic → Story → Task → Subtask) not yet built |
+| **P1** | Filter subtasks from top-level kanban | Subtasks currently appear alongside parents as independent cards |
 | **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
-| **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin. Scalability tests need k6 installed |
+| **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin |
+| **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls — remove after confirming GUEST works |
 
 ### Key Architecture Notes for Next Session
 
 - **Supabase pooler cannot run DDL** — always use SQL Editor for ALTER TABLE / CREATE TYPE
 - **Schema change workflow**: edit schema → SQL Editor on production → `prisma generate` → commit
 - **Invitation email matching**: enforced — only the invited email can accept (403 if mismatch)
-- **GUEST RBAC**: `buildProjectAccessFilter()` in `api-organization.ts` restricts GUEST to explicit `ProjectMember` records only
+- **GUEST RBAC**: Uses explicit `projectId: { in: allowedIds }` pattern (not Prisma nested relation filter — that doesn't restrict correctly)
+- **GUEST data flow**: First query allowed project IDs → then filter issues/stats by those IDs
 - **Sidebar filtering**: `collapsible-sidebar.tsx` hides Budget/Members/Settings/Automation/Reports for GUEST
+- **Org member management**: PATCH/DELETE on `/api/organization-members` — OWNER role is protected
 - **`userRole`**: exposed via `workspace-context.tsx` from `/api/organizations` response
 
 ---
