@@ -130,10 +130,19 @@ export async function GET(request: NextRequest) {
           avatar: true,
         },
       },
+      parent: {
+        select: {
+          id: true,
+          key: true,
+          title: true,
+          type: true,
+        },
+      },
       _count: {
         select: {
           comments: { where: { deletedAt: null } },
           attachments: true,
+          subtasks: true,
         },
       },
     };
@@ -146,6 +155,7 @@ export async function GET(request: NextRequest) {
       ...issue,
       commentCount: issue._count?.comments ?? 0,
       attachmentCount: issue._count?.attachments ?? 0,
+      subtaskCount: issue._count?.subtasks ?? 0,
       _count: undefined,
     });
 

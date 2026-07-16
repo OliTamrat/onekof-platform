@@ -237,6 +237,7 @@ export async function PATCH(
       assigneeId,
       labels,
       dueDate,
+      startDate,
       estimate,
       timeSpent,
       parentId,
@@ -261,6 +262,7 @@ export async function PATCH(
     if (assigneeId !== undefined) updateData.assigneeId = assigneeId;
     if (labels !== undefined) updateData.labels = labels;
     if (dueDate !== undefined) updateData.dueDate = dueDate ? new Date(dueDate) : null;
+    if (startDate !== undefined) updateData.startDate = startDate ? new Date(startDate) : null;
     if (estimate !== undefined) updateData.estimate = estimate;
     if (timeSpent !== undefined) updateData.timeSpent = timeSpent;
     if (parentId !== undefined) updateData.parentId = parentId;

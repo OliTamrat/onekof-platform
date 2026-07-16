@@ -85,6 +85,7 @@ interface Issue {
   commentCount: number;
   attachmentCount: number;
   labels?: string[];
+  startDate?: string;
   dueDate?: string;
   createdAt: string;
   updatedAt: string;
@@ -585,6 +586,7 @@ function DetailsTab({
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false);
+  const [isEditingStartDate, setIsEditingStartDate] = useState(false);
   const [isEditingDueDate, setIsEditingDueDate] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
 
@@ -917,6 +919,36 @@ function DetailsTab({
                       None
                     </Button>
                   </div>
+                )}
+              </div>
+            </div>
+
+            {/* Start Date */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.startDate') || 'Start Date'}</span>
+              <div className="flex items-center gap-2 flex-1">
+                <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
+                {isEditingStartDate ? (
+                  <input
+                    type="date"
+                    defaultValue={issue.startDate ? new Date(issue.startDate).toISOString().split('T')[0] : ''}
+                    onChange={(e) => {
+                      updateIssue.mutate({ startDate: e.target.value || null });
+                      setIsEditingStartDate(false);
+                      flashSaved();
+                    }}
+                    onBlur={() => setIsEditingStartDate(false)}
+                    autoFocus
+                    className="border border-gray-300 dark:border-slate-700 rounded px-2 py-1 text-sm bg-white dark:bg-[#282E33] text-gray-900 dark:text-white"
+                  />
+                ) : (
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsEditingStartDate(true)}
+                    className="h-auto px-1.5 py-0.5 text-sm cursor-pointer text-gray-900 dark:text-white hover:underline"
+                  >
+                    {issue.startDate ? format(new Date(issue.startDate), 'MMM dd, yyyy') : 'None'}
+                  </Button>
                 )}
               </div>
             </div>

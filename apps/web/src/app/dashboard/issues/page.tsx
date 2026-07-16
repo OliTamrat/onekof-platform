@@ -43,9 +43,13 @@ interface Issue {
     key: string;
     color?: string;
   };
+  parentId?: string;
+  parent?: { id: string; key: string; title: string; type: string };
   commentCount: number;
   attachmentCount: number;
+  subtaskCount?: number;
   labels?: string[];
+  startDate?: string;
   dueDate?: string;
   createdAt: string;
   updatedAt: string;
@@ -387,8 +391,34 @@ function IssueCard({ issue }: { issue: Issue }) {
     return `${month} ${day}, ${year}`;
   };
 
+  const typeConfig: Record<string, { label: string; color: string }> = {
+    EPIC: { label: 'Epic', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' },
+    STORY: { label: 'Story', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
+    BUG: { label: 'Bug', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' },
+    TASK: { label: 'Task', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' },
+    SUBTASK: { label: 'Subtask', color: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
+  };
+  const typeInfo = typeConfig[issue.type] || typeConfig.TASK;
+
   return (
     <div className="space-y-2.5">
+      {/* Type badge + parent ref */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold ${typeInfo.color}`}>
+          {typeInfo.label}
+        </span>
+        {issue.parent && (
+          <span className="text-[10px] text-gray-400 dark:text-white/40 truncate max-w-[120px]">
+            {issue.parent.key}
+          </span>
+        )}
+        {(issue.subtaskCount ?? 0) > 0 && (
+          <span className="text-[10px] text-gray-400 dark:text-white/40">
+            +{issue.subtaskCount} sub
+          </span>
+        )}
+      </div>
+
       {/* Title */}
       <h4 className="line-clamp-2 text-sm font-normal text-gray-900 dark:text-white leading-snug">
         {issue.title}
