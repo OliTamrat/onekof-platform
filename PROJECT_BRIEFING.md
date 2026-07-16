@@ -77,6 +77,53 @@ These columns/types were added directly — `prisma db push` does not work throu
 | **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin |
 | **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls — remove after confirming GUEST works |
 
+### Git History Cleanup — 10 Non-Compliant Commits
+
+Run from local terminal (`filter-branch` blocked in cloud environment):
+
+```bash
+cd onekof-platform
+git filter-branch -f --env-filter '
+OLD_EMAIL1="120649391+OliTamrat@users.noreply.github.com"
+OLD_EMAIL2="noreply@anthropic.com"
+CORRECT_NAME="Oli Tamrat Oli"
+CORRECT_EMAIL="oli.oli@udc.edu"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL1" ] || [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL2" ]; then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL1" ] || [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL2" ]; then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' -- master
+
+git push --force-with-lease origin master
+```
+
+**Commits to fix:**
+
+| Commit | Issue |
+|--------|-------|
+| `95e2218` | Author + Committer: `Claude <noreply@anthropic.com>` |
+| `84fcaf8` | Committer: `Claude <noreply@anthropic.com>` |
+| `0554879` | Wrong email: `120649391+OliTamrat@users.noreply.github.com` |
+| `450cc34` | Wrong email |
+| `9202f5f` | Wrong email |
+| `7298d83` | Wrong email |
+| `b1ee062` | Wrong email |
+| `825f9e5` | Wrong email |
+| `39d26fb` | Wrong email |
+| `4a1c7bd` | Wrong email |
+
+All must be: `Oli Tamrat Oli <oli.oli@udc.edu>` (both author AND committer).
+
+After running, verify with: `git log --format="%h %an <%ae> | %cn <%ce>" -30 | grep -v "oli.oli@udc.edu"`
+Should return empty (no non-compliant commits).
+
+---
+
 ### Key Architecture Notes for Next Session
 
 - **Supabase pooler cannot run DDL** — always use SQL Editor for ALTER TABLE / CREATE TYPE
