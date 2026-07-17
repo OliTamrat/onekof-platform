@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "clean": "rm -rf .next .turbo node_modules",
-    "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma"
+    "postinstall": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma || echo 'Warning: prisma generate failed (engine binaries unavailable — expected in offline/restricted environments)'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
