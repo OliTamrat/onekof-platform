@@ -121,11 +121,11 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
   // Project navigation (when in a specific project)
   const projectNav = [
-    { name: 'Board', href: '/board', icon: FolderKanban },
-    { name: 'Backlog', href: '/backlog', icon: List },
-    { name: 'Timeline', href: '/timeline', icon: Calendar },
-    { name: 'Reports', href: '/reports', icon: BarChart3 },
-    { name: 'Project Settings', href: '/settings', icon: SettingsIcon },
+    { name: t('nav.board'), href: '/board', icon: FolderKanban },
+    { name: t('nav.backlog'), href: '/backlog', icon: List },
+    { name: t('nav.timeline'), href: '/timeline', icon: Calendar },
+    { name: t('nav.reports'), href: '/reports', icon: BarChart3 },
+    { name: t('projectSettings.title'), href: '/settings', icon: SettingsIcon },
   ];
 
   const navigation = isInProject ? projectNav : dashboardNav;

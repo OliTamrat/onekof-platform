@@ -108,7 +108,7 @@ function SignInContent() {
       <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
         <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Back to home
+          {t('common.back')}
         </Link>
         <LanguageSwitcher />
       </div>
@@ -159,9 +159,9 @@ function SignInContent() {
           {/* Stats */}
           <div className="flex gap-6 border-t border-white/[0.06] pt-6 xl:gap-10">
             {[
-              { value: '500+', label: 'Teams' },
-              { value: '10K+', label: 'Projects' },
-              { value: '99.9%', label: 'Uptime' },
+              { value: '500+', label: t('teams.title') },
+              { value: '10K+', label: t('projects.title') },
+              { value: '99.9%', label: t('auth.uptime') },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl font-semibold text-white">{stat.value}</p>
@@ -233,7 +233,7 @@ function SignInContent() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder="Enter your password"
+                  placeholder={t('auth.enterPassword')}
                 />
                 <Button
                   type="button"
@@ -252,7 +252,7 @@ function SignInContent() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
                   <Shield className="h-4 w-4 text-primary-400" />
-                  <span className="text-[12px] text-primary-300">Enter the 6-digit code from your authenticator</span>
+                  <span className="text-[12px] text-primary-300">{t('auth.twoFactorCode')}</span>
                 </div>
                 <input
                   id="totpCode"
@@ -264,7 +264,7 @@ function SignInContent() {
                   autoFocus
                   autoComplete="one-time-code"
                 />
-                <p className="text-[11px] text-white/20">You can also use a backup code (format: XXXX-XXXX)</p>
+                <p className="text-[11px] text-white/20">{t('auth.backupCode')}</p>
               </div>
             )}
 
