@@ -1,5 +1,5 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-16 — RBAC enforcement, member management, issue hierarchy, timeline editing
+> Last updated: 2026-07-18 — Profile photo upload, RBAC enforcement, member management, issue hierarchy
 
 ---
 
@@ -64,6 +64,15 @@ These columns/types were added directly — `prisma db push` does not work throu
 | 24 | Issues API includes parent relation + subtask count | `api/issues/route.ts` |
 | 25 | Member checkbox fix — userId field mismatch in org members API | `api/organizations/[id]/members/route.ts`, `create-project-modal.tsx` |
 
+### Session Log (2026-07-18) — Profile Photo Upload + Issue Improvements
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 26 | Profile photo upload API (POST + DELETE) | `api/user/avatar/route.ts` (new) |
+| 27 | Profile settings page: camera hover overlay + upload + remove | `settings/profile/page.tsx` |
+| 28 | Dashboard settings profile tab: replaced Avatar URL text input with photo upload | `dashboard/settings/page.tsx` |
+| 29 | Photos stored in Vercel Blob, URL persisted in User.avatar, old photos auto-deleted on replace | Uses existing storage driver infrastructure |
+
 ### Pending Tasks
 
 | Priority | Task | Details |
@@ -75,6 +84,8 @@ These columns/types were added directly — `prisma db push` does not work throu
 | **P1** | Filter subtasks from top-level kanban | Subtasks currently appear alongside parents as independent cards |
 | **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
 | **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin |
+| **P2** | Profile photo in navbar | Navbar avatar circle still shows initial letter — should show uploaded photo |
+| **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls |
 | **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls — remove after confirming GUEST works |
 
 ### Git History Cleanup — 10 Non-Compliant Commits
