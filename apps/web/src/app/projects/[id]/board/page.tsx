@@ -4,12 +4,13 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Plus, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 const STATUSES = [
-  { id: 'TODO', label: 'To Do', color: 'bg-slate-200 dark:bg-slate-700' },
-  { id: 'IN_PROGRESS', label: 'In Progress', color: 'bg-blue-200 dark:bg-blue-900' },
-  { id: 'IN_REVIEW', label: 'In Review', color: 'bg-purple-200 dark:bg-purple-900' },
-  { id: 'DONE', label: 'Done', color: 'bg-green-200 dark:bg-green-900' },
+  { id: 'TODO', labelKey: 'status.todo', color: 'bg-slate-200 dark:bg-slate-700' },
+  { id: 'IN_PROGRESS', labelKey: 'status.inProgress', color: 'bg-blue-200 dark:bg-blue-900' },
+  { id: 'IN_REVIEW', labelKey: 'status.inReview', color: 'bg-purple-200 dark:bg-purple-900' },
+  { id: 'DONE', labelKey: 'status.done', color: 'bg-green-200 dark:bg-green-900' },
 ];
 
 export default function ProjectBoardPage() {
@@ -17,6 +18,7 @@ export default function ProjectBoardPage() {
   const projectId = params.id as string;
   const [issues, setIssues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchIssues();
@@ -61,7 +63,7 @@ export default function ProjectBoardPage() {
               <div className="flex items-center gap-2">
                 <div className={`h-3 w-3 rounded-full ${status.color}`} />
                 <h3 className="font-semibold text-gray-900 dark:text-white">
-                  {status.label}
+                  {t(status.labelKey)}
                 </h3>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {getIssuesByStatus(status.id).length}
