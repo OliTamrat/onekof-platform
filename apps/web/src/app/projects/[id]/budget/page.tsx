@@ -82,7 +82,7 @@ export default function ProjectBudgetPage() {
       const top = atRisk.sort((a: any, b: any) => b.util - a.util)[0];
       insights.push({
         id: 'risk-1', type: 'warning', icon: AlertCircle, color: 'text-yellow-500',
-        title: `${top.name} Alert`,
+        title: `${top.name} - ${t('budget.atRisk')}`,
         message: `${top.name} is at ${top.util.toFixed(0)}% utilization (ETB ${formatAmt(top.spent)} of ${formatAmt(top.allocated)}). Review upcoming expenses.`,
         timestamp: new Date(), priority: 'high',
       });
@@ -94,7 +94,7 @@ export default function ProjectBudgetPage() {
       const source = underUsed.sort((a: any, b: any) => a.util - b.util)[0];
       insights.push({
         id: 'opt-1', type: 'info', icon: Sparkles, color: 'text-blue-500',
-        title: 'Budget Optimization',
+        title: t('budget.budgetUtilization'),
         message: `${source.name} is at ${source.util.toFixed(0)}% — consider reallocating surplus to ${atRisk[0].name}.`,
         timestamp: new Date(), priority: 'medium',
       });
@@ -105,7 +105,7 @@ export default function ProjectBudgetPage() {
     if (overallUtil <= 75 && atRisk.length === 0) {
       insights.push({
         id: 'health-1', type: 'success', icon: CheckCircle, color: 'text-green-500',
-        title: 'On-Track Performance',
+        title: t('budget.onTrack'),
         message: `Overall budget is at ${overallUtil.toFixed(0)}% utilization. All categories within healthy limits.`,
         timestamp: new Date(), priority: 'low',
       });
@@ -115,7 +115,7 @@ export default function ProjectBudgetPage() {
     if (pendingApprovals > 0) {
       insights.push({
         id: 'pending-1', type: 'info', icon: AlertCircle, color: 'text-amber-500',
-        title: 'Pending Approvals',
+        title: t('budget.pendingApprovals'),
         message: `${pendingApprovals} expense${pendingApprovals === 1 ? '' : 's'} awaiting approval.`,
         timestamp: new Date(), priority: 'medium',
       });
@@ -155,14 +155,14 @@ export default function ProjectBudgetPage() {
             icon={<DollarSign className="h-5 w-5" />}
             value={`${(totalAllocated / 1000000).toFixed(1)}M`}
             label={t('budget.totalBudget')}
-            sublabel={`${budget?.currency || 'ETB'} allocated`}
+            sublabel={`${budget?.currency || 'ETB'}`}
             color="text-[#1C8C7D]"
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
             value={`${(totalSpent / 1000000).toFixed(1)}M`}
             label={t('budget.spent')}
-            sublabel={`${utilizationRate.toFixed(1)}% utilization`}
+            sublabel={`${utilizationRate.toFixed(1)}% ${t('budget.utilization')}`}
             color="text-blue-500"
           />
           <StatCard
@@ -176,7 +176,7 @@ export default function ProjectBudgetPage() {
             icon={<AlertCircle className="h-5 w-5" />}
             value={`${(totalAvailable / 1000000).toFixed(1)}M`}
             label={t('budget.available')}
-            sublabel={`${((totalAvailable / totalAllocated) * 100).toFixed(0)}% remaining`}
+            sublabel={`${((totalAvailable / totalAllocated) * 100).toFixed(0)}% ${t('budget.remaining')}`}
             color="text-purple-500"
           />
         </div>
@@ -193,7 +193,7 @@ export default function ProjectBudgetPage() {
                     {t('budget.categories')}
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {categories.length} categories • {expenses.length} total expenses
+                    {categories.length} {t('budget.categories')} • {expenses.length} {t('budget.totalExpenses')}
                   </p>
                 </div>
                 <Button className="p-2 hover:bg-gray-100 dark:hover:bg-[#1B1F23] rounded-lg transition-colors">
@@ -234,7 +234,7 @@ export default function ProjectBudgetPage() {
                             </span>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600 dark:text-gray-400">
-                              Allocated: {(category.allocatedAmount / 1000000).toFixed(2)}M ETB
+                              {t('budget.totalBudget')}: {(category.allocatedAmount / 1000000).toFixed(2)}M ETB
                             </span>
                           </div>
                         </div>
@@ -320,7 +320,7 @@ export default function ProjectBudgetPage() {
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-gray-600 dark:text-gray-400">
-                            {expense.category?.name || 'Uncategorized'}
+                            {expense.category?.name || t('common.noData')}
                           </span>
                           <span className="text-xs text-gray-400">•</span>
                           <span className="text-xs text-gray-500">
@@ -349,10 +349,10 @@ export default function ProjectBudgetPage() {
                 <Sparkles className="h-5 w-5 text-[#1C8C7D]" />
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    AI Budget Watchers
+                    {t('budget.budgetHealth')}
                   </h2>
                   <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                    Smart insights & recommendations
+                    {t('budget.aiRecommendations')}
                   </p>
                 </div>
               </div>
@@ -399,14 +399,14 @@ export default function ProjectBudgetPage() {
             {/* Budget Status Overview */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Status Overview
+                {t('common.overview')}
               </h3>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-green-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Approved</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.approved')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {expenses.filter((e: any) => e.status === 'APPROVED').length}
@@ -416,7 +416,7 @@ export default function ProjectBudgetPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Pending</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.pending')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {pendingApprovals}
@@ -426,7 +426,7 @@ export default function ProjectBudgetPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Rejected</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.rejected')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {rejectedCount}
@@ -457,6 +457,7 @@ function StatCard({
   color: string;
   onClick?: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div role="button" tabIndex={0}
       onClick={onClick}
@@ -466,7 +467,7 @@ function StatCard({
       <div className="mb-4 flex items-center justify-between">
         <div className={color}>{icon}</div>
         {onClick && (
-          <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">View details →</div>
+          <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">{t('common.viewDetails')}</div>
         )}
       </div>
       <div className="text-4xl font-bold text-gray-900 dark:text-white">{value}</div>
