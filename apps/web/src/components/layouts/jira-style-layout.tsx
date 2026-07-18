@@ -153,9 +153,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-2 mr-2 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm shadow-md">
-            O
-          </div>
+          <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded" />
           <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
             Onekof
           </span>
@@ -414,9 +412,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Mobile Sidebar Header with Close Button */}
           <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.08] md:hidden shrink-0">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm">
-                O
-              </div>
+              <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded" />
               <span className="text-lg font-bold text-slate-900 dark:text-white">
                 Onekof
               </span>

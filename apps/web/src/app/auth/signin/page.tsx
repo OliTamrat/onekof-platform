@@ -123,9 +123,7 @@ function SignInContent() {
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
+            <img src="/logo-icon.png" alt="Onekof" className="h-9 w-9 rounded-lg" />
             <span className="text-[16px] font-semibold text-white">Onekof</span>
           </Link>
 
@@ -177,9 +175,7 @@ function SignInContent() {
         <div className="w-full max-w-[420px]">
           {/* Mobile logo */}
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
+            <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded-lg" />
             <span className="text-[15px] font-semibold text-white">Onekof</span>
           </div>
 
