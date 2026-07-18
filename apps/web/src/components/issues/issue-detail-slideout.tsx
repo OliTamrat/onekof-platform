@@ -47,6 +47,7 @@ import {
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/toast-provider';
 import { Button } from '@/components/ui/button';
+import { EthiopianDatePicker } from '@/components/ui/ethiopian-date-picker';
 import { AlertModal } from '@/components/ui/alert-modal';
 import { SkeletonIssueDetail } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
@@ -923,70 +924,32 @@ function DetailsTab({
               </div>
             </div>
 
-            {/* Start Date */}
+            {/* Start Date — Ethiopian/Gregorian dual picker */}
             <div className="flex items-start gap-3">
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.startDate') || 'Start Date'}</span>
-              <div className="flex items-center gap-2 flex-1">
-                <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
-                {isEditingStartDate ? (
-                  <input
-                    type="date"
-                    defaultValue={issue.startDate ? new Date(issue.startDate).toISOString().split('T')[0] : ''}
-                    onChange={(e) => {
-                      updateIssue.mutate({ startDate: e.target.value || null });
-                      setIsEditingStartDate(false);
-                      flashSaved();
-                    }}
-                    onBlur={() => setIsEditingStartDate(false)}
-                    autoFocus
-                    className="border border-gray-300 dark:border-slate-700 rounded px-2 py-1 text-sm bg-white dark:bg-[#282E33] text-gray-900 dark:text-white"
-                  />
-                ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsEditingStartDate(true)}
-                    className="h-auto px-1.5 py-0.5 text-sm cursor-pointer text-gray-900 dark:text-white hover:underline"
-                  >
-                    {issue.startDate ? format(new Date(issue.startDate), 'MMM dd, yyyy') : 'None'}
-                  </Button>
-                )}
-              </div>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.startDate')}</span>
+              <EthiopianDatePicker
+                value={issue.startDate || null}
+                onChange={(date) => {
+                  updateIssue.mutate({ startDate: date });
+                  flashSaved();
+                }}
+                placeholder={t('common.none')}
+                className="flex-1"
+              />
             </div>
 
-            {/* Due Date */}
+            {/* Due Date — Ethiopian/Gregorian dual picker */}
             <div className="flex items-start gap-3">
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">{t('common.dueDate')}</span>
-              <div className="flex items-center gap-2 flex-1">
-                <Calendar className="h-4 w-4 text-gray-400 shrink-0" />
-                {isEditingDueDate ? (
-                  <input
-                    type="date"
-                    defaultValue={issue.dueDate ? new Date(issue.dueDate).toISOString().split('T')[0] : ''}
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        updateIssue.mutate({ dueDate: e.target.value });
-                      }
-                      setIsEditingDueDate(false);
-                      flashSaved();
-                    }}
-                    onBlur={() => setIsEditingDueDate(false)}
-                    autoFocus
-                    className="border border-gray-300 dark:border-slate-700 rounded px-2 py-1 text-sm bg-white dark:bg-[#282E33] text-gray-900 dark:text-white"
-                  />
-                ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsEditingDueDate(true)}
-                    className={`h-auto px-1.5 py-0.5 text-sm cursor-pointer ${
-                      issue.dueDate && new Date(issue.dueDate) < new Date()
-                        ? 'text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded'
-                        : 'text-gray-900 dark:text-white hover:underline'
-                    }`}
-                  >
-                    {issue.dueDate ? format(new Date(issue.dueDate), 'MMM dd, yyyy') : 'None'}
-                  </Button>
-                )}
-              </div>
+              <EthiopianDatePicker
+                value={issue.dueDate || null}
+                onChange={(date) => {
+                  updateIssue.mutate({ dueDate: date });
+                  flashSaved();
+                }}
+                placeholder={t('common.none')}
+                className="flex-1"
+              />
             </div>
 
             {/* Labels */}
