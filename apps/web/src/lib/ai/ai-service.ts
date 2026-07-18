@@ -322,10 +322,41 @@ export async function extractTextFromFile(
   }
 
   if (mimeType === 'application/pdf') {
-    // For PDFs, convert to images and use vision API
-    // Or use pdf-parse library
-    // For now, return placeholder
-    return 'PDF text extraction coming soon. Please use image uploads for now.';
+    const base64Pdf = fileBuffer.toString('base64');
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
+    const response = await client.messages.create({
+      model: process.env.AI_MODEL || 'claude-3-haiku-20240307',
+      max_tokens: 4096,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'document',
+              source: {
+                type: 'base64',
+                media_type: 'application/pdf',
+                data: base64Pdf,
+              },
+            },
+            {
+              type: 'text',
+              text: 'Extract and return all the text content from this document. Preserve the structure (headings, tables, lists). Return only the extracted text, no commentary.',
+            },
+          ],
+        },
+      ],
+    });
+    const content = response.content[0];
+    return content.type === 'text' ? content.text : '';
+  }
+
+  // For DOCX files, extract readable text from XML content
+  if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || mimeType === 'application/msword') {
+    const text = fileBuffer.toString('utf-8');
+    const xmlText = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (xmlText.length > 100) return xmlText;
+    return 'Document content could not be extracted. Please convert to PDF or text format.';
   }
 
   // For plain text files
@@ -339,11 +370,71 @@ export async function checkAIQuota(
   organizationId: string,
   userId: string
 ): Promise<{ allowed: boolean; remaining: number; limit: number }> {
-  // This will be implemented with the database
-  // For now, return allowed
+  const { prisma } = await import('@onekof/database');
+
+  const now = new Date();
+  const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const usage = await prisma.aIUsage.findFirst({
+    where: {
+      organizationId,
+      periodStart: { gte: periodStart },
+      periodEnd: { lte: periodEnd },
+    },
+  });
+
+  const limit = usage?.documentLimit || 50;
+  const used = usage?.documentCount || 0;
+  const remaining = Math.max(0, limit - used);
+
   return {
-    allowed: true,
-    remaining: 50,
-    limit: 50,
+    allowed: remaining > 0,
+    remaining,
+    limit,
   };
+}
+
+export async function recordAIUsage(
+  organizationId: string,
+  userId: string,
+  tokensUsed: number,
+  costUsd: number
+): Promise<void> {
+  const { prisma } = await import('@onekof/database');
+
+  const now = new Date();
+  const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const periodStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const existing = await prisma.aIUsage.findFirst({
+    where: { organizationId, userId, period: periodStr },
+  });
+
+  if (existing) {
+    await prisma.aIUsage.update({
+      where: { id: existing.id },
+      data: {
+        documentCount: { increment: 1 },
+        tokensUsed: { increment: tokensUsed },
+        costUSD: { increment: costUsd },
+      },
+    });
+  } else {
+    await prisma.aIUsage.create({
+      data: {
+        organizationId,
+        userId,
+        period: periodStr,
+        periodStart,
+        periodEnd,
+        documentCount: 1,
+        tokensUsed,
+        costUSD: costUsd,
+        documentLimit: 50,
+        exceeded: false,
+      },
+    });
+  }
 }

@@ -5,7 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { processDocument, extractTextFromFile, checkAIQuota, AI_CONFIG } from '@/lib/ai/ai-service';
+import { processDocument, extractTextFromFile, checkAIQuota, recordAIUsage, AI_CONFIG } from '@/lib/ai/ai-service';
+import { storage } from '@/lib/storage';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -102,9 +103,17 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // For MVP: Store file content in database (in production, use Supabase Storage)
-    // In production, upload to Supabase Storage and get URL
-    const fileUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+    // Upload to cloud storage (Vercel Blob / local-fs / S3)
+    let fileUrl: string;
+    try {
+      const ext = file.name.split('.').pop() || 'bin';
+      const storagePath = `documents/${ctx.organizationId}/${Date.now()}-${file.name}`;
+      const result = await storage.put(storagePath, file, { access: 'private' });
+      fileUrl = result.url;
+    } catch (storageError) {
+      logger.warn('Cloud storage upload failed, falling back to base64', { error: storageError });
+      fileUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+    }
 
     // Extract text from file
     let extractedText: string;
@@ -138,7 +147,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Process document with AI (async, don't wait)
-    processDocumentAsync(document.id, extractedText, documentType, file.name, user.id);
+    processDocumentAsync(document.id, extractedText, documentType, file.name, user.id, ctx.organizationId);
 
     return NextResponse.json({
       success: true,
@@ -168,7 +177,8 @@ async function processDocumentAsync(
   content: string,
   documentType: string,
   fileName: string,
-  userId: string
+  userId: string,
+  organizationId: string
 ) {
   try {
     // Process with AI
@@ -218,6 +228,13 @@ async function processDocumentAsync(
     // Extract milestones if it's a contract/proposal
     if (documentType === 'contract' || documentType === 'proposal' || documentType === 'rfp') {
       await extractMilestones(documentId, result.extractedData, userId);
+    }
+
+    // Track AI usage for quota
+    try {
+      await recordAIUsage(organizationId, userId, result.tokensUsed.total, result.cost);
+    } catch (quotaErr) {
+      logger.warn('Failed to record AI usage', { error: quotaErr });
     }
 
     logger.info('Document processed successfully', { documentId });
