@@ -1225,7 +1225,10 @@
     "teamMemberAdded": "Miseensi garee dabalame",
     "deadlineApproaching": "Beellami dhiyaataa jira",
     "systemUpdate": "Haaromsaa sirnaa",
-    "newFeaturesAdded": "Amalonni haaraan gara waltajjiitti dabalameera"
+    "newFeaturesAdded": "Amalonni haaraan gara waltajjiitti dabalameera",
+    "assigned": "Ramadame",
+    "comments": "Yaadota",
+    "watching": "Ilaalaa"
   },
   "createProject": {
     "basics": "Bu'uuraa",

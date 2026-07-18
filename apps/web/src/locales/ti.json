@@ -1225,7 +1225,10 @@
     "teamMemberAdded": "ኣባል ጋንታ ተወሲኹ",
     "deadlineApproaching": "ናይ ምውዳእ ግዜ ይቐርብ ኣሎ",
     "systemUpdate": "ናይ ስርዓት ምሕዳስ",
-    "newFeaturesAdded": "ሓደስቲ ባህርያት ኣብ ፕላትፎርም ተወሲኾም"
+    "newFeaturesAdded": "ሓደስቲ ባህርያት ኣብ ፕላትፎርም ተወሲኾም",
+    "assigned": "ዝተመደበ",
+    "comments": "ርእይቶ",
+    "watching": "ይዕዘቡ"
   },
   "createProject": {
     "basics": "መሰረታዊ",

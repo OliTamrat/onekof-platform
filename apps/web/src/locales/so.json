@@ -1219,7 +1219,10 @@
     "teamMemberAdded": "Xubin cusub ayaa kooxda lagu daray",
     "deadlineApproaching": "Waqtiga dhammaadku wuu soo dhowaaday",
     "systemUpdate": "Cusbooneysiinta nidaamka",
-    "newFeaturesAdded": "Astaamaha cusub ayaa lagu daray barnaamijka"
+    "newFeaturesAdded": "Astaamaha cusub ayaa lagu daray barnaamijka",
+    "assigned": "La shaqeeyay",
+    "comments": "Faallooyinka",
+    "watching": "Daawashada"
   },
   "createProject": {
     "basics": "Aasaaska",

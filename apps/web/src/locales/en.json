@@ -1218,7 +1218,10 @@
     "teamMemberAdded": "Team member added",
     "deadlineApproaching": "Deadline approaching",
     "systemUpdate": "System update",
-    "newFeaturesAdded": "New features have been added to the platform"
+    "newFeaturesAdded": "New features have been added to the platform",
+    "assigned": "Assigned",
+    "comments": "Comments",
+    "watching": "Watching"
   },
   "createProject": {
     "basics": "Basics",
