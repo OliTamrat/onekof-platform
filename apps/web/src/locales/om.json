@@ -344,7 +344,21 @@
     "yourEmailVerified": "Imeeliin Keessan Mirkanaa'eera",
     "verifyYourEmail": "Imeelii Keessan Mirkaneessaa",
     "resetInstructions": "Jecha darbii haaromsuuf qajeelfama isiniif ergina.",
-    "copyright": "2026 Onekof. Itoophiyaa keessatti jaalaladhaan ijaarame"
+    "copyright": "2026 Onekof. Itoophiyaa keessatti jaalaladhaan ijaarame",
+    "startBuilding": "Ijaaruu jalqabi",
+    "withYourTeam": "garee keessan waliin",
+    "signupDescription": "Dhaabbilee Itoophiyaa dhibbaan lakkaa'aman Onekof fayyadamuun pirojektii bulchuuf, baajeta Birriin hordofuuf, fi afaan filataniin hojjechuuf waliin ta'aa jiru.",
+    "featureCalendar": "Kaalaandarii Itoophiyaa fi jijjiirraa Giriigoriyaanii",
+    "featureLanguages": "Amaariffaa, Oromoo, Tigrinya, Inglizii",
+    "featureBudget": "Hordoffii baajeta Birriin",
+    "featureAI": "Pirosesii dokumantiiwwan AI-n deeggarame",
+    "featureFree": "Garee 10 tti bilisaan yoomiyyuu",
+    "setupTime": "Yeroo qindaa'inaa",
+    "toStart": "Jalqabuuf",
+    "yourFullName": "Maqaa guutuu keessan",
+    "emailPlaceholder": "you@company.com",
+    "enterPassword": "Jecha darbii keessan galchaa",
+    "uptime": "Yeroo hojii"
   },
   "projects": {
     "title": "Pirojektota",

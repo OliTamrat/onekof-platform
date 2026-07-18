@@ -344,7 +344,21 @@
     "yourEmailVerified": "ኢመይልካ ተረጋጊጹ",
     "verifyYourEmail": "ኢመይልካ ኣረጋግጽ",
     "resetInstructions": "ቃለ-ምስጢርካ ንምዳጋም መምርሒ ክንሰደልካ ኢና።",
-    "copyright": "2026 Onekof። ብፍቕሪ ኣብ ኢትዮጵያ ዝተሃንጸ"
+    "copyright": "2026 Onekof። ብፍቕሪ ኣብ ኢትዮጵያ ዝተሃንጸ",
+    "startBuilding": "ምህናጽ ጀምሩ",
+    "withYourTeam": "ምስ ጋንታኹም",
+    "signupDescription": "ብኣማኢት ዝቝጸሩ ኢትዮጵያውያን ትካላት Onekof ተጠቒሞም ፕሮጀክት ንምምሕዳር፣ ብብር ባጀት ንምክትታል፣ ብዝደለይዎ ቋንቋ ንምትሕብባር ይጸንብሩ ኣለዉ።",
+    "featureCalendar": "ናይ ኢትዮጵያ ካላንደር ምስ ግሪጎሪያን ምቕያር",
+    "featureLanguages": "ኣማርኛ፣ ኦሮሞ፣ ትግርኛ፣ እንግሊዝኛ",
+    "featureBudget": "ብናይ ኢትዮጵያ ብር ባጀት ምክትታል",
+    "featureAI": "ብ AI ዝሰርሕ ሰነድ ምስትንዓድ",
+    "featureFree": "ንጋንታታት ክሳብ 10 ንዘለኣለም ብነጻ",
+    "setupTime": "ግዜ ምድላው",
+    "toStart": "ንምጅማር",
+    "yourFullName": "ምሉእ ስምኩም",
+    "emailPlaceholder": "you@company.com",
+    "enterPassword": "ናይ ምስጢር ቃልኩም ኣእትዉ",
+    "uptime": "ግዜ ስራሕ"
   },
   "projects": {
     "title": "ፕሮጀክትታት",

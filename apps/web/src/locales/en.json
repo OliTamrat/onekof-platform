@@ -343,7 +343,21 @@
     "yourEmailVerified": "Your Email is Verified",
     "verifyYourEmail": "Verify Your Email",
     "resetInstructions": "We'll send you instructions to reset your password and get you back on track.",
-    "copyright": "2026 Onekof. Built with love in Ethiopia"
+    "copyright": "2026 Onekof. Built with love in Ethiopia",
+    "startBuilding": "Start building",
+    "withYourTeam": "with your team",
+    "signupDescription": "Join hundreds of Ethiopian organizations using Onekof to manage projects, track budgets in ETB, and collaborate in their preferred language.",
+    "featureCalendar": "Ethiopian calendar & Gregorian toggle",
+    "featureLanguages": "Amharic, Oromoo, Tigrinya, English UI",
+    "featureBudget": "Budget tracking in Ethiopian Birr",
+    "featureAI": "AI-powered document processing",
+    "featureFree": "Free forever for teams up to 10",
+    "setupTime": "Setup time",
+    "toStart": "To start",
+    "yourFullName": "Your full name",
+    "emailPlaceholder": "you@company.com",
+    "enterPassword": "Enter your password",
+    "uptime": "Uptime"
   },
   "projects": {
     "title": "Projects",

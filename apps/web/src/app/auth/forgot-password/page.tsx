@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="text-sm text-white/30">
-          © 2026 Onekof. Built with love in Ethiopia.
+          © 2026 Onekof. {t('auth.builtForEthiopia')}
         </div>
       </div>
 
