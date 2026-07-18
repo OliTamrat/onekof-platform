@@ -1,5 +1,5 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-18 — Profile photo upload, RBAC enforcement, member management, issue hierarchy
+> Last updated: 2026-07-18 — Ethiopian Calendar, AI docs fix, budget PAID, translations, profile photo, RBAC
 
 ---
 
@@ -73,20 +73,78 @@ These columns/types were added directly — `prisma db push` does not work throu
 | 28 | Dashboard settings profile tab: replaced Avatar URL text input with photo upload | `dashboard/settings/page.tsx` |
 | 29 | Photos stored in Vercel Blob, URL persisted in User.avatar, old photos auto-deleted on replace | Uses existing storage driver infrastructure |
 
+### Session Log (2026-07-18 cont.) — Translation Wiring + Ethiopian Calendar + AI/Budget Fixes
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 30 | Wire `t()` into all 14 project detail pages | `projects/[id]/*.tsx` (board, list, team, budget, settings, timeline, calendar, documents, goals, activity, automation, wiki, layout) |
+| 31 | Ethiopian Calendar date picker component | `components/ui/ethiopian-date-picker.tsx` (new, 265 lines) |
+| 32 | Replace `<input type="date">` with EthiopianDatePicker on issue start/due dates | `issue-detail-slideout.tsx` |
+| 33 | Fix PDF extraction — Anthropic vision document blocks | `lib/ai/ai-service.ts` |
+| 34 | Fix DOCX extraction — XML tag stripping | `lib/ai/ai-service.ts` |
+| 35 | Wire document uploads to Vercel Blob storage | `api/documents/upload/route.ts` |
+| 36 | Implement AI quota tracking via AIUsage model | `lib/ai/ai-service.ts` |
+| 37 | Budget PAID transition endpoint | `api/expenses/[id]/pay/route.ts` (new) |
+| 38 | Fix expense revision numbering | `api/expenses/[id]/route.ts` |
+| 39 | Wire `t()` into signup + forgot-password pages + 14 new auth translation keys | `auth/signup/page.tsx`, `auth/forgot-password/page.tsx`, all 5 locale files |
+| 40 | Wire `t()` into notifications page + add filter keys | `dashboard/notifications/page.tsx`, all 5 locale files |
+| 41 | Add all missing env vars to .env.example | `.env.example` (Blob, Stripe, Chapa, Admin, Upstash, Sentry) |
+
 ### Pending Tasks
 
 | Priority | Task | Details |
 |----------|------|---------|
-| **P0** | E2E test invitation flow | Full test: new email → incognito → signup → accept → GUEST-restricted dashboard |
-| **P1** | Expand translation files | ~350 of ~1,020 keys done. AM, OM, TI, SO files need expansion to match full en.json |
-| **P1** | Integrate `t()` across all pages | Auth pages, sidebar nav, settings, projects, issues, budget, teams, goals, docs, onboarding, landing page |
-| **P1** | Issue hierarchy tree view | Current kanban shows type badges + parent refs. Full tree view (Epic → Story → Task → Subtask) not yet built |
+| **P0** | **Verify Vercel env vars (run from terminal)** | Check Vercel Dashboard → Settings → Environment Variables. Ensure these are set: `ANTHROPIC_API_KEY`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`. Without these, AI docs, file storage, and email won't work. |
+| **P0** | **Set Stripe env vars in Vercel** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. Get from Stripe Dashboard → Developers → API Keys. |
+| **P0** | **Set Chapa env vars in Vercel** | `CHAPA_SECRET_KEY`, `CHAPA_WEBHOOK_SECRET`. Get from Chapa Dashboard. |
+| **P0** | **E2E test payment flow** | After setting Stripe/Chapa keys, test checkout from pricing page → payment → subscription activation. Run from browser. |
+| **P1** | **E2E test AI document upload** | After verifying `ANTHROPIC_API_KEY` + `BLOB_READ_WRITE_TOKEN`, upload a PDF invoice and verify: file stored in Vercel Blob (not base64), AI extracts budget items, quota tracked in `ai_usage` table. |
+| **P1** | **E2E test email delivery** | After setting `RESEND_API_KEY`, test: invitation email, password reset email, expense approval notification. |
+| **P1** | **Test integrations with API keys** | Set OAuth credentials in Vercel for: Slack (`SLACK_CLIENT_ID/SECRET`), GitHub (`GITHUB_CLIENT_ID/SECRET`), Google Calendar, Microsoft Teams, Jira. Test each connect flow. |
+| **P1** | Issue hierarchy tree view | Kanban shows type badges + parent refs. Full tree view (Epic → Story → Task → Subtask) not yet built |
 | **P1** | Filter subtasks from top-level kanban | Subtasks currently appear alongside parents as independent cards |
-| **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
-| **P2** | QA team readiness | Security tests (SEC-01 through SEC-12) can begin |
+| **P1** | Apply EthiopianDatePicker to more date fields | Currently on issue start/due dates. Also needed: project start/due dates in create-project-modal, budget fiscal year selectors |
 | **P2** | Profile photo in navbar | Navbar avatar circle still shows initial letter — should show uploaded photo |
 | **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls |
-| **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls — remove after confirming GUEST works |
+| **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
+| **P2** | Wire `t()` into remaining settings pages | `dashboard/settings/customization`, `dashboard/settings/security`, `dashboard/settings/integrations` |
+
+### Vercel Environment Variables Checklist (run from terminal or Vercel dashboard)
+
+```
+# Required for AI Document Processing
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Required for File Storage (documents, avatars)
+BLOB_READ_WRITE_TOKEN=vercel_blob_...
+
+# Required for Email (invitations, password reset, expense notifications)
+RESEND_API_KEY=re_...
+
+# Required for Payments — Stripe
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+
+# Required for Payments — Chapa (Ethiopia)
+CHAPA_SECRET_KEY=CHASECK_...
+CHAPA_WEBHOOK_SECRET=...
+
+# Required for Security
+ADMIN_SECRET=<generate with: openssl rand -hex 32>
+ADMIN_USERS=<bcrypt hashes, see generate-admin-hash.mjs>
+CRON_SECRET=<generate with: openssl rand -hex 32>
+BLOB_ENCRYPTION_KEY=<generate with: openssl rand -hex 32>
+
+# Required for Rate Limiting (already set if Upstash configured)
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# Optional — Error Tracking
+SENTRY_DSN=https://...
+```
+
+Verify with: `vercel env ls` or Vercel Dashboard → Settings → Environment Variables
 
 ### Git History Cleanup — 10 Non-Compliant Commits
 
