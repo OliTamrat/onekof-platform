@@ -22,7 +22,7 @@ import {
   Languages,
   Pause,
   Play,
-  Star,
+
   Sparkles,
   ChevronRight,
   Check,
@@ -1230,87 +1230,6 @@ export default function HomePage() {
                   <p className="mt-1.5 text-[14px] text-white/70">{stat.label}</p>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ TESTIMONIALS ═══ */}
-      <section id="about" className="py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <Reveal>
-            <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-              <div className="mb-5 inline-flex items-center gap-2">
-                <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.testimonials.label')}</span>
-              </div>
-              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
-                {t('landing.testimonials.heading1')}{' '}
-                <span className="font-serif italic text-white/70">{t('landing.testimonials.heading2')}</span>
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                quote: t('landing.testimonials.quote1'),
-                name: t('landing.testimonials.name1'),
-                role: t('landing.testimonials.role1'),
-                gradient: 'from-primary-500 to-primary-700',
-              },
-              {
-                quote: t('landing.testimonials.quote2'),
-                name: t('landing.testimonials.name2'),
-                role: t('landing.testimonials.role2'),
-                gradient: 'from-purple-500 to-pink-500',
-              },
-              {
-                quote: t('landing.testimonials.quote3'),
-                name: t('landing.testimonials.name3'),
-                role: t('landing.testimonials.role3'),
-                gradient: 'from-emerald-500 to-teal-500',
-              },
-              {
-                quote: t('landing.testimonials.quote4'),
-                name: t('landing.testimonials.name4'),
-                role: t('landing.testimonials.role4'),
-                gradient: 'from-amber-500 to-orange-500',
-              },
-              {
-                quote: t('landing.testimonials.quote5'),
-                name: t('landing.testimonials.name5'),
-                role: t('landing.testimonials.role5'),
-                gradient: 'from-cyan-500 to-blue-500',
-              },
-              {
-                quote: t('landing.testimonials.quote6'),
-                name: t('landing.testimonials.name6'),
-                role: t('landing.testimonials.role6'),
-                gradient: 'from-rose-500 to-pink-500',
-              },
-            ].map((testimonial, i) => (
-              <Reveal key={testimonial.name} delay={i * 60}>
-                <div className="group h-full rounded-2xl border border-white/[0.08] bg-[#12161B] p-6 transition-all duration-500 hover:border-white/[0.15]">
-                  <div className="mb-4 flex gap-1">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
-                    ))}
-                  </div>
-                  <p className="mb-6 text-[14px] leading-relaxed text-white/70">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-medium text-white">{testimonial.name}</p>
-                      <p className="text-[13px] text-white/70">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
             ))}
           </div>
         </div>
