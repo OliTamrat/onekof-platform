@@ -45,6 +45,7 @@ import {
   Smartphone,
   Landmark,
   CreditCard,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -690,13 +691,20 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
+                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:flex-wrap">
                   <Link
                     href="/auth/signup"
                     className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[15px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
                   >
                     {t('landing.hero.getStartedFree')}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                  <Link
+                    href="/product"
+                    className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-[#1C8C7D]/30 bg-[#1C8C7D]/[0.08] px-7 py-3.5 text-[15px] font-medium text-white/80 transition-all hover:border-[#1C8C7D]/50 hover:bg-[#1C8C7D]/[0.12] hover:text-white"
+                  >
+                    <Layers className="h-4 w-4 text-[#2BB5A2]" />
+                    How It Works
                   </Link>
                   <button
                     onClick={() => setVideoOpen(true)}
