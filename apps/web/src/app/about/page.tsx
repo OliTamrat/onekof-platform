@@ -162,10 +162,10 @@ export default function AboutPage() {
 
       {/* ═══ NAVBAR ═══ */}
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-[#0B0E11]/80 backdrop-blur-2xl backdrop-saturate-150">
-        <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
+        <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center gap-2.5">
-            <img src="/logo-mark.png" alt="Onekof" className="h-9 w-9 md:hidden" />
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-9 hidden md:block" />
+            <img src="/logo-mark.png?v=2" alt="Onekof" className="h-14 w-14 md:hidden" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14 hidden md:block" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -708,7 +708,7 @@ export default function AboutPage() {
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5">
-                <img src="/logo-wordmark.png" alt="Onekof" className="h-9" />
+                <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
               </div>
               <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 Modern project management built for Ethiopian teams. Native calendar, local

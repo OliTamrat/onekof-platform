@@ -147,8 +147,8 @@ function PricingContent() {
       <nav className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0B0E11]/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <img src="/logo-mark.png" alt="Onekof" className="h-8 w-8 md:hidden" />
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-8 hidden md:block" />
+            <img src="/logo-mark.png?v=2" alt="Onekof" className="h-12 w-12 md:hidden" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14 hidden md:block" />
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />

@@ -85,7 +85,7 @@ function MarketingPage() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2.5">
-              <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
             </div>
             <div className="hidden md:flex items-center gap-6">
               {['Product', 'Solutions', 'Pricing', 'Enterprise'].map((item) => (
@@ -367,7 +367,7 @@ function MarketingPage() {
               <div className="h-7 w-7 rounded-lg bg-[#2563EB] flex items-center justify-center">
                 <span className="text-white font-semibold text-xs">O</span>
               </div>
-              <img src="/logo-wordmark.png" alt="Onekof" className="h-6" />
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10" />
             </div>
             <p className="text-xs text-slate-500">&copy; 2024 Onekof. All rights reserved.</p>
           </div>
@@ -416,7 +416,7 @@ function DashboardPage() {
       <aside className="w-[240px] border-r border-[#1E2130] bg-[#13151E] flex flex-col">
         {/* Logo */}
         <div className="h-14 flex items-center gap-2.5 px-4 border-b border-[#1E2130]">
-          <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
+          <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
         </div>
 
         {/* Org Switcher */}

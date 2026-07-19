@@ -110,7 +110,7 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
           <Shield className="h-4 w-4 text-white" />
         </div>
         <div>
-          <img src="/logo-wordmark.png" alt="Onekof" className="h-6" />
+          <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10" />
           <p className="text-[10px] text-slate-400">Platform Management</p>
         </div>
       </div>

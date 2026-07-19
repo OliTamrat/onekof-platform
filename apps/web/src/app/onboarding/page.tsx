@@ -299,7 +299,7 @@ function OnboardingContent() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex flex-col items-center gap-2 mb-6">
-              <img src="/logo-full.png" alt="Onekof" className="h-10" />
+              <img src="/logo-full.png?v=2" alt="Onekof" className="h-20" />
               <div className="text-center">
                 <p className="text-xs text-white/70">{t('onboardingPage.enterprisePM')}</p>
               </div>
