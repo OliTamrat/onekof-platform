@@ -356,7 +356,7 @@
     "setupTime": "Yeroo qindaa'inaa",
     "toStart": "Jalqabuuf",
     "yourFullName": "Maqaa guutuu keessan",
-    "emailPlaceholder": "you@company.com",
+    "emailPlaceholder": "name@example.com",
     "enterPassword": "Jecha darbii keessan galchaa",
     "uptime": "Yeroo hojii"
   },
@@ -1970,7 +1970,7 @@
     "teamMemberName": "Maqaa Miseensa Garee",
     "fullName": "Maqaa guutuu",
     "email": "Imeelii",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "Gahee",
     "startDate": "Guyyaa Jalqabaa",
     "mentor": "Gorsiisaa",

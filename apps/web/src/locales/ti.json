@@ -356,7 +356,7 @@
     "setupTime": "ግዜ ምድላው",
     "toStart": "ንምጅማር",
     "yourFullName": "ምሉእ ስምኩም",
-    "emailPlaceholder": "you@company.com",
+    "emailPlaceholder": "name@example.com",
     "enterPassword": "ናይ ምስጢር ቃልኩም ኣእትዉ",
     "uptime": "ግዜ ስራሕ"
   },
@@ -2014,7 +2014,7 @@
     "teamMemberName": "ስም ኣባል ጋንታ",
     "fullName": "ምሉእ ስም",
     "email": "ኢመይል",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "ተራ",
     "startDate": "ናይ ምጅማር ዕለት",
     "mentor": "ኣማኻሪ",

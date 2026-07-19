@@ -153,7 +153,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center mr-2 shrink-0">
-          <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 lg:hidden" />
+          <img src="/logo-mark.png" alt="Onekof" className="h-8 w-8 lg:hidden" />
           <img src="/logo-wordmark.png" alt="Onekof" className="h-8 hidden lg:block" />
         </Link>
 

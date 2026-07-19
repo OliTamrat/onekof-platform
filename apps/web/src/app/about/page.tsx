@@ -164,7 +164,7 @@ export default function AboutPage() {
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-[#0B0E11]/80 backdrop-blur-2xl backdrop-saturate-150">
         <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center gap-2.5">
-            <img src="/logo-icon.png" alt="Onekof" className="h-9 w-9 md:hidden" />
+            <img src="/logo-mark.png" alt="Onekof" className="h-9 w-9 md:hidden" />
             <img src="/logo-wordmark.png" alt="Onekof" className="h-9 hidden md:block" />
           </Link>
 

@@ -356,7 +356,7 @@
     "setupTime": "Waqtiga dejinta",
     "toStart": "Si aad u bilowdo",
     "yourFullName": "Magacaaga buuxa",
-    "emailPlaceholder": "you@company.com",
+    "emailPlaceholder": "name@example.com",
     "enterPassword": "Geli eraygaaga sirta ah",
     "uptime": "Waqtiga shaqada"
   },
@@ -2008,7 +2008,7 @@
     "teamMemberName": "Magaca Xubin Kooxda",
     "fullName": "Magaca buuxa",
     "email": "Iimaylka",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "Doorka",
     "startDate": "Taariikhda bilowga",
     "mentor": "La taliyaha",

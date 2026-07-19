@@ -356,7 +356,7 @@
     "setupTime": "የማዋቀር ጊዜ",
     "toStart": "ለመጀመር",
     "yourFullName": "ሙሉ ስምዎ",
-    "emailPlaceholder": "you@company.com",
+    "emailPlaceholder": "name@example.com",
     "enterPassword": "የይለፍ ቃልዎን ያስገቡ",
     "uptime": "የስራ ጊዜ"
   },
@@ -2008,7 +2008,7 @@
     "teamMemberName": "የቡድን አባል ስም",
     "fullName": "ሙሉ ስም",
     "email": "ኢሜይል",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "ሚና",
     "startDate": "የመጀመሪያ ቀን",
     "mentor": "አማካሪ",

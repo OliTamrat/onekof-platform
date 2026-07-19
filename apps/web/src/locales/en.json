@@ -355,7 +355,7 @@
     "setupTime": "Setup time",
     "toStart": "To start",
     "yourFullName": "Your full name",
-    "emailPlaceholder": "you@company.com",
+    "emailPlaceholder": "name@example.com",
     "enterPassword": "Enter your password",
     "uptime": "Uptime"
   },
@@ -1963,7 +1963,7 @@
     "teamMemberName": "Team Member Name",
     "fullName": "Full name",
     "email": "Email",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "Role",
     "startDate": "Start Date",
     "mentor": "Mentor",
