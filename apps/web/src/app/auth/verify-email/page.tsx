@@ -88,8 +88,7 @@ function VerifyEmailContent() {
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo-icon.png" alt="Onekof" className="h-12 w-12 rounded-xl" />
-            <span className="text-2xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-10" />
           </Link>
         </div>
 
@@ -138,8 +137,7 @@ function VerifyEmailContent() {
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <img src="/logo-icon.png" alt="Onekof" className="h-10 w-10 rounded-xl" />
-            <span className="text-xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-8" />
           </Link>
 
           <div className="mb-8">
@@ -256,8 +254,7 @@ function VerifyEmailLoading() {
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo-icon.png" alt="Onekof" className="h-12 w-12 rounded-xl" />
-            <span className="text-2xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-10" />
           </Link>
         </div>
 
@@ -294,8 +291,7 @@ function VerifyEmailLoading() {
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <img src="/logo-icon.png" alt="Onekof" className="h-10 w-10 rounded-xl" />
-            <span className="text-xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-8" />
           </Link>
 
           <div className="mb-8">

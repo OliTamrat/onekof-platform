@@ -152,11 +152,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </Button>
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 mr-2 shrink-0">
-          <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded" />
-          <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
-            Onekof
-          </span>
+        <Link href="/dashboard" className="flex items-center mr-2 shrink-0">
+          <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 lg:hidden" />
+          <img src="/logo-wordmark.png" alt="Onekof" className="h-8 hidden lg:block" />
         </Link>
 
         {/* Workspace Selector */}
@@ -411,11 +409,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         )}>
           {/* Mobile Sidebar Header with Close Button */}
           <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.08] md:hidden shrink-0">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded" />
-              <span className="text-lg font-bold text-slate-900 dark:text-white">
-                Onekof
-              </span>
+            <Link href="/dashboard" className="flex items-center">
+              <img src="/logo-wordmark.png" alt="Onekof" className="h-8" />
             </Link>
             <Button
               variant="ghost"

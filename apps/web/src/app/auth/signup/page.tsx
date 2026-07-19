@@ -146,8 +146,7 @@ function SignUpContent() {
 
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <img src="/logo-icon.png" alt="Onekof" className="h-9 w-9 rounded-lg" />
-            <span className="text-[16px] font-semibold text-white">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
           </Link>
 
           <div className="max-w-md">
@@ -198,8 +197,7 @@ function SignUpContent() {
       <div className="flex w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 lg:w-1/2">
         <div className="w-full max-w-[420px]">
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <img src="/logo-icon.png" alt="Onekof" className="h-8 w-8 rounded-lg" />
-            <span className="text-[15px] font-semibold text-white">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
           </div>
 
           <div className="mb-8">
