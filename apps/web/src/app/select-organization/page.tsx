@@ -138,7 +138,7 @@ export default function SelectOrganizationPage() {
           <div className="text-center mb-12">
             {/* Logo */}
             <div className="inline-flex flex-col items-center gap-3 mb-8">
-              <img src="/logo-full.png?v=2" alt="Onekof" className="h-16" />
+              <img src="/logo-full.png?v=2" alt="Onekof" className="h-24" />
               <p className="text-sm text-white/30">Enterprise Project Management</p>
             </div>
 
