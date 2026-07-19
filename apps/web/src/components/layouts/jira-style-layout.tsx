@@ -153,8 +153,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center mr-2 shrink-0">
-          <img src="/logo-mark.png" alt="Onekof" className="h-10 w-10 lg:hidden" />
-          <img src="/logo-wordmark.png" alt="Onekof" className="h-10 hidden lg:block" />
+          <img src="/logo-mark.png?v=2" alt="Onekof" className="h-10 w-10 lg:hidden" />
+          <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10 hidden lg:block" />
         </Link>
 
         {/* Workspace Selector */}
@@ -410,7 +410,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           {/* Mobile Sidebar Header with Close Button */}
           <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.08] md:hidden shrink-0">
             <Link href="/dashboard" className="flex items-center">
-              <img src="/logo-wordmark.png" alt="Onekof" className="h-10" />
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10" />
             </Link>
             <Button
               variant="ghost"

@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo-full.png" alt="Onekof" className="h-14" />
+            <img src="/logo-full.png?v=2" alt="Onekof" className="h-14" />
           </Link>
         </div>
 
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <img src="/logo-full.png" alt="Onekof" className="h-10" />
+            <img src="/logo-full.png?v=2" alt="Onekof" className="h-10" />
           </Link>
 
           {/* Back to signin link */}

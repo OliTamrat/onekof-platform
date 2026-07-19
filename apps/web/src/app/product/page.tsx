@@ -97,8 +97,8 @@ export default function ProductPage() {
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-[#0B0E11]/80 backdrop-blur-2xl backdrop-saturate-150">
         <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center gap-2.5">
-            <img src="/logo-mark.png" alt="Onekof" className="h-11 w-11 md:hidden" />
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-11 hidden md:block" />
+            <img src="/logo-mark.png?v=2" alt="Onekof" className="h-11 w-11 md:hidden" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-11 hidden md:block" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -312,7 +312,7 @@ export default function ProductPage() {
       <footer className="border-t border-white/[0.06] bg-[#0B0E11]">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-8">
           <div className="flex items-center gap-3">
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-9" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-9" />
           </div>
           <p className="text-[12px] text-white/30">
             &copy; 2026 DAPS Analytics. Built for Ethiopia.

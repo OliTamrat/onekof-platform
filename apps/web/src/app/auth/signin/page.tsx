@@ -123,7 +123,7 @@ function SignInContent() {
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-12" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
           </Link>
 
           {/* Main content */}
@@ -174,7 +174,7 @@ function SignInContent() {
         <div className="w-full max-w-[420px]">
           {/* Mobile logo */}
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-12" />
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
           </div>
 
           <div className="mb-10">
