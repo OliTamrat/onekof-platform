@@ -572,8 +572,7 @@ export default function HomePage() {
       >
         <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center">
-            <img src="/logo-icon.png" alt="Onekof" className="h-9 w-9 md:hidden" />
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-9 hidden md:block" />
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-8 sm:h-9" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
