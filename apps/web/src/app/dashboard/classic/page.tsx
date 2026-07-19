@@ -94,7 +94,7 @@ export default function DashboardPage() {
       <aside className="w-64 border-r border-gray-800 bg-[#12161B]">
         {/* Logo */}
         <div className="flex h-16 items-center border-b border-gray-800 px-4">
-          <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
+          <img src="/logo-wordmark.png" alt="Onekof" className="h-9" />
         </div>
 
         {/* Navigation */}

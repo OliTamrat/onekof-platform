@@ -573,7 +573,7 @@ export default function HomePage() {
       >
         <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
           <Link href="/" className="group flex items-center">
-            <img src="/logo-wordmark.png" alt="Onekof" className="h-8 sm:h-9" />
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-10 sm:h-11" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -1519,7 +1519,7 @@ export default function HomePage() {
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center">
-                <img src="/logo-wordmark.png" alt="Onekof" className="h-9" />
+                <img src="/logo-wordmark.png" alt="Onekof" className="h-11" />
               </div>
               <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 {t('landing.footer.description')}
