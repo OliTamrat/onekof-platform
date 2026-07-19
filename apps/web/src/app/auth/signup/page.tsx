@@ -129,16 +129,7 @@ function SignUpContent() {
 
   return (
     <div className="flex min-h-screen bg-[#0B0E11]">
-      {/* Top bar — back + language */}
-      <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
-        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          {t('common.back')}
-        </Link>
-        <LanguageSwitcher />
-      </div>
-
-      {/* LEFT — Brand panel */}
+      {/* LEFT — Brand panel (desktop only) */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B3A34]" />
         <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
@@ -159,7 +150,6 @@ function SignUpContent() {
               {t('auth.signupDescription')}
             </p>
 
-            {/* What you get */}
             <div className="mt-8 space-y-3">
               {[
                 t('auth.featureCalendar'),
@@ -194,11 +184,21 @@ function SignUpContent() {
       </div>
 
       {/* RIGHT — Sign up form */}
-      <div className="flex w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 lg:w-1/2">
-        <div className="w-full max-w-[420px]">
-          <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-16" />
-          </div>
+      <div className="flex w-full flex-col lg:w-1/2">
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-5 py-4 sm:px-8">
+          <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            {t('common.back')}
+          </Link>
+          <LanguageSwitcher />
+        </div>
+
+        <div className="flex flex-1 items-center justify-center px-6 pb-8 sm:px-8">
+          <div className="w-full max-w-[420px]">
+            <div className="mb-8 lg:hidden">
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
+            </div>
 
           <div className="mb-8">
             <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
@@ -348,6 +348,7 @@ function SignUpContent() {
           <p className="mt-2 text-center text-[12px] text-white/20">
             &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
           </p>
+          </div>
         </div>
       </div>
     </div>
