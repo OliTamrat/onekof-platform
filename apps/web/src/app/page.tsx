@@ -575,7 +575,7 @@ export default function HomePage() {
             <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg transition-shadow group-hover:shadow-xl">
               <span className="text-sm font-black text-white">O</span>
             </div>
-            <span className="text-[17px] font-bold tracking-[-0.01em]">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-8" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">

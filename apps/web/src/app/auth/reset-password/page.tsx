@@ -138,7 +138,7 @@ function ResetPasswordContent() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm transition-all group-hover:bg-white/20 group-hover:scale-105">
               <span className="text-2xl font-bold text-white">O</span>
             </div>
-            <span className="text-2xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-10" />
           </Link>
         </div>
 

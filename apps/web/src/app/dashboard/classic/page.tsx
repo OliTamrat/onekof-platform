@@ -97,7 +97,7 @@ export default function DashboardPage() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#0F3D2E]">
             <span className="text-lg font-bold text-white">O</span>
           </div>
-          <span className="text-lg font-semibold text-white">Onekof</span>
+          <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
         </div>
 
         {/* Navigation */}

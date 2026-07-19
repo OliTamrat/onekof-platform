@@ -370,7 +370,7 @@ function MarketingPage() {
               <div className="h-7 w-7 rounded-lg bg-[#2563EB] flex items-center justify-center">
                 <span className="text-white font-semibold text-xs">O</span>
               </div>
-              <span className="text-[14px] font-semibold text-white">Onekof</span>
+              <img src="/logo-wordmark.png" alt="Onekof" className="h-6" />
             </div>
             <p className="text-xs text-slate-500">&copy; 2024 Onekof. All rights reserved.</p>
           </div>

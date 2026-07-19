@@ -142,7 +142,7 @@ export default function SelectOrganizationPage() {
                 <span className="text-2xl font-bold text-white">O</span>
               </div>
               <div className="text-left">
-                <h1 className="text-2xl font-bold text-white">Onekof</h1>
+                <img src="/logo-full.png" alt="Onekof" className="h-10" />
                 <p className="text-sm text-white/30">Enterprise Project Management</p>
               </div>
             </div>

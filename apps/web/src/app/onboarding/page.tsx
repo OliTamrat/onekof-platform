@@ -303,7 +303,7 @@ function OnboardingContent() {
                 <span className="text-[16px] font-semibold text-white">O</span>
               </div>
               <div className="text-left">
-                <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
+                <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
                 <p className="text-xs text-white/70">{t('onboardingPage.enterprisePM')}</p>
               </div>
             </div>
