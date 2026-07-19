@@ -184,9 +184,15 @@ function SignUpContent() {
       </div>
 
       {/* RIGHT — Sign up form */}
-      <div className="flex w-full flex-col lg:w-1/2">
+      <div className="relative flex w-full flex-col lg:w-1/2">
+        {/* Mobile ambient glow */}
+        <div className="pointer-events-none absolute inset-0 lg:hidden">
+          <div className="absolute -right-[20%] -top-[10%] h-[400px] w-[400px] rounded-full bg-primary-500/[0.06] blur-[120px]" />
+          <div className="absolute -left-[15%] bottom-[20%] h-[300px] w-[300px] rounded-full bg-primary-700/[0.04] blur-[100px]" />
+        </div>
+
         {/* Top bar */}
-        <div className="flex items-center justify-between px-5 py-4 sm:px-8">
+        <div className="relative z-10 flex items-center justify-between px-5 py-4 sm:px-8">
           <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
             <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
             {t('common.back')}
@@ -194,21 +200,23 @@ function SignUpContent() {
           <LanguageSwitcher />
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-6 pb-8 sm:px-8">
+        <div className="relative z-10 flex flex-1 items-center justify-center px-6 py-6 sm:px-8 sm:py-10">
           <div className="w-full max-w-[420px]">
-            <div className="mb-8 lg:hidden">
-              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
+            <div className="mb-10 lg:hidden">
+              <Link href="/">
+                <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
+              </Link>
             </div>
 
-          <div className="mb-8">
-            <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.createAccount')}</h3>
-            <p className="mt-2 text-[14px] text-white/70">
-              {t('auth.hasAccount')}{' '}
-              <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
-                {t('common.signIn')}
-              </Link>
-            </p>
-          </div>
+            <div className="mb-8">
+              <h3 className="font-serif font-medium text-[28px] tracking-[-0.02em] text-white sm:text-3xl">{t('auth.createAccount')}</h3>
+              <p className="mt-3 text-[15px] text-white/60">
+                {t('auth.hasAccount')}{' '}
+                <Link href="/auth/signin" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
+                  {t('common.signIn')}
+                </Link>
+              </p>
+            </div>
 
           {error && (
             <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">

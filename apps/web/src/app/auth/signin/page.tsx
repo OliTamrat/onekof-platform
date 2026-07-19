@@ -151,9 +151,15 @@ function SignInContent() {
       </div>
 
       {/* RIGHT — Sign in form */}
-      <div className="flex w-full flex-col lg:w-1/2">
+      <div className="relative flex w-full flex-col lg:w-1/2">
+        {/* Mobile ambient glow */}
+        <div className="pointer-events-none absolute inset-0 lg:hidden">
+          <div className="absolute -right-[20%] -top-[10%] h-[400px] w-[400px] rounded-full bg-primary-500/[0.06] blur-[120px]" />
+          <div className="absolute -left-[15%] bottom-[20%] h-[300px] w-[300px] rounded-full bg-primary-700/[0.04] blur-[100px]" />
+        </div>
+
         {/* Top bar */}
-        <div className="flex items-center justify-between px-5 py-4 sm:px-8">
+        <div className="relative z-10 flex items-center justify-between px-5 py-4 sm:px-8">
           <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
             <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
             {t('common.back')}
@@ -161,16 +167,18 @@ function SignInContent() {
           <LanguageSwitcher />
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-6 pb-8 sm:px-8">
+        <div className="relative z-10 flex flex-1 items-center justify-center px-6 py-6 sm:px-8 sm:py-10">
           <div className="w-full max-w-[420px]">
             {/* Mobile logo */}
-            <div className="mb-8 lg:hidden">
-              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
+            <div className="mb-10 lg:hidden">
+              <Link href="/">
+                <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
+              </Link>
             </div>
 
             <div className="mb-8">
-              <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.signInTitle')}</h3>
-              <p className="mt-2 text-[14px] text-white/70">
+              <h3 className="font-serif font-medium text-[28px] tracking-[-0.02em] text-white sm:text-3xl">{t('auth.signInTitle')}</h3>
+              <p className="mt-3 text-[15px] text-white/60">
                 {t('auth.noAccount')}{' '}
                 <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
                   {t('common.signUp')}
@@ -178,114 +186,114 @@ function SignInContent() {
               </p>
             </div>
 
-          {error && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">
-              <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
-              <p className="text-[13px] text-red-300">{error}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/70">
-                {t('auth.email')}
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="name@example.com"
-              />
-            </div>
-
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="password" className="text-[13px] font-medium text-white/70">
-                  {t('auth.password')}
-                </label>
-                <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
-                  {t('auth.forgotPassword')}
-                </Link>
-              </div>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder={t('auth.enterPassword')}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/60"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-
-            {requiresTwoFactor && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
-                  <Shield className="h-4 w-4 text-primary-400" />
-                  <span className="text-[12px] text-primary-300">{t('auth.twoFactorCode')}</span>
-                </div>
-                <input
-                  id="totpCode"
-                  type="text"
-                  value={totpCode}
-                  onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder="000000"
-                  autoFocus
-                  autoComplete="one-time-code"
-                />
-                <p className="text-[11px] text-white/20">{t('auth.backupCode')}</p>
+            {error && (
+              <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">
+                <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
+                <p className="text-[13px] text-red-300">{error}</p>
               </div>
             )}
 
-            <Button
-              type="submit"
-              disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
-              className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  {requiresTwoFactor ? t('auth.verifying') : t('auth.signingIn')}
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  {requiresTwoFactor ? t('auth.verifyAndSignIn') : t('common.continueBtn')}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </span>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/70">
+                  {t('auth.email')}
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  placeholder="name@example.com"
+                />
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label htmlFor="password" className="text-[13px] font-medium text-white/70">
+                    {t('auth.password')}
+                  </label>
+                  <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
+                    {t('auth.forgotPassword')}
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[15px] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    placeholder={t('auth.enterPassword')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/60"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+
+              {requiresTwoFactor && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
+                    <Shield className="h-4 w-4 text-primary-400" />
+                    <span className="text-[12px] text-primary-300">{t('auth.twoFactorCode')}</span>
+                  </div>
+                  <input
+                    id="totpCode"
+                    type="text"
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    placeholder="000000"
+                    autoFocus
+                    autoComplete="one-time-code"
+                  />
+                  <p className="text-[11px] text-white/30">{t('auth.backupCode')}</p>
+                </div>
               )}
-            </Button>
-          </form>
 
-          {isMainDomain && (
-            <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-              <p className="text-[13px] text-white/60">
-                <span className="font-medium text-white/60">{t('auth.directAccess')}</span>{' '}
-                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
-                  your-org.onekof.com
-                </code>
-              </p>
-            </div>
-          )}
+              <Button
+                type="submit"
+                disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
+                className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-4 text-[15px] font-semibold shadow-lg shadow-primary-500/20 active:scale-[0.98]"
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {requiresTwoFactor ? t('auth.verifying') : t('auth.signingIn')}
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    {requiresTwoFactor ? t('auth.verifyAndSignIn') : t('common.continueBtn')}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                )}
+              </Button>
+            </form>
 
-          <p className="mt-8 text-center text-[12px] text-white/20">
-            &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
-          </p>
+            {isMainDomain && (
+              <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                <p className="text-[13px] text-white/50">
+                  <span className="font-medium text-white/60">{t('auth.directAccess')}</span>{' '}
+                  <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
+                    your-org.onekof.com
+                  </code>
+                </p>
+              </div>
+            )}
+
+            <p className="mt-8 text-center text-[12px] text-white/25">
+              &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
+            </p>
           </div>
         </div>
       </div>
