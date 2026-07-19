@@ -10,10 +10,7 @@ export default function CookiesPage() {
         <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-4 py-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
             <ArrowLeft className="h-4 w-4 text-white/60" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#156b60]">
-              <span className="text-[12px] font-black text-white">O</span>
-            </div>
-            <span className="text-[15px] font-semibold">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-8" />
           </Link>
         </div>
       </nav>
