@@ -654,8 +654,8 @@ export default function HomePage() {
           <div className="absolute -left-[10%] bottom-[10%] h-[500px] w-[500px] rounded-full bg-violet-500/[0.05] blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[1200px] px-6 pb-6 pt-24 sm:pt-32 lg:pt-40">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="relative mx-auto max-w-[1200px] px-6 pb-12 pt-28 sm:pb-16 sm:pt-36 lg:pt-44">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             {/* LEFT — Text content */}
             <motion.div
               initial="hidden"
@@ -663,7 +663,7 @@ export default function HomePage() {
               variants={heroStagger}
             >
               <motion.div variants={heroChild}>
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-3 py-1.5 sm:gap-2.5 sm:px-4 sm:py-2">
+                <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-3 py-1.5 sm:gap-2.5 sm:px-4 sm:py-2">
                   <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
                   <span className="text-[12px] sm:text-[14px] font-semibold text-emerald-400">Enterprise-Grade Security</span>
                   <span className="hidden sm:inline-block h-3 w-px bg-white/10" />
@@ -676,7 +676,10 @@ export default function HomePage() {
                   {t('landing.hero.headingPrefix')}
                   <br />
                   <span className="relative inline-block">
-                    <span className="bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
+                    <span className="invisible font-serif italic" aria-hidden="true">
+                      {heroWords.reduce((a, b) => a.length >= b.length ? a : b, '')}
+                    </span>
+                    <span className="absolute left-0 top-0 bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
                       {heroTyped}
                     </span>
                     <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
@@ -685,13 +688,13 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <p className="mt-6 max-w-[480px] text-[18px] leading-[1.75] text-white/65">
+                <p className="mt-8 max-w-[480px] text-[17px] leading-[1.8] text-white/60">
                   {t('auth.projectsDescription')}
                 </p>
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center sm:flex-wrap">
+                <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center sm:flex-wrap">
                   <Link
                     href="/auth/signup"
                     className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[15px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
@@ -719,7 +722,7 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] sm:text-[14px] text-white/55">
+                <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] sm:text-[14px] text-white/50">
                   <span className="inline-flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-400" />
                     Certified Secure
@@ -1094,7 +1097,7 @@ export default function HomePage() {
               </div>
 
               {/* Content */}
-              <div className="grid items-center gap-8 rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:grid-cols-2">
+              <div className="grid items-center gap-8 rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:grid-cols-2 min-h-[520px] lg:min-h-[480px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${activeShowcase}`}
