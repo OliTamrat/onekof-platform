@@ -344,7 +344,21 @@
     "yourEmailVerified": "Iimeylkaagu waa la xaqiijiyey",
     "verifyYourEmail": "Iimeylkaaga xaqiiji",
     "resetInstructions": "Waxaan kuu soo diri doonnaa tilmaamo aad ku dib u dejiso furahaaga sirta.",
-    "copyright": "2026 Onekof. Jacayl leh Itoobiya looga dhisay"
+    "copyright": "2026 Onekof. Jacayl leh Itoobiya looga dhisay",
+    "startBuilding": "Dhisidda bilow",
+    "withYourTeam": "kooxdaada la socda",
+    "signupDescription": "Ku biir boqolaal hay'adood oo Itoophiyaan ah oo isticmaalaya Onekof si ay u maamulaan mashruucyada, u raad raacaan miisaaniyadda Birr, iyo ku wada shaqeeyaan luqadda ay doorbidaan.",
+    "featureCalendar": "Taariikhda Itoophiya iyo beddelka Gregorian",
+    "featureLanguages": "Amxaarig, Oromoo, Tigrinya, Ingiriis",
+    "featureBudget": "Raad raacidda miisaaniyadda Birr",
+    "featureAI": "Dukumentiyada AI-ga lagu shaqeeyo",
+    "featureFree": "Bilaash weligeed kooxaha ilaa 10",
+    "setupTime": "Waqtiga dejinta",
+    "toStart": "Si aad u bilowdo",
+    "yourFullName": "Magacaaga buuxa",
+    "emailPlaceholder": "you@company.com",
+    "enterPassword": "Geli eraygaaga sirta ah",
+    "uptime": "Waqtiga shaqada"
   },
   "projects": {
     "title": "Mashruucyo",
@@ -1205,7 +1219,10 @@
     "teamMemberAdded": "Xubin cusub ayaa kooxda lagu daray",
     "deadlineApproaching": "Waqtiga dhammaadku wuu soo dhowaaday",
     "systemUpdate": "Cusbooneysiinta nidaamka",
-    "newFeaturesAdded": "Astaamaha cusub ayaa lagu daray barnaamijka"
+    "newFeaturesAdded": "Astaamaha cusub ayaa lagu daray barnaamijka",
+    "assigned": "La shaqeeyay",
+    "comments": "Faallooyinka",
+    "watching": "Daawashada"
   },
   "createProject": {
     "basics": "Aasaaska",

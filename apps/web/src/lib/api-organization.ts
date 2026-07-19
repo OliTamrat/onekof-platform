@@ -319,8 +319,20 @@ export function buildProjectAccessFilter(params: {
     };
   }
 
-  // MEMBER / GUEST: see PUBLIC and INTERNAL projects (org-internal = visible
-  // to all org members). Only CONFIDENTIAL requires explicit membership.
+  // GUEST: only see projects they're explicitly added to
+  if (orgRole === 'GUEST') {
+    return {
+      organizationId,
+      deletedAt: null,
+      OR: [
+        { members: { some: { userId } } },
+        { leadId: userId },
+        { ownerId: userId },
+      ],
+    };
+  }
+
+  // MEMBER: see PUBLIC and INTERNAL projects + any they're explicitly in
   return {
     ...base,
     OR: [

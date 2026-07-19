@@ -548,7 +548,7 @@ export default function HomePage() {
   const navLinks = [
     { label: t('landing.nav.features'), href: '#features' },
     { label: t('landing.nav.product'), href: '#product' },
-    { label: t('landing.nav.pricing'), href: '#pricing' },
+    { label: t('landing.nav.pricing'), href: '/pricing' },
     { label: t('landing.nav.about'), href: '/about' },
   ];
 
@@ -571,11 +571,8 @@ export default function HomePage() {
         }`}
       >
         <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
-          <Link href="/" className="group flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg transition-shadow group-hover:shadow-xl">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[17px] font-bold tracking-[-0.01em]">Onekof</span>
+          <Link href="/" className="group flex items-center">
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-8 sm:h-9" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -1513,11 +1510,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1200px] px-6 py-14 sm:py-16">
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg">
-                  <span className="text-[13px] font-black text-white">O</span>
-                </div>
-                <span className="text-[17px] font-bold">Onekof</span>
+              <div className="flex items-center">
+                <img src="/logo-wordmark.png" alt="Onekof" className="h-9" />
               </div>
               <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 {t('landing.footer.description')}
@@ -1542,7 +1536,7 @@ export default function HomePage() {
             {[
               { title: t('landing.footer.productCol'), links: [
                 { label: t('landing.footer.footerLinks.features'), href: '#features' },
-                { label: t('landing.footer.footerLinks.pricing'), href: '#pricing' },
+                { label: t('landing.footer.footerLinks.pricing'), href: '/pricing' },
                 { label: t('landing.footer.footerLinks.integrations'), href: '#' },
                 { label: t('landing.footer.footerLinks.changelog'), href: '#' },
                 { label: t('landing.footer.footerLinks.roadmap'), href: '#' },

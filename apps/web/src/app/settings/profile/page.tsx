@@ -14,6 +14,7 @@ import {
   Loader2,
   LogOut,
   Trash2,
+  Camera,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
@@ -25,6 +26,8 @@ export default function ProfilePage() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -41,7 +44,12 @@ export default function ProfilePage() {
     if (session?.user) {
       setName(session.user.name || '');
       setEmail(session.user.email || '');
+      setAvatar((session.user as any).image || null);
     }
+    // Fetch current avatar from API
+    fetch('/api/user/update').then(r => r.json()).then(d => {
+      if (d.user?.avatar) setAvatar(d.user.avatar);
+    }).catch(() => {});
   }, [session]);
 
   // Show loading while checking session
@@ -156,12 +164,71 @@ export default function ProfilePage() {
             <div className="space-y-4">
               {/* Avatar */}
               <div className="flex items-center gap-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0EA5E9] text-2xl font-bold text-white">
-                  {name?.charAt(0).toUpperCase() || email?.charAt(0).toUpperCase() || 'U'}
+                <div className="relative group">
+                  {avatar ? (
+                    <img src={avatar} alt={name || 'Profile'} className="h-20 w-20 rounded-full object-cover" />
+                  ) : (
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-500 text-2xl font-bold text-white">
+                      {name?.charAt(0).toUpperCase() || email?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <label className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    {isUploadingAvatar ? (
+                      <Loader2 className="h-5 w-5 text-white animate-spin" />
+                    ) : (
+                      <Camera className="h-5 w-5 text-white" />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      disabled={isUploadingAvatar}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          setMessage({ type: 'error', text: 'File too large. Maximum 5MB.' });
+                          return;
+                        }
+                        setIsUploadingAvatar(true);
+                        setMessage(null);
+                        try {
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          const res = await fetch('/api/user/avatar', { method: 'POST', body: formData });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.error);
+                          setAvatar(data.avatar);
+                          setMessage({ type: 'success', text: 'Profile photo updated' });
+                        } catch (err: any) {
+                          setMessage({ type: 'error', text: err.message || 'Failed to upload photo' });
+                        } finally {
+                          setIsUploadingAvatar(false);
+                          e.target.value = '';
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{name || 'User'}</h3>
                   <p className="text-sm text-gray-600">{email}</p>
+                  {avatar && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          await fetch('/api/user/avatar', { method: 'DELETE' });
+                          setAvatar(null);
+                          setMessage({ type: 'success', text: 'Profile photo removed' });
+                        } catch {
+                          setMessage({ type: 'error', text: 'Failed to remove photo' });
+                        }
+                      }}
+                      className="mt-1 text-xs text-red-500 hover:underline"
+                    >
+                      Remove photo
+                    </button>
+                  )}
                 </div>
               </div>
 

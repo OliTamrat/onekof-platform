@@ -344,7 +344,21 @@
     "yourEmailVerified": "ኢሜይልዎ ተረጋግጧል",
     "verifyYourEmail": "ኢሜይልዎን ያረጋግጡ",
     "resetInstructions": "የይለፍ ቃልዎን ለማስጀመር መመሪያ እንልክልዎታለን።",
-    "copyright": "2026 Onekof. በኢትዮጵያ በፍቅር የተሠራ"
+    "copyright": "2026 Onekof. በኢትዮጵያ በፍቅር የተሠራ",
+    "startBuilding": "መገንባት ይጀምሩ",
+    "withYourTeam": "ከቡድንዎ ጋር",
+    "signupDescription": "በመቶዎች የሚቆጠሩ የኢትዮጵያ ድርጅቶች Onekof በመጠቀም ፕሮጀክቶችን ለማስተዳደር፣ በብር በጀት ለመከታተል እና በሚፈልጉት ቋንቋ ለመተባበር ይቀላቀሉ።",
+    "featureCalendar": "የኢትዮጵያ ቀን መቁጠሪያ እና ግሪጎሪያን ቀያይር",
+    "featureLanguages": "አማርኛ፣ ኦሮሙ፣ ትግርኛ፣ እንግሊዝኛ",
+    "featureBudget": "በኢትዮጵያ ብር የበጀት ክትትል",
+    "featureAI": "AI የሰነድ ማስተናገድ",
+    "featureFree": "ለ10 ድረስ ቡድኖች ዘላቂ ነፃ",
+    "setupTime": "የማዋቀር ጊዜ",
+    "toStart": "ለመጀመር",
+    "yourFullName": "ሙሉ ስምዎ",
+    "emailPlaceholder": "you@company.com",
+    "enterPassword": "የይለፍ ቃልዎን ያስገቡ",
+    "uptime": "የስራ ጊዜ"
   },
   "projects": {
     "title": "ፕሮጀክቶች",
@@ -1205,7 +1219,10 @@
     "teamMemberAdded": "የቡድን አባል ተጨምሯል",
     "deadlineApproaching": "የመጨረሻ ቀን እየቀረበ ነው",
     "systemUpdate": "የስርዓት ማዘመኛ",
-    "newFeaturesAdded": "አዲስ ባህሪያት ወደ መድረኩ ተጨምረዋል"
+    "newFeaturesAdded": "አዲስ ባህሪያት ወደ መድረኩ ተጨምረዋል",
+    "assigned": "የተመደበ",
+    "comments": "አስተያየቶች",
+    "watching": "እየተመለከቱ"
   },
   "createProject": {
     "basics": "መሠረታዊ",

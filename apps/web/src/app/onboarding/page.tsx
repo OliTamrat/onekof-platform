@@ -298,12 +298,9 @@ function OnboardingContent() {
         <div className="w-full max-w-4xl">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg">
-                <span className="text-[16px] font-semibold text-white">O</span>
-              </div>
-              <div className="text-left">
-                <h1 className="text-[16px] font-semibold text-white">Onekof</h1>
+            <div className="inline-flex flex-col items-center gap-2 mb-6">
+              <img src="/logo-full.png" alt="Onekof" className="h-10" />
+              <div className="text-center">
                 <p className="text-xs text-white/70">{t('onboardingPage.enterprisePM')}</p>
               </div>
             </div>

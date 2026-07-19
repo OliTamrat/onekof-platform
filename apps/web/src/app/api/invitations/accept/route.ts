@@ -68,6 +68,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Enforce email matching — only the invited email can accept
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true },
+    });
+
+    if (user?.email?.toLowerCase() !== matchedInvitation.email.toLowerCase()) {
+      return NextResponse.json(
+        {
+          error: 'This invitation was sent to a different email address. Please sign out and sign in with the correct account.',
+          invitedEmail: matchedInvitation.email,
+          currentEmail: user?.email,
+          emailMismatch: true,
+        },
+        { status: 403 }
+      );
+    }
+
     const existingMembership = await prisma.organizationMember.findUnique({
       where: {
         organizationId_userId: {
@@ -95,7 +113,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    await prisma.$transaction([
+    const transactionOps = [
       prisma.organizationMember.create({
         data: {
           organizationId: matchedInvitation.organizationId,
@@ -112,12 +130,40 @@ export async function POST(request: NextRequest) {
         where: { id: session.user.id },
         data: { defaultOrganizationId: matchedInvitation.organizationId },
       }),
-    ]);
+    ];
+
+    if (matchedInvitation.projectId) {
+      transactionOps.push(
+        prisma.projectMember.create({
+          data: {
+            projectId: matchedInvitation.projectId,
+            userId: session.user.id,
+            role: matchedInvitation.projectRole || 'MEMBER',
+            addedBy: matchedInvitation.invitedBy,
+          },
+        }) as any
+      );
+    }
+
+    await prisma.$transaction(transactionOps);
+
+    let projectName = null;
+    if (matchedInvitation.projectId) {
+      const project = await prisma.project.findUnique({
+        where: { id: matchedInvitation.projectId },
+        select: { name: true },
+      });
+      projectName = project?.name;
+    }
 
     return NextResponse.json({
-      message: `You have joined ${matchedInvitation.organization.name}`,
+      message: projectName
+        ? `You have joined ${matchedInvitation.organization.name} and project ${projectName}`
+        : `You have joined ${matchedInvitation.organization.name}`,
       organization: matchedInvitation.organization,
       role: matchedInvitation.role,
+      projectId: matchedInvitation.projectId,
+      projectRole: matchedInvitation.projectRole,
     });
   } catch (error) {
     logger.error('Error accepting invitation', { error: error instanceof Error ? error.message : error });
@@ -176,6 +222,15 @@ export async function GET(request: NextRequest) {
 
     const isExpired = isTokenExpired(matchedInvitation.expiresAt);
 
+    let projectName = null;
+    if (matchedInvitation.projectId) {
+      const project = await prisma.project.findUnique({
+        where: { id: matchedInvitation.projectId },
+        select: { name: true },
+      });
+      projectName = project?.name;
+    }
+
     return NextResponse.json({
       valid: !isExpired,
       invitation: {
@@ -185,6 +240,8 @@ export async function GET(request: NextRequest) {
         invitedBy: 'A team member',
         expiresAt: matchedInvitation.expiresAt.toISOString(),
         isExpired,
+        projectName,
+        projectRole: matchedInvitation.projectRole,
       },
     });
   } catch (error) {

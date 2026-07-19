@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ interface OrganizationInfo {
   memberCount: number;
 }
 
-export default function SignUpPage() {
+function SignUpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -133,7 +133,7 @@ export default function SignUpPage() {
       <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
         <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Back to home
+          {t('common.back')}
         </Link>
         <LanguageSwitcher />
       </div>
@@ -146,32 +146,27 @@ export default function SignUpPage() {
 
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 shadow-lg">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[16px] font-semibold text-white">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-10" />
           </Link>
 
           <div className="max-w-md">
             <h2 className="font-serif font-medium text-4xl leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
-              Start building
+              {t('auth.startBuilding')}
               <br />
-              <span className="text-white/30">with your team</span>
+              <span className="text-white/30">{t('auth.withYourTeam')}</span>
             </h2>
             <p className="mt-5 text-[16px] leading-relaxed text-white/70">
-              Join hundreds of Ethiopian organizations using Onekof to
-              manage projects, track budgets in ETB, and collaborate in
-              their preferred language.
+              {t('auth.signupDescription')}
             </p>
 
             {/* What you get */}
             <div className="mt-8 space-y-3">
               {[
-                'Ethiopian calendar & Gregorian toggle',
-                'Amharic, Oromoo, Tigrinya, English UI',
-                'Budget tracking in Ethiopian Birr',
-                'AI-powered document processing',
-                'Free forever for teams up to 10',
+                t('auth.featureCalendar'),
+                t('auth.featureLanguages'),
+                t('auth.featureBudget'),
+                t('auth.featureAI'),
+                t('auth.featureFree'),
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2.5">
                   <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/10">
@@ -185,9 +180,9 @@ export default function SignUpPage() {
 
           <div className="flex gap-6 border-t border-white/[0.06] pt-6 xl:gap-10">
             {[
-              { value: '500+', label: 'Teams' },
-              { value: '2 min', label: 'Setup time' },
-              { value: 'Free', label: 'To start' },
+              { value: '500+', label: t('teams.title') },
+              { value: '2 min', label: t('auth.setupTime') },
+              { value: t('pricing.free'), label: t('auth.toStart') },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl font-semibold text-white">{stat.value}</p>
@@ -202,10 +197,7 @@ export default function SignUpPage() {
       <div className="flex w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 lg:w-1/2">
         <div className="w-full max-w-[420px]">
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[15px] font-semibold text-white">Onekof</span>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-10" />
           </div>
 
           <div className="mb-8">
@@ -237,7 +229,7 @@ export default function SignUpPage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="Your full name"
+                placeholder={t('auth.yourFullName')}
               />
             </div>
 
@@ -252,7 +244,7 @@ export default function SignUpPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="you@company.com"
+                placeholder={t('auth.emailPlaceholder')}
               />
             </div>
 
@@ -268,7 +260,7 @@ export default function SignUpPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder="At least 8 characters"
+                  placeholder={t('auth.atLeast8Chars')}
                 />
                 <Button
                   type="button"
@@ -359,5 +351,14 @@ export default function SignUpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0E11]"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#1C8C7D] border-t-transparent" /></div>}>
+      <SignUpContent />
+    </Suspense>
   );
 }

@@ -21,6 +21,7 @@ export interface Organization {
   maxProjects?: number;
   maxStorage?: number;
   trialEndsAt?: string | null;
+  role?: string;
 }
 
 export interface Project {
@@ -77,6 +78,9 @@ interface WorkspaceContextType {
   // All projects in current organization
   projects: Project[];
   setProjects: (projects: Project[]) => void;
+
+  // Current user's role in the organization
+  userRole: string;
 
   // Loading states
   isLoadingOrganizations: boolean;
@@ -213,6 +217,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         setCurrentProject,
         projects,
         setProjects,
+        userRole: currentOrganization?.role || 'MEMBER',
         isLoadingOrganizations,
         isLoadingProjects,
         refreshOrganizations,

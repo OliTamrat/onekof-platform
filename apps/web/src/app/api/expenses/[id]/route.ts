@@ -162,7 +162,7 @@ export async function PATCH(
     await prisma.budgetRevision.create({
       data: {
         budgetId: expense.budgetId,
-        revisionNumber: 1, // TODO: Calculate
+        revisionNumber: await prisma.budgetRevision.count({ where: { budgetId: expense.budgetId } }) + 1,
         changeType: 'EXPENSE_UPDATED',
         before: expense,
         after: { ...expense, ...updateData },
@@ -252,7 +252,7 @@ export async function DELETE(
     await prisma.budgetRevision.create({
       data: {
         budgetId: expense.budgetId,
-        revisionNumber: 1, // TODO: Calculate
+        revisionNumber: await prisma.budgetRevision.count({ where: { budgetId: expense.budgetId } }) + 1,
         changeType: 'EXPENSE_DELETED',
         before: expense,
         after: Prisma.JsonNull,

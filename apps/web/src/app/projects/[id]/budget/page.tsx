@@ -20,10 +20,12 @@ import {
 import { useState , type ReactNode } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ProjectBudgetPage() {
   const params = useParams();
   const projectId = params.id as string;
+  const { t } = useLanguage();
 
   // Fetch budget data
   const { data: budgetData, isLoading: budgetLoading } = useQuery({
@@ -80,7 +82,7 @@ export default function ProjectBudgetPage() {
       const top = atRisk.sort((a: any, b: any) => b.util - a.util)[0];
       insights.push({
         id: 'risk-1', type: 'warning', icon: AlertCircle, color: 'text-yellow-500',
-        title: `${top.name} Alert`,
+        title: `${top.name} - ${t('budget.atRisk')}`,
         message: `${top.name} is at ${top.util.toFixed(0)}% utilization (ETB ${formatAmt(top.spent)} of ${formatAmt(top.allocated)}). Review upcoming expenses.`,
         timestamp: new Date(), priority: 'high',
       });
@@ -92,7 +94,7 @@ export default function ProjectBudgetPage() {
       const source = underUsed.sort((a: any, b: any) => a.util - b.util)[0];
       insights.push({
         id: 'opt-1', type: 'info', icon: Sparkles, color: 'text-blue-500',
-        title: 'Budget Optimization',
+        title: t('budget.budgetUtilization'),
         message: `${source.name} is at ${source.util.toFixed(0)}% — consider reallocating surplus to ${atRisk[0].name}.`,
         timestamp: new Date(), priority: 'medium',
       });
@@ -103,7 +105,7 @@ export default function ProjectBudgetPage() {
     if (overallUtil <= 75 && atRisk.length === 0) {
       insights.push({
         id: 'health-1', type: 'success', icon: CheckCircle, color: 'text-green-500',
-        title: 'On-Track Performance',
+        title: t('budget.onTrack'),
         message: `Overall budget is at ${overallUtil.toFixed(0)}% utilization. All categories within healthy limits.`,
         timestamp: new Date(), priority: 'low',
       });
@@ -113,7 +115,7 @@ export default function ProjectBudgetPage() {
     if (pendingApprovals > 0) {
       insights.push({
         id: 'pending-1', type: 'info', icon: AlertCircle, color: 'text-amber-500',
-        title: 'Pending Approvals',
+        title: t('budget.pendingApprovals'),
         message: `${pendingApprovals} expense${pendingApprovals === 1 ? '' : 's'} awaiting approval.`,
         timestamp: new Date(), priority: 'medium',
       });
@@ -129,20 +131,20 @@ export default function ProjectBudgetPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Budget Dashboard
+              {t('budget.budgetOverview')}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Real-time budget tracking and financial insights
+              {t('budget.realTimeTracking')}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#22272B] border border-gray-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
               <Eye className="h-4 w-4 inline mr-2" />
-              Export Report
+              {t('common.export')}
             </Button>
             <Button className="px-4 py-2 text-sm font-medium text-white bg-[#1C8C7D] rounded-lg hover:bg-[#156B60] transition-colors">
               <Package className="h-4 w-4 inline mr-2" />
-              Submit Expense
+              {t('common.submit')}
             </Button>
           </div>
         </div>
@@ -152,29 +154,29 @@ export default function ProjectBudgetPage() {
           <StatCard
             icon={<DollarSign className="h-5 w-5" />}
             value={`${(totalAllocated / 1000000).toFixed(1)}M`}
-            label="Total Budget"
-            sublabel={`${budget?.currency || 'ETB'} allocated`}
+            label={t('budget.totalBudget')}
+            sublabel={`${budget?.currency || 'ETB'}`}
             color="text-[#1C8C7D]"
           />
           <StatCard
             icon={<TrendingUp className="h-5 w-5" />}
             value={`${(totalSpent / 1000000).toFixed(1)}M`}
-            label="Total Spent"
-            sublabel={`${utilizationRate.toFixed(1)}% utilization`}
+            label={t('budget.spent')}
+            sublabel={`${utilizationRate.toFixed(1)}% ${t('budget.utilization')}`}
             color="text-blue-500"
           />
           <StatCard
             icon={<Clock className="h-5 w-5" />}
             value={pendingApprovals.toString()}
-            label="Pending Approvals"
-            sublabel="awaiting review"
+            label={t('budget.pendingApprovals')}
+            sublabel={t('budget.awaitingApproval')}
             color="text-yellow-500"
           />
           <StatCard
             icon={<AlertCircle className="h-5 w-5" />}
             value={`${(totalAvailable / 1000000).toFixed(1)}M`}
-            label="Available"
-            sublabel={`${((totalAvailable / totalAllocated) * 100).toFixed(0)}% remaining`}
+            label={t('budget.available')}
+            sublabel={`${((totalAvailable / totalAllocated) * 100).toFixed(0)}% ${t('budget.remaining')}`}
             color="text-purple-500"
           />
         </div>
@@ -188,10 +190,10 @@ export default function ProjectBudgetPage() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Budget Categories
+                    {t('budget.categories')}
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {categories.length} categories • {expenses.length} total expenses
+                    {categories.length} {t('budget.categories')} • {expenses.length} {t('budget.totalExpenses')}
                   </p>
                 </div>
                 <Button className="p-2 hover:bg-gray-100 dark:hover:bg-[#1B1F23] rounded-lg transition-colors">
@@ -226,13 +228,13 @@ export default function ProjectBudgetPage() {
                           </div>
                           <div className="flex items-center gap-4 mt-1 text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Spent: <span className="font-medium text-gray-900 dark:text-white">
+                              {t('budget.spent')}: <span className="font-medium text-gray-900 dark:text-white">
                                 {((category.spent || 0) / 1000000).toFixed(2)}M ETB
                               </span>
                             </span>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600 dark:text-gray-400">
-                              Allocated: {(category.allocatedAmount / 1000000).toFixed(2)}M ETB
+                              {t('budget.totalBudget')}: {(category.allocatedAmount / 1000000).toFixed(2)}M ETB
                             </span>
                           </div>
                         </div>
@@ -246,7 +248,7 @@ export default function ProjectBudgetPage() {
                           }`}>
                             {percentUsed.toFixed(0)}%
                           </div>
-                          <div className="text-xs text-gray-500">utilized</div>
+                          <div className="text-xs text-gray-500">{t('budget.utilized')}</div>
                         </div>
                       </div>
 
@@ -266,7 +268,7 @@ export default function ProjectBudgetPage() {
 
                       {/* Remaining Amount */}
                       <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                        Remaining: <span className="font-medium text-gray-900 dark:text-white">
+                        {t('budget.remaining')}: <span className="font-medium text-gray-900 dark:text-white">
                           {((category.allocatedAmount - (category.spent || 0)) / 1000000).toFixed(2)}M ETB
                         </span>
                       </div>
@@ -281,14 +283,14 @@ export default function ProjectBudgetPage() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Recent Activities
+                    {t('budget.recentActivity')}
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Latest budget transactions
+                    {t('budget.totalExpenses')}
                   </p>
                 </div>
                 <Button variant="link" className="text-sm text-[#1C8C7D] hover:underline font-medium">
-                  View all
+                  {t('common.viewAll')}
                 </Button>
               </div>
 
@@ -318,7 +320,7 @@ export default function ProjectBudgetPage() {
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-gray-600 dark:text-gray-400">
-                            {expense.category?.name || 'Uncategorized'}
+                            {expense.category?.name || t('common.noData')}
                           </span>
                           <span className="text-xs text-gray-400">•</span>
                           <span className="text-xs text-gray-500">
@@ -347,10 +349,10 @@ export default function ProjectBudgetPage() {
                 <Sparkles className="h-5 w-5 text-[#1C8C7D]" />
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    AI Budget Watchers
+                    {t('budget.budgetHealth')}
                   </h2>
                   <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                    Smart insights & recommendations
+                    {t('budget.aiRecommendations')}
                   </p>
                 </div>
               </div>
@@ -397,14 +399,14 @@ export default function ProjectBudgetPage() {
             {/* Budget Status Overview */}
             <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Status Overview
+                {t('common.overview')}
               </h3>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-green-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Approved</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.approved')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {expenses.filter((e: any) => e.status === 'APPROVED').length}
@@ -414,7 +416,7 @@ export default function ProjectBudgetPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Pending</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.pending')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {pendingApprovals}
@@ -424,7 +426,7 @@ export default function ProjectBudgetPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Rejected</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{t('budget.rejected')}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {rejectedCount}
@@ -455,6 +457,7 @@ function StatCard({
   color: string;
   onClick?: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div role="button" tabIndex={0}
       onClick={onClick}
@@ -464,7 +467,7 @@ function StatCard({
       <div className="mb-4 flex items-center justify-between">
         <div className={color}>{icon}</div>
         {onClick && (
-          <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">View details →</div>
+          <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">{t('common.viewDetails')}</div>
         )}
       </div>
       <div className="text-4xl font-bold text-gray-900 dark:text-white">{value}</div>

@@ -681,7 +681,7 @@ function ReceiptModal({
         <div ref={receiptRef} className="p-5 space-y-4">
           {/* Header preview */}
           <div className="rounded-lg bg-gradient-to-r from-[#0f172a] to-[#1C8C7D] p-4 text-center text-white">
-            <div className="text-lg font-extrabold">Onekof</div>
+            <img src="/logo-wordmark.png" alt="Onekof" className="h-7" />
             <div className="text-[10px] uppercase tracking-[0.12em] text-white/70 mt-0.5">Invoice / Receipt</div>
             <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-bold uppercase text-emerald-300">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />

@@ -49,11 +49,13 @@ interface PendingInvitation {
 
 export default function MembersPage() {
   const { t } = useLanguage();
-  const { currentOrganization } = useWorkspace();
+  const { currentOrganization, projects, userRole } = useWorkspace();
   const queryClient = useQueryClient();
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'MEMBER' | 'ADMIN' | 'GUEST'>('MEMBER');
+  const [inviteProjectId, setInviteProjectId] = useState('');
+  const [inviteProjectRole, setInviteProjectRole] = useState<'MEMBER' | 'ADMIN' | 'VIEWER'>('MEMBER');
   const [showInviteForm, setShowInviteForm] = useState(() => {
     if (typeof window !== 'undefined') {
       return new URLSearchParams(window.location.search).get('invite') === 'true';
@@ -89,11 +91,11 @@ export default function MembersPage() {
 
   // Send invitation mutation
   const inviteMutation = useMutation({
-    mutationFn: async ({ email, role }: { email: string; role: string }) => {
+    mutationFn: async (payload: { email: string; role: string; projectId?: string; projectRole?: string }) => {
       const res = await fetch(`/api/organizations/${organizationId}/invitations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to send invitation');
@@ -102,6 +104,7 @@ export default function MembersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['organization-invitations'] });
       setInviteEmail('');
+      setInviteProjectId('');
       setShowInviteForm(false);
     },
   });
@@ -120,6 +123,36 @@ export default function MembersPage() {
       queryClient.invalidateQueries({ queryKey: ['organization-invitations'] });
     },
   });
+
+  const updateRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+      const res = await fetch('/api/organization-members', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update role');
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organization-members'] });
+    },
+  });
+
+  const removeMemberMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const res = await fetch(`/api/organization-members?userId=${userId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to remove member');
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organization-members'] });
+    },
+  });
+
+  const isAdmin = userRole === 'OWNER' || userRole === 'ADMIN';
 
   const members: OrganizationMember[] = membersData?.members || [];
   const invitations: PendingInvitation[] = invitationsData?.invitations || [];
@@ -151,10 +184,32 @@ export default function MembersPage() {
 
   const handleInvite = () => {
     if (!inviteEmail.trim()) return;
-    inviteMutation.mutate({ email: inviteEmail.trim(), role: inviteRole });
+    const payload: { email: string; role: string; projectId?: string; projectRole?: string } = {
+      email: inviteEmail.trim(),
+      role: inviteRole,
+    };
+    if (inviteProjectId) {
+      payload.projectId = inviteProjectId;
+      payload.projectRole = inviteProjectRole;
+    }
+    inviteMutation.mutate(payload);
   };
 
   const isLoading = loadingMembers || loadingInvitations;
+
+  if (userRole === 'GUEST') {
+    return (
+      <AppLayout>
+        <div className="flex h-full items-center justify-center bg-gray-50 dark:bg-[#0B0E11]">
+          <div className="text-center max-w-md p-8">
+            <Shield className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t('membersPage.accessRestricted')}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{t('membersPage.guestNoAccess')}</p>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
@@ -211,28 +266,60 @@ export default function MembersPage() {
               <p className="mb-3 text-xs text-gray-600 dark:text-white/70">
                 {t('membersPage.inviteDesc')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Input
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="colleague@example.com"
-                  className="flex-1 bg-white dark:bg-[#12161B] border-gray-200 dark:border-white/[0.08]"
-                  onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
-                />
-                <select
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as any)}
-                  className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
-                >
-                  <option value="MEMBER">{t('membersPage.roleMember')}</option>
-                  <option value="ADMIN">{t('membersPage.roleAdmin')}</option>
-                  <option value="GUEST">{t('membersPage.roleGuest')}</option>
-                </select>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="colleague@example.com"
+                    className="flex-1 bg-white dark:bg-[#12161B] border-gray-200 dark:border-white/[0.08]"
+                    onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+                  />
+                  <select
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value as any)}
+                    className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                  >
+                    <option value="MEMBER">{t('membersPage.roleMember')}</option>
+                    <option value="ADMIN">{t('membersPage.roleAdmin')}</option>
+                    <option value="GUEST">{t('membersPage.roleGuest')}</option>
+                  </select>
+                </div>
+
+                {projects.length > 0 && (
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <select
+                      value={inviteProjectId}
+                      onChange={(e) => {
+                        setInviteProjectId(e.target.value);
+                        if (e.target.value) setInviteRole('GUEST');
+                      }}
+                      className="flex-1 h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                    >
+                      <option value="">{t('membersPage.allProjects')}</option>
+                      {projects.map((p: any) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                    {inviteProjectId && (
+                      <select
+                        value={inviteProjectRole}
+                        onChange={(e) => setInviteProjectRole(e.target.value as any)}
+                        className="h-10 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 text-sm text-gray-900 dark:text-white"
+                      >
+                        <option value="VIEWER">{t('membersPage.projectViewer')}</option>
+                        <option value="MEMBER">{t('membersPage.projectMember')}</option>
+                        <option value="ADMIN">{t('membersPage.projectAdmin')}</option>
+                      </select>
+                    )}
+                  </div>
+                )}
+
                 <Button
                   onClick={handleInvite}
                   disabled={!inviteEmail.trim() || inviteMutation.isPending}
-                  className="bg-primary-500 hover:bg-primary-600 text-white"
+                  className="bg-primary-500 hover:bg-primary-600 text-white w-full sm:w-auto self-end"
                 >
                   {inviteMutation.isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -369,18 +456,45 @@ export default function MembersPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getRoleBadgeClasses(member.role)}`}>
-                            {getRoleIcon(member.role)}
-                            {member.role}
-                          </span>
+                          {isAdmin && member.role !== 'OWNER' ? (
+                            <select
+                              value={member.role}
+                              onChange={(e) => updateRoleMutation.mutate({ userId: member.id, role: e.target.value })}
+                              className="text-xs rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] text-gray-900 dark:text-white px-2 py-1"
+                            >
+                              <option value="ADMIN">Admin</option>
+                              <option value="MEMBER">Member</option>
+                              <option value="GUEST">Guest</option>
+                            </select>
+                          ) : (
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getRoleBadgeClasses(member.role)}`}>
+                              {getRoleIcon(member.role)}
+                              {member.role}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-white/70 hidden sm:table-cell">
                           {member.budgetAccess?.replace(/_/g, ' ') || t('membersPage.noAccess')}
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <span className="text-xs text-gray-500 dark:text-white/70">
-                            {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : '—'}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500 dark:text-white/70">
+                              {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : '—'}
+                            </span>
+                            {isAdmin && member.role !== 'OWNER' && (
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Remove ${member.name || member.email} from this organization?`)) {
+                                    removeMemberMutation.mutate(member.id);
+                                  }
+                                }}
+                                className="ml-auto p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/10"
+                                title="Remove member"
+                              >
+                                <X className="h-3.5 w-3.5 text-red-500" />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

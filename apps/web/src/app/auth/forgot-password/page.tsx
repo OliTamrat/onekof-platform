@@ -58,10 +58,7 @@ export default function ForgotPasswordPage() {
       <div className="hidden w-1/2 bg-gradient-to-br from-[#0B3A34] via-[#0B4A3F] to-[#0B0E11] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div>
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
-              <span className="text-2xl font-bold text-white">O</span>
-            </div>
-            <span className="text-2xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-10" />
           </Link>
         </div>
 
@@ -77,7 +74,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="text-sm text-white/30">
-          © 2026 Onekof. Built with love in Ethiopia.
+          © 2026 Onekof. {t('auth.builtForEthiopia')}
         </div>
       </div>
 
@@ -86,10 +83,7 @@ export default function ForgotPasswordPage() {
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo */}
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2]">
-              <span className="text-xl font-bold text-white">O</span>
-            </div>
-            <span className="text-xl font-bold text-white">Onekof</span>
+            <img src="/logo-full.png" alt="Onekof" className="h-8" />
           </Link>
 
           {/* Back to signin link */}

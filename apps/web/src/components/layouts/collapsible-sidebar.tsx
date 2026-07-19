@@ -20,7 +20,8 @@ interface CollapsibleSidebarProps {
 
 export function CollapsibleSidebar({ className, collapsed = false }: CollapsibleSidebarProps) {
   const pathname = usePathname();
-  const { currentOrganization, projects } = useWorkspace();
+  const { currentOrganization, projects, userRole } = useWorkspace();
+  const isGuest = userRole === 'GUEST';
   const { t } = useLanguage();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'projects', // Projects expanded by default
@@ -92,9 +93,14 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
     return section.items.some((item) => isActive(item.href));
   };
 
+  const guestHiddenSections = ['budget', 'members', 'reports', 'settings', 'automation'];
+  const filteredNavigation = isGuest
+    ? sidebarNavigation.filter((s: any) => !guestHiddenSections.includes(s.id))
+    : sidebarNavigation;
+
   return (
     <nav className={cn('pt-1 pb-2', collapsed ? 'space-y-0' : 'space-y-0.5', className)}>
-      {sidebarNavigation.map((section) => {
+      {filteredNavigation.map((section) => {
         const isExpanded = expandedSections.includes(section.id);
         const hasSubItems = section.items.length > 0;
         const Icon = section.icon;
@@ -166,7 +172,13 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{label}</span>
-                {section.items.length > 0 && (
+                {section.id === 'projects' ? (
+                  projects.length > 0 && (
+                    <span className="text-xs text-gray-500 dark:text-white/30 mr-1">
+                      {projects.length}
+                    </span>
+                  )
+                ) : section.items.length > 0 && (
                   <span className="text-xs text-gray-500 dark:text-white/30 mr-1">
                     {section.items.length}
                   </span>

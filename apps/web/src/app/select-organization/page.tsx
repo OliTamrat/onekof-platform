@@ -137,14 +137,9 @@ export default function SelectOrganizationPage() {
           {/* Header */}
           <div className="text-center mb-12">
             {/* Logo */}
-            <div className="inline-flex items-center gap-3 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2] shadow-lg">
-                <span className="text-2xl font-bold text-white">O</span>
-              </div>
-              <div className="text-left">
-                <h1 className="text-2xl font-bold text-white">Onekof</h1>
-                <p className="text-sm text-white/30">Enterprise Project Management</p>
-              </div>
+            <div className="inline-flex flex-col items-center gap-3 mb-8">
+              <img src="/logo-full.png" alt="Onekof" className="h-12" />
+              <p className="text-sm text-white/30">Enterprise Project Management</p>
             </div>
 
             {/* Greeting */}

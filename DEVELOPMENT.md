@@ -198,7 +198,7 @@ Full audit covering Security, UI/UX Design System, Code Quality, and Database Sc
 
 15. Debug endpoints exposed without auth (`/api/debug/*`, `/api/env-check`, `/api/test-db`)
 16. Account lockout fails open on error (returns `{ locked: false }`)
-17. TypeScript strict mode disabled; `ignoreBuildErrors: true`
+17. ~~TypeScript strict mode disabled; `ignoreBuildErrors: true`~~ — **RESOLVED**: `ignoreBuildErrors: false`, 0 TS errors
 18. Unused dependencies (`next-intl`, `@trpc/*`)
 19. No pagination on list endpoints (unbounded arrays)
 20. Low test coverage (~3%, no API route tests)
@@ -239,7 +239,7 @@ Full audit covering Security, UI/UX Design System, Code Quality, and Database Sc
 - [x] Standardize API error responses (`{ error: string }` with correct HTTP status codes)
 - [ ] Add soft delete to remaining models — **BLOCKED: requires production schema migration for 24 models**
 - [x] Replace console.log with structured logger (`@/lib/logger`) in all API routes
-- [x] Enable TypeScript strictNullChecks (23 remaining errors all blocked by schema migrations or third-party types; `ignoreBuildErrors: true` covers them)
+- [x] Enable TypeScript strictNullChecks (0 errors — all schema migration errors resolved, `ignoreBuildErrors: false` enforced)
 - [x] Convert raw `<button>` to `<Button>` components across auth, admin, marketing, settings, dashboard, layout pages
 
 **Week 4+ — Hardening (ongoing):**

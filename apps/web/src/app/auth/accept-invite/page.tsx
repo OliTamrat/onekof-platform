@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import {
   CheckCircle2,
@@ -24,6 +24,8 @@ interface InvitationDetails {
   invitedBy: string;
   expiresAt: string;
   isExpired: boolean;
+  projectName?: string;
+  projectRole?: string;
 }
 
 function AcceptInviteContent() {
@@ -89,6 +91,11 @@ function AcceptInviteContent() {
       if (!res.ok) {
         if (res.status === 401) {
           router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/auth/accept-invite?token=${token}`)}`);
+          return;
+        }
+        if (data.emailMismatch) {
+          setError(`This invitation was sent to ${data.invitedEmail}. You are signed in as ${data.currentEmail}. Please sign out and sign in with the correct account.`);
+          setAccepting(false);
           return;
         }
         setError(data.error || t('auth.failedToValidateInvitation'));
@@ -210,6 +217,20 @@ function AcceptInviteContent() {
                     {invitation?.role}
                   </span>
                 </div>
+                {invitation?.projectName && (
+                  <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                    <span className="text-xs font-medium text-white/70">{t('invite.project')}</span>
+                    <span className="text-sm font-semibold text-white">{invitation.projectName}</span>
+                  </div>
+                )}
+                {invitation?.projectRole && (
+                  <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
+                    <span className="text-xs font-medium text-white/70">{t('invite.projectRole')}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/20 border border-blue-500/30 px-2.5 py-0.5 text-xs font-medium text-blue-400">
+                      {invitation.projectRole}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-[#181D23] p-3">
                   <span className="text-xs font-medium text-white/70">{t('invite.expires')}</span>
                   <span className="inline-flex items-center gap-1 text-xs text-white/70">
@@ -220,8 +241,17 @@ function AcceptInviteContent() {
               </div>
 
               {error && (
-                <div className="mb-4 rounded-xl border border-white/[0.08] bg-[#181D23] p-3 text-center">
+                <div className="mb-4 rounded-xl border border-white/[0.08] bg-[#181D23] p-4 text-center space-y-3">
                   <p className="text-sm text-red-400">{error}</p>
+                  {error.includes('sign out') && (
+                    <Button
+                      onClick={() => signOut({ callbackUrl: `/auth/accept-invite?token=${token}` })}
+                      variant="outline"
+                      className="rounded-full border-white/[0.08] bg-transparent text-white hover:bg-white/[0.06] hover:text-white"
+                    >
+                      Sign Out & Switch Account
+                    </Button>
+                  )}
                 </div>
               )}
 
