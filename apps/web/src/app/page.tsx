@@ -548,7 +548,7 @@ export default function HomePage() {
   const navLinks = [
     { label: t('landing.nav.features'), href: '#features' },
     { label: t('landing.nav.product'), href: '#product' },
-    { label: t('landing.nav.pricing'), href: '#pricing' },
+    { label: t('landing.nav.pricing'), href: '/pricing' },
     { label: t('landing.nav.about'), href: '/about' },
   ];
 
@@ -1537,7 +1537,7 @@ export default function HomePage() {
             {[
               { title: t('landing.footer.productCol'), links: [
                 { label: t('landing.footer.footerLinks.features'), href: '#features' },
-                { label: t('landing.footer.footerLinks.pricing'), href: '#pricing' },
+                { label: t('landing.footer.footerLinks.pricing'), href: '/pricing' },
                 { label: t('landing.footer.footerLinks.integrations'), href: '#' },
                 { label: t('landing.footer.footerLinks.changelog'), href: '#' },
                 { label: t('landing.footer.footerLinks.roadmap'), href: '#' },
