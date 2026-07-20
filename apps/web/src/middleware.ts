@@ -289,9 +289,19 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
   const isProduction = process.env.NODE_ENV === 'production';
   const isVercelPreview = process.env.VERCEL_ENV === 'preview';
   const allowVercelLive = !isProduction || isVercelPreview;
+  const oauthDomains = [
+    'https://accounts.google.com',
+    'https://www.gstatic.com',
+    'https://login.microsoftonline.com',
+    'https://login.live.com',
+    'https://github.com',
+    'https://www.linkedin.com',
+    'https://api.linkedin.com',
+  ].join(' ');
+
   const scriptSrc = isProduction && !isVercelPreview
-    ? "'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com"
-    : "'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live https://*.vercel.live";
+    ? `'self' 'unsafe-inline' ${oauthDomains}`
+    : `'self' 'unsafe-eval' 'unsafe-inline' ${oauthDomains} https://vercel.live https://*.vercel.live`;
 
   const csp = [
     "default-src 'self'",
@@ -299,11 +309,11 @@ function addSecurityHeaders(response: NextResponse, pathname: string) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    `connect-src 'self' https://accounts.google.com https://*.upstash.io https://cloudflareinsights.com https://static.cloudflareinsights.com${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
-    `frame-src 'self' https://accounts.google.com${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
+    `connect-src 'self' ${oauthDomains} https://*.upstash.io https://cloudflareinsights.com https://static.cloudflareinsights.com${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
+    `frame-src 'self' ${oauthDomains}${allowVercelLive ? ' https://vercel.live https://*.vercel.live' : ''}`,
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    `form-action 'self' ${oauthDomains}`,
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
   ].join('; ');
