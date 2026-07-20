@@ -219,6 +219,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.picture = (user as any).avatar || user.image || null;
         token.iat = Math.floor(Date.now() / 1000);
 
         // Fetch user's organizations
@@ -271,6 +272,16 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      if (trigger === 'update' && token.id) {
+        const freshUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { avatar: true },
+        });
+        if (freshUser) {
+          token.picture = freshUser.avatar || null;
+        }
+      }
+
       // Refresh organizations on update trigger
       if (trigger === 'update' && token.id) {
         const organizations = await prisma.organizationMember.findMany({
@@ -307,6 +318,7 @@ export const authOptions: NextAuthOptions = {
           return { ...session, user: undefined } as any;
         }
         session.user.id = token.id as string;
+        session.user.image = (token.picture as string) || null;
         session.user.organizations = token.organizations as any[];
       }
       return session;
