@@ -667,7 +667,6 @@
     "editProfile": "መገለጫ አርትዕ",
     "profileUpdated": "መገለጫ በተሳካ ሁኔታ ተዘምኗል!",
     "failedToUpdateProfile": "መገለጫ ማዘመን አልተሳካም",
-    "profilePhoto": "የፕሮፋይል ፎቶ",
     "orgSettings": "የድርጅት ቅንብሮች እና ምርጫዎች በቅርቡ ይመጣሉ",
     "redirecting": "ወደ ቅንብሮች በማዛወር ላይ..."
   },
@@ -1834,7 +1833,8 @@
     "deleteAccountDesc": "መለያዎን እና ሁሉ ተዛማጅ ውሂቦን በቋሚነት ሰርዝ",
     "backToDashboard": "ወደ ዳሽቦርድ ተመለስ",
     "profileUpdated": "መገለጫ በተሳካ ሁኔታ ዘምኗል!",
-    "failedToUpdateProfile": "መገለጫ ማዘመን አልተሳካም"
+    "failedToUpdateProfile": "መገለጫ ማዘመን አልተሳካም",
+    "profilePhoto": "የፕሮፋይል ፎቶ"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "ምን ዓይነት የሥራ ቦታ ያስፈልግዎታል?",

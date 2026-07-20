@@ -667,7 +667,6 @@
     "editProfile": "Piroofaayilii Gulaali",
     "profileUpdated": "Piroofaayiliin milkaa'inaan haaromfame!",
     "failedToUpdateProfile": "Piroofaayilii haaromsuu hin dandeenye",
-    "profilePhoto": "Suuraa Piroofaayilii",
     "orgSettings": "Qindaa'inni fi filannoon dhaabbataa dhiyootti ni dhufa",
     "redirecting": "Gara qindaa'inaatti geessaa jira..."
   },
@@ -1796,7 +1795,8 @@
     "deleteAccountDesc": "Herreega keessan fi odeeffannoo hunda dhaabumaan haqi",
     "backToDashboard": "Gara Daashboorditti Deebi'i",
     "profileUpdated": "Piroofaayilin milkiin haaromfameera!",
-    "failedToUpdateProfile": "Piroofaayilii haaromsuun hin milkoofne"
+    "failedToUpdateProfile": "Piroofaayilii haaromsuun hin milkoofne",
+    "profilePhoto": "Suuraa Piroofaayilii"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "Maal gosa bakka hojii barbaaddu?",
