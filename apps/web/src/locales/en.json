@@ -666,7 +666,6 @@
     "editProfile": "Edit Profile",
     "profileUpdated": "Profile updated successfully!",
     "failedToUpdateProfile": "Failed to update profile",
-    "profilePhoto": "Profile Photo",
     "orgSettings": "Organization settings and preferences coming soon",
     "redirecting": "Redirecting to settings..."
   },
@@ -1789,7 +1788,8 @@
     "deleteAccountDesc": "Permanently delete your account and all associated data",
     "backToDashboard": "Back to Dashboard",
     "profileUpdated": "Profile updated successfully!",
-    "failedToUpdateProfile": "Failed to update profile"
+    "failedToUpdateProfile": "Failed to update profile",
+    "profilePhoto": "Profile Photo"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "What type of workspace do you need?",

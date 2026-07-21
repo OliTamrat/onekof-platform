@@ -667,7 +667,6 @@
     "editProfile": "ፕሮፋይል ኣርትዕ",
     "profileUpdated": "ፕሮፋይል ብዓወት ተሓዲሱ!",
     "failedToUpdateProfile": "ፕሮፋይል ምሕዳስ ኣይሰለጠን",
-    "profilePhoto": "ስእሊ ፕሮፋይል",
     "orgSettings": "ናይ ትካል ቅጥዒታትን ምርጫታትን ኣብ ቀረባ ይመጽእ",
     "redirecting": "ናብ ቅጥዒታት ይኸይድ ኣሎ..."
   },
@@ -1840,7 +1839,8 @@
     "deleteAccountDesc": "ሕሳብካን ኩሉ ዝተሓሓዘ ሓበሬታን ብቐዋሚ ሰርዝ",
     "backToDashboard": "ናብ ዳሽቦርድ ተመለስ",
     "profileUpdated": "ፕሮፋይል ብዓወት ተሓዲሱ!",
-    "failedToUpdateProfile": "ፕሮፋይል ምሕዳስ ኣይተሳዕፈን"
+    "failedToUpdateProfile": "ፕሮፋይል ምሕዳስ ኣይተሳዕፈን",
+    "profilePhoto": "ስእሊ ፕሮፋይል"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "ኣየናይ ዓይነት ናይ ስራሕ ቦታ ትደሊ?",

@@ -667,7 +667,6 @@
     "editProfile": "Bogga shaqsiga wax ka bedel",
     "profileUpdated": "Bogga shaqsiga si guul leh loo cusbooneysiiyey!",
     "failedToUpdateProfile": "Bogga shaqsiga cusbooneysiintiisa waa la waayay",
-    "profilePhoto": "Sawirka Profile-ka",
     "orgSettings": "Dejinta hay'adda iyo doorashooyinka waa iman doontaa dhowaan",
     "redirecting": "Waa lagu wareejinayaa dejinta..."
   },
@@ -1834,7 +1833,8 @@
     "deleteAccountDesc": "Xisaabkaaga iyo dhammaan xogta la xidhiidha si joogto ah u tirtir",
     "backToDashboard": "Ku laabo Xarunta",
     "profileUpdated": "Bogga shaqsigu si guul leh ayaa loo cusboonaysiiyay!",
-    "failedToUpdateProfile": "Bogga shaqsiga cusboonaysiinta way ku guul-darreysatay"
+    "failedToUpdateProfile": "Bogga shaqsiga cusboonaysiinta way ku guul-darreysatay",
+    "profilePhoto": "Sawirka Profile-ka"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "Nooca shaqo-goobta aad u baahan tahay?",
