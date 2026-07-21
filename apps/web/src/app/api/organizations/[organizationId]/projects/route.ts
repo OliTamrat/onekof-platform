@@ -39,12 +39,33 @@ export async function GET(
       );
     }
 
-    // Fetch projects
+    // RBAC: GUEST users only see projects they're explicitly added to
+    const isGuest = membership.role === 'GUEST';
+    const projectWhere: any = {
+      organizationId,
+      isArchived: false,
+    };
+    if (isGuest) {
+      projectWhere.AND = [
+        {
+          OR: [
+            { members: { some: { userId: session.user.id } } },
+            { leadId: session.user.id },
+            { ownerId: session.user.id },
+          ],
+        },
+      ];
+    }
+
+    logger.info('Project access filter', {
+      userId: session.user.id,
+      role: membership.role,
+      isGuest,
+      filterApplied: !!projectWhere.AND,
+    });
+
     const projects = await prisma.project.findMany({
-      where: {
-        organizationId,
-        isArchived: false, // Only show active projects by default
-      },
+      where: projectWhere,
       include: {
         _count: {
           select: {

@@ -60,7 +60,7 @@ function MarketingPage() {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                 <span className="text-black font-bold text-sm">O</span>
               </div>
-              <span className="text-lg font-semibold tracking-tight text-white">Onekof</span>
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
             </div>
             <div className="hidden md:flex items-center gap-6">
               {['Product', 'Solutions', 'Pricing', 'Enterprise'].map((item) => (
@@ -345,7 +345,7 @@ function MarketingPage() {
               <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                 <span className="text-black font-bold text-xs">O</span>
               </div>
-              <span className="text-sm font-semibold text-white">Onekof</span>
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10" />
             </div>
             <p className="text-xs text-zinc-600">&copy; 2024 Onekof. All rights reserved.</p>
           </div>
@@ -399,7 +399,7 @@ function DashboardPage() {
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0">
             <span className="text-black font-bold text-sm">O</span>
           </div>
-          {!sidebarCollapsed && <span className="text-sm font-semibold text-white">Onekof</span>}
+          {!sidebarCollapsed && <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-10" />}
         </div>
 
         {/* Org Switcher */}

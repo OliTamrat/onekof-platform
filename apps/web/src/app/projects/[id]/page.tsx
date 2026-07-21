@@ -2,11 +2,13 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function ProjectDefaultPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Redirect to the board (Overview) page as the default view

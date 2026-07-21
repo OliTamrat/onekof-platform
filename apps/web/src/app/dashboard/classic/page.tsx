@@ -93,11 +93,8 @@ export default function DashboardPage() {
       {/* Sidebar - Jira-inspired */}
       <aside className="w-64 border-r border-gray-800 bg-[#12161B]">
         {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b border-gray-800 px-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1C8C7D] to-[#0F3D2E]">
-            <span className="text-lg font-bold text-white">O</span>
-          </div>
-          <span className="text-lg font-semibold text-white">Onekof</span>
+        <div className="flex h-16 items-center border-b border-gray-800 px-4">
+          <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
         </div>
 
         {/* Navigation */}

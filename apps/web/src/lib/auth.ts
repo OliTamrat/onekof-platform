@@ -79,17 +79,10 @@ export const authOptions: NextAuthOptions = {
     newUser: '/onboarding',
   },
   providers: [
-    // OAuth callbacks are always routed through the main domain (onekof.com)
-    // regardless of which org subdomain the user signed in from.
-    // This keeps redirect URIs stable across all tenants — each provider only
-    // needs one registered callback URL.
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? [GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          authorization: {
-            params: { redirect_uri: 'https://onekof.com/api/auth/callback/google' },
-          },
         })]
       : []),
     ...(process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_CLIENT_SECRET
@@ -97,27 +90,18 @@ export const authOptions: NextAuthOptions = {
           clientId: process.env.AZURE_AD_CLIENT_ID,
           clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
           tenantId: process.env.AZURE_AD_TENANT_ID || 'common',
-          authorization: {
-            params: { redirect_uri: 'https://onekof.com/api/auth/callback/azure-ad' },
-          },
         })]
       : []),
     ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
       ? [GitHubProvider({
           clientId: process.env.GITHUB_CLIENT_ID,
           clientSecret: process.env.GITHUB_CLIENT_SECRET,
-          authorization: {
-            params: { redirect_uri: 'https://onekof.com/api/auth/callback/github' },
-          },
         })]
       : []),
     ...(process.env.LINKEDIN_CLIENT_ID && process.env.LINKEDIN_CLIENT_SECRET
       ? [LinkedInProvider({
           clientId: process.env.LINKEDIN_CLIENT_ID,
           clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-          authorization: {
-            params: { redirect_uri: 'https://onekof.com/api/auth/callback/linkedin' },
-          },
         })]
       : []),
     CredentialsProvider({
@@ -235,6 +219,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.picture = (user as any).avatar || user.image || null;
         token.iat = Math.floor(Date.now() / 1000);
 
         // Fetch user's organizations
@@ -287,6 +272,16 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      if (trigger === 'update' && token.id) {
+        const freshUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { avatar: true },
+        });
+        if (freshUser) {
+          token.picture = freshUser.avatar || null;
+        }
+      }
+
       // Refresh organizations on update trigger
       if (trigger === 'update' && token.id) {
         const organizations = await prisma.organizationMember.findMany({
@@ -323,6 +318,7 @@ export const authOptions: NextAuthOptions = {
           return { ...session, user: undefined } as any;
         }
         session.user.id = token.id as string;
+        session.user.image = (token.picture as string) || null;
         session.user.organizations = token.organizations as any[];
       }
       return session;

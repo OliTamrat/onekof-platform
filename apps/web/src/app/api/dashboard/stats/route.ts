@@ -15,17 +15,36 @@ export async function GET(_request: NextRequest) {
     if (error || !ctx) return error!;
 
     const organizationId = ctx.organizationId;
+    const userId = ctx.user.id;
+    const isGuest = ctx.role === 'GUEST';
 
     // Calculate date ranges
     const now = new Date();
     const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const next7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-    // Shared task scope: org's non-deleted tasks in non-deleted projects
-    const baseWhere = {
+    // RBAC: GUEST users only see stats from projects they're explicitly in
+    let baseWhere: any = {
       project: { organizationId, deletedAt: null },
       deletedAt: null,
     };
+
+    if (isGuest) {
+      const allowedProjects = await prisma.project.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          OR: [
+            { members: { some: { userId } } },
+            { leadId: userId },
+            { ownerId: userId },
+          ],
+        },
+        select: { id: true },
+      });
+      const allowedIds = allowedProjects.map((p: { id: string }) => p.id);
+      baseWhere.projectId = { in: allowedIds };
+    }
 
     // All aggregations run in parallel — DB-side counting, no data transfer
     const [

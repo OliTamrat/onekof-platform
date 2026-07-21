@@ -30,18 +30,34 @@ export async function GET(request: NextRequest) {
     const organizationId = ctx.organizationId;
 
     // SECURITY: scope tasks to projects the user is actually allowed to see.
-    // This reuses the project access filter so the rules stay consistent with
-    // /api/projects (MEMBERs only see public projects or projects they're in).
-    const projectAccessFilter = buildProjectAccessFilter({
-      organizationId,
-      userId: ctx.user.id,
-      orgRole: ctx.role,
-    });
-
-    const where: any = {
+    let where: any = {
       deletedAt: null,
-      project: projectAccessFilter,
+      project: { organizationId, deletedAt: null },
     };
+
+    if (ctx.role === 'GUEST') {
+      const allowedProjects = await prisma.project.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          OR: [
+            { members: { some: { userId: ctx.user.id } } },
+            { leadId: ctx.user.id },
+            { ownerId: ctx.user.id },
+          ],
+        },
+        select: { id: true },
+      });
+      const allowedIds = allowedProjects.map((p: { id: string }) => p.id);
+      where.projectId = { in: allowedIds };
+    } else {
+      const projectAccessFilter = buildProjectAccessFilter({
+        organizationId,
+        userId: ctx.user.id,
+        orgRole: ctx.role,
+      });
+      where.project = projectAccessFilter;
+    }
 
     // Filter by specific project if specified — but still enforce access.
     // If the user requests a project they can't access, they'll just get no
@@ -114,10 +130,19 @@ export async function GET(request: NextRequest) {
           avatar: true,
         },
       },
+      parent: {
+        select: {
+          id: true,
+          key: true,
+          title: true,
+          type: true,
+        },
+      },
       _count: {
         select: {
           comments: { where: { deletedAt: null } },
           attachments: true,
+          subtasks: true,
         },
       },
     };
@@ -130,6 +155,7 @@ export async function GET(request: NextRequest) {
       ...issue,
       commentCount: issue._count?.comments ?? 0,
       attachmentCount: issue._count?.attachments ?? 0,
+      subtaskCount: issue._count?.subtasks ?? 0,
       _count: undefined,
     });
 

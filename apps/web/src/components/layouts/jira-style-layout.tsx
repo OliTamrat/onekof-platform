@@ -121,11 +121,11 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
   // Project navigation (when in a specific project)
   const projectNav = [
-    { name: 'Board', href: '/board', icon: FolderKanban },
-    { name: 'Backlog', href: '/backlog', icon: List },
-    { name: 'Timeline', href: '/timeline', icon: Calendar },
-    { name: 'Reports', href: '/reports', icon: BarChart3 },
-    { name: 'Project Settings', href: '/settings', icon: SettingsIcon },
+    { name: t('nav.board'), href: '/board', icon: FolderKanban },
+    { name: t('nav.backlog'), href: '/backlog', icon: List },
+    { name: t('nav.timeline'), href: '/timeline', icon: Calendar },
+    { name: t('nav.reports'), href: '/reports', icon: BarChart3 },
+    { name: t('projectSettings.title'), href: '/settings', icon: SettingsIcon },
   ];
 
   const navigation = isInProject ? projectNav : dashboardNav;
@@ -152,13 +152,9 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         </Button>
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 mr-2 shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm shadow-md">
-            O
-          </div>
-          <span className="text-lg font-bold text-slate-900 dark:text-white hidden lg:block">
-            Onekof
-          </span>
+        <Link href="/dashboard" className="flex items-center mr-2 shrink-0">
+          <img src="/logo-mark.png?v=2" alt="Onekof" className="h-12 w-12 lg:hidden" />
+          <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14 hidden lg:block" />
         </Link>
 
         {/* Workspace Selector */}
@@ -358,9 +354,17 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-sm font-medium text-white shadow-sm">
-                  {session?.user?.name?.[0]?.toUpperCase() || 'U'}
-                </div>
+                {session?.user?.image ? (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name || ''}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-sm font-medium text-white shadow-sm">
+                    {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -413,13 +417,8 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
         )}>
           {/* Mobile Sidebar Header with Close Button */}
           <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-white/[0.08] md:hidden shrink-0">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-white font-bold text-sm">
-                O
-              </div>
-              <span className="text-lg font-bold text-slate-900 dark:text-white">
-                Onekof
-              </span>
+            <Link href="/dashboard" className="flex items-center">
+              <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
             </Link>
             <Button
               variant="ghost"

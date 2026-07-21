@@ -3,12 +3,13 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Clock, AlertCircle, List } from 'lucide-react';
+import { useLanguage } from '@/contexts/language-context';
 
 const STATUS_CONFIG = {
-  TODO: { label: 'To Do', icon: List, color: 'text-gray-500' },
-  IN_PROGRESS: { label: 'In Progress', icon: Clock, color: 'text-blue-500' },
-  IN_REVIEW: { label: 'In Review', icon: AlertCircle, color: 'text-purple-500' },
-  DONE: { label: 'Done', icon: CheckCircle2, color: 'text-green-500' },
+  TODO: { labelKey: 'status.todo', icon: List, color: 'text-gray-500' },
+  IN_PROGRESS: { labelKey: 'status.inProgress', icon: Clock, color: 'text-blue-500' },
+  IN_REVIEW: { labelKey: 'status.inReview', icon: AlertCircle, color: 'text-purple-500' },
+  DONE: { labelKey: 'status.done', icon: CheckCircle2, color: 'text-green-500' },
 };
 
 export default function ProjectListPage() {
@@ -16,6 +17,7 @@ export default function ProjectListPage() {
   const projectId = params.id as string;
   const [issues, setIssues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchIssues();
@@ -49,19 +51,19 @@ export default function ProjectListPage() {
         <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#22272B] overflow-hidden">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-[#1B1F23] px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-            <div className="col-span-1">Type</div>
-            <div className="col-span-2">Key</div>
-            <div className="col-span-4">Summary</div>
-            <div className="col-span-2">Assignee</div>
-            <div className="col-span-2">Status</div>
-            <div className="col-span-1">Priority</div>
+            <div className="col-span-1">{t('common.type')}</div>
+            <div className="col-span-2">{t('projects.projectKey')}</div>
+            <div className="col-span-4">{t('common.summary')}</div>
+            <div className="col-span-2">{t('common.assignee')}</div>
+            <div className="col-span-2">{t('common.status')}</div>
+            <div className="col-span-1">{t('common.priority')}</div>
           </div>
 
           {/* Table Body */}
           <div className="divide-y divide-gray-200 dark:divide-slate-700">
             {issues.length === 0 ? (
               <div className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                No issues found. Create your first issue to get started.
+                {t('emptyStates.noIssuesDesc')}
               </div>
             ) : (
               issues.map(issue => {
@@ -99,13 +101,13 @@ export default function ProjectListPage() {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-400 dark:text-gray-500">Unassigned</span>
+                        <span className="text-sm text-gray-400 dark:text-gray-500">{t('common.unassigned')}</span>
                       )}
                     </div>
                     <div className="col-span-2 flex items-center gap-2">
                       <StatusIcon className={`h-4 w-4 ${statusColor}`} />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {STATUS_CONFIG[issue.status as keyof typeof STATUS_CONFIG]?.label || issue.status}
+                        {STATUS_CONFIG[issue.status as keyof typeof STATUS_CONFIG]?.labelKey ? t(STATUS_CONFIG[issue.status as keyof typeof STATUS_CONFIG].labelKey) : issue.status}
                       </span>
                     </div>
                     <div className="col-span-1 flex items-center">

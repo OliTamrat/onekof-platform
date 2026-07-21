@@ -26,6 +26,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { IconRenderer } from '@/components/ui/icon-renderer';
+import { useLanguage } from '@/contexts/language-context';
 
 interface Project {
   id: string;
@@ -37,24 +38,25 @@ interface Project {
 }
 
 const TAB_ITEMS = [
-  { id: 'board', label: 'Summary', icon: LayoutDashboard, href: '/projects/[id]/board' },
-  { id: 'list', label: 'List', icon: List, href: '/projects/[id]/list' },
-  { id: 'board-view', label: 'Board', icon: Kanban, href: '/projects/[id]/board' },
-  { id: 'calendar', label: 'Calendar', icon: Calendar, href: '/projects/[id]/calendar' },
-  { id: 'timeline', label: 'Timeline', icon: Clock, href: '/projects/[id]/timeline' },
-  { id: 'team', label: 'Team', icon: Users, href: '/projects/[id]/team' },
-  { id: 'goals', label: 'Goals', icon: Target, href: '/projects/[id]/goals' },
-  { id: 'budget', label: 'Budget', icon: DollarSign, href: '/projects/[id]/budget' },
-  { id: 'documents', label: 'Documents', icon: FileText, href: '/projects/[id]/documents' },
-  { id: 'automation', label: 'Automation', icon: Zap, href: '/projects/[id]/automation' },
-  { id: 'wiki', label: 'Wiki', icon: BookOpen, href: '/projects/[id]/wiki' },
-  { id: 'settings', label: 'Settings', icon: Settings, href: '/projects/[id]/settings' },
+  { id: 'board', labelKey: 'tabs.summary', icon: LayoutDashboard, href: '/projects/[id]/board' },
+  { id: 'list', labelKey: 'tabs.list', icon: List, href: '/projects/[id]/list' },
+  { id: 'board-view', labelKey: 'tabs.board', icon: Kanban, href: '/projects/[id]/board' },
+  { id: 'calendar', labelKey: 'tabs.calendar', icon: Calendar, href: '/projects/[id]/calendar' },
+  { id: 'timeline', labelKey: 'tabs.timeline', icon: Clock, href: '/projects/[id]/timeline' },
+  { id: 'team', labelKey: 'tabs.team', icon: Users, href: '/projects/[id]/team' },
+  { id: 'goals', labelKey: 'tabs.goals', icon: Target, href: '/projects/[id]/goals' },
+  { id: 'budget', labelKey: 'tabs.budget', icon: DollarSign, href: '/projects/[id]/budget' },
+  { id: 'documents', labelKey: 'tabs.docs', icon: FileText, href: '/projects/[id]/documents' },
+  { id: 'automation', labelKey: 'tabs.automation', icon: Zap, href: '/projects/[id]/automation' },
+  { id: 'wiki', labelKey: 'tabs.wiki', icon: BookOpen, href: '/projects/[id]/wiki' },
+  { id: 'settings', labelKey: 'tabs.settings', icon: Settings, href: '/projects/[id]/settings' },
 ];
 
 export default function ProjectLayout({ children }: { children: ReactNode }): ReactNode {
   const params = useParams();
   const pathname = usePathname();
   const projectId = params.id as string;
+  const { t } = useLanguage();
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -109,7 +111,7 @@ export default function ProjectLayout({ children }: { children: ReactNode }): Re
               </div>
               <div>
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">
-                  {project?.name || 'Project'}
+                  {project?.name || t('common.project')}
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-slate-400">
                   {project?.key || ''}
@@ -136,7 +138,7 @@ export default function ProjectLayout({ children }: { children: ReactNode }): Re
                   }`}
                 >
                   <Icon className="h-4 w-4" />
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               );
             })}

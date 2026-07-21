@@ -132,10 +132,10 @@ export default function NotificationsPage() {
   }), [notifications]);
 
   const FILTERS: { key: NotifFilter; label: string }[] = [
-    { key: 'all',      label: 'All' },
-    { key: 'assigned', label: 'Assigned' },
-    { key: 'comments', label: 'Comments' },
-    { key: 'watching', label: 'Watching' },
+    { key: 'all',      label: t('filter.all') },
+    { key: 'assigned', label: t('notifications.assigned') },
+    { key: 'comments', label: t('notifications.comments') },
+    { key: 'watching', label: t('notifications.watching') },
   ];
 
   const handleClick = (n: Notification) => {

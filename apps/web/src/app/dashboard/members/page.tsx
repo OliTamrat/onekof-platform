@@ -124,6 +124,36 @@ export default function MembersPage() {
     },
   });
 
+  const updateRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+      const res = await fetch('/api/organization-members', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update role');
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organization-members'] });
+    },
+  });
+
+  const removeMemberMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const res = await fetch(`/api/organization-members?userId=${userId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to remove member');
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organization-members'] });
+    },
+  });
+
+  const isAdmin = userRole === 'OWNER' || userRole === 'ADMIN';
+
   const members: OrganizationMember[] = membersData?.members || [];
   const invitations: PendingInvitation[] = invitationsData?.invitations || [];
   const pendingInvitations = invitations.filter((i) => !i.isExpired);
@@ -426,18 +456,45 @@ export default function MembersPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getRoleBadgeClasses(member.role)}`}>
-                            {getRoleIcon(member.role)}
-                            {member.role}
-                          </span>
+                          {isAdmin && member.role !== 'OWNER' ? (
+                            <select
+                              value={member.role}
+                              onChange={(e) => updateRoleMutation.mutate({ userId: member.id, role: e.target.value })}
+                              className="text-xs rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] text-gray-900 dark:text-white px-2 py-1"
+                            >
+                              <option value="ADMIN">Admin</option>
+                              <option value="MEMBER">Member</option>
+                              <option value="GUEST">Guest</option>
+                            </select>
+                          ) : (
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getRoleBadgeClasses(member.role)}`}>
+                              {getRoleIcon(member.role)}
+                              {member.role}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600 dark:text-white/70 hidden sm:table-cell">
                           {member.budgetAccess?.replace(/_/g, ' ') || t('membersPage.noAccess')}
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <span className="text-xs text-gray-500 dark:text-white/70">
-                            {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : '—'}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500 dark:text-white/70">
+                              {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : '—'}
+                            </span>
+                            {isAdmin && member.role !== 'OWNER' && (
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Remove ${member.name || member.email} from this organization?`)) {
+                                    removeMemberMutation.mutate(member.id);
+                                  }
+                                }}
+                                className="ml-auto p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/10"
+                                title="Remove member"
+                              >
+                                <X className="h-3.5 w-3.5 text-red-500" />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

@@ -22,7 +22,7 @@ import {
   Languages,
   Pause,
   Play,
-  Star,
+
   Sparkles,
   ChevronRight,
   Check,
@@ -45,6 +45,7 @@ import {
   Smartphone,
   Landmark,
   CreditCard,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -548,7 +549,7 @@ export default function HomePage() {
   const navLinks = [
     { label: t('landing.nav.features'), href: '#features' },
     { label: t('landing.nav.product'), href: '#product' },
-    { label: t('landing.nav.pricing'), href: '#pricing' },
+    { label: t('landing.nav.pricing'), href: '/pricing' },
     { label: t('landing.nav.about'), href: '/about' },
   ];
 
@@ -570,12 +571,9 @@ export default function HomePage() {
             : 'bg-transparent'
         }`}
       >
-        <div className="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6">
-          <Link href="/" className="group flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg transition-shadow group-hover:shadow-xl">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[17px] font-bold tracking-[-0.01em]">Onekof</span>
+        <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
+          <Link href="/" className="group flex items-center">
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14 sm:h-16" />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -656,8 +654,8 @@ export default function HomePage() {
           <div className="absolute -left-[10%] bottom-[10%] h-[500px] w-[500px] rounded-full bg-violet-500/[0.05] blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[1200px] px-6 pb-6 pt-24 sm:pt-32 lg:pt-40">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="relative mx-auto max-w-[1200px] px-6 pb-12 pt-28 sm:pb-16 sm:pt-36 lg:pt-44">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             {/* LEFT — Text content */}
             <motion.div
               initial="hidden"
@@ -665,7 +663,7 @@ export default function HomePage() {
               variants={heroStagger}
             >
               <motion.div variants={heroChild}>
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-3 py-1.5 sm:gap-2.5 sm:px-4 sm:py-2">
+                <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/[0.08] px-3 py-1.5 sm:gap-2.5 sm:px-4 sm:py-2">
                   <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
                   <span className="text-[12px] sm:text-[14px] font-semibold text-emerald-400">Enterprise-Grade Security</span>
                   <span className="hidden sm:inline-block h-3 w-px bg-white/10" />
@@ -678,7 +676,10 @@ export default function HomePage() {
                   {t('landing.hero.headingPrefix')}
                   <br />
                   <span className="relative inline-block">
-                    <span className="bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
+                    <span className="invisible font-serif italic" aria-hidden="true">
+                      {heroWords.reduce((a, b) => a.length >= b.length ? a : b, '')}
+                    </span>
+                    <span className="absolute left-0 top-0 bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
                       {heroTyped}
                     </span>
                     <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
@@ -687,19 +688,26 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <p className="mt-6 max-w-[480px] text-[18px] leading-[1.75] text-white/65">
+                <p className="mt-8 max-w-[480px] text-[17px] leading-[1.8] text-white/60">
                   {t('auth.projectsDescription')}
                 </p>
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
+                <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-center sm:flex-wrap">
                   <Link
                     href="/auth/signup"
                     className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] px-7 py-3.5 text-[15px] font-semibold text-white shadow-xl shadow-primary-500/20 transition-all hover:shadow-2xl hover:shadow-primary-500/30 hover:brightness-110 active:scale-[0.98]"
                   >
                     {t('landing.hero.getStartedFree')}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                  <Link
+                    href="/product"
+                    className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-[#1C8C7D]/30 bg-[#1C8C7D]/[0.08] px-7 py-3.5 text-[15px] font-medium text-white/80 transition-all hover:border-[#1C8C7D]/50 hover:bg-[#1C8C7D]/[0.12] hover:text-white"
+                  >
+                    <Layers className="h-4 w-4 text-[#2BB5A2]" />
+                    How It Works
                   </Link>
                   <button
                     onClick={() => setVideoOpen(true)}
@@ -714,7 +722,7 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] sm:text-[14px] text-white/55">
+                <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] sm:text-[14px] text-white/50">
                   <span className="inline-flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-400" />
                     Certified Secure
@@ -1089,7 +1097,7 @@ export default function HomePage() {
               </div>
 
               {/* Content */}
-              <div className="grid items-center gap-8 rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:grid-cols-2">
+              <div className="grid items-center gap-8 rounded-2xl border border-white/[0.08] bg-[#12161B] p-8 sm:p-12 lg:grid-cols-2 min-h-[520px] lg:min-h-[480px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${activeShowcase}`}
@@ -1222,87 +1230,6 @@ export default function HomePage() {
                   <p className="mt-1.5 text-[14px] text-white/70">{stat.label}</p>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ TESTIMONIALS ═══ */}
-      <section id="about" className="py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <Reveal>
-            <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-              <div className="mb-5 inline-flex items-center gap-2">
-                <span className="h-px w-6 bg-primary-500" />
-                <span className="text-[13px] font-semibold uppercase tracking-[0.15em] text-[#2BB5A2]">{t('landing.testimonials.label')}</span>
-              </div>
-              <h2 className="font-serif text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.15]">
-                {t('landing.testimonials.heading1')}{' '}
-                <span className="font-serif italic text-white/70">{t('landing.testimonials.heading2')}</span>
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                quote: t('landing.testimonials.quote1'),
-                name: t('landing.testimonials.name1'),
-                role: t('landing.testimonials.role1'),
-                gradient: 'from-primary-500 to-primary-700',
-              },
-              {
-                quote: t('landing.testimonials.quote2'),
-                name: t('landing.testimonials.name2'),
-                role: t('landing.testimonials.role2'),
-                gradient: 'from-purple-500 to-pink-500',
-              },
-              {
-                quote: t('landing.testimonials.quote3'),
-                name: t('landing.testimonials.name3'),
-                role: t('landing.testimonials.role3'),
-                gradient: 'from-emerald-500 to-teal-500',
-              },
-              {
-                quote: t('landing.testimonials.quote4'),
-                name: t('landing.testimonials.name4'),
-                role: t('landing.testimonials.role4'),
-                gradient: 'from-amber-500 to-orange-500',
-              },
-              {
-                quote: t('landing.testimonials.quote5'),
-                name: t('landing.testimonials.name5'),
-                role: t('landing.testimonials.role5'),
-                gradient: 'from-cyan-500 to-blue-500',
-              },
-              {
-                quote: t('landing.testimonials.quote6'),
-                name: t('landing.testimonials.name6'),
-                role: t('landing.testimonials.role6'),
-                gradient: 'from-rose-500 to-pink-500',
-              },
-            ].map((testimonial, i) => (
-              <Reveal key={testimonial.name} delay={i * 60}>
-                <div className="group h-full rounded-2xl border border-white/[0.08] bg-[#12161B] p-6 transition-all duration-500 hover:border-white/[0.15]">
-                  <div className="mb-4 flex gap-1">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="h-3.5 w-3.5 fill-amber-400/80 text-amber-400/80" />
-                    ))}
-                  </div>
-                  <p className="mb-6 text-[14px] leading-relaxed text-white/70">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} text-[11px] font-bold text-white shadow-sm`}>
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-medium text-white">{testimonial.name}</p>
-                      <p className="text-[13px] text-white/70">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
             ))}
           </div>
         </div>
@@ -1513,11 +1440,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1200px] px-6 py-14 sm:py-16">
           <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-5">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-primary-500 to-violet-600 shadow-lg">
-                  <span className="text-[13px] font-black text-white">O</span>
-                </div>
-                <span className="text-[17px] font-bold">Onekof</span>
+              <div className="flex items-center">
+                <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-14" />
               </div>
               <p className="mt-4 max-w-xs text-[14px] leading-[1.7] text-white/70">
                 {t('landing.footer.description')}
@@ -1542,7 +1466,7 @@ export default function HomePage() {
             {[
               { title: t('landing.footer.productCol'), links: [
                 { label: t('landing.footer.footerLinks.features'), href: '#features' },
-                { label: t('landing.footer.footerLinks.pricing'), href: '#pricing' },
+                { label: t('landing.footer.footerLinks.pricing'), href: '/pricing' },
                 { label: t('landing.footer.footerLinks.integrations'), href: '#' },
                 { label: t('landing.footer.footerLinks.changelog'), href: '#' },
                 { label: t('landing.footer.footerLinks.roadmap'), href: '#' },

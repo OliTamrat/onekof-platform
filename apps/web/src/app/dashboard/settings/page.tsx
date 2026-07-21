@@ -20,6 +20,7 @@ import {
   Loader2,
   Check,
   CreditCard,
+  Camera,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -95,6 +96,7 @@ export default function SettingsPage() {
   const [timezone, setTimezone] = useState('Africa/Addis_Ababa');
   const [language, setLanguage] = useState('EN');
   const [avatar, setAvatar] = useState('');
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   // Password form state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -280,25 +282,72 @@ export default function SettingsPage() {
                       </div>
 
                       <div className="p-6 space-y-4">
-                        {/* Avatar preview */}
+                        {/* Avatar upload */}
                         <div className="flex items-center gap-4">
-                          {avatar ? (
-                            <img src={avatar} alt={name} className="h-16 w-16 rounded-full ring-2 ring-primary-500/20" />
-                          ) : (
-                            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary-500 to-[#16A085] flex items-center justify-center text-white text-xl font-semibold ring-2 ring-primary-500/20">
-                              {(name || user?.email || 'U').charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <label className="block text-xs font-medium text-gray-700 dark:text-slate-300 mb-1">
-                              Avatar URL
+                          <div className="relative group shrink-0">
+                            {avatar ? (
+                              <img src={avatar} alt={name} className="h-16 w-16 rounded-full object-cover ring-2 ring-primary-500/20" />
+                            ) : (
+                              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary-500 to-[#16A085] flex items-center justify-center text-white text-xl font-semibold ring-2 ring-primary-500/20">
+                                {(name || user?.email || 'U').charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                            <label className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                              {isUploadingAvatar ? (
+                                <Loader2 className="h-5 w-5 text-white animate-spin" />
+                              ) : (
+                                <Camera className="h-5 w-5 text-white" />
+                              )}
+                              <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp,image/gif"
+                                className="hidden"
+                                disabled={isUploadingAvatar}
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  if (file.size > 5 * 1024 * 1024) {
+                                    toast.error('File too large', 'Maximum size is 5MB');
+                                    return;
+                                  }
+                                  setIsUploadingAvatar(true);
+                                  try {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+                                    const res = await fetch('/api/user/avatar', { method: 'POST', body: formData });
+                                    const data = await res.json();
+                                    if (!res.ok) throw new Error(data.error);
+                                    setAvatar(data.avatar);
+                                    toast.success('Photo updated');
+                                  } catch (err: any) {
+                                    toast.error('Upload failed', err.message);
+                                  } finally {
+                                    setIsUploadingAvatar(false);
+                                    e.target.value = '';
+                                  }
+                                }}
+                              />
                             </label>
-                            <Input
-                              value={avatar}
-                              onChange={(e) => setAvatar(e.target.value)}
-                              placeholder="https://..."
-                              className="text-sm"
-                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">{t('profile.profilePhoto')}</p>
+                            <p className="text-xs text-gray-500 dark:text-white/70 mt-0.5">Hover and click to upload (JPEG, PNG, max 5MB)</p>
+                            {avatar && (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await fetch('/api/user/avatar', { method: 'DELETE' });
+                                    setAvatar('');
+                                    toast.success('Photo removed');
+                                  } catch {
+                                    toast.error('Failed to remove photo');
+                                  }
+                                }}
+                                className="mt-1 text-xs text-red-500 hover:underline"
+                              >
+                                Remove photo
+                              </button>
+                            )}
                           </div>
                         </div>
 

@@ -344,7 +344,21 @@
     "yourEmailVerified": "Imeeliin Keessan Mirkanaa'eera",
     "verifyYourEmail": "Imeelii Keessan Mirkaneessaa",
     "resetInstructions": "Jecha darbii haaromsuuf qajeelfama isiniif ergina.",
-    "copyright": "2026 Onekof. Itoophiyaa keessatti jaalaladhaan ijaarame"
+    "copyright": "2026 Onekof. Itoophiyaa keessatti jaalaladhaan ijaarame",
+    "startBuilding": "Ijaaruu jalqabi",
+    "withYourTeam": "garee keessan waliin",
+    "signupDescription": "Dhaabbilee Itoophiyaa dhibbaan lakkaa'aman Onekof fayyadamuun pirojektii bulchuuf, baajeta Birriin hordofuuf, fi afaan filataniin hojjechuuf waliin ta'aa jiru.",
+    "featureCalendar": "Kaalaandarii Itoophiyaa fi jijjiirraa Giriigoriyaanii",
+    "featureLanguages": "Amaariffaa, Oromoo, Tigrinya, Inglizii",
+    "featureBudget": "Hordoffii baajeta Birriin",
+    "featureAI": "Pirosesii dokumantiiwwan AI-n deeggarame",
+    "featureFree": "Garee 10 tti bilisaan yoomiyyuu",
+    "setupTime": "Yeroo qindaa'inaa",
+    "toStart": "Jalqabuuf",
+    "yourFullName": "Maqaa guutuu keessan",
+    "emailPlaceholder": "name@example.com",
+    "enterPassword": "Jecha darbii keessan galchaa",
+    "uptime": "Yeroo hojii"
   },
   "projects": {
     "title": "Pirojektota",
@@ -1211,7 +1225,10 @@
     "teamMemberAdded": "Miseensi garee dabalame",
     "deadlineApproaching": "Beellami dhiyaataa jira",
     "systemUpdate": "Haaromsaa sirnaa",
-    "newFeaturesAdded": "Amalonni haaraan gara waltajjiitti dabalameera"
+    "newFeaturesAdded": "Amalonni haaraan gara waltajjiitti dabalameera",
+    "assigned": "Ramadame",
+    "comments": "Yaadota",
+    "watching": "Ilaalaa"
   },
   "createProject": {
     "basics": "Bu'uuraa",
@@ -1778,7 +1795,8 @@
     "deleteAccountDesc": "Herreega keessan fi odeeffannoo hunda dhaabumaan haqi",
     "backToDashboard": "Gara Daashboorditti Deebi'i",
     "profileUpdated": "Piroofaayilin milkiin haaromfameera!",
-    "failedToUpdateProfile": "Piroofaayilii haaromsuun hin milkoofne"
+    "failedToUpdateProfile": "Piroofaayilii haaromsuun hin milkoofne",
+    "profilePhoto": "Suuraa Piroofaayilii"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "Maal gosa bakka hojii barbaaddu?",
@@ -1953,7 +1971,7 @@
     "teamMemberName": "Maqaa Miseensa Garee",
     "fullName": "Maqaa guutuu",
     "email": "Imeelii",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "Gahee",
     "startDate": "Guyyaa Jalqabaa",
     "mentor": "Gorsiisaa",

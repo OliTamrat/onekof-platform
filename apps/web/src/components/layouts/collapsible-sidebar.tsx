@@ -172,7 +172,13 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{label}</span>
-                {section.items.length > 0 && (
+                {section.id === 'projects' ? (
+                  projects.length > 0 && (
+                    <span className="text-xs text-gray-500 dark:text-white/30 mr-1">
+                      {projects.length}
+                    </span>
+                  )
+                ) : section.items.length > 0 && (
                   <span className="text-xs text-gray-500 dark:text-white/30 mr-1">
                     {section.items.length}
                   </span>

@@ -104,32 +104,17 @@ function SignInContent() {
 
   return (
     <div className="flex min-h-screen bg-[#0B0E11]">
-      {/* Top bar — back + language */}
-      <div className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-5 py-4">
-        <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Back to home
-        </Link>
-        <LanguageSwitcher />
-      </div>
-
-      {/* LEFT — Brand panel */}
+      {/* LEFT — Brand panel (desktop only) */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
-        {/* Ambient glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0B0E11] via-[#12161B] to-[#0B3A34]" />
         <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] rounded-full bg-primary-500/[0.08] blur-[150px]" />
         <div className="absolute bottom-1/4 right-1/3 h-[400px] w-[400px] rounded-full bg-primary-700/[0.06] blur-[120px]" />
 
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[16px] font-semibold text-white">Onekof</span>
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-16" />
           </Link>
 
-          {/* Main content */}
           <div className="max-w-md">
             <h2 className="font-serif font-medium text-4xl leading-[1.1] tracking-[-0.03em] text-white xl:text-5xl">
               {t('auth.welcomeBack')}
@@ -140,7 +125,6 @@ function SignInContent() {
               {t('auth.projectsDescription')}
             </p>
 
-            {/* Feature pills */}
             <div className="mt-8 flex flex-wrap gap-2">
               {[
                 { icon: Calendar, label: t('auth.ethiopianCalendar') },
@@ -156,12 +140,11 @@ function SignInContent() {
             </div>
           </div>
 
-          {/* Stats */}
           <div className="flex gap-6 border-t border-white/[0.06] pt-6 xl:gap-10">
             {[
-              { value: '500+', label: 'Teams' },
-              { value: '10K+', label: 'Projects' },
-              { value: '99.9%', label: 'Uptime' },
+              { value: '500+', label: t('teams.title') },
+              { value: '10K+', label: t('projects.title') },
+              { value: '99.9%', label: t('auth.uptime') },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-xl font-semibold text-white">{stat.value}</p>
@@ -173,192 +156,220 @@ function SignInContent() {
       </div>
 
       {/* RIGHT — Sign in form */}
-      <div className="flex w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-12 lg:w-1/2">
-        <div className="w-full max-w-[420px]">
-          {/* Mobile logo */}
-          <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-primary-700">
-              <span className="text-sm font-black text-white">O</span>
-            </div>
-            <span className="text-[15px] font-semibold text-white">Onekof</span>
-          </div>
+      <div className="relative flex w-full flex-col lg:w-1/2">
+        {/* Mobile ambient glow */}
+        <div className="pointer-events-none absolute inset-0 lg:hidden">
+          <div className="absolute -right-[20%] -top-[10%] h-[400px] w-[400px] rounded-full bg-primary-500/[0.06] blur-[120px]" />
+          <div className="absolute -left-[15%] bottom-[20%] h-[300px] w-[300px] rounded-full bg-primary-700/[0.04] blur-[100px]" />
+        </div>
 
-          <div className="mb-10">
-            <h3 className="font-serif font-medium text-2xl tracking-[-0.02em] text-white">{t('auth.signInTitle')}</h3>
-            <p className="mt-2 text-[14px] text-white/70">
-              {t('auth.noAccount')}{' '}
-              <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
-                {t('common.signUp')}
+        {/* Top bar */}
+        <div className="relative z-10 flex items-center justify-between px-5 py-4 sm:px-8">
+          <Link href="/" className="group flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/70 backdrop-blur-sm transition-all hover:border-white/[0.15] hover:text-white">
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            {t('common.back')}
+          </Link>
+          <LanguageSwitcher />
+        </div>
+
+        <div className="relative z-10 flex flex-1 items-center justify-center px-6 py-6 sm:px-8 sm:py-10">
+          <div className="w-full max-w-[420px]">
+            {/* Mobile logo */}
+            <div className="mb-10 lg:hidden">
+              <Link href="/">
+                <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
               </Link>
-            </p>
-          </div>
-
-          {error && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">
-              <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
-              <p className="text-[13px] text-red-300">{error}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/70">
-                {t('auth.email')}
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="you@company.com"
-              />
             </div>
 
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="password" className="text-[13px] font-medium text-white/70">
-                  {t('auth.password')}
-                </label>
-                <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
-                  {t('auth.forgotPassword')}
+            <div className="mb-8">
+              <h3 className="font-serif font-medium text-[28px] tracking-[-0.02em] text-white sm:text-3xl">{t('auth.signInTitle')}</h3>
+              <p className="mt-3 text-[15px] text-white/60">
+                {t('auth.noAccount')}{' '}
+                <Link href="/auth/signup" className="font-medium text-primary-400 transition-colors hover:text-primary-300">
+                  {t('common.signUp')}
                 </Link>
-              </div>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[14px] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder="Enter your password"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/20 hover:bg-transparent hover:text-white/60"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
+              </p>
             </div>
 
-            {requiresTwoFactor && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
-                  <Shield className="h-4 w-4 text-primary-400" />
-                  <span className="text-[12px] text-primary-300">Enter the 6-digit code from your authenticator</span>
-                </div>
-                <input
-                  id="totpCode"
-                  type="text"
-                  value={totpCode}
-                  onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/20 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  placeholder="000000"
-                  autoFocus
-                  autoComplete="one-time-code"
-                />
-                <p className="text-[11px] text-white/20">You can also use a backup code (format: XXXX-XXXX)</p>
+            {error && (
+              <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4">
+                <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-400" />
+                <p className="text-[13px] text-red-300">{error}</p>
               </div>
             )}
 
-            <Button
-              type="submit"
-              disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
-              className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-3.5 text-[14px] font-medium shadow-lg active:scale-[0.98]"
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  {requiresTwoFactor ? t('auth.verifying') : t('auth.signingIn')}
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  {requiresTwoFactor ? t('auth.verifyAndSignIn') : t('common.continueBtn')}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </span>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-white/70">
+                  {t('auth.email')}
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  placeholder="name@example.com"
+                />
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label htmlFor="password" className="text-[13px] font-medium text-white/70">
+                    {t('auth.password')}
+                  </label>
+                  <Link href="/auth/forgot-password" className="text-[12px] text-primary-400 transition-colors hover:text-primary-300">
+                    {t('auth.forgotPassword')}
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 pr-11 text-[15px] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    placeholder={t('auth.enterPassword')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-white/30 hover:bg-transparent hover:text-white/60"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+
+              {requiresTwoFactor && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/[0.06] p-3">
+                    <Shield className="h-4 w-4 text-primary-400" />
+                    <span className="text-[12px] text-primary-300">{t('auth.twoFactorCode')}</span>
+                  </div>
+                  <input
+                    id="totpCode"
+                    type="text"
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9A-Za-z-]/g, '').slice(0, 9))}
+                    className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-center font-mono text-lg tracking-[0.3em] text-white placeholder-white/25 transition-all focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    placeholder="000000"
+                    autoFocus
+                    autoComplete="one-time-code"
+                  />
+                  <p className="text-[11px] text-white/30">{t('auth.backupCode')}</p>
+                </div>
               )}
-            </Button>
-          </form>
 
-          {/* Divider */}
-          <div className="my-8 flex items-center gap-4">
-            <div className="h-px flex-1 bg-white/[0.06]" />
-            <span className="text-[11px] font-medium uppercase tracking-wider text-white/20">{t('common.or')}</span>
-            <div className="h-px flex-1 bg-white/[0.06]" />
-          </div>
+              <Button
+                type="submit"
+                disabled={isLoading || (requiresTwoFactor && totpCode.length < 6)}
+                className="group w-full rounded-full bg-gradient-to-r from-primary-500 to-[#2BB5A2] py-4 text-[15px] font-semibold shadow-lg shadow-primary-500/20 active:scale-[0.98]"
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {requiresTwoFactor ? t('auth.verifying') : t('auth.signingIn')}
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    {requiresTwoFactor ? t('auth.verifyAndSignIn') : t('common.continueBtn')}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                )}
+              </Button>
+            </form>
 
-          {/* OAuth */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('google')}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-              </svg>
-              {t('auth.google')}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('azure-ad')}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#00A4EF">
-                <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" />
-              </svg>
-              {t('auth.microsoft')}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('github')}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-              </svg>
-              GitHub
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('linkedin')}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/70"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#0A66C2">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-              </svg>
-              LinkedIn
-            </Button>
-          </div>
-
-          {isMainDomain && (
-            <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-              <p className="text-[13px] text-white/60">
-                <span className="font-medium text-white/60">{t('auth.directAccess')}</span>{' '}
-                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
-                  your-org.onekof.com
-                </code>
-              </p>
+            {/* Divider */}
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-white/[0.06]" />
+              <span className="text-[11px] font-medium uppercase tracking-wider text-white/25">{t('common.or')}</span>
+              <div className="h-px flex-1 bg-white/[0.06]" />
             </div>
-          )}
 
-          <p className="mt-10 text-center text-[12px] text-white/20">
-            &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
-          </p>
+            {/* OAuth providers */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                onClick={() => handleOAuthSignIn('google')}
+                disabled={isLoading}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] active:scale-[0.98] disabled:opacity-50"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                Google
+              </button>
+              <button
+                onClick={() => handleOAuthSignIn('azure-ad')}
+                disabled={isLoading}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] active:scale-[0.98] disabled:opacity-50"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#00A4EF">
+                  <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z" />
+                </svg>
+                Microsoft
+              </button>
+              <button
+                onClick={() => handleOAuthSignIn('github')}
+                disabled={isLoading}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] active:scale-[0.98] disabled:opacity-50"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+                GitHub
+              </button>
+              <button
+                onClick={() => handleOAuthSignIn('linkedin')}
+                disabled={isLoading}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[13px] font-medium text-white/70 transition-all hover:border-white/[0.15] hover:bg-white/[0.06] active:scale-[0.98] disabled:opacity-50"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="#0A66C2">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+                LinkedIn
+              </button>
+            </div>
+
+            {/* Mobile app promotion */}
+            <div className="mt-8 rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-5">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C8C7D] to-[#2BB5A2] shadow-lg shadow-[#1C8C7D]/20">
+                  <Kanban className="h-5 w-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-[14px] font-semibold text-white">Onekof Mobile App</p>
+                  <p className="mt-1 text-[12px] leading-relaxed text-white/50">
+                    Manage projects on the go with native Ethiopian calendar, offline access, and push notifications.
+                  </p>
+                  <p className="mt-2 text-[11px] font-medium text-primary-400">Coming soon to App Store & Google Play</p>
+                </div>
+              </div>
+            </div>
+
+            {isMainDomain && (
+              <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                <p className="text-[13px] text-white/50">
+                  <span className="font-medium text-white/60">{t('auth.directAccess')}</span>{' '}
+                  <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-primary-400">
+                    your-org.onekof.com
+                  </code>
+                </p>
+              </div>
+            )}
+
+            <p className="mt-6 text-center text-[12px] text-white/25">
+              &copy; 2026 Onekof &middot; {t('auth.builtForEthiopia')}
+            </p>
+          </div>
         </div>
       </div>
     </div>

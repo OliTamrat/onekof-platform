@@ -1,18 +1,208 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-02 — Infrastructure audit + Phase 2 pre-analysis complete
+> Last updated: 2026-07-18 — Ethiopian Calendar, AI docs fix, budget PAID, translations, profile photo, RBAC
 
 ---
 
-## CURRENT STATUS (2026-07-02)
+## CURRENT STATUS (2026-07-14)
 
 ### Tier 3 (Vercel + Supabase) — Live
-Web platform is live at **vision.onekof.com** and other org subdomains.
+Web platform is live at **onekof.com** and org subdomains.
 204/204 unit tests passing. TypeScript strict build: 0 errors. Sentry active.
 INSA security code (P1-P6): implemented — but see CSRF note below.
 
 ### Phase 2 (EthioTelecom Tier 2) — PRE-LAUNCH
 INSA certification completing this week. Moving to Tier 2 deployment.
 Full infrastructure audit completed: `docs/deployment/INFRASTRUCTURE_AUDIT_2026_07.md`
+
+---
+
+## SESSION LOG (2026-07-14) — QA Testing + Invitation Flow + i18n
+
+### Completed
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 1 | Fixed all TypeScript errors (was 10+, now 0) | `auth.ts`, `reports/page.tsx`, `budget/page.tsx`, `issues/budget/page.tsx`, `create-sample-expenses/route.ts`, `superadmin.ts` |
+| 2 | Fixed ESLint config (broken `@onekof/config` path) | `.eslintrc.js` |
+| 3 | Added 2FA fields to Prisma schema + migrated production DB via SQL Editor | `schema.prisma` |
+| 4 | Fixed `entityType` column mapping (missing `@map`) | `schema.prisma` |
+| 5 | Created missing PostgreSQL enum types (`ProjectEntityType`, `ProjectVisibility`, `ProjectRiskLevel`, `ProjectPriority`) | Production DB via SQL Editor |
+| 6 | Added all missing enterprise project columns to production DB | Production DB via SQL Editor |
+| 7 | Created k6 load test scripts for QA team | `tests/k6/` (8 files) |
+| 8 | Built multi-language system (5 languages) | `src/locales/`, `src/contexts/language-context.tsx`, `src/components/language-switcher.tsx` |
+| 9 | Changed ETB as default currency | `src/lib/validation/schemas.ts` |
+| 10 | Fixed invitation acceptance flow — subdomain redirect, session refresh, defaultOrganizationId | `api/invitations/accept/route.ts`, `auth/accept-invite/page.tsx` |
+| 11 | Fixed signup Suspense boundary (was breaking CI build) | `auth/signup/page.tsx` |
+| 12 | Fixed `/api/health` build error (missing `force-dynamic`) | `api/health/route.ts` |
+| 13 | Built project-scoped invitations | `schema.prisma`, `api/invitations/`, `auth/accept-invite/page.tsx` |
+| 14 | GUEST role defaults for project-scoped invites | `api/organizations/[id]/invitations/route.ts` |
+| 15 | RBAC enforcement for GUEST users (project filter, sidebar hiding, members page blocked) | `api-organization.ts`, `collapsible-sidebar.tsx`, `members/page.tsx`, `workspace-context.tsx` |
+| 16 | Email matching on invitation acceptance | `api/invitations/accept/route.ts`, `auth/accept-invite/page.tsx` |
+| 17 | Project selector + role selector in invitation UI | `dashboard/members/page.tsx` |
+
+### Database Migrations Applied (via Supabase SQL Editor)
+
+These columns/types were added directly — `prisma db push` does not work through the Supabase pooler.
+
+| Table | Columns/Types Added |
+|-------|-------------------|
+| `users` | `two_factor_enabled`, `two_factor_secret`, `two_factor_backup_codes` |
+| `projects` | `owner_id`, `department`, `category`, `entity_type`, `visibility`, `risk_level`, `budget_code`, `tags`, `start_date`, `due_date`, `priority` |
+| `projects` | Enum types: `ProjectEntityType`, `ProjectVisibility`, `ProjectRiskLevel`, `ProjectPriority` |
+| `invitations` | `project_id`, `project_role` |
+
+### Session Log (2026-07-15/16) — RBAC Enforcement + Member Management + Issue Improvements
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 18 | GUEST RBAC data filtering — explicit project ID list for issues/stats | `api/issues/route.ts`, `api/dashboard/stats/route.ts`, `api-organization.ts` |
+| 19 | Sidebar Projects badge shows actual project count (was nav item count) | `collapsible-sidebar.tsx` |
+| 20 | Org member role change API (PATCH) + removal API (DELETE) | `api/organization-members/route.ts` |
+| 21 | Members page: inline role dropdown + remove button for OWNER/ADMIN | `dashboard/members/page.tsx` |
+| 22 | Start date editing — API + UI (issue detail slideout) | `api/issues/[id]/route.ts`, `issue-detail-slideout.tsx` |
+| 23 | Issue type badges on kanban cards (Epic/Story/Bug/Task/Subtask) | `dashboard/issues/page.tsx` |
+| 24 | Issues API includes parent relation + subtask count | `api/issues/route.ts` |
+| 25 | Member checkbox fix — userId field mismatch in org members API | `api/organizations/[id]/members/route.ts`, `create-project-modal.tsx` |
+
+### Session Log (2026-07-18) — Profile Photo Upload + Issue Improvements
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 26 | Profile photo upload API (POST + DELETE) | `api/user/avatar/route.ts` (new) |
+| 27 | Profile settings page: camera hover overlay + upload + remove | `settings/profile/page.tsx` |
+| 28 | Dashboard settings profile tab: replaced Avatar URL text input with photo upload | `dashboard/settings/page.tsx` |
+| 29 | Photos stored in Vercel Blob, URL persisted in User.avatar, old photos auto-deleted on replace | Uses existing storage driver infrastructure |
+
+### Session Log (2026-07-18 cont.) — Translation Wiring + Ethiopian Calendar + AI/Budget Fixes
+
+| # | What | Files Changed |
+|---|------|---------------|
+| 30 | Wire `t()` into all 14 project detail pages | `projects/[id]/*.tsx` (board, list, team, budget, settings, timeline, calendar, documents, goals, activity, automation, wiki, layout) |
+| 31 | Ethiopian Calendar date picker component | `components/ui/ethiopian-date-picker.tsx` (new, 265 lines) |
+| 32 | Replace `<input type="date">` with EthiopianDatePicker on issue start/due dates | `issue-detail-slideout.tsx` |
+| 33 | Fix PDF extraction — Anthropic vision document blocks | `lib/ai/ai-service.ts` |
+| 34 | Fix DOCX extraction — XML tag stripping | `lib/ai/ai-service.ts` |
+| 35 | Wire document uploads to Vercel Blob storage | `api/documents/upload/route.ts` |
+| 36 | Implement AI quota tracking via AIUsage model | `lib/ai/ai-service.ts` |
+| 37 | Budget PAID transition endpoint | `api/expenses/[id]/pay/route.ts` (new) |
+| 38 | Fix expense revision numbering | `api/expenses/[id]/route.ts` |
+| 39 | Wire `t()` into signup + forgot-password pages + 14 new auth translation keys | `auth/signup/page.tsx`, `auth/forgot-password/page.tsx`, all 5 locale files |
+| 40 | Wire `t()` into notifications page + add filter keys | `dashboard/notifications/page.tsx`, all 5 locale files |
+| 41 | Add all missing env vars to .env.example | `.env.example` (Blob, Stripe, Chapa, Admin, Upstash, Sentry) |
+
+### Pending Tasks
+
+| Priority | Task | Details |
+|----------|------|---------|
+| **P0** | **Verify Vercel env vars (run from terminal)** | Check Vercel Dashboard → Settings → Environment Variables. Ensure these are set: `ANTHROPIC_API_KEY`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`. Without these, AI docs, file storage, and email won't work. |
+| **P0** | **Set Stripe env vars in Vercel** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. Get from Stripe Dashboard → Developers → API Keys. |
+| **P0** | **Set Chapa env vars in Vercel** | `CHAPA_SECRET_KEY`, `CHAPA_WEBHOOK_SECRET`. Get from Chapa Dashboard. |
+| **P0** | **E2E test payment flow** | After setting Stripe/Chapa keys, test checkout from pricing page → payment → subscription activation. Run from browser. |
+| **P1** | **E2E test AI document upload** | After verifying `ANTHROPIC_API_KEY` + `BLOB_READ_WRITE_TOKEN`, upload a PDF invoice and verify: file stored in Vercel Blob (not base64), AI extracts budget items, quota tracked in `ai_usage` table. |
+| **P1** | **E2E test email delivery** | After setting `RESEND_API_KEY`, test: invitation email, password reset email, expense approval notification. |
+| **P1** | **Test integrations with API keys** | Set OAuth credentials in Vercel for: Slack (`SLACK_CLIENT_ID/SECRET`), GitHub (`GITHUB_CLIENT_ID/SECRET`), Google Calendar, Microsoft Teams, Jira. Test each connect flow. |
+| **P1** | Issue hierarchy tree view | Kanban shows type badges + parent refs. Full tree view (Epic → Story → Task → Subtask) not yet built |
+| **P1** | Filter subtasks from top-level kanban | Subtasks currently appear alongside parents as independent cards |
+| **P1** | Apply EthiopianDatePicker to more date fields | Currently on issue start/due dates. Also needed: project start/due dates in create-project-modal, budget fiscal year selectors |
+| **P2** | Profile photo in navbar | Navbar avatar circle still shows initial letter — should show uploaded photo |
+| **P2** | Remove debug logging | `api/issues/route.ts` and `api/organizations/[id]/projects/route.ts` have RBAC debug `logger.info` calls |
+| **P2** | k6 test configuration | Sute Dullo needs `BASE_URL` + test credentials configured before running scalability tests |
+| **P2** | Wire `t()` into remaining settings pages | `dashboard/settings/customization`, `dashboard/settings/security`, `dashboard/settings/integrations` |
+
+### Vercel Environment Variables Checklist (run from terminal or Vercel dashboard)
+
+```
+# Required for AI Document Processing
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Required for File Storage (documents, avatars)
+BLOB_READ_WRITE_TOKEN=vercel_blob_...
+
+# Required for Email (invitations, password reset, expense notifications)
+RESEND_API_KEY=re_...
+
+# Required for Payments — Stripe
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+
+# Required for Payments — Chapa (Ethiopia)
+CHAPA_SECRET_KEY=CHASECK_...
+CHAPA_WEBHOOK_SECRET=...
+
+# Required for Security
+ADMIN_SECRET=<generate with: openssl rand -hex 32>
+ADMIN_USERS=<bcrypt hashes, see generate-admin-hash.mjs>
+CRON_SECRET=<generate with: openssl rand -hex 32>
+BLOB_ENCRYPTION_KEY=<generate with: openssl rand -hex 32>
+
+# Required for Rate Limiting (already set if Upstash configured)
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# Optional — Error Tracking
+SENTRY_DSN=https://...
+```
+
+Verify with: `vercel env ls` or Vercel Dashboard → Settings → Environment Variables
+
+### Git History Cleanup — 10 Non-Compliant Commits
+
+Run from local terminal (`filter-branch` blocked in cloud environment):
+
+```bash
+cd onekof-platform
+git filter-branch -f --env-filter '
+OLD_EMAIL1="120649391+OliTamrat@users.noreply.github.com"
+OLD_EMAIL2="noreply@anthropic.com"
+CORRECT_NAME="Oli Tamrat Oli"
+CORRECT_EMAIL="oli.oli@udc.edu"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL1" ] || [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL2" ]; then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL1" ] || [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL2" ]; then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' -- master
+
+git push --force-with-lease origin master
+```
+
+**Commits to fix:**
+
+| Commit | Issue |
+|--------|-------|
+| `95e2218` | Author + Committer: `Claude <noreply@anthropic.com>` |
+| `84fcaf8` | Committer: `Claude <noreply@anthropic.com>` |
+| `0554879` | Wrong email: `120649391+OliTamrat@users.noreply.github.com` |
+| `450cc34` | Wrong email |
+| `9202f5f` | Wrong email |
+| `7298d83` | Wrong email |
+| `b1ee062` | Wrong email |
+| `825f9e5` | Wrong email |
+| `39d26fb` | Wrong email |
+| `4a1c7bd` | Wrong email |
+
+All must be: `Oli Tamrat Oli <oli.oli@udc.edu>` (both author AND committer).
+
+After running, verify with: `git log --format="%h %an <%ae> | %cn <%ce>" -30 | grep -v "oli.oli@udc.edu"`
+Should return empty (no non-compliant commits).
+
+---
+
+### Key Architecture Notes for Next Session
+
+- **Supabase pooler cannot run DDL** — always use SQL Editor for ALTER TABLE / CREATE TYPE
+- **Schema change workflow**: edit schema → SQL Editor on production → `prisma generate` → commit
+- **Invitation email matching**: enforced — only the invited email can accept (403 if mismatch)
+- **GUEST RBAC**: Uses explicit `projectId: { in: allowedIds }` pattern (not Prisma nested relation filter — that doesn't restrict correctly)
+- **GUEST data flow**: First query allowed project IDs → then filter issues/stats by those IDs
+- **Sidebar filtering**: `collapsible-sidebar.tsx` hides Budget/Members/Settings/Automation/Reports for GUEST
+- **Org member management**: PATCH/DELETE on `/api/organization-members` — OWNER role is protected
+- **`userRole`**: exposed via `workspace-context.tsx` from `/api/organizations` response
 
 ---
 

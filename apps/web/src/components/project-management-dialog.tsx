@@ -582,15 +582,35 @@ export function ProjectManagementDialog({
                         </p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeMemberMutation.mutate(member.userId)}
-                      disabled={removeMemberMutation.isPending}
-                      className="hover:bg-gray-200 dark:hover:bg-slate-700"
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={member.role || 'MEMBER'}
+                        onChange={async (e) => {
+                          try {
+                            await fetch(`/api/projects/${project?.id}/members/${member.userId}`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ role: e.target.value }),
+                            });
+                            queryClient.invalidateQueries({ queryKey: ['project-members', project?.id] });
+                          } catch {}
+                        }}
+                        className="text-xs rounded border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-gray-700 dark:text-slate-300 px-2 py-1"
+                      >
+                        <option value="ADMIN">Admin</option>
+                        <option value="MEMBER">Member</option>
+                        <option value="VIEWER">Viewer</option>
+                      </select>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeMemberMutation.mutate(member.userId)}
+                        disabled={removeMemberMutation.isPending}
+                        className="hover:bg-gray-200 dark:hover:bg-slate-700"
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
                   </div>
                 ))
               ) : (

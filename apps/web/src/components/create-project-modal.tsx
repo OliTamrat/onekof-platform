@@ -622,8 +622,8 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                       className="text-xs rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-slate-700 dark:text-slate-300 px-2 py-1"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <option value="ADMIN">Admin</option>
                       <option value="MEMBER">Member</option>
+                      <option value="ADMIN">Admin</option>
                       <option value="VIEWER">Viewer</option>
                       <option value="CONTRACTOR">Contractor</option>
                     </select>

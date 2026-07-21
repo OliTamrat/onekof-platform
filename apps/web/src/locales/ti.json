@@ -344,7 +344,21 @@
     "yourEmailVerified": "ኢመይልካ ተረጋጊጹ",
     "verifyYourEmail": "ኢመይልካ ኣረጋግጽ",
     "resetInstructions": "ቃለ-ምስጢርካ ንምዳጋም መምርሒ ክንሰደልካ ኢና።",
-    "copyright": "2026 Onekof። ብፍቕሪ ኣብ ኢትዮጵያ ዝተሃንጸ"
+    "copyright": "2026 Onekof። ብፍቕሪ ኣብ ኢትዮጵያ ዝተሃንጸ",
+    "startBuilding": "ምህናጽ ጀምሩ",
+    "withYourTeam": "ምስ ጋንታኹም",
+    "signupDescription": "ብኣማኢት ዝቝጸሩ ኢትዮጵያውያን ትካላት Onekof ተጠቒሞም ፕሮጀክት ንምምሕዳር፣ ብብር ባጀት ንምክትታል፣ ብዝደለይዎ ቋንቋ ንምትሕብባር ይጸንብሩ ኣለዉ።",
+    "featureCalendar": "ናይ ኢትዮጵያ ካላንደር ምስ ግሪጎሪያን ምቕያር",
+    "featureLanguages": "ኣማርኛ፣ ኦሮሞ፣ ትግርኛ፣ እንግሊዝኛ",
+    "featureBudget": "ብናይ ኢትዮጵያ ብር ባጀት ምክትታል",
+    "featureAI": "ብ AI ዝሰርሕ ሰነድ ምስትንዓድ",
+    "featureFree": "ንጋንታታት ክሳብ 10 ንዘለኣለም ብነጻ",
+    "setupTime": "ግዜ ምድላው",
+    "toStart": "ንምጅማር",
+    "yourFullName": "ምሉእ ስምኩም",
+    "emailPlaceholder": "name@example.com",
+    "enterPassword": "ናይ ምስጢር ቃልኩም ኣእትዉ",
+    "uptime": "ግዜ ስራሕ"
   },
   "projects": {
     "title": "ፕሮጀክትታት",
@@ -1211,7 +1225,10 @@
     "teamMemberAdded": "ኣባል ጋንታ ተወሲኹ",
     "deadlineApproaching": "ናይ ምውዳእ ግዜ ይቐርብ ኣሎ",
     "systemUpdate": "ናይ ስርዓት ምሕዳስ",
-    "newFeaturesAdded": "ሓደስቲ ባህርያት ኣብ ፕላትፎርም ተወሲኾም"
+    "newFeaturesAdded": "ሓደስቲ ባህርያት ኣብ ፕላትፎርም ተወሲኾም",
+    "assigned": "ዝተመደበ",
+    "comments": "ርእይቶ",
+    "watching": "ይዕዘቡ"
   },
   "createProject": {
     "basics": "መሰረታዊ",
@@ -1822,7 +1839,8 @@
     "deleteAccountDesc": "ሕሳብካን ኩሉ ዝተሓሓዘ ሓበሬታን ብቐዋሚ ሰርዝ",
     "backToDashboard": "ናብ ዳሽቦርድ ተመለስ",
     "profileUpdated": "ፕሮፋይል ብዓወት ተሓዲሱ!",
-    "failedToUpdateProfile": "ፕሮፋይል ምሕዳስ ኣይተሳዕፈን"
+    "failedToUpdateProfile": "ፕሮፋይል ምሕዳስ ኣይተሳዕፈን",
+    "profilePhoto": "ስእሊ ፕሮፋይል"
   },
   "onboardingPage": {
     "whatTypeWorkspace": "ኣየናይ ዓይነት ናይ ስራሕ ቦታ ትደሊ?",
@@ -1997,7 +2015,7 @@
     "teamMemberName": "ስም ኣባል ጋንታ",
     "fullName": "ምሉእ ስም",
     "email": "ኢመይል",
-    "emailPlaceholder": "email@company.com",
+    "emailPlaceholder": "name@example.com",
     "role": "ተራ",
     "startDate": "ናይ ምጅማር ዕለት",
     "mentor": "ኣማኻሪ",

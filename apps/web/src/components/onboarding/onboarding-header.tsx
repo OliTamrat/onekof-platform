@@ -13,7 +13,7 @@ export function OnboardingHeader() {
             <Building2 className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Onekof</h1>
+            <img src="/logo-wordmark.png?v=2" alt="Onekof" className="h-12" />
             <p className="text-xs text-slate-500 dark:text-slate-400">Setup your workspace</p>
           </div>
         </div>
