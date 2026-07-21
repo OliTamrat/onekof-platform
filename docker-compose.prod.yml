@@ -32,6 +32,13 @@
 #
 # WIPE DATA (destructive):
 #   docker compose -f docker-compose.prod.yml down -v
+#
+# BACKUPS:
+#   Automated daily backups at 03:00 EAT (00:00 UTC) with 7-day retention.
+#   Install the host cron after first deploy:
+#     chmod +x /opt/onekof/scripts/backup-db.sh
+#     echo "0 0 * * * /opt/onekof/scripts/backup-db.sh >> /var/log/onekof-backup.log 2>&1" | crontab -
+#   Backups are stored on the data disk at /var/onekof/backups/
 
 services:
 
@@ -168,6 +175,13 @@ volumes:
     name: onekof_prod_redis
   onekof_blobs:
     name: onekof_prod_blobs
+  onekof_backups:
+    name: onekof_prod_backups
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/onekof/backups
   caddy_data:
     name: onekof_prod_caddy_data
   caddy_config:

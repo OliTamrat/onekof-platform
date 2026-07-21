@@ -1,33 +1,25 @@
 # Onekof Platform — Caddy reverse proxy config
 # Handles SSL termination and security headers for Tier 2 / Tier 3 self-hosted
 #
-# Replace onekof.et with your actual domain before deploying.
 # Caddy automatically provisions Let's Encrypt certificates.
+# Tenant subdomains use on_demand TLS — certs are issued per-subdomain
+# via HTTP-01 challenge as tenants are created. No DNS provider needed.
 
-onekof.et {
-    reverse_proxy onekof-web:3000
-
-    # Security headers
+# Shared security headers snippet
+(security_headers) {
     header {
-        # Force HTTPS for 1 year, include subdomains
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        # Prevent MIME-type sniffing
         X-Content-Type-Options "nosniff"
-        # Prevent clickjacking
         X-Frame-Options "DENY"
-        # Control referrer information
         Referrer-Policy "strict-origin-when-cross-origin"
-        # Disable FLoC / Topics API tracking
         Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-        # Remove server fingerprint
         -Server
         -X-Powered-By
     }
+}
 
-    # Gzip compression
-    encode gzip
-
-    # Access logs
+# Shared logging snippet
+(access_log) {
     log {
         output file /var/log/caddy/access.log {
             roll_size 100mb
@@ -35,6 +27,40 @@ onekof.et {
         }
         format json
     }
+}
+
+# On-demand TLS config — Caddy asks the app to verify valid subdomains
+# before issuing a certificate, preventing abuse.
+{
+    on_demand_tls {
+        ask http://onekof-web:3000/api/health
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Apex domain — onekof.et
+# ---------------------------------------------------------------------------
+onekof.et {
+    reverse_proxy onekof-web:3000
+    import security_headers
+    encode gzip
+    import access_log
+}
+
+# ---------------------------------------------------------------------------
+# Wildcard — *.onekof.et (multi-tenant subdomains)
+# Each organization gets its own subdomain (e.g. ministry.onekof.et).
+# The Next.js app reads the Host header to resolve the tenant.
+# On-demand TLS issues individual certs per subdomain via HTTP-01.
+# ---------------------------------------------------------------------------
+*.onekof.et {
+    tls {
+        on_demand
+    }
+    reverse_proxy onekof-web:3000
+    import security_headers
+    encode gzip
+    import access_log
 }
 
 # Redirect www to apex domain

@@ -141,6 +141,13 @@ echo "  Logs:    ssh ${REMOTE_HOST} 'cd ${REMOTE_DIR} && docker compose -f ${COM
 echo "  Status:  ssh ${REMOTE_HOST} 'cd ${REMOTE_DIR} && docker compose -f ${COMPOSE_FILE} ps'"
 echo ""
 
+# ---------------------------------------------------------------------------
+# Install backup cron (idempotent — only adds if not already present)
+# ---------------------------------------------------------------------------
+log "Ensuring backup cron is installed..."
+ssh "${REMOTE_HOST}" "mkdir -p /var/onekof/backups && chmod +x ${REMOTE_DIR}/scripts/backup-db.sh 2>/dev/null; (crontab -l 2>/dev/null | grep -q 'backup-db.sh') || (crontab -l 2>/dev/null; echo '0 0 * * * ${REMOTE_DIR}/scripts/backup-db.sh >> /var/log/onekof-backup.log 2>&1') | crontab -" \
+  || warn "Could not install backup cron (non-critical)"
+
 # Prune old images
 log "Pruning old Docker images..."
 ssh "${REMOTE_HOST}" "docker image prune -f --filter 'until=168h'" > /dev/null 2>&1 || true
