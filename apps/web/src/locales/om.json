@@ -120,7 +120,8 @@
     "whatNeedsDone": "Maaltu hojjetamuu qaba?",
     "noMatchFilters": "Hojiin calaloo keessan waliin wal simu hin jiru.",
     "createFirstTask": "Hojii jalqabaa keessan uumaa",
-    "pages": "Fuulota"
+    "pages": "Fuulota",
+    "selectDate": "Guyyaa filadhu"
   },
   "nav": {
     "home": "Fuula Jalqabaa",
