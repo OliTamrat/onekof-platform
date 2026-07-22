@@ -85,6 +85,8 @@ export default function IssuesPage() {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [hideSubtasks, setHideSubtasks] = useState(true);
+  const [filterStatus, setFilterStatus] = useState<string[]>([]);
+  const [filterPriority, setFilterPriority] = useState<string[]>([]);
   const [creatingInColumn, setCreatingInColumn] = useState<string | null>(null);
   const [newIssueTitle, setNewIssueTitle] = useState('');
   const queryClient = useQueryClient();
@@ -95,8 +97,13 @@ export default function IssuesPage() {
   const projectsData = { projects: workspaceProjects };
 
   // Fetch issues with filters
+  const handleFilterChange = (field: string, values: string[]) => {
+    if (field === 'status') setFilterStatus(values);
+    if (field === 'priority') setFilterPriority(values);
+  };
+
   const { data: issuesData, isLoading } = useQuery({
-    queryKey: ['issues', selectedProject, selectedTeam, selectedGoal, hideSubtasks],
+    queryKey: ['issues', selectedProject, selectedTeam, selectedGoal, hideSubtasks, filterStatus, filterPriority],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedProject) {
@@ -110,6 +117,9 @@ export default function IssuesPage() {
       }
       if (hideSubtasks) {
         params.append('topLevel', 'true');
+      }
+      if (filterStatus.length === 1) {
+        params.append('status', filterStatus[0]);
       }
       const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed to fetch issues');
@@ -195,6 +205,7 @@ export default function IssuesPage() {
 
   // Filter and organize issues by status
   const filteredIssues = issuesData?.issues?.filter((issue: Issue) => {
+    if (filterPriority.length > 0 && !filterPriority.includes(issue.priority)) return false;
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
@@ -288,6 +299,7 @@ export default function IssuesPage() {
         showInsights
         onInsightsToggle={() => setInsightsOpen((v) => !v)}
         insightsOpen={insightsOpen}
+        onFilterChange={handleFilterChange}
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
