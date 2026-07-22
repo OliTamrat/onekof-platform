@@ -672,14 +672,14 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div variants={heroChild}>
-                <h1 className="font-serif text-[clamp(2.5rem,5vw,4.25rem)] font-medium leading-[1.08] tracking-[-0.02em]">
+                <h1 className="font-serif text-[clamp(2.5rem,5vw,4.25rem)] font-medium leading-[1.2] tracking-[-0.02em]">
                   {t('landing.hero.headingPrefix')}
                   <br />
-                  <span className="relative inline-block">
+                  <span className="relative inline-block overflow-visible">
                     <span className="invisible font-serif italic" aria-hidden="true">
                       {heroWords.reduce((a, b) => a.length >= b.length ? a : b, '')}
                     </span>
-                    <span className="absolute left-0 top-0 bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#2BB5A2] to-primary-500 bg-clip-text font-serif italic text-transparent">
                       {heroTyped}
                     </span>
                     <span className="ml-0.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-full bg-primary-400 align-middle" />
