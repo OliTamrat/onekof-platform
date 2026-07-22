@@ -24,6 +24,10 @@ import {
   CornerDownLeft,
   ArrowUp,
   ArrowDown,
+  Loader2,
+  User,
+  Bug,
+  CheckSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -48,6 +52,66 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listRef = React.useRef<HTMLDivElement>(null);
+  const [searchResults, setSearchResults] = React.useState<{ issues: any[]; projects: any[]; members: any[] }>({ issues: [], projects: [], members: [] });
+  const [isSearching, setIsSearching] = React.useState(false);
+  const searchTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    if (!query || query.trim().length < 2) {
+      setSearchResults({ issues: [], projects: [], members: [] });
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
+    searchTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSearchResults(data);
+        }
+      } catch {}
+      setIsSearching(false);
+    }, 300);
+    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
+  }, [query]);
+
+  const issueTypeIcon = (type: string) => {
+    if (type === 'BUG') return Bug;
+    if (type === 'EPIC') return Target;
+    return CheckSquare;
+  };
+
+  const searchIssueItems: CommandItem[] = searchResults.issues.map((issue: any) => ({
+    id: `search-issue-${issue.id}`,
+    label: `${issue.key}: ${issue.title}`,
+    description: `${issue.project?.name || ''} · ${issue.type} · ${issue.status}`,
+    icon: issueTypeIcon(issue.type),
+    action: () => router.push(`/projects/${issue.project?.id}/board?issue=${issue.id}`),
+    category: 'search-issue' as any,
+    keywords: [],
+  }));
+
+  const searchProjectItems: CommandItem[] = searchResults.projects.map((project: any) => ({
+    id: `search-project-${project.id}`,
+    label: project.name,
+    description: `${project.key} · ${project._count?.tasks || 0} issues`,
+    icon: FolderKanban,
+    action: () => router.push(`/projects/${project.id}`),
+    category: 'search-project' as any,
+    keywords: [],
+  }));
+
+  const searchMemberItems: CommandItem[] = searchResults.members.map((member: any) => ({
+    id: `search-member-${member.id}`,
+    label: member.name || member.email,
+    description: `${member.email} · ${member.role}`,
+    icon: User,
+    action: () => router.push(`/dashboard/members`),
+    category: 'search-member' as any,
+    keywords: [],
+  }));
 
   // Navigation commands
   const navigationItems: CommandItem[] = [
@@ -83,7 +147,15 @@ export function CommandPalette() {
     keywords: [project.key.toLowerCase(), project.name.toLowerCase()],
   }));
 
-  const allItems = [...actionItems, ...navigationItems, ...projectItems];
+  const hasSearchResults = searchIssueItems.length > 0 || searchProjectItems.length > 0 || searchMemberItems.length > 0;
+  const allItems = [
+    ...searchIssueItems,
+    ...searchProjectItems,
+    ...searchMemberItems,
+    ...(hasSearchResults ? [] : actionItems),
+    ...navigationItems,
+    ...(hasSearchResults ? [] : projectItems),
+  ];
 
   // Filter items based on query
   const filteredItems = React.useMemo(() => {
@@ -169,6 +241,9 @@ export function CommandPalette() {
   };
 
   const categoryLabels: Record<string, string> = {
+    'search-issue': 'Issues',
+    'search-project': 'Projects',
+    'search-member': 'Members',
     action: t('commandPalette.actions'),
     navigation: t('commandPalette.navigation'),
     project: t('nav.projects'),
@@ -209,13 +284,19 @@ export function CommandPalette() {
 
           {/* Results */}
           <div ref={listRef} className="max-h-[360px] overflow-y-auto px-2 py-2">
-            {flatItems.length === 0 ? (
+            {isSearching && (
+              <div className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-slate-400">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Searching...
+              </div>
+            )}
+            {!isSearching && flatItems.length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-                {t('common.noResults')}
+                {query.trim().length >= 2 ? 'No results found' : t('common.noResults')}
               </div>
             ) : (
               Object.entries(groupedItems).map(([category, items]) => {
-                const order = ['action', 'navigation', 'project', 'recent'];
+                const order = ['search-issue', 'search-project', 'search-member', 'action', 'navigation', 'project', 'recent'];
                 if (!order.includes(category)) return null;
                 return (
                   <div key={category} className="mb-2">
