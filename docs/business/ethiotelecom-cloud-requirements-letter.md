@@ -1,15 +1,15 @@
 # EthioTelecom Cloud — Technical and Commercial Requirements Inquiry
 
-**From:** Oli Tamrat Oli, Founder, Olink Technologies / Onekof Platform
+**From:** Oli Tamrat Oli, Founder & CEO, DAPS Analytics PLC / Onekof Platform
 **To:** EthioTelecom Cloud Services — Enterprise / Government Solutions Team
-**Date:** _______________
+**Date:** July 22, 2026
 **Reference:** Onekof Tier 1 Government Deployment Evaluation
 
 ---
 
 ## 1. Introduction
 
-I am writing on behalf of Olink Technologies, the entity behind the **Onekof Platform** — an Ethiopian-first enterprise project management, budget tracking, and document processing software system. Onekof is currently deployed on international cloud infrastructure serving a mix of private-sector and pilot customers.
+I am writing on behalf of DAPS Analytics PLC, the entity behind the **Onekof Platform** — an Ethiopian-first enterprise project management, budget tracking, and document processing software system. Onekof is currently deployed on international cloud infrastructure serving a mix of private-sector and pilot customers.
 
 In preparation for **Ethiopian government and public-sector customers**, I am evaluating EthioTelecom Cloud as the hosting provider for a dedicated government tier of the platform. This tier would host workloads for ministries, federal and regional agencies, public universities, and other public-sector institutions that require Ethiopian data residency.
 
@@ -23,10 +23,10 @@ I would be grateful for responses to the questions in Sections 3–7 below, at w
 
 ### 2.1 Company
 
-- **Legal entity:** Olink Technologies (Ethiopian entity, formation in progress)
-- **Founder:** Oli Tamrat Oli
+- **Legal entity:** DAPS Analytics PLC
+- **Founder & CEO:** Oli Tamrat Oli
 - **Contact:** oli.oli@udc.edu
-- **Mailing address:** 14823 Crossvalley Rd, Burtonsville, Maryland 20866, United States of America
+- **Mailing address:** Addis Ababa, Ethiopia
 - **IP status:** Ethiopian Intellectual Property Authority (EIPA) software copyright registration filed 2026-04-11
 
 ### 2.2 Platform
@@ -34,7 +34,7 @@ I would be grateful for responses to the questions in Sections 3–7 below, at w
 - **Product:** Onekof — web-based multi-tenant enterprise platform
 - **Technology stack:** Next.js 14, TypeScript, React 18, PostgreSQL 15 (Prisma ORM), Node.js 20
 - **Features:** Project management, budget and expense tracking with Ethiopian fiscal year alignment, AI-powered document processing, Ethiopian (Ge'ez) calendar, five-language user interface (English, Amharic, Oromo, Tigrinya, Somali)
-- **Current codebase:** ~132,000 lines of original source code across 689 files, approximately 80 database models
+- **Current codebase:** ~158,000 lines of original source code across 538+ files, 46 database models
 - **Tenancy model:** Multi-tenant with subdomain-per-organization routing
 
 ### 2.3 Current deployment (for reference)
@@ -200,7 +200,7 @@ Onekof stores user-uploaded file attachments (invoices, receipts, contracts, pho
 
 4. **Procurement**
    - What is the procurement process for a private company (non-government) to become an EthioTelecom Cloud customer?
-   - Is a local Ethiopian entity required, or can an international company with an Ethiopian business relationship procure services directly?
+   - DAPS Analytics PLC is a registered Ethiopian entity — what documentation do you require to open an enterprise account?
    - What documentation do you require for a new enterprise account?
 
 5. **Operational model**
@@ -234,17 +234,19 @@ I would appreciate:
 3. **A formal quote or estimate** for the POC described in Section 9
 4. **Any NDAs or compliance documents** your team requires before sharing detailed pricing or architectural information
 
-I am available for a call, written exchange, or in-person meeting on either my end (Maryland, United States; time zone UTC−5) or during my next visit to Addis Ababa.
+I am available for a call, written exchange, or in-person meeting at our office in Addis Ababa, Ethiopia.
 
 Thank you in advance for your time and consideration. I am enthusiastic about the possibility of building the Onekof government tier on Ethiopian-owned infrastructure and look forward to your response.
 
 Sincerely,
 
 **Oli Tamrat Oli**
-Founder, Olink Technologies
+Founder & CEO, DAPS Analytics PLC
 Author and Copyright Holder, Onekof Platform
 Email: oli.oli@udc.edu
 Phone: _______________
+
+![Onekof Logo](/apps/web/public/logo-wordmark.png)
 
 ---
 
@@ -286,6 +288,6 @@ To keep this inquiry focused, the following topics are **out of scope** for this
 
 ---
 
-**Document version:** 1.0 — drafted 2026-04-11
+**Document version:** 2.0 — finalized July 22, 2026
 **Review status:** Draft, pending final review before sending
 **Distribution:** EthioTelecom Cloud Enterprise / Government team only
