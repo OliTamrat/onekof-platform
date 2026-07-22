@@ -176,7 +176,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const members: any[] = membersData?.members || [];
   const currentMembership = members.find((m: any) => m.id === currentUserId || m.userId === currentUserId);
   const userRole = currentMembership?.role;
-  const canDelete = userRole === 'OWNER' || userRole === 'ADMIN';
+  const canDelete = userRole === 'OWNER' || userRole === 'ADMIN' || userRole === 'MEMBER';
 
   // Fetch full issue details
   const { data: issueData, refetch } = useQuery({
