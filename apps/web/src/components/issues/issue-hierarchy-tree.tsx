@@ -18,6 +18,7 @@ interface TreeIssue {
   assignee?: { id: string; name: string; avatar: string | null } | null;
   project?: { id: string; name: string; key: string; color: string } | null;
   _count?: { subtasks: number };
+  subtaskCount?: number;
   dueDate?: string | null;
 }
 
@@ -52,7 +53,8 @@ function TreeNode({ issue, depth, projectId, onSelect }: {
   onSelect?: (issue: TreeIssue) => void;
 }) {
   const [expanded, setExpanded] = useState(depth < 1);
-  const hasChildren = (issue._count?.subtasks || 0) > 0;
+  const childCount = issue.subtaskCount ?? issue._count?.subtasks ?? 0;
+  const hasChildren = childCount > 0;
   const config = typeConfig[issue.type] || typeConfig.TASK;
   const Icon = config.icon;
   const status = statusColors[issue.status] || 'bg-gray-400';
@@ -138,7 +140,7 @@ function TreeNode({ issue, depth, projectId, onSelect }: {
         {/* Child count */}
         {hasChildren && (
           <span className="shrink-0 rounded-full bg-slate-100 dark:bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400">
-            {issue._count!.subtasks}
+            {childCount}
           </span>
         )}
       </div>
