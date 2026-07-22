@@ -63,12 +63,17 @@ export async function POST(
       );
     }
 
-    // Generate next issue key
+    // Generate next issue key — use MAX to avoid race conditions
+    const maxTask = await prisma.task.findFirst({
+      where: { projectId: parentTask.projectId },
+      orderBy: { createdAt: 'desc' },
+      select: { key: true },
+    });
     let nextNumber = 1;
-    if (parentTask.project.tasks.length > 0) {
-      const lastKey = parentTask.project.tasks[0].key;
-      const lastNumber = parseInt(lastKey.split('-')[1]);
-      nextNumber = lastNumber + 1;
+    if (maxTask?.key) {
+      const parts = maxTask.key.split('-');
+      const lastNumber = parseInt(parts[parts.length - 1]);
+      if (!isNaN(lastNumber)) nextNumber = lastNumber + 1;
     }
     const issueKey = `${parentTask.project.key}-${nextNumber}`;
 

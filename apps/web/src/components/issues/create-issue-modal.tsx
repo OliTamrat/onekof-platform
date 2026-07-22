@@ -212,9 +212,12 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus, def
             )}
             <div className="min-w-0">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
-                {t('commandPalette.createNewIssue')}
+                {defaultParentId ? 'Add Child Task' : t('commandPalette.createNewIssue')}
               </h2>
-              {selectedProject && (
+              {defaultParentId && (
+                <p className="text-xs text-[#1C8C7D] font-medium truncate">Creating as child of parent issue</p>
+              )}
+              {!defaultParentId && selectedProject && (
                 <p className="text-xs text-gray-500 dark:text-slate-500 truncate">{selectedProject.name}</p>
               )}
             </div>

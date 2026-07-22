@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     const teamId = searchParams.get('teamId');
     const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
+    const search = searchParams.get('search') || searchParams.get('q');
 
     const organizationId = ctx.organizationId;
 
@@ -98,6 +99,14 @@ export async function GET(request: NextRequest) {
     // Filter by type
     if (type) {
       where.type = type;
+    }
+
+    // Search by title or key
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { key: { contains: search, mode: 'insensitive' } },
+      ];
     }
 
     // Note: label filtering is done client-side after fetching since
