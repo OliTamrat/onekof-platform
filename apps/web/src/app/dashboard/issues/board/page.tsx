@@ -83,6 +83,13 @@ export default function IssuesBoardPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string[]>([]);
+  const [filterPriority, setFilterPriority] = useState<string[]>([]);
+
+  const handleFilterChange = (field: string, values: string[]) => {
+    if (field === 'status') setFilterStatus(values);
+    if (field === 'priority') setFilterPriority(values);
+  };
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
@@ -129,13 +136,14 @@ export default function IssuesBoardPage() {
     };
 
     issues.forEach((task) => {
+      if (filterPriority.length > 0 && !filterPriority.includes(task.priority)) return;
       if (grouped[task.status]) {
         grouped[task.status].push(task);
       }
     });
 
     setOptimisticTasks(grouped);
-  }, [issues]);
+  }, [issues, filterPriority]);
 
   // Update task status mutation
   const updateTaskMutation = useMutation({
@@ -233,6 +241,7 @@ export default function IssuesBoardPage() {
         showInsights
         onInsightsToggle={() => setInsightsOpen((v) => !v)}
         insightsOpen={insightsOpen}
+        onFilterChange={handleFilterChange}
       />
 
       <div className="flex h-full flex-col bg-slate-50 dark:bg-[#0B0E11]">

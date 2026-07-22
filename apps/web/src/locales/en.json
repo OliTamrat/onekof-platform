@@ -1872,7 +1872,8 @@
     "recent": "Recent",
     "shared": "Shared",
     "templates": "Templates",
-    "team": "Team"
+    "team": "Team",
+    "hierarchy": "Hierarchy"
   },
   "sidebar": {
     "home": "Home",
