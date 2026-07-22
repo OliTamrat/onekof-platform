@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
     const goalId = searchParams.get('goalId');
     const type = searchParams.get('type');
     const search = searchParams.get('search') || searchParams.get('q');
+    const parentId = searchParams.get('parentId');
+    const topLevel = searchParams.get('topLevel');
 
     const organizationId = ctx.organizationId;
 
@@ -107,6 +109,16 @@ export async function GET(request: NextRequest) {
         { title: { contains: search, mode: 'insensitive' } },
         { key: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    // Filter by parent (get children of a specific issue)
+    if (parentId) {
+      where.parentId = parentId;
+    }
+
+    // Top-level only (no parent — for hierarchy tree root nodes)
+    if (topLevel === 'true') {
+      where.parentId = null;
     }
 
     // Note: label filtering is done client-side after fetching since
