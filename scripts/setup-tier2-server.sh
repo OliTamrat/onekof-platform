@@ -79,6 +79,22 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# 2b. Authenticate with GitHub Container Registry
+# -----------------------------------------------------------------------------
+if docker pull ghcr.io/daps-analytics/onekof-web:latest --quiet 2>/dev/null; then
+  log "GHCR authentication already configured"
+else
+  log "Authenticating with GitHub Container Registry..."
+  echo "Enter a GitHub Personal Access Token (PAT) with read:packages scope:"
+  read -rs GHCR_TOKEN
+  echo "$GHCR_TOKEN" | docker login ghcr.io -u onekof-deploy --password-stdin
+  if [[ $? -ne 0 ]]; then
+    error "GHCR authentication failed. Create a PAT at https://github.com/settings/tokens with read:packages scope."
+  fi
+  log "GHCR authentication successful"
+fi
+
+# -----------------------------------------------------------------------------
 # 3. Backup directory
 # -----------------------------------------------------------------------------
 log "Creating backup directory at $BACKUP_DIR..."

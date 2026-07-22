@@ -46,7 +46,7 @@ services:
   # PostgreSQL 15 — primary database
   # ==========================================================================
   postgres:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: onekof-postgres
     restart: always
     environment:
@@ -157,6 +157,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
+      - caddy_logs:/var/log/caddy
     networks:
       - onekof-prod
     logging:
@@ -186,6 +187,8 @@ volumes:
     name: onekof_prod_caddy_data
   caddy_config:
     name: onekof_prod_caddy_config
+  caddy_logs:
+    name: onekof_prod_caddy_logs
 
 # ============================================================================
 # NETWORK — internal bridge; only Caddy is exposed to the internet
