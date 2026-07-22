@@ -98,10 +98,15 @@ export default function IssuesBoardPage() {
     BLOCKED: [],
   });
 
+  const [hideSubtasks, setHideSubtasks] = useState(true);
+
   // Fetch issues/tasks (filtered by project if scoped)
-  const issuesUrl = scopedProjectId ? `/api/issues?projectId=${scopedProjectId}` : '/api/issues';
+  const params = new URLSearchParams();
+  if (scopedProjectId) params.set('projectId', scopedProjectId);
+  if (hideSubtasks) params.set('topLevel', 'true');
+  const issuesUrl = `/api/issues?${params}`;
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
-    queryKey: ['issues', 'board', scopedProjectId],
+    queryKey: ['issues', 'board', scopedProjectId, hideSubtasks],
     queryFn: async () => {
       const res = await fetch(issuesUrl);
       if (!res.ok) throw new Error('Failed to fetch issues');
@@ -231,6 +236,24 @@ export default function IssuesBoardPage() {
       />
 
       <div className="flex h-full flex-col bg-slate-50 dark:bg-[#0B0E11]">
+        {/* Subtask filter toggle */}
+        <div className="flex items-center gap-3 px-6 pt-3">
+          <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-500 dark:text-slate-400">
+            <input
+              type="checkbox"
+              checked={hideSubtasks}
+              onChange={(e) => setHideSubtasks(e.target.checked)}
+              className="h-3.5 w-3.5 rounded border-slate-300 dark:border-slate-600 text-primary-500 focus:ring-primary-500/30"
+            />
+            Hide subtasks
+          </label>
+          {!hideSubtasks && (
+            <span className="text-[10px] text-slate-400 dark:text-slate-500">
+              Showing all issues including subtasks
+            </span>
+          )}
+        </div>
+
         <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">

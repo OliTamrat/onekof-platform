@@ -84,6 +84,7 @@ export default function IssuesPage() {
     return false;
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [hideSubtasks, setHideSubtasks] = useState(true);
   const [creatingInColumn, setCreatingInColumn] = useState<string | null>(null);
   const [newIssueTitle, setNewIssueTitle] = useState('');
   const queryClient = useQueryClient();
@@ -95,7 +96,7 @@ export default function IssuesPage() {
 
   // Fetch issues with filters
   const { data: issuesData, isLoading } = useQuery({
-    queryKey: ['issues', selectedProject, selectedTeam, selectedGoal],
+    queryKey: ['issues', selectedProject, selectedTeam, selectedGoal, hideSubtasks],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedProject) {
@@ -106,6 +107,9 @@ export default function IssuesPage() {
       }
       if (selectedGoal) {
         params.append('goalId', selectedGoal);
+      }
+      if (hideSubtasks) {
+        params.append('topLevel', 'true');
       }
       const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed to fetch issues');
@@ -287,8 +291,20 @@ export default function IssuesPage() {
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
-        {/* Project Page Header */}
-                {/* Kanban Board */}
+        {/* Subtask filter */}
+        <div className="flex items-center gap-3 px-3 md:px-6 pt-3">
+          <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-500 dark:text-slate-400">
+            <input
+              type="checkbox"
+              checked={hideSubtasks}
+              onChange={(e) => setHideSubtasks(e.target.checked)}
+              className="h-3.5 w-3.5 rounded border-slate-300 dark:border-slate-600 text-primary-500 focus:ring-primary-500/30"
+            />
+            Hide subtasks
+          </label>
+        </div>
+
+        {/* Kanban Board */}
         <div className="flex-1 overflow-x-auto overflow-y-hidden px-3 md:px-6 py-4">
           {isLoading ? (
             <SkeletonKanban columns={4} cardsPerColumn={3} />
