@@ -120,7 +120,8 @@
     "whatNeedsDone": "What needs to be done?",
     "noMatchFilters": "No tasks match your current filters.",
     "createFirstTask": "Create your first task",
-    "pages": "pages"
+    "pages": "pages",
+    "selectDate": "Select date"
   },
   "nav": {
     "home": "Home",

@@ -120,7 +120,8 @@
     "whatNeedsDone": "ምን መሠራት አለበት?",
     "noMatchFilters": "ከአሁኑ ማጣሪያዎችዎ ጋር የሚዛመድ ተግባር የለም።",
     "createFirstTask": "የመጀመሪያ ተግባርዎን ይፍጠሩ",
-    "pages": "ገፆች"
+    "pages": "ገፆች",
+    "selectDate": "ቀን ይምረጡ"
   },
   "nav": {
     "home": "መነሻ",

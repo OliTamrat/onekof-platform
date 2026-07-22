@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { cn } from '@/lib/utils';
+import { EthiopianDatePicker } from '@/components/ui/ethiopian-date-picker';
 
 interface CreateIssueModalProps {
   onClose: () => void;
@@ -476,7 +477,11 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus, def
             {/* Due Date */}
             <div>
               <label className={labelClasses}>{t('common.dueDate')}</label>
-              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClasses} />
+              <EthiopianDatePicker
+                value={dueDate || null}
+                onChange={(isoDate) => setDueDate(isoDate || '')}
+                placeholder={t('common.selectDate') || 'Select date'}
+              />
             </div>
 
             {/* Estimate */}
