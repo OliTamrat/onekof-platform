@@ -98,7 +98,10 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus, def
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error('Failed to create issue');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to create issue');
+      }
       const result = await res.json();
       const taskId = result.issue?.id || result.task?.id || result.id;
 
@@ -135,6 +138,9 @@ export function CreateIssueModal({ onClose, defaultProjectId, defaultStatus, def
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] });
       onClose();
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to create issue', error.message);
     },
   });
 

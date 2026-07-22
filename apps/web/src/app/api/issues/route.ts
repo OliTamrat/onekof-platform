@@ -286,14 +286,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate next issue key (e.g., PROJ-1, PROJ-2, etc.)
-    let nextNumber = 1;
-    if (project.tasks.length > 0) {
-      const lastKey = project.tasks[0].key;
-      const lastNumber = parseInt(lastKey.split('-')[1]);
-      nextNumber = lastNumber + 1;
+    // Generate next issue key using COUNT of all tasks (including deleted)
+    // to avoid key collisions from race conditions or deleted tasks
+    const totalTasks = await prisma.task.count({
+      where: { projectId },
+    });
+    let nextNumber = totalTasks + 1;
+
+    // Retry loop in case of concurrent creation
+    let issueKey = `${project.key}-${nextNumber}`;
+    let retries = 0;
+    while (retries < 5) {
+      const existing = await prisma.task.findFirst({
+        where: { projectId, key: issueKey },
+        select: { id: true },
+      });
+      if (!existing) break;
+      nextNumber++;
+      issueKey = `${project.key}-${nextNumber}`;
+      retries++;
     }
-    const issueKey = `${project.key}-${nextNumber}`;
 
     // Create issue with transaction for watchers and goal links
     const issue = await prisma.$transaction(async (tx) => {
