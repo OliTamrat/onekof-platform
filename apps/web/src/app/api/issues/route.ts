@@ -6,6 +6,7 @@ import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination'
 import { sendTaskAssignmentEmail, sendMentionEmail, userWantsNotification } from '@/lib/email';
 import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
+import { createIssueSchema } from '@/lib/validation/schemas';
 
 export const dynamic = 'force-dynamic';
 
@@ -231,8 +232,25 @@ export async function POST(request: NextRequest) {
     const { data: ctx, error } = await resolveUserOrganization();
     if (error || !ctx) return error!;
 
-    // Parse request body
+    // Parse and validate request body
     const body = await request.json();
+
+    const validation = createIssueSchema.safeParse({
+      ...body,
+      reporterId: ctx.user.id,
+      type: body.type || 'TASK',
+      priority: body.priority || 'MEDIUM',
+      status: body.status || 'TODO',
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      return NextResponse.json(
+        { error: firstError?.message || 'Invalid input', details: validation.error.errors },
+        { status: 400 }
+      );
+    }
+
     const {
       projectId,
       title,
@@ -241,22 +259,13 @@ export async function POST(request: NextRequest) {
       status,
       priority,
       assigneeId,
-      teamId,
       labels,
       dueDate,
       estimate,
       parentId,
-      watchers, // Array of user IDs to watch this task
-      goalIds,  // Array of goal IDs to link this task to
-    } = body;
+    } = validation.data;
 
-    // Validate required fields
-    if (!projectId || !title) {
-      return NextResponse.json(
-        { error: 'Project ID and title are required' },
-        { status: 400 }
-      );
-    }
+    const { teamId, watchers, goalIds } = body;
 
     // Get project to generate issue key
     const project = await prisma.project.findUnique({

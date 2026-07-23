@@ -264,7 +264,7 @@ describe('Validation Schemas', () => {
     });
 
     it('accepts all issue types', () => {
-      for (const type of ['TASK', 'BUG', 'FEATURE', 'EPIC', 'STORY']) {
+      for (const type of ['TASK', 'BUG', 'EPIC', 'STORY', 'SUBTASK']) {
         expect(() => createIssueSchema.parse({ ...validIssue, type })).not.toThrow();
       }
     });

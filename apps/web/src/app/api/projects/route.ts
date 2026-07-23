@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { getOrganizationContext, buildProjectAccessFilter } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import logger from '@/lib/logger';
+import { createProjectSchema } from '@/lib/validation/schemas';
 
 export const dynamic = 'force-dynamic';
 
@@ -177,24 +178,28 @@ export async function POST(request: NextRequest) {
 
     const { organization, user } = context;
 
-    // Parse request body
+    // Parse and validate request body
     const body = await request.json();
-    const {
-      name, description, key, color, icon,
-      template, projectType, priority, leadId, ownerId, defaultAssignee,
-      startDate, dueDate, teamIds, memberIds,
-      // Enterprise fields
-      department, category, entityType, visibility, riskLevel,
-      budgetCode, tags,
-    } = body;
 
-    // Validate required fields
-    if (!name || !key) {
+    const validation = createProjectSchema.safeParse({
+      ...body,
+      organizationId: organization.id,
+    });
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
       return NextResponse.json(
-        { error: 'Name and key are required' },
+        { error: firstError?.message || 'Invalid input' },
         { status: 400 }
       );
     }
+
+    const { name, description, key, color, icon } = validation.data;
+    const {
+      template, projectType, priority, leadId, ownerId, defaultAssignee,
+      startDate, dueDate, teamIds, memberIds,
+      department, category, entityType, visibility, riskLevel,
+      budgetCode, tags,
+    } = body;
 
     // Check if project key already exists
     const existingProject = await prisma.project.findFirst({
