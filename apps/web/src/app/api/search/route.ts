@@ -31,10 +31,14 @@ export async function GET(request: NextRequest) {
       prisma.task.findMany({
         where: {
           deletedAt: null,
-          project: { ...projectAccessFilter, deletedAt: null },
-          OR: [
-            { title: { contains: q, mode: 'insensitive' } },
-            { key: { contains: q, mode: 'insensitive' } },
+          project: projectAccessFilter,
+          AND: [
+            {
+              OR: [
+                { title: { contains: q, mode: 'insensitive' } },
+                { key: { contains: q, mode: 'insensitive' } },
+              ],
+            },
           ],
         },
         select: {
@@ -54,10 +58,13 @@ export async function GET(request: NextRequest) {
       prisma.project.findMany({
         where: {
           ...projectAccessFilter,
-          deletedAt: null,
-          OR: [
-            { name: { contains: q, mode: 'insensitive' } },
-            { key: { contains: q, mode: 'insensitive' } },
+          AND: [
+            {
+              OR: [
+                { name: { contains: q, mode: 'insensitive' } },
+                { key: { contains: q, mode: 'insensitive' } },
+              ],
+            },
           ],
         },
         select: {
