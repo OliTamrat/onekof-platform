@@ -4,6 +4,7 @@ import { getOrganizationContext, buildProjectAccessFilter } from '@/lib/api-orga
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import logger from '@/lib/logger';
 import { createProjectSchema } from '@/lib/validation/schemas';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -166,6 +167,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitError = await checkRateLimit(request, 'dataMutation');
+    if (rateLimitError) return rateLimitError;
+
     // Get organization context and validate access
     const { data: context, error } = await getOrganizationContext();
     if (error) return error;

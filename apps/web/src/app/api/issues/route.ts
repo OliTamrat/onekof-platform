@@ -7,6 +7,7 @@ import { sendTaskAssignmentEmail, sendMentionEmail, userWantsNotification } from
 import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 import { createIssueSchema } from '@/lib/validation/schemas';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
@@ -229,6 +230,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitError = await checkRateLimit(request, 'dataMutation');
+    if (rateLimitError) return rateLimitError;
+
     const { data: ctx, error } = await resolveUserOrganization();
     if (error || !ctx) return error!;
 
