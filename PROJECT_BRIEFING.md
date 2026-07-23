@@ -1,18 +1,27 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-18 — Ethiopian Calendar, AI docs fix, budget PAID, translations, profile photo, RBAC
+> Last updated: 2026-07-23 — v1.3.0 tagged, docs reorganized, search fixed, INSA cleanup, Ethio Telecom pricing briefing
 
 ---
 
-## CURRENT STATUS (2026-07-14)
+## CURRENT STATUS (2026-07-23)
 
-### Tier 3 (Vercel + Supabase) — Live
-Web platform is live at **onekof.com** and org subdomains.
-204/204 unit tests passing. TypeScript strict build: 0 errors. Sentry active.
-INSA security code (P1-P6): implemented — but see CSRF note below.
+### Master HEAD: `179ad21` (567 commits, 136 PRs merged)
+### Git Tags: `v0.2.0` → `v1.0.0` → `v1.2.0` → `v1.3.0`
+### Docker: `ghcr.io/olitamrat/onekof-web:1.3.0` (latest)
 
-### Phase 2 (EthioTelecom Tier 2) — PRE-LAUNCH
-INSA certification completing this week. Moving to Tier 2 deployment.
-Full infrastructure audit completed: `docs/deployment/INFRASTRUCTURE_AUDIT_2026_07.md`
+### Tier 3 (Vercel + Supabase) — LIVE
+Web platform live at **onekof.com** and org subdomains.
+TypeScript strict build: 0 errors. Sentry gracefully skips when DSN not set.
+INSA security code (P1-P6): all implemented and certified.
+
+### Tier 2 (Ethio Telecom ECS) — APPROVED, PENDING VM ORDER
+- **INSA Certified:** 2026-07-03 (6-month validity, expires ~January 2027)
+- **Recommended config (Scenario 2):** CSRAMOPT05 (4c/32GB/4Mbps) + ETZ Daily Backup = 126,815 ETB/6mo
+- **Briefing doc:** `docs/deployment/ETHIO_TELECOM_CLOUD_PRICING_BRIEFING.html`
+- **Docker image ready:** v1.3.0 on ghcr.io
+- **onekof.et domain:** SECURED
+- **Deploy script:** `deploy-et.sh` (online + offline modes)
+- **Staging:** Remains on Vercel (free, no sovereignty impact — see briefing doc Section 7)
 
 ---
 
@@ -259,30 +268,105 @@ All department pages use `DepartmentTaskList` component with task create/list/sl
 
 ---
 
-## KEY FILES TOUCHED THIS SESSION
+## SESSION LOG (2026-07-22/23) — v1.0.0 through v1.3.0
 
-| File | What changed |
-|---|---|
-| `apps/web/src/lib/security/authorization.ts` | `requireProjectAccess` — INTERNAL projects now allowed for all org members (both read and write branches) |
+### PRs #112-#136 (Sandbox Agent — 36 improvements)
+
+| # | What |
+|---|------|
+| 1 | Workflow engine — status transition validation |
+| 2 | Bulk operations API — batch update/delete up to 100 issues |
+| 3 | Webhooks wired — issue.created and issue.updated events fire |
+| 4 | Mobile auth hardened — lockout + failed login recording |
+| 5 | Search expanded to 6 entity types (Prisma OR conflict fixed) |
+| 6 | Mobile slideout — 100dvh for proper scrolling |
+| 7 | Project delete button — added to project card dropdowns |
+| 8 | Input validation — Zod on issues/projects POST/PATCH |
+| 9 | Rate limiting — on data mutation routes |
+| 10 | i18n keys — hierarchy + audit log sections (+41 keys per language) |
+| 11 | Issue hierarchy tree view (Epic > Story > Task > Subtask) |
+| 12 | Command palette enhanced |
+| 13 | Dashboard error boundary |
+| 14 | 7 new test suites |
+
+### Post-#136 (Local Agent — cleanup & docs)
+
+| Commit | What |
+|--------|------|
+| `f7be683` | Ethio Telecom cloud pricing briefing (HTML+MD) + translation export (2,748 keys XLSX) |
+| `be48592` | Search fix — `flatItems` missing all `search-*` categories |
+| `00d9924` | Docs reorganized into 8 categorized folders, 31 scripts organized |
+| `179ad21` | INSA test scripts removed, Sentry DSN crash fixed, CSP worker-src added |
+
+### Git Tag History
+
+| Tag | Commit | Date | What |
+|-----|--------|------|------|
+| v0.2.0 | `6c6326c` | 2026-03-01 | Dual dashboard system |
+| v1.0.0 | `f7a5fdd` | 2026-07-22 | First production release, INSA certified |
+| v1.2.0 | `f7be683` | 2026-07-23 | 36 improvements from sandbox agent |
+| v1.3.0 | `179ad21` | 2026-07-23 | Search fix, docs reorg, INSA cleanup, Sentry/CSP fixes |
+
+Branch: `master` | Total commits: 567
 
 ---
 
-## RECENT COMMITS (last 10)
+## DOCUMENTATION STRUCTURE
 
-```
-7a77fa7  Fix 403 on issue detail and task updates for MEMBER-role users
-4a41fc1  Update roadmap: mark Sentry, Resend, and webhooks as shipped
-6b05203  Update README: add mobile app section, waves 4/5 roadmap, EIPA registration status
-725050a  Fix Vercel deploy hitting 5000-file upload limit
-ba6d191  Fix MEMBER users seeing 0 issues after creating them
-2cb1bf1  Fix service worker crash killing all page network requests
-e4b1994  Add error toast to department task create and surface silent failures
-188f2e1  Fix create task silently failing on all department sub-pages
-fd291b3  Fix cross-org member contamination in issue detail slideout
-1cdcca6  Fix nav create shortcuts and broken translation key
-```
+All docs organized in `docs/` — see `docs/INDEX.html` for full branded index.
 
-Branch: `master` | Total commits: 425
+| Folder | Contents | Count |
+|--------|----------|-------|
+| `docs/architecture/` | Technical arch, multi-tenant, three-tier federation | 3 |
+| `docs/deployment/` | Ethio Telecom, Vercel, runbooks, backups, translations | 14 |
+| `docs/security/` | INSA hardening, OAuth, email, secrets | 4 |
+| `docs/development/` | Setup guide, logging, linguist review | 4 |
+| `docs/business/` | Pitch deck, exec summary, readiness report, store metadata | 6 |
+| `docs/legal-ip/` | EIPA filing package, DEPOSIT folders | 2 packages |
+| `docs/marketing/` | INSA blog, LinkedIn calendar, NGO outreach | 4 |
+| `docs/video-scripts/` | 10-part product demo series | 11 |
+
+---
+
+## ETHIO TELECOM DEPLOYMENT — DECISION PENDING
+
+**Recommended: Scenario 2 (126,815 ETB / 6 months, ~$169/month)**
+- Production VM: CSRAMOPT05 (4 vCPU, 32GB RAM, 50GB SSD, 4Mbps)
+- ETZ Daily Backup: 100GB, 7-day retention (managed by Ethio Telecom)
+- Staging: Vercel (free, no data sovereignty impact)
+- Dual-layer backup: ETZ managed snapshots + our backup-db.sh
+- Full briefing: `docs/deployment/ETHIO_TELECOM_CLOUD_PRICING_BRIEFING.html`
+
+### Co-Founder Decisions Needed
+1. Approve Scenario 2 budget (126,815 ETB / 6 months)?
+2. Approve contacting ETZCloudSupport@ethiotelecom.et for EVS storage pricing?
+3. Order now (maximize INSA window) or wait for signed LOI?
+4. Which DAPS Analytics account covers the payment?
+
+---
+
+## INSA TEST ACCOUNTS
+
+- **Scripts removed** from codebase (clean production code)
+- **6 accounts kept** in Supabase DB for next recertification (~January 2027):
+  - `insa.owner@insa-test.et`, `insa.admin@insa-test.et`, `insa.member@insa-test.et`
+  - `insa.viewer@insa-test.et`, `insa.guest@insa-test.et`, `reviewer@onekof.com`
+- Do NOT delete DB accounts — saves setup time for next INSA engagement
+
+---
+
+## TRANSLATION STATUS
+
+- 2,748 keys across 5 languages (EN, AM, OM, TI, SO)
+- Zero missing keys — all AI-generated, pending linguist review
+- Export: `docs/deployment/Onekof_Translations_For_Linguist_Review.xlsx`
+- 5 sheets: per-language (Key, English, Translation, Notes) + master view
+
+---
+
+## OPEN PRs: NONE
+
+All 4 orphaned PRs (#98-#101) closed on 2026-07-23.
 
 ---
 
