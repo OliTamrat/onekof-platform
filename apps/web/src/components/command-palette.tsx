@@ -63,9 +63,12 @@ export function CommandPalette() {
       setIsSearching(false);
       return;
     }
-    setIsSearching(true);
+    // Don't clear previous results while debouncing — keep them visible
+    // Only show spinner if we have no results yet
+    if (!hasSearchResults) setIsSearching(true);
     let cancelled = false;
     searchTimerRef.current = setTimeout(async () => {
+      if (!cancelled) setIsSearching(true);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
         if (cancelled) return;
@@ -233,7 +236,7 @@ export function CommandPalette() {
 
   const flatItems = React.useMemo(() => {
     const result: CommandItem[] = [];
-    const order: string[] = ['action', 'navigation', 'project', 'recent'];
+    const order: string[] = ['search-issue', 'search-project', 'search-member', 'search-team', 'search-goal', 'search-doc', 'action', 'navigation', 'project', 'recent'];
     for (const cat of order) {
       if (groupedItems[cat]) result.push(...groupedItems[cat]);
     }
