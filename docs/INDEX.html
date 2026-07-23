@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onekof PM — Documentation Index</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; font-size: 11pt; }
+  @media print { body { font-size: 10pt; } .page-break { page-break-before: always; } }
+  .container { max-width: 920px; margin: 0 auto; padding: 40px 50px; }
+
+  .doc-header { border-bottom: 3px solid #1C8C7D; padding-bottom: 20px; margin-bottom: 32px; }
+  .logo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .logo-bar img { height: 48px; object-fit: contain; }
+  .logo-bar .right { text-align: right; }
+  .logo-bar .company { font-size: 9pt; font-weight: 600; color: #555; }
+  .logo-bar .version { font-size: 8pt; color: #888; margin-top: 2px; }
+  .doc-header h1 { font-size: 24pt; font-weight: 800; color: #0B0E11; margin-bottom: 4px; }
+  .doc-header .subtitle { font-size: 12pt; color: #1C8C7D; font-weight: 600; margin-bottom: 12px; }
+  .doc-header .meta { font-size: 9pt; color: #666; }
+
+  .intro { background: #f0faf8; border-left: 4px solid #1C8C7D; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 32px; font-size: 10.5pt; }
+  .intro strong { display: block; margin-bottom: 4px; }
+
+  .category { margin-bottom: 28px; }
+  .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #e8e8e8; }
+  .category-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; flex-shrink: 0; }
+  .category-header h2 { font-size: 14pt; font-weight: 700; color: #0B0E11; }
+  .category-header .count { font-size: 9pt; color: #888; font-weight: 400; margin-left: auto; }
+
+  .doc-list { list-style: none; padding: 0; }
+  .doc-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border: 1px solid #f0f0f0; border-radius: 8px; margin-bottom: 6px; transition: background 0.15s; }
+  .doc-item:hover { background: #f9fafb; }
+  .doc-item .format { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .fmt-md { background: #e8f5e9; color: #2e7d32; }
+  .fmt-html { background: #e3f2fd; color: #1565c0; }
+  .fmt-docx { background: #fce4ec; color: #c62828; }
+  .fmt-xlsx { background: #e8eaf6; color: #283593; }
+  .doc-item .info { flex: 1; }
+  .doc-item .title { font-size: 10.5pt; font-weight: 600; color: #1a1a2e; }
+  .doc-item .path { font-size: 8.5pt; color: #999; font-family: 'Cascadia Code', monospace; margin-top: 1px; }
+  .doc-item .desc { font-size: 9.5pt; color: #555; margin-top: 2px; }
+
+  .bg-arch { background: #7c3aed; }
+  .bg-deploy { background: #059669; }
+  .bg-security { background: #dc2626; }
+  .bg-dev { background: #2563eb; }
+  .bg-biz { background: #d97706; }
+  .bg-legal { background: #4b5563; }
+  .bg-marketing { background: #ec4899; }
+  .bg-video { background: #8b5cf6; }
+  .bg-i18n { background: #0891b2; }
+
+  .doc-footer { margin-top: 40px; padding-top: 16px; border-top: 2px solid #e8e8e8; font-size: 8.5pt; color: #888; font-style: italic; display: flex; align-items: center; gap: 16px; }
+  .doc-footer img { height: 32px; opacity: 0.4; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="doc-header">
+  <div class="logo-bar">
+    <img src="deployment/logo-full.png" alt="Onekof Project Management Software">
+    <div class="right">
+      <div class="company">DAPS Analytics PLC</div>
+      <div class="version">v1.2.0 &mdash; July 2026</div>
+    </div>
+  </div>
+  <h1>Documentation Index</h1>
+  <div class="subtitle">Complete Reference for All Stakeholders</div>
+  <div class="meta">Last updated: July 23, 2026 &mdash; 70+ documents organized by category</div>
+</div>
+
+<div class="intro">
+  <strong>Who is this for?</strong>
+  Co-founders, developers, government liaisons, marketing team, and legal counsel. Every document related to Onekof PM is organized here by category. If Oli is unavailable, this index tells you where to find what you need.
+</div>
+
+<!-- Architecture -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-arch">&#9881;</div>
+    <h2>Architecture</h2>
+    <div class="count">3 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Technical Architecture</div>
+        <div class="path">docs/architecture/TECHNICAL_ARCHITECTURE.md</div>
+        <div class="desc">Full system architecture: stack, database schema, API design, caching, auth flow</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Three-Tier Federation</div>
+        <div class="path">docs/architecture/three-tier-federation.md</div>
+        <div class="desc">Tier 1 (Gov/EthioTelecom), Tier 2 (Private/On-Premise), Tier 3 (Global/Vercel) hosting model</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Multi-Tenant Setup Guide</div>
+        <div class="path">docs/architecture/MULTI_TENANT_SETUP_GUIDE.md</div>
+        <div class="desc">Subdomain routing, org isolation, tenant provisioning</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Deployment -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-deploy">&#9889;</div>
+    <h2>Deployment &amp; Infrastructure</h2>
+    <div class="count">14 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-html">HTML</span>
+      <div class="info">
+        <div class="title">Ethio Telecom Cloud Pricing Briefing</div>
+        <div class="path">docs/deployment/ETHIO_TELECOM_CLOUD_PRICING_BRIEFING.html</div>
+        <div class="desc">Co-founder briefing: ECS pricing, 4 scenarios, Scenario 2 recommended (126,815 ETB/6mo). Print to PDF.</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-html">HTML</span>
+      <div class="info">
+        <div class="title">Ethio Telecom Migration Plan</div>
+        <div class="path">docs/deployment/ETHIO_TELECOM_MIGRATION_PLAN.html</div>
+        <div class="desc">Step-by-step migration from Vercel to Ethio Telecom ECS</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-html">HTML</span>
+      <div class="info">
+        <div class="title">Ethio Telecom VM Request</div>
+        <div class="path">docs/deployment/ETHIO_TELECOM_VM_REQUEST.html</div>
+        <div class="desc">Formal VM specification request for Ethio Telecom Cloud team</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Infrastructure Audit (July 2026)</div>
+        <div class="path">docs/deployment/INFRASTRUCTURE_AUDIT_2026_07.md</div>
+        <div class="desc">Full infrastructure audit with 8 identified bugs and fix status</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Tier 2 Deployment Runbook</div>
+        <div class="path">docs/deployment/tier-2-runbook.md</div>
+        <div class="desc">671-line runbook: bare Ubuntu to live Tier 2 production</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Windows Deployment Guide</div>
+        <div class="path">docs/deployment/windows-deployment-guide.md</div>
+        <div class="desc">Docker Desktop deployment on Windows for Ethiopian market</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Go-Live Roadmap</div>
+        <div class="path">docs/deployment/GO_LIVE_ROADMAP.md</div>
+        <div class="desc">Pre-launch checklist and go-live sequence</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Production Deployment Checklist</div>
+        <div class="path">docs/deployment/PRODUCTION_DEPLOYMENT_CHECKLIST.md</div>
+        <div class="desc">Step-by-step production deployment verification</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Vercel Environment Setup</div>
+        <div class="path">docs/deployment/VERCEL_ENV_SETUP.md</div>
+        <div class="desc">All required Vercel environment variables with descriptions</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Cloudflare DNS Setup</div>
+        <div class="path">docs/deployment/CLOUDFLARE_DNS_SETUP.md</div>
+        <div class="desc">DNS configuration, SSL mode, wildcard subdomain setup</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Database Backup Strategy</div>
+        <div class="path">docs/deployment/DATABASE_BACKUP_STRATEGY.md</div>
+        <div class="desc">Backup approach: pg_dump daily, 7-day retention, ETZ managed backup</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Sentry Setup</div>
+        <div class="path">docs/deployment/SENTRY_SETUP.md</div>
+        <div class="desc">Error tracking configuration for web and mobile</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Migration Deployment Plan</div>
+        <div class="path">docs/deployment/MIGRATION_DEPLOYMENT_PLAN.md</div>
+        <div class="desc">Phased migration plan between deployment tiers</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-xlsx">XLSX</span>
+      <div class="info">
+        <div class="title">Translation Export for Linguist Review</div>
+        <div class="path">docs/deployment/Onekof_Translations_For_Linguist_Review.xlsx</div>
+        <div class="desc">2,748 i18n keys in 5 sheets (AM/OM/TI/SO + master) for linguist correction</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Security -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-security">&#128274;</div>
+    <h2>Security</h2>
+    <div class="count">4 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Production Security Upgrade Guide</div>
+        <div class="path">docs/security/PRODUCTION_SECURITY_UPGRADE_GUIDE.md</div>
+        <div class="desc">INSA P1-P6 security hardening: CSRF, rate limiting, encryption, session management</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">OAuth Setup</div>
+        <div class="path">docs/security/OAUTH_SETUP.md</div>
+        <div class="desc">Google, Microsoft, GitHub, LinkedIn OAuth provider configuration</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Email Integration Guide</div>
+        <div class="path">docs/security/EMAIL_INTEGRATION_GUIDE.md</div>
+        <div class="desc">Resend email setup: invitations, password reset, notifications</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Secrets Setup</div>
+        <div class="path">docs/security/SECRETS_SETUP.md</div>
+        <div class="desc">GitHub Actions secrets and CI/CD credential management</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Development -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-dev">&#128187;</div>
+    <h2>Development</h2>
+    <div class="count">4 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Development Guide</div>
+        <div class="path">docs/development/DEVELOPMENT.md</div>
+        <div class="desc">Local dev setup, pnpm commands, test running, branch conventions</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Setup Guide</div>
+        <div class="path">docs/development/SETUP_GUIDE.md</div>
+        <div class="desc">First-time contributor setup: prerequisites, env vars, database</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Logging Guide</div>
+        <div class="path">docs/development/LOGGING_GUIDE.md</div>
+        <div class="desc">Application logging standards, log levels, structured logging</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Linguist Review Guide</div>
+        <div class="path">docs/development/LINGUIST_REVIEW.md</div>
+        <div class="desc">Instructions for linguists reviewing AI-generated translations</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Business -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-biz">&#128200;</div>
+    <h2>Business &amp; Strategy</h2>
+    <div class="count">6 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Executive Summary (One-Pager)</div>
+        <div class="path">docs/business/EXECUTIVE_SUMMARY_ONE_PAGER.md</div>
+        <div class="desc">One-page overview for executives and partners</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Investor Pitch Deck</div>
+        <div class="path">docs/business/ONEKOF_INVESTOR_PITCH_DECK.md</div>
+        <div class="desc">Pitch deck content: problem, solution, market, traction, team</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Project Readiness Report</div>
+        <div class="path">docs/business/ONEKOF_PROJECT_READINESS_REPORT.md</div>
+        <div class="desc">Launch readiness assessment across all workstreams</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">Ethio Telecom Cloud Requirements Letter</div>
+        <div class="path">docs/business/ethiotelecom-cloud-requirements-letter.md</div>
+        <div class="desc">Formal requirements letter v2.0 to Ethio Telecom (finalized PR #111)</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">IP Registration (Ethiopia)</div>
+        <div class="path">docs/business/IP_REGISTRATION_ETHIOPIA.md</div>
+        <div class="desc">Ethiopian IP registration process, EIPA requirements, patentable innovations</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">App Store / Play Store Metadata</div>
+        <div class="path">docs/business/STORE_METADATA.md</div>
+        <div class="desc">iOS App Store and Google Play listing copy, screenshots, keywords</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Legal / IP -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-legal">&#128220;</div>
+    <h2>Legal &amp; Intellectual Property</h2>
+    <div class="count">2 packages</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-docx">PKG</span>
+      <div class="info">
+        <div class="title">EIPA Filing Package</div>
+        <div class="path">docs/legal-ip/EIPA_Filing_Package/</div>
+        <div class="desc">Complete EIPA registration forms: copyright (Form C-1), patent (Form P-1), trademark (Form TM-1). Registered 2026-05-26.</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-docx">PKG</span>
+      <div class="info">
+        <div class="title">DEPOSIT / DEPOSIT_SECURED</div>
+        <div class="path">docs/legal-ip/DEPOSIT_SECURED/</div>
+        <div class="desc">Source code deposit volumes, SHA-256 manifests, filing agent NDA. Archive from 2026-04-11.</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Marketing -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-marketing">&#128227;</div>
+    <h2>Marketing &amp; Outreach</h2>
+    <div class="count">4 documents</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">INSA Certification Announcement Blog</div>
+        <div class="path">docs/marketing/INSA_ANNOUNCEMENT_BLOG.md</div>
+        <div class="desc">Blog post: "First INSA-Certified PM Platform in Ethiopia"</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">LinkedIn Content Calendar</div>
+        <div class="path">docs/marketing/LINKEDIN_CONTENT_CALENDAR.md</div>
+        <div class="desc">10 LinkedIn post drafts for soft launch campaign</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">NGO Outreach Email Template</div>
+        <div class="path">docs/marketing/NGO_OUTREACH_EMAIL.md</div>
+        <div class="desc">Email template for first batch of 20 NGO outreach</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-html">HTML</span>
+      <div class="info">
+        <div class="title">Demo Landing Page</div>
+        <div class="path">docs/marketing/demo-landing.html</div>
+        <div class="desc">Standalone demo landing page for presentations</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Video Scripts -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon bg-video">&#127909;</div>
+    <h2>Video Scripts (Product Demo Series)</h2>
+    <div class="count">11 scripts</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">00 &mdash; Overview &amp; Production Plan</div>
+        <div class="path">docs/video-scripts/00-OVERVIEW.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">01 &mdash; Platform Introduction</div>
+        <div class="path">docs/video-scripts/01-platform-introduction.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">02 &mdash; Getting Started</div>
+        <div class="path">docs/video-scripts/02-getting-started.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">03 &mdash; Project Management</div>
+        <div class="path">docs/video-scripts/03-project-management.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">04 &mdash; Issues &amp; Tasks</div>
+        <div class="path">docs/video-scripts/04-issues-and-tasks.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">05 &mdash; Ethiopian Calendar</div>
+        <div class="path">docs/video-scripts/05-ethiopian-calendar.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">06 &mdash; Multi-Language Support</div>
+        <div class="path">docs/video-scripts/06-multi-language.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">07 &mdash; Teams &amp; Collaboration</div>
+        <div class="path">docs/video-scripts/07-teams-collaboration.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">08 &mdash; Budget &amp; Finance</div>
+        <div class="path">docs/video-scripts/08-budget-finance.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">09 &mdash; Knowledge Base</div>
+        <div class="path">docs/video-scripts/09-knowledge-base.md</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">10 &mdash; Reports &amp; Analytics</div>
+        <div class="path">docs/video-scripts/10-reports-analytics.md</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Root-level files -->
+<div class="category">
+  <div class="category-header">
+    <div class="category-icon" style="background:#374151;">&#128196;</div>
+    <h2>Root-Level Reference (Repo Files)</h2>
+    <div class="count">3 files</div>
+  </div>
+  <ul class="doc-list">
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">README.md</div>
+        <div class="path">README.md</div>
+        <div class="desc">Project overview, quick start, platform status</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">PROJECT_BRIEFING.md</div>
+        <div class="path">PROJECT_BRIEFING.md</div>
+        <div class="desc">Session briefing: recent changes, pending tasks, env var checklist, known bugs</div>
+      </div>
+    </li>
+    <li class="doc-item">
+      <span class="format fmt-md">MD</span>
+      <div class="info">
+        <div class="title">PROJECT_GUIDELINES.md</div>
+        <div class="path">PROJECT_GUIDELINES.md</div>
+        <div class="desc">Coding standards, commit rules, design system, i18n rules, security policy</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="doc-footer">
+  <img src="deployment/logo-mark.png" alt="Onekof">
+  <div>
+    <p>Onekof PM v1.2.0 &mdash; 564 commits, 136 PRs merged, INSA Certified.</p>
+    <p>&copy; 2026 DAPS Analytics PLC. All rights reserved.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
