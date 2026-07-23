@@ -23,6 +23,7 @@ import {
   Users,
   CheckCircle2,
   Settings,
+  Trash2,
   Clock,
   BarChart3,
   FileText,
@@ -241,6 +242,7 @@ export default function ProjectsPage() {
 // Project Card Component - Grid View
 function ProjectCard({ project, onClick }: { project: any; onClick: () => void }) {
   const { t } = useLanguage();
+  const router = useRouter();
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
@@ -270,6 +272,17 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
             >
               <Settings className="mr-2 h-4 w-4" />
               {t('dashboard.manageMembers')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                router.push(`/projects/${project.id}/settings`);
+              }}
+              className="text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Project
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -312,6 +325,7 @@ function ProjectCard({ project, onClick }: { project: any; onClick: () => void }
 // Project List Item Component - List View
 function ProjectListItem({ project, onClick }: { project: any; onClick: () => void }) {
   const { t } = useLanguage();
+  const router = useRouter();
   return (
     <Link
       href={`/dashboard/projects/${project.id}/overview`}
@@ -370,6 +384,17 @@ function ProjectListItem({ project, onClick }: { project: any; onClick: () => vo
             >
               <Settings className="mr-2 h-4 w-4" />
               {t('dashboard.manageMembers')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                router.push(`/projects/${project.id}/settings`);
+              }}
+              className="text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Project
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -350,7 +350,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
           className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
           onClick={onClose}
         />
-        <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 animate-slide-in-right overflow-hidden">
+        <div className="fixed right-0 top-14 h-[calc(100dvh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 animate-slide-in-right overflow-hidden">
           <SkeletonIssueDetail />
         </div>
       </>
@@ -366,7 +366,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
       />
 
       {/* Slide-out Panel */}
-      <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex flex-col animate-slide-in-right">
+      <div className="fixed right-0 top-14 h-[calc(100dvh-3.5rem)] w-full md:max-w-4xl bg-white dark:bg-[#1B1F23] shadow-2xl z-50 flex flex-col animate-slide-in-right overflow-hidden">
 
         {/* Jira-Style Clean Header */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-3 md:px-6 py-3">
