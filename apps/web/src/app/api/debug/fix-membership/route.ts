@@ -7,6 +7,10 @@ export const dynamic = 'force-dynamic';
 
 
 export async function POST() {
+    if (process.env.NODE_ENV === 'production' && !process.env.ENABLE_DEBUG_ROUTES) {
+      return NextResponse.json({ error: 'Debug routes disabled in production' }, { status: 404 });
+    }
+
   const { authorized, error } = await requireSuperAdmin('ADMIN');
   if (!authorized) return error!;
 

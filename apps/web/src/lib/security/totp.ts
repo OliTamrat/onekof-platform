@@ -122,6 +122,6 @@ export function decryptSecret(encryptedSecret: string): string {
 }
 
 function getEncryptionKey(): Buffer {
-  const secret = process.env.NEXTAUTH_SECRET || process.env.TWO_FACTOR_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
+  const secret = process.env.NEXTAUTH_SECRET || process.env.TWO_FACTOR_ENCRYPTION_KEY || 'dev-only-totp-key';
   return crypto.createHash('sha256').update(secret).digest();
 }

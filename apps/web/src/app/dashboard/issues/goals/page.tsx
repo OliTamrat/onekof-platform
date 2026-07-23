@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { EthiopianDatePicker } from '@/components/ui/ethiopian-date-picker';
 
 type GoalStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'AT_RISK' | 'COMPLETED' | 'CANCELLED';
 type GoalPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -671,11 +672,10 @@ export default function IssuesGoalsPage() {
                     <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">
                       Due Date
                     </label>
-                    <input
-                      type="date"
-                      value={goalFormData.dueDate}
-                      onChange={(e) => setGoalFormData({ ...goalFormData, dueDate: e.target.value })}
-                      className="w-full rounded-lg border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
+                    <EthiopianDatePicker
+                      value={goalFormData.dueDate || null}
+                      onChange={(isoDate) => setGoalFormData({ ...goalFormData, dueDate: isoDate || '' })}
+                      placeholder="Select due date"
                     />
                   </div>
                 </div>
