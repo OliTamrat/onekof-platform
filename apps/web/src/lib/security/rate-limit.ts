@@ -113,6 +113,13 @@ export const rateLimitConfigs = {
     window: '60m', // 3 signups per hour per IP
     windowMs: 60 * 60 * 1000,
   },
+
+  // Data mutations (POST/PATCH/DELETE on issues, projects, etc.)
+  dataMutation: {
+    requests: 60,
+    window: '1m', // 60 mutations per minute
+    windowMs: 60 * 1000,
+  },
 };
 
 type RateLimitConfig = keyof typeof rateLimitConfigs;
@@ -143,6 +150,7 @@ const rateLimiters = {
   emailVerification: createRateLimiter('emailVerification'),
   api: createRateLimiter('api'),
   signup: createRateLimiter('signup'),
+  dataMutation: createRateLimiter('dataMutation'),
 };
 
 /**
