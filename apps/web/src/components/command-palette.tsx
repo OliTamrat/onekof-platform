@@ -195,10 +195,12 @@ export function CommandPalette() {
   ];
 
   // Filter items based on query
+  // Search result items (from API) are already filtered server-side — don't re-filter them
   const filteredItems = React.useMemo(() => {
     if (!query.trim()) return allItems;
     const lowerQuery = query.toLowerCase();
     return allItems.filter((item) => {
+      if (item.category.startsWith('search-')) return true;
       const matchLabel = item.label.toLowerCase().includes(lowerQuery);
       const matchDescription = item.description?.toLowerCase().includes(lowerQuery);
       const matchKeywords = item.keywords?.some((k) => k.includes(lowerQuery));

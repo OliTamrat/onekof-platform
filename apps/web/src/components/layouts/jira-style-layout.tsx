@@ -135,7 +135,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
   const favoriteProjects = projects.filter(p => p.isFavorite);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#0B0E11]">
+    <div className="flex h-dvh flex-col overflow-hidden bg-slate-50 dark:bg-[#0B0E11]">
       {/* Global overlays */}
       <CommandPalette />
       <KeyboardShortcutsModal />
