@@ -2983,5 +2983,40 @@
     "spaceTitle": "የሰነድ ቦታ",
     "spaceId": "የቦታ መለያ",
     "spaceComingSoon": "የሰነድ ቦታ መመልከቻ በቅርቡ ይመጣል"
+  },
+  "hierarchy": {
+    "noIssues": "ጉዳዮች አልተገኙም",
+    "createEpicHint": "ተዋረድዎን ለመገንባት ኤፒክ ይፍጠሩ",
+    "highest": "ከፍተኛ",
+    "high": "ከፍ",
+    "medium": "መካከለኛ",
+    "low": "ዝቅተኛ",
+    "lowest": "በጣም ዝቅተኛ"
+  },
+  "auditLog": {
+    "title": "የኦዲት ምዝግብ",
+    "description": "በድርጅትዎ ውስጥ ያለ እያንዳንዱ ልዩ ተግባር ሪከርድ",
+    "accessDenied": "ተከልክሏል",
+    "accessDeniedDesc": "የድርጅት ባለቤቶች እና አስተዳዳሪዎች ብቻ ማየት ይችላሉ",
+    "apply": "ተግብር",
+    "clear": "አጽዳ",
+    "exportCsv": "CSV ላክ",
+    "noEntries": "ለተመረጡ ማጣሪያዎች ምንም ግኝቶች አልተገኙም",
+    "timestamp": "ጊዜ",
+    "actor": "ተዋናይ",
+    "action": "ተግባር",
+    "resource": "ሀብት",
+    "target": "ዒላማ",
+    "ipAddress": "IP አድራሻ",
+    "outcome": "ውጤት",
+    "showing": "ማሳየት",
+    "of": "ከ",
+    "entries": "ግኝቶች",
+    "page": "ገጽ",
+    "filterByAction": "በተግባር ማጣሪያ",
+    "allActions": "ሁሉም ተግባራት",
+    "dateRange": "የቀን ክልል",
+    "from": "ከ",
+    "to": "እስከ"
   }
 }
