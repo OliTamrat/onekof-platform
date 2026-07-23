@@ -7,6 +7,7 @@ import {
   ListChecks, Loader2, User, Calendar,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
 
 interface TreeIssue {
   id: string;
@@ -171,6 +172,7 @@ export function IssueHierarchyTree({ projectId, onSelect }: {
   projectId?: string;
   onSelect?: (issue: TreeIssue) => void;
 }) {
+  const { t } = useLanguage();
   const { data: rootIssues, isLoading } = useQuery({
     queryKey: ['issues-hierarchy-root', projectId],
     queryFn: async () => {
@@ -195,8 +197,8 @@ export function IssueHierarchyTree({ projectId, onSelect }: {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <Target className="h-12 w-12 text-slate-300 dark:text-slate-600 mb-3" />
-        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">No issues found</p>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Create an Epic to start building your hierarchy</p>
+        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('hierarchy.noIssues')}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('hierarchy.createEpicHint')}</p>
       </div>
     );
   }

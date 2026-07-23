@@ -2989,5 +2989,40 @@
     "spaceTitle": "Bakka Dookimentii",
     "spaceId": "Eenyummaa Bakkaa",
     "spaceComingSoon": "Ilaalchisaan bakka dookimentii dhiyootti ni dhufa"
+  },
+  "hierarchy": {
+    "noIssues": "No issues found",
+    "createEpicHint": "Create an Epic to start building your hierarchy",
+    "highest": "Highest",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "lowest": "Lowest"
+  },
+  "auditLog": {
+    "title": "Audit Log",
+    "description": "A tamper-evident record of every privileged action in your organization",
+    "accessDenied": "Access Denied",
+    "accessDeniedDesc": "Only organization Owners and Admins can view the audit log.",
+    "apply": "Apply",
+    "clear": "Clear",
+    "exportCsv": "Export CSV",
+    "noEntries": "No audit entries found for the selected filters.",
+    "timestamp": "Timestamp",
+    "actor": "Actor",
+    "action": "Action",
+    "resource": "Resource",
+    "target": "Target",
+    "ipAddress": "IP Address",
+    "outcome": "Outcome",
+    "showing": "Showing",
+    "of": "of",
+    "entries": "entries",
+    "page": "Page",
+    "filterByAction": "Filter by action",
+    "allActions": "All Actions",
+    "dateRange": "Date range",
+    "from": "From",
+    "to": "To"
   }
 }
