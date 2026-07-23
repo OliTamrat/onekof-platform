@@ -8,6 +8,7 @@ import { requireAuth, requireProjectAccess } from '@/lib/security/authorization'
 import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
+import { updateIssueSchema } from '@/lib/validation/schemas';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
 export const dynamic = 'force-dynamic';
@@ -226,8 +227,17 @@ export async function PATCH(
       return projectAuthResult.error!;
     }
 
-    // Parse request body
+    // Parse and validate request body
     const body = await request.json();
+    const validation = updateIssueSchema.safeParse(body);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      return NextResponse.json(
+        { error: firstError?.message || 'Invalid input' },
+        { status: 400 }
+      );
+    }
+
     const {
       title,
       description,
@@ -241,8 +251,8 @@ export async function PATCH(
       estimate,
       timeSpent,
       parentId,
-      backlogOrder,
-    } = body;
+    } = validation.data as any;
+    const { backlogOrder } = body;
 
     // Build update data
     const updateData: any = {};

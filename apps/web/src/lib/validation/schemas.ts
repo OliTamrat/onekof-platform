@@ -172,9 +172,9 @@ export const createIssueSchema = z.object({
     .max(200, 'Title must be less than 200 characters')
     .trim(),
   description: z.string().max(10000, 'Description must be less than 10,000 characters').optional(),
-  type: z.enum(['TASK', 'BUG', 'FEATURE', 'EPIC', 'STORY']),
+  type: z.enum(['TASK', 'BUG', 'EPIC', 'STORY', 'SUBTASK']),
   priority: z.enum(['LOWEST', 'LOW', 'MEDIUM', 'HIGH', 'HIGHEST']).default('MEDIUM'),
-  status: z.enum(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED']).default('TODO'),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED', 'BACKLOG']).default('TODO'),
   projectId: uuidSchema,
   assigneeId: uuidSchema.optional(),
   reporterId: uuidSchema,
