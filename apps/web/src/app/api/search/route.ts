@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const q = searchParams.get('q')?.trim();
 
     if (!q || q.length < 2) {
-      return NextResponse.json({ issues: [], projects: [], members: [] });
+      return NextResponse.json({ issues: [], projects: [], members: [], teams: [], goals: [], documents: [] });
     }
 
     const organizationId = ctx.organizationId;
@@ -165,7 +165,10 @@ export async function GET(request: NextRequest) {
       documents,
     });
   } catch (error) {
-    console.error('Search error:', error);
-    return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+    console.error('Search error:', error instanceof Error ? error.message : error);
+    return NextResponse.json(
+      { error: 'Search failed', detail: error instanceof Error ? error.message : 'Unknown error', issues: [], projects: [], members: [], teams: [], goals: [], documents: [] },
+      { status: 500 }
+    );
   }
 }

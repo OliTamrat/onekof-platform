@@ -68,13 +68,26 @@ export function CommandPalette() {
     searchTimerRef.current = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
-        if (res.ok && !cancelled) {
-          const data = await res.json();
-          setSearchResults(data);
+        if (cancelled) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setSearchResults({
+            issues: data.issues || [],
+            projects: data.projects || [],
+            members: data.members || [],
+            teams: data.teams || [],
+            goals: data.goals || [],
+            documents: data.documents || [],
+          });
         }
-      } catch {}
+        if (!res.ok) {
+          console.warn('Search API error:', res.status, data.error || data.detail);
+        }
+      } catch (err) {
+        console.warn('Search fetch failed:', err);
+      }
       if (!cancelled) setIsSearching(false);
-    }, 400);
+    }, 300);
     return () => {
       cancelled = true;
       if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
