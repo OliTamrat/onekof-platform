@@ -8,6 +8,7 @@ import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 import { createIssueSchema } from '@/lib/validation/schemas';
 import { checkRateLimit } from '@/lib/security/rate-limit';
+import { deliverWebhook } from '@/lib/integrations/webhooks';
 
 export const dynamic = 'force-dynamic';
 
@@ -486,6 +487,11 @@ export async function POST(request: NextRequest) {
         }
       })();
     }
+
+    // Deliver webhooks (fire-and-forget)
+    deliverWebhook(ctx.organizationId, 'issue.created', {
+      issue: { id: issue.id, key: issue.key, title: issue.title, type: issue.type, status: issue.status },
+    }).catch(() => {});
 
     return NextResponse.json({
       issue: {

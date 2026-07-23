@@ -10,6 +10,7 @@ import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
 import { updateIssueSchema } from '@/lib/validation/schemas';
 import { validateStatusTransition, getAllowedTransitions, type TaskStatus } from '@/lib/workflow-engine';
+import { deliverWebhook } from '@/lib/integrations/webhooks';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
 export const dynamic = 'force-dynamic';
@@ -513,6 +514,14 @@ export async function PATCH(
           });
         });
       }
+    }
+
+    // Deliver webhooks (fire-and-forget)
+    if (projectWithOrg2?.organization) {
+      deliverWebhook(projectWithOrg2.organization.id, 'issue.updated', {
+        issue: { id: issue.id, key: issue.key, title: issue.title, status: issue.status, priority: issue.priority },
+        changes: Object.keys(updateData),
+      }).catch(() => {});
     }
 
     return NextResponse.json({

@@ -3,6 +3,7 @@ import { prisma } from '@onekof/database';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { checkRateLimit } from '@/lib/security/rate-limit';
+import { isAccountLocked, recordFailedLogin, resetFailedAttempts } from '@/lib/security/account-lockout';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev-only-fallback';
 
@@ -21,6 +22,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // SECURITY: Check if account is locked
+    try {
+      const lockStatus = await isAccountLocked(email.toLowerCase().trim());
+      if (lockStatus.locked) {
+        return NextResponse.json(
+          { error: `Account locked. Try again in ${lockStatus.minutesRemaining} minutes.` },
+          { status: 423 }
+        );
+      }
+    } catch {}
+
     // Find user
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase().trim() },
@@ -34,6 +46,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.password) {
+      try { await recordFailedLogin(email.toLowerCase().trim()); } catch {}
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -43,11 +56,23 @@ export async function POST(request: NextRequest) {
     // Verify password
     const isValid = await compare(password, user.password);
     if (!isValid) {
+      try {
+        const lockResult = await recordFailedLogin(email.toLowerCase().trim());
+        if (lockResult.locked) {
+          return NextResponse.json(
+            { error: `Account locked due to too many failed attempts. Try again in ${Math.ceil((lockResult.lockedUntil!.getTime() - Date.now()) / 60000)} minutes.` },
+            { status: 423 }
+          );
+        }
+      } catch {}
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
+
+    // SECURITY: Reset failed attempts on successful login
+    try { await resetFailedAttempts(email.toLowerCase().trim()); } catch {}
 
     // Generate JWT token
     const token = sign(
