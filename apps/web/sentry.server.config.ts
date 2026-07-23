@@ -2,6 +2,10 @@ import * as Sentry from '@sentry/nextjs';
 
 const SENTRY_DSN = process.env.SENTRY_DSN;
 
+if (!SENTRY_DSN) {
+  // Sentry DSN not configured — skip initialization silently
+} else {
+
 Sentry.init({
   dsn: SENTRY_DSN,
 
@@ -48,3 +52,5 @@ Sentry.init({
     return event;
   },
 });
+
+} // end if (SENTRY_DSN)
