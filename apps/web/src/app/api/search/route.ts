@@ -21,32 +21,17 @@ export async function GET(request: NextRequest) {
 
     const organizationId = ctx.organizationId;
 
-    const projectWhere: any = {
+    const projectAccessFilter = buildProjectAccessFilter({
       organizationId,
-      deletedAt: null,
-    };
-
-    if (ctx.role as string === 'GUEST') {
-      const allowed = await prisma.project.findMany({
-        where: {
-          organizationId,
-          deletedAt: null,
-          OR: [
-            { members: { some: { userId: ctx.user.id } } },
-            { leadId: ctx.user.id },
-            { ownerId: ctx.user.id },
-          ],
-        },
-        select: { id: true },
-      });
-      projectWhere.id = { in: allowed.map((p: { id: string }) => p.id) };
-    }
+      userId: ctx.user.id,
+      orgRole: ctx.role,
+    });
 
     const [issues, projects, members] = await Promise.all([
       prisma.task.findMany({
         where: {
           deletedAt: null,
-          project: { organizationId, deletedAt: null, ...(projectWhere.id ? { id: projectWhere.id } : {}) },
+          project: { ...projectAccessFilter, deletedAt: null },
           OR: [
             { title: { contains: q, mode: 'insensitive' } },
             { key: { contains: q, mode: 'insensitive' } },
@@ -68,7 +53,8 @@ export async function GET(request: NextRequest) {
 
       prisma.project.findMany({
         where: {
-          ...projectWhere,
+          ...projectAccessFilter,
+          deletedAt: null,
           OR: [
             { name: { contains: q, mode: 'insensitive' } },
             { key: { contains: q, mode: 'insensitive' } },
