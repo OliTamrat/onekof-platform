@@ -106,11 +106,16 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
-    // Search by title or key
+    // Search by title or key — use AND to avoid overwriting access filter OR
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { key: { contains: search, mode: 'insensitive' } },
+      where.AND = [
+        ...(where.AND || []),
+        {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { key: { contains: search, mode: 'insensitive' } },
+          ],
+        },
       ];
     }
 
