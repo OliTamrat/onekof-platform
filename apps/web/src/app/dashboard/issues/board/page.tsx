@@ -241,6 +241,7 @@ export default function IssuesBoardPage() {
         showInsights
         onInsightsToggle={() => setInsightsOpen((v) => !v)}
         insightsOpen={insightsOpen}
+        activeFilters={{ status: filterStatus, priority: filterPriority }}
         onFilterChange={handleFilterChange}
       />
 
