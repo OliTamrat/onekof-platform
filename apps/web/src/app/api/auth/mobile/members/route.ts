@@ -4,7 +4,7 @@ import { verify } from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
 
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'fallback-secret';
+const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev-only-fallback';
 
 /**
  * GET /api/auth/mobile/members

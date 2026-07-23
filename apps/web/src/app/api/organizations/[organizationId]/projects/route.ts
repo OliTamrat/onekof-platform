@@ -78,6 +78,7 @@ export async function GET(
         { isFavorite: 'desc' },
         { updatedAt: 'desc' },
       ],
+      take: 200,
     });
 
     return NextResponse.json({

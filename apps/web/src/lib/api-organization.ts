@@ -5,7 +5,7 @@ import { prisma } from '@onekof/database';
 import { headers } from 'next/headers';
 import { verify } from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'fallback-secret';
+const JWT_SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev-only-fallback';
 
 /**
  * Resolve the authenticated user from either:
