@@ -9,6 +9,7 @@ import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
 import { updateIssueSchema } from '@/lib/validation/schemas';
+import { validateStatusTransition, getAllowedTransitions, type TaskStatus } from '@/lib/workflow-engine';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
 export const dynamic = 'force-dynamic';
@@ -260,11 +261,33 @@ export async function PATCH(
     if (description !== undefined) updateData.description = description;
     if (type !== undefined) updateData.type = type;
     if (status !== undefined) {
+      // Validate status transition
+      const currentTask = await prisma.task.findUnique({
+        where: { id: params.id },
+        select: { status: true, project: { select: { id: true } } },
+      });
+
+      if (currentTask && currentTask.status !== status) {
+        const transition = validateStatusTransition(
+          currentTask.status as TaskStatus,
+          status as TaskStatus,
+          { enforceWorkflow: false }
+        );
+        if (!transition.allowed) {
+          return NextResponse.json(
+            {
+              error: transition.reason,
+              allowedTransitions: getAllowedTransitions(currentTask.status as TaskStatus),
+            },
+            { status: 422 }
+          );
+        }
+      }
+
       updateData.status = status;
-      // Set completedAt when status changes to DONE
       if (status === 'DONE') {
         updateData.completedAt = new Date();
-      } else if (status !== 'DONE') {
+      } else {
         updateData.completedAt = null;
       }
     }
