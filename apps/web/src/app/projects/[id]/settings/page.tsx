@@ -44,7 +44,7 @@ export default function ProjectSettingsPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50 dark:bg-[#1B1F23] p-4 md:p-8">
+    <div className="min-h-full overflow-y-auto bg-gray-50 dark:bg-[#1B1F23] p-4 md:p-8">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">

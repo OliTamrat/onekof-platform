@@ -80,12 +80,9 @@ export function AlertModal({
     >
       <div
         className={cn(
-          'relative w-full sm:max-w-md bg-white dark:bg-[#282E33] shadow-2xl transition-all duration-200 ease-out',
-          // Mobile: bottom sheet with rounded top
+          'relative w-full sm:max-w-md max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-white dark:bg-[#282E33] shadow-2xl transition-all duration-200 ease-out',
           'rounded-t-2xl sm:rounded-xl',
-          // Border
           'border border-slate-200/80 dark:border-white/[0.08]',
-          // Animation
           isAnimating
             ? 'translate-y-0 opacity-100 scale-100'
             : 'translate-y-8 sm:translate-y-4 opacity-0 sm:scale-[0.97]'
@@ -93,26 +90,26 @@ export function AlertModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mobile drag handle */}
-        <div className="flex justify-center pt-3 pb-0 sm:hidden" aria-hidden="true">
+        <div className="flex justify-center pt-3 pb-0 sm:hidden flex-shrink-0" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-slate-300 dark:bg-slate-600" />
         </div>
 
         {/* Teal accent — desktop */}
-        <div className="hidden sm:block h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60 rounded-t-xl" />
+        <div className="hidden sm:block h-[3px] w-full bg-gradient-to-r from-[#1C8C7D] to-[#1C8C7D]/60 rounded-t-xl flex-shrink-0" />
 
         {/* Close Button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="absolute right-3 top-3 sm:right-4 sm:top-5 h-8 w-8 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 active:scale-95 dark:hover:text-white dark:hover:bg-white/[0.06] transition-all"
+          className="absolute right-3 top-3 sm:right-4 sm:top-5 h-8 w-8 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 active:scale-95 dark:hover:text-white dark:hover:bg-white/[0.06] transition-all z-10"
           title="Close"
         >
           <X className="h-4 w-4" />
         </Button>
 
-        {/* Content */}
-        <div className="p-5 sm:p-6">
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto min-h-0 p-5 sm:p-6">
           {/* Icon and Title */}
           <div className="mb-4 flex items-start gap-3">
             <div className={cn('flex-shrink-0 mt-0.5 h-10 w-10 rounded-xl flex items-center justify-center border', bg, border)}>
@@ -124,12 +121,14 @@ export function AlertModal({
           </div>
 
           {/* Message */}
-          <div className="mb-6 pl-[52px]">
+          <div className="pl-[52px]">
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">{message}</p>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pl-0 sm:pl-[52px]">
+        {/* Actions — pinned to bottom */}
+        <div className="flex-shrink-0 border-t border-slate-200 dark:border-white/[0.08] p-4 sm:px-6 sm:py-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
             {cancelText && (
               <Button
                 variant="outline"
