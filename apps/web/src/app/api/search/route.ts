@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       orgRole: ctx.role,
     });
 
-    const [issues, projects, members] = await Promise.all([
+    const [issues, projects, members, teams, goals, documents] = await Promise.all([
       prisma.task.findMany({
         where: {
           deletedAt: null,
@@ -97,12 +97,72 @@ export async function GET(request: NextRequest) {
         },
         take: 5,
       }),
+
+      prisma.team.findMany({
+        where: {
+          organizationId,
+          AND: [{
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { description: { contains: q, mode: 'insensitive' } },
+            ],
+          }],
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          _count: { select: { members: true } },
+        },
+        take: 5,
+      }),
+
+      prisma.goal.findMany({
+        where: {
+          organizationId,
+          AND: [{
+            OR: [
+              { title: { contains: q, mode: 'insensitive' } },
+              { description: { contains: q, mode: 'insensitive' } },
+            ],
+          }],
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          status: true,
+          progress: true,
+        },
+        take: 5,
+      }),
+
+      prisma.document.findMany({
+        where: {
+          organizationId,
+          AND: [{
+            OR: [
+              { fileName: { contains: q, mode: 'insensitive' } },
+            ],
+          }],
+        },
+        select: {
+          id: true,
+          fileName: true,
+          fileType: true,
+          createdAt: true,
+        },
+        take: 5,
+      }),
     ]);
 
     return NextResponse.json({
       issues,
       projects,
       members: members.map(m => ({ ...m.user, role: m.role })),
+      teams: teams.map((t: any) => ({ ...t, memberCount: t._count?.members || 0, _count: undefined })),
+      goals,
+      documents,
     });
   } catch (error) {
     console.error('Search error:', error);

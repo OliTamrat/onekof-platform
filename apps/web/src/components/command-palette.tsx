@@ -52,14 +52,14 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listRef = React.useRef<HTMLDivElement>(null);
-  const [searchResults, setSearchResults] = React.useState<{ issues: any[]; projects: any[]; members: any[] }>({ issues: [], projects: [], members: [] });
+  const [searchResults, setSearchResults] = React.useState<{ issues: any[]; projects: any[]; members: any[]; teams: any[]; goals: any[]; documents: any[] }>({ issues: [], projects: [], members: [], teams: [], goals: [], documents: [] });
   const [isSearching, setIsSearching] = React.useState(false);
   const searchTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
     if (!query || query.trim().length < 2) {
-      setSearchResults({ issues: [], projects: [], members: [] });
+      setSearchResults({ issues: [], projects: [], members: [], teams: [], goals: [], documents: [] });
       setIsSearching(false);
       return;
     }
@@ -117,6 +117,36 @@ export function CommandPalette() {
     keywords: [],
   }));
 
+  const searchTeamItems: CommandItem[] = (searchResults.teams || []).map((team: any) => ({
+    id: `search-team-${team.id}`,
+    label: team.name,
+    description: `${team.memberCount || 0} members${team.description ? ' · ' + team.description.slice(0, 50) : ''}`,
+    icon: Users,
+    action: () => router.push(`/dashboard/teams`),
+    category: 'search-team' as any,
+    keywords: [],
+  }));
+
+  const searchGoalItems: CommandItem[] = (searchResults.goals || []).map((goal: any) => ({
+    id: `search-goal-${goal.id}`,
+    label: goal.title,
+    description: `${goal.status || 'Active'}${goal.progress ? ' · ' + goal.progress + '%' : ''}`,
+    icon: Target,
+    action: () => router.push(`/dashboard/goals`),
+    category: 'search-goal' as any,
+    keywords: [],
+  }));
+
+  const searchDocItems: CommandItem[] = (searchResults.documents || []).map((doc: any) => ({
+    id: `search-doc-${doc.id}`,
+    label: doc.fileName,
+    description: doc.fileType || 'Document',
+    icon: FileText,
+    action: () => router.push(`/dashboard/documents`),
+    category: 'search-doc' as any,
+    keywords: [],
+  }));
+
   // Navigation commands
   const navigationItems: CommandItem[] = [
     { id: 'nav-home', label: t('nav.home'), description: t('dashboard.title'), icon: Home, action: () => router.push('/dashboard'), category: 'navigation', keywords: ['dashboard', 'main'] },
@@ -151,11 +181,14 @@ export function CommandPalette() {
     keywords: [project.key.toLowerCase(), project.name.toLowerCase()],
   }));
 
-  const hasSearchResults = searchIssueItems.length > 0 || searchProjectItems.length > 0 || searchMemberItems.length > 0;
+  const hasSearchResults = searchIssueItems.length > 0 || searchProjectItems.length > 0 || searchMemberItems.length > 0 || searchTeamItems.length > 0 || searchGoalItems.length > 0 || searchDocItems.length > 0;
   const allItems = [
     ...searchIssueItems,
     ...searchProjectItems,
     ...searchMemberItems,
+    ...searchTeamItems,
+    ...searchGoalItems,
+    ...searchDocItems,
     ...(hasSearchResults ? [] : actionItems),
     ...navigationItems,
     ...(hasSearchResults ? [] : projectItems),
@@ -248,6 +281,9 @@ export function CommandPalette() {
     'search-issue': 'Issues',
     'search-project': 'Projects',
     'search-member': 'Members',
+    'search-team': 'Teams',
+    'search-goal': 'Goals',
+    'search-doc': 'Documents',
     action: t('commandPalette.actions'),
     navigation: t('commandPalette.navigation'),
     project: t('nav.projects'),
@@ -300,7 +336,7 @@ export function CommandPalette() {
               </div>
             ) : (
               Object.entries(groupedItems).map(([category, items]) => {
-                const order = ['search-issue', 'search-project', 'search-member', 'action', 'navigation', 'project', 'recent'];
+                const order = ['search-issue', 'search-project', 'search-member', 'search-team', 'search-goal', 'search-doc', 'action', 'navigation', 'project', 'recent'];
                 if (!order.includes(category)) return null;
                 return (
                   <div key={category} className="mb-2">
