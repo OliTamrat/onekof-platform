@@ -15,6 +15,7 @@ import {
 import { SlideoutPanel, SlideoutPanelContent } from '@/components/ui/slideout-panel';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { EthiopianDatePicker } from '@/components/ui/ethiopian-date-picker';
 
 interface QuickAddEventModalProps {
   date: Date;
@@ -197,11 +198,9 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
                 {t('calendar.start')}
               </label>
               <div className="space-y-1.5">
-                <input
-                  type="date"
-                  value={formData.startDate}
-                  onChange={(e) => update('startDate', e.target.value)}
-                  className={inputClass}
+                <EthiopianDatePicker
+                  value={formData.startDate || null}
+                  onChange={(isoDate) => update('startDate', isoDate || '')}
                 />
                 <input
                   type="time"
@@ -218,11 +217,9 @@ export function QuickAddEventModal({ date, onClose, projectId }: QuickAddEventMo
                 {t('calendar.due')}
               </label>
               <div className="space-y-1.5">
-                <input
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={(e) => update('dueDate', e.target.value)}
-                  className={inputClass}
+                <EthiopianDatePicker
+                  value={formData.dueDate || null}
+                  onChange={(isoDate) => update('dueDate', isoDate || '')}
                 />
                 <input
                   type="time"

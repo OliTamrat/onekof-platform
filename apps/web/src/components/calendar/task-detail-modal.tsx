@@ -24,6 +24,7 @@ import {
 import type { CalendarTask } from './dual-calendar';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { EthiopianDatePicker } from '@/components/ui/ethiopian-date-picker';
 
 interface TaskDetailModalProps {
   task: CalendarTask;
@@ -293,11 +294,9 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               </label>
               {isEditing ? (
                 <div className="space-y-2">
-                  <input
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
+                  <EthiopianDatePicker
+                    value={formData.startDate || null}
+                    onChange={(isoDate) => setFormData({ ...formData, startDate: isoDate || '' })}
                   />
                   <input
                     type="time"
@@ -320,11 +319,9 @@ export function TaskDetailModal({ task, onClose, onUpdate, onDelete }: TaskDetai
               </label>
               {isEditing ? (
                 <div className="space-y-2">
-                  <input
-                    type="date"
-                    value={formData.dueDate}
-                    onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-4 py-2 text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none focus:ring-1 focus:ring-[#1C8C7D]"
+                  <EthiopianDatePicker
+                    value={formData.dueDate || null}
+                    onChange={(isoDate) => setFormData({ ...formData, dueDate: isoDate || '' })}
                   />
                   <input
                     type="time"
