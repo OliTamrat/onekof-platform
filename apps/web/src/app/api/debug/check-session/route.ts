@@ -6,6 +6,7 @@ import { requireSuperAdmin } from '@/lib/security/superadmin';
 
 export const dynamic = 'force-dynamic';
 
+
 export async function GET() {
   // 🔒 SECURITY: Debug routes must require superadmin access
   const { authorized, error } = await requireSuperAdmin();

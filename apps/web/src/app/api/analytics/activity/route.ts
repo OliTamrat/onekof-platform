@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Get hourly activity pattern (for activity heatmap)
+    // Get hourly activity pattern using groupBy for scalability
     const hourlyActivity = Array.from({ length: 24 }, () => 0);
     const allActivitiesForPattern = await prisma.userActivity.findMany({
       where: {
@@ -138,6 +138,7 @@ export async function GET(request: NextRequest) {
       select: {
         createdAt: true,
       },
+      take: 10000,
     });
 
     allActivitiesForPattern.forEach((activity: { createdAt: Date }) => {

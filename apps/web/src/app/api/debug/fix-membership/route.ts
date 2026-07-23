@@ -5,6 +5,7 @@ import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
+
 export async function POST() {
   const { authorized, error } = await requireSuperAdmin('ADMIN');
   if (!authorized) return error!;

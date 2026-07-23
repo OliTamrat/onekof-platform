@@ -205,6 +205,7 @@ export async function GET(request: NextRequest) {
       where,
       include: includeClause,
       orderBy: orderByClause,
+      take: 500,
     });
 
     const issuesWithCounts = issues.map(transformIssue);

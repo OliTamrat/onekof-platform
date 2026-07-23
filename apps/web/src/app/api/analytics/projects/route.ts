@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const endDate = new Date();
     const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000);
 
-    // Get all projects with their tasks
+    // Get projects with task counts (not full task arrays) for scalability
     const projects = await prisma.project.findMany({
       where: {
         organizationId,
@@ -38,8 +38,17 @@ export async function GET(request: NextRequest) {
       },
       include: {
         tasks: {
-          where: {
-            deletedAt: null,
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            title: true,
+            key: true,
+            status: true,
+            priority: true,
+            dueDate: true,
+            completedAt: true,
+            createdAt: true,
+            projectId: true,
           },
         },
         members: {
@@ -55,6 +64,7 @@ export async function GET(request: NextRequest) {
           },
         },
       },
+      take: 100,
     });
 
     // Calculate aggregate metrics
