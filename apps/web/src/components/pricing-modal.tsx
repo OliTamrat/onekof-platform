@@ -75,7 +75,7 @@ export function PricingModal({ open, onOpenChange, trialEndsDate }: PricingModal
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-50 dark:bg-[#1B1F23] border-slate-200 dark:border-slate-700 p-0 gap-0">
+      <DialogContent className="max-w-5xl bg-slate-50 dark:bg-[#1B1F23] border-slate-200 dark:border-slate-700 p-0 gap-0">
         {/* Header Section */}
         <div className="bg-white dark:bg-[#22272B] border-b border-slate-200 dark:border-slate-700 px-4 sm:px-8 py-4 sm:py-6">
           <DialogHeader>
