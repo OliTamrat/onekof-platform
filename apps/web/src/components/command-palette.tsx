@@ -64,17 +64,21 @@ export function CommandPalette() {
       return;
     }
     setIsSearching(true);
+    let cancelled = false;
     searchTimerRef.current = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
           setSearchResults(data);
         }
       } catch {}
-      setIsSearching(false);
-    }, 300);
-    return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
+      if (!cancelled) setIsSearching(false);
+    }, 400);
+    return () => {
+      cancelled = true;
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    };
   }, [query]);
 
   const issueTypeIcon = (type: string) => {

@@ -118,9 +118,6 @@ export default function IssuesPage() {
       if (hideSubtasks) {
         params.append('topLevel', 'true');
       }
-      if (filterStatus.length === 1) {
-        params.append('status', filterStatus[0]);
-      }
       const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed to fetch issues');
       return res.json();
@@ -205,6 +202,7 @@ export default function IssuesPage() {
 
   // Filter and organize issues by status
   const filteredIssues = issuesData?.issues?.filter((issue: Issue) => {
+    if (filterStatus.length > 0 && !filterStatus.includes(issue.status)) return false;
     if (filterPriority.length > 0 && !filterPriority.includes(issue.priority)) return false;
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -299,6 +297,7 @@ export default function IssuesPage() {
         showInsights
         onInsightsToggle={() => setInsightsOpen((v) => !v)}
         insightsOpen={insightsOpen}
+        activeFilters={{ status: filterStatus, priority: filterPriority }}
         onFilterChange={handleFilterChange}
       />
 
