@@ -95,13 +95,23 @@ export async function POST(
 
 async function retryProcessing(document: any, userId: string) {
   try {
-    // Download the file from storage
-    const response = await fetch(document.fileUrl);
-    if (!response.ok) {
-      throw new Error('Failed to retrieve file from storage');
+    let buffer: Buffer;
+
+    if (document.fileUrl.startsWith('data:')) {
+      const base64Data = document.fileUrl.split(',')[1];
+      buffer = Buffer.from(base64Data, 'base64');
+    } else if (document.fileUrl.startsWith('local-fs://')) {
+      const fs = await import('fs/promises');
+      const filePath = document.fileUrl.replace('local-fs://', '');
+      buffer = await fs.readFile(filePath);
+    } else {
+      const response = await fetch(document.fileUrl);
+      if (!response.ok) {
+        throw new Error('Failed to retrieve file from storage');
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      buffer = Buffer.from(arrayBuffer);
     }
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
 
     // Extract text
     const extractedText = await extractTextFromFile(buffer, document.mimeType);

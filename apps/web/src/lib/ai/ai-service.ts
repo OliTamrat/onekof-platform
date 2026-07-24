@@ -6,20 +6,27 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+// Initialize Anthropic client — fail fast if key is missing
+const apiKey = process.env.ANTHROPIC_API_KEY;
+const anthropic = apiKey ? new Anthropic({ apiKey }) : null;
 
-// Model configuration
+function getClient(): Anthropic {
+  if (!anthropic) {
+    throw new Error('ANTHROPIC_API_KEY is not configured. Set it in your environment variables.');
+  }
+  return anthropic;
+}
+
+// Model configuration — use claude-haiku-4-5 which supports PDF document type
 export const AI_CONFIG = {
-  model: process.env.AI_MODEL || 'claude-3-haiku-20240307',
+  model: process.env.AI_MODEL || 'claude-haiku-4-5-20251001',
   maxTokens: 4096,
-  temperature: 0.2, // Lower temperature for consistent, factual extraction
+  temperature: 0.2,
   costs: {
-    inputPer1M: 0.25, // $0.25 per 1M input tokens
-    outputPer1M: 1.25, // $1.25 per 1M output tokens
+    inputPer1M: 0.80,
+    outputPer1M: 4.00,
   },
+  timeoutMs: 120_000,
 };
 
 // Document types we support
@@ -65,8 +72,11 @@ export async function processDocument(
     // Build context-aware prompt based on document type
     const prompt = buildPrompt(documentContent, documentType, fileName);
 
-    // Call Anthropic API
-    const response = await anthropic.messages.create({
+    const client = getClient();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), AI_CONFIG.timeoutMs);
+
+    const response = await client.messages.create({
       model: AI_CONFIG.model,
       max_tokens: AI_CONFIG.maxTokens,
       temperature: AI_CONFIG.temperature,
@@ -76,7 +86,7 @@ export async function processDocument(
           content: prompt,
         },
       ],
-    });
+    }, { signal: controller.signal }).finally(() => clearTimeout(timeout));
 
     // Extract response content
     const content = response.content[0];
@@ -286,14 +296,11 @@ export async function extractTextFromFile(
   fileBuffer: Buffer,
   mimeType: string
 ): Promise<string> {
-  // For MVP, we'll use the vision API for images and PDFs
-  // In production, use pdf-parse, tesseract.js, or similar libraries
+  const client = getClient();
 
   if (mimeType.startsWith('image/')) {
-    // Convert image to base64 for AI vision
     const base64Image = fileBuffer.toString('base64');
-
-    const response = await anthropic.messages.create({
+    const response = await client.messages.create({
       model: AI_CONFIG.model,
       max_tokens: AI_CONFIG.maxTokens,
       messages: [
@@ -316,23 +323,21 @@ export async function extractTextFromFile(
         },
       ],
     });
-
     const content = response.content[0];
     return content.type === 'text' ? content.text : '';
   }
 
   if (mimeType === 'application/pdf') {
     const base64Pdf = fileBuffer.toString('base64');
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
     const response = await client.messages.create({
-      model: process.env.AI_MODEL || 'claude-3-haiku-20240307',
-      max_tokens: 4096,
+      model: AI_CONFIG.model,
+      max_tokens: AI_CONFIG.maxTokens,
       messages: [
         {
           role: 'user',
           content: [
             {
-              type: 'document',
+              type: 'document' as any,
               source: {
                 type: 'base64',
                 media_type: 'application/pdf',
@@ -351,15 +356,57 @@ export async function extractTextFromFile(
     return content.type === 'text' ? content.text : '';
   }
 
-  // For DOCX files, extract readable text from XML content
   if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || mimeType === 'application/msword') {
-    const text = fileBuffer.toString('utf-8');
-    const xmlText = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (xmlText.length > 100) return xmlText;
+    try {
+      const { Readable } = await import('stream');
+      const { createUnzip } = await import('zlib');
+      const { Buffer: B } = await import('buffer');
+
+      const entries: { name: string; data: Buffer }[] = [];
+      const extract = await import('stream/promises');
+
+      // DOCX is a ZIP — use AdmZip-style manual extraction
+      // Look for PK signature (ZIP magic bytes)
+      if (fileBuffer[0] === 0x50 && fileBuffer[1] === 0x4B) {
+        // Find word/document.xml in the ZIP using basic ZIP parsing
+        let offset = 0;
+        let docXml = '';
+        while (offset < fileBuffer.length - 4) {
+          if (fileBuffer.readUInt32LE(offset) === 0x04034b50) { // local file header
+            const fnLen = fileBuffer.readUInt16LE(offset + 26);
+            const extraLen = fileBuffer.readUInt16LE(offset + 28);
+            const compSize = fileBuffer.readUInt32LE(offset + 18);
+            const uncompSize = fileBuffer.readUInt32LE(offset + 22);
+            const compMethod = fileBuffer.readUInt16LE(offset + 8);
+            const fileName = fileBuffer.toString('utf-8', offset + 30, offset + 30 + fnLen);
+            const dataStart = offset + 30 + fnLen + extraLen;
+
+            if (fileName === 'word/document.xml') {
+              if (compMethod === 0) {
+                docXml = fileBuffer.toString('utf-8', dataStart, dataStart + uncompSize);
+              } else {
+                const { inflateRawSync } = await import('zlib');
+                const compressed = fileBuffer.subarray(dataStart, dataStart + compSize);
+                docXml = inflateRawSync(compressed).toString('utf-8');
+              }
+              break;
+            }
+            offset = dataStart + compSize;
+          } else {
+            offset++;
+          }
+        }
+        if (docXml) {
+          const text = docXml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          if (text.length > 50) return text;
+        }
+      }
+    } catch {
+      // fallback
+    }
     return 'Document content could not be extracted. Please convert to PDF or text format.';
   }
 
-  // For plain text files
   return fileBuffer.toString('utf-8');
 }
 

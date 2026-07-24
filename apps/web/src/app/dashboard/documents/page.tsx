@@ -44,12 +44,23 @@ export default function DocumentsPage() {
     }
   }, [status, router]);
 
-  // Fetch documents
+  // Fetch documents + poll while any are PROCESSING
   useEffect(() => {
     if (session) {
       fetchDocuments();
     }
   }, [session]);
+
+  useEffect(() => {
+    const hasProcessing = documents.some((d: any) => d.status === 'PROCESSING');
+    if (!hasProcessing) return;
+    const interval = setInterval(() => {
+      fetch('/api/documents').then(r => r.ok ? r.json() : null).then(data => {
+        if (data?.documents) setDocuments(data.documents);
+      }).catch(() => {});
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [documents]);
 
   const fetchDocuments = async () => {
     try {
