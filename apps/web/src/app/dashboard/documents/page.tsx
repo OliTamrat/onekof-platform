@@ -22,7 +22,9 @@ import {
   DollarSign,
   Calendar,
   Eye,
-  Loader2
+  Loader2,
+  Trash2,
+  RefreshCw
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
@@ -42,12 +44,23 @@ export default function DocumentsPage() {
     }
   }, [status, router]);
 
-  // Fetch documents
+  // Fetch documents + poll while any are PROCESSING
   useEffect(() => {
     if (session) {
       fetchDocuments();
     }
   }, [session]);
+
+  useEffect(() => {
+    const hasProcessing = documents.some((d: any) => d.status === 'PROCESSING');
+    if (!hasProcessing) return;
+    const interval = setInterval(() => {
+      fetch('/api/documents').then(r => r.ok ? r.json() : null).then(data => {
+        if (data?.documents) setDocuments(data.documents);
+      }).catch(() => {});
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [documents]);
 
   const fetchDocuments = async () => {
     try {
@@ -67,6 +80,36 @@ export default function DocumentsPage() {
   // Handle upload complete
   const handleUploadComplete = () => {
     fetchDocuments();
+  };
+
+  // Handle document delete
+  const handleDelete = async (e: React.MouseEvent, docId: string) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(`/api/documents/${docId}`, { method: 'DELETE' });
+      if (response.ok) {
+        setDocuments(prev => prev.filter(d => d.id !== docId));
+      }
+    } catch (error) {
+      console.error('Failed to delete document:', error);
+    }
+  };
+
+  // Handle document retry
+  const handleRetry = async (e: React.MouseEvent, docId: string) => {
+    e.stopPropagation();
+    try {
+      setDocuments(prev => prev.map(d => d.id === docId ? { ...d, status: 'PROCESSING' } : d));
+      const response = await fetch(`/api/documents/${docId}/retry`, { method: 'POST' });
+      if (response.ok) {
+        fetchDocuments();
+      } else {
+        setDocuments(prev => prev.map(d => d.id === docId ? { ...d, status: 'FAILED' } : d));
+      }
+    } catch (error) {
+      console.error('Failed to retry document:', error);
+      setDocuments(prev => prev.map(d => d.id === docId ? { ...d, status: 'FAILED' } : d));
+    }
   };
 
   // Don't render if not authenticated
@@ -208,10 +251,18 @@ export default function DocumentsPage() {
                 {documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
+                    className="relative p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"
                     onClick={() => setSelectedDocument(doc)}
                   >
-                    <div className="flex items-start gap-4">
+                    {/* Delete button */}
+                    <button
+                      onClick={(e) => handleDelete(e, doc.id)}
+                      className="absolute top-2 right-2 p-1.5 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors z-10"
+                      title="Delete document"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <div className="flex items-start gap-4 pr-8">
                       {/* Status Icon */}
                       <div className={`
                         flex-shrink-0 h-12 w-12 rounded-lg flex items-center justify-center
@@ -297,9 +348,18 @@ export default function DocumentsPage() {
                         )}
 
                         {doc.status === 'FAILED' && (
-                          <p className="text-xs text-red-600 dark:text-red-400">
-                            {t('documents.processingFailed')}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs text-red-600 dark:text-red-400">
+                              {t('documents.processingFailed')}
+                            </p>
+                            <button
+                              onClick={(e) => handleRetry(e, doc.id)}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors"
+                            >
+                              <RefreshCw className="h-3 w-3" />
+                              Retry
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
