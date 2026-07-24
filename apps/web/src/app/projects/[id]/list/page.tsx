@@ -25,7 +25,7 @@ export default function ProjectListPage() {
 
   const fetchIssues = async () => {
     try {
-      const res = await fetch(`/api/issues?projectId=${projectId}`);
+      const res = await fetch(`/api/projects/${projectId}/issues`);
       if (res.ok) {
         const data = await res.json();
         setIssues(data.issues || []);
