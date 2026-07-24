@@ -3,14 +3,19 @@ name: CI
 on:
   pull_request:
     branches: [master, develop]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/ci.yml'
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build & Type Check
+  build-and-test:
+    name: Build & Type Check + Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -35,48 +40,17 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Pull Vercel env vars (provides DATABASE_URL, NEXTAUTH_SECRET, etc.)
-        # vercel pull creates .env.production.local which Next.js loads at build time.
-        # This avoids duplicating secrets in GitHub — Vercel is the single source of truth.
+      - name: Pull Vercel env vars
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      # prisma generate is already the first step in `pnpm --filter=web run build`
-      # (see apps/web/package.json build script) — no separate step needed here.
       - name: Build web app
         run: pnpm --filter=web run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-  test:
-    name: Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: build
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8.15.1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Tests need the generated Prisma client but don't run build first,
-      # so we generate explicitly here. prisma generate does NOT connect to
-      # the database — no DATABASE_URL needed for this step.
       - name: Generate Prisma Client
         run: pnpm --filter=database exec prisma generate
 
