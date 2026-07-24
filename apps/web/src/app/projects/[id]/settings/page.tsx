@@ -44,7 +44,7 @@ export default function ProjectSettingsPage() {
   };
 
   return (
-    <div className="min-h-full overflow-y-auto bg-gray-50 dark:bg-[#1B1F23] p-4 md:p-8">
+    <div className="min-h-full overflow-y-auto bg-gray-50 dark:bg-[#1B1F23] p-4 md:p-8 pb-20">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -108,7 +108,7 @@ export default function ProjectSettingsPage() {
           </div>
 
           {showDeleteConfirm && (
-            <div className="mt-4 rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-[#1B1F23] p-4">
+            <div className="mt-4 mb-8 rounded-lg border border-red-300 dark:border-red-800 bg-white dark:bg-[#1B1F23] p-4">
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
                 Type <strong className="text-red-600 dark:text-red-400">{project?.name}</strong> to confirm deletion:
               </p>
