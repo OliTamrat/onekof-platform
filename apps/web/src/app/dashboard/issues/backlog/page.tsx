@@ -618,7 +618,7 @@ export default function BacklogPage() {
             <select
               value={scopedProjectId ?? ''}
               onChange={(e) => changeProjectScope(e.target.value || null)}
-              className="h-8 w-[120px] min-w-0 shrink rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none sm:w-[180px]"
+              className="h-9 w-[150px] min-w-0 shrink rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-3 text-sm leading-none text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none sm:w-[200px]"
               title={t('sprints.selectProject', { nounPlural: sprintNounPlural })}
             >
               <option value="">{t('sprints.allProjects')}</option>
