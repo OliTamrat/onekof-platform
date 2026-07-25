@@ -12,7 +12,7 @@ on:
       migration:
         description: 'Migration folder name to apply (must be idempotent SQL)'
         required: true
-        default: '20260726_add_sprints_and_project_settings'
+        default: '20260727_add_sprint_budget_snapshot'
 
 jobs:
   migrate:
