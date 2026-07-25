@@ -47,6 +47,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 | Bulk | 5th action `moveToSprint` (`value: sprintId` or `"null"` = backlog), project-scope enforced, churn logged via `createMany` (no push storm) |
 | Tests | 21 new tests (sprint schemas, lifecycle rollover contract, settings inheritance incl. null-means-inherit and SCRUM template default) — 290 total green |
 
+**Production status:** PR #144 merged to master 2026-07-25; migration `20260726_add_sprints_and_project_settings` **applied to Supabase and verified** (partial unique index, tasks columns, project_settings, org defaults all confirmed via `DB Migrate` workflow run #2). New CI utility: `.github/workflows/db-migrate.yml` — manual dispatch, applies an idempotent migration over DIRECT_URL and records it in `_prisma_migrations` (handles the `@`-in-password psql quirk by exporting PG* vars via Node URL parsing).
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)
