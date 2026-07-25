@@ -33,6 +33,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
 import { useTerminology } from '@/hooks/use-terminology';
 import { useProjectSettings, useSprints } from '@/components/sprints/use-sprints';
@@ -82,6 +83,7 @@ const COLUMNS: Column[] = [
 export default function IssuesBoardPage() {
   const { t } = useLanguage();
   const { sprintNoun } = useTerminology();
+  const toast = useToast();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -173,10 +175,20 @@ export default function IssuesBoardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (!res.ok) throw new Error('Failed to update task');
+      if (!res.ok) {
+        // Surface the server's reason (e.g. a blocked workflow transition
+        // lists the allowed moves) instead of failing silently
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || 'Failed to update task');
+      }
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to update task');
+      // Resync the board so the optimistic column move snaps back
       queryClient.invalidateQueries({ queryKey: ['issues'] });
     },
   });

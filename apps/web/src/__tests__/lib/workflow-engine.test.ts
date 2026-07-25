@@ -51,9 +51,11 @@ describe('Workflow Engine', () => {
       expect(result.reason).toContain('Cannot transition');
     });
 
-    it('blocks TODO → DONE', () => {
+    it('allows quick-close: TODO → DONE', () => {
+      // Relaxed after founder testing: closing a small task straight from
+      // To Do is an everyday flow. BACKLOG → DONE stays restricted.
       const result = validateStatusTransition('TODO', 'DONE', { enforceWorkflow: true });
-      expect(result.allowed).toBe(false);
+      expect(result.allowed).toBe(true);
     });
 
     it('allows backward: IN_REVIEW → IN_PROGRESS', () => {
