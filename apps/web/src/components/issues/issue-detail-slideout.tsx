@@ -496,6 +496,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
               addWatcher={addWatcherMutation}
               removeWatcher={removeWatcherMutation}
               members={members}
+              onSubtaskClick={(id) => setViewingIssueId(id)}
             />
           )}
           {activeTab === 'settings' && <SettingsTab issue={issue} updateIssue={updateIssueMutation} />}
@@ -584,6 +585,7 @@ function DetailsTab({
   addWatcher,
   removeWatcher,
   members,
+  onSubtaskClick,
 }: {
   issue: Issue;
   watchers: Watcher[];
@@ -591,6 +593,7 @@ function DetailsTab({
   addWatcher: any;
   removeWatcher: any;
   members: any[];
+  onSubtaskClick?: (id: string) => void;
 }) {
   const { t } = useLanguage();
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -784,7 +787,7 @@ function DetailsTab({
           </div>
 
           {/* Subtasks */}
-          <SubtasksSection issue={issue} onSubtaskClick={(id) => setViewingIssueId(id)} />
+          <SubtasksSection issue={issue} onSubtaskClick={onSubtaskClick} />
 
           {/* Attachments */}
           <AttachmentsSection issue={issue} />
