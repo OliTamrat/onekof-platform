@@ -3103,6 +3103,14 @@
     "scopeChanges": "Isbeddelka baaxadda bilowga kadib",
     "scopeSummary": "+{added} lagu daray · −{removed} laga saaray",
     "noScopeChanges": "Isbeddel baaxadeed ma jirin bilowga kadib",
-    "budgetLine": "Miisaaniyad ({currency}): {planned} la qorsheeyay · {invested} la isticmaalay"
+    "budgetLine": "Miisaaniyad ({currency}): {planned} la qorsheeyay · {invested} la isticmaalay",
+    "reportDocTitle": "Warbixinta {noun}",
+    "projectLabel": "Mashruuc",
+    "datesLabel": "Taariikhaha",
+    "preparedBy": "Diyaariyey",
+    "approvedBy": "Ansixiyey",
+    "dateLabel": "Taariikh",
+    "generatedOn": "La sameeyay {date}",
+    "exportPdf": "PDF soo saar"
   }
 }

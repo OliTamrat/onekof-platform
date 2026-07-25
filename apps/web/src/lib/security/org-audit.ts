@@ -74,6 +74,7 @@ export const OrgActions = {
   // Sprints (completion writes permanent snapshots; deletion is destructive)
   SPRINT_COMPLETED: 'SPRINT_COMPLETED',
   SPRINT_DELETED:   'SPRINT_DELETED',
+  SPRINT_REPORT_EXPORTED: 'SPRINT_REPORT_EXPORTED',
 
   // Project settings
   PROJECT_SETTINGS_UPDATED: 'PROJECT_SETTINGS_UPDATED',
