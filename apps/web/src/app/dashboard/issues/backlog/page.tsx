@@ -572,43 +572,41 @@ export default function BacklogPage() {
       />
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
-        {/* Toolbar */}
-        <div className="flex items-center justify-between gap-3 border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={toggleSelectAll}
-              className="flex items-center gap-2 text-sm text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white"
-            >
-              {selectedIds.size > 0 && selectedIds.size === backlogTasks.length ? (
-                <CheckSquare className="h-4 w-4 text-primary-500" />
-              ) : (
-                <Square className="h-4 w-4" />
-              )}
-              {selectedIds.size > 0
-                ? `${selectedIds.size} selected`
-                : `${backlogTasks.length} in backlog`}
-            </button>
-
-            {selectedIds.size > 0 && (
-              <Button
-                size="sm"
-                onClick={handleBulkMoveToTodo}
-                disabled={moveToTodoMutation.isPending}
-                className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
-              >
-                <ArrowRight className="h-3.5 w-3.5 mr-1.5" />
-                Move to To Do
-              </Button>
+        {/* Toolbar — wraps on narrow screens so nothing pushes off-canvas */}
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 border-b border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
+          <button
+            type="button"
+            onClick={toggleSelectAll}
+            className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white"
+          >
+            {selectedIds.size > 0 && selectedIds.size === backlogTasks.length ? (
+              <CheckSquare className="h-4 w-4 text-primary-500" />
+            ) : (
+              <Square className="h-4 w-4" />
             )}
-          </div>
+            {selectedIds.size > 0
+              ? `${selectedIds.size} selected`
+              : `${backlogTasks.length} in backlog`}
+          </button>
 
-          <div className="flex items-center gap-2">
+          {selectedIds.size > 0 && (
+            <Button
+              size="sm"
+              onClick={handleBulkMoveToTodo}
+              disabled={moveToTodoMutation.isPending}
+              className="h-8 shrink-0 bg-primary-500 hover:bg-primary-600 text-white"
+            >
+              <ArrowRight className="h-3.5 w-3.5 mr-1.5" />
+              Move to To Do
+            </Button>
+          )}
+
+          <div className="ml-auto flex min-w-0 items-center gap-2">
             {/* Project scope picker — sprints are planned per project */}
             <select
               value={scopedProjectId ?? ''}
               onChange={(e) => changeProjectScope(e.target.value || null)}
-              className="h-8 max-w-[160px] rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+              className="h-8 w-[120px] min-w-0 shrink rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none sm:w-[180px]"
               title={t('sprints.selectProject', { nounPlural: sprintNounPlural })}
             >
               <option value="">{t('sprints.allProjects')}</option>
@@ -623,19 +621,22 @@ export default function BacklogPage() {
                 size="sm"
                 variant="outline"
                 onClick={() => setSprintModal({ sprint: null })}
-                className="h-8"
+                className="h-8 shrink-0"
+                title={t('sprints.newSprint', { noun: sprintNoun })}
               >
-                <Zap className="h-3.5 w-3.5 mr-1.5 text-primary-500" />
-                {t('sprints.newSprint', { noun: sprintNoun })}
+                <Zap className="h-3.5 w-3.5 text-primary-500 sm:mr-1.5" />
+                <span className="hidden sm:inline">
+                  {t('sprints.newSprint', { noun: sprintNoun })}
+                </span>
               </Button>
             )}
             <Button
               size="sm"
               onClick={() => setShowCreateModal(true)}
-              className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
+              className="h-8 shrink-0 bg-primary-500 hover:bg-primary-600 text-white"
             >
-              <Plus className="h-3.5 w-3.5 mr-1.5" />
-              {t('common.create')}
+              <Plus className="h-3.5 w-3.5 sm:mr-1.5" />
+              <span className="hidden sm:inline">{t('common.create')}</span>
             </Button>
           </div>
         </div>
