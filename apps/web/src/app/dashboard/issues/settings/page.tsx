@@ -113,26 +113,24 @@ export default function IssuesSettingsPage() {
           <div className="space-y-6">
             {/* Project work configuration — real ProjectSettings persistence */}
             <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-[#1C8C7D]" />
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {t('projectSettings.title')}
-                  </h2>
-                </div>
-                <select
-                  value={scopedProjectId ?? ''}
-                  onChange={(e) => changeProjectScope(e.target.value || null)}
-                  className="h-8 w-[200px] min-w-0 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
-                >
-                  <option value="">{t('projectSettings.selectProject')}</option>
-                  {projects.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex items-center gap-2 mb-4">
+                <Settings className="h-5 w-5 text-[#1C8C7D]" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t('projectSettings.title')}
+                </h2>
               </div>
+              <select
+                value={scopedProjectId ?? ''}
+                onChange={(e) => changeProjectScope(e.target.value || null)}
+                className="w-full sm:max-w-sm rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
+              >
+                <option value="">{t('projectSettings.selectProject')}</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {scopedProjectId && <ProjectWorkConfig projectId={scopedProjectId} />}
