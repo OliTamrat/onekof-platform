@@ -198,7 +198,7 @@ export default function SprintsPage() {
           <select
             value={scopedProjectId ?? ''}
             onChange={(e) => changeProjectScope(e.target.value || null)}
-            className="h-8 w-[180px] min-w-0 shrink rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+            className="h-9 w-full sm:w-[220px] min-w-0 shrink rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-3 text-sm leading-none text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
             title={t('sprints.selectProject', { nounPlural: sprintNounPlural })}
           >
             <option value="">{t('sprints.selectProject', { nounPlural: sprintNounPlural })}</option>

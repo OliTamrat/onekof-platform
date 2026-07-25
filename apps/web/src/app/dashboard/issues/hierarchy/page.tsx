@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { GitBranch } from 'lucide-react';
 import { IssueHierarchyTree } from '@/components/issues/issue-hierarchy-tree';
+import { IssueDetailSlideout } from '@/components/issues/issue-detail-slideout';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
@@ -11,10 +11,10 @@ import { useWorkspace } from '@/contexts/workspace-context';
 import { useLanguage } from '@/contexts/language-context';
 
 export default function HierarchyPage() {
-  const router = useRouter();
   const { projects } = useWorkspace();
   const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
 
   return (
     <AppLayout>
@@ -52,13 +52,19 @@ export default function HierarchyPage() {
           <div className="rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#1B1F23] p-3">
             <IssueHierarchyTree
               projectId={selectedProject || undefined}
-              onSelect={(issue) => {
-                router.push(`/projects/${issue.project?.id}/board?issue=${issue.id}`);
-              }}
+              onSelect={(issue) => setSelectedIssueId(issue.id)}
             />
           </div>
         </div>
       </div>
+
+      {/* Issue detail opens in place — same pattern as list/backlog views */}
+      {selectedIssueId && (
+        <IssueDetailSlideout
+          issueId={selectedIssueId}
+          onClose={() => setSelectedIssueId(null)}
+        />
+      )}
     </AppLayout>
   );
 }
