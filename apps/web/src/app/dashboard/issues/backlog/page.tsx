@@ -56,6 +56,7 @@ import {
   SprintModal,
   StartSprintDialog,
   DeleteSprintDialog,
+  CompleteSprintDialog,
 } from '@/components/sprints/sprint-modal';
 
 interface Issue {
@@ -104,6 +105,7 @@ export default function BacklogPage() {
   const [sprintModal, setSprintModal] = useState<{ sprint: Sprint | null } | null>(null);
   const [startDialogSprint, setStartDialogSprint] = useState<Sprint | null>(null);
   const [deleteDialogSprint, setDeleteDialogSprint] = useState<Sprint | null>(null);
+  const [completeDialogSprint, setCompleteDialogSprint] = useState<Sprint | null>(null);
   const [collapsedSprints, setCollapsedSprints] = useState<Set<string>>(new Set());
 
   // Project scope: initialized from the URL, changeable via the picker.
@@ -506,6 +508,16 @@ export default function BacklogPage() {
                 {t('sprints.startNow')}
               </Button>
             )}
+            {sprint.status === 'ACTIVE' && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setCompleteDialogSprint(sprint)}
+                className="h-7 px-2 text-primary-600 dark:text-[#2BB5A2] hover:bg-primary-500/10"
+              >
+                {t('sprints.complete', { noun: sprintNoun })}
+              </Button>
+            )}
             <button
               type="button"
               onClick={() => setSprintModal({ sprint })}
@@ -752,6 +764,14 @@ export default function BacklogPage() {
           projectId={scopedProjectId}
           sprint={deleteDialogSprint}
           onClose={() => setDeleteDialogSprint(null)}
+        />
+      )}
+      {completeDialogSprint && scopedProjectId && (
+        <CompleteSprintDialog
+          projectId={scopedProjectId}
+          sprint={completeDialogSprint}
+          otherSprints={planningSprints}
+          onClose={() => setCompleteDialogSprint(null)}
         />
       )}
     </AppLayout>

@@ -1919,7 +1919,8 @@
     "shared": "La wadaagay",
     "templates": "Qaababka",
     "team": "Koox",
-    "hierarchy": "Kala Heerarka"
+    "hierarchy": "Kala Heerarka",
+    "sprints": "Sprints"
   },
   "sidebar": {
     "home": "Bogga hore",
@@ -3057,6 +3058,22 @@
     "selectProject": "Dooro mashruuc si aad u qorsheyso {nounPlural}",
     "enableHint": "Qorshaha {noun} waa ka damman yahay mashruucan.",
     "enable": "Daar qorshaha {noun}",
-    "enabledToast": "Qorshaha {noun} waa la daaray"
+    "enabledToast": "Qorshaha {noun} waa la daaray",
+    "complete": "Dhammee {noun}",
+    "completeHint": "Arrimaha aan dhammaan waxay u guuraan meesha aad dooratay. Wadarta ballanqaadka iyo dhammaystirka si joogto ah ayaa loo diiwaangeliyaa.",
+    "rolloverLabel": "Arrimaha aan dhammaan u guuri",
+    "rolloverBacklog": "Backlog",
+    "completedToast": "{noun} waa la dhammeeyay — {done} dhammaaday, {rolled} guuray",
+    "activeSprintTitle": "{noun} firfircoon",
+    "noActiveSprint": "{noun} firfircoon ma jiro",
+    "planHint": "Ka qorshee oo ka bilow {nounPlural} tabka Backlog.",
+    "daysLeft": "{count} maalmood ayaa hadhay",
+    "endedDaysAgo": "{count} maalmood ka hor ayuu dhammaaday",
+    "progressLabel": "{committed} arrimood ee la ballanqaaday {done} ayaa dhammaaday",
+    "reportTitle": "{nounPlural} la dhammeeyay",
+    "velocityLabel": "Xawaare: {count} halkii {noun}",
+    "committedShort": "La ballanqaaday",
+    "completedShort": "La dhammeeyay",
+    "activeOnly": "{noun} firfircoon oo keliya"
   }
 }

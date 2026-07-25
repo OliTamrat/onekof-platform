@@ -34,6 +34,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
+import { useTerminology } from '@/hooks/use-terminology';
+import { useProjectSettings, useSprints } from '@/components/sprints/use-sprints';
 
 type TaskStatus = 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
 type TaskPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -58,6 +60,7 @@ interface Task {
     color: string;
   };
   tags?: string[];
+  sprintId?: string | null;
 }
 
 interface Column {
@@ -78,6 +81,7 @@ const COLUMNS: Column[] = [
 
 export default function IssuesBoardPage() {
   const { t } = useLanguage();
+  const { sprintNoun } = useTerminology();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -107,6 +111,14 @@ export default function IssuesBoardPage() {
   });
 
   const [hideSubtasks, setHideSubtasks] = useState(true);
+  const [activeSprintOnly, setActiveSprintOnly] = useState(false);
+
+  // Active-sprint filter (Phase 3): only offered when the board is scoped
+  // to a project with sprints enabled and a running sprint.
+  const { data: sprintSettingsData } = useProjectSettings(scopedProjectId);
+  const sprintsEnabled = !!scopedProjectId && !!sprintSettingsData?.effective?.sprintsEnabled;
+  const { data: sprintsData } = useSprints(scopedProjectId, sprintsEnabled);
+  const activeSprint = (sprintsData?.sprints || []).find((s) => s.status === 'ACTIVE') || null;
 
   // Fetch issues/tasks (filtered by project if scoped)
   const params = new URLSearchParams();
@@ -139,6 +151,7 @@ export default function IssuesBoardPage() {
     const query = searchQuery.trim().toLowerCase();
     issues.forEach((task) => {
       if (filterPriority.length > 0 && !filterPriority.includes(task.priority)) return;
+      if (activeSprintOnly && activeSprint && task.sprintId !== activeSprint.id) return;
       if (
         query &&
         !task.title.toLowerCase().includes(query) &&
@@ -150,7 +163,7 @@ export default function IssuesBoardPage() {
     });
 
     setOptimisticTasks(grouped);
-  }, [issues, filterPriority, searchQuery]);
+  }, [issues, filterPriority, searchQuery, activeSprintOnly, activeSprint]);
 
   // Update task status mutation
   const updateTaskMutation = useMutation({
@@ -270,6 +283,17 @@ export default function IssuesBoardPage() {
             <span className="text-[10px] text-slate-400 dark:text-slate-500">
               Showing all issues including subtasks
             </span>
+          )}
+          {activeSprint && (
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-500 dark:text-slate-400">
+              <input
+                type="checkbox"
+                checked={activeSprintOnly}
+                onChange={(e) => setActiveSprintOnly(e.target.checked)}
+                className="h-3.5 w-3.5 rounded border-slate-300 dark:border-slate-600 text-primary-500 focus:ring-primary-500/30"
+              />
+              {t('sprints.activeOnly', { noun: sprintNoun })}
+            </label>
           )}
         </div>
 

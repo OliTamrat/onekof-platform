@@ -51,6 +51,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 
 **Phase 2 SHIPPED (PR #145, merged 2026-07-25, no migration needed):** sprint planning UI on the project-scoped backlog page — sprint sections with drag between sprint/backlog, create/edit/start/delete dialogs, live count + estimate sums, `useTerminology` hook (Sprint/Work Cycle per org `terminologyScheme`), 33 `sprints.*` i18n keys × 5 locales (flag for linguist review), `GET /api/issues?sprintId=null|any|<id>` filter. Deliberate deviation: the "Sprint tab" moved from Phase 2 to Phase 3 (tabs are org-wide static config; the tab will target the Phase 3 active-sprint board page).
 
+**Phase 3 SHIPPED (2026-07-25, no migration needed):** Sprints tab in ISSUES_TABS -> /dashboard/issues/sprints (active sprint panel with goal/dates/days-left/progress-vs-commitment/issue list + Complete button; completed-sprints report with committed vs completed and 3-sprint velocity, all from write-once snapshots); CompleteSprintDialog with rollover decision (backlog | planned sprint) wired on backlog ACTIVE sections and sprints page; board gains "Active sprint only" filter when scoped project has a running sprint; 17 new sprints.* keys + departmentTabs.sprints x 5 locales.
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)

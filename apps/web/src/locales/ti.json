@@ -1925,7 +1925,8 @@
     "shared": "ዝተኻፈሉ",
     "templates": "ቅዳሓት",
     "team": "ጋንታ",
-    "hierarchy": "ተዓራረብ"
+    "hierarchy": "ተዓራረብ",
+    "sprints": "ስፕሪንታት"
   },
   "sidebar": {
     "home": "መበገሲ",
@@ -3063,6 +3064,22 @@
     "selectProject": "{nounPlural} ንምምዳብ ፕሮጀክት ምረጽ",
     "enableHint": "ናይ {noun} መደብ ነዚ ፕሮጀክት ጠፊኡ ኣሎ።",
     "enable": "ናይ {noun} መደብ ኣንቅሕ",
-    "enabledToast": "ናይ {noun} መደብ ነቒሑ"
+    "enabledToast": "ናይ {noun} መደብ ነቒሑ",
+    "complete": "{noun} ዛዝም",
+    "completeHint": "ዘይተዛዘሙ ጉዳያት ናብቲ ዝመረጽካዮ ቦታ ይዛወሩ። ናይ መደብን ናይ ውዳኤን ድምርታት ብቐዋሚ ይምዝገቡ።",
+    "rolloverLabel": "ዘይተዛዘሙ ጉዳያት ኣዛውር ናብ",
+    "rolloverBacklog": "ባክሎግ",
+    "completedToast": "{noun} ተዛዚሙ — {done} ወዲኡ፣ {rolled} ተዛዊሩ",
+    "activeSprintTitle": "ንጡፍ {noun}",
+    "noActiveSprint": "ንጡፍ {noun} የለን",
+    "planHint": "{nounPlural} ካብ ትር ባክሎግ መድብን ጀምርን።",
+    "daysLeft": "{count} መዓልታት ተሪፉ",
+    "endedDaysAgo": "ቅድሚ {count} መዓልታት ተዛዚሙ",
+    "progressLabel": "ካብ {committed} ዝተመደቡ ጉዳያት {done} ወዲኦም",
+    "reportTitle": "ዝተዛዘሙ {nounPlural}",
+    "velocityLabel": "ፍጥነት፦ {count} ኣብ {noun}",
+    "committedShort": "ዝተመደበ",
+    "completedShort": "ዝተዛዘመ",
+    "activeOnly": "ንጡፍ {noun} ጥራይ"
   }
 }
