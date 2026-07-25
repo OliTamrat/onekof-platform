@@ -1919,7 +1919,8 @@
     "shared": "የተጋሩ",
     "templates": "አብነቶች",
     "team": "ቡድን",
-    "hierarchy": "ተዋረድ"
+    "hierarchy": "ተዋረድ",
+    "sprints": "ስፕሪንቶች"
   },
   "sidebar": {
     "home": "መነሻ",
@@ -3057,6 +3058,22 @@
     "selectProject": "{nounPlural} ለማቀድ ፕሮጀክት ይምረጡ",
     "enableHint": "ለዚህ ፕሮጀክት የ{noun} እቅድ ጠፍቷል።",
     "enable": "የ{noun} እቅድ አንቃ",
-    "enabledToast": "የ{noun} እቅድ ነቅቷል"
+    "enabledToast": "የ{noun} እቅድ ነቅቷል",
+    "complete": "{noun} አጠናቅቅ",
+    "completeHint": "ያላለቁ ጉዳዮች ወደመረጡት መድረሻ ይዛወራሉ። የታቀደው እና የተጠናቀቀው ድምር በቋሚነት ይመዘገባል።",
+    "rolloverLabel": "ያላለቁ ጉዳዮችን አዛውር ወደ",
+    "rolloverBacklog": "ባክሎግ",
+    "completedToast": "{noun} ተጠናቋል — {done} አልቋል፣ {rolled} ተዛውሯል",
+    "activeSprintTitle": "ንቁ {noun}",
+    "noActiveSprint": "ንቁ {noun} የለም",
+    "planHint": "{nounPlural} ከባክሎግ ትር ያቅዱ እና ይጀምሩ።",
+    "daysLeft": "{count} ቀናት ቀርተዋል",
+    "endedDaysAgo": "ከ{count} ቀናት በፊት አልቋል",
+    "progressLabel": "ከ{committed} የታቀዱ ጉዳዮች {done} አልቀዋል",
+    "reportTitle": "የተጠናቀቁ {nounPlural}",
+    "velocityLabel": "ፍጥነት፦ {count} በ{noun}",
+    "committedShort": "የታቀደ",
+    "completedShort": "የተጠናቀቀ",
+    "activeOnly": "ንቁ {noun} ብቻ"
   }
 }

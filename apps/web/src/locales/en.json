@@ -1874,7 +1874,8 @@
     "shared": "Shared",
     "templates": "Templates",
     "team": "Team",
-    "hierarchy": "Hierarchy"
+    "hierarchy": "Hierarchy",
+    "sprints": "Sprints"
   },
   "sidebar": {
     "home": "Home",
@@ -3056,6 +3057,22 @@
     "selectProject": "Pick a project to plan {nounPlural}",
     "enableHint": "{noun} planning is off for this project.",
     "enable": "Enable {noun} planning",
-    "enabledToast": "{noun} planning enabled"
+    "enabledToast": "{noun} planning enabled",
+    "complete": "Complete {noun}",
+    "completeHint": "Unfinished issues move to the destination you choose. The committed and completed totals are recorded permanently.",
+    "rolloverLabel": "Move unfinished issues to",
+    "rolloverBacklog": "Backlog",
+    "completedToast": "{noun} completed — {done} done, {rolled} moved",
+    "activeSprintTitle": "Active {noun}",
+    "noActiveSprint": "No active {noun}",
+    "planHint": "Plan and start {nounPlural} from the Backlog tab.",
+    "daysLeft": "{count} days left",
+    "endedDaysAgo": "Ended {count} days ago",
+    "progressLabel": "{done} of {committed} committed issues done",
+    "reportTitle": "Completed {nounPlural}",
+    "velocityLabel": "Velocity: {count} per {noun}",
+    "committedShort": "Committed",
+    "completedShort": "Completed",
+    "activeOnly": "Active {noun} only"
   }
 }

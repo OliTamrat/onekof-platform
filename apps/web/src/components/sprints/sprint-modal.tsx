@@ -27,6 +27,7 @@ import {
   useUpdateSprint,
   useStartSprint,
   useDeleteSprint,
+  useCompleteSprint,
 } from './use-sprints';
 
 const inputClass =
@@ -151,6 +152,85 @@ export function SprintModal({
             className="bg-primary-500 hover:bg-primary-600 text-white"
           >
             {t('common.save')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function CompleteSprintDialog({
+  projectId,
+  sprint,
+  otherSprints,
+  onClose,
+}: {
+  projectId: string;
+  sprint: Sprint;
+  /** PLANNED sprints in the same project — candidate rollover targets */
+  otherSprints: Sprint[];
+  onClose: () => void;
+}) {
+  const { t } = useLanguage();
+  const { sprintNoun } = useTerminology();
+  const toast = useToast();
+  const completeMutation = useCompleteSprint(projectId);
+  const [rolloverTo, setRolloverTo] = useState<string>('backlog');
+
+  const handleComplete = async () => {
+    try {
+      const result = await completeMutation.mutateAsync({ sprintId: sprint.id, rolloverTo });
+      toast.success(
+        t('sprints.completedToast', {
+          noun: sprintNoun,
+          done: result.sprint.completedCount ?? 0,
+          rolled: result.rolledOver ?? 0,
+        })
+      );
+      onClose();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t('sprints.actionFailed'));
+    }
+  };
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t('sprints.complete', { noun: sprintNoun })}</DialogTitle>
+          <DialogDescription>{t('sprints.completeHint')}</DialogDescription>
+        </DialogHeader>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/85">
+            {t('sprints.rolloverLabel')}
+          </label>
+          <select
+            value={rolloverTo}
+            onChange={(e) => setRolloverTo(e.target.value)}
+            className={inputClass}
+          >
+            <option value="backlog">{t('sprints.rolloverBacklog')}</option>
+            {otherSprints
+              .filter((s) => s.id !== sprint.id && s.status === 'PLANNED')
+              .map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={completeMutation.isPending}>
+            {t('common.cancel')}
+          </Button>
+          <Button
+            onClick={handleComplete}
+            disabled={completeMutation.isPending}
+            className="bg-primary-500 hover:bg-primary-600 text-white"
+          >
+            {t('sprints.complete', { noun: sprintNoun })}
           </Button>
         </DialogFooter>
       </DialogContent>

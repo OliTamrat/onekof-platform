@@ -1881,7 +1881,8 @@
     "shared": "Kan Qoodaman",
     "templates": "Unkaawwan Moodeelii",
     "team": "Garee",
-    "hierarchy": "Sadarkaa"
+    "hierarchy": "Sadarkaa",
+    "sprints": "Ispiriintiiwwan"
   },
   "sidebar": {
     "home": "Fuula Jalqabaa",
@@ -3063,6 +3064,22 @@
     "selectProject": "{nounPlural} karoorfachuuf pirojektii filadhu",
     "enableHint": "Karoorri {noun} pirojektii kanaaf cufaadha.",
     "enable": "Karoora {noun} banuu",
-    "enabledToast": "Karoorri {noun} banameera"
+    "enabledToast": "Karoorri {noun} banameera",
+    "complete": "{noun} xumuri",
+    "completeHint": "Dhimmoonni hin xumuramin gara iddoo ati filattutti darbu. Idaatamni waadaa fi xumuraa yeroo hundaaf galmeeffama.",
+    "rolloverLabel": "Dhimmoota hin xumuramin gara",
+    "rolloverBacklog": "Baaklogii",
+    "completedToast": "{noun} xumurameera — {done} xumurame, {rolled} darbe",
+    "activeSprintTitle": "{noun} hojii irra jiru",
+    "noActiveSprint": "{noun} hojii irra jiru hin jiru",
+    "planHint": "{nounPlural} caancala Baaklogii irraa karoorfadhu, jalqabi.",
+    "daysLeft": "guyyaa {count} hafe",
+    "endedDaysAgo": "guyyaa {count} dura xumurame",
+    "progressLabel": "dhimmoota waadaa galaman {committed} keessaa {done} xumurame",
+    "reportTitle": "{nounPlural} xumuraman",
+    "velocityLabel": "Saffisa: {count} {noun} tokkotti",
+    "committedShort": "Waadaa galame",
+    "completedShort": "Xumurame",
+    "activeOnly": "{noun} hojii irra jiru qofa"
   }
 }

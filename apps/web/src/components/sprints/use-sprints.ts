@@ -22,6 +22,7 @@ export interface Sprint {
   committedEstimate: number | null;
   completedCount: number | null;
   completedEstimate: number | null;
+  completedAt: string | null;
   taskCount: number;
 }
 
@@ -112,6 +113,26 @@ export function useDeleteSprint(projectId: string | null) {
       const res = await fetch(`/api/sprints/${sprintId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error((await res.json()).error || 'Failed to delete sprint');
       return res.json();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sprints', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['issues'] });
+    },
+  });
+}
+
+export function useCompleteSprint(projectId: string | null) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ sprintId, rolloverTo }: { sprintId: string; rolloverTo: 'backlog' | string }) => {
+      const res = await fetch(`/api/sprints/${sprintId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rolloverTo }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to complete sprint');
+      return data as { sprint: Sprint; rolledOver: number };
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sprints', projectId] });
