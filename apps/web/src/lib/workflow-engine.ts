@@ -26,7 +26,11 @@ interface TransitionResult {
 
 export const DEFAULT_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   BACKLOG: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
-  TODO: ['BACKLOG', 'IN_PROGRESS', 'BLOCKED'],
+  // TODO → DONE is allowed: quick-closing a small task without touching
+  // In Progress is a legitimate everyday flow (founder testing feedback).
+  // BACKLOG → DONE stays restricted — unplanned work should at least be
+  // acknowledged before being closed.
+  TODO: ['BACKLOG', 'IN_PROGRESS', 'DONE', 'BLOCKED'],
   IN_PROGRESS: ['TODO', 'IN_REVIEW', 'DONE', 'BLOCKED'],
   IN_REVIEW: ['IN_PROGRESS', 'DONE', 'BLOCKED'],
   DONE: ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'BACKLOG'],

@@ -219,7 +219,12 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
-      if (!res.ok) throw new Error('Failed to update issue');
+      if (!res.ok) {
+        // Surface the server's reason (e.g. a blocked workflow transition
+        // lists the allowed moves) instead of a generic failure
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || 'Failed to update issue');
+      }
       return res.json();
     },
     onMutate: async (updates) => {
@@ -252,7 +257,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
       return { prevDetail, prevLists };
     },
-    onError: (_err, _vars, context) => {
+    onError: (err, _vars, context) => {
       // Roll back both the detail cache and every issues list cache
       if (context?.prevDetail) {
         queryClient.setQueryData(['issue', resolvedId], context.prevDetail);
@@ -260,7 +265,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
       context?.prevLists?.forEach(([key, data]) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to update issue');
+      toast.error(err instanceof Error ? err.message : 'Failed to update issue');
     },
     onSettled: () => {
       // Reconcile with server truth once the mutation completes
