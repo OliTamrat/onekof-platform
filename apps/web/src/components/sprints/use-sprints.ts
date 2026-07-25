@@ -23,6 +23,8 @@ export interface Sprint {
   completedCount: number | null;
   completedEstimate: number | null;
   completedAt: string | null;
+  budgetPlanned: number | null;
+  budgetInvested: number | null;
   taskCount: number;
 }
 

@@ -3108,6 +3108,7 @@
     "completionOf": "ካብ {committed} {done} ተዛዚሙ",
     "scopeChanges": "ድሕሪ ምጅማር ለውጥታት ወሰን",
     "scopeSummary": "+{added} ተወሲኹ · −{removed} ተኣልዩ",
-    "noScopeChanges": "ድሕሪ ምጅማር ለውጢ ወሰን የለን"
+    "noScopeChanges": "ድሕሪ ምጅማር ለውጢ ወሰን የለን",
+    "budgetLine": "በጀት ({currency})፦ {planned} ዝተመደበ · {invested} ዝወዓለ"
   }
 }

@@ -3108,6 +3108,7 @@
     "completionOf": "{committed} keessaa {done} xumurame",
     "scopeChanges": "Jijjiirama hammangaa jalqabaa booda",
     "scopeSummary": "+{added} dabalame · −{removed} haqame",
-    "noScopeChanges": "Jalqabaa booda jijjiiramni hammangaa hin jiru"
+    "noScopeChanges": "Jalqabaa booda jijjiiramni hammangaa hin jiru",
+    "budgetLine": "Bajata ({currency}): {planned} karoorfame · {invested} itti bahe"
   }
 }

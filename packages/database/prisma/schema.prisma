@@ -502,6 +502,11 @@ model Sprint {
   completedAt       DateTime? @map("completed_at")
   rolloverTargetId  String?   @map("rollover_target_id") // sprint unfinished items moved to (null = backlog)
 
+  // Budget snapshots (Tier 2b) — written once at completion from TaskBudget
+  // allocations of delivered issues, org-currency only. Null = not tracked.
+  budgetPlanned  Decimal? @map("budget_planned") @db.Decimal(19, 2)
+  budgetInvested Decimal? @map("budget_invested") @db.Decimal(19, 2)
+
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")

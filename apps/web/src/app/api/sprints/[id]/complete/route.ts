@@ -78,6 +78,19 @@ export async function POST(
     const settings = await resolveProjectSettings(sprint.projectId);
     const estimateField = settings?.estimationUnit === 'POINTS' ? 'storyPoints' : 'estimate';
 
+    // Budget snapshots sum only the org's budget currency — mixing
+    // currencies would produce a meaningless number (design §3.1)
+    const orgSettings = await prisma.organizationSettings.findUnique({
+      where: { organizationId: sprint.project.organizationId },
+      select: { budgetCurrency: true },
+    });
+    const VALID_CURRENCIES = ['ETB', 'USD', 'EUR', 'GBP', 'CNY'] as const;
+    const budgetCurrency = (VALID_CURRENCIES as readonly string[]).includes(
+      orgSettings?.budgetCurrency ?? ''
+    )
+      ? (orgSettings!.budgetCurrency as (typeof VALID_CURRENCIES)[number])
+      : 'ETB';
+
     const result = await prisma.$transaction(async (tx) => {
       // Completion snapshot: what actually got DONE
       const [doneCount, doneSum, unfinished] = await Promise.all([
@@ -99,6 +112,16 @@ export async function POST(
         data: { sprintId: rolloverTargetId, sprintOrder: null },
       });
 
+      // Budget snapshot (Tier 2b): allocations of delivered issues (the ones
+      // still in the sprint after rollover), org currency only, write-once
+      const budgetAgg = await tx.taskBudget.aggregate({
+        where: {
+          currency: budgetCurrency,
+          task: { sprintId: params.id, deletedAt: null },
+        },
+        _sum: { estimatedCost: true, actualCost: true },
+      });
+
       const completed = await tx.sprint.update({
         where: { id: params.id },
         data: {
@@ -107,6 +130,8 @@ export async function POST(
           completedCount: doneCount,
           completedEstimate: doneSum._sum[estimateField] ?? 0,
           rolloverTargetId,
+          budgetPlanned: budgetAgg._sum.estimatedCost,
+          budgetInvested: budgetAgg._sum.actualCost,
         },
       });
 
@@ -144,6 +169,9 @@ export async function POST(
         completedEstimate: result.completed.completedEstimate,
         rolledOver: result.unfinished,
         rolloverTargetId,
+        budgetPlanned: result.completed.budgetPlanned?.toString() ?? null,
+        budgetInvested: result.completed.budgetInvested?.toString() ?? null,
+        budgetCurrency,
       },
       request: req,
     });

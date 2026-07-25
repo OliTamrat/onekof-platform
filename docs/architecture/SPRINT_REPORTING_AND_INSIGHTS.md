@@ -80,15 +80,21 @@ figures, churn surfacing, export. Each is Tier 2+ with its own design below.
 ### 3.1 Budget invested per sprint
 
 - **Data path:** `TaskBudget` allocations already tie tasks to budget
-  categories. Sprint cost = Σ allocations of the sprint's delivered issues.
-- **Audit rule (the design decision):** computed figures drift when budgets
-  are re-allocated later. Therefore completion writes a **`budgetInvested`
-  snapshot column** (nullable, migration `add_sprint_budget_snapshot`) the
-  same way counts are snapshotted; the live query powers the pre-completion
-  view, the snapshot powers history. ETB display follows org currency; fiscal
-  rollups respect the Ethiopian July fiscal year start already configured in
+  categories, each carrying `estimatedCost` and `actualCost` with a currency.
+- **Two snapshots, not one (build refinement):** completion writes
+  **`budgetPlanned`** (Σ estimated) and **`budgetInvested`** (Σ actual) —
+  planned-vs-actual is the pair ministries reconcile, and a snapshot that
+  wasn't taken can never be retrofitted.
+- **Currency rule:** sums include only allocations in the org's
+  `budgetCurrency` — adding ETB to USD is a lie; multi-currency rollups wait
+  for an explicit FX policy (documented non-goal for now).
+- **Audit rule:** computed figures drift when budgets are re-allocated later,
+  so the snapshot is written once at completion (migration
+  `add_sprint_budget_snapshot`, nullable = "not tracked"); fiscal rollups
+  respect the Ethiopian July fiscal year start in
   `OrganizationSettings.fiscalYearStart`.
-- **Emission:** value recorded in the completion `OrgAuditLog` entry.
+- **Emission:** both values + currency recorded in the completion
+  `OrgAuditLog` entry.
 
 ### 3.2 Scope churn surfaced
 
