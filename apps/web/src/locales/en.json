@@ -3102,6 +3102,14 @@
     "scopeChanges": "Scope changes after start",
     "scopeSummary": "+{added} added · −{removed} removed",
     "noScopeChanges": "No scope changes after start",
-    "budgetLine": "Budget ({currency}): {planned} planned · {invested} invested"
+    "budgetLine": "Budget ({currency}): {planned} planned · {invested} invested",
+    "reportDocTitle": "{noun} Report",
+    "projectLabel": "Project",
+    "datesLabel": "Dates",
+    "preparedBy": "Prepared by",
+    "approvedBy": "Approved by",
+    "dateLabel": "Date",
+    "generatedOn": "Generated {date}",
+    "exportPdf": "Export PDF"
   }
 }

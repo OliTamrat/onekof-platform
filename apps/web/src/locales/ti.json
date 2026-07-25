@@ -3109,6 +3109,14 @@
     "scopeChanges": "ድሕሪ ምጅማር ለውጥታት ወሰን",
     "scopeSummary": "+{added} ተወሲኹ · −{removed} ተኣልዩ",
     "noScopeChanges": "ድሕሪ ምጅማር ለውጢ ወሰን የለን",
-    "budgetLine": "በጀት ({currency})፦ {planned} ዝተመደበ · {invested} ዝወዓለ"
+    "budgetLine": "በጀት ({currency})፦ {planned} ዝተመደበ · {invested} ዝወዓለ",
+    "reportDocTitle": "ጸብጻብ {noun}",
+    "projectLabel": "ፕሮጀክት",
+    "datesLabel": "ዕለታት",
+    "preparedBy": "ዘዳለዎ",
+    "approvedBy": "ዘጽደቖ",
+    "dateLabel": "ዕለት",
+    "generatedOn": "ዝተፈጥረ {date}",
+    "exportPdf": "ፒዲኤፍ ኣውጽእ"
   }
 }

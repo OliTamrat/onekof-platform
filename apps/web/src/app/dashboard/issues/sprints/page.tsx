@@ -12,7 +12,7 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Zap, ListTodo, CheckCircle2, Flag, ChevronDown, ChevronRight } from 'lucide-react';
+import { Zap, ListTodo, CheckCircle2, Flag, ChevronDown, ChevronRight, Download } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
@@ -126,6 +126,19 @@ function CompletedSprintInsight({
 
   return (
     <div className="space-y-4 border-t border-gray-100 dark:border-white/[0.05] bg-gray-50/50 dark:bg-[#181D23]/40 px-4 py-4">
+      {/* Export the branded ministry report (Tier 2c) */}
+      <div className="flex justify-end">
+        <a
+          href={`/api/sprints/${sprint.id}/report.pdf`}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1.5 rounded-md border border-gray-200 px-2.5 py-1 text-xs text-gray-600 hover:border-primary-500 hover:text-primary-600 dark:border-white/[0.08] dark:text-white/60 dark:hover:text-[#2BB5A2]"
+        >
+          <Download className="h-3.5 w-3.5" />
+          {t('sprints.exportPdf')}
+        </a>
+      </div>
+
       {/* Goal + duration */}
       {(sprint.goal || duration != null) && (
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-white/70">

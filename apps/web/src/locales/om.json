@@ -3109,6 +3109,14 @@
     "scopeChanges": "Jijjiirama hammangaa jalqabaa booda",
     "scopeSummary": "+{added} dabalame · −{removed} haqame",
     "noScopeChanges": "Jalqabaa booda jijjiiramni hammangaa hin jiru",
-    "budgetLine": "Bajata ({currency}): {planned} karoorfame · {invested} itti bahe"
+    "budgetLine": "Bajata ({currency}): {planned} karoorfame · {invested} itti bahe",
+    "reportDocTitle": "Gabaasa {noun}",
+    "projectLabel": "Pirojektii",
+    "datesLabel": "Guyyoota",
+    "preparedBy": "Kan qopheesse",
+    "approvedBy": "Kan mirkaneesse",
+    "dateLabel": "Guyyaa",
+    "generatedOn": "Kan uumame {date}",
+    "exportPdf": "PDF baasi"
   }
 }

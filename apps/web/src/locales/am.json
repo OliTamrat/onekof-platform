@@ -3103,6 +3103,14 @@
     "scopeChanges": "ከጅምር በኋላ የወሰን ለውጦች",
     "scopeSummary": "+{added} ታክሏል · −{removed} ተወግዷል",
     "noScopeChanges": "ከጅምር በኋላ የወሰን ለውጥ የለም",
-    "budgetLine": "በጀት ({currency})፦ {planned} የታቀደ · {invested} የዋለ"
+    "budgetLine": "በጀት ({currency})፦ {planned} የታቀደ · {invested} የዋለ",
+    "reportDocTitle": "የ{noun} ሪፖርት",
+    "projectLabel": "ፕሮጀክት",
+    "datesLabel": "ቀናት",
+    "preparedBy": "ያዘጋጀው",
+    "approvedBy": "ያጸደቀው",
+    "dateLabel": "ቀን",
+    "generatedOn": "የተፈጠረው {date}",
+    "exportPdf": "ፒዲኤፍ አውጣ"
   }
 }
