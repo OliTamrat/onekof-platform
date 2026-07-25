@@ -3089,6 +3089,7 @@
     "velocityLabel": "Velocity: {count} per {noun}",
     "committedShort": "Committed",
     "completedShort": "Completed",
-    "activeOnly": "Active {noun} only"
+    "activeOnly": "Active {noun} only",
+    "emptyStartBlocked": "Add at least one issue from the Backlog tab before starting this {noun}."
   }
 }

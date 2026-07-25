@@ -3096,6 +3096,7 @@
     "velocityLabel": "Saffisa: {count} {noun} tokkotti",
     "committedShort": "Waadaa galame",
     "completedShort": "Xumurame",
-    "activeOnly": "{noun} hojii irra jiru qofa"
+    "activeOnly": "{noun} hojii irra jiru qofa",
+    "emptyStartBlocked": "{noun} kana jalqabuu dura caancala Baaklogii irraa yoo xiqqaate dhimma tokko dabali."
   }
 }
