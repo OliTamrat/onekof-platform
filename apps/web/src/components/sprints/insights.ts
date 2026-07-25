@@ -82,6 +82,47 @@ export function aggregateSprintInsights(
   return { totals, contributions };
 }
 
+export interface ChurnEvent {
+  entityId: string;
+  metadata: { from?: string | null; to?: string | null } | null;
+}
+
+export interface ChurnSummary {
+  added: number;
+  removed: number;
+  /** last-known direction per issue: 'in' | 'out' | 'both' */
+  perIssue: Map<string, 'in' | 'out' | 'both'>;
+}
+
+/**
+ * Classify TASK_SPRINT_CHANGED activity rows relative to one sprint.
+ * Gross counts by design: an issue added then removed is 1 added + 1
+ * removed — churn measures instability, not the net.
+ */
+export function summarizeChurn(sprintId: string, events: ChurnEvent[]): ChurnSummary {
+  let added = 0;
+  let removed = 0;
+  const perIssue = new Map<string, 'in' | 'out' | 'both'>();
+
+  for (const event of events) {
+    const wasAdded = event.metadata?.to === sprintId;
+    const wasRemoved = event.metadata?.from === sprintId;
+    if (!wasAdded && !wasRemoved) continue;
+
+    if (wasAdded) added += 1;
+    if (wasRemoved) removed += 1;
+
+    const direction: 'in' | 'out' = wasAdded ? 'in' : 'out';
+    const prev = perIssue.get(event.entityId);
+    perIssue.set(
+      event.entityId,
+      prev && prev !== direction ? 'both' : direction
+    );
+  }
+
+  return { added, removed, perIssue };
+}
+
 /** Whole days between two ISO dates (inclusive-ish, floors partial days). */
 export function sprintDurationDays(
   startDate: string | null,

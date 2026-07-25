@@ -3105,6 +3105,9 @@
     "timeSpentLabel": "ዝወሰዶ ግዜ",
     "estimatedLabel": "ዝተገመተ",
     "unassigned": "ዘይተመደበ",
-    "completionOf": "ካብ {committed} {done} ተዛዚሙ"
+    "completionOf": "ካብ {committed} {done} ተዛዚሙ",
+    "scopeChanges": "ድሕሪ ምጅማር ለውጥታት ወሰን",
+    "scopeSummary": "+{added} ተወሲኹ · −{removed} ተኣልዩ",
+    "noScopeChanges": "ድሕሪ ምጅማር ለውጢ ወሰን የለን"
   }
 }

@@ -3098,6 +3098,9 @@
     "timeSpentLabel": "Time spent",
     "estimatedLabel": "Estimated",
     "unassigned": "Unassigned",
-    "completionOf": "{done} of {committed} completed"
+    "completionOf": "{done} of {committed} completed",
+    "scopeChanges": "Scope changes after start",
+    "scopeSummary": "+{added} added · −{removed} removed",
+    "noScopeChanges": "No scope changes after start"
   }
 }

@@ -3099,6 +3099,9 @@
     "timeSpentLabel": "Waqtiga la isticmaalay",
     "estimatedLabel": "La qiyaasay",
     "unassigned": "Aan la xilsaarin",
-    "completionOf": "{committed} kamid ah {done} ayaa la dhammeeyay"
+    "completionOf": "{committed} kamid ah {done} ayaa la dhammeeyay",
+    "scopeChanges": "Isbeddelka baaxadda bilowga kadib",
+    "scopeSummary": "+{added} lagu daray · −{removed} laga saaray",
+    "noScopeChanges": "Isbeddel baaxadeed ma jirin bilowga kadib"
   }
 }
