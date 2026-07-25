@@ -3091,6 +3091,14 @@
     "committedShort": "La ballanqaaday",
     "completedShort": "La dhammeeyay",
     "activeOnly": "{noun} firfircoon oo keliya",
-    "emptyStartBlocked": "Kahor intaadan bilaabin {noun}-kan, ugu yaraan hal arrin ka soo dar tabka Backlog."
+    "emptyStartBlocked": "Kahor intaadan bilaabin {noun}-kan, ugu yaraan hal arrin ka soo dar tabka Backlog.",
+    "insightsDuration": "{noun} {count}-maalmood ah",
+    "contributions": "Wax-qabadka",
+    "contributor": "Loo xilsaaray",
+    "issuesDone": "La dhammeeyay",
+    "timeSpentLabel": "Waqtiga la isticmaalay",
+    "estimatedLabel": "La qiyaasay",
+    "unassigned": "Aan la xilsaarin",
+    "completionOf": "{committed} kamid ah {done} ayaa la dhammeeyay"
   }
 }

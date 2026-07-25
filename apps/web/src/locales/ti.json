@@ -3097,6 +3097,14 @@
     "committedShort": "ዝተመደበ",
     "completedShort": "ዝተዛዘመ",
     "activeOnly": "ንጡፍ {noun} ጥራይ",
-    "emptyStartBlocked": "ነዚ {noun} ቅድሚ ምጅማርካ ካብ ትር ባክሎግ እንተወሓደ ሓደ ጉዳይ ወስኽ።"
+    "emptyStartBlocked": "ነዚ {noun} ቅድሚ ምጅማርካ ካብ ትር ባክሎግ እንተወሓደ ሓደ ጉዳይ ወስኽ።",
+    "insightsDuration": "ናይ {count} መዓልቲ {noun}",
+    "contributions": "ኣበርክቶታት",
+    "contributor": "ተመዳቢ",
+    "issuesDone": "ዝተዛዘመ",
+    "timeSpentLabel": "ዝወሰዶ ግዜ",
+    "estimatedLabel": "ዝተገመተ",
+    "unassigned": "ዘይተመደበ",
+    "completionOf": "ካብ {committed} {done} ተዛዚሙ"
   }
 }

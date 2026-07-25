@@ -3097,6 +3097,14 @@
     "committedShort": "Waadaa galame",
     "completedShort": "Xumurame",
     "activeOnly": "{noun} hojii irra jiru qofa",
-    "emptyStartBlocked": "{noun} kana jalqabuu dura caancala Baaklogii irraa yoo xiqqaate dhimma tokko dabali."
+    "emptyStartBlocked": "{noun} kana jalqabuu dura caancala Baaklogii irraa yoo xiqqaate dhimma tokko dabali.",
+    "insightsDuration": "{noun} guyyaa {count}",
+    "contributions": "Gumaachota",
+    "contributor": "Ramadamaa",
+    "issuesDone": "Xumurame",
+    "timeSpentLabel": "Yeroo itti bahe",
+    "estimatedLabel": "Tilmaamame",
+    "unassigned": "Hin ramadamne",
+    "completionOf": "{committed} keessaa {done} xumurame"
   }
 }

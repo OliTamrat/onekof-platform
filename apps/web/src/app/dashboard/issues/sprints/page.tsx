@@ -12,7 +12,7 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Zap, ListTodo, CheckCircle2, Flag } from 'lucide-react';
+import { Zap, ListTodo, CheckCircle2, Flag, ChevronDown, ChevronRight } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
 import { ISSUES_TABS } from '@/config/department-tabs';
@@ -31,6 +31,10 @@ import {
   useEnableSprints,
 } from '@/components/sprints/use-sprints';
 import { CompleteSprintDialog } from '@/components/sprints/sprint-modal';
+import {
+  aggregateSprintInsights,
+  sprintDurationDays,
+} from '@/components/sprints/insights';
 
 interface Issue {
   id: string;
@@ -62,6 +66,143 @@ const STATUS_LABEL_KEYS: Record<string, string> = {
   BLOCKED: 'status.blocked',
 };
 
+/**
+ * Expanded insight panel for one completed sprint (Tier 1 of the reporting
+ * architecture): completion bullet bar against the commitment snapshot,
+ * duration, goal, and the per-assignee contribution table. Data = the
+ * sprint's surviving issues (rollover removed unfinished work at completion).
+ */
+function CompletedSprintInsight({
+  sprint,
+  estimationUnit,
+  formatEstimate,
+}: {
+  sprint: Sprint;
+  estimationUnit: 'HOURS' | 'POINTS';
+  formatEstimate: (n: number | null) => string;
+}) {
+  const { t } = useLanguage();
+  const { sprintNoun } = useTerminology();
+
+  const { data } = useQuery({
+    queryKey: ['issues', 'sprint-insight', sprint.id],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.append('sprintId', sprint.id);
+      const res = await fetch(`/api/issues?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch sprint issues');
+      return res.json();
+    },
+  });
+
+  const insights = useMemo(
+    () => aggregateSprintInsights((data?.issues || []) as any[], estimationUnit),
+    [data, estimationUnit]
+  );
+
+  const duration = sprintDurationDays(sprint.startDate, sprint.endDate);
+  const committed = sprint.committedCount ?? 0;
+  const done = sprint.completedCount ?? 0;
+  const pct = committed > 0 ? Math.min(100, (done / committed) * 100) : 0;
+
+  return (
+    <div className="space-y-4 border-t border-gray-100 dark:border-white/[0.05] bg-gray-50/50 dark:bg-[#181D23]/40 px-4 py-4">
+      {/* Goal + duration */}
+      {(sprint.goal || duration != null) && (
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-white/70">
+          {sprint.goal && (
+            <span className="flex items-start gap-2">
+              <Flag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
+              {sprint.goal}
+            </span>
+          )}
+          {duration != null && (
+            <span className="ml-auto shrink-0 rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-white/[0.08] dark:text-white/60">
+              {t('sprints.insightsDuration', { count: duration, noun: sprintNoun })}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Completion bullet: committed = track, completed = fill, numbers labeled */}
+      <div>
+        <div className="mb-1 flex items-center justify-between text-xs">
+          <span className="font-medium text-gray-700 dark:text-white/85">
+            {t('sprints.completionOf', { done, committed })}
+          </span>
+          <span className="text-gray-500 dark:text-white/50">
+            {formatEstimate(sprint.completedEstimate)} / {formatEstimate(sprint.committedEstimate)}
+          </span>
+        </div>
+        <div className="relative h-3 overflow-hidden rounded-full border border-gray-300 dark:border-white/[0.15]">
+          <div
+            className="absolute inset-y-0 left-0 rounded-full bg-primary-500 transition-all"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Contribution table */}
+      {insights.contributions.length > 0 && (
+        <div>
+          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-white/50">
+            {t('sprints.contributions')}
+          </h4>
+          <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-white/[0.08]">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50 text-left dark:border-white/[0.08] dark:bg-[#181D23]">
+                  <th className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-white/50">
+                    {t('sprints.contributor')}
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-white/50">
+                    {t('sprints.issuesDone')}
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-white/50">
+                    {t('sprints.timeSpentLabel')}
+                  </th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-white/50">
+                    {t('sprints.estimatedLabel')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                {insights.contributions.map((c) => (
+                  <tr key={c.id ?? 'unassigned'}>
+                    <td className="px-3 py-2">
+                      <span className="flex items-center gap-2">
+                        {c.avatar ? (
+                          <img src={c.avatar} alt="" className="h-5 w-5 rounded-full" />
+                        ) : (
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-[9px] font-semibold text-white">
+                            {(c.name || '?').charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                        <span className="text-gray-900 dark:text-white">
+                          {c.name || t('sprints.unassigned')}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 text-right text-gray-900 dark:text-white">
+                      {c.done}/{c.issues}
+                    </td>
+                    <td className="px-3 py-2 text-right text-gray-600 dark:text-white/70">
+                      {t('sprints.estimateHours', { count: c.timeSpent })}
+                    </td>
+                    <td className="px-3 py-2 text-right text-gray-600 dark:text-white/70">
+                      {formatEstimate(c.estimated)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SprintsPage() {
   const { t } = useLanguage();
   const { sprintNoun, sprintNounPlural } = useTerminology();
@@ -70,6 +211,16 @@ export default function SprintsPage() {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [completeDialogSprint, setCompleteDialogSprint] = useState<Sprint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSprints, setExpandedSprints] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = (id: string) => {
+    setExpandedSprints((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const [scopedProjectId, setScopedProjectId] = useState<string | null>(() =>
     typeof window !== 'undefined'
@@ -374,22 +525,43 @@ export default function SprintsPage() {
                     )}
                   </div>
                   <div className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                    {completedSprints.map((s) => (
-                      <div key={s.id} className="flex flex-wrap items-center gap-2 px-4 py-2.5">
-                        <span className="text-sm text-gray-900 dark:text-white">{s.name}</span>
-                        <span className="hidden sm:inline text-xs text-gray-400 dark:text-white/30">
-                          {formatDateRange(s)}
-                        </span>
-                        <span className="ml-auto flex items-center gap-3 text-xs">
-                          <span className="text-gray-500 dark:text-white/50">
-                            {t('sprints.committedShort')}: {s.committedCount ?? '—'} ({formatEstimate(s.committedEstimate)})
-                          </span>
-                          <span className="font-medium text-primary-600 dark:text-[#2BB5A2]">
-                            {t('sprints.completedShort')}: {s.completedCount ?? '—'} ({formatEstimate(s.completedEstimate)})
-                          </span>
-                        </span>
-                      </div>
-                    ))}
+                    {completedSprints.map((s) => {
+                      const expanded = expandedSprints.has(s.id);
+                      return (
+                        <div key={s.id}>
+                          <button
+                            type="button"
+                            onClick={() => toggleExpanded(s.id)}
+                            className="flex w-full flex-wrap items-center gap-2 px-4 py-2.5 text-left hover:bg-gray-50 dark:hover:bg-white/[0.03]"
+                          >
+                            {expanded ? (
+                              <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" />
+                            )}
+                            <span className="text-sm text-gray-900 dark:text-white">{s.name}</span>
+                            <span className="hidden sm:inline text-xs text-gray-400 dark:text-white/30">
+                              {formatDateRange(s)}
+                            </span>
+                            <span className="ml-auto flex items-center gap-3 text-xs">
+                              <span className="text-gray-500 dark:text-white/50">
+                                {t('sprints.committedShort')}: {s.committedCount ?? '—'} ({formatEstimate(s.committedEstimate)})
+                              </span>
+                              <span className="font-medium text-primary-600 dark:text-[#2BB5A2]">
+                                {t('sprints.completedShort')}: {s.completedCount ?? '—'} ({formatEstimate(s.completedEstimate)})
+                              </span>
+                            </span>
+                          </button>
+                          {expanded && (
+                            <CompletedSprintInsight
+                              sprint={s}
+                              estimationUnit={estimationUnit}
+                              formatEstimate={formatEstimate}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

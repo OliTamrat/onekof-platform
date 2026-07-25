@@ -3091,6 +3091,14 @@
     "committedShort": "የታቀደ",
     "completedShort": "የተጠናቀቀ",
     "activeOnly": "ንቁ {noun} ብቻ",
-    "emptyStartBlocked": "ይህን {noun} ከመጀመርዎ በፊት ከባክሎግ ትር ቢያንስ አንድ ጉዳይ ያክሉ።"
+    "emptyStartBlocked": "ይህን {noun} ከመጀመርዎ በፊት ከባክሎግ ትር ቢያንስ አንድ ጉዳይ ያክሉ።",
+    "insightsDuration": "የ{count} ቀን {noun}",
+    "contributions": "አስተዋጽኦዎች",
+    "contributor": "ተመዳቢ",
+    "issuesDone": "የተጠናቀቀ",
+    "timeSpentLabel": "የፈጀው ጊዜ",
+    "estimatedLabel": "የተገመተ",
+    "unassigned": "ያልተመደበ",
+    "completionOf": "ከ{committed} ውስጥ {done} ተጠናቋል"
   }
 }

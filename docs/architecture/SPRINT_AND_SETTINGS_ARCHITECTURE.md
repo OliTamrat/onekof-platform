@@ -1,7 +1,7 @@
 # Onekof — Sprint & Settings Architecture Design
 
 **Date:** July 25, 2026 (v1.2)
-**Prepared by:** Oli Tamrat (CTO) with Claude
+**Prepared by:** Oli Tamrat, CTO — DAPS Analytics PLC
 **Status:** APPROVED July 25, 2026 — Phase 1 implementation in progress
 **Horizon:** Designed for the 5–10 year platform, not the demo
 

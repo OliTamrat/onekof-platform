@@ -3090,6 +3090,14 @@
     "committedShort": "Committed",
     "completedShort": "Completed",
     "activeOnly": "Active {noun} only",
-    "emptyStartBlocked": "Add at least one issue from the Backlog tab before starting this {noun}."
+    "emptyStartBlocked": "Add at least one issue from the Backlog tab before starting this {noun}.",
+    "insightsDuration": "{count}-day {noun}",
+    "contributions": "Contributions",
+    "contributor": "Assignee",
+    "issuesDone": "Done",
+    "timeSpentLabel": "Time spent",
+    "estimatedLabel": "Estimated",
+    "unassigned": "Unassigned",
+    "completionOf": "{done} of {committed} completed"
   }
 }
