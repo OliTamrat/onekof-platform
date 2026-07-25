@@ -40,6 +40,7 @@ export default function CalendarPage() {
   const { data: session } = useSession();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
@@ -69,7 +70,15 @@ export default function CalendarPage() {
     enabled: !!session,
   });
 
-  const calendarTasks: CalendarTask[] = (issuesData?.issues || []).map((issue: Issue) => ({
+  const query = searchQuery.trim().toLowerCase();
+  const calendarTasks: CalendarTask[] = (issuesData?.issues || [])
+    .filter(
+      (issue: Issue) =>
+        !query ||
+        issue.title.toLowerCase().includes(query) ||
+        issue.key.toLowerCase().includes(query)
+    )
+    .map((issue: Issue) => ({
     id: issue.id,
     title: issue.title,
     key: issue.key,
@@ -104,6 +113,8 @@ export default function CalendarPage() {
         baseHref="/dashboard/calendar"
         showTabs={false}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

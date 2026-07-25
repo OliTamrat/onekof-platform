@@ -273,6 +273,8 @@ export default function TeamsPage() {
         customTabs={TEAMS_TABS}
         showTabs
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

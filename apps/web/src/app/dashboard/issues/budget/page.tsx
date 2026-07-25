@@ -269,7 +269,7 @@ export default function BudgetPage() {
         baseHref="/dashboard/issues"
         showTabs
         customTabs={ISSUES_TABS}
-        showSearch
+        showSearch={false}
         showFilters
         showGroupBy
         showViewSettings

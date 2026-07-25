@@ -99,6 +99,7 @@ export default function IssuesTeamPage() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [invitationData, setInvitationData] = useState<{ email: string; token: string; invited: boolean } | null>(null);
 
   // Form state
@@ -249,7 +250,11 @@ export default function IssuesTeamPage() {
     } as any);
   };
 
-  const teams = teamsData?.teams || [];
+  const allTeams = teamsData?.teams || [];
+  const teamQuery = searchQuery.trim().toLowerCase();
+  const teams = teamQuery
+    ? allTeams.filter((team: Team) => team.name.toLowerCase().includes(teamQuery))
+    : allTeams;
   const favoriteTeams = teams.filter((t: Team) => t.isFavorite);
   const otherTeams = teams.filter((t: Team) => !t.isFavorite);
 
@@ -274,6 +279,8 @@ export default function IssuesTeamPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

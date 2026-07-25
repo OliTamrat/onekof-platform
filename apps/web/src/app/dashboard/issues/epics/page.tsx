@@ -7,6 +7,7 @@
  * % of child tasks complete. Click to open the epic detail page.
  */
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -52,6 +53,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 export default function EpicsListPage() {
   const { t } = useLanguage();
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const scopedProjectId = typeof window !== 'undefined'
     ? new URLSearchParams(window.location.search).get('projectId')
@@ -68,7 +70,15 @@ export default function EpicsListPage() {
     },
   });
 
-  const epics = data?.epics || [];
+  const allEpics = data?.epics || [];
+  const query = searchQuery.trim().toLowerCase();
+  const epics = query
+    ? allEpics.filter(
+        (epic) =>
+          epic.title.toLowerCase().includes(query) ||
+          epic.key.toLowerCase().includes(query)
+      )
+    : allEpics;
 
   return (
     <AppLayout>
@@ -81,6 +91,8 @@ export default function EpicsListPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
       />
 

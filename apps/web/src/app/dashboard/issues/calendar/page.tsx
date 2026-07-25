@@ -32,6 +32,7 @@ export default function IssuesCalendarPage() {
   const { data: session } = useSession();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [createTaskDate, setCreateTaskDate] = useState<Date | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { data: projectsData } = useQuery({
     queryKey: ['projects'],
@@ -55,7 +56,15 @@ export default function IssuesCalendarPage() {
     enabled: !!session,
   });
 
-  const calendarTasks: CalendarTask[] = (issuesData?.issues || []).map((issue: Issue) => ({
+  const query = searchQuery.trim().toLowerCase();
+  const calendarTasks: CalendarTask[] = (issuesData?.issues || [])
+    .filter(
+      (issue: Issue) =>
+        !query ||
+        issue.title.toLowerCase().includes(query) ||
+        issue.key.toLowerCase().includes(query)
+    )
+    .map((issue: Issue) => ({
     id: issue.id,
     title: issue.title,
     key: issue.key,
@@ -91,6 +100,8 @@ export default function IssuesCalendarPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

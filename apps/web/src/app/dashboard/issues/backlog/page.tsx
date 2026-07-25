@@ -63,6 +63,7 @@ export default function BacklogPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
@@ -84,14 +85,22 @@ export default function BacklogPage() {
 
   // Sort tasks by backlogOrder (NULL goes last), then by createdAt descending
   const backlogTasks: Issue[] = useMemo(() => {
-    const tasks = (issuesData?.issues || []) as Issue[];
+    let tasks = (issuesData?.issues || []) as Issue[];
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      tasks = tasks.filter(
+        (t) =>
+          t.title.toLowerCase().includes(query) ||
+          t.key.toLowerCase().includes(query)
+      );
+    }
     return [...tasks].sort((a, b) => {
       const aOrder = a.backlogOrder ?? Number.MAX_SAFE_INTEGER;
       const bOrder = b.backlogOrder ?? Number.MAX_SAFE_INTEGER;
       if (aOrder !== bOrder) return aOrder - bOrder;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [issuesData]);
+  }, [issuesData, searchQuery]);
 
   // Reorder mutation — writes new backlogOrder values
   const reorderMutation = useMutation({
@@ -200,6 +209,8 @@ export default function BacklogPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
       />
 

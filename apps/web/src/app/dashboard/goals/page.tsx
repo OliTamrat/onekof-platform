@@ -389,6 +389,8 @@ export default function GoalsPage() {
         customTabs={GOALS_TABS}
         showTabs
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings
