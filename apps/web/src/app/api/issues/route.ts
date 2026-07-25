@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || searchParams.get('q');
     const parentId = searchParams.get('parentId');
     const topLevel = searchParams.get('topLevel');
+    const sprintId = searchParams.get('sprintId');
 
     const organizationId = ctx.organizationId;
 
@@ -127,6 +128,17 @@ export async function GET(request: NextRequest) {
     // Top-level only (no parent — for hierarchy tree root nodes)
     if (topLevel === 'true') {
       where.parentId = null;
+    }
+
+    // Filter by sprint membership: 'null' = backlog (no sprint),
+    // 'any' = in some sprint (backlog page groups these client-side),
+    // otherwise a specific sprint id
+    if (sprintId === 'null') {
+      where.sprintId = null;
+    } else if (sprintId === 'any') {
+      where.sprintId = { not: null };
+    } else if (sprintId) {
+      where.sprintId = sprintId;
     }
 
     // Note: label filtering is done client-side after fetching since

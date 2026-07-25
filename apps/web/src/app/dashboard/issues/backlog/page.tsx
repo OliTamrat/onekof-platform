@@ -3,9 +3,14 @@
 /**
  * Backlog View
  *
- * Real backlog page showing tasks with status = BACKLOG, ordered by
- * backlogOrder (drag to reorder). Bulk-move selected tasks to TODO to
- * schedule them for work.
+ * Backlog page showing tasks with status = BACKLOG, ordered by backlogOrder
+ * (drag to reorder). Bulk-move selected tasks to TODO to schedule them.
+ *
+ * Sprint planning (Phase 2 of the Sprint & Settings architecture): when the
+ * page is scoped to a project whose effective settings enable sprints, the
+ * project's PLANNED/ACTIVE sprints render as droppable sections above the
+ * backlog — drag issues between sprint and backlog to plan. Terminology
+ * ("Sprint" vs "Work Cycle") follows the org's terminologyScheme.
  */
 
 import { useState, useMemo } from 'react';
@@ -21,6 +26,12 @@ import {
   User,
   Flag,
   GripVertical,
+  ChevronDown,
+  ChevronRight,
+  Play,
+  Pencil,
+  Trash2,
+  Zap,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { UnifiedPageHeader } from '@/components/navigation/unified-page-header';
@@ -32,6 +43,18 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
+import { useTerminology } from '@/hooks/use-terminology';
+import {
+  Sprint,
+  useProjectSettings,
+  useSprints,
+  useMoveIssueToSprint,
+} from '@/components/sprints/use-sprints';
+import {
+  SprintModal,
+  StartSprintDialog,
+  DeleteSprintDialog,
+} from '@/components/sprints/sprint-modal';
 
 interface Issue {
   id: string;
@@ -45,6 +68,10 @@ interface Issue {
   project: { id: string; name: string; key: string; color?: string };
   dueDate?: string;
   backlogOrder?: number | null;
+  sprintId?: string | null;
+  sprintOrder?: number | null;
+  estimate?: number | null;
+  storyPoints?: number | null;
   createdAt: string;
 }
 
@@ -56,19 +83,43 @@ const PRIORITY_COLORS: Record<string, string> = {
   LOWEST: 'text-gray-500 dark:text-gray-400',
 };
 
+const SPRINT_STATUS_CHIP: Record<Sprint['status'], string> = {
+  ACTIVE: 'bg-primary-500/15 text-primary-600 dark:text-[#2BB5A2]',
+  PLANNED: 'bg-gray-200 text-gray-600 dark:bg-white/[0.08] dark:text-white/70',
+  COMPLETED: 'bg-gray-200 text-gray-500 dark:bg-white/[0.08] dark:text-white/50',
+};
+
 export default function BacklogPage() {
   const { t } = useLanguage();
+  const { sprintNoun } = useTerminology();
   const toast = useToast();
   const queryClient = useQueryClient();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [sprintModal, setSprintModal] = useState<{ sprint: Sprint | null } | null>(null);
+  const [startDialogSprint, setStartDialogSprint] = useState<Sprint | null>(null);
+  const [deleteDialogSprint, setDeleteDialogSprint] = useState<Sprint | null>(null);
+  const [collapsedSprints, setCollapsedSprints] = useState<Set<string>>(new Set());
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
     ? new URLSearchParams(window.location.search).get('projectId')
     : null;
+
+  // Sprint planning is project-scoped: resolve effective settings (org
+  // defaults ← project overrides) and only then load sprints.
+  const { data: settingsData } = useProjectSettings(scopedProjectId);
+  const sprintsEnabled = !!scopedProjectId && !!settingsData?.effective?.sprintsEnabled;
+  const estimationUnit = settingsData?.effective?.estimationUnit ?? 'HOURS';
+  const { data: sprintsData } = useSprints(scopedProjectId, sprintsEnabled);
+  const moveMutation = useMoveIssueToSprint();
+
+  const planningSprints: Sprint[] = useMemo(
+    () => (sprintsData?.sprints || []).filter((s) => s.status !== 'COMPLETED'),
+    [sprintsData]
+  );
 
   // Fetch backlog tasks
   const { data: issuesData, isLoading } = useQuery({
@@ -83,17 +134,31 @@ export default function BacklogPage() {
     },
   });
 
-  // Sort tasks by backlogOrder (NULL goes last), then by createdAt descending
+  // Fetch issues already planned into sprints (any status)
+  const { data: sprintedData } = useQuery({
+    queryKey: ['issues', 'sprinted', scopedProjectId],
+    enabled: sprintsEnabled,
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.append('projectId', scopedProjectId as string);
+      params.append('sprintId', 'any');
+      const res = await fetch(`/api/issues?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch sprint issues');
+      return res.json();
+    },
+  });
+
+  const matchesSearch = (issue: Issue, query: string) =>
+    !query ||
+    issue.title.toLowerCase().includes(query) ||
+    issue.key.toLowerCase().includes(query);
+
+  // Backlog = BACKLOG status AND not planned into a sprint
   const backlogTasks: Issue[] = useMemo(() => {
-    let tasks = (issuesData?.issues || []) as Issue[];
     const query = searchQuery.trim().toLowerCase();
-    if (query) {
-      tasks = tasks.filter(
-        (t) =>
-          t.title.toLowerCase().includes(query) ||
-          t.key.toLowerCase().includes(query)
-      );
-    }
+    const tasks = ((issuesData?.issues || []) as Issue[]).filter(
+      (i) => !i.sprintId && matchesSearch(i, query)
+    );
     return [...tasks].sort((a, b) => {
       const aOrder = a.backlogOrder ?? Number.MAX_SAFE_INTEGER;
       const bOrder = b.backlogOrder ?? Number.MAX_SAFE_INTEGER;
@@ -101,6 +166,26 @@ export default function BacklogPage() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   }, [issuesData, searchQuery]);
+
+  const issuesBySprint: Map<string, Issue[]> = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    const map = new Map<string, Issue[]>();
+    for (const issue of (sprintedData?.issues || []) as Issue[]) {
+      if (!issue.sprintId || !matchesSearch(issue, query)) continue;
+      const list = map.get(issue.sprintId) || [];
+      list.push(issue);
+      map.set(issue.sprintId, list);
+    }
+    for (const list of map.values()) {
+      list.sort((a, b) => {
+        const aOrder = a.sprintOrder ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = b.sprintOrder ?? Number.MAX_SAFE_INTEGER;
+        if (aOrder !== bOrder) return aOrder - bOrder;
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    }
+    return map;
+  }, [sprintedData, searchQuery]);
 
   // Reorder mutation — writes new backlogOrder values
   const reorderMutation = useMutation({
@@ -162,18 +247,36 @@ export default function BacklogPage() {
   });
 
   const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    if (result.destination.index === result.source.index) return;
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-    // Compute new order: use the destination index * 1000 as the new order.
-    // Multiplying by 1000 gives us room to insert without re-numbering everything.
-    const reordered = Array.from(backlogTasks);
-    const [moved] = reordered.splice(result.source.index, 1);
-    reordered.splice(result.destination.index, 0, moved);
+    const toSprintId = destination.droppableId.startsWith('sprint:')
+      ? destination.droppableId.slice('sprint:'.length)
+      : null;
+    const fromSprintId = source.droppableId.startsWith('sprint:')
+      ? source.droppableId.slice('sprint:'.length)
+      : null;
 
-    // Assign new backlogOrder values
-    const newOrder = result.destination.index * 1000;
-    reorderMutation.mutate({ issueId: moved.id, newOrder });
+    // Same-list reorder inside the backlog: keep the ×1000 gap scheme
+    if (!toSprintId && !fromSprintId) {
+      const newOrder = destination.index * 1000;
+      reorderMutation.mutate({ issueId: draggableId, newOrder });
+      return;
+    }
+
+    // Anything involving a sprint: single PATCH sets membership + position
+    moveMutation.mutate(
+      {
+        issueId: draggableId,
+        sprintId: toSprintId,
+        sprintOrder: toSprintId ? destination.index * 1000 : null,
+      },
+      {
+        onError: (err) =>
+          toast.error(err instanceof Error ? err.message : t('sprints.actionFailed')),
+      }
+    );
   };
 
   const toggleSelection = (id: string) => {
@@ -196,6 +299,232 @@ export default function BacklogPage() {
   const handleBulkMoveToTodo = () => {
     if (selectedIds.size === 0) return;
     moveToTodoMutation.mutate(Array.from(selectedIds));
+  };
+
+  const toggleSprintCollapsed = (id: string) => {
+    setCollapsedSprints((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const sprintEstimateSum = (issues: Issue[]) =>
+    issues.reduce(
+      (sum, i) => sum + ((estimationUnit === 'POINTS' ? i.storyPoints : i.estimate) ?? 0),
+      0
+    );
+
+  const formatDateRange = (sprint: Sprint) => {
+    if (!sprint.startDate && !sprint.endDate) return null;
+    const fmt = (d: string) =>
+      new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return `${sprint.startDate ? fmt(sprint.startDate) : '—'} → ${sprint.endDate ? fmt(sprint.endDate) : '—'}`;
+  };
+
+  const renderIssueRow = (issue: Issue, index: number, showCheckbox: boolean) => (
+    <Draggable key={issue.id} draggableId={issue.id} index={index}>
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className={`group flex items-center gap-3 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 transition-all ${
+            snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : 'hover:border-primary-500'
+          }`}
+        >
+          {/* Drag handle */}
+          <div
+            {...provided.dragHandleProps}
+            className="text-gray-300 dark:text-slate-600 group-hover:text-gray-500 dark:group-hover:text-slate-400 cursor-grab active:cursor-grabbing"
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
+
+          {/* Checkbox — backlog section only (bulk move to TODO) */}
+          {showCheckbox && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleSelection(issue.id);
+              }}
+              className="shrink-0"
+              title="Select"
+            >
+              {selectedIds.has(issue.id) ? (
+                <CheckSquare className="h-4 w-4 text-primary-500" />
+              ) : (
+                <Square className="h-4 w-4 text-gray-400" />
+              )}
+            </button>
+          )}
+
+          {/* Project badge */}
+          <span
+            className="h-5 shrink-0 rounded px-1.5 text-[10px] font-bold text-white flex items-center"
+            style={{ backgroundColor: issue.project?.color || '#3B82F6' }}
+          >
+            {issue.project?.key?.slice(0, 3)}
+          </span>
+
+          {/* Key */}
+          <span className="text-xs font-mono text-gray-500 dark:text-white/70 shrink-0">
+            {issue.key}
+          </span>
+
+          {/* Title — clickable */}
+          <button
+            type="button"
+            onClick={() => setSelectedIssue(issue)}
+            className="flex-1 text-left text-sm text-gray-900 dark:text-white hover:text-primary-500 truncate"
+          >
+            {issue.title}
+          </button>
+
+          {/* Priority */}
+          {issue.priority && (
+            <span className="shrink-0 flex items-center gap-1">
+              <Flag className={`h-3.5 w-3.5 ${PRIORITY_COLORS[issue.priority] || 'text-gray-400'}`} />
+            </span>
+          )}
+
+          {/* Due date */}
+          {issue.dueDate && (
+            <span className="shrink-0 flex items-center gap-1 text-xs text-gray-500 dark:text-white/70">
+              <Calendar className="h-3.5 w-3.5" />
+              {new Date(issue.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+            </span>
+          )}
+
+          {/* Assignee */}
+          {issue.assignee ? (
+            issue.assignee.avatar ? (
+              <img
+                src={issue.assignee.avatar}
+                alt={issue.assignee.name}
+                className="h-6 w-6 shrink-0 rounded-full"
+              />
+            ) : (
+              <div className="h-6 w-6 shrink-0 rounded-full bg-primary-500 text-white flex items-center justify-center text-[10px] font-semibold">
+                {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
+              </div>
+            )
+          ) : (
+            <div className="h-6 w-6 shrink-0 rounded-full border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center">
+              <User className="h-3 w-3 text-gray-400" />
+            </div>
+          )}
+        </div>
+      )}
+    </Draggable>
+  );
+
+  const renderSprintSection = (sprint: Sprint) => {
+    const issues = issuesBySprint.get(sprint.id) || [];
+    const collapsed = collapsedSprints.has(sprint.id);
+    const estimateSum = sprintEstimateSum(issues);
+    const statusLabel =
+      sprint.status === 'ACTIVE'
+        ? t('sprints.active')
+        : sprint.status === 'PLANNED'
+          ? t('sprints.planned')
+          : t('sprints.completed');
+
+    return (
+      <div key={sprint.id} className="mb-6">
+        {/* Section header */}
+        <div className="mb-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => toggleSprintCollapsed(sprint.id)}
+            className="text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white"
+            title={sprint.name}
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+          <Zap className="h-4 w-4 text-primary-500" />
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">{sprint.name}</span>
+          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${SPRINT_STATUS_CHIP[sprint.status]}`}>
+            {statusLabel}
+          </span>
+          {formatDateRange(sprint) && (
+            <span className="hidden sm:inline text-xs text-gray-500 dark:text-white/50">
+              {formatDateRange(sprint)}
+            </span>
+          )}
+          <span className="text-xs text-gray-500 dark:text-white/50">
+            {t('sprints.itemCount', { count: issues.length })}
+            {estimateSum > 0 && (
+              <>
+                {' · '}
+                {estimationUnit === 'POINTS'
+                  ? t('sprints.estimatePoints', { count: estimateSum })
+                  : t('sprints.estimateHours', { count: estimateSum })}
+              </>
+            )}
+          </span>
+
+          <div className="ml-auto flex items-center gap-1">
+            {sprint.status === 'PLANNED' && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setStartDialogSprint(sprint)}
+                className="h-7 px-2 text-primary-600 dark:text-[#2BB5A2] hover:bg-primary-500/10"
+              >
+                <Play className="h-3.5 w-3.5 mr-1" />
+                {t('sprints.startNow')}
+              </Button>
+            )}
+            <button
+              type="button"
+              onClick={() => setSprintModal({ sprint })}
+              className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/[0.06] dark:hover:text-white"
+              title={t('sprints.edit', { noun: sprintNoun })}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+            {sprint.status === 'PLANNED' && (
+              <button
+                type="button"
+                onClick={() => setDeleteDialogSprint(sprint)}
+                className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                title={t('common.delete')}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Droppable issue list */}
+        {!collapsed && (
+          <Droppable droppableId={`sprint:${sprint.id}`}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`space-y-2 rounded-lg border-2 border-dashed p-2 transition-colors ${
+                  snapshot.isDraggingOver
+                    ? 'border-primary-500 bg-primary-500/5'
+                    : 'border-gray-200 dark:border-white/[0.08]'
+                }`}
+              >
+                {issues.length === 0 && !snapshot.isDraggingOver && (
+                  <p className="px-2 py-3 text-center text-xs text-gray-400 dark:text-white/30">
+                    {t('sprints.emptySection', { noun: sprintNoun })}
+                  </p>
+                )}
+                {issues.map((issue, index) => renderIssueRow(issue, index, false))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -246,14 +575,27 @@ export default function BacklogPage() {
             )}
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => setShowCreateModal(true)}
-            className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
-          >
-            <Plus className="h-3.5 w-3.5 mr-1.5" />
-            {t('common.create')}
-          </Button>
+          <div className="flex items-center gap-2">
+            {sprintsEnabled && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setSprintModal({ sprint: null })}
+                className="h-8"
+              >
+                <Zap className="h-3.5 w-3.5 mr-1.5 text-primary-500" />
+                {t('sprints.newSprint', { noun: sprintNoun })}
+              </Button>
+            )}
+            <Button
+              size="sm"
+              onClick={() => setShowCreateModal(true)}
+              className="h-8 bg-primary-500 hover:bg-primary-600 text-white"
+            >
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              {t('common.create')}
+            </Button>
+          </div>
         </div>
 
         {/* Content */}
@@ -264,7 +606,7 @@ export default function BacklogPage() {
                 <SkeletonCard key={i} />
               ))}
             </div>
-          ) : backlogTasks.length === 0 ? (
+          ) : backlogTasks.length === 0 && planningSprints.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <EmptyState
                 icon={ListTodo}
@@ -276,112 +618,36 @@ export default function BacklogPage() {
             </div>
           ) : (
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="backlog-list">
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="space-y-2 max-w-4xl"
-                  >
-                    {backlogTasks.map((issue, index) => (
-                      <Draggable key={issue.id} draggableId={issue.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className={`group flex items-center gap-3 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#12161B] p-3 transition-all ${
-                              snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500' : 'hover:border-primary-500'
-                            }`}
-                          >
-                            {/* Drag handle */}
-                            <div
-                              {...provided.dragHandleProps}
-                              className="text-gray-300 dark:text-slate-600 group-hover:text-gray-500 dark:group-hover:text-slate-400 cursor-grab active:cursor-grabbing"
-                              title="Drag to reorder"
-                            >
-                              <GripVertical className="h-4 w-4" />
-                            </div>
+              <div className="max-w-4xl">
+                {/* Sprint sections (project-scoped, sprints enabled) */}
+                {sprintsEnabled && planningSprints.map(renderSprintSection)}
 
-                            {/* Checkbox */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleSelection(issue.id);
-                              }}
-                              className="shrink-0"
-                              title="Select"
-                            >
-                              {selectedIds.has(issue.id) ? (
-                                <CheckSquare className="h-4 w-4 text-primary-500" />
-                              ) : (
-                                <Square className="h-4 w-4 text-gray-400" />
-                              )}
-                            </button>
-
-                            {/* Project badge */}
-                            <span
-                              className="h-5 shrink-0 rounded px-1.5 text-[10px] font-bold text-white flex items-center"
-                              style={{ backgroundColor: issue.project?.color || '#3B82F6' }}
-                            >
-                              {issue.project?.key?.slice(0, 3)}
-                            </span>
-
-                            {/* Key */}
-                            <span className="text-xs font-mono text-gray-500 dark:text-white/70 shrink-0">
-                              {issue.key}
-                            </span>
-
-                            {/* Title — clickable */}
-                            <button
-                              type="button"
-                              onClick={() => setSelectedIssue(issue)}
-                              className="flex-1 text-left text-sm text-gray-900 dark:text-white hover:text-primary-500 truncate"
-                            >
-                              {issue.title}
-                            </button>
-
-                            {/* Priority */}
-                            {issue.priority && (
-                              <span className="shrink-0 flex items-center gap-1">
-                                <Flag className={`h-3.5 w-3.5 ${PRIORITY_COLORS[issue.priority] || 'text-gray-400'}`} />
-                              </span>
-                            )}
-
-                            {/* Due date */}
-                            {issue.dueDate && (
-                              <span className="shrink-0 flex items-center gap-1 text-xs text-gray-500 dark:text-white/70">
-                                <Calendar className="h-3.5 w-3.5" />
-                                {new Date(issue.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                              </span>
-                            )}
-
-                            {/* Assignee */}
-                            {issue.assignee ? (
-                              issue.assignee.avatar ? (
-                                <img
-                                  src={issue.assignee.avatar}
-                                  alt={issue.assignee.name}
-                                  className="h-6 w-6 shrink-0 rounded-full"
-                                />
-                              ) : (
-                                <div className="h-6 w-6 shrink-0 rounded-full bg-primary-500 text-white flex items-center justify-center text-[10px] font-semibold">
-                                  {issue.assignee.name?.charAt(0).toUpperCase() || '?'}
-                                </div>
-                              )
-                            ) : (
-                              <div className="h-6 w-6 shrink-0 rounded-full border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center">
-                                <User className="h-3 w-3 text-gray-400" />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
+                {/* Backlog section header — only needed once sprints exist */}
+                {sprintsEnabled && planningSprints.length > 0 && (
+                  <div className="mb-2 flex items-center gap-2">
+                    <ListTodo className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {t('sprints.backlogSection')}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-white/50">
+                      {t('sprints.itemCount', { count: backlogTasks.length })}
+                    </span>
                   </div>
                 )}
-              </Droppable>
+
+                <Droppable droppableId="backlog-list">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="space-y-2"
+                    >
+                      {backlogTasks.map((issue, index) => renderIssueRow(issue, index, true))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
             </DragDropContext>
           )}
         </div>
@@ -401,6 +667,29 @@ export default function BacklogPage() {
         <IssueDetailSlideout
           issue={selectedIssue as any}
           onClose={() => setSelectedIssue(null)}
+        />
+      )}
+
+      {/* Sprint dialogs */}
+      {sprintModal && scopedProjectId && (
+        <SprintModal
+          projectId={scopedProjectId}
+          sprint={sprintModal.sprint}
+          onClose={() => setSprintModal(null)}
+        />
+      )}
+      {startDialogSprint && scopedProjectId && (
+        <StartSprintDialog
+          projectId={scopedProjectId}
+          sprint={startDialogSprint}
+          onClose={() => setStartDialogSprint(null)}
+        />
+      )}
+      {deleteDialogSprint && scopedProjectId && (
+        <DeleteSprintDialog
+          projectId={scopedProjectId}
+          sprint={deleteDialogSprint}
+          onClose={() => setDeleteDialogSprint(null)}
         />
       )}
     </AppLayout>

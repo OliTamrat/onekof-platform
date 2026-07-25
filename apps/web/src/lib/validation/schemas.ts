@@ -274,6 +274,7 @@ export const organizationSettingsPutSchema = z.object({
     requireBudgetApproval: z.boolean(),
     publicProjectsVisible: z.boolean(),
   }),
+  terminologyScheme: z.enum(['AGILE', 'FORMAL']).optional(),
 });
 
 // Budget Schemas

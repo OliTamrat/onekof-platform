@@ -102,6 +102,7 @@ export async function GET(
         requireBudgetApproval: settings.requireBudgetApproval,
         publicProjectsVisible: settings.publicProjectsVisible,
       },
+      terminologyScheme: (settings as any).terminologyScheme ?? 'AGILE',
     };
 
     return NextResponse.json(response);
@@ -196,6 +197,7 @@ export async function PUT(
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
+        ...(body.terminologyScheme && { terminologyScheme: body.terminologyScheme }),
       },
       update: {
         enabledSections: body.enabledSections,
@@ -218,6 +220,7 @@ export async function PUT(
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
+        ...(body.terminologyScheme && { terminologyScheme: body.terminologyScheme }),
       },
     });
 
@@ -263,6 +266,7 @@ export async function PUT(
         requireBudgetApproval: settings.requireBudgetApproval,
         publicProjectsVisible: settings.publicProjectsVisible,
       },
+      terminologyScheme: (settings as any).terminologyScheme ?? 'AGILE',
     };
 
     return NextResponse.json(response);
