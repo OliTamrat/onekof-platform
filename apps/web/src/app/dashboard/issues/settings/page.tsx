@@ -8,11 +8,31 @@ import { Settings, Save, Eye, Workflow, Tag, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
+import { ProjectWorkConfig } from '@/components/sprints/project-work-config';
 
 export default function IssuesSettingsPage() {
   const { t } = useLanguage();
   const toast = useToast();
+  const { projects } = useWorkspace();
   const [saving, setSaving] = useState(false);
+
+  // Project scope for the real (DB-backed) work configuration section
+  const [scopedProjectId, setScopedProjectId] = useState<string | null>(() =>
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('projectId')
+      : null
+  );
+
+  const changeProjectScope = (projectId: string | null) => {
+    setScopedProjectId(projectId);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (projectId) url.searchParams.set('projectId', projectId);
+      else url.searchParams.delete('projectId');
+      window.history.replaceState(null, '', url.toString());
+    }
+  };
 
   // Display preferences (persisted to localStorage)
   const [defaultView, setDefaultView] = useState<'list' | 'board' | 'timeline'>('list');
@@ -91,6 +111,32 @@ export default function IssuesSettingsPage() {
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         <div className="flex-1 overflow-auto p-3 md:p-6">
           <div className="space-y-6">
+            {/* Project work configuration — real ProjectSettings persistence */}
+            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-[#1C8C7D]" />
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {t('projectSettings.title')}
+                  </h2>
+                </div>
+                <select
+                  value={scopedProjectId ?? ''}
+                  onChange={(e) => changeProjectScope(e.target.value || null)}
+                  className="h-8 w-[200px] min-w-0 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
+                >
+                  <option value="">{t('projectSettings.selectProject')}</option>
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {scopedProjectId && <ProjectWorkConfig projectId={scopedProjectId} />}
+
             {/* Display Preferences */}
             <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
@@ -169,17 +215,6 @@ export default function IssuesSettingsPage() {
                   <Toggle checked={emailOnStatusChange} onChange={() => setEmailOnStatusChange(!emailOnStatusChange)} />
                 </div>
               </div>
-            </div>
-
-            {/* Workflow & Labels Info */}
-            <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Workflow className="h-5 w-5 text-[#1C8C7D]" />
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Workflow & Labels</h2>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-white/70">
-                Workflow statuses and labels are configured per project. Visit a project&apos;s settings page to customize them.
-              </p>
             </div>
 
             {/* Save Button */}

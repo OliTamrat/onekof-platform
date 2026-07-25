@@ -10,6 +10,7 @@ import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
 import { updateIssueSchema } from '@/lib/validation/schemas';
 import { validateStatusTransition, getAllowedTransitions, type TaskStatus } from '@/lib/workflow-engine';
+import { resolveProjectSettings } from '@/lib/settings/resolve';
 import { deliverWebhook } from '@/lib/integrations/webhooks';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
 
@@ -265,23 +266,26 @@ export async function PATCH(
     if (description !== undefined) updateData.description = description;
     if (type !== undefined) updateData.type = type;
     if (status !== undefined) {
-      // Validate status transition
-      const currentTask = await prisma.task.findUnique({
-        where: { id: params.id },
-        select: { status: true, project: { select: { id: true } } },
-      });
-
-      if (currentTask && currentTask.status !== status) {
+      // Validate status transition against the project's effective workflow
+      // settings (org default ← project override) — Phase 4 wires the engine.
+      if (currentIssue.status !== status) {
+        const effective = await resolveProjectSettings(currentIssue.projectId);
         const transition = validateStatusTransition(
-          currentTask.status as TaskStatus,
+          currentIssue.status as TaskStatus,
           status as TaskStatus,
-          { enforceWorkflow: false }
+          {
+            enforceWorkflow: effective?.enforceWorkflow ?? false,
+            transitions: effective?.workflowTransitions ?? null,
+          }
         );
         if (!transition.allowed) {
           return NextResponse.json(
             {
               error: transition.reason,
-              allowedTransitions: getAllowedTransitions(currentTask.status as TaskStatus),
+              allowedTransitions: getAllowedTransitions(
+                currentIssue.status as TaskStatus,
+                effective?.workflowTransitions ?? null
+              ),
             },
             { status: 422 }
           );

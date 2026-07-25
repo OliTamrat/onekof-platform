@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { checkRateLimit } from '@/lib/security/rate-limit';
+import { validateStatusTransition, type TaskStatus } from '@/lib/workflow-engine';
+import { resolveProjectSettings } from '@/lib/settings/resolve';
 import logger from '@/lib/logger';
 import { z } from 'zod';
 
@@ -57,17 +59,38 @@ export async function POST(request: NextRequest) {
 
     const accessibleIds = issues.map(i => i.id);
     let updated = 0;
+    let workflowBlocked = 0;
 
     switch (action) {
       case 'updateStatus': {
         if (!value) {
           return NextResponse.json({ error: 'Status value required' }, { status: 400 });
         }
+
+        // Workflow enforcement (Phase 4): bulk changes obey the same
+        // transition rules as single edits — no more bypass. Settings are
+        // resolved once per project, invalid transitions are skipped and
+        // counted rather than failing the whole batch.
+        const projectIds = Array.from(new Set(issues.map(i => i.projectId)));
+        const settingsByProject = new Map(
+          await Promise.all(
+            projectIds.map(async (pid) => [pid, await resolveProjectSettings(pid)] as const)
+          )
+        );
+        const passing = issues.filter((i) => {
+          const s = settingsByProject.get(i.projectId);
+          return validateStatusTransition(i.status as TaskStatus, value as TaskStatus, {
+            enforceWorkflow: s?.enforceWorkflow ?? false,
+            transitions: s?.workflowTransitions ?? null,
+          }).allowed;
+        });
+        workflowBlocked = issues.length - passing.length;
+
         // completedAt semantics: set only on the transition INTO DONE (so an
         // already-DONE task keeps its original completion date), cleared only
         // on the transition OUT of DONE.
-        const alreadyDone = issues.filter(i => i.status === 'DONE').map(i => i.id);
-        const notDone = issues.filter(i => i.status !== 'DONE').map(i => i.id);
+        const alreadyDone = passing.filter(i => i.status === 'DONE').map(i => i.id);
+        const notDone = passing.filter(i => i.status !== 'DONE').map(i => i.id);
 
         const [wasDone, wasNotDone] = await prisma.$transaction([
           prisma.task.updateMany({
@@ -193,6 +216,7 @@ export async function POST(request: NextRequest) {
       requested: issueIds.length,
       updated,
       skipped: issueIds.length - accessibleIds.length,
+      workflowBlocked,
     });
   } catch (error) {
     logger.error('Bulk operation error', { error: error instanceof Error ? error.message : error });

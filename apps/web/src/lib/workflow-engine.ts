@@ -2,10 +2,12 @@
  * Workflow Engine — Status Transition Rules
  *
  * Validates that issue status transitions follow a defined workflow.
- * Default workflow allows standard project management transitions.
- * Future: per-project custom workflows stored in database.
+ * Enforcement and the transition table come from the settings hierarchy
+ * (resolveProjectSettings): a project's workflowTransitions override falls
+ * back to DEFAULT_TRANSITIONS, and enforcement is off unless the project
+ * (or org default) turns it on.
  *
- * Design principles:
+ * Design principles (default table):
  * - Forward progress is always allowed (BACKLOG → TODO → IN_PROGRESS → IN_REVIEW → DONE)
  * - Backward movement is allowed for corrections (e.g., IN_REVIEW → IN_PROGRESS)
  * - BLOCKED can be entered from any active state and returned to the previous state
@@ -15,12 +17,14 @@
 
 export type TaskStatus = 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
 
+export type TransitionTable = Record<string, readonly string[]>;
+
 interface TransitionResult {
   allowed: boolean;
   reason?: string;
 }
 
-const DEFAULT_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
+export const DEFAULT_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   BACKLOG: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
   TODO: ['BACKLOG', 'IN_PROGRESS', 'BLOCKED'],
   IN_PROGRESS: ['TODO', 'IN_REVIEW', 'DONE', 'BLOCKED'],
@@ -32,7 +36,7 @@ const DEFAULT_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
 export function validateStatusTransition(
   currentStatus: TaskStatus,
   newStatus: TaskStatus,
-  options?: { enforceWorkflow?: boolean }
+  options?: { enforceWorkflow?: boolean; transitions?: TransitionTable | null }
 ): TransitionResult {
   if (currentStatus === newStatus) {
     return { allowed: true };
@@ -42,7 +46,8 @@ export function validateStatusTransition(
     return { allowed: true };
   }
 
-  const allowedTransitions = DEFAULT_TRANSITIONS[currentStatus];
+  const table = options?.transitions ?? DEFAULT_TRANSITIONS;
+  const allowedTransitions = table[currentStatus];
   if (!allowedTransitions) {
     return { allowed: false, reason: `Unknown current status: ${currentStatus}` };
   }
@@ -57,8 +62,11 @@ export function validateStatusTransition(
   return { allowed: true };
 }
 
-export function getAllowedTransitions(currentStatus: TaskStatus): TaskStatus[] {
-  return DEFAULT_TRANSITIONS[currentStatus] || [];
+export function getAllowedTransitions(
+  currentStatus: TaskStatus,
+  transitions?: TransitionTable | null
+): TaskStatus[] {
+  return ([...((transitions ?? DEFAULT_TRANSITIONS)[currentStatus] || [])]) as TaskStatus[];
 }
 
 function formatStatus(status: string): string {
