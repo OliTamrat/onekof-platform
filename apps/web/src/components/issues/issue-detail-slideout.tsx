@@ -143,7 +143,11 @@ type Tab = 'details' | 'settings';
 
 export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: IssueDetailSlideoutProps) {
   const { t } = useLanguage();
-  const resolvedId = initialIssue?.id || issueId;
+  // Internal navigation: when a subtask is clicked, we display it within
+  // the same slideout panel instead of opening a separate one.
+  const [viewingIssueId, setViewingIssueId] = useState<string | null>(null);
+  const originalId = initialIssue?.id || issueId;
+  const resolvedId = viewingIssueId || originalId;
   const toast = useToast();
   const { data: session } = useSession();
   const currentUserId = (session?.user as any)?.id;
@@ -370,8 +374,18 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
 
         {/* Jira-Style Clean Header */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-3 md:px-6 py-3">
-          {/* Left: Task Key */}
+          {/* Left: Task Key (with back button when viewing a subtask) */}
           <div className="flex items-center gap-2">
+            {viewingIssueId && (
+              <button
+                onClick={() => setViewingIssueId(null)}
+                className="flex items-center gap-1 text-xs text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 mr-1"
+                title="Back to parent issue"
+              >
+                <ChevronDown className="h-3.5 w-3.5 rotate-90" />
+                Back
+              </button>
+            )}
             <span className="text-sm md:text-base font-semibold text-gray-900 dark:text-white">
               {issue.key}
             </span>
@@ -770,7 +784,7 @@ function DetailsTab({
           </div>
 
           {/* Subtasks */}
-          <SubtasksSection issue={issue} />
+          <SubtasksSection issue={issue} onSubtaskClick={(id) => setViewingIssueId(id)} />
 
           {/* Attachments */}
           <AttachmentsSection issue={issue} />
@@ -1177,10 +1191,12 @@ function IssueActivitySection({ issue }: { issue: Issue }) {
 }
 
 // Subtasks Section Component
-function SubtasksSection({ issue }: { issue: Issue }) {
+function SubtasksSection({ issue, onSubtaskClick }: { issue: Issue; onSubtaskClick?: (id: string) => void }) {
   const subtasks = issue.subtasks || [];
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [subtaskTitle, setSubtaskTitle] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const toast = useToast();
 
@@ -1215,13 +1231,56 @@ function SubtasksSection({ issue }: { issue: Issue }) {
     }
   };
 
+  const handleToggleStatus = async (subtask: Subtask) => {
+    setTogglingId(subtask.id);
+    const newStatus = subtask.status === 'DONE' ? 'TODO' : 'DONE';
+    try {
+      const res = await fetch(`/api/issues/${subtask.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+        await queryClient.invalidateQueries({ queryKey: ['issues'] });
+      } else {
+        toast.error('Failed to update subtask status');
+      }
+    } catch {
+      toast.error('Failed to update subtask status');
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
+  const handleDeleteSubtask = async (subtaskId: string) => {
+    setDeletingId(subtaskId);
+    try {
+      const res = await fetch(`/api/issues/${subtaskId}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Subtask deleted');
+        await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
+        await queryClient.invalidateQueries({ queryKey: ['issues'] });
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || 'Failed to delete subtask');
+      }
+    } catch {
+      toast.error('Failed to delete subtask');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const doneCount = subtasks.filter((s) => s.status === 'DONE').length;
+
   return (
     <div className="px-3 md:px-6 py-4 border-b border-gray-200 dark:border-gray-800">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <CheckSquare className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-            Subtasks ({subtasks.length})
+            Subtasks ({doneCount}/{subtasks.length})
           </h2>
         </div>
         <Button
@@ -1233,6 +1292,16 @@ function SubtasksSection({ issue }: { issue: Issue }) {
           Add subtask
         </Button>
       </div>
+
+      {/* Progress bar */}
+      {subtasks.length > 0 && (
+        <div className="mb-3 h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+          <div
+            className="h-1.5 rounded-full bg-green-500 transition-all duration-300"
+            style={{ width: `${subtasks.length > 0 ? (doneCount / subtasks.length) * 100 : 0}%` }}
+          />
+        </div>
+      )}
 
       {/* Add Subtask Form */}
       {isAddingSubtask && (
@@ -1277,12 +1346,66 @@ function SubtasksSection({ issue }: { issue: Issue }) {
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         {subtasks.length > 0 ? (
           subtasks.map((subtask) => (
-            <div key={subtask.id} className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
-              <CheckSquare className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-900 dark:text-white">{subtask.title}</span>
+            <div
+              key={subtask.id}
+              className="group flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              {/* Status checkbox */}
+              <button
+                onClick={(e) => { e.stopPropagation(); handleToggleStatus(subtask); }}
+                disabled={togglingId === subtask.id}
+                className={`flex-shrink-0 h-4 w-4 rounded border transition-colors ${
+                  subtask.status === 'DONE'
+                    ? 'bg-green-500 border-green-500 text-white'
+                    : 'border-gray-400 dark:border-gray-500 hover:border-primary-500'
+                } ${togglingId === subtask.id ? 'opacity-50' : ''}`}
+                title={subtask.status === 'DONE' ? 'Mark as todo' : 'Mark as done'}
+              >
+                {subtask.status === 'DONE' && <Check className="h-3 w-3 mx-auto" />}
+              </button>
+
+              {/* Clickable subtask title + key */}
+              <button
+                onClick={() => onSubtaskClick?.(subtask.id)}
+                className={`flex-1 text-left text-sm truncate transition-colors ${
+                  subtask.status === 'DONE'
+                    ? 'text-gray-400 dark:text-gray-500 line-through'
+                    : 'text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+                title={`Open ${subtask.key}: ${subtask.title}`}
+              >
+                <span className="text-xs text-gray-400 dark:text-gray-500 mr-1.5 font-mono">{subtask.key}</span>
+                {subtask.title}
+              </button>
+
+              {/* Assignee avatar */}
+              {subtask.assignee && (
+                <div
+                  className="flex-shrink-0 h-5 w-5 rounded-full bg-primary-500 flex items-center justify-center text-white text-[10px] font-medium"
+                  title={subtask.assignee.name}
+                >
+                  {subtask.assignee.avatar ? (
+                    <img src={subtask.assignee.avatar} alt={subtask.assignee.name} className="h-5 w-5 rounded-full" />
+                  ) : (
+                    subtask.assignee.name?.[0]?.toUpperCase() || '?'
+                  )}
+                </div>
+              )}
+
+              {/* Delete button (visible on hover) */}
+              <button
+                onClick={(e) => { e.stopPropagation(); handleDeleteSubtask(subtask.id); }}
+                disabled={deletingId === subtask.id}
+                className={`flex-shrink-0 opacity-0 group-hover:opacity-100 p-1 rounded text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all ${
+                  deletingId === subtask.id ? 'opacity-100 animate-pulse' : ''
+                }`}
+                title="Delete subtask"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
             </div>
           ))
         ) : (

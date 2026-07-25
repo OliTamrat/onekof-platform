@@ -36,7 +36,8 @@ export default function ProjectSettingsPage() {
         const data = await res.json();
         throw new Error(data.error || 'Failed to delete project');
       }
-      router.push('/dashboard');
+      // Force full reload to clear all caches (React Query, workspace context, etc.)
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.message);
       setIsDeleting(false);
