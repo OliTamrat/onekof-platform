@@ -82,14 +82,13 @@ export async function GET(
 
     const projectIds = projects.map((p) => p.id);
 
-    // Count active tasks per project (exclude soft-deleted and CANCELLED)
+    // Count active tasks per project (exclude soft-deleted)
     const taskCounts = projectIds.length > 0
       ? await prisma.task.groupBy({
           by: ['projectId'],
           where: {
             projectId: { in: projectIds },
             deletedAt: null,
-            status: { not: 'CANCELLED' },
           },
           _count: { _all: true },
         })
