@@ -213,7 +213,7 @@ export async function PATCH(
     // Get the current issue to check project access and track changes
     const currentIssue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true },
+      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true, sprintId: true },
     });
 
     if (!currentIssue) {
@@ -253,6 +253,9 @@ export async function PATCH(
       estimate,
       timeSpent,
       parentId,
+      sprintId,
+      sprintOrder,
+      storyPoints,
     } = validation.data as any;
     const { backlogOrder } = body;
 
@@ -286,9 +289,11 @@ export async function PATCH(
       }
 
       updateData.status = status;
-      if (status === 'DONE') {
+      // Set completedAt only on the transition INTO DONE (an already-DONE
+      // task keeps its original completion date); clear it when leaving DONE.
+      if (status === 'DONE' && currentIssue.status !== 'DONE') {
         updateData.completedAt = new Date();
-      } else {
+      } else if (status !== 'DONE') {
         updateData.completedAt = null;
       }
     }
@@ -301,6 +306,26 @@ export async function PATCH(
     if (timeSpent !== undefined) updateData.timeSpent = timeSpent;
     if (parentId !== undefined) updateData.parentId = parentId;
     if (backlogOrder !== undefined) updateData.backlogOrder = backlogOrder;
+    if (storyPoints !== undefined) updateData.storyPoints = storyPoints;
+    if (sprintOrder !== undefined) updateData.sprintOrder = sprintOrder;
+    if (sprintId !== undefined) {
+      // null = back to backlog; otherwise the sprint must be a live sprint
+      // in the SAME project (sprints are project-scoped by design)
+      if (sprintId !== null) {
+        const targetSprint = await prisma.sprint.findFirst({
+          where: { id: sprintId, deletedAt: null, status: { not: 'COMPLETED' } },
+          select: { projectId: true },
+        });
+        if (!targetSprint || targetSprint.projectId !== currentIssue.projectId) {
+          return NextResponse.json(
+            { error: 'Sprint not found in this project (or already completed)' },
+            { status: 400 }
+          );
+        }
+      }
+      updateData.sprintId = sprintId;
+      if (sprintOrder === undefined) updateData.sprintOrder = null;
+    }
 
     // Update issue
     const issue = await prisma.task.update({
@@ -482,6 +507,20 @@ export async function PATCH(
           taskTitle: currentIssue.title || '',
           action: 'ASSIGNED',
           metadata: { assigneeId },
+        }).catch(() => {});
+      }
+
+      // Scope-churn signal: sprint membership changes are first-class events
+      // (velocity/predictability reporting queries these against the
+      // commitment snapshot written at sprint start)
+      if (sprintId !== undefined && sprintId !== currentIssue.sprintId) {
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: currentIssue.title || '',
+          action: 'SPRINT_CHANGED',
+          metadata: { from: currentIssue.sprintId, to: sprintId },
         }).catch(() => {});
       }
 

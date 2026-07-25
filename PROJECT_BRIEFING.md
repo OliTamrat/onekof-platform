@@ -1,5 +1,5 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-23 — v1.3.0 tagged, docs reorganized, search fixed, INSA cleanup, Ethio Telecom pricing briefing
+> Last updated: 2026-07-25 — Sprint & Settings foundation Phase 1 (PR #144), architecture doc approved v1.2
 
 ---
 
@@ -22,6 +22,35 @@ INSA security code (P1-P6): all implemented and certified.
 - **onekof.et domain:** SECURED
 - **Deploy script:** `deploy-et.sh` (online + offline modes)
 - **Staging:** Remains on Vercel (free, no sovereignty impact — see briefing doc Section 7)
+
+---
+
+## SESSION LOG (2026-07-25) — Sprint & Settings Foundation (Phase 1)
+
+**Strategic decision (founder):** build the long-horizon foundation properly — Sprints and the settings hierarchy are "must build right" tools. Core Jira concepts adopted, implementation not copied.
+
+**Architecture doc:** `docs/architecture/SPRINT_AND_SETTINGS_ARCHITECTURE.md` — **APPROVED v1.2**.
+Approved decisions: **2-week default sprint length** · **sprint completion requires project ADMIN+** · **terminologyScheme ships in Phase 1** (AGILE says "Sprint", FORMAL says "Work Cycle"; i18n mapping in Phase 2).
+
+### Phase 1 shipped (PR #144 — dark launch, zero UI change)
+
+| Area | What |
+|------|------|
+| Schema | `Sprint` model (PLANNED → ACTIVE → COMPLETED, terminal), `ProjectSettings` (nullable = inherit from org), `Task.sprintId/sprintOrder/storyPoints` (all nullable), org defaults + `terminologyScheme`, 7 new `ActivityType` values |
+| DB guarantee | Partial unique index `sprints_one_active_per_project` — one ACTIVE sprint per project enforced by Postgres, race-free (validated empirically on PG15/16) |
+| Snapshots | `committed*` written at sprint START, `completed*` at completion — scope churn stays measurable forever |
+| Migration | `20260726_add_sprints_and_project_settings` — idempotent, applied twice cleanly against baseline-reconstructed DB |
+| APIs | `GET/POST /api/projects/[id]/sprints`, `PATCH/DELETE /api/sprints/[id]`, `POST /api/sprints/[id]/start` (commitment snapshot, 2-wk default), `POST /api/sprints/[id]/complete` (ADMIN+, rollover decision recorded) |
+| Settings | `lib/settings/effective.ts` (pure merge rules, unit-tested) + `lib/settings/resolve.ts` (`resolveProjectSettings` — the ONE resolution point); `GET/PATCH /api/projects/[id]/settings` with zod |
+| Audit | Sprint lifecycle + settings writes emit `UserActivity`; completion/deletion/settings changes also go to `OrgAuditLog` (INSA posture); `TASK_SPRINT_CHANGED` = scope-churn signal |
+| Bug fixes | **`uuidSchema` rejected all real IDs** (strict RFC-UUID vs Prisma cuid — `/api/issues` POST validation was rejecting every cuid; validator now accepts cuid/uuid token shapes); `OrganizationSettingsProvider` never received organizationId (settings never loaded client-side — fixed via `useWorkspace()` in wrapper); org settings PUT unvalidated (zod added + OrgAuditLog); bulk/single `completedAt` overwritten on repeat DONE (now only set on transition into DONE) |
+| Bulk | 5th action `moveToSprint` (`value: sprintId` or `"null"` = backlog), project-scope enforced, churn logged via `createMany` (no push storm) |
+| Tests | 21 new tests (sprint schemas, lifecycle rollover contract, settings inheritance incl. null-means-inherit and SCRUM template default) — 290 total green |
+
+### Remaining phases (do NOT start without founder go-ahead per phase)
+- **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
+- **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)
+- **Phase 4:** Project settings UI, workflow enforcement wired (incl. bulk), transition matrix view
 
 ---
 
@@ -364,7 +393,9 @@ All docs organized in `docs/` — see `docs/INDEX.html` for full branded index.
 
 ---
 
-## OPEN PRs: NONE
+## OPEN PRs
+
+- **#144** — Sprint & Settings foundation Phase 1 (draft; dark launch, schema + APIs, no UI)
 
 All 4 orphaned PRs (#98-#101) closed on 2026-07-23.
 

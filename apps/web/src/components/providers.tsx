@@ -4,7 +4,7 @@ import { useState, useEffect , type ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WorkspaceProvider } from '@/contexts/workspace-context';
+import { WorkspaceProvider, useWorkspace } from '@/contexts/workspace-context';
 import { OrganizationSettingsProvider } from '@/contexts/organization-settings-context';
 import { LanguageProvider } from '@/contexts/language-context';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -61,13 +61,12 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 }
 
-// Wrapper to access workspace context
+// Wrapper rendered inside WorkspaceProvider so real org settings load
+// for the current organization (nulls fall back to provider defaults).
 function OrganizationSettingsWrapper({ children }: { children: ReactNode }) {
-  // We can't use useWorkspace here directly because it would create a circular dependency
-  // Instead, we'll let the OrganizationSettingsProvider handle fetching when needed
-  // The sidebar component will pass the settings when available
+  const { currentOrganization } = useWorkspace();
   return (
-    <OrganizationSettingsProvider>
+    <OrganizationSettingsProvider organizationId={currentOrganization?.id}>
       <LanguageProvider>
         {children}
       </LanguageProvider>

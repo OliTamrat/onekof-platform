@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 
 const bulkUpdateSchema = z.object({
   issueIds: z.array(z.string()).min(1, 'At least one issue ID required').max(100, 'Maximum 100 issues per batch'),
-  action: z.enum(['updateStatus', 'updatePriority', 'updateAssignee', 'delete']),
-  value: z.string().optional(),
+  action: z.enum(['updateStatus', 'updatePriority', 'updateAssignee', 'delete', 'moveToSprint']),
+  value: z.string().optional(), // for moveToSprint: sprintId, or "null" = backlog
 });
 
 /**
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         deletedAt: null,
         project: { organizationId: ctx.organizationId },
       },
-      select: { id: true, projectId: true, status: true },
+      select: { id: true, projectId: true, status: true, sprintId: true },
     });
 
     if (issues.length === 0) {
@@ -63,14 +63,29 @@ export async function POST(request: NextRequest) {
         if (!value) {
           return NextResponse.json({ error: 'Status value required' }, { status: 400 });
         }
-        const result = await prisma.task.updateMany({
-          where: { id: { in: accessibleIds } },
-          data: {
-            status: value as any,
-            completedAt: value === 'DONE' ? new Date() : null,
-          },
-        });
-        updated = result.count;
+        // completedAt semantics: set only on the transition INTO DONE (so an
+        // already-DONE task keeps its original completion date), cleared only
+        // on the transition OUT of DONE.
+        const alreadyDone = issues.filter(i => i.status === 'DONE').map(i => i.id);
+        const notDone = issues.filter(i => i.status !== 'DONE').map(i => i.id);
+
+        const [wasDone, wasNotDone] = await prisma.$transaction([
+          prisma.task.updateMany({
+            where: { id: { in: alreadyDone } },
+            data: {
+              status: value as any,
+              ...(value !== 'DONE' && { completedAt: null }),
+            },
+          }),
+          prisma.task.updateMany({
+            where: { id: { in: notDone } },
+            data: {
+              status: value as any,
+              ...(value === 'DONE' && { completedAt: new Date() }),
+            },
+          }),
+        ]);
+        updated = wasDone.count + wasNotDone.count;
         break;
       }
 
@@ -101,6 +116,64 @@ export async function POST(request: NextRequest) {
           data: { deletedAt: new Date() },
         });
         updated = result.count;
+        break;
+      }
+
+      case 'moveToSprint': {
+        if (!value) {
+          return NextResponse.json({ error: 'Sprint ID (or "null" for backlog) required' }, { status: 400 });
+        }
+        const targetSprintId = value === 'null' ? null : value;
+        let movableIds = accessibleIds;
+
+        if (targetSprintId) {
+          // Sprints are project-scoped: only tasks in the sprint's project can move in
+          const sprint = await prisma.sprint.findFirst({
+            where: {
+              id: targetSprintId,
+              deletedAt: null,
+              status: { not: 'COMPLETED' },
+              project: { organizationId: ctx.organizationId },
+            },
+            select: { id: true, projectId: true },
+          });
+          if (!sprint) {
+            return NextResponse.json(
+              { error: 'Sprint not found or already completed' },
+              { status: 404 }
+            );
+          }
+          movableIds = issues
+            .filter(i => i.projectId === sprint.projectId)
+            .map(i => i.id);
+        }
+
+        const moved = issues.filter(
+          i => movableIds.includes(i.id) && i.sprintId !== targetSprintId
+        );
+
+        const result = await prisma.task.updateMany({
+          where: { id: { in: movableIds } },
+          data: { sprintId: targetSprintId, sprintOrder: null },
+        });
+        updated = result.count;
+
+        // Scope-churn signal: record every sprint membership change.
+        // Direct createMany (not logActivity) — no per-task push notification
+        // storm on a bulk move.
+        if (moved.length > 0) {
+          await prisma.userActivity.createMany({
+            data: moved.map(i => ({
+              organizationId: ctx.organizationId,
+              userId: ctx.user.id,
+              activityType: 'TASK_SPRINT_CHANGED' as any,
+              entityType: 'TASK',
+              entityId: i.id,
+              action: 'SPRINT_CHANGED',
+              metadata: { from: i.sprintId, to: targetSprintId, bulk: true },
+            })),
+          });
+        }
         break;
       }
     }
