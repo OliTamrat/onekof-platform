@@ -41,13 +41,28 @@ export async function GET(
       return NextResponse.json({ added: 0, removed: 0, issues: [] });
     }
 
+    // The window opens at the INSTANT the commitment snapshot was written —
+    // the SPRINT_STARTED audit event. startDate alone is a calendar date at
+    // midnight, which would misclassify same-day planning drags as churn
+    // (founder testing caught exactly this).
+    const startedEvent = await prisma.userActivity.findFirst({
+      where: {
+        entityType: 'SPRINT',
+        entityId: sprint.id,
+        activityType: 'SPRINT_STARTED',
+      },
+      orderBy: { createdAt: 'asc' },
+      select: { createdAt: true },
+    });
+    const windowStart = startedEvent?.createdAt ?? sprint.startDate;
+
     const events = await prisma.userActivity.findMany({
       where: {
         organizationId: sprint.project.organizationId,
         activityType: 'TASK_SPRINT_CHANGED',
         entityType: 'TASK',
         createdAt: {
-          gte: sprint.startDate,
+          gte: windowStart,
           ...(sprint.completedAt && { lte: sprint.completedAt }),
         },
         OR: [
