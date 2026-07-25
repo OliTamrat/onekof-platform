@@ -49,6 +49,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 
 **Production status:** PR #144 merged to master 2026-07-25; migration `20260726_add_sprints_and_project_settings` **applied to Supabase and verified** (partial unique index, tasks columns, project_settings, org defaults all confirmed via `DB Migrate` workflow run #2). New CI utility: `.github/workflows/db-migrate.yml` — manual dispatch, applies an idempotent migration over DIRECT_URL and records it in `_prisma_migrations` (handles the `@`-in-password psql quirk by exporting PG* vars via Node URL parsing).
 
+**Phase 2 SHIPPED (PR #145, merged 2026-07-25, no migration needed):** sprint planning UI on the project-scoped backlog page — sprint sections with drag between sprint/backlog, create/edit/start/delete dialogs, live count + estimate sums, `useTerminology` hook (Sprint/Work Cycle per org `terminologyScheme`), 33 `sprints.*` i18n keys × 5 locales (flag for linguist review), `GET /api/issues?sprintId=null|any|<id>` filter. Deliberate deviation: the "Sprint tab" moved from Phase 2 to Phase 3 (tabs are org-wide static config; the tab will target the Phase 3 active-sprint board page).
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)
