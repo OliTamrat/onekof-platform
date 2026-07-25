@@ -53,6 +53,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 
 **Phase 3 SHIPPED (2026-07-25, no migration needed):** Sprints tab in ISSUES_TABS -> /dashboard/issues/sprints (active sprint panel with goal/dates/days-left/progress-vs-commitment/issue list + Complete button; completed-sprints report with committed vs completed and 3-sprint velocity, all from write-once snapshots); CompleteSprintDialog with rollover decision (backlog | planned sprint) wired on backlog ACTIVE sections and sprints page; board gains "Active sprint only" filter when scoped project has a running sprint; 17 new sprints.* keys + departmentTabs.sprints x 5 locales.
 
+**Phase 4 SHIPPED (2026-07-25, no migration needed):** workflow engine LIVE — enforcement + transition table resolved via resolveProjectSettings on single PATCH and bulk updateStatus (bulk skips blocked transitions, reports workflowBlocked count); issues/settings page gains real DB-backed "Work configuration" card (ProjectWorkConfig component): sprint toggle, estimation unit, workflow enforcement with inherited/overridden badges + "use org default" (null override), read-only transition matrix; 16 projectSettings.* keys x 5 locales; 8 new enforcement tests. The Sprint & Settings architecture is now fully delivered (Phases 1-4).
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)

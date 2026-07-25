@@ -30,17 +30,45 @@ export interface EffectiveProjectSettings {
   sprintsEnabled: boolean;
   estimationUnit: 'HOURS' | 'POINTS';
   enforceWorkflow: boolean;
+  workflowTransitions: Record<string, string[]> | null;
   terminologyScheme: 'AGILE' | 'FORMAL';
+}
+
+export interface ProjectSettingsOverrides {
+  sprintsEnabled: boolean | null;
+  estimationUnit: 'HOURS' | 'POINTS' | null;
+  enforceWorkflow: boolean | null;
+  workflowTransitions: Record<string, string[]> | null;
 }
 
 export function useProjectSettings(projectId: string | null) {
   return useQuery({
     queryKey: ['project-settings', projectId],
     enabled: !!projectId,
-    queryFn: async (): Promise<{ effective: EffectiveProjectSettings }> => {
+    queryFn: async (): Promise<{ overrides: ProjectSettingsOverrides; effective: EffectiveProjectSettings }> => {
       const res = await fetch(`/api/projects/${projectId}/settings`);
       if (!res.ok) throw new Error('Failed to fetch project settings');
       return res.json();
+    },
+  });
+}
+
+/** Field-level override update; null restores inheritance from the org. */
+export function useUpdateProjectSettings(projectId: string | null) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: Partial<ProjectSettingsOverrides>) => {
+      const res = await fetch(`/api/projects/${projectId}/settings`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Failed to update settings');
+      return res.json();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['project-settings', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['sprints', projectId] });
     },
   });
 }
