@@ -43,12 +43,14 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
+import { useWorkspace } from '@/contexts/workspace-context';
 import { useTerminology } from '@/hooks/use-terminology';
 import {
   Sprint,
   useProjectSettings,
   useSprints,
   useMoveIssueToSprint,
+  useEnableSprints,
 } from '@/components/sprints/use-sprints';
 import {
   SprintModal,
@@ -91,9 +93,10 @@ const SPRINT_STATUS_CHIP: Record<Sprint['status'], string> = {
 
 export default function BacklogPage() {
   const { t } = useLanguage();
-  const { sprintNoun } = useTerminology();
+  const { sprintNoun, sprintNounPlural } = useTerminology();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { projects } = useWorkspace();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -103,18 +106,43 @@ export default function BacklogPage() {
   const [deleteDialogSprint, setDeleteDialogSprint] = useState<Sprint | null>(null);
   const [collapsedSprints, setCollapsedSprints] = useState<Set<string>>(new Set());
 
-  // Read project scope from URL
-  const scopedProjectId = typeof window !== 'undefined'
-    ? new URLSearchParams(window.location.search).get('projectId')
-    : null;
+  // Project scope: initialized from the URL, changeable via the picker.
+  // Kept in the URL so links/refreshes preserve the scope.
+  const [scopedProjectId, setScopedProjectId] = useState<string | null>(() =>
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('projectId')
+      : null
+  );
+
+  const changeProjectScope = (projectId: string | null) => {
+    setScopedProjectId(projectId);
+    setSelectedIds(new Set());
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (projectId) url.searchParams.set('projectId', projectId);
+      else url.searchParams.delete('projectId');
+      window.history.replaceState(null, '', url.toString());
+    }
+  };
 
   // Sprint planning is project-scoped: resolve effective settings (org
   // defaults ← project overrides) and only then load sprints.
   const { data: settingsData } = useProjectSettings(scopedProjectId);
   const sprintsEnabled = !!scopedProjectId && !!settingsData?.effective?.sprintsEnabled;
+  const sprintsDisabledForProject = !!scopedProjectId && !!settingsData && !settingsData.effective?.sprintsEnabled;
   const estimationUnit = settingsData?.effective?.estimationUnit ?? 'HOURS';
   const { data: sprintsData } = useSprints(scopedProjectId, sprintsEnabled);
   const moveMutation = useMoveIssueToSprint();
+  const enableSprintsMutation = useEnableSprints(scopedProjectId);
+
+  const handleEnableSprints = async () => {
+    try {
+      await enableSprintsMutation.mutateAsync();
+      toast.success(t('sprints.enabledToast', { noun: sprintNoun }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t('sprints.actionFailed'));
+    }
+  };
 
   const planningSprints: Sprint[] = useMemo(
     () => (sprintsData?.sprints || []).filter((s) => s.status !== 'COMPLETED'),
@@ -576,6 +604,20 @@ export default function BacklogPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Project scope picker — sprints are planned per project */}
+            <select
+              value={scopedProjectId ?? ''}
+              onChange={(e) => changeProjectScope(e.target.value || null)}
+              className="h-8 max-w-[160px] rounded-md border border-gray-300 dark:border-white/[0.08] bg-white dark:bg-[#181D23] px-2 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+              title={t('sprints.selectProject', { nounPlural: sprintNounPlural })}
+            >
+              <option value="">{t('sprints.allProjects')}</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
             {sprintsEnabled && (
               <Button
                 size="sm"
@@ -597,6 +639,25 @@ export default function BacklogPage() {
             </Button>
           </div>
         </div>
+
+        {/* Sprints off for this project → one-tap enable (server enforces ADMIN) */}
+        {sprintsDisabledForProject && (
+          <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 dark:border-white/[0.08] bg-primary-500/5 px-3 md:px-6 py-2.5">
+            <Zap className="h-4 w-4 shrink-0 text-primary-500" />
+            <span className="text-sm text-gray-700 dark:text-white/70">
+              {t('sprints.enableHint', { noun: sprintNoun })}
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleEnableSprints}
+              disabled={enableSprintsMutation.isPending}
+              className="h-7"
+            >
+              {t('sprints.enable', { noun: sprintNoun })}
+            </Button>
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-3 md:p-6">

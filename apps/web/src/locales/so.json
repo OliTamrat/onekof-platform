@@ -3052,6 +3052,11 @@
     "updated": "{noun} waa la cusboonaysiiyay",
     "started": "{noun} waa la bilaabay",
     "deleted": "{noun} waa la tirtiray",
-    "actionFailed": "Ficilku wuu fashilmay. Waxaa laga yaabaa inaad u baahan tahay xuquuqda maamulaha mashruuca."
+    "actionFailed": "Ficilku wuu fashilmay. Waxaa laga yaabaa inaad u baahan tahay xuquuqda maamulaha mashruuca.",
+    "allProjects": "Dhammaan mashaariicda",
+    "selectProject": "Dooro mashruuc si aad u qorsheyso {nounPlural}",
+    "enableHint": "Qorshaha {noun} waa ka damman yahay mashruucan.",
+    "enable": "Daar qorshaha {noun}",
+    "enabledToast": "Qorshaha {noun} waa la daaray"
   }
 }
