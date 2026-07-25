@@ -50,11 +50,13 @@ function InheritBadge({
   );
 }
 
+// shrink-0 matters: without it, rows with long hint text compress the
+// switch into an oval on narrow screens.
 function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <button
       onClick={onChange}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] ${
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C8C7D] ${
         checked ? 'bg-[#1C8C7D]' : 'bg-gray-200 dark:bg-white/[0.08]'
       }`}
       role="switch"
@@ -68,6 +70,15 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void 
     </button>
   );
 }
+
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  BACKLOG: 'status.backlog',
+  TODO: 'status.todo',
+  IN_PROGRESS: 'status.inProgress',
+  IN_REVIEW: 'status.inReview',
+  DONE: 'status.done',
+  BLOCKED: 'status.blocked',
+};
 
 export function ProjectWorkConfig({ projectId }: { projectId: string }) {
   const { t } = useLanguage();
@@ -89,10 +100,12 @@ export function ProjectWorkConfig({ projectId }: { projectId: string }) {
   };
 
   const matrix = effective.workflowTransitions ?? DEFAULT_TRANSITIONS;
-  const statusLabel = (id: string) =>
-    t(`status.${id.toLowerCase().replace('_', '')}`) ||
-    WORKFLOW_STATUSES.find((s) => s.id === id)?.label ||
-    id;
+  const statusLabel = (id: string) => {
+    const key = STATUS_LABEL_KEYS[id];
+    const translated = key ? t(key) : '';
+    if (translated && translated !== key) return translated;
+    return WORKFLOW_STATUSES.find((s) => s.id === id)?.label || id;
+  };
 
   return (
     <div className="bg-white dark:bg-[#12161B] border border-gray-200 dark:border-white/[0.08] rounded-lg p-6">
@@ -141,7 +154,7 @@ export function ProjectWorkConfig({ projectId }: { projectId: string }) {
           <select
             value={effective.estimationUnit}
             onChange={(e) => apply({ estimationUnit: e.target.value as 'HOURS' | 'POINTS' })}
-            className="h-8 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
+            className="shrink-0 rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#0B0E11] px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-[#1C8C7D] focus:outline-none"
           >
             <option value="HOURS">{t('projectSettings.hours')}</option>
             <option value="POINTS">{t('projectSettings.points')}</option>

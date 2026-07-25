@@ -53,6 +53,15 @@ const STATUS_CHIP: Record<string, string> = {
   BACKLOG: 'bg-gray-200 text-gray-500 dark:bg-white/[0.08] dark:text-white/50',
 };
 
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  BACKLOG: 'status.backlog',
+  TODO: 'status.todo',
+  IN_PROGRESS: 'status.inProgress',
+  IN_REVIEW: 'status.inReview',
+  DONE: 'status.done',
+  BLOCKED: 'status.blocked',
+};
+
 export default function SprintsPage() {
   const { t } = useLanguage();
   const { sprintNoun, sprintNounPlural } = useTerminology();
@@ -322,7 +331,7 @@ export default function SprintsPage() {
                             <span
                               className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${STATUS_CHIP[issue.status]}`}
                             >
-                              {t(`status.${issue.status.toLowerCase().replace('_', '')}`) || issue.status}
+                              {t(STATUS_LABEL_KEYS[issue.status]) || issue.status}
                             </span>
                           </button>
                         ))}
