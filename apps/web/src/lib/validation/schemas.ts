@@ -194,7 +194,7 @@ export const updateIssueSchema = z.object({
   description: z.string().max(10000, 'Description must be less than 10,000 characters').optional(),
   type: z.enum(['TASK', 'BUG', 'FEATURE', 'EPIC', 'STORY']).optional(),
   priority: z.enum(['LOWEST', 'LOW', 'MEDIUM', 'HIGH', 'HIGHEST']).optional(),
-  status: z.enum(['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED']).optional(),
+  status: z.enum(['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE', 'BLOCKED']).optional(),
   assigneeId: uuidSchema.nullable().optional(),
   parentId: uuidSchema.nullable().optional(),
   labels: z.array(z.string().max(50)).max(10, 'Maximum 10 labels allowed').optional(),
