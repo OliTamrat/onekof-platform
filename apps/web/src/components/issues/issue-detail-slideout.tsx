@@ -1182,15 +1182,21 @@ function SubtasksSection({ issue }: { issue: Issue }) {
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [subtaskTitle, setSubtaskTitle] = useState('');
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const handleAddSubtask = async () => {
     if (!subtaskTitle.trim()) return;
 
     try {
-      const res = await fetch(`/api/issues/${issue.id}/subtasks`, {
+      const res = await fetch('/api/issues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: subtaskTitle }),
+        body: JSON.stringify({
+          title: subtaskTitle,
+          projectId: issue.project.id,
+          parentId: issue.id,
+          type: 'SUBTASK',
+        }),
       });
 
       if (res.ok) {
@@ -1199,9 +1205,13 @@ function SubtasksSection({ issue }: { issue: Issue }) {
         // Refresh issue data to show new subtask
         await queryClient.invalidateQueries({ queryKey: ['issue', issue.id] });
         await queryClient.invalidateQueries({ queryKey: ['issues'] });
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error('Failed to create subtask', errData.error || 'Please try again');
       }
     } catch (error) {
       console.error('Failed to add subtask:', error);
+      toast.error('Failed to create subtask', 'An unexpected error occurred');
     }
   };
 
