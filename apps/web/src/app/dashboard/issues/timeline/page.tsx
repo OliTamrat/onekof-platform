@@ -56,6 +56,7 @@ export default function IssuesTimelinePage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [timeRange, setTimeRange] = useState<'30d' | '90d' | '6m' | '1y'>('90d');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Read project scope from URL
   const scopedProjectId = typeof window !== 'undefined'
@@ -97,7 +98,14 @@ export default function IssuesTimelinePage() {
   });
 
   // Transform to Project format with calculated metrics
-  const projects: Project[] = Array.from(projectsMap.values()).map((projectGroup) => {
+  const searchLower = searchQuery.trim().toLowerCase();
+  const projects: Project[] = Array.from(projectsMap.values())
+    .filter((projectGroup) =>
+      !searchLower ||
+      projectGroup.name.toLowerCase().includes(searchLower) ||
+      projectGroup.key.toLowerCase().includes(searchLower)
+    )
+    .map((projectGroup) => {
     const projectIssues = projectGroup.issues;
     const totalIssues = projectIssues.length;
     const completedIssues = projectIssues.filter((i: any) => i.status === 'DONE').length;
@@ -194,6 +202,8 @@ export default function IssuesTimelinePage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

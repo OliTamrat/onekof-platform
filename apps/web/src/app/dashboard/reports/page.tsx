@@ -93,7 +93,7 @@ export default function ReportsAndAnalyticsPage() {
         currentTab="summary"
         baseHref="/dashboard/reports"
         showTabs={false}
-        showSearch
+        showSearch={false}
         showFilters
       />
 

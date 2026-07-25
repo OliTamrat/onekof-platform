@@ -36,6 +36,7 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Redirect to signin if not authenticated
   useEffect(() => {
@@ -76,6 +77,11 @@ export default function DocumentsPage() {
     return null;
   }
 
+  const docQuery = searchQuery.trim().toLowerCase();
+  const visibleDocuments = docQuery
+    ? documents.filter((d) => (d.fileName || '').toLowerCase().includes(docQuery))
+    : documents;
+
   // Format date
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -112,6 +118,8 @@ export default function DocumentsPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings
@@ -217,16 +225,18 @@ export default function DocumentsPage() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 text-[#1C8C7D] animate-spin" />
               </div>
-            ) : documents.length === 0 ? (
+            ) : visibleDocuments.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 mx-auto text-slate-400 mb-3" />
                 <p className="text-slate-600 dark:text-white/70">
-                  No documents yet. Upload your first document to get started!
+                  {searchQuery
+                    ? 'No documents match your search.'
+                    : 'No documents yet. Upload your first document to get started!'}
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
-                {documents.map((doc) => (
+                {visibleDocuments.map((doc) => (
                   <div
                     key={doc.id}
                     className="p-4 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] transition-all duration-200 cursor-pointer"

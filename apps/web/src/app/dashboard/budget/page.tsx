@@ -384,7 +384,7 @@ export default function BudgetPage() {
         baseHref="/dashboard/budget"
         customTabs={BUDGET_TABS}
         showTabs
-        showSearch
+        showSearch={false}
         showInsights
         onInsightsToggle={() => setInsightsOpen((v) => !v)}
         insightsOpen={insightsOpen}

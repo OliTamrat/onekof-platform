@@ -41,6 +41,7 @@ export default function IssuesAutomationPage() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedRules, setExpandedRules] = useState<Set<string>>(new Set());
 
   // Fetch projects
@@ -223,9 +224,11 @@ export default function IssuesAutomationPage() {
   ];
 
   // Filter automation rules
+  const ruleQuery = searchQuery.trim().toLowerCase();
   const filteredRules = automationRules.filter(rule => {
     if (selectedCategory !== 'all' && rule.category !== selectedCategory) return false;
     if (selectedStatus !== 'all' && rule.status !== selectedStatus) return false;
+    if (ruleQuery && !rule.name.toLowerCase().includes(ruleQuery)) return false;
     return true;
   });
 
@@ -269,6 +272,8 @@ export default function IssuesAutomationPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

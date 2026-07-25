@@ -86,6 +86,7 @@ export default function IssuesGoalsPage() {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [showCreateGoal, setShowCreateGoal] = useState(false);
   const [expandedGoals, setExpandedGoals] = useState<Set<string>>(new Set());
   const [goalFormData, setGoalFormData] = useState({
@@ -121,7 +122,11 @@ export default function IssuesGoalsPage() {
     enabled: !!session && showCreateGoal,
   });
 
-  const goals: Goal[] = goalsData?.goals || [];
+  const allGoals: Goal[] = goalsData?.goals || [];
+  const goalQuery = searchQuery.trim().toLowerCase();
+  const goals: Goal[] = goalQuery
+    ? allGoals.filter((goal) => goal.title.toLowerCase().includes(goalQuery))
+    : allGoals;
   const teams: Team[] = teamsData?.teams || [];
 
   // Create goal mutation
@@ -312,6 +317,8 @@ export default function IssuesGoalsPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings

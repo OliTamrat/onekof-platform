@@ -85,6 +85,7 @@ export default function IssuesBoardPage() {
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string[]>([]);
   const [filterPriority, setFilterPriority] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleFilterChange = (field: string, values: string[]) => {
     if (field === 'status') setFilterStatus(values);
@@ -135,15 +136,21 @@ export default function IssuesBoardPage() {
       BLOCKED: [],
     };
 
+    const query = searchQuery.trim().toLowerCase();
     issues.forEach((task) => {
       if (filterPriority.length > 0 && !filterPriority.includes(task.priority)) return;
+      if (
+        query &&
+        !task.title.toLowerCase().includes(query) &&
+        !task.key.toLowerCase().includes(query)
+      ) return;
       if (grouped[task.status]) {
         grouped[task.status].push(task);
       }
     });
 
     setOptimisticTasks(grouped);
-  }, [issues, filterPriority]);
+  }, [issues, filterPriority, searchQuery]);
 
   // Update task status mutation
   const updateTaskMutation = useMutation({
@@ -235,6 +242,8 @@ export default function IssuesBoardPage() {
         showTabs
         customTabs={ISSUES_TABS}
         showSearch
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
         showFilters
         showGroupBy
         showViewSettings
