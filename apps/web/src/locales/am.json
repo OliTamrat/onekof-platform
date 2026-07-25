@@ -3052,6 +3052,11 @@
     "updated": "{noun} ተዘምኗል",
     "started": "{noun} ተጀምሯል",
     "deleted": "{noun} ተሰርዟል",
-    "actionFailed": "ተግባሩ አልተሳካም። የፕሮጀክት አስተዳዳሪ ፈቃድ ሊያስፈልግ ይችላል።"
+    "actionFailed": "ተግባሩ አልተሳካም። የፕሮጀክት አስተዳዳሪ ፈቃድ ሊያስፈልግ ይችላል።",
+    "allProjects": "ሁሉም ፕሮጀክቶች",
+    "selectProject": "{nounPlural} ለማቀድ ፕሮጀክት ይምረጡ",
+    "enableHint": "ለዚህ ፕሮጀክት የ{noun} እቅድ ጠፍቷል።",
+    "enable": "የ{noun} እቅድ አንቃ",
+    "enabledToast": "የ{noun} እቅድ ነቅቷል"
   }
 }

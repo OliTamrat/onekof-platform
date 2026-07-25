@@ -120,6 +120,23 @@ export function useDeleteSprint(projectId: string | null) {
   });
 }
 
+/** Flip sprintsEnabled on for a project (server enforces project ADMIN+). */
+export function useEnableSprints(projectId: string | null) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/projects/${projectId}/settings`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sprintsEnabled: true }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Failed to enable sprints');
+      return res.json();
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['project-settings', projectId] }),
+  });
+}
+
 /**
  * Move an issue between backlog and a sprint (or between sprints).
  * Optimistically updates every issues query so both the backlog list and

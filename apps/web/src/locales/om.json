@@ -3058,6 +3058,11 @@
     "updated": "{noun} haaromfameera",
     "started": "{noun} jalqabameera",
     "deleted": "{noun} haqameera",
-    "actionFailed": "Tarkaanfiin hin milkoofne. Mirga bulchaa pirojektii barbaachisuu danda'a."
+    "actionFailed": "Tarkaanfiin hin milkoofne. Mirga bulchaa pirojektii barbaachisuu danda'a.",
+    "allProjects": "Pirojektoota hunda",
+    "selectProject": "{nounPlural} karoorfachuuf pirojektii filadhu",
+    "enableHint": "Karoorri {noun} pirojektii kanaaf cufaadha.",
+    "enable": "Karoora {noun} banuu",
+    "enabledToast": "Karoorri {noun} banameera"
   }
 }

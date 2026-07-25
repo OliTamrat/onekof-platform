@@ -3051,6 +3051,11 @@
     "updated": "{noun} updated",
     "started": "{noun} started",
     "deleted": "{noun} deleted",
-    "actionFailed": "Action failed. You may need project admin rights."
+    "actionFailed": "Action failed. You may need project admin rights.",
+    "allProjects": "All projects",
+    "selectProject": "Pick a project to plan {nounPlural}",
+    "enableHint": "{noun} planning is off for this project.",
+    "enable": "Enable {noun} planning",
+    "enabledToast": "{noun} planning enabled"
   }
 }
