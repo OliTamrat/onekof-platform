@@ -102,9 +102,10 @@ export async function GET(request: NextRequest) {
         : Promise.resolve([] as any[]),
     ]);
 
-    // Build a projectId -> stats map
+    // Build a projectId -> stats map (exclude CANCELLED from totals)
     const statsByProject = new Map<string, { total: number; completed: number; inProgress: number; todo: number }>();
     for (const g of taskGroups as any[]) {
+      if (g.status === 'CANCELLED') continue;
       const stats = statsByProject.get(g.projectId) || { total: 0, completed: 0, inProgress: 0, todo: 0 };
       const count = g._count._all;
       stats.total += count;

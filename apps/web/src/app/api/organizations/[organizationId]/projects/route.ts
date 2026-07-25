@@ -69,7 +69,6 @@ export async function GET(
       include: {
         _count: {
           select: {
-            tasks: true,
             members: true,
           },
         },
@@ -80,6 +79,24 @@ export async function GET(
       ],
       take: 200,
     });
+
+    const projectIds = projects.map((p) => p.id);
+
+    // Count active tasks per project (exclude soft-deleted)
+    const taskCounts = projectIds.length > 0
+      ? await prisma.task.groupBy({
+          by: ['projectId'],
+          where: {
+            projectId: { in: projectIds },
+            deletedAt: null,
+          },
+          _count: { _all: true },
+        })
+      : [];
+
+    const taskCountByProject = new Map(
+      (taskCounts as any[]).map((g) => [g.projectId, g._count._all])
+    );
 
     return NextResponse.json({
       projects: projects.map(p => ({
@@ -110,7 +127,7 @@ export async function GET(
         organizationId: p.organizationId,
         createdAt: p.createdAt.toISOString(),
         updatedAt: p.updatedAt.toISOString(),
-        taskCount: p._count.tasks,
+        taskCount: taskCountByProject.get(p.id) || 0,
         memberCount: p._count.members,
       })),
     });
