@@ -120,6 +120,10 @@ export interface OrganizationSettings {
     requireBudgetApproval: boolean;
     publicProjectsVisible: boolean;
   };
+
+  // Vocabulary rendered by the i18n layer: AGILE says "Sprint",
+  // FORMAL says "Work Cycle" (government/NGO-facing orgs).
+  terminologyScheme?: 'AGILE' | 'FORMAL';
 }
 
 export interface OrganizationPreset {
