@@ -3101,6 +3101,7 @@
     "completionOf": "{done} of {committed} completed",
     "scopeChanges": "Scope changes after start",
     "scopeSummary": "+{added} added · −{removed} removed",
-    "noScopeChanges": "No scope changes after start"
+    "noScopeChanges": "No scope changes after start",
+    "budgetLine": "Budget ({currency}): {planned} planned · {invested} invested"
   }
 }

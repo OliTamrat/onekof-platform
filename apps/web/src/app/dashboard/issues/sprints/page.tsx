@@ -22,6 +22,7 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/components/ui/toast-provider';
 import { useLanguage } from '@/contexts/language-context';
+import { useOrganizationSettings } from '@/contexts/organization-settings-context';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { useTerminology } from '@/hooks/use-terminology';
 import {
@@ -85,6 +86,8 @@ function CompletedSprintInsight({
 }) {
   const { t } = useLanguage();
   const { sprintNoun } = useTerminology();
+  const { settings: orgSettings } = useOrganizationSettings();
+  const budgetCurrency = orgSettings.customization?.budgetCurrency || 'ETB';
 
   const { data } = useQuery({
     queryKey: ['issues', 'sprint-insight', sprint.id],
@@ -157,6 +160,17 @@ function CompletedSprintInsight({
           />
         </div>
       </div>
+
+      {/* Budget snapshots (Tier 2b): written once at completion, org currency */}
+      {(sprint.budgetPlanned != null || sprint.budgetInvested != null) && (
+        <p className="text-xs text-gray-600 dark:text-white/70">
+          {t('sprints.budgetLine', {
+            currency: budgetCurrency,
+            planned: sprint.budgetPlanned != null ? sprint.budgetPlanned.toLocaleString() : '—',
+            invested: sprint.budgetInvested != null ? sprint.budgetInvested.toLocaleString() : '—',
+          })}
+        </p>
+      )}
 
       {/* Scope churn (Tier 2a): explicit even at zero — auditors read zeros */}
       {churnData && (

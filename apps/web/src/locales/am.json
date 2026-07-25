@@ -3102,6 +3102,7 @@
     "completionOf": "ከ{committed} ውስጥ {done} ተጠናቋል",
     "scopeChanges": "ከጅምር በኋላ የወሰን ለውጦች",
     "scopeSummary": "+{added} ታክሏል · −{removed} ተወግዷል",
-    "noScopeChanges": "ከጅምር በኋላ የወሰን ለውጥ የለም"
+    "noScopeChanges": "ከጅምር በኋላ የወሰን ለውጥ የለም",
+    "budgetLine": "በጀት ({currency})፦ {planned} የታቀደ · {invested} የዋለ"
   }
 }

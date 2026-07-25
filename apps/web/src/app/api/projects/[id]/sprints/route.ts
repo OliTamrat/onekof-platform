@@ -53,6 +53,8 @@ export async function GET(
         completedEstimate: s.completedEstimate,
         completedAt: s.completedAt?.toISOString() ?? null,
         rolloverTargetId: s.rolloverTargetId,
+        budgetPlanned: s.budgetPlanned != null ? Number(s.budgetPlanned) : null,
+        budgetInvested: s.budgetInvested != null ? Number(s.budgetInvested) : null,
         taskCount: s._count.tasks,
         createdAt: s.createdAt.toISOString(),
         updatedAt: s.updatedAt.toISOString(),

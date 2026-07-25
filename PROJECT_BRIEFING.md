@@ -59,6 +59,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 
 **Tier 2a SHIPPED (2026-07-25):** scope churn surfaced — `GET /api/sprints/[id]/churn` counts TASK_SPRINT_CHANGED activity in the start→completion window (rollover excluded by design: completion emits no per-task events); pure `summarizeChurn` classifier (gross counting, per-issue in/out/both) with 4 tests; insight panel shows the churn line (explicit zero for auditors) + clickable issue chips opening the slideout. Remaining Tier 2: 2b budget snapshot, 2c branded PDF export.
 
+**Tier 2b SHIPPED (2026-07-25):** budget-per-sprint snapshots — migration `20260727_add_sprint_budget_snapshot` (sprints.budget_planned + budget_invested DECIMAL(19,2), NEEDS DB Migrate run after merge); completion transaction sums TaskBudget estimatedCost/actualCost of delivered issues filtered to org budgetCurrency (mixing currencies rejected by design — FX policy is a documented non-goal), writes both snapshots + records them with currency in the completion OrgAuditLog; sprints API + insight panel budget line. Design refinement recorded in doc §3.1: two snapshots (planned/invested) not one. Also merged: churn window fix #156 (window opens at SPRINT_STARTED event instant, not midnight of startDate). Remaining Tier 2: 2c branded PDF export.
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)
