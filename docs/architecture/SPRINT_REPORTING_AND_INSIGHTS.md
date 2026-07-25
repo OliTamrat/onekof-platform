@@ -1,7 +1,7 @@
 # Onekof — Sprint Reporting & Insights Architecture
 
 **Date:** July 25, 2026
-**Prepared by:** Oli Tamrat (CTO) with Claude
+**Prepared by:** Oli Tamrat, CTO — DAPS Analytics PLC
 **Status:** Tier 1 APPROVED & IMPLEMENTED with this document · Tier 2 DESIGNED — build on founder go-ahead
 **Parent:** SPRINT_AND_SETTINGS_ARCHITECTURE.md (delivered Phases 1–4, July 25, 2026)
 

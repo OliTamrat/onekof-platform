@@ -679,8 +679,8 @@ Do not proceed with deposit regeneration until Oli confirms all three documents 
 
 1. Oli confirms Co-Owner/Co-Founder agreement + DAPS authorization letter in hand
 2. Oli picks trade-secret scope (A/B/C) from decision 1 above
-3. Claude archives the 2026-04-11 deposit folders (decision 2)
-4. Claude builds `generate-eipa-final-deposit.py` and runs it
+3. Archive the 2026-04-11 deposit folders (decision 2)
+4. Build `generate-eipa-final-deposit.py` and run it
 5. Sanity-check single `.docx` opens, restrict-editing holds, SHA-256 matches
 6. Burn CD-R or load read-only USB, attach to filing package
 7. Ship to Ethiopia representative
