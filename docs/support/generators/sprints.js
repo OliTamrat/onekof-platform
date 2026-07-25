@@ -1,0 +1,130 @@
+const { P, B, BOLDLEAD, STEP, H1, H2, table, buildGuide } = require('./lib/guide-lib');
+
+buildGuide({
+  subtitle: 'Sprints & Work Cycles',
+  headerTitle: 'Sprints & Work Cycles',
+  version: '1.1',
+  date: 'July 25, 2026',
+  outFile: 'ONEKOF_SUPPORT_GUIDE_SPRINTS.docx',
+  body: [
+    // ---- 1. Overview ----
+    H1('1. What is a Sprint?'),
+    P('A Sprint is a short, fixed-length work cycle — normally two weeks — in which a project team commits to delivering a specific set of issues and then reviews what was actually delivered. Instead of an endless list of tasks, work is organized into repeatable cycles with a clear start, a clear commitment, and a clear finish. Over time, completed Sprints build a track record that tells managers how much the team reliably delivers per cycle.'),
+    P('Terminology note: organizations serving government and formal institutions can switch Onekof’s vocabulary from "Sprint" to "Work Cycle" (Organization Settings → terminology scheme). Every screen, message, and exported report follows the chosen term automatically — in all five platform languages (English, Amharic, Afaan Oromo, Tigrinya, Somali). In this guide, "Sprint" means both.'),
+
+    // ---- 2. Roles ----
+    H1('2. Who Can Do What'),
+    P('Sprint actions follow project roles. Organization Owners and Admins implicitly hold project-admin rights.'),
+    table([
+      ['Action', 'Required role'],
+      ['View sprints, insights, export the PDF report', 'Any project member'],
+      ['Enable sprint planning for a project', 'Project Admin (or Org Owner/Admin)'],
+      ['Create / edit / plan a sprint (drag issues)', 'Project Member or above'],
+      ['Start a sprint', 'Project Admin (or Org Owner/Admin)'],
+      ['Complete a sprint', 'Project Admin (or Org Owner/Admin)'],
+      ['Delete a sprint (planned only)', 'Project Admin (or Org Owner/Admin)'],
+      ['Change project work configuration (settings)', 'Project Admin (or Org Owner/Admin)'],
+    ]),
+
+    // ---- 3. Key terms ----
+    H1('3. Key Terms'),
+    BOLDLEAD('Backlog — ', 'the project’s pool of not-yet-scheduled issues. Sprint planning means moving issues from the Backlog into a Sprint.'),
+    BOLDLEAD('Committed scope — ', 'the issues (and their total estimate) inside the Sprint at the moment it is started. Onekof records this once, permanently. It never changes afterwards — this is what makes reports honest.'),
+    BOLDLEAD('Delivered — ', 'the issues marked Done when the Sprint is completed.'),
+    BOLDLEAD('Rollover — ', 'the decision made at completion about unfinished issues: return them to the Backlog, or move them into another planned Sprint. The decision is recorded.'),
+    BOLDLEAD('Scope change — ', 'any issue added to or removed from a Sprint after it started. Counted and shown separately — it is the main signal of planning instability.'),
+    BOLDLEAD('Velocity — ', 'the average number of issues delivered per Sprint (rolling average of the last three completed Sprints). Used for forecasting.'),
+    BOLDLEAD('Estimation unit — ', 'hours or story points, set per project (Work configuration). All Sprint totals follow this setting.'),
+    BOLDLEAD('Workflow enforcement — ', 'an optional per-project rule that status changes must follow the allowed-transitions matrix. Off by default.'),
+
+    // ---- 4. Step-by-step ----
+    H1('4. Step-by-Step Guides'),
+    H2('4.1 Enable sprint planning for a project'),
+    P('Projects created from the SCRUM template have sprints on automatically. For any other project:'),
+    STEP('steps0', 'Open Issues → Backlog tab.'),
+    STEP('steps0', 'Pick the project in the project dropdown on the toolbar.'),
+    STEP('steps0', 'A banner appears: "Sprint planning is off for this project" — tap Enable Sprint planning. (Requires project admin; also available under Issues → Settings → Work configuration.)'),
+    H2('4.2 Create and plan a sprint'),
+    STEP('steps1', 'On the Backlog tab (project selected), tap New Sprint (⚡ icon on phones).'),
+    STEP('steps1', 'Give it a name, an optional goal, and optionally dates — dates are not required until you start it.'),
+    STEP('steps1', 'Drag issues from the Backlog section into the sprint’s section. Create new issues first with the + button if the backlog is empty.'),
+    H2('4.3 Start the sprint'),
+    STEP('steps2', 'Tap Start now on the sprint’s header.'),
+    STEP('steps2', 'Confirm the dates — they pre-fill to a two-week cycle. A sprint must contain at least one issue to start.'),
+    STEP('steps2', 'On start, Onekof permanently records the committed scope. Only one sprint per project can be active at a time.'),
+    H2('4.4 Work the sprint'),
+    STEP('steps3', 'Use the Board tab with the "Active sprint only" checkbox to focus on sprint work.'),
+    STEP('steps3', 'Move issues across statuses as work progresses. Quick-closing To Do → Done is allowed.'),
+    STEP('steps3', 'To add work mid-sprint: go to the Backlog tab and drag an issue into the active sprint’s section. It will be counted as a scope change — that is intentional, not an error.'),
+    H2('4.5 Complete the sprint'),
+    STEP('steps4', 'Tap Complete Sprint (Sprints tab panel, or the sprint header on the Backlog tab).'),
+    STEP('steps4', 'Choose where unfinished issues go: Backlog, or another planned sprint.'),
+    STEP('steps4', 'Onekof records what was delivered, the rollover decision, and the budget totals (if the issues carry budget allocations). A completed sprint is permanent history — it cannot be edited or reopened.'),
+    H2('4.6 Read the insights and export the report'),
+    STEP('steps5', 'Sprints tab → select the project → Completed Sprints list.'),
+    STEP('steps5', 'Tap a completed sprint row to expand its insight panel: completion vs committed, duration, scope changes (with clickable issues), per-person contributions, and the budget line.'),
+    STEP('steps5', 'Tap Export PDF (top-right of the panel) — a branded, signable report opens, in the organization’s language, ready to print or share.'),
+
+    // ---- 5. Rules ----
+    H1('5. Rules the System Enforces (and Why)'),
+    P('These are deliberate protections, not bugs. When a user asks "why can’t I…", the answer is usually here.'),
+    BOLDLEAD('Only one active sprint per project. ', 'Enforced by the database itself — a second start is refused with a clear message. Finish the current cycle first.'),
+    BOLDLEAD('An empty sprint cannot be started. ', 'The commitment record would be meaningless. Add at least one issue first.'),
+    BOLDLEAD('An active sprint cannot be deleted. ', 'Once started, a sprint is auditable history in the making. The only exit is Complete Sprint (choose Backlog as rollover to retire a mistaken sprint in two taps). Planned sprints can be deleted — their issues return to the Backlog.'),
+    BOLDLEAD('A completed sprint is immutable. ', 'Its recorded numbers are the permanent report. Corrections happen in the next cycle, never by rewriting history.'),
+    BOLDLEAD('Committed scope is measured at start, not at completion. ', 'Work added mid-sprint shows as a scope change instead of silently inflating the commitment. This keeps velocity and completion rates honest.'),
+    BOLDLEAD('Rollover is not a scope change. ', 'Moving unfinished work out at completion is the recorded closing decision, not planning instability.'),
+    BOLDLEAD('Budget totals are single-currency. ', 'Sprint budget lines sum only allocations in the organization’s budget currency — mixing currencies would produce a meaningless figure.'),
+    BOLDLEAD('Blocked status changes explain themselves. ', 'If workflow enforcement is on and a move is not allowed, the message lists the allowed transitions. Enforcement can be turned off per project in Work configuration.'),
+
+    // ---- 6. FAQ ----
+    H1('6. Troubleshooting & FAQ'),
+    table([
+      ['Question / symptom', 'Answer'],
+      ['"I can’t find the Sprint button."', 'Sprints are planned on the Issues → Backlog tab, after selecting a specific project in the dropdown. The Sprints tab is for the running sprint and reports — it has no drag-and-drop.'],
+      ['"There is no Enable button on the banner."', 'Enabling requires project admin rights (or org Owner/Admin). Ask an admin to enable it, or check Issues → Settings → Work configuration.'],
+      ['"Start is greyed out / it says add at least one issue."', 'The sprint is empty. Drag at least one issue in from the Backlog section, then start.'],
+      ['"I can’t delete this sprint."', 'It is active. Tap Complete Sprint, keep rollover on Backlog, confirm — the sprint retires immediately. Only planned sprints can be deleted.'],
+      ['"Cannot transition from X to Y…" when changing status.', 'Workflow enforcement is on for that project. Follow the listed allowed transitions, or a project admin can turn enforcement off (Issues → Settings → Work configuration).'],
+      ['"Totals show 0 h or 0 pts."', 'The issues have no estimates. Set Estimate (hours) or Story points on the issues; the unit used is the project’s Estimation unit setting.'],
+      ['"The budget line is missing from the report."', 'Budget appears only for sprints completed after budget tracking was introduced, and only when the sprint’s issues carry budget allocations in the org’s currency.'],
+      ['"The report is in the wrong language."', 'The PDF renders in the organization’s language (Organization Settings). Change the org language and export again — reports are regenerated fresh every time.'],
+      ['"Scope changes shows work we planned before starting."', 'Planning moves made before the start moment are not scope changes. If this appears wrong, confirm when the sprint was actually started versus when issues were dragged in.'],
+    ], 3400, 5960),
+
+    // ---- 7. Benefits ----
+    H1('7. Why Use Sprints — the Benefits'),
+    H2('For teams'),
+    B('A clear, short-term focus: everyone knows exactly what this cycle is for.'),
+    B('A repeating rhythm of planning → delivery → review that builds discipline without micromanagement.'),
+    H2('For project managers'),
+    B('Honest committed-vs-delivered numbers every cycle — the commitment is frozen at start, so results cannot be quietly redefined.'),
+    B('Velocity: a data-based answer to "how much can this team deliver in two weeks?", improving every cycle.'),
+    B('Scope-change visibility: mid-cycle additions are measured, making planning problems discussable with evidence.'),
+    H2('For government, NGO, and enterprise leadership'),
+    B('A complete audit trail: starts, completions, rollover decisions, settings changes, and report exports are all permanently logged — aligned with INSA audit expectations.'),
+    B('A signable, branded PDF report per cycle — in the organization’s language, with formal "Work Cycle" terminology available — ready to submit upward.'),
+    B('Budget accountability: planned vs invested amounts recorded per cycle in ETB (or the org currency), frozen at completion.'),
+    B('Works identically on sovereign on-premise deployments — reports render with no internet access required.'),
+
+    // ---- 8. Under the hood ----
+    H1('8. Under the Hood (Senior Support Reference)'),
+    B('Lifecycle: PLANNED → ACTIVE → COMPLETED (terminal). One-active-per-project is enforced by a database constraint, not application code.'),
+    B('Write-once records: committed count/estimate at start; delivered count/estimate, rollover target, and budget planned/invested at completion. Reports never recompute history.'),
+    B('Every lifecycle action emits an activity event; completion, deletion, settings changes, and report exports additionally write organization audit-log entries.'),
+    B('Scope changes are individual task-level events recorded the moment an issue enters or leaves a sprint; reports count them within the started→completed window.'),
+    B('Settings follow the hierarchy Organization → Project: a project setting left "inherited" follows the org default; setting it overrides for that project only.'),
+    B('The PDF report is rendered server-side from stored data on every request — historical sprints always produce current-format reports.'),
+
+    // ---- 9. Navigation map ----
+    H1('9. Where Everything Lives'),
+    table([
+      ['I want to…', 'Go to'],
+      ['Plan sprints (create, drag issues, start, delete planned)', 'Issues → Backlog tab → select project'],
+      ['See the active sprint, complete it, read reports, export PDF', 'Issues → Sprints tab → select project'],
+      ['Focus the board on sprint work', 'Issues → Board tab → "Active sprint only"'],
+      ['Turn sprints on/off, set estimation unit, workflow enforcement', 'Issues → Settings → Project Settings → Work configuration'],
+      ['Switch Sprint / Work Cycle terminology, org language, currency', 'Organization Settings'],
+    ], 4200, 5160),
+  ],
+});
