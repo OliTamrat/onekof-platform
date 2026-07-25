@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   aggregateSprintInsights,
   sprintDurationDays,
+  summarizeChurn,
 } from '@/components/sprints/insights';
 
 const issue = (over: Record<string, unknown> = {}) => ({
@@ -62,6 +63,47 @@ describe('aggregateSprintInsights', () => {
     const result = aggregateSprintInsights([], 'HOURS');
     expect(result.totals.issues).toBe(0);
     expect(result.contributions).toEqual([]);
+  });
+});
+
+describe('summarizeChurn', () => {
+  const S = 'sprint-1';
+
+  it('counts adds and removes for this sprint only', () => {
+    const result = summarizeChurn(S, [
+      { entityId: 'a', metadata: { from: null, to: S } },
+      { entityId: 'b', metadata: { from: S, to: null } },
+      { entityId: 'c', metadata: { from: 'other-sprint', to: 'another' } },
+    ]);
+    expect(result.added).toBe(1);
+    expect(result.removed).toBe(1);
+    expect(result.perIssue.has('c')).toBe(false);
+  });
+
+  it('gross counting: added then removed is 1+1 and direction both', () => {
+    const result = summarizeChurn(S, [
+      { entityId: 'a', metadata: { from: null, to: S } },
+      { entityId: 'a', metadata: { from: S, to: null } },
+    ]);
+    expect(result.added).toBe(1);
+    expect(result.removed).toBe(1);
+    expect(result.perIssue.get('a')).toBe('both');
+  });
+
+  it('a move between two sprints counts once per side', () => {
+    // from other sprint INTO this one — this sprint sees an add only
+    const result = summarizeChurn(S, [
+      { entityId: 'a', metadata: { from: 'other', to: S } },
+    ]);
+    expect(result.added).toBe(1);
+    expect(result.removed).toBe(0);
+    expect(result.perIssue.get('a')).toBe('in');
+  });
+
+  it('tolerates null metadata', () => {
+    const result = summarizeChurn(S, [{ entityId: 'a', metadata: null }]);
+    expect(result.added).toBe(0);
+    expect(result.removed).toBe(0);
   });
 });
 

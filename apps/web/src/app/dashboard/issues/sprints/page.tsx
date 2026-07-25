@@ -76,10 +76,12 @@ function CompletedSprintInsight({
   sprint,
   estimationUnit,
   formatEstimate,
+  onIssueClick,
 }: {
   sprint: Sprint;
   estimationUnit: 'HOURS' | 'POINTS';
   formatEstimate: (n: number | null) => string;
+  onIssueClick?: (issueId: string) => void;
 }) {
   const { t } = useLanguage();
   const { sprintNoun } = useTerminology();
@@ -92,6 +94,20 @@ function CompletedSprintInsight({
       const res = await fetch(`/api/issues?${params}`);
       if (!res.ok) throw new Error('Failed to fetch sprint issues');
       return res.json();
+    },
+  });
+
+  // Scope churn (Tier 2a): adds/removes after start, from the activity trail
+  const { data: churnData } = useQuery({
+    queryKey: ['sprint-churn', sprint.id],
+    queryFn: async () => {
+      const res = await fetch(`/api/sprints/${sprint.id}/churn`);
+      if (!res.ok) throw new Error('Failed to fetch churn');
+      return res.json() as Promise<{
+        added: number;
+        removed: number;
+        issues: { id: string; key: string; title: string; direction: string }[];
+      }>;
     },
   });
 
@@ -141,6 +157,44 @@ function CompletedSprintInsight({
           />
         </div>
       </div>
+
+      {/* Scope churn (Tier 2a): explicit even at zero — auditors read zeros */}
+      {churnData && (
+        <div className="text-xs">
+          {churnData.added + churnData.removed === 0 ? (
+            <p className="text-gray-400 dark:text-white/30">
+              {t('sprints.noScopeChanges')}
+            </p>
+          ) : (
+            <div className="space-y-1.5">
+              <p className="text-gray-600 dark:text-white/70">
+                <span className="font-medium text-gray-700 dark:text-white/85">
+                  {t('sprints.scopeChanges')}:
+                </span>{' '}
+                {t('sprints.scopeSummary', {
+                  added: churnData.added,
+                  removed: churnData.removed,
+                })}
+              </p>
+              {churnData.issues.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {churnData.issues.map((i) => (
+                    <button
+                      key={i.id}
+                      type="button"
+                      onClick={() => onIssueClick?.(i.id)}
+                      className="rounded-full border border-gray-200 px-2 py-0.5 font-mono text-[10px] text-gray-600 hover:border-primary-500 hover:text-primary-600 dark:border-white/[0.08] dark:text-white/60 dark:hover:text-[#2BB5A2]"
+                      title={i.title}
+                    >
+                      {i.direction === 'in' ? '+' : i.direction === 'out' ? '−' : '±'} {i.key}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Contribution table */}
       {insights.contributions.length > 0 && (
@@ -212,6 +266,7 @@ export default function SprintsPage() {
   const [completeDialogSprint, setCompleteDialogSprint] = useState<Sprint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSprints, setExpandedSprints] = useState<Set<string>>(new Set());
+  const [insightIssueId, setInsightIssueId] = useState<string | null>(null);
 
   const toggleExpanded = (id: string) => {
     setExpandedSprints((prev) => {
@@ -557,6 +612,7 @@ export default function SprintsPage() {
                               sprint={s}
                               estimationUnit={estimationUnit}
                               formatEstimate={formatEstimate}
+                              onIssueClick={setInsightIssueId}
                             />
                           )}
                         </div>
@@ -574,6 +630,12 @@ export default function SprintsPage() {
         <IssueDetailSlideout
           issue={selectedIssue as any}
           onClose={() => setSelectedIssue(null)}
+        />
+      )}
+      {insightIssueId && (
+        <IssueDetailSlideout
+          issueId={insightIssueId}
+          onClose={() => setInsightIssueId(null)}
         />
       )}
       {completeDialogSprint && scopedProjectId && (

@@ -3105,6 +3105,9 @@
     "timeSpentLabel": "Yeroo itti bahe",
     "estimatedLabel": "Tilmaamame",
     "unassigned": "Hin ramadamne",
-    "completionOf": "{committed} keessaa {done} xumurame"
+    "completionOf": "{committed} keessaa {done} xumurame",
+    "scopeChanges": "Jijjiirama hammangaa jalqabaa booda",
+    "scopeSummary": "+{added} dabalame · −{removed} haqame",
+    "noScopeChanges": "Jalqabaa booda jijjiiramni hammangaa hin jiru"
   }
 }

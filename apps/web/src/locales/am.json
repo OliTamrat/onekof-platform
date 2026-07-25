@@ -3099,6 +3099,9 @@
     "timeSpentLabel": "የፈጀው ጊዜ",
     "estimatedLabel": "የተገመተ",
     "unassigned": "ያልተመደበ",
-    "completionOf": "ከ{committed} ውስጥ {done} ተጠናቋል"
+    "completionOf": "ከ{committed} ውስጥ {done} ተጠናቋል",
+    "scopeChanges": "ከጅምር በኋላ የወሰን ለውጦች",
+    "scopeSummary": "+{added} ታክሏል · −{removed} ተወግዷል",
+    "noScopeChanges": "ከጅምር በኋላ የወሰን ለውጥ የለም"
   }
 }

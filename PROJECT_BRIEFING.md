@@ -57,6 +57,8 @@ Approved decisions: **2-week default sprint length** · **sprint completion requ
 
 **Sprint Insights Tier 1 SHIPPED + Reporting architecture designed (2026-07-25):** new doc `docs/architecture/SPRINT_REPORTING_AND_INSIGHTS.md` (Tier 1 implemented; Tier 2 designed: budget-per-sprint snapshot via TaskBudget, churn endpoint from TASK_SPRINT_CHANGED, branded PDF export via @react-pdf/renderer with embedded Ge'ez fonts; deliberate non-goal: cross-sprint per-person scoring). Tier 1: completed-sprint rows on Sprints tab expand to insight panel — completion bullet bar vs commitment snapshot (dataviz-validated form: single teal fill on structural track, direct labels; teal+gray paired bars FAILED CVD validation and were rejected), goal + duration chip, per-assignee contribution table (done/time/estimated, unassigned bucketed last) from pure unit-tested aggregator `components/sprints/insights.ts`. 8 new sprints.* keys x 5 locales.
 
+**Tier 2a SHIPPED (2026-07-25):** scope churn surfaced — `GET /api/sprints/[id]/churn` counts TASK_SPRINT_CHANGED activity in the start→completion window (rollover excluded by design: completion emits no per-task events); pure `summarizeChurn` classifier (gross counting, per-issue in/out/both) with 4 tests; insight panel shows the churn line (explicit zero for auditors) + clickable issue chips opening the slideout. Remaining Tier 2: 2b budget snapshot, 2c branded PDF export.
+
 ### Remaining phases (do NOT start without founder go-ahead per phase)
 - **Phase 2:** Sprint planning UI on backlog page (sprint sections, drag between, create/start), Sprint tab gated by `sprintsEnabled`; terminology i18n mapping
 - **Phase 3:** Active-sprint board filter, completion dialog w/ rollover, sprint report (committed vs completed, velocity)
