@@ -3090,6 +3090,7 @@
     "velocityLabel": "Xawaare: {count} halkii {noun}",
     "committedShort": "La ballanqaaday",
     "completedShort": "La dhammeeyay",
-    "activeOnly": "{noun} firfircoon oo keliya"
+    "activeOnly": "{noun} firfircoon oo keliya",
+    "emptyStartBlocked": "Kahor intaadan bilaabin {noun}-kan, ugu yaraan hal arrin ka soo dar tabka Backlog."
   }
 }

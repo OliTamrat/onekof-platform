@@ -59,6 +59,18 @@ export async function POST(
       );
     }
 
+    // An empty sprint would freeze a meaningless commitment snapshot of 0 —
+    // require at least one issue before starting.
+    const memberCount = await prisma.task.count({
+      where: { sprintId: params.id, deletedAt: null },
+    });
+    if (memberCount === 0) {
+      return NextResponse.json(
+        { error: 'Sprint has no issues. Add at least one issue before starting.', code: 'EMPTY_SPRINT' },
+        { status: 400 }
+      );
+    }
+
     const settings = await resolveProjectSettings(sprint.projectId);
     const estimateField = settings?.estimationUnit === 'POINTS' ? 'storyPoints' : 'estimate';
 

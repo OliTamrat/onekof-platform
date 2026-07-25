@@ -3090,6 +3090,7 @@
     "velocityLabel": "ፍጥነት፦ {count} በ{noun}",
     "committedShort": "የታቀደ",
     "completedShort": "የተጠናቀቀ",
-    "activeOnly": "ንቁ {noun} ብቻ"
+    "activeOnly": "ንቁ {noun} ብቻ",
+    "emptyStartBlocked": "ይህን {noun} ከመጀመርዎ በፊት ከባክሎግ ትር ቢያንስ አንድ ጉዳይ ያክሉ።"
   }
 }

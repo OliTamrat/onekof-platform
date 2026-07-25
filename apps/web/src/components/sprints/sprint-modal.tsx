@@ -310,6 +310,8 @@ export function StartSprintDialog({
   const [endDate, setEndDate] = useState(sprint.endDate?.slice(0, 10) ?? twoWeeks);
 
   const pending = updateMutation.isPending || startMutation.isPending;
+  // Empty sprints can't start — the commitment snapshot would be meaningless
+  const isEmpty = sprint.taskCount === 0;
 
   const handleStart = async () => {
     try {
@@ -343,6 +345,12 @@ export function StartSprintDialog({
           </DialogDescription>
         </DialogHeader>
 
+        {isEmpty && (
+          <p className="rounded-md bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
+            {t('sprints.emptyStartBlocked', { noun: sprintNoun })}
+          </p>
+        )}
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-white/85">
@@ -374,7 +382,7 @@ export function StartSprintDialog({
           </Button>
           <Button
             onClick={handleStart}
-            disabled={pending || !startDate || !endDate || endDate <= startDate}
+            disabled={pending || isEmpty || !startDate || !endDate || endDate <= startDate}
             className="bg-primary-500 hover:bg-primary-600 text-white"
           >
             <Play className="mr-1.5 h-3.5 w-3.5" />

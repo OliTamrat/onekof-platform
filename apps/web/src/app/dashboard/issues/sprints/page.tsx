@@ -336,8 +336,10 @@ export default function SprintsPage() {
                           </button>
                         ))}
                         {sprintIssues.length === 0 && (
+                          /* This page has no drag targets — planning happens
+                             on the Backlog tab, so point there */
                           <p className="py-3 text-center text-xs text-gray-400 dark:text-white/30">
-                            {t('sprints.emptySection', { noun: sprintNoun })}
+                            {t('sprints.planHint', { nounPlural: sprintNounPlural })}
                           </p>
                         )}
                       </div>
