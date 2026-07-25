@@ -43,6 +43,15 @@ These rules apply to any contributor or AI coding assistant working on this code
 - When adding new keys, add to ALL 5 locale files
 - Mobile nav must include language switcher (in "More" menu)
 
+## Sprint & Settings Rules
+
+- **Settings resolution**: NEVER read `ProjectSettings`/`OrganizationSettings` sprint-workflow fields directly — always go through `resolveProjectSettings()` in `apps/web/src/lib/settings/resolve.ts`. Null at project level means "inherit from org", and only that utility encodes the rule.
+- **Sprint lifecycle**: PLANNED → ACTIVE → COMPLETED, terminal. One ACTIVE sprint per project is enforced by the DB partial index `sprints_one_active_per_project` — catch Prisma `P2002` and return 409, never pre-check with a query.
+- **Snapshots are write-once**: `committed*` at start, `completed*` at completion. Never recompute or backfill them.
+- **Sprint completion / deletion / settings changes** must emit `OrgAuditLog` entries (INSA). Sprint membership changes on tasks emit `TASK_SPRINT_CHANGED` activity — reports depend on it.
+- **Entity IDs are cuids, not UUIDs** — validate route/body IDs with the shared `uuidSchema` (cuid-compatible token validator) from `lib/validation/schemas.ts`, never `z.string().uuid()`.
+- Architecture reference: `docs/architecture/SPRINT_AND_SETTINGS_ARCHITECTURE.md` (approved v1.2). Phases 2-4 need founder go-ahead per phase.
+
 ## Security Rules
 
 - **RBAC enforcement**: `/api/projects` and `/api/issues` apply `buildProjectAccessFilter` based on org role + project visibility

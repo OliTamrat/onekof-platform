@@ -31,7 +31,14 @@ export const nameSchema = z
   .trim()
   .regex(/^[a-zA-Z\s'-]+$/, 'Name can only contain letters, spaces, hyphens, and apostrophes');
 
-export const uuidSchema = z.string().uuid('Invalid ID format');
+// Entity IDs are Prisma cuids (e.g. "cm3k9x2ab0001lz08qwerty12"), not RFC
+// UUIDs — a strict .uuid() validator rejects every real ID in the database.
+// Accept cuid/cuid2/uuid shapes: opaque url-safe token, bounded length.
+export const uuidSchema = z
+  .string()
+  .min(10, 'Invalid ID format')
+  .max(40, 'Invalid ID format')
+  .regex(/^[a-zA-Z0-9_-]+$/, 'Invalid ID format');
 
 export const urlSchema = z.string().url('Invalid URL format').max(2048, 'URL too long');
 
@@ -201,6 +208,72 @@ export const updateIssueSchema = z.object({
   dueDate: z.string().datetime().nullable().optional(),
   estimate: z.number().int().min(0).max(1000).optional(),
   timeSpent: z.number().int().min(0).max(1000).optional(),
+  sprintId: uuidSchema.nullable().optional(), // null = move back to backlog
+  sprintOrder: z.number().int().min(0).nullable().optional(),
+  storyPoints: z.number().int().min(0).max(1000).nullable().optional(),
+});
+
+// Sprint Schemas
+
+export const createSprintSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(120, 'Name must be less than 120 characters').trim(),
+  goal: z.string().max(2000, 'Goal must be less than 2,000 characters').nullable().optional(),
+  startDate: z.string().datetime().nullable().optional(),
+  endDate: z.string().datetime().nullable().optional(),
+});
+
+export const updateSprintSchema = z.object({
+  name: z.string().min(1).max(120).trim().optional(),
+  goal: z.string().max(2000).nullable().optional(),
+  startDate: z.string().datetime().nullable().optional(),
+  endDate: z.string().datetime().nullable().optional(),
+  position: z.number().int().min(0).optional(),
+});
+
+export const completeSprintSchema = z.object({
+  // Where unfinished items go: 'backlog' or the id of another non-completed sprint
+  rolloverTo: z.union([z.literal('backlog'), uuidSchema]),
+});
+
+// Project Settings Schemas (nullable = inherit from organization)
+
+export const updateProjectSettingsSchema = z.object({
+  sprintsEnabled: z.boolean().nullable().optional(),
+  estimationUnit: z.enum(['HOURS', 'POINTS']).nullable().optional(),
+  enforceWorkflow: z.boolean().nullable().optional(),
+  workflowTransitions: z.record(z.array(z.string().max(30)).max(10)).nullable().optional(),
+});
+
+// Organization Settings Schema — guards the full-object PUT that previously
+// dereferenced body.features.* unvalidated (500s on malformed input).
+
+export const organizationSettingsPutSchema = z.object({
+  enabledSections: z.array(z.string().max(50)).max(30),
+  features: z.object({
+    budget: z.record(z.boolean()),
+    teams: z.record(z.boolean()),
+    goals: z.record(z.boolean()),
+    automations: z.record(z.boolean()),
+    documents: z.record(z.boolean()),
+    docs: z.record(z.boolean()),
+    aiAssistant: z.boolean(),
+    analytics: z.boolean(),
+    integrations: z.boolean(),
+    customBranding: z.boolean(),
+  }),
+  customization: z.object({
+    primaryColor: z.string().max(20),
+    logoUrl: z.string().max(2048).nullable().optional(),
+    budgetCurrency: z.string().max(10),
+    fiscalYearStart: z.number().int().min(1).max(12),
+    dateFormat: z.string().max(20),
+    language: z.string().max(10),
+  }),
+  permissions: z.object({
+    allowMemberInvites: z.boolean(),
+    requireBudgetApproval: z.boolean(),
+    publicProjectsVisible: z.boolean(),
+  }),
 });
 
 // Budget Schemas

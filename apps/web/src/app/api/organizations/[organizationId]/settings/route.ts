@@ -3,8 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
-import { avatarUrlSchema } from '@/lib/validation/schemas';
+import { avatarUrlSchema, organizationSettingsPutSchema } from '@/lib/validation/schemas';
 import type { OrganizationSettings } from '@/types/organization-settings';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -146,7 +147,14 @@ export async function PUT(
       );
     }
 
-    const body: OrganizationSettings = await req.json();
+    const parsed = organizationSettingsPutSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid settings payload', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+    const body = parsed.data as unknown as OrganizationSettings;
 
     // 🔒 SECURITY: Validate logo URL to prevent Blind SSRF
     if (body.customization?.logoUrl) {
@@ -158,6 +166,10 @@ export async function PUT(
         );
       }
     }
+
+    const previous = await db.organizationSettings.findUnique({
+      where: { organizationId },
+    });
 
     // Update or create settings
     const settings = await db.organizationSettings.upsert({
@@ -207,6 +219,20 @@ export async function PUT(
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
       },
+    });
+
+    // INSA audit trail: org settings changes are privileged actions
+    logOrgAction({
+      organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: membership.role,
+      action: OrgActions.ORG_SETTINGS_UPDATED,
+      resource: 'organization',
+      resourceId: organizationId,
+      before: previous ? { enabledSections: previous.enabledSections, aiAssistant: previous.aiAssistant, analytics: previous.analytics, integrations: previous.integrations, customBranding: previous.customBranding, language: previous.language } : undefined,
+      after: { enabledSections: settings.enabledSections, aiAssistant: settings.aiAssistant, analytics: settings.analytics, integrations: settings.integrations, customBranding: settings.customBranding, language: settings.language },
+      request: req,
     });
 
     // Convert back to TypeScript format

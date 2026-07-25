@@ -71,6 +71,13 @@ export const OrgActions = {
   EXPENSE_DELETED:  'EXPENSE_DELETED',
   BUDGET_DELETED:   'BUDGET_DELETED',
 
+  // Sprints (completion writes permanent snapshots; deletion is destructive)
+  SPRINT_COMPLETED: 'SPRINT_COMPLETED',
+  SPRINT_DELETED:   'SPRINT_DELETED',
+
+  // Project settings
+  PROJECT_SETTINGS_UPDATED: 'PROJECT_SETTINGS_UPDATED',
+
   // Org settings
   ORG_SETTINGS_UPDATED: 'ORG_SETTINGS_UPDATED',
   ORG_MEMBER_ROLE_CHANGED: 'ORG_MEMBER_ROLE_CHANGED',
@@ -87,6 +94,8 @@ export type OrgResource =
   | 'team_member'
   | 'issue'
   | 'task'
+  | 'sprint'
+  | 'project_settings'
   | 'goal'
   | 'document'
   | 'automation'

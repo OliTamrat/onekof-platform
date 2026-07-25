@@ -128,6 +128,13 @@ model OrganizationSettings {
   requireBudgetApproval  Boolean @default(true) @map("require_budget_approval")
   publicProjectsVisible  Boolean @default(false) @map("public_projects_visible")
 
+  // Sprint & workflow defaults — the org layer of the settings hierarchy.
+  // ProjectSettings columns are nullable; null falls through to these values.
+  sprintsEnabledDefault  Boolean           @default(false) @map("sprints_enabled_default")
+  estimationUnitDefault  EstimationUnit    @default(HOURS) @map("estimation_unit_default")
+  enforceWorkflowDefault Boolean           @default(false) @map("enforce_workflow_default")
+  terminologyScheme      TerminologyScheme @default(AGILE) @map("terminology_scheme")
+
   // Metadata
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -418,11 +425,13 @@ model Project {
   createdBy String    @map("created_by")
 
   // Relations
-  tasks   Task[]
-  members ProjectMember[]
-  teams   ProjectTeam[]
-  goals   GoalProject[]
-  budget  Budget? // 🚀 NEW: 1:1 Budget relationship
+  tasks           Task[]
+  members         ProjectMember[]
+  teams           ProjectTeam[]
+  goals           GoalProject[]
+  budget          Budget? // 🚀 NEW: 1:1 Budget relationship
+  sprints         Sprint[]
+  projectSettings ProjectSettings? // 1:1 override layer of the settings hierarchy
 
   @@unique([organizationId, key])
   // 🚀 PERFORMANCE: Project query indexes
@@ -459,6 +468,95 @@ model ProjectMember {
 
   @@unique([projectId, userId])
   @@map("project_members")
+  @@schema("public")
+}
+
+// ============================================================================
+// SPRINTS & PROJECT SETTINGS
+// See docs/architecture/SPRINT_AND_SETTINGS_ARCHITECTURE.md (approved v1.2)
+// ============================================================================
+
+// Sprint lifecycle: PLANNED → ACTIVE → COMPLETED (terminal, no reopen).
+// One ACTIVE sprint per project is enforced by a partial unique index
+// (sprints_one_active_per_project) — SQL-only, Prisma can't express it.
+model Sprint {
+  id        String  @id @default(cuid())
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  name     String
+  goal     String?
+  status   SprintStatus @default(PLANNED)
+  position Int          @default(0) // ordering among a project's sprints
+
+  startDate DateTime? @map("start_date") // required to START, not to create
+  endDate   DateTime? @map("end_date")
+
+  // Snapshots: committed* written once at START (what the team signed up for),
+  // completed* written once at COMPLETION. Never recomputed — velocity and
+  // scope-churn reporting stay honest plain queries.
+  committedCount    Int?      @map("committed_count")
+  committedEstimate Int?      @map("committed_estimate") // in the project's effective EstimationUnit
+  completedCount    Int?      @map("completed_count")
+  completedEstimate Int?      @map("completed_estimate")
+  completedAt       DateTime? @map("completed_at")
+  rolloverTargetId  String?   @map("rollover_target_id") // sprint unfinished items moved to (null = backlog)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String    @map("created_by")
+
+  tasks Task[]
+
+  @@index([projectId, status, deletedAt])
+  @@index([projectId, position])
+  @@map("sprints")
+  @@schema("public")
+}
+
+// Project-level settings overrides. Every nullable column means
+// "inherit from OrganizationSettings" — the ProjectMember.budgetAccess
+// pattern generalized. Resolution happens only in lib/settings/resolve.ts.
+model ProjectSettings {
+  id        String  @id @default(cuid())
+  projectId String  @unique @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  sprintsEnabled      Boolean?        @map("sprints_enabled")
+  estimationUnit      EstimationUnit? @map("estimation_unit")
+  enforceWorkflow     Boolean?        @map("enforce_workflow")
+  workflowTransitions Json?           @map("workflow_transitions") // null = engine default table
+  extra               Json            @default("{}")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("project_settings")
+  @@schema("public")
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+
+  @@schema("public")
+}
+
+enum EstimationUnit {
+  HOURS
+  POINTS
+
+  @@schema("public")
+}
+
+// Vocabulary rendered by the i18n layer: AGILE says "Sprint",
+// FORMAL says "Work Cycle" (government/NGO-facing orgs).
+enum TerminologyScheme {
+  AGILE
+  FORMAL
+
   @@schema("public")
 }
 
@@ -502,6 +600,13 @@ model Task {
   // Backlog ordering (drag-to-prioritize in backlog view)
   backlogOrder Int? @map("backlog_order")
 
+  // Sprint membership (null = backlog). Deleting a sprint returns tasks
+  // to the backlog via SetNull — never destroys them.
+  sprintId    String? @map("sprint_id")
+  sprint      Sprint? @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  sprintOrder Int?    @map("sprint_order") // ordering inside a sprint
+  storyPoints Int?    @map("story_points") // estimate stays hours; settings pick which is used
+
   // Metadata
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -529,6 +634,7 @@ model Task {
   @@index([priority, status, deletedAt]) // Priority-based views
   @@index([parentId]) // Subtask lookups
   @@index([projectId, status, backlogOrder]) // Backlog ordering
+  @@index([sprintId, sprintOrder]) // Sprint board ordering
   @@map("tasks")
   @@schema("public")
 }
@@ -1245,6 +1351,17 @@ enum ActivityType {
   AUTOMATION_CREATED
   AUTOMATION_EXECUTED
   AUTOMATION_FAILED
+
+  // Sprints
+  SPRINT_CREATED
+  SPRINT_UPDATED
+  SPRINT_STARTED
+  SPRINT_COMPLETED
+  SPRINT_DELETED
+  TASK_SPRINT_CHANGED // task moved into/out of a sprint (scope churn signal)
+
+  // Settings
+  PROJECT_SETTINGS_CHANGED
 
   @@schema("public")
 }
