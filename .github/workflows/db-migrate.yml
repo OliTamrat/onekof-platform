@@ -45,10 +45,32 @@ jobs:
           DATABASE_URL: ${{ secrets.DIRECT_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
-      - name: Apply idempotent migration SQL
-        run: psql "$DIRECT_URL" -v ON_ERROR_STOP=1 -f "packages/database/prisma/migrations/${{ inputs.migration }}/migration.sql"
+      # The DB password contains characters psql's URL parser mis-splits on
+      # (unencoded '@'), so decode the URL with Node's WHATWG parser and hand
+      # psql discrete PG* variables instead of the raw URL.
+      - name: Export PG connection variables
+        run: |
+          node -e '
+            const u = new URL(process.env.DIRECT_URL);
+            const out = [
+              ["PGHOST", u.hostname],
+              ["PGPORT", u.port || "5432"],
+              ["PGUSER", decodeURIComponent(u.username)],
+              ["PGPASSWORD", decodeURIComponent(u.password)],
+              ["PGDATABASE", u.pathname.replace(/^\//, "") || "postgres"],
+              ["PGSSLMODE", "require"],
+            ];
+            const fs = require("fs");
+            for (const [k, v] of out) {
+              fs.appendFileSync(process.env.GITHUB_ENV, `${k}=${v}\n`);
+              console.log(`::add-mask::${v}`);
+            }
+          '
         env:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      - name: Apply idempotent migration SQL
+        run: psql -v ON_ERROR_STOP=1 -f "packages/database/prisma/migrations/${{ inputs.migration }}/migration.sql"
 
       - name: Record migration as applied
         working-directory: packages/database
@@ -59,14 +81,16 @@ jobs:
 
       - name: Verify objects
         run: |
+          echo "--- recorded migrations (latest 6):"
+          psql -c "SELECT migration_name, finished_at FROM _prisma_migrations ORDER BY started_at DESC LIMIT 6;"
           echo "--- sprints indexes:"
-          psql "$DIRECT_URL" -c "SELECT indexname FROM pg_indexes WHERE schemaname='public' AND tablename='sprints';"
+          psql -c "SELECT indexname FROM pg_indexes WHERE schemaname='public' AND tablename='sprints';"
           echo "--- new tasks columns:"
-          psql "$DIRECT_URL" -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='tasks' AND (column_name LIKE 'sprint%' OR column_name='story_points');"
+          psql -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='tasks' AND (column_name LIKE 'sprint%' OR column_name='story_points');"
           echo "--- project_settings table:"
-          psql "$DIRECT_URL" -c "SELECT count(*) AS project_settings_exists FROM information_schema.tables WHERE table_schema='public' AND table_name='project_settings';"
+          psql -c "SELECT count(*) AS project_settings_exists FROM information_schema.tables WHERE table_schema='public' AND table_name='project_settings';"
           echo "--- organization_settings new columns:"
-          psql "$DIRECT_URL" -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='organization_settings' AND column_name IN ('sprints_enabled_default','estimation_unit_default','enforce_workflow_default','terminology_scheme');"
+          psql -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='organization_settings' AND column_name IN ('sprints_enabled_default','estimation_unit_default','enforce_workflow_default','terminology_scheme');"
         env:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
