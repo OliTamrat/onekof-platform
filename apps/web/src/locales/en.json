@@ -1513,7 +1513,8 @@
     "materialsDesc": "Manage research materials and resources",
     "inspectionsDesc": "Schedule and track site inspections and surveys",
     "medicalDesc": "Manage patient care, clinical operations, and medical records",
-    "coursesDesc": "Manage courses, cohorts, and learning programs"
+    "coursesDesc": "Manage courses, cohorts, and learning programs",
+    "classifiedNote": "New items here are classified as {label}"
   },
   "operationsPage": {
     "title": "Operations",

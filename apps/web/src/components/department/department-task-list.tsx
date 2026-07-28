@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { useWorkspace } from '@/contexts/workspace-context';
+import { isDepartment, isWorkstreamOf } from '@/lib/departments/catalog';
 import { useToast } from '@/components/ui/toast-provider';
 
 interface Task {
@@ -25,6 +26,8 @@ interface Task {
   assignee?: { id: string; name: string; avatar?: string };
   project: { id: string; name: string; key: string; color: string };
   labels?: string[];
+  department?: string | null;
+  workstream?: string | null;
 }
 
 type DepartmentCategory = 'development' | 'marketing' | 'operations' | 'research' | 'knowledge' | 'general';
@@ -118,6 +121,19 @@ export function DepartmentTaskList({
   // returns nothing for members, causing silent create failures.
   const { projects: workspaceProjects } = useWorkspace();
 
+  // Phase 2 (D1/D4): this page IS a classification lens. The department is
+  // the page's category (validated against the catalog); the workstream is
+  // the legacy label that names one of that department's workstreams.
+  const department = isDepartment(category) ? category : null;
+  const workstream = department
+    ? defaultLabels.find((l) => isWorkstreamOf(department, l)) ?? null
+    : null;
+  // Human label: localized department name, plus the page title for
+  // workstream pages (the title IS the workstream's display name)
+  const classificationLabel = department
+    ? (workstream ? `${t('sidebar.' + department)} / ${title}` : t('sidebar.' + department))
+    : '';
+
   const { data: issuesData, isLoading } = useQuery<{ issues?: Task[] }>({
     queryKey: ['issues', 'department', title, scopedProjectId],
     queryFn: async () => {
@@ -143,7 +159,10 @@ export function DepartmentTaskList({
           projectId,
           status: 'TODO',
           priority: 'MEDIUM',
-          labels: defaultLabels,
+          // D3: labels no longer carry structure — classification does
+          ...(department
+            ? { department, ...(workstream ? { workstream } : {}) }
+            : { labels: defaultLabels }),
         }),
       });
       if (!res.ok) throw new Error('Failed to create task');
@@ -162,13 +181,24 @@ export function DepartmentTaskList({
 
   const allTasks = useMemo(() => {
     const tasks = issuesData?.issues || [];
+    if (department) {
+      return tasks.filter(t => {
+        // Field-first (D1): classified issues match on the fields exactly
+        if (t.department != null) {
+          return t.department === department && (!workstream || t.workstream === workstream);
+        }
+        // D4 fallback (one release): unclassified issues keep matching by
+        // their legacy labels so deploy order can never hide work
+        return !!t.labels?.some(l => defaultLabels.includes(l));
+      });
+    }
     if (defaultLabels.length === 0) return tasks;
     // Only show issues that have at least one matching label
     return tasks.filter(t =>
       t.labels && t.labels.length > 0 &&
       t.labels.some(l => defaultLabels.includes(l))
     );
-  }, [issuesData, defaultLabels]);
+  }, [issuesData, defaultLabels, department, workstream]);
 
   // Apply search + filters
   const filteredTasks = useMemo(() => {
@@ -237,7 +267,7 @@ export function DepartmentTaskList({
       {/* Unified Header with Navigation + Controls */}
       <UnifiedPageHeader
         title={title}
-        description={description}
+        description={department ? `${description} · ${t('departments.classifiedNote', { label: classificationLabel })}` : description}
         icon={<Icon className="h-6 w-6" />}
         iconColor={iconColor}
         currentTab={currentTab}
