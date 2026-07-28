@@ -20,6 +20,7 @@ import type { ProjectType } from '@/lib/project-navigation';
 import { Button } from '@/components/ui/button';
 import { SkeletonKanban } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/language-context';
+import { DepartmentChip } from '@/components/department/department-chip';
 import { useWorkspace } from '@/contexts/workspace-context';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 
@@ -32,6 +33,8 @@ interface Issue {
   type: 'TASK' | 'STORY' | 'BUG' | 'EPIC' | 'SUBTASK';
   status: 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED';
   priority: 'HIGHEST' | 'HIGH' | 'MEDIUM' | 'LOW' | 'LOWEST';
+  department?: string | null;
+  workstream?: string | null;
   assignee?: {
     id: string;
     name: string;
@@ -446,6 +449,7 @@ function IssueCard({ issue }: { issue: Issue }) {
             +{issue.subtaskCount} sub
           </span>
         )}
+        <DepartmentChip department={issue.department} workstream={issue.workstream} />
       </div>
 
       {/* Title */}

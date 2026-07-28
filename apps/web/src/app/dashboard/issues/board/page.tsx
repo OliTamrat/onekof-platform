@@ -13,6 +13,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { DepartmentChip } from '@/components/department/department-chip';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
@@ -62,6 +63,8 @@ interface Task {
   };
   tags?: string[];
   sprintId?: string | null;
+  department?: string | null;
+  workstream?: string | null;
 }
 
 interface Column {
@@ -383,6 +386,7 @@ export default function IssuesBoardPage() {
                                         <div className="flex items-center gap-2">
                                           <div className={`h-2 w-2 rounded-full ${getPriorityColor(task.priority)}`} />
                                           <span className="text-xs font-semibold text-primary-500">{task.key}</span>
+                                          <DepartmentChip department={task.department} workstream={task.workstream} />
                                         </div>
                                         {dueDate && (
                                           <div className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
