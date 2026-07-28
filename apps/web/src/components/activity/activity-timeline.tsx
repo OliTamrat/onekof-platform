@@ -275,8 +275,8 @@ export function ActivityTimeline({
                       className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D] cursor-pointer"
                     >
                       {/* Header */}
-                      <div className="flex items-start justify-between gap-4 mb-2">
-                        <div className="flex items-center gap-3 flex-1">
+                      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 mb-2">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
                           {/* User Avatar */}
                           {activity.user?.avatar ? (
                             <img
@@ -307,7 +307,7 @@ export function ActivityTimeline({
                         </div>
 
                         {/* Timestamp */}
-                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 shrink-0">
+                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 shrink-0 whitespace-nowrap ml-auto">
                           <Clock className="h-3.5 w-3.5" />
                           <span>{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
                         </div>
