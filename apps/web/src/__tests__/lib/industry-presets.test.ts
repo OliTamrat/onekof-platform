@@ -142,3 +142,25 @@ describe('settings PUT schema accepts preset payloads (Save-failed regression)',
     }
   });
 });
+
+describe('live onboarding org types all resolve to a preset', () => {
+  // These ids come from apps/web/src/app/onboarding/page.tsx — the flow
+  // real users go through. A mismatch here means a customer picks
+  // "Healthcare" and silently receives the Business edition.
+  const LIVE_ONBOARDING_TYPES = [
+    'personal', 'government', 'private', 'ngo', 'education', 'construction', 'healthcare',
+  ];
+
+  it('every live onboarding type maps to an intended preset', () => {
+    for (const id of LIVE_ONBOARDING_TYPES) {
+      expect(getPresetForOrgType(id).name, id).toBeTruthy();
+    }
+  });
+
+  it('the sector-specific types map to their own editions, not the fallback', () => {
+    expect(getPresetForOrgType('healthcare').name).toBe('Healthcare');
+    expect(getPresetForOrgType('government').name).toBe('Ministry / Government');
+    expect(getPresetForOrgType('ngo').name).toBe('NGO / Non-Profit');
+    expect(getPresetForOrgType('education').name).toBe('Education');
+  });
+});

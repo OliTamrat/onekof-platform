@@ -318,6 +318,12 @@ export const ORGANIZATION_PRESETS = {
   healthcare: HEALTHCARE_PRESET,
   hospital: HEALTHCARE_PRESET,
   clinic: HEALTHCARE_PRESET,
+  // The live onboarding (/onboarding) offers these ids too. They were
+  // resolving to Business only via the unknown-type fallback; mapping
+  // them explicitly makes the intent visible and testable.
+  private: BUSINESS_PRESET,
+  personal: BUSINESS_PRESET,
+  construction: BUSINESS_PRESET,
 } as const;
 
 /**

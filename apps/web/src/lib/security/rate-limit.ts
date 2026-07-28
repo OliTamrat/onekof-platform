@@ -114,6 +114,16 @@ export const rateLimitConfigs = {
     windowMs: 60 * 60 * 1000,
   },
 
+  // Workspace creation - authenticated, keyed PER USER (not per IP).
+  // An IP-keyed limit punishes whole offices behind one NAT: a ministry
+  // with 200 staff would share 3 workspaces/hour. Per user it stays
+  // abuse-resistant without blocking legitimate multi-workspace setup.
+  orgCreate: {
+    requests: 10,
+    window: '60m', // 10 workspaces per hour per user
+    windowMs: 60 * 60 * 1000,
+  },
+
   // Data mutations (POST/PATCH/DELETE on issues, projects, etc.)
   dataMutation: {
     requests: 60,
@@ -150,6 +160,7 @@ const rateLimiters = {
   emailVerification: createRateLimiter('emailVerification'),
   api: createRateLimiter('api'),
   signup: createRateLimiter('signup'),
+  orgCreate: createRateLimiter('orgCreate'),
   dataMutation: createRateLimiter('dataMutation'),
 };
 
