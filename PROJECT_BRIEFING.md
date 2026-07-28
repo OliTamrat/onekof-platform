@@ -1,11 +1,18 @@
 # Onekof Web Platform — Session Briefing
-> Last updated: 2026-07-25 — Sprint & Settings foundation Phase 1 (PR #144), architecture doc approved v1.2
+> Last updated: 2026-07-28 — Department & Workstream architecture COMPLETE (D1-D9, PRs #161-#171); Sprint & Settings + Reporting complete
 
 ---
 
-## CURRENT STATUS (2026-07-23)
+## CURRENT STATUS (2026-07-28)
 
-### Master HEAD: `179ad21` (567 commits, 136 PRs merged)
+### Master HEAD: `8fead29` (609 commits, 148 PRs merged)
+> Verified 2026-07-28: master contains every merged PR; the working branch
+> `claude/audit-multilang-structure-sdvvS` is content-identical to master
+> (stale ref only). One PR remains open: **#160** (draft, `remove-k6-tests`)
+> — `tests/k6/` is still present in master, so that PR is genuinely pending.
+> ~42 other remote branches are stale refs from squash-merged PRs; their
+> content is in master. Recommend enabling repo setting "Automatically
+> delete head branches" and pruning the rest (see TERMINAL AGENT HANDOFF).
 ### Git Tags: `v0.2.0` → `v1.0.0` → `v1.2.0` → `v1.3.0`
 ### Docker: `ghcr.io/olitamrat/onekof-web:1.3.0` (latest)
 
@@ -22,6 +29,48 @@ INSA security code (P1-P6): all implemented and certified.
 - **onekof.et domain:** SECURED
 - **Deploy script:** `deploy-et.sh` (online + offline modes)
 - **Staging:** Remains on Vercel (free, no sovereignty impact — see briefing doc Section 7)
+
+---
+
+## NEXT TODO (priority order, as of 2026-07-28)
+
+**Founder actions (only you can do these):**
+1. **Test the completed architecture on production** — new workspace shows the org-type question; existing orgs show the "choose your organization type" banner; department chips appear on cards; issue panel has the Department selector.
+2. **Linguist review** — a batch of new am/om/ti/so strings shipped today (departments.*, customization.chooseOrgType*, sidebar.medical/courses) plus the ~70 sprint/settings strings still pending from earlier. Export and review.
+3. **Repo hygiene** — enable GitHub setting *Automatically delete head branches* (Settings → General → Pull Requests) so this stale-branch pile-up stops recurring.
+4. **Decide on PR #160** (draft, `remove-k6-tests`) — genuinely pending; `tests/k6/` is still in master.
+
+**Engineering backlog (ready to start on go-ahead):**
+1. **Shared-Button sweep** (highest value/effort ratio) — the `Button` base class carries `whitespace-nowrap inline-flex justify-center`, which silently breaks any wrapping text placed inside it. It broke FOUR screens this session (Customization presets/toggles/header, AI Insights cards, onboarding option cards). One audit of every `<Button>` wrapping block content + a documented rule would retire the entire bug class.
+2. **Support guides Wave 2** — Goals & OKRs, Documents, Docs & Wiki, Reports & Analytics, Compliance & Audit, Org Settings (catalog + generators already in `docs/support/`).
+3. **Five product findings** from the code research (recorded 2026-07-25, still open): OrgAuditLog not wired for invitation/member/team/project-member routes (catalogue defines the actions, nothing writes them — do NOT promise member audit trails until fixed); standalone `POST /api/expenses/[id]/reject` skips the approve-level gate that `/approve` enforces; expense approver-notification query checks literal `budgetAccess: 'FULL'` which never matches enum `FULL_CONTROL`; `OrganizationSettings.budgetCurrency` schema default is USD in an ETB-first product; (the orphaned Customization page was FIXED in #164).
+4. **Org-defined department registry** — the designed-for extension of D1: ministries want "Directorates", NGOs want "Programs", universities want "Faculties". The string-not-enum decision means this needs no schema migration; it becomes an OrgSettings-driven registry feeding the same fields.
+5. **Industry vertical guides** (Wave 3) — written per client go-live, not before.
+
+---
+
+## TERMINAL AGENT HANDOFF (2026-07-28)
+
+**Master is current and complete — no merge work is pending.** `git fetch origin && git checkout master && git pull` gets everything. Master HEAD = `8fead29`.
+
+**On "orphaned commits":** there are none in the sense that matters — no unmerged work exists anywhere. What the repo has is ~42 **stale branch refs** left behind by squash-merges (a squash merge puts the branch's *content* into master as one new commit, so the old branch tip is no longer an ancestor of master even though nothing is lost). Verification command:
+
+```bash
+# For each remote branch: is its content already in master?
+for b in $(git branch -r | grep -v HEAD | grep -v master); do
+  git diff --quiet origin/master "$b" && echo "SAFE (identical): $b"
+done
+# Better check per branch — was its PR merged?
+gh pr list --state merged --json number,headRefName --limit 200
+```
+
+**Recommended cleanup (safe order):**
+1. Enable *Automatically delete head branches* in repo settings (stops the recurrence).
+2. Delete remote branches whose PR is merged: `git push origin --delete <branch>` — keep `remove-k6-tests` (open PR #160).
+3. `git remote prune origin` locally.
+4. Do **not** rewrite master history — the historical commit-attribution cleanup discussed earlier (a handful of old commits authored as `Claude <noreply@anthropic.com>`, incl. `95e2218`, `e8e486a`, `21f4fa9`) touches already-merged, already-deployed history. If it is done, it must be a deliberate, coordinated force-push with every collaborator informed, and Vercel/CI reconnected afterwards.
+
+**Standing project rules the terminal agent must honor** (also in PROJECT_GUIDELINES.md): commits are authored AND committed as `Oli Tamrat Oli <oli.oli@udc.edu>`; **no AI/tool attribution anywhere** — no Co-Authored-By trailers, no session URLs, no tool names in commit messages, PR bodies, code comments, or documents (this is an IP-registration requirement); use PROJECT_BRIEFING.md (never create CLAUDE.md).
 
 ---
 
