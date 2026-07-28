@@ -464,7 +464,7 @@ function InsightCard({ insight, onTaskClick }: { insight: Insight; onTaskClick?:
       <Button
         variant="ghost"
         onClick={() => hasDetails && setExpanded(!expanded)}
-        className={cn('w-full h-auto text-left p-3.5 flex items-start gap-3 rounded-none', hasDetails && 'cursor-pointer')}
+        className={cn('w-full h-auto whitespace-normal text-left p-3.5 flex items-start gap-3 rounded-none', hasDetails && 'cursor-pointer')}
       >
         <div className={cn('rounded-lg p-1.5 shrink-0', styles.iconBg)}>
           <InsightIcon className={cn('h-4 w-4', styles.icon)} />
@@ -517,7 +517,7 @@ function RecommendationCard({ rec, onTaskClick }: { rec: Recommendation; onTaskC
       <Button
         variant="ghost"
         onClick={() => hasDetails && setExpanded(!expanded)}
-        className={cn('flex h-auto w-full items-start gap-2.5 p-3 rounded-none text-left', hasDetails && 'cursor-pointer')}
+        className={cn('flex h-auto w-full whitespace-normal items-start gap-2.5 p-3 rounded-none text-left', hasDetails && 'cursor-pointer')}
       >
         <ArrowRight className="h-3.5 w-3.5 text-primary-500 shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
