@@ -1520,7 +1520,8 @@
     "materialsDesc": "ናይ ምርምር ኣቑሑትን ጸጋታትን ኣመሓድር",
     "inspectionsDesc": "ናይ ቦታ ምርመራታትን ዳህሳስን መደብን ተኸታተልን",
     "medicalDesc": "ክንክን ሕሙማት፣ ክሊኒካዊ ስርሓታትን መዛግብቲ ሕክምናን ኣመሓድሩ",
-    "coursesDesc": "ኮርሳት፣ ጉጅለታትን መደባት ትምህርትን ኣመሓድሩ"
+    "coursesDesc": "ኮርሳት፣ ጉጅለታትን መደባት ትምህርትን ኣመሓድሩ",
+    "classifiedNote": "ኣብዚ ዝፍጠሩ ሓደስቲ ስራሓት ከም {label} ይምደቡ"
   },
   "operationsPage": {
     "title": "ስርሒታት",
