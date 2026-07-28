@@ -20,6 +20,7 @@ import {
   Loader2,
   Check,
   CreditCard,
+  SlidersHorizontal,
   Camera,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
@@ -257,6 +258,13 @@ export default function SettingsPage() {
                 >
                   <CreditCard className="h-4 w-4" />
                   Billing
+                </a>
+                <a
+                  href="/dashboard/settings/customization"
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Customization
                 </a>
               </div>
             </nav>
