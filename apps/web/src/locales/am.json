@@ -1515,7 +1515,8 @@
     "inspectionsDesc": "የቦታ ምርመራዎችን እና ዳሰሳዎችን ያቅዱ እና ይከታተሉ",
     "medicalDesc": "የታካሚ እንክብካቤ፣ ክሊኒካዊ ሥራዎች እና የሕክምና መዛግብት ያስተዳድሩ",
     "coursesDesc": "ኮርሶችን፣ ቡድኖችን እና የትምህርት ፕሮግራሞችን ያስተዳድሩ",
-    "classifiedNote": "እዚህ የሚፈጠሩ አዳዲስ ስራዎች እንደ {label} ይመደባሉ"
+    "classifiedNote": "እዚህ የሚፈጠሩ አዳዲስ ስራዎች እንደ {label} ይመደባሉ",
+    "classification": "ክፍል"
   },
   "operationsPage": {
     "title": "ተግባራት",

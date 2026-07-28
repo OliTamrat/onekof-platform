@@ -11,6 +11,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
+import { DEPARTMENTS, DEPARTMENT_CATALOG, WORKSTREAM_LABEL_KEYS, isDepartment, type Department } from '@/lib/departments/catalog';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { ActivityTimeline as RealActivityTimeline } from '@/components/activity/activity-timeline';
@@ -86,6 +87,8 @@ interface Issue {
   commentCount: number;
   attachmentCount: number;
   labels?: string[];
+  department?: string | null;
+  workstream?: string | null;
   startDate?: string;
   dueDate?: string;
   createdAt: string;
@@ -972,6 +975,47 @@ function DetailsTab({
                 placeholder={t('common.none')}
                 className="flex-1"
               />
+            </div>
+
+            {/* Classification — controlled catalog values only (D2); every
+                change is audited server-side as TASK_DEPARTMENT_CHANGED */}
+            <div className="flex items-start gap-3">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-20 pt-0.5 shrink-0">
+                {t('departments.classification')}
+              </span>
+              <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+                <select
+                  value={issue.department || ''}
+                  onChange={(e) => {
+                    const next = e.target.value || null;
+                    // Changing department clears any stale workstream — the
+                    // server enforces the same rule
+                    updateIssue.mutate({ department: next, workstream: null });
+                    flashSaved();
+                  }}
+                  className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 py-1 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                >
+                  <option value="">{t('common.none')}</option>
+                  {DEPARTMENTS.map((d) => (
+                    <option key={d} value={d}>{t('sidebar.' + d)}</option>
+                  ))}
+                </select>
+                {issue.department && isDepartment(issue.department) && (
+                  <select
+                    value={issue.workstream || ''}
+                    onChange={(e) => {
+                      updateIssue.mutate({ workstream: e.target.value || null });
+                      flashSaved();
+                    }}
+                    className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-[#22272B] px-2 py-1 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                  >
+                    <option value="">{t('common.none')}</option>
+                    {DEPARTMENT_CATALOG[issue.department as Department].map((w) => (
+                      <option key={w} value={w}>{t(WORKSTREAM_LABEL_KEYS[w] || w)}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
             </div>
 
             {/* Labels */}

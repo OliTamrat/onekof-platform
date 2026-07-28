@@ -1515,7 +1515,8 @@
     "inspectionsDesc": "Qorshee iyo raadraac kormeernada goobaha iyo sahanka",
     "medicalDesc": "Maamul daryeelka bukaanka, hawlaha caafimaadka iyo diiwaannada caafimaadka",
     "coursesDesc": "Maamul koorsooyinka, kooxaha iyo barnaamijyada waxbarashada",
-    "classifiedNote": "Shaqooyinka cusub ee halkan lagu abuuro waxaa loo kala saaraa sida {label}"
+    "classifiedNote": "Shaqooyinka cusub ee halkan lagu abuuro waxaa loo kala saaraa sida {label}",
+    "classification": "Waaxda"
   },
   "operationsPage": {
     "title": "Hawlgallada",

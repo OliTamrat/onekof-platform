@@ -60,3 +60,24 @@ export function validateClassification(
   }
   return { ok: true };
 }
+
+/**
+ * i18n label keys for workstream slugs (the sidebar already localizes
+ * every workstream page name — reuse those keys everywhere).
+ */
+export const WORKSTREAM_LABEL_KEYS: Record<string, string> = {
+  backlog: 'sidebar.backlog',
+  'code-review': 'sidebar.codeReview',
+  release: 'sidebar.releases',
+  analytics: 'sidebar.analytics',
+  campaign: 'sidebar.campaigns',
+  'social-media': 'sidebar.socialMedia',
+  checklist: 'sidebar.checklists',
+  incident: 'sidebar.incidents',
+  monitoring: 'sidebar.monitoring',
+  data: 'sidebar.data',
+  findings: 'sidebar.findings',
+  inspection: 'sidebar.inspections',
+  materials: 'sidebar.materials',
+  plan: 'sidebar.plans',
+};

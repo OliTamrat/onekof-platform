@@ -1521,7 +1521,8 @@
     "inspectionsDesc": "ናይ ቦታ ምርመራታትን ዳህሳስን መደብን ተኸታተልን",
     "medicalDesc": "ክንክን ሕሙማት፣ ክሊኒካዊ ስርሓታትን መዛግብቲ ሕክምናን ኣመሓድሩ",
     "coursesDesc": "ኮርሳት፣ ጉጅለታትን መደባት ትምህርትን ኣመሓድሩ",
-    "classifiedNote": "ኣብዚ ዝፍጠሩ ሓደስቲ ስራሓት ከም {label} ይምደቡ"
+    "classifiedNote": "ኣብዚ ዝፍጠሩ ሓደስቲ ስራሓት ከም {label} ይምደቡ",
+    "classification": "ክፍሊ"
   },
   "operationsPage": {
     "title": "ስርሒታት",

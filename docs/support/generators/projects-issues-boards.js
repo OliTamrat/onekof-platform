@@ -3,7 +3,7 @@ const { P, B, BOLDLEAD, STEP, H1, H2, table, buildGuide } = require('./lib/guide
 buildGuide({
   subtitle: 'Projects, Issues & Boards',
   headerTitle: 'Projects, Issues & Boards',
-  version: '1.0',
+  version: '1.1',
   date: 'July 25, 2026',
   outFile: 'ONEKOF_SUPPORT_GUIDE_PROJECTS_ISSUES_BOARDS.docx',
   body: [
@@ -33,6 +33,7 @@ buildGuide({
     BOLDLEAD('Issue types — ', 'Task (normal work), Story (user-facing deliverable), Bug (defect), Epic (large body of work that contains others), Subtask (a child of any issue, created from inside it).'),
     BOLDLEAD('Statuses — ', 'Backlog (not yet planned), To Do, In Progress, In Review, Done, Blocked. Priorities run Highest → Lowest.'),
     BOLDLEAD('Visibility — ', 'Public and Internal projects are open to all org members; Private needs explicit membership (org admins can also see them); Confidential is visible only to explicitly added people — even org Admins are excluded.'),
+    BOLDLEAD('Department & workstream — ', 'the classification an issue carries, e.g. Operations / Incidents. It is set automatically when work is created from a department page, shown as a chip wherever the issue appears, and changeable from the issue panel. It is a real field on the issue — not a label — so it cannot be lost by editing tags.'),
     BOLDLEAD('Workflow enforcement — ', 'an optional per-project rule that status changes must follow the allowed-transitions matrix. Off by default.'),
     BOLDLEAD('Watcher — ', 'a person notified about an issue’s changes. Creating, being assigned, commenting, or being @mentioned makes you a watcher automatically; the eye button toggles it manually.'),
     BOLDLEAD('Linked work items — ', 'relationships between issues, even across projects: Relates to, Blocks / Is blocked by, Duplicates, Causes…'),
@@ -59,10 +60,15 @@ buildGuide({
     STEP('steps4', 'Comment with @ to mention someone — they are notified and start watching the issue.'),
     STEP('steps4', 'Attach files, edit priority/due date/labels inline, and follow the Activity timeline for the full change history.'),
     STEP('steps4', 'Link related work under Linked work items — including issues in other projects of the organization.'),
-    H2('4.6 Find things fast'),
-    STEP('steps5', 'Tabs on the Issues page: Summary, List, Backlog, Sprints, Board, Epics, Hierarchy, Timeline, Team, Settings.'),
-    STEP('steps5', 'Timeline is the strategic view — progress, budget, and goals over time — not another card view.'),
-    STEP('steps5', 'Ctrl+K (Cmd+K) searches issues, projects, and people from anywhere.'),
+    H2('4.6 Classify work by department'),
+    STEP('steps6', 'Create the item from its department page (Operations → Incidents, Development → Releases, and so on). The page header states the classification it applies, and every item created there is classified automatically.'),
+    STEP('steps6', 'To see or change an existing item’s classification, open the issue and use the Department selector in the details panel; a second selector appears for the workstream once a department is chosen.'),
+    STEP('steps6', 'Classified items show a chip (e.g. “Operations / Incidents”) on the board and list, so you can tell at a glance which department’s work you are looking at.'),
+    STEP('steps6', 'Leaving an item unclassified is normal and correct — general project work belongs to no department.'),
+    H2('4.7 Find things fast'),
+    STEP('steps7', 'Tabs on the Issues page: Summary, List, Backlog, Sprints, Board, Epics, Hierarchy, Timeline, Team, Settings.'),
+    STEP('steps7', 'Timeline is the strategic view — progress, budget, and goals over time — not another card view.'),
+    STEP('steps7', 'Ctrl+K (Cmd+K) searches issues, projects, and people from anywhere.'),
 
     // ---- 5. Rules ----
     H1('5. Rules the System Enforces (and Why)'),
@@ -74,6 +80,7 @@ buildGuide({
     BOLDLEAD('Completion timestamps are automatic. ', 'The completion date is stamped when an issue enters Done and cleared if it is reopened — no manual bookkeeping, no stale dates in reports.'),
     BOLDLEAD('Issue deletion is a soft delete. ', 'Deleted issues are hidden, not destroyed — recoverable at the database level if a mistake must be undone.'),
     BOLDLEAD('Sprint moves are guarded. ', 'Issues can only move into a non-completed sprint of the same project; deleting a planned sprint returns its issues to the backlog. See the Sprints guide.'),
+    BOLDLEAD('Classification lives in its own field, not in labels. ', 'A department page shows exactly the items classified to it. Editing an issue’s labels can never remove it from its department, and every classification change is recorded in the activity history.'),
     BOLDLEAD('Confidential means confidential. ', 'Even org Admins cannot see a Confidential project without being explicitly added.'),
 
     // ---- 6. FAQ ----
@@ -90,6 +97,9 @@ buildGuide({
       ['"I closed an issue by mistake."', 'Drag it back out of Done — reopening is always allowed and the completion date clears automatically.'],
       ['"Who deleted this issue? Can we get it back?"', 'Deletions are soft — the record survives underneath. Escalate to senior support for recovery; the activity log shows who did it.'],
       ['"Anyone can create a project?!"', 'Yes, by design — any org member can start a project and becomes its Admin. Visibility rules still control who sees it.'],
+      ['"I created a task under Operations → Incidents and it also appears on the Issues page."', 'Correct — there is one issue store. The department pages are filtered views of it. The task carries an Operations / Incidents classification (visible as a chip), which is what makes it appear on that department page.'],
+      ['"How do I know which department an issue belongs to?"', 'The chip on the board/list card, and the Department field in the issue panel. Items with no chip are general project work.'],
+      ['"Can I move an item to a different department?"', 'Yes — open the issue and change the Department selector. Choosing a new department clears the old workstream so a mismatched pair can never be stored. The change is recorded in the activity history.'],
     ], 3400, 5960),
 
     // ---- 7. Benefits ----
@@ -114,6 +124,7 @@ buildGuide({
     B('Board drags are optimistic with server reconciliation — a rejection resyncs the board and surfaces the server’s exact reason.'),
     B('completedAt is set only on transition into DONE and cleared on leaving DONE — sprint and report math depends on this invariant.'),
     B('Deletes are soft (deletedAt); attachments, comments, watchers, and activity ride on the issue record. Automations and webhooks fire on create/update events.'),
+    B('Classification: department/workstream are first-class indexed fields on the issue, validated against a fixed catalog (4 departments, 14 workstreams). Department pages create and filter on them; labels are free-form user tags with no structural meaning. Changing a classification emits an audited activity event recording old → new.'),
 
     // ---- 9. Navigation map ----
     H1('9. Where Everything Lives'),
@@ -125,6 +136,7 @@ buildGuide({
       ['See the Epic → Subtask tree', 'Issues → Hierarchy tab'],
       ['Strategic progress over time', 'Issues → Timeline tab'],
       ['Create an issue from anywhere', 'Press C, or + Create → Issue'],
+      ['See or change an issue’s department', 'Open the issue → Details panel → Department'],
       ['Project settings: sprints, workflow, estimation unit', 'Issues → Settings (project Admin)'],
       ['Manage who is in the project', 'Project → Settings → Members'],
     ], 4200, 5160),

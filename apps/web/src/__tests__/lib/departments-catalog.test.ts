@@ -80,3 +80,27 @@ describe('issue schemas accept classification fields', () => {
     expect(update.success).toBe(true);
   });
 });
+
+describe('workstream label keys (chip + slideout rendering)', () => {
+  it('every catalog workstream has an i18n label key', async () => {
+    const { WORKSTREAM_LABEL_KEYS } = await import('@/lib/departments/catalog');
+    for (const [dept, workstreams] of Object.entries(DEPARTMENT_CATALOG)) {
+      for (const ws of workstreams) {
+        expect(WORKSTREAM_LABEL_KEYS[ws], `${dept}/${ws}`).toBeTruthy();
+      }
+    }
+  });
+
+  it('every label key resolves in English (no raw keys leak to the UI)', async () => {
+    const { WORKSTREAM_LABEL_KEYS } = await import('@/lib/departments/catalog');
+    const en = (await import('@/locales/en.json')).default as any;
+    for (const key of Object.values(WORKSTREAM_LABEL_KEYS)) {
+      const [section, name] = key.split('.');
+      expect(en[section]?.[name], key).toBeTruthy();
+    }
+    // department labels too
+    for (const dept of Object.keys(DEPARTMENT_CATALOG)) {
+      expect(en.sidebar?.[dept], `sidebar.${dept}`).toBeTruthy();
+    }
+  });
+});

@@ -1514,7 +1514,8 @@
     "inspectionsDesc": "Schedule and track site inspections and surveys",
     "medicalDesc": "Manage patient care, clinical operations, and medical records",
     "coursesDesc": "Manage courses, cohorts, and learning programs",
-    "classifiedNote": "New items here are classified as {label}"
+    "classifiedNote": "New items here are classified as {label}",
+    "classification": "Department"
   },
   "operationsPage": {
     "title": "Operations",

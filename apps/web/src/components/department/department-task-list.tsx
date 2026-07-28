@@ -182,15 +182,11 @@ export function DepartmentTaskList({
   const allTasks = useMemo(() => {
     const tasks = issuesData?.issues || [];
     if (department) {
-      return tasks.filter(t => {
-        // Field-first (D1): classified issues match on the fields exactly
-        if (t.department != null) {
-          return t.department === department && (!workstream || t.workstream === workstream);
-        }
-        // D4 fallback (one release): unclassified issues keep matching by
-        // their legacy labels so deploy order can never hide work
-        return !!t.labels?.some(l => defaultLabels.includes(l));
-      });
+      // Field-only (Phase 3): the backfill classified all existing issues
+      // and creation stamps the fields, so labels carry no structure here
+      return tasks.filter(
+        t => t.department === department && (!workstream || t.workstream === workstream)
+      );
     }
     if (defaultLabels.length === 0) return tasks;
     // Only show issues that have at least one matching label

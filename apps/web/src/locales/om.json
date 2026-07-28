@@ -1521,7 +1521,8 @@
     "inspectionsDesc": "Sakatta'iinsa fi sarvee iddoo sagantaa baasii hordofi",
     "medicalDesc": "Kunuunsa dhukkubsataa, hojiiwwan kilinikaa fi galmeewwan fayyaa bulchi",
     "coursesDesc": "Koorsota, gareewwan fi sagantaalee barnootaa bulchi",
-    "classifiedNote": "Hojiiwwan haaraan asitti uumaman akka {label} ramadamu"
+    "classifiedNote": "Hojiiwwan haaraan asitti uumaman akka {label} ramadamu",
+    "classification": "Kutaa"
   },
   "operationsPage": {
     "title": "Hojimaata",
