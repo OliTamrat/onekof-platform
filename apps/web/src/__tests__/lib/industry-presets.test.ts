@@ -105,3 +105,40 @@ describe('resolveEnabledSections (fail posture, D9)', () => {
     expect(resolveEnabledSections([], undefined)).toBeNull();
   });
 });
+
+describe('settings PUT schema accepts preset payloads (Save-failed regression)', () => {
+  it('accepts feature groups that are null (Ministry/NGO/Education/Healthcare disable automations)', async () => {
+    const { organizationSettingsPutSchema } = await import('@/lib/validation/schemas');
+    const payload = {
+      enabledSections: [...MINISTRY_PRESET.enabledSections],
+      features: { ...MINISTRY_PRESET.features },
+      customization: {
+        primaryColor: '#1C8C7D',
+        budgetCurrency: 'ETB',
+        fiscalYearStart: 1,
+        dateFormat: 'DD/MM/YYYY',
+        language: 'en',
+      },
+      permissions: {
+        allowMemberInvites: true,
+        requireBudgetApproval: true,
+        publicProjectsVisible: false,
+      },
+    };
+    const result = organizationSettingsPutSchema.safeParse(payload);
+    expect(result.success, JSON.stringify(!result.success && result.error.flatten())).toBe(true);
+  });
+
+  it('every preset round-trips through the PUT schema', async () => {
+    const { organizationSettingsPutSchema } = await import('@/lib/validation/schemas');
+    for (const preset of getAllPresets()) {
+      const result = organizationSettingsPutSchema.safeParse({
+        enabledSections: [...preset.enabledSections],
+        features: { ...preset.features },
+        customization: { primaryColor: '#1C8C7D', budgetCurrency: 'ETB', fiscalYearStart: 1, dateFormat: 'DD/MM/YYYY', language: 'en' },
+        permissions: { allowMemberInvites: true, requireBudgetApproval: true, publicProjectsVisible: false },
+      });
+      expect(result.success, preset.name).toBe(true);
+    }
+  });
+});
