@@ -123,7 +123,7 @@ export interface OrganizationSettings {
     budgetCurrency: string;
     fiscalYearStart: number; // 1-12 (month)
     dateFormat: 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD';
-    language: 'en' | 'am' | 'ti' | 'om'; // English, Amharic, Tigrinya, Oromo
+    language: 'EN' | 'AM' | 'OM' | 'TI' | 'SO'; // matches the DB Language enum
   };
 
   // Permissions

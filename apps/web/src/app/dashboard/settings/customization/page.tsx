@@ -88,7 +88,7 @@ const INITIAL_SETTINGS: OrganizationSettings = {
     budgetCurrency: 'USD',
     fiscalYearStart: 1,
     dateFormat: 'MM/DD/YYYY',
-    language: 'en',
+    language: 'EN',
   },
   permissions: {
     allowMemberInvites: true,
@@ -165,7 +165,8 @@ export default function DashboardCustomizationPage() {
       toast.success(t("customization.settingsSaved"), t("customization.settingsSavedDesc"));
       window.location.reload(); // Reload to apply new settings
     } catch (error) {
-      toast.error(t("customization.saveFailed"), t("customization.saveFailedDesc"));
+      const reason = error instanceof Error ? error.message : undefined;
+      toast.error(t("customization.saveFailed"), reason || t("customization.saveFailedDesc"));
     } finally {
       setIsSaving(false);
     }

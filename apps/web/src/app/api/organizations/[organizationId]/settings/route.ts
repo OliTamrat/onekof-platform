@@ -11,6 +11,14 @@ import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
+// The DB column is a strict enum (EN/AM/OM/TI/SO); client fallbacks have
+// historically sent lowercase codes. Normalize instead of 500ing.
+const LANGUAGE_VALUES = ['EN', 'AM', 'OM', 'TI', 'SO'] as const;
+function normalizeLanguage(value: unknown): string {
+  const upper = String(value ?? 'EN').toUpperCase();
+  return (LANGUAGE_VALUES as readonly string[]).includes(upper) ? upper : 'EN';
+}
+
 /**
  * GET /api/organizations/[organizationId]/settings
  * Get organization settings with feature flags
@@ -61,12 +69,12 @@ export async function GET(
         data: {
           organizationId,
           enabledSections: preset.enabledSections,
-          budgetFeatures: preset.features.budget as any,
-          teamsFeatures: preset.features.teams as any,
-          goalsFeatures: preset.features.goals as any,
-          automationsFeatures: preset.features.automations as any,
-          documentsFeatures: preset.features.documents as any,
-          docsFeatures: preset.features.docs as any,
+          budgetFeatures: (preset.features.budget ?? Prisma.DbNull) as any,
+          teamsFeatures: (preset.features.teams ?? Prisma.DbNull) as any,
+          goalsFeatures: (preset.features.goals ?? Prisma.DbNull) as any,
+          automationsFeatures: (preset.features.automations ?? Prisma.DbNull) as any,
+          documentsFeatures: (preset.features.documents ?? Prisma.DbNull) as any,
+          docsFeatures: (preset.features.docs ?? Prisma.DbNull) as any,
           aiAssistant: preset.features.aiAssistant,
           analytics: preset.features.analytics,
           integrations: preset.features.integrations,
@@ -194,7 +202,7 @@ export async function PUT(
         budgetCurrency: body.customization.budgetCurrency,
         fiscalYearStart: body.customization.fiscalYearStart,
         dateFormat: body.customization.dateFormat,
-        language: body.customization.language as any,
+        language: normalizeLanguage(body.customization.language) as any,
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
@@ -217,7 +225,7 @@ export async function PUT(
         budgetCurrency: body.customization.budgetCurrency,
         fiscalYearStart: body.customization.fiscalYearStart,
         dateFormat: body.customization.dateFormat,
-        language: body.customization.language as any,
+        language: normalizeLanguage(body.customization.language) as any,
         allowMemberInvites: body.permissions.allowMemberInvites,
         requireBudgetApproval: body.permissions.requireBudgetApproval,
         publicProjectsVisible: body.permissions.publicProjectsVisible,
