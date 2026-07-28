@@ -1,6 +1,6 @@
 # Department & Workstream Architecture — First-Class Issue Classification & Industry Availability
 
-> **Status: v1.1 — PROPOSED (awaiting founder approval of Decisions D1–D9)**
+> **Status: v1.2 — APPROVED (founder approved Decisions D1–D9, 2026-07-28: "go ahead with the plan and start building it right")**
 > v1.1 adds Part II (D6–D9): industry-based availability of department sections, closing the gap between the planned per-industry experience and the delivered one-sidebar-for-all.
 > Author: Oli Tamrat, CTO — DAPS Analytics PLC
 > Related: `SPRINT_AND_SETTINGS_ARCHITECTURE.md` (approved v1.2) — this document follows the same design method: enterprise-grade core now, org-level configurability later, nothing that requires rewriting history.
