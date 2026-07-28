@@ -256,12 +256,14 @@ export const updateProjectSettingsSchema = z.object({
 export const organizationSettingsPutSchema = z.object({
   enabledSections: z.array(z.string().max(50)).max(30),
   features: z.object({
-    budget: z.record(z.boolean()),
-    teams: z.record(z.boolean()),
-    goals: z.record(z.boolean()),
-    automations: z.record(z.boolean()),
-    documents: z.record(z.boolean()),
-    docs: z.record(z.boolean()),
+    // null = feature group disabled for this org type (e.g. the Ministry,
+    // NGO, Education, and Healthcare presets ship automations: null)
+    budget: z.record(z.boolean()).nullable(),
+    teams: z.record(z.boolean()).nullable(),
+    goals: z.record(z.boolean()).nullable(),
+    automations: z.record(z.boolean()).nullable(),
+    documents: z.record(z.boolean()).nullable(),
+    docs: z.record(z.boolean()).nullable(),
     aiAssistant: z.boolean(),
     analytics: z.boolean(),
     integrations: z.boolean(),

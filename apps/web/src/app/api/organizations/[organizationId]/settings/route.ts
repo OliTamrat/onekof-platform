@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
+import { Prisma } from '@onekof/database';
 import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { avatarUrlSchema, organizationSettingsPutSchema } from '@/lib/validation/schemas';
 import type { OrganizationSettings } from '@/types/organization-settings';
@@ -178,12 +179,12 @@ export async function PUT(
       create: {
         organizationId,
         enabledSections: body.enabledSections,
-        budgetFeatures: body.features.budget as any,
-        teamsFeatures: body.features.teams as any,
-        goalsFeatures: body.features.goals as any,
-        automationsFeatures: body.features.automations as any,
-        documentsFeatures: body.features.documents as any,
-        docsFeatures: body.features.docs as any,
+        budgetFeatures: (body.features.budget ?? Prisma.DbNull) as any,
+        teamsFeatures: (body.features.teams ?? Prisma.DbNull) as any,
+        goalsFeatures: (body.features.goals ?? Prisma.DbNull) as any,
+        automationsFeatures: (body.features.automations ?? Prisma.DbNull) as any,
+        documentsFeatures: (body.features.documents ?? Prisma.DbNull) as any,
+        docsFeatures: (body.features.docs ?? Prisma.DbNull) as any,
         aiAssistant: body.features.aiAssistant,
         analytics: body.features.analytics,
         integrations: body.features.integrations,
@@ -201,12 +202,12 @@ export async function PUT(
       },
       update: {
         enabledSections: body.enabledSections,
-        budgetFeatures: body.features.budget as any,
-        teamsFeatures: body.features.teams as any,
-        goalsFeatures: body.features.goals as any,
-        automationsFeatures: body.features.automations as any,
-        documentsFeatures: body.features.documents as any,
-        docsFeatures: body.features.docs as any,
+        budgetFeatures: (body.features.budget ?? Prisma.DbNull) as any,
+        teamsFeatures: (body.features.teams ?? Prisma.DbNull) as any,
+        goalsFeatures: (body.features.goals ?? Prisma.DbNull) as any,
+        automationsFeatures: (body.features.automations ?? Prisma.DbNull) as any,
+        documentsFeatures: (body.features.documents ?? Prisma.DbNull) as any,
+        docsFeatures: (body.features.docs ?? Prisma.DbNull) as any,
         aiAssistant: body.features.aiAssistant,
         analytics: body.features.analytics,
         integrations: body.features.integrations,
