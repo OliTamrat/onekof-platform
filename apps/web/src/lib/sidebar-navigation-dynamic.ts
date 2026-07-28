@@ -7,6 +7,7 @@
  */
 
 import { getNavigationForType } from '@/config/organization-types';
+import { resolveEnabledSections } from '@/lib/presets/organization-presets';
 import type { OrganizationSettings } from '@/types/organization-settings';
 import {
   Home,
@@ -57,7 +58,8 @@ export interface SidebarSection {
  */
 export function getSidebarNavigation(
   organizationType?: string | null,
-  organizationSettings?: OrganizationSettings
+  organizationSettings?: OrganizationSettings,
+  industry?: string | null
 ): SidebarSection[] {
   // Build comprehensive 7-category structure with 21+ pages
   const allSections: SidebarSection[] = [
@@ -185,11 +187,17 @@ export function getSidebarNavigation(
     },
   ];
 
-  // If no organization settings OR no enabled sections, return all sections
-  // This ensures navigation always works even if settings fail to load
-  if (!organizationSettings || !organizationSettings.enabledSections || organizationSettings.enabledSections.length === 0) {
+  // D9 fail posture: explicit settings win; without them, derive from the
+  // org's industry preset; only with neither (legacy orgs) fail open so
+  // navigation always works even if settings fail to load.
+  const enabled = resolveEnabledSections(
+    organizationSettings?.enabledSections,
+    industry ?? organizationType
+  );
+  if (!enabled) {
     return allSections;
   }
+  const enabledSet = new Set(enabled);
 
   // Filter sections and items based on organization settings
   return allSections
@@ -200,34 +208,34 @@ export function getSidebarNavigation(
 
         // Check if the main section is enabled
         if (itemPath.includes('/teams')) {
-          return organizationSettings.enabledSections.includes('teams');
+          return enabledSet.has('teams');
         }
         if (itemPath.includes('/budget')) {
-          return organizationSettings.enabledSections.includes('budget');
+          return enabledSet.has('budget');
         }
         if (itemPath.includes('/goals')) {
-          return organizationSettings.enabledSections.includes('goals');
+          return enabledSet.has('goals');
         }
         if (itemPath.includes('/automations')) {
-          return organizationSettings.enabledSections.includes('automations');
+          return enabledSet.has('automations');
         }
         if (itemPath.includes('/documents')) {
-          return organizationSettings.enabledSections.includes('documents');
+          return enabledSet.has('documents');
         }
         if (itemPath.includes('/docs') || itemPath.includes('/wiki')) {
-          return organizationSettings.enabledSections.includes('docs');
+          return enabledSet.has('docs');
         }
         if (itemPath.includes('/issues')) {
-          return organizationSettings.enabledSections.includes('issues');
+          return enabledSet.has('issues');
         }
         if (itemPath.includes('/calendar')) {
-          return organizationSettings.enabledSections.includes('calendar');
+          return enabledSet.has('calendar');
         }
         if (itemPath.includes('/timeline')) {
-          return organizationSettings.enabledSections.includes('timeline');
+          return enabledSet.has('timeline');
         }
         if (itemPath.includes('/reports') || itemPath.includes('/analytics')) {
-          return organizationSettings.enabledSections.includes('analytics');
+          return enabledSet.has('analytics');
         }
 
         // For sections that don't map to feature flags, show them all
@@ -242,10 +250,19 @@ export function getSidebarNavigation(
     .filter((section) => {
       // Filter top-level sections based on enabled feature flags
       if (section.id === 'teams') {
-        return organizationSettings.enabledSections.includes('teams');
+        return enabledSet.has('teams');
       }
       if (section.id === 'budget') {
-        return organizationSettings.enabledSections.includes('budget');
+        return enabledSet.has('budget');
+      }
+      // Department sections are industry-gated (D6) — same rule as the rest
+      if (
+        section.id === 'development' ||
+        section.id === 'marketing' ||
+        section.id === 'operations' ||
+        section.id === 'research'
+      ) {
+        return enabledSet.has(section.id);
       }
 
       // Remove sections that have no items and no direct href

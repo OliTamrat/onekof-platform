@@ -1512,7 +1512,9 @@
     "findingsDesc": "የምርምር ግኝቶችን እና ግንዛቤዎችን ይመዝግቡ",
     "plansDesc": "የምርምር ዕቅዶችን እና ዘዴዎችን ያዘጋጁ እና ይከታተሉ",
     "materialsDesc": "የምርምር ቁሳቁሶችን እና ሀብቶችን ያስተዳድሩ",
-    "inspectionsDesc": "የቦታ ምርመራዎችን እና ዳሰሳዎችን ያቅዱ እና ይከታተሉ"
+    "inspectionsDesc": "የቦታ ምርመራዎችን እና ዳሰሳዎችን ያቅዱ እና ይከታተሉ",
+    "medicalDesc": "የታካሚ እንክብካቤ፣ ክሊኒካዊ ሥራዎች እና የሕክምና መዛግብት ያስተዳድሩ",
+    "coursesDesc": "ኮርሶችን፣ ቡድኖችን እና የትምህርት ፕሮግራሞችን ያስተዳድሩ"
   },
   "operationsPage": {
     "title": "ተግባራት",
@@ -1957,7 +1959,9 @@
     "automation": "አውቶሜሽን",
     "wiki": "ዊኪ",
     "docs": "ሰነዶች",
-    "integrations": "ውህደቶች"
+    "integrations": "ውህደቶች",
+    "medical": "ሕክምና",
+    "courses": "ኮርሶች"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ አገናኝ",
@@ -2419,7 +2423,9 @@
     "impact": "ተፅዕኖ",
     "calendar": "ቀን መቆጠሪያ",
     "issues": "ጉዳዮች",
-    "timeline": "የጊዜ ሰሌዳ"
+    "timeline": "የጊዜ ሰሌዳ",
+    "presetHealthcareName": "ጤና አገልግሎት",
+    "presetHealthcareDesc": "ሆስፒታሎች፣ ክሊኒኮች እና የጤና ፕሮግራሞች — ከታካሚ ጋር የተያያዙ ሥራዎች፣ ክሊኒካዊ ምርምር እና ተገዢነት።"
   },
   "documentsSettings": {
     "title": "የሰነዶች ቅንብሮች",

@@ -1512,7 +1512,9 @@
     "findingsDesc": "Diiwaangeli natiijooyinka cilmi baadhista iyo aragtiyada",
     "plansDesc": "Horumarso oo raadraac qorshayaasha iyo hab-raacyada cilmi baadhista",
     "materialsDesc": "Maamul agabka iyo kheyraadka cilmi baadhista",
-    "inspectionsDesc": "Qorshee iyo raadraac kormeernada goobaha iyo sahanka"
+    "inspectionsDesc": "Qorshee iyo raadraac kormeernada goobaha iyo sahanka",
+    "medicalDesc": "Maamul daryeelka bukaanka, hawlaha caafimaadka iyo diiwaannada caafimaadka",
+    "coursesDesc": "Maamul koorsooyinka, kooxaha iyo barnaamijyada waxbarashada"
   },
   "operationsPage": {
     "title": "Hawlgallada",
@@ -1957,7 +1959,9 @@
     "automation": "Otomaatik",
     "wiki": "Wiiki",
     "docs": "Dukumentiyo",
-    "integrations": "Isku xidhka"
+    "integrations": "Isku xidhka",
+    "medical": "Caafimaad",
+    "courses": "Koorsooyin"
   },
   "codeConnect": {
     "title": "Ku xidh Kaydka",
@@ -2419,7 +2423,9 @@
     "impact": "Saameynta",
     "calendar": "Kalandar",
     "issues": "Arrimaha",
-    "timeline": "Jadwalka Waqtiga"
+    "timeline": "Jadwalka Waqtiga",
+    "presetHealthcareName": "Caafimaad",
+    "presetHealthcareDesc": "Isbitaallo, kiliinikooyin iyo barnaamijyo caafimaad — hawlo bukaan-xidhiidh ah, cilmi-baadhis caafimaad iyo u hoggaansanaan."
   },
   "documentsSettings": {
     "title": "Dejinta Dukumentiyada",

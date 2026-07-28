@@ -18,6 +18,12 @@ import {
   BookOpen,
   BarChart3,
   Loader2,
+  GitBranch,
+  TrendingUp,
+  Activity,
+  FileSpreadsheet,
+  HeartPulse,
+  GraduationCap,
 } from 'lucide-react';
 import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
@@ -101,6 +107,13 @@ const SECTION_INFO = {
   docs: { icon: BookOpen, labelKey: 'customization.docsWiki', color: '#06B6D4', descKey: 'customization.docsWikiDesc' },
   projects: { icon: FileText, labelKey: 'customization.projects', color: '#1C8C7D', descKey: 'customization.projectsDesc' },
   analytics: { icon: BarChart3, labelKey: 'customization.analytics', color: '#6366F1', descKey: 'customization.analyticsDesc' },
+  // Department sections + vertical modules (industry-gated, D6/D8)
+  development: { icon: GitBranch, labelKey: 'sidebar.development', color: '#A855F7', descKey: 'departments.developmentDesc' },
+  marketing: { icon: TrendingUp, labelKey: 'sidebar.marketing', color: '#F97316', descKey: 'departments.marketingDesc' },
+  operations: { icon: Activity, labelKey: 'sidebar.operations', color: '#EF4444', descKey: 'departments.operationsDesc' },
+  research: { icon: FileSpreadsheet, labelKey: 'sidebar.research', color: '#0EA5E9', descKey: 'departments.researchDesc' },
+  medical: { icon: HeartPulse, labelKey: 'sidebar.medical', color: '#E11D48', descKey: 'departments.medicalDesc' },
+  courses: { icon: GraduationCap, labelKey: 'sidebar.courses', color: '#22C55E', descKey: 'departments.coursesDesc' },
 };
 
 export default function DashboardCustomizationPage() {

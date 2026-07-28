@@ -1518,7 +1518,9 @@
     "findingsDesc": "Argannoo fi hubannoo qorannoo galmeessi",
     "plansDesc": "Karoora fi mala qorannoo misoomsii hordofi",
     "materialsDesc": "Meeshaalee fi qabeenya qorannoo bulchi",
-    "inspectionsDesc": "Sakatta'iinsa fi sarvee iddoo sagantaa baasii hordofi"
+    "inspectionsDesc": "Sakatta'iinsa fi sarvee iddoo sagantaa baasii hordofi",
+    "medicalDesc": "Kunuunsa dhukkubsataa, hojiiwwan kilinikaa fi galmeewwan fayyaa bulchi",
+    "coursesDesc": "Koorsota, gareewwan fi sagantaalee barnootaa bulchi"
   },
   "operationsPage": {
     "title": "Hojimaata",
@@ -1919,7 +1921,9 @@
     "automation": "Ofumaan Hojjachuu",
     "wiki": "Wiikii",
     "docs": "Dokumantoota",
-    "integrations": "Walitti Makamtii"
+    "integrations": "Walitti Makamtii",
+    "medical": "Fayyaa",
+    "courses": "Koorsota"
   },
   "codeConnect": {
     "title": "Kuusaa Walitti Hidhi",
@@ -2381,7 +2385,9 @@
     "impact": "Dhiibbaa",
     "calendar": "Kaalaandarii",
     "issues": "Dhimmota",
-    "timeline": "Tartiiba Yeroo"
+    "timeline": "Tartiiba Yeroo",
+    "presetHealthcareName": "Fayyaa",
+    "presetHealthcareDesc": "Hospitaalota, kilinikoota fi sagantaalee fayyaa — hojiiwwan dhukkubsataan walqabatan, qorannoo kilinikaa fi seeraan bulmaata."
   },
   "documentsSettings": {
     "title": "Qindaa'ina Dokumantoota",
