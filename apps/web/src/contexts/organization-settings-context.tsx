@@ -62,7 +62,7 @@ const DEFAULT_SETTINGS: OrganizationSettings = {
     budgetCurrency: 'USD',
     fiscalYearStart: 1,
     dateFormat: 'MM/DD/YYYY',
-    language: 'en',
+    language: 'EN',
   },
   permissions: {
     allowMemberInvites: true,
@@ -160,7 +160,9 @@ export function OrganizationSettingsProvider({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save settings');
+        // Surface the server's reason — a generic toast hid two real bugs
+        const err = await response.json().catch(() => null);
+        throw new Error(err?.error || `Failed to save settings (HTTP ${response.status})`);
       }
 
       const updatedSettings = await response.json();
