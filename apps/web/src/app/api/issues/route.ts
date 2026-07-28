@@ -7,6 +7,7 @@ import { sendTaskAssignmentEmail, sendMentionEmail, userWantsNotification } from
 import { triggerAutomations } from '@/lib/automation-engine';
 import logger from '@/lib/logger';
 import { createIssueSchema } from '@/lib/validation/schemas';
+import { validateClassification } from '@/lib/departments/catalog';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { deliverWebhook } from '@/lib/integrations/webhooks';
 
@@ -139,6 +140,20 @@ export async function GET(request: NextRequest) {
       where.sprintId = { not: null };
     } else if (sprintId) {
       where.sprintId = sprintId;
+    }
+
+    // Filter by department classification (indexed, server-side — unlike
+    // labels). 'null' = general work only; a value must be in the catalog
+    // to match anything, so no validation error is needed on read.
+    const department = searchParams.get('department');
+    const workstream = searchParams.get('workstream');
+    if (department === 'null') {
+      where.department = null;
+    } else if (department) {
+      where.department = department;
+    }
+    if (workstream) {
+      where.workstream = workstream;
     }
 
     // Note: label filtering is done client-side after fetching since
@@ -285,9 +300,17 @@ export async function POST(request: NextRequest) {
       dueDate,
       estimate,
       parentId,
+      department,
+      workstream,
     } = validation.data;
 
     const { teamId, watchers, goalIds } = body;
+
+    // Classification must be a valid catalog pair (D1/D2)
+    const classification = validateClassification(department, workstream);
+    if (!classification.ok) {
+      return NextResponse.json({ error: classification.error }, { status: 400 });
+    }
 
     // Get project to generate issue key
     const project = await prisma.project.findUnique({
@@ -359,6 +382,8 @@ export async function POST(request: NextRequest) {
           dueDate: dueDate ? new Date(dueDate) : null,
           estimate: estimate || null,
           parentId: parentId || null,
+          department: department || null,
+          workstream: workstream || null,
         },
         include: {
           project: {

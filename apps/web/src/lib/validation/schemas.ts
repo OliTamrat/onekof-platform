@@ -189,6 +189,10 @@ export const createIssueSchema = z.object({
   labels: z.array(z.string().max(50)).max(10, 'Maximum 10 labels allowed').optional(),
   dueDate: z.string().datetime().optional(),
   estimate: z.number().int().min(0).max(1000, 'Estimate must be between 0 and 1000 hours').optional(),
+  // Department classification — validated against the catalog in the route
+  // (pair rules need the task's post-update state, not just this payload)
+  department: z.string().max(50).nullable().optional(),
+  workstream: z.string().max(50).nullable().optional(),
 });
 
 export const updateIssueSchema = z.object({
@@ -211,6 +215,8 @@ export const updateIssueSchema = z.object({
   sprintId: uuidSchema.nullable().optional(), // null = move back to backlog
   sprintOrder: z.number().int().min(0).nullable().optional(),
   storyPoints: z.number().int().min(0).max(1000).nullable().optional(),
+  department: z.string().max(50).nullable().optional(),
+  workstream: z.string().max(50).nullable().optional(),
 });
 
 // Sprint Schemas
