@@ -59,7 +59,7 @@ export const MINISTRY_PRESET: OrganizationPreset = {
   description: 'Full-featured dashboard for government ministries with public budget transparency, procurement tracking, and compliance features.',
   nameKey: 'customization.presetMinistryName',
   descriptionKey: 'customization.presetMinistryDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'timeline', 'calendar', 'issues', 'analytics'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
   features: MINISTRY_FEATURES,
   recommendedFor: ['ministry', 'government'],
 };
@@ -118,7 +118,7 @@ export const NGO_PRESET: OrganizationPreset = {
   description: 'Optimized for non-profits with grant tracking, donation management, and impact reporting.',
   nameKey: 'customization.presetNgoName',
   descriptionKey: 'customization.presetNgoDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'impact', 'timeline', 'calendar', 'issues', 'analytics'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'impact', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
   features: NGO_FEATURES,
   recommendedFor: ['ngo'],
 };
@@ -182,7 +182,7 @@ export const BUSINESS_PRESET: OrganizationPreset = {
   description: 'Full-featured dashboard with automation, AI assistance, revenue tracking, and advanced analytics.',
   nameKey: 'customization.presetBusinessName',
   descriptionKey: 'customization.presetBusinessDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'analytics', 'projects', 'issues', 'calendar', 'timeline'],
+  enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'analytics', 'projects', 'issues', 'calendar', 'timeline', 'development', 'marketing', 'operations'],
   features: BUSINESS_FEATURES,
   recommendedFor: ['business', 'startup'],
 };
@@ -241,9 +241,68 @@ export const EDUCATION_PRESET: OrganizationPreset = {
   description: 'Simplified dashboard for educational institutions with grant tracking and document management.',
   nameKey: 'customization.presetEducationName',
   descriptionKey: 'customization.presetEducationDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research', 'courses'],
   features: EDUCATION_FEATURES,
   recommendedFor: ['education'],
+};
+
+// ============================================
+// HEALTHCARE PRESET (fifth preset, D8 — enables the medical vertical)
+// ============================================
+const HEALTHCARE_FEATURES: OrganizationFeatures = {
+  budget: {
+    expenses: true,
+    income: false,
+    reports: true,
+    forecasting: false,
+    procurement: false,
+    grants: false,
+    donations: false,
+    publicTransparency: false,
+    multiCurrency: false,
+    approvalWorkflow: true,
+  },
+  teams: {
+    goals: true,
+    activity: true,
+    performance: false,
+    workload: true,
+  },
+  goals: {
+    activeGoals: true,
+    completedGoals: true,
+    teamGoals: true,
+    okrs: false,
+    milestones: true,
+  },
+  automations: null, // Disabled for healthcare
+  documents: {
+    aiProcessing: false,
+    templates: true,
+    versionControl: true,
+    collaboration: true,
+    ocr: false,
+  },
+  docs: {
+    wiki: true,
+    search: true,
+    publicDocs: false,
+    apiDocs: false,
+  },
+  aiAssistant: false,
+  analytics: true,
+  integrations: false,
+  customBranding: true,
+};
+
+export const HEALTHCARE_PRESET: OrganizationPreset = {
+  name: 'Healthcare',
+  description: 'Hospitals, clinics, and health programs: patient-linked operations, clinical research, and compliance posture.',
+  nameKey: 'customization.presetHealthcareName',
+  descriptionKey: 'customization.presetHealthcareDesc',
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research', 'medical'],
+  features: HEALTHCARE_FEATURES,
+  recommendedFor: ['healthcare', 'hospital', 'clinic'],
 };
 
 // ============================================
@@ -256,6 +315,9 @@ export const ORGANIZATION_PRESETS = {
   business: BUSINESS_PRESET,
   startup: BUSINESS_PRESET,
   education: EDUCATION_PRESET,
+  healthcare: HEALTHCARE_PRESET,
+  hospital: HEALTHCARE_PRESET,
+  clinic: HEALTHCARE_PRESET,
 } as const;
 
 /**
@@ -274,5 +336,20 @@ export function getAllPresets(): OrganizationPreset[] {
     NGO_PRESET,
     BUSINESS_PRESET,
     EDUCATION_PRESET,
+    HEALTHCARE_PRESET,
   ];
+}
+
+/**
+ * Resolve the effective enabled sections (D9 fail posture):
+ * explicit settings win; otherwise fall back to the org's industry preset;
+ * only with neither (legacy orgs) does the caller fail open.
+ */
+export function resolveEnabledSections(
+  enabledSections: string[] | null | undefined,
+  industry: string | null | undefined
+): string[] | null {
+  if (enabledSections && enabledSections.length > 0) return enabledSections;
+  if (industry) return [...getPresetForOrgType(industry).enabledSections];
+  return null;
 }

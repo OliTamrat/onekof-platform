@@ -11,6 +11,8 @@ export type OrganizationType =
   | 'startup'
   | 'education'
   | 'healthcare'
+  | 'hospital'
+  | 'clinic'
   | 'other';
 
 export type DashboardSectionId =
@@ -26,7 +28,17 @@ export type DashboardSectionId =
   | 'timeline'
   | 'analytics'
   | 'compliance'
-  | 'impact';
+  | 'impact'
+  // Department sections (industry-gated per the capability matrix, D6).
+  // The sidebar "Knowledge" group needs no id of its own — it derives from
+  // its children's gates (documents/docs/automations).
+  | 'development'
+  | 'marketing'
+  | 'operations'
+  | 'research'
+  // Vertical modules
+  | 'medical'
+  | 'courses';
 
 export interface BudgetFeatures {
   // Core budget features

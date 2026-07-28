@@ -1518,7 +1518,9 @@
     "findingsDesc": "ናይ ምርምር ረኽቦታትን ትዕዝብትታትን ሰነድ",
     "plansDesc": "ናይ ምርምር ውጥናትን ኣገባባትን ኣማዕብልን ተኸታተልን",
     "materialsDesc": "ናይ ምርምር ኣቑሑትን ጸጋታትን ኣመሓድር",
-    "inspectionsDesc": "ናይ ቦታ ምርመራታትን ዳህሳስን መደብን ተኸታተልን"
+    "inspectionsDesc": "ናይ ቦታ ምርመራታትን ዳህሳስን መደብን ተኸታተልን",
+    "medicalDesc": "ክንክን ሕሙማት፣ ክሊኒካዊ ስርሓታትን መዛግብቲ ሕክምናን ኣመሓድሩ",
+    "coursesDesc": "ኮርሳት፣ ጉጅለታትን መደባት ትምህርትን ኣመሓድሩ"
   },
   "operationsPage": {
     "title": "ስርሒታት",
@@ -1963,7 +1965,9 @@
     "automation": "ኦቶመይሽን",
     "wiki": "ዊኪ",
     "docs": "ሰነዳት",
-    "integrations": "ውህደታት"
+    "integrations": "ውህደታት",
+    "medical": "ሕክምና",
+    "courses": "ኮርሳት"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ ኣራኽብ",
@@ -2425,7 +2429,9 @@
     "impact": "ጽልዋ",
     "calendar": "ካሌንደር",
     "issues": "ጉዳያት",
-    "timeline": "ናይ ግዜ ሰሌዳ"
+    "timeline": "ናይ ግዜ ሰሌዳ",
+    "presetHealthcareName": "ጥዕና",
+    "presetHealthcareDesc": "ሆስፒታላት፣ ክሊኒካትን መደባት ጥዕናን — ምስ ሕሙማት ዝተኣሳሰሩ ስርሓታት፣ ክሊኒካዊ ምርምርን ተገዛእነትን።"
   },
   "documentsSettings": {
     "title": "ናይ ሰነዳት ቅጥዒታት",

@@ -1511,7 +1511,9 @@
     "findingsDesc": "Document research findings and insights",
     "plansDesc": "Develop and track research plans and methodologies",
     "materialsDesc": "Manage research materials and resources",
-    "inspectionsDesc": "Schedule and track site inspections and surveys"
+    "inspectionsDesc": "Schedule and track site inspections and surveys",
+    "medicalDesc": "Manage patient care, clinical operations, and medical records",
+    "coursesDesc": "Manage courses, cohorts, and learning programs"
   },
   "operationsPage": {
     "title": "Operations",
@@ -1912,7 +1914,9 @@
     "automation": "Automation",
     "wiki": "Wiki",
     "docs": "Docs",
-    "integrations": "Integrations"
+    "integrations": "Integrations",
+    "medical": "Medical",
+    "courses": "Courses"
   },
   "codeConnect": {
     "title": "Connect Repository",
@@ -2374,7 +2378,9 @@
     "impact": "Impact",
     "calendar": "Calendar",
     "issues": "Issues",
-    "timeline": "Timeline"
+    "timeline": "Timeline",
+    "presetHealthcareName": "Healthcare",
+    "presetHealthcareDesc": "Hospitals, clinics, and health programs with patient-linked operations, clinical research, and compliance."
   },
   "documentsSettings": {
     "title": "Documents Settings",
