@@ -214,12 +214,12 @@ export default function SettingsPage() {
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6">
           <div className="flex flex-col md:flex-row gap-6">
             {/* Tab nav */}
-            <nav className="md:w-48 shrink-0">
-              <div className="flex md:flex-col gap-1">
+            <nav className="md:w-48 shrink-0 min-w-0">
+              <div className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 pb-1 md:pb-0">
                 <button
                   type="button"
                   onClick={() => setActiveTab('profile')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
                     activeTab === 'profile'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
                       : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('notifications')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
                     activeTab === 'notifications'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
                       : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
@@ -243,7 +243,7 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('security')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
                     activeTab === 'security'
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
                       : 'text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23]'
@@ -254,14 +254,14 @@ export default function SettingsPage() {
                 </button>
                 <a
                   href="/dashboard/settings/billing"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                  className="flex shrink-0 items-center gap-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   <CreditCard className="h-4 w-4" />
                   Billing
                 </a>
                 <a
                   href="/dashboard/settings/customization"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
+                  className="flex shrink-0 items-center gap-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-[#181D23] transition-colors"
                 >
                   <SlidersHorizontal className="h-4 w-4" />
                   Customization
