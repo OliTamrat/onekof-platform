@@ -2389,7 +2389,10 @@
     "issues": "Dhimmota",
     "timeline": "Tartiiba Yeroo",
     "presetHealthcareName": "Fayyaa",
-    "presetHealthcareDesc": "Hospitaalota, kilinikoota fi sagantaalee fayyaa — hojiiwwan dhukkubsataan walqabatan, qorannoo kilinikaa fi seeraan bulmaata."
+    "presetHealthcareDesc": "Hospitaalota, kilinikoota fi sagantaalee fayyaa — hojiiwwan dhukkubsataan walqabatan, qorannoo kilinikaa fi seeraan bulmaata.",
+    "chooseOrgTypeTitle": "Gosa dhaabbata keessanii filadhaa",
+    "chooseOrgTypeBody": "Onekof damee keessaniif sirreessaa — mootummaa, dhaabbata miti-mootummaa, daldala, barnoota yookaan fayyaa. Kutaaleen isin hin barbaachifne baafata irraa ni badu.",
+    "chooseOrgTypeAction": "Gosa dhaabbataa filadhu"
   },
   "documentsSettings": {
     "title": "Qindaa'ina Dokumantoota",

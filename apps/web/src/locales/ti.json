@@ -2433,7 +2433,10 @@
     "issues": "ጉዳያት",
     "timeline": "ናይ ግዜ ሰሌዳ",
     "presetHealthcareName": "ጥዕና",
-    "presetHealthcareDesc": "ሆስፒታላት፣ ክሊኒካትን መደባት ጥዕናን — ምስ ሕሙማት ዝተኣሳሰሩ ስርሓታት፣ ክሊኒካዊ ምርምርን ተገዛእነትን።"
+    "presetHealthcareDesc": "ሆስፒታላት፣ ክሊኒካትን መደባት ጥዕናን — ምስ ሕሙማት ዝተኣሳሰሩ ስርሓታት፣ ክሊኒካዊ ምርምርን ተገዛእነትን።",
+    "chooseOrgTypeTitle": "ዓይነት ትካልኩም ምረጹ",
+    "chooseOrgTypeBody": "ንOnekof ናብ ጽላትኩም ኣዐርይዎ — መንግስቲ፣ ዘይመንግስታዊ ትካል፣ ንግዲ፣ ትምህርቲ ወይ ጥዕና። ዘየድልዩኹም ክፋላት ካብ ዝርዝር ይእለዩ።",
+    "chooseOrgTypeAction": "ዓይነት ትካል ምረጽ"
   },
   "documentsSettings": {
     "title": "ናይ ሰነዳት ቅጥዒታት",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { ChooseOrgTypeBanner } from '@/components/organization/choose-org-type-banner';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState , type ReactNode } from 'react';
 import { useWorkspace } from '@/contexts/workspace-context';
@@ -312,6 +313,11 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="p-3 md:p-6">
+        {/* Legacy orgs with no type chose no industry edition (D9) */}
+        <div className="mb-4 empty:mb-0">
+          <ChooseOrgTypeBanner />
+        </div>
+
         {/* API Error Banner */}
         {apiError && (
           <div className="mb-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">

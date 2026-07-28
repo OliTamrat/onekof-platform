@@ -2427,7 +2427,10 @@
     "issues": "Arrimaha",
     "timeline": "Jadwalka Waqtiga",
     "presetHealthcareName": "Caafimaad",
-    "presetHealthcareDesc": "Isbitaallo, kiliinikooyin iyo barnaamijyo caafimaad — hawlo bukaan-xidhiidh ah, cilmi-baadhis caafimaad iyo u hoggaansanaan."
+    "presetHealthcareDesc": "Isbitaallo, kiliinikooyin iyo barnaamijyo caafimaad — hawlo bukaan-xidhiidh ah, cilmi-baadhis caafimaad iyo u hoggaansanaan.",
+    "chooseOrgTypeTitle": "Dooro nooca ururkaaga",
+    "chooseOrgTypeBody": "U habee Onekof qaybtaada — dawlad, urur samafal, ganacsi, waxbarasho ama caafimaad. Qaybaha aadan u baahnayn ayaa liiska ka baxaya.",
+    "chooseOrgTypeAction": "Dooro nooca ururka"
   },
   "documentsSettings": {
     "title": "Dejinta Dukumentiyada",

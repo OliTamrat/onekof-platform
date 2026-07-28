@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@onekof/database';
+import { getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
@@ -196,6 +198,31 @@ export async function POST(req: NextRequest) {
             trialEndsAt: isGovernment ? null : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           },
         });
+
+      // Apply the industry edition at creation, atomically (D7): the org
+      // never exists without settings, so the sidebar can never fail open
+      // for a brand-new workspace.
+      const preset = getPresetForOrgType(type || industry || 'business');
+      await tx.organizationSettings.create({
+        data: {
+          organizationId: organization.id,
+          enabledSections: preset.enabledSections,
+          budgetFeatures: (preset.features.budget ?? Prisma.DbNull) as any,
+          teamsFeatures: (preset.features.teams ?? Prisma.DbNull) as any,
+          goalsFeatures: (preset.features.goals ?? Prisma.DbNull) as any,
+          automationsFeatures: (preset.features.automations ?? Prisma.DbNull) as any,
+          documentsFeatures: (preset.features.documents ?? Prisma.DbNull) as any,
+          docsFeatures: (preset.features.docs ?? Prisma.DbNull) as any,
+          aiAssistant: preset.features.aiAssistant,
+          analytics: preset.features.analytics,
+          integrations: preset.features.integrations,
+          customBranding: preset.features.customBranding,
+          // Government and NGO institutions read "Work Cycle", not "Sprint"
+          ...(type === 'government' || type === 'ministry' || type === 'ngo'
+            ? { terminologyScheme: 'FORMAL' as const }
+            : {}),
+        },
+      });
 
       // Add creator as organization member with OWNER role
       await tx.organizationMember.create({
