@@ -17,6 +17,25 @@ interface TeamSizeOption {
   description: string;
 }
 
+type OrgType = 'government' | 'ngo' | 'business' | 'education' | 'healthcare' | 'other';
+
+interface OrgTypeOption {
+  id: OrgType;
+  label: string;
+  description: string;
+}
+
+// Values match the preset registry keys (lib/presets/organization-presets.ts)
+// so the industry edition is applied at creation — no orphan window (D7).
+const ORG_TYPE_OPTIONS: OrgTypeOption[] = [
+  { id: 'government', label: 'Government / Ministry', description: 'Procurement, transparency, compliance' },
+  { id: 'ngo', label: 'NGO / Non-Profit', description: 'Grants, donations, impact reporting' },
+  { id: 'business', label: 'Business / Startup', description: 'Development, automation, analytics' },
+  { id: 'education', label: 'Education', description: 'Courses, research, simplified budget' },
+  { id: 'healthcare', label: 'Healthcare', description: 'Patients, clinical operations, compliance' },
+  { id: 'other', label: 'Other', description: 'A general-purpose workspace' },
+];
+
 const TEAM_SIZE_OPTIONS: TeamSizeOption[] = [
   { id: 'SOLO', label: 'Just me', description: '1 person' },
   { id: 'SMALL', label: '2-10 people', description: 'Small team' },
@@ -36,6 +55,7 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
+    orgType: null as OrgType | null,
     teamSize: null as TeamSize | null,
   });
 
@@ -72,6 +92,11 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
       return;
     }
 
+    if (!formData.orgType) {
+      setError('Please choose what kind of organization this is');
+      return;
+    }
+
     if (!formData.teamSize) {
       setError('Please select your team size');
       return;
@@ -91,6 +116,8 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
         body: JSON.stringify({
           name: formData.name,
           slug: formData.slug,
+          type: formData.orgType,
+          teamSize: formData.teamSize,
           settings: {
             teamSize: formData.teamSize,
           },
@@ -178,6 +205,51 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
             </p>
           </div>
 
+          {/* Organization type — decides the industry edition (D7/D8) */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              What kind of organization is this?
+            </Label>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              We tailor the workspace to your sector. You can change this any time in Settings.
+            </p>
+            <div className="space-y-2">
+              {ORG_TYPE_OPTIONS.map((option) => {
+                const isSelected = formData.orgType === option.id;
+                return (
+                  <Button
+                    key={option.id}
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setFormData((prev) => ({ ...prev, orgType: option.id }))}
+                    className={cn(
+                      "w-full h-auto whitespace-normal flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left",
+                      isSelected
+                        ? "border-[#1C8C7D] bg-[#1C8C7D]/5 dark:bg-[#1C8C7D]/10"
+                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] hover:border-slate-300 dark:hover:border-slate-600"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex h-5 w-5 items-center justify-center rounded-full border-2 shrink-0",
+                      isSelected ? "border-[#1C8C7D] bg-[#1C8C7D]" : "border-slate-300 dark:border-slate-600"
+                    )}>
+                      {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={cn(
+                        "font-medium",
+                        isSelected ? "text-[#1C8C7D]" : "text-slate-900 dark:text-white"
+                      )}>
+                        {option.label}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{option.description}</p>
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Team Size */}
           <div className="space-y-3">
             <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -194,7 +266,7 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
                     variant="ghost"
                     onClick={() => setFormData((prev) => ({ ...prev, teamSize: option.id }))}
                     className={cn(
-                      "w-full h-auto flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left",
+                      "w-full h-auto whitespace-normal flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left",
                       isSelected
                         ? "border-[#1C8C7D] bg-[#1C8C7D]/5 dark:bg-[#1C8C7D]/10"
                         : "border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] hover:border-slate-300 dark:hover:border-slate-600"
@@ -251,7 +323,7 @@ export function CreateOrganization({ onComplete, onBack }: CreateOrganizationPro
             )}
             <Button
               type="submit"
-              disabled={isSubmitting || !formData.name || !formData.slug || !formData.teamSize}
+              disabled={isSubmitting || !formData.name || !formData.slug || !formData.orgType || !formData.teamSize}
               className="ml-auto bg-[#1C8C7D] hover:bg-[#156B60] text-white h-12 px-6"
             >
               {isSubmitting ? (

@@ -2427,7 +2427,10 @@
     "issues": "ጉዳዮች",
     "timeline": "የጊዜ ሰሌዳ",
     "presetHealthcareName": "ጤና አገልግሎት",
-    "presetHealthcareDesc": "ሆስፒታሎች፣ ክሊኒኮች እና የጤና ፕሮግራሞች — ከታካሚ ጋር የተያያዙ ሥራዎች፣ ክሊኒካዊ ምርምር እና ተገዢነት።"
+    "presetHealthcareDesc": "ሆስፒታሎች፣ ክሊኒኮች እና የጤና ፕሮግራሞች — ከታካሚ ጋር የተያያዙ ሥራዎች፣ ክሊኒካዊ ምርምር እና ተገዢነት።",
+    "chooseOrgTypeTitle": "የድርጅትዎን ዓይነት ይምረጡ",
+    "chooseOrgTypeBody": "Onekof ን ለዘርፍዎ ያስተካክሉ — መንግሥት፣ መንግሥታዊ ያልሆነ ድርጅት፣ ንግድ፣ ትምህርት ወይም ጤና። የማይፈልጓቸው ክፍሎች ከምናሌው ይወገዳሉ።",
+    "chooseOrgTypeAction": "የድርጅት ዓይነት ይምረጡ"
   },
   "documentsSettings": {
     "title": "የሰነዶች ቅንብሮች",

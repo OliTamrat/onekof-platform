@@ -2382,7 +2382,10 @@
     "issues": "Issues",
     "timeline": "Timeline",
     "presetHealthcareName": "Healthcare",
-    "presetHealthcareDesc": "Hospitals, clinics, and health programs with patient-linked operations, clinical research, and compliance."
+    "presetHealthcareDesc": "Hospitals, clinics, and health programs with patient-linked operations, clinical research, and compliance.",
+    "chooseOrgTypeTitle": "Choose your organization type",
+    "chooseOrgTypeBody": "Tailor Onekof to your sector — government, NGO, business, education, or healthcare. Sections you do not need disappear from the menu.",
+    "chooseOrgTypeAction": "Choose organization type"
   },
   "documentsSettings": {
     "title": "Documents Settings",
