@@ -126,10 +126,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // SECURITY: Rate limit org creation to prevent spam/DoS
-    const rateLimitError = await checkRateLimit(req, 'signup');
-    if (rateLimitError) return rateLimitError;
-
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -138,6 +134,13 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
+
+    // SECURITY: rate limit workspace creation, keyed PER USER. This used
+    // the 'signup' limiter (3/hour) keyed by IP, which blocked everyone
+    // sharing an office IP after three workspaces — and blocked genuine
+    // testing. Authentication is checked first so the key is the user.
+    const rateLimitError = await checkRateLimit(req, 'orgCreate', session.user.id);
+    if (rateLimitError) return rateLimitError;
 
     const {
       name,
