@@ -1,6 +1,7 @@
-# Department & Workstream Architecture — First-Class Issue Classification
+# Department & Workstream Architecture — First-Class Issue Classification & Industry Availability
 
-> **Status: v1.0 — PROPOSED (awaiting founder approval of Decisions D1–D5)**
+> **Status: v1.1 — PROPOSED (awaiting founder approval of Decisions D1–D9)**
+> v1.1 adds Part II (D6–D9): industry-based availability of department sections, closing the gap between the planned per-industry experience and the delivered one-sidebar-for-all.
 > Author: Oli Tamrat, CTO — DAPS Analytics PLC
 > Related: `SPRINT_AND_SETTINGS_ARCHITECTURE.md` (approved v1.2) — this document follows the same design method: enterprise-grade core now, org-level configurability later, nothing that requires rewriting history.
 
@@ -78,13 +79,72 @@ Phase 2 department pages filter `department = X OR (department IS NULL AND label
 | **3 — Everywhere + cleanup** | Chips/filters on main Issues list & board; drop label fallback; i18n keys ×5 (flag for linguist); Projects/Issues support-guide regenerated same-PR (per docs versioning rule). | No |
 | **Future (not now)** | Org-defined department registry in OrgSettings (ministry Directorates, NGO Programs) feeding the same fields; alignment of `Project.department`/`User.department` to the registry. Designed-for, deliberately deferred. | — |
 
-## 5. Non-goals
+---
+
+# Part II — Industry Availability (D6–D9)
+
+## 5. Problem: the planned per-industry experience was never wired
+
+The plan: organizations choose their type at account creation (government, NGO, tech, education, healthcare…) and the sidebar/features adapt. The delivery diverged in three places, verified in code:
+
+1. **Ungated sections.** `DashboardSectionId` (the vocabulary presets and the sidebar filter share) contains 13 values — `development`, `marketing`, `operations`, `research`, and `knowledge` are not among them. The sidebar filter gates what it knows and passes through the rest, so the department sections render for every organization unconditionally.
+2. **Onboarding never captures organization type.** It asks name/URL/team-size only. Presets are applied solely by the Settings → Customization page — which no navigation links to (recorded product finding). `Organization.industry String?` exists in the schema and is never written at signup.
+3. **Missing settings fail open** — an org with no settings record (i.e., every org created through onboarding) shows everything.
+
+Result: all test accounts across industries have identical sidebars. Classification (Part I) and availability (Part II) are two halves of one foundation: Part I says *what an issue is*; Part II says *who gets which lenses*.
+
+### D6 — Extend the section vocabulary and gate the department sections like everything else
+
+Add to `DashboardSectionId`: `'development' | 'marketing' | 'operations' | 'research' | 'knowledge'` plus vertical modules `'medical' | 'courses'`. The sidebar filter gates them via `enabledSections` exactly as it gates `teams`/`budget` today. The `Task.department` catalog (Part I) stays global — classification remains valid data even when an org hides the section (hiding a lens must never corrupt the record).
+
+### D7 — Onboarding captures organization type; preset applied at creation
+
+- New onboarding step (with the existing role/workspace steps): "What kind of organization is this?" — Government/Ministry · NGO/Non-Profit · Business/Tech · Education · Healthcare · Other.
+- Writes `Organization.industry` and creates the OrganizationSettings record from the matching preset **atomically at workspace creation** — no orphan window.
+- The Customization page is linked into Settings navigation (fixes the orphan finding). Presets remain defaults, not locks — Owner/Admin can still toggle any section, preserving the existing philosophy.
+
+### D8 — Industry capability matrix (preset definitions)
+
+Core for every industry: Projects, Issues, Sprints/Work Cycles, Teams, Goals, Budget, Documents, Docs/Wiki (knowledge), Calendar, Timeline, Reports.
+
+| Section | Government | NGO | Business/Tech | Education | Healthcare |
+|---|---|---|---|---|---|
+| Development | — | — | ✓ | — | — |
+| Marketing | — | ✓ (outreach/campaigns) | ✓ | — | — |
+| Operations | ✓ | ✓ | ✓ | — | ✓ |
+| Research | ✓ | ✓ | — | ✓ | ✓ |
+| Knowledge (wiki/docs) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Automations + AI | — | — | ✓ | — | — |
+| Compliance | ✓ | — | — | — | ✓ |
+| Impact | — | ✓ | — | — | — |
+| Medical & Patients | — | — | — | — | ✓ |
+| Courses | — | — | — | ✓ | — |
+| Budget flavor | procurement + transparency + approval | grants + donations + multi-currency | forecasting + multi-currency | grants, simplified | approval workflow |
+
+- **Healthcare becomes the fifth preset** (currently missing; the medical/patients modules exist with no preset that enables them).
+- Other/unknown → Business preset (current fallback, unchanged).
+- The matrix is the founder-approvable artifact — amend cells freely; the mechanism is identical whatever the cells say.
+
+### D9 — Fail posture: fail to the preset, not to everything
+
+When an org's settings record is missing, derive `enabledSections` from `Organization.industry`'s preset instead of showing all. True fail-open remains only for legacy orgs with neither settings nor industry — and those get a dismissible admin banner ("Choose your organization type") linking to Customization, which is how existing test accounts converge without a forced migration.
+
+## Part II phases
+
+| Phase | Scope |
+|---|---|
+| **A** | Vocabulary extension + sidebar gating + matrix encoded in presets + Healthcare preset. Code-only; existing orgs unaffected (legacy fail-open until D9 banner acted on). |
+| **B** | Onboarding org-type step, `Organization.industry` write + atomic settings creation, Customization link in Settings nav, legacy-org banner. |
+
+Part I and Part II are independently shippable; Part I Phase 1 and Part II Phase A can proceed in parallel once approved.
+
+## 7. Non-goals
 
 - No per-department permissions (departments are classification, not access control — access stays with project visibility/roles).
 - No forced classification of general project work (null is a first-class value).
 - No new sidebar sections — this changes what the existing pages stand on, not what they look like.
 
-## 6. Testing
+## 8. Testing
 
 - Catalog module: pure unit tests (validation, department/workstream pairing).
 - Backfill: SQL applied twice against seeded scratch DB — classification correct, idempotent, labels untouched.
