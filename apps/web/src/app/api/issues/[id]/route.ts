@@ -9,6 +9,7 @@ import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
 import { updateIssueSchema } from '@/lib/validation/schemas';
+import { validateClassification } from '@/lib/departments/catalog';
 import { validateStatusTransition, getAllowedTransitions, type TaskStatus } from '@/lib/workflow-engine';
 import { resolveProjectSettings } from '@/lib/settings/resolve';
 import { deliverWebhook } from '@/lib/integrations/webhooks';
@@ -214,7 +215,7 @@ export async function PATCH(
     // Get the current issue to check project access and track changes
     const currentIssue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true, sprintId: true },
+      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true, sprintId: true, department: true, workstream: true },
     });
 
     if (!currentIssue) {
@@ -257,6 +258,8 @@ export async function PATCH(
       sprintId,
       sprintOrder,
       storyPoints,
+      department,
+      workstream,
     } = validation.data as any;
     const { backlogOrder } = body;
 
@@ -329,6 +332,21 @@ export async function PATCH(
       }
       updateData.sprintId = sprintId;
       if (sprintOrder === undefined) updateData.sprintOrder = null;
+    }
+    if (department !== undefined || workstream !== undefined) {
+      // Validate the pair as it will exist AFTER the update (a workstream
+      // sent alone must still belong to the task's resulting department).
+      const nextDepartment = department !== undefined ? department : currentIssue.department;
+      let nextWorkstream = workstream !== undefined ? workstream : currentIssue.workstream;
+      // Changing department without naming a workstream clears the old one —
+      // a stale workstream from another department is never kept silently.
+      if (department !== undefined && workstream === undefined) nextWorkstream = null;
+      const classification = validateClassification(nextDepartment, nextWorkstream);
+      if (!classification.ok) {
+        return NextResponse.json({ error: classification.error }, { status: 400 });
+      }
+      updateData.department = nextDepartment;
+      updateData.workstream = nextWorkstream;
     }
 
     // Update issue
@@ -525,6 +543,25 @@ export async function PATCH(
           taskTitle: currentIssue.title || '',
           action: 'SPRINT_CHANGED',
           metadata: { from: currentIssue.sprintId, to: sprintId },
+        }).catch(() => {});
+      }
+
+      // Classification changes are audited (D2): old -> new, both levels
+      if (
+        updateData.department !== undefined &&
+        (updateData.department !== currentIssue.department ||
+          updateData.workstream !== currentIssue.workstream)
+      ) {
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: currentIssue.title || '',
+          action: 'DEPARTMENT_CHANGED',
+          metadata: {
+            from: { department: currentIssue.department, workstream: currentIssue.workstream },
+            to: { department: updateData.department, workstream: updateData.workstream },
+          },
         }).catch(() => {});
       }
 

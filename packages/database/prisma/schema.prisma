@@ -602,6 +602,13 @@ model Task {
   labels       Json @default("[]")
   customFields Json @default("{}") @map("custom_fields")
 
+  // Department classification (first-class, catalog-validated in the API
+  // layer — see lib/departments/catalog.ts). Null = general project work.
+  // String (not enum) so org-defined vocabularies can arrive without a
+  // schema migration. Changes are audited via TASK_DEPARTMENT_CHANGED.
+  department String?
+  workstream String?
+
   // Backlog ordering (drag-to-prioritize in backlog view)
   backlogOrder Int? @map("backlog_order")
 
@@ -640,6 +647,7 @@ model Task {
   @@index([parentId]) // Subtask lookups
   @@index([projectId, status, backlogOrder]) // Backlog ordering
   @@index([sprintId, sprintOrder]) // Sprint board ordering
+  @@index([projectId, department, workstream]) // Department lens queries
   @@map("tasks")
   @@schema("public")
 }
@@ -1364,6 +1372,7 @@ enum ActivityType {
   SPRINT_COMPLETED
   SPRINT_DELETED
   TASK_SPRINT_CHANGED // task moved into/out of a sprint (scope churn signal)
+  TASK_DEPARTMENT_CHANGED // classification changed (old -> new in metadata)
 
   // Settings
   PROJECT_SETTINGS_CHANGED
