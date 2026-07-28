@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
-import { findSubdomainBase, getTenantSlugFromHostname } from '@/lib/routing/subdomain';
+import { buildTenantUrl, findSubdomainBase, getTenantSlugFromHostname } from '@/lib/routing/subdomain';
 
 // Types
 export interface Organization {
@@ -170,24 +170,39 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Switch to a different organization
+  // Switch to a different organization.
+  // Tenancy is resolved server-side from the hostname (x-organization-slug),
+  // so switching must NAVIGATE to the target org's subdomain — updating React
+  // state alone leaves every API call answering for the old org.
   const switchOrganization = async (organizationId: string) => {
     const org = organizations.find(o => o.id === organizationId);
-    if (org) {
-      setCurrentOrganization(org);
-      setCurrentProject(null); // Clear current project when switching orgs
+    if (!org || org.id === currentOrganization?.id) return;
 
-      // Update user's default organization
-      try {
-        await fetch('/api/user/default-organization', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ organizationId }),
-        });
-      } catch (error) {
-        console.error('Failed to update default organization:', error);
-      }
+    setCurrentOrganization(org);
+    setCurrentProject(null); // Clear current project when switching orgs
+
+    // Persist the default BEFORE navigating — path-based hosts (previews,
+    // localhost) resolve the org from defaultOrganizationId on the server.
+    try {
+      await fetch('/api/user/default-organization', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ organizationId }),
+      });
+    } catch (error) {
+      console.error('Failed to update default organization:', error);
     }
+
+    const tenantUrl = buildTenantUrl(
+      window.location.hostname,
+      window.location.port,
+      window.location.protocol,
+      org.slug,
+      '/dashboard',
+    );
+    // Full navigation (not router.push) so all server-resolved data reloads
+    // under the new org context.
+    window.location.href = tenantUrl ?? '/dashboard';
   };
 
   // Load organizations when session is ready

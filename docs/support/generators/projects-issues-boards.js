@@ -1,0 +1,132 @@
+const { P, B, BOLDLEAD, STEP, H1, H2, table, buildGuide } = require('./lib/guide-lib');
+
+buildGuide({
+  subtitle: 'Projects, Issues & Boards',
+  headerTitle: 'Projects, Issues & Boards',
+  version: '1.0',
+  date: 'July 25, 2026',
+  outFile: 'ONEKOF_SUPPORT_GUIDE_PROJECTS_ISSUES_BOARDS.docx',
+  body: [
+    // ---- 1. Overview ----
+    H1('1. What are Projects, Issues & Boards?'),
+    P('A Project is the container for one initiative — a dam construction program, a grant deliverable, a product launch. Inside a project, every piece of work is an Issue: a task, a bug, a user story, or a large epic broken into subtasks. Boards show those issues as cards in status columns, so a team sees at a glance what is waiting, what is moving, and what is done — and moves work forward by dragging cards.'),
+    P('This is the daily workspace of every Onekof user; the Sprints & Work Cycles guide builds on it, and the Teams, Members & Permissions guide explains who can open which project.'),
+
+    // ---- 2. Roles ----
+    H1('2. Who Can Do What'),
+    P('Issue actions follow project roles (Admin > Member > Viewer). Org Owners and Admins pass every project-role check. One deliberate openness: on Public and Internal projects, any org member can work on issues even without being formally added to the project.'),
+    table([
+      ['Action', 'Required role'],
+      ['Create a project', 'Any org member — the creator automatically becomes that project’s Admin and lead'],
+      ['View issues and boards', 'Project Viewer or above (see visibility rules below)'],
+      ['Create / edit / drag issues, comment, attach files', 'Project Member or above (Viewers are read-only)'],
+      ['Edit project details (name, description, visibility)', 'Project Member or above'],
+      ['Add/remove project members, change roles', 'Project Admin, or Org Owner/Admin'],
+      ['Change project settings (sprints, workflow, estimation unit)', 'Project Admin, or Org Owner/Admin'],
+      ['Delete a project', 'Project Admin'],
+      ['Delete an issue', 'Project Member or above (deletion is recoverable — see Rules)'],
+    ]),
+
+    // ---- 3. Key terms ----
+    H1('3. Key Terms'),
+    BOLDLEAD('Issue key — ', 'the permanent ID of an issue, formed from the project key: e.g. WATER-123. Project keys are unique per organization and always uppercase.'),
+    BOLDLEAD('Issue types — ', 'Task (normal work), Story (user-facing deliverable), Bug (defect), Epic (large body of work that contains others), Subtask (a child of any issue, created from inside it).'),
+    BOLDLEAD('Statuses — ', 'Backlog (not yet planned), To Do, In Progress, In Review, Done, Blocked. Priorities run Highest → Lowest.'),
+    BOLDLEAD('Visibility — ', 'Public and Internal projects are open to all org members; Private needs explicit membership (org admins can also see them); Confidential is visible only to explicitly added people — even org Admins are excluded.'),
+    BOLDLEAD('Workflow enforcement — ', 'an optional per-project rule that status changes must follow the allowed-transitions matrix. Off by default.'),
+    BOLDLEAD('Watcher — ', 'a person notified about an issue’s changes. Creating, being assigned, commenting, or being @mentioned makes you a watcher automatically; the eye button toggles it manually.'),
+    BOLDLEAD('Linked work items — ', 'relationships between issues, even across projects: Relates to, Blocks / Is blocked by, Duplicates, Causes…'),
+
+    // ---- 4. Step-by-step ----
+    H1('4. Step-by-Step Guides'),
+    H2('4.1 Create a project'),
+    STEP('steps0', 'Top bar → + Create → Project (or Dashboard → Projects → All Projects).'),
+    STEP('steps0', 'Set the name and short key (it becomes the issue prefix, e.g. WATER). Choose type, template (Kanban, or Scrum to get sprints on automatically), priority, lead, and visibility.'),
+    STEP('steps0', 'Optionally add members and teams now. You are the project Admin either way.'),
+    H2('4.2 Create an issue'),
+    STEP('steps1', 'Press C anywhere on the Issues pages, or use + Create → Issue.'),
+    STEP('steps1', 'Fill in title, description, type (Task / Story / Bug / Epic), status, priority, assignee, due date, and estimate in hours. Attachments and links to other work items can be added at creation.'),
+    STEP('steps1', 'Save. The assignee is emailed; creator and assignee become watchers automatically.'),
+    H2('4.3 Work the board'),
+    STEP('steps2', 'Issues → Board tab shows six columns: Backlog, To Do, In Progress, In Review, Done, Blocked. (The main Issues page shows a compact five-column board without Blocked.)'),
+    STEP('steps2', 'Drag a card to another column to change its status. The card moves instantly; if the server refuses (workflow enforcement), it snaps back and the message lists the allowed moves.'),
+    STEP('steps2', 'Use search and the status/priority filters. "Hide subtasks" is on by default — untick it to see subtasks as cards.'),
+    H2('4.4 Break work down with subtasks'),
+    STEP('steps3', 'Open an issue (click its card) → Add subtask in the slideout panel.'),
+    STEP('steps3', 'Each subtask has its own assignee; the parent shows a completion percentage as subtasks reach Done.'),
+    STEP('steps3', 'For the full picture, use the Hierarchy tab: an expandable Epic → Story → Task → Subtask tree per project.'),
+    H2('4.5 Collaborate on an issue'),
+    STEP('steps4', 'Comment with @ to mention someone — they are notified and start watching the issue.'),
+    STEP('steps4', 'Attach files, edit priority/due date/labels inline, and follow the Activity timeline for the full change history.'),
+    STEP('steps4', 'Link related work under Linked work items — including issues in other projects of the organization.'),
+    H2('4.6 Find things fast'),
+    STEP('steps5', 'Tabs on the Issues page: Summary, List, Backlog, Sprints, Board, Epics, Hierarchy, Timeline, Team, Settings.'),
+    STEP('steps5', 'Timeline is the strategic view — progress, budget, and goals over time — not another card view.'),
+    STEP('steps5', 'Ctrl+K (Cmd+K) searches issues, projects, and people from anywhere.'),
+
+    // ---- 5. Rules ----
+    H1('5. Rules the System Enforces (and Why)'),
+    P('These are deliberate protections, not bugs.'),
+    BOLDLEAD('Project keys are unique and uppercase. ', 'A duplicate key is refused ("Project key already exists") — issue keys like WATER-123 must stay unambiguous forever.'),
+    BOLDLEAD('Viewers cannot change anything. ', 'A Viewer sees boards and issues but every edit or drag is refused. Raise them to Member if they should work, not just observe.'),
+    BOLDLEAD('Backlog cannot jump straight to Done (when enforcement is on). ', 'Unplanned work must at least be acknowledged (moved to To Do) before being closed. Quick-closing To Do → Done is allowed; reopening from Done is always allowed.'),
+    BOLDLEAD('Blocked moves explain themselves. ', 'A refused drag snaps back with the exact list of allowed next statuses — support can read the message to the user verbatim.'),
+    BOLDLEAD('Completion timestamps are automatic. ', 'The completion date is stamped when an issue enters Done and cleared if it is reopened — no manual bookkeeping, no stale dates in reports.'),
+    BOLDLEAD('Issue deletion is a soft delete. ', 'Deleted issues are hidden, not destroyed — recoverable at the database level if a mistake must be undone.'),
+    BOLDLEAD('Sprint moves are guarded. ', 'Issues can only move into a non-completed sprint of the same project; deleting a planned sprint returns its issues to the backlog. See the Sprints guide.'),
+    BOLDLEAD('Confidential means confidential. ', 'Even org Admins cannot see a Confidential project without being explicitly added.'),
+
+    // ---- 6. FAQ ----
+    H1('6. Troubleshooting & FAQ'),
+    table([
+      ['Question / symptom', 'Answer'],
+      ['"I can’t drag this card from Backlog to Done."', 'Workflow enforcement is on for that project. Move it to To Do first (the snap-back message lists the allowed moves). A project Admin can turn enforcement off under Issues → Settings.'],
+      ['"There’s no Blocked column on my board."', 'There are two boards: the main Issues page shows five columns (no Blocked); the Board tab shows all six. Blocked cards only appear on the Board tab.'],
+      ['"My subtasks disappeared."', '"Hide subtasks" is ticked by default on both boards. Untick it, or open the parent issue — the card also shows a "+N sub" badge.'],
+      ['"I can see everything but every edit fails."', 'The account is a project Viewer. Ask a project Admin to raise the role to Member.'],
+      ['"A colleague can’t find our project."', 'Private and Confidential projects need explicit membership — add them under project → Settings → Members. Guests see nothing they aren’t added to.'],
+      ['"It says Project key already exists."', 'Keys are unique per organization and auto-uppercased. Pick another key.'],
+      ['"Where are Sprints?"', 'Sprint sections appear on the Backlog tab once a specific project with sprints enabled is selected. Scrum-template projects have sprints on automatically; others enable them via the banner or Issues → Settings. Formal-terminology orgs see "Work Cycle".'],
+      ['"I closed an issue by mistake."', 'Drag it back out of Done — reopening is always allowed and the completion date clears automatically.'],
+      ['"Who deleted this issue? Can we get it back?"', 'Deletions are soft — the record survives underneath. Escalate to senior support for recovery; the activity log shows who did it.'],
+      ['"Anyone can create a project?!"', 'Yes, by design — any org member can start a project and becomes its Admin. Visibility rules still control who sees it.'],
+    ], 3400, 5960),
+
+    // ---- 7. Benefits ----
+    H1('7. Why This Design — the Benefits'),
+    H2('For teams'),
+    B('One card per piece of work, one drag to update it — the board is the status meeting.'),
+    B('Watchers, @mentions, and the activity timeline keep everyone informed without email chains.'),
+    H2('For project managers'),
+    B('Epic → Story → Task → Subtask hierarchy scales from a one-week task list to a multi-year program in the same project.'),
+    B('Optional workflow enforcement turns your process into system rules — no more silently skipped review steps.'),
+    B('Cross-project issue links make dependencies between departments visible and navigable.'),
+    H2('For government, NGO, and enterprise leadership'),
+    B('Four visibility levels, up to Confidential where even administrators are excluded — matching institutional confidentiality practice.'),
+    B('Every change is on the record: automatic completion timestamps, full activity history, recoverable deletions.'),
+    B('Enterprise fields — department, budget code, risk level, entity type — attach institutional context to every project from day one.'),
+
+    // ---- 8. Under the hood ----
+    H1('8. Under the Hood (Senior Support Reference)'),
+    B('Issue keys are generated as PROJECTKEY-N with collision retry; numbering counts deleted issues, so numbers are never reused.'),
+    B('Access model: project role hierarchy ADMIN > MEMBER > VIEWER, checked server-side on every write; org Owner/Admin bypass project-role checks. Public/Internal projects deliberately allow issue edits by any org member without a membership record.'),
+    B('Status transition matrix (enforcement on): BACKLOG→{TODO, IN_PROGRESS, BLOCKED}; TODO→{BACKLOG, IN_PROGRESS, DONE, BLOCKED}; IN_PROGRESS→{TODO, IN_REVIEW, DONE, BLOCKED}; IN_REVIEW→{IN_PROGRESS, DONE, BLOCKED}; DONE→{TODO, IN_PROGRESS, IN_REVIEW, BACKLOG}; BLOCKED→{BACKLOG, TODO, IN_PROGRESS, IN_REVIEW}. Projects can override the table; a refused move returns the allowed list.'),
+    B('Board drags are optimistic with server reconciliation — a rejection resyncs the board and surfaces the server’s exact reason.'),
+    B('completedAt is set only on transition into DONE and cleared on leaving DONE — sprint and report math depends on this invariant.'),
+    B('Deletes are soft (deletedAt); attachments, comments, watchers, and activity ride on the issue record. Automations and webhooks fire on create/update events.'),
+
+    // ---- 9. Navigation map ----
+    H1('9. Where Everything Lives'),
+    table([
+      ['I want to…', 'Go to'],
+      ['See all projects / create a project', 'Dashboard → Projects (or + Create → Project)'],
+      ['Work the full board (incl. Blocked column)', 'Issues → Board tab'],
+      ['Groom unplanned work / plan sprints', 'Issues → Backlog tab (select a project)'],
+      ['See the Epic → Subtask tree', 'Issues → Hierarchy tab'],
+      ['Strategic progress over time', 'Issues → Timeline tab'],
+      ['Create an issue from anywhere', 'Press C, or + Create → Issue'],
+      ['Project settings: sprints, workflow, estimation unit', 'Issues → Settings (project Admin)'],
+      ['Manage who is in the project', 'Project → Settings → Members'],
+    ], 4200, 5160),
+  ],
+});
