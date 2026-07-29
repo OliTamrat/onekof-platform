@@ -52,17 +52,32 @@ describe('no fabricated data in dashboard pages', () => {
     expect(offenders, offenders.join('\n')).toEqual([]);
   });
 
-  it('keeps the deleted routes deleted', () => {
-    // Re-adding one of these is fine — in the change that makes it query real
-    // data. This guard exists so it cannot come back by a copy-paste.
+  it('keeps the still-fabricated routes deleted', () => {
+    // goals/list and goals/board are deliberately absent from this list: they
+    // were rebuilt against the Goal model and now query real data, which is
+    // exactly the condition this guard was written to allow. The rest have no
+    // model behind them and stay gone until something real backs them.
     const deleted = [
       'teams/activity', 'teams/board', 'teams/goals', 'teams/list',
       'teams/pages', 'teams/timeline',
-      'goals/active', 'goals/board', 'goals/completed', 'goals/list',
-      'goals/pages', 'goals/teams', 'goals/timeline',
+      'goals/active', 'goals/completed', 'goals/pages', 'goals/teams',
+      'goals/timeline',
     ];
     for (const route of deleted) {
       expect(existsSync(join(DASHBOARD, route, 'page.tsx')), route).toBe(false);
+    }
+  });
+
+  it('the rebuilt goal views actually query data', () => {
+    // The whole point of bringing these two back. A rebuilt page that renders
+    // a hardcoded array again would pass the "no invented names" check by
+    // simply using different names — this is what stops that.
+    for (const route of ['goals/list', 'goals/board']) {
+      const src = readFileSync(join(DASHBOARD, route, 'page.tsx'), 'utf8');
+      expect(src, `${route} must fetch`).toMatch(/useQuery/);
+      expect(src, `${route} must use the shared goals query`).toMatch(/fetchGoals/);
+      // No top-level array of domain rows masquerading as data.
+      expect(src, `${route} must not hardcode rows`).not.toMatch(/^const [A-Z_]+ = \[\s*$/m);
     }
   });
 });
