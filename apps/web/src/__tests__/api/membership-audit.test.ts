@@ -67,6 +67,18 @@ describe('cross-tenant scoping on membership routes', () => {
   });
 });
 
+describe('team lifecycle is audited', () => {
+  it('records team creation', () => {
+    expect(code('app/api/teams/route.ts')).toContain('OrgActions.TEAM_CREATED');
+  });
+
+  it('records team deletion', () => {
+    // Teams are soft-deleted; the audit entry is the record that survives
+    // independently of the row.
+    expect(code('app/api/teams/[id]/route.ts')).toContain('OrgActions.TEAM_DELETED');
+  });
+});
+
 describe('audit logging never breaks the caller', () => {
   it('swallows its own failures', async () => {
     const src = read('lib/security/org-audit.ts');
