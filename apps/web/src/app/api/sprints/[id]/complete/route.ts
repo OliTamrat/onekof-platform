@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
 import { completeSprintSchema } from '@/lib/validation/schemas';
 import { resolveProjectSettings } from '@/lib/settings/resolve';
 import { logActivity } from '@/lib/activity-logger';
@@ -23,7 +23,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const auth = await requireAuth();
+    const auth = await requireAuthentication();
     if (!auth.authorized) return auth.error;
     const userId = auth.session.user.id;
 

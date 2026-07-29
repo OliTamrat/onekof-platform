@@ -4,7 +4,7 @@ import { prisma } from '@onekof/database';
 import { handleTaskStatusChange } from '@/lib/progress-aggregation';
 import { autoWatchMentionedUsers } from '@/lib/mention-parser';
 import { authOptions } from '@/lib/auth';
-import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendTaskAssignmentEmail, userWantsNotification } from '@/lib/email';
@@ -29,7 +29,7 @@ export async function GET(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }
@@ -199,7 +199,7 @@ export async function PATCH(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }
@@ -634,7 +634,7 @@ export async function DELETE(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }

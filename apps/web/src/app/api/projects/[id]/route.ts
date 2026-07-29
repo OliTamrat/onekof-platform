@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { authOptions } from '@/lib/auth';
-import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
 import { log } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -19,7 +19,7 @@ export async function GET(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }
@@ -110,7 +110,7 @@ export async function PATCH(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }
@@ -219,7 +219,7 @@ export async function DELETE(
 ) {
   try {
     // SECURITY FIX: Verify authentication
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }

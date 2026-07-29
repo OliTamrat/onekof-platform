@@ -6,10 +6,32 @@ import { log, logSecurity } from '@/lib/logger';
 import { resolveAuthUser } from '@/lib/api-organization';
 
 /**
- * Authorization Middleware for API Routes
+ * Authentication and authorization helpers for API routes.
  *
- * SECURITY: Prevents IDOR (Insecure Direct Object Reference) attacks
- * by verifying users can only access resources in their organization
+ * READ THIS BEFORE USING requireAuthentication().
+ *
+ * This module contains two different kinds of function and confusing them is
+ * how every authorization defect found on 2026-07-29 happened:
+ *
+ *   requireAuthentication()  — answers "WHO is this?" and nothing more.
+ *                              It does NOT check organization membership and
+ *                              it does NOT prevent IDOR. A route that calls
+ *                              only this, then acts on an id from the URL, is
+ *                              open to every signed-in user of the platform.
+ *
+ *   requireOrganizationMembership()
+ *   requireProjectAccess()
+ *   requireExpenseAccess()   — answer "MAY they touch THIS resource?"
+ *                              One of these is required before reading or
+ *                              writing anything identified by a URL parameter.
+ *
+ * This header previously read "SECURITY: Prevents IDOR attacks by verifying
+ * users can only access resources in their organization", and the first
+ * function beneath it was called requireAuth(). Both were true of the module
+ * as a whole and false of that function, and routes were written on the
+ * strength of the header. The function is now named for what it does.
+ *
+ * See docs/architecture/API_AUTHORIZATION_AUDIT.md.
  */
 
 export type Role = 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST';
@@ -26,7 +48,7 @@ interface AuthorizationResult {
  * Verify user is authenticated.
  * Accepts NextAuth session cookies (web) or Bearer JWT tokens (mobile).
  */
-export async function requireAuth(): Promise<AuthorizationResult> {
+export async function requireAuthentication(): Promise<AuthorizationResult> {
   // Try NextAuth session first (web)
   const session = await getServerSession(authOptions);
   if (session?.user) {
