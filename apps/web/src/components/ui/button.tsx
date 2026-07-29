@@ -21,10 +21,35 @@ const buttonVariants = cva(
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
       },
+      /**
+       * `layout` exists because the base class above is right for labels and
+       * wrong for anything else, and the failure is silent.
+       *
+       * `inline` (default) keeps `inline-flex`, `justify-center` and
+       * `whitespace-nowrap` — correct for "Save", "Add member", an icon and a
+       * word. Unchanged from before this variant existed.
+       *
+       * `block` is for a button that is really a card or an option: a
+       * selectable preset, a stacked title-and-description, anything whose
+       * text must wrap. It drops the three properties that break that.
+       *
+       * Why this matters more than it looks: `whitespace-nowrap` INHERITS.
+       * A wrapping paragraph nested three levels inside a Button still
+       * refuses to wrap, and the height collapse that follows reads as a
+       * styling accident rather than a component contract. This exact base
+       * class broke four separate screens in one day — the Customization
+       * presets, its toggles and header, the AI Insights cards, and the
+       * onboarding option cards.
+       */
+      layout: {
+        inline: '',
+        block: 'flex-col items-stretch justify-start whitespace-normal text-left h-auto',
+      },
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      layout: 'inline',
     },
   }
 );
@@ -36,11 +61,11 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, layout, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, layout, className }))}
         ref={ref}
         {...props}
       />
