@@ -30,7 +30,7 @@ const numbering = {
       }],
     },
     // Each question block restarts at 1.
-    ...['q1', 'q2', 'q3', 'q4'].map((ref) => ({
+    ...['q1', 'q1b', 'q2', 'q3', 'q4'].map((ref) => ({
       reference: ref,
       levels: [{
         level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT,
@@ -208,6 +208,7 @@ const doc = new Document({
       BOLDLEAD('Health data is sensitive personal data — ', 'the sensitive category expressly includes physical or mental health data. Processing of sensitive personal data is prohibited save on enumerated grounds such as consent or legal obligation.'),
       BOLDLEAD('Cross-border transfer — ', 'transfers abroad require an adequacy assessment of the recipient country, appropriate safeguards, explicit informed consent, or necessity. For sensitive personal data specifically, we understand prior approval of the Authority is required.'),
       BOLDLEAD('Storage limitation — ', 'personal data must not be kept in identifiable form for longer than necessary for the purpose, after which it must be securely deleted or anonymised, unless retention is required by law.'),
+      BOLDLEAD('Scope — ', 'we understand the Proclamation to apply to any controller or processor established in Ethiopia and processing in that context, and also to those not established in Ethiopia who process the personal data of persons in Ethiopia. We have found only one exemption, for processing by an individual in the course of purely personal or household activity, and no threshold based on the size of the operator. If that understanding is wrong, Question 1b below is where it matters most to us.'),
       P('We also understand that enforcement is at an early stage: a year after entry into force the Authority was still expanding capacity, with implementing directives pending. We are treating this as relevant to urgency and to the likelihood of near-term enforcement action, but not to what the law requires. We would rather comply early than argue that a statute is not yet being enforced.'),
 
       // ---------- Consequence ----------
@@ -230,6 +231,11 @@ const doc = new Document({
       NUM('q1', 'Does Article 22 require that personal data collected in Ethiopia be stored ONLY in Ethiopia, so that a copy held abroad is non-compliant regardless of safeguards?'),
       NUM('q1', 'Or does it require a copy to be stored in Ethiopia, while permitting an additional copy abroad under the cross-border transfer provisions?'),
       P('If the first: Tier 3 cannot serve Ethiopian customers and we must move them to Tier 1 or Tier 2. If the second: Tier 3 can continue for non-sensitive data with the appropriate safeguards and consents in place, and only patient data requires the hard restriction.'),
+      H2('Question 1b — Does the sector of the business change the answer?'),
+      P('Our internal view has been divided on this and we would like it settled. One reading is that the localisation duty is aimed principally at health, telecommunications and similar sensitive-sector operators, and that a general business tool holding ordinary account data is not the intended target. The other is that the duty is territorial — it attaches to personal data collected in Ethiopia irrespective of the controller\'s sector.'),
+      NUM('q1b', 'Does Article 22 apply differently to a general-purpose business application than to a health or telemedicine application, or is the obligation the same for both?'),
+      NUM('q1b', 'Is Onekof a data controller, a data processor, or both? Our customers decide what to put into their workspaces, which suggests we are a processor for their content and a controller for the account data we collect ourselves. Does that distinction change our obligations under Article 22?'),
+      NUM('q1b', 'Are there any thresholds, exemptions or transitional accommodations — by size of operator, volume of data, or sector — that would apply to a company of our size?'),
 
       H2('Question 2 — Patient data on Ethiopian infrastructure'),
       NUM('q2', 'Do you agree that patient identifiers, as described in section 2, must be stored on infrastructure located in Ethiopia?'),
