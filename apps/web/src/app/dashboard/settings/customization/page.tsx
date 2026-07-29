@@ -83,7 +83,7 @@ const INITIAL_SETTINGS: OrganizationSettings = {
   },
   customization: {
     primaryColor: '#1C8C7D',
-    budgetCurrency: 'USD',
+    budgetCurrency: 'ETB',
     fiscalYearStart: 1,
     dateFormat: 'MM/DD/YYYY',
     language: 'EN',

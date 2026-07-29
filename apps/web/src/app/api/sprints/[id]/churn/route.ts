@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
 import { summarizeChurn } from '@/components/sprints/insights';
 import logger from '@/lib/logger';
 
@@ -22,7 +22,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const auth = await requireAuth();
+    const auth = await requireAuthentication();
     if (!auth.authorized) return auth.error;
 
     const sprint = await prisma.sprint.findFirst({

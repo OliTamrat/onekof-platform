@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { requireAuth, requireProjectAccess } from '@/lib/security/authorization';
+import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const authResult = await requireAuth();
+    const authResult = await requireAuthentication();
     if (!authResult.authorized || !authResult.session?.user) {
       return authResult.error!;
     }

@@ -9,7 +9,7 @@ const code = (p: string) =>
     .replace(/^\s*\/\/.*$/gm, '');
 
 /**
- * requireAuth() and resolveAuthUser() only AUTHENTICATE. They answer "who is
+ * requireAuthentication() and resolveAuthUser() only AUTHENTICATE. They answer "who is
  * this?", never "may they touch this resource?" — despite the header of
  * lib/security/authorization.ts claiming the module prevents IDOR.
  *

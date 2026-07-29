@@ -119,7 +119,10 @@ model OrganizationSettings {
   // Customization
   primaryColor    String   @default("#0065FF") @map("primary_color")
   logoUrl         String?  @map("logo_url")
-  budgetCurrency  String   @default("USD") @map("budget_currency")
+  // ETB, not USD: Onekof is an Ethiopian product sold to Ethiopian
+  // institutions. Existing organizations keep whatever they already set —
+  // a default only applies to rows that never specified one.
+  budgetCurrency  String   @default("ETB") @map("budget_currency")
   fiscalYearStart Int      @default(1) @map("fiscal_year_start") // 1-12 (month)
   dateFormat      String   @default("MM/DD/YYYY") @map("date_format")
   language        Language @default(EN)
