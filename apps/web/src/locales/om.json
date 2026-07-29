@@ -121,7 +121,8 @@
     "noMatchFilters": "Hojiin calaloo keessan waliin wal simu hin jiru.",
     "createFirstTask": "Hojii jalqabaa keessan uumaa",
     "pages": "Fuulota",
-    "selectDate": "Guyyaa filadhu"
+    "selectDate": "Guyyaa filadhu",
+    "clear": "Haqi"
   },
   "nav": {
     "home": "Fuula Jalqabaa",
@@ -3152,5 +3153,23 @@
     "dateLabel": "Guyyaa",
     "generatedOn": "Kan uumame {date}",
     "exportPdf": "PDF baasi"
+  },
+  "medical": {
+    "birthYearUnknown": "Waggaan dhalootaa hin galmoofne",
+    "bornIn": "Kan dhalate {year}",
+    "careWorkDesc": "Hojiiwwan kunuunsaa gabatee idilee irratti — haala, sprint fi gabaasa hojiiwwan biroo waliin wal fakkaatu.",
+    "careWorkTitle": "Hojii kunuunsaa",
+    "erased": "Haqameera",
+    "identityWithheld": "Eenyummaan dhorkameera",
+    "limitedNotice": "Dhukkubsataan akka jiru arguu dandeessu, garuu eenyu akka ta'e miti.",
+    "lookup": "Barbaadi",
+    "lookupPlaceholder": "Eenyummeessaa dhukkubsataa sirrii",
+    "noAccessBody": "Dhaqqabummaan dhukkubsataa gahee dhaabbata keessanii irraa adda ta'ee kennama — abbaa yookaan bulchaa ta'uun isa hin dabalatu. Abbaan dhaabbatichaa akka isinii kennu gaafadhaa.",
+    "noAccessTitle": "Dhaqqabummaa dhukkubsataa hin qabdan",
+    "noMatch": "Eenyummeessaa sanaan dhukkubsataan hin jiru",
+    "noMatchDesc": "Barbaachi eenyummeessaa guutuu sirriitti walsimsiisa. Barreeffamni cita fi maqaan hin walsimu.",
+    "residencyBlockedBody": "Seerri Itoophiyaa odeeffannoon dhukkubsataa biyya keessatti akka kuufamu barbaada. Ijaarsi kun Itoophiyaan alatti waan hojjetuuf galmeewwan dhukkubsataa asitti kuufamuu yookaan agarsiifamuu hin danda'an. Waa'ee ijaarsa biyya keessaa bulchaa keessan gaafadhaa.",
+    "residencyBlockedTitle": "Galmeewwan dhukkubsataa ijaarsa kana irratti hin argaman",
+    "unnamed": "Galmee maqaa hin qabne"
   }
 }

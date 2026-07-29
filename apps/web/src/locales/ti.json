@@ -121,7 +121,8 @@
     "noMatchFilters": "ምስ ሕጂ ጸሪኻ ዝሰማማዕ ተግባር የለን።",
     "createFirstTask": "ቀዳማይ ተግባርካ ፍጠር",
     "pages": "ገጻት",
-    "selectDate": "ዕለት ምረጽ"
+    "selectDate": "ዕለት ምረጽ",
+    "clear": "ኣጽሪ"
   },
   "nav": {
     "home": "መበገሲ",
@@ -3152,5 +3153,23 @@
     "dateLabel": "ዕለት",
     "generatedOn": "ዝተፈጥረ {date}",
     "exportPdf": "ፒዲኤፍ ኣውጽእ"
+  },
+  "medical": {
+    "birthYearUnknown": "ዓመት ልደት ኣይተመዝገበን",
+    "bornIn": "ዝተወልደ {year}",
+    "careWorkDesc": "ናይ ክንክን ተግባራት ኣብ ልሙድ ሰሌዳ — ምስ ካልኦት ስራሓት ተመሳሳሊ ኩነታት፣ ስፕሪንትን ጸብጻብን።",
+    "careWorkTitle": "ናይ ክንክን ስራሕ",
+    "erased": "ተሰሪዙ",
+    "identityWithheld": "መንነት ተኸልኪሉ",
+    "limitedNotice": "ሕሙም ከም ዘሎ ክትርኢ ትኽእል፣ ግን መን ምዃኑ ኣይኮነን።",
+    "lookup": "ድለ",
+    "lookupPlaceholder": "ልክዕ መለለዪ ሕሙም",
+    "noAccessBody": "ናይ ሕሙም መእተዊ ካብ ናይ ትካል ተራኻ ተፈልዩ ይወሃብ — ወናኒ ወይ ኣመሓዳሪ ምዃን ኣየጠቓልልን። ወናኒ ትካል መእተዊ ክህበካ ሕተት።",
+    "noAccessTitle": "ናይ ሕሙም መእተዊ የብልካን",
+    "noMatch": "በዚ መለለዪ ሕሙም የለን",
+    "noMatchDesc": "ምድላይ ንምሉእ መለለዪ ብልክዕ የዛምድ። ከፊላዊ ጽሑፍን ስማትን ኣይዛመዱን።",
+    "residencyBlockedBody": "ሕጊ ኢትዮጵያ ሓበሬታ ሕሙማት ኣብ ውሽጢ ሃገር ክቕመጥ ይጠልብ። እዚ ትካል ካብ ኢትዮጵያ ወጻኢ ስለ ዝሰርሕ መዝገባት ሕሙማት ኣብዚ ክቕመጡ ወይ ክርኣዩ ኣይክእሉን። ብዛዕባ ውሽጢ ሃገር ትካል ንኣመሓዳሪኻ ሕተት።",
+    "residencyBlockedTitle": "መዝገባት ሕሙማት ኣብዚ ትካል ኣይርከቡን",
+    "unnamed": "ስም ዘይብሉ መዝገብ"
   }
 }

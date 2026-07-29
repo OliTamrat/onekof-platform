@@ -121,7 +121,8 @@
     "noMatchFilters": "Hawl la helin shaandhayaashaada hadda.",
     "createFirstTask": "Hawshaada koowaad samee",
     "pages": "bogagyo",
-    "selectDate": "Taariikhda dooro"
+    "selectDate": "Taariikhda dooro",
+    "clear": "Nadiifi"
   },
   "nav": {
     "home": "Bogga hore",
@@ -3146,5 +3147,23 @@
     "dateLabel": "Taariikh",
     "generatedOn": "La sameeyay {date}",
     "exportPdf": "PDF soo saar"
+  },
+  "medical": {
+    "birthYearUnknown": "Sanadka dhalashada lama diiwaangelin",
+    "bornIn": "Wuxuu dhashay {year}",
+    "careWorkDesc": "Hawlaha daryeelka oo ku jira sabuuradda caadiga ah — isla xaalado, sprints iyo warbixin sida shaqada kale.",
+    "careWorkTitle": "Shaqada daryeelka",
+    "erased": "La tirtiray",
+    "identityWithheld": "Aqoonsiga waa la celiyay",
+    "limitedNotice": "Waad arki kartaa in bukaan jiro, laakiin ma aha cidda uu yahay.",
+    "lookup": "Raadi",
+    "lookupPlaceholder": "Aqoonsiga bukaanka oo sax ah",
+    "noAccessBody": "Gelitaanka bukaanka gooni ahaan ayaa loo siiyaa doorkaaga ururka — inaad tahay milkiile ama maamule ma ku jirto. Weydii milkiilaha ururka inuu ku siiyo gelitaan.",
+    "noAccessTitle": "Ma haysatid gelitaan bukaan",
+    "noMatch": "Bukaan aqoonsigaas leh ma jiro",
+    "noMatchDesc": "Raadinta waxay u dhigantaa aqoonsiga oo dhan si sax ah. Qoraal qayb ah iyo magacyada ma dhigmi doonaan.",
+    "residencyBlockedBody": "Sharciga Itoobiya wuxuu u baahan yahay in xogta bukaanka gudaha dalka lagu kaydiyo. Rakibaaddan waxay ka shaqaysaa Itoobiya dibadeeda, sidaas darteed diiwaanada bukaanka halkan lagama kaydin karo lagamana muujin karo. Weydii maamulahaaga rakibaadda gudaha dalka.",
+    "residencyBlockedTitle": "Diiwaanada bukaanka lagama heli karo rakibaaddan",
+    "unnamed": "Diiwaan aan magac lahayn"
   }
 }
