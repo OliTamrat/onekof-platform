@@ -129,6 +129,102 @@ gh pr list --state merged --json number,headRefName --limit 200
 
 ---
 
+## SESSION LOG (2026-07-29) — Medical M1/M2, security audit, activity trail
+
+**23 PRs merged (#174–#196).** Everything below is on `master` and deployed to
+production (deploy run 200, 18:58 UTC).
+
+### Medical module
+
+| | |
+|---|---|
+| **M1 — patient registry** | `Patient` model, encrypted identifiers, keyed blind index for lookup-without-decryption, `patientAccess` ladder, registry + access-granting APIs. Migration applied to production. |
+| **M2 — care coordination** | `Task.patientId` (a column, not a parallel model). Enforced across the issue list, detail, bulk, search, epics, activities, notifications and sprint churn. Migration applied. |
+| **M5 — residency** | Grounded in Proclamation 1321/2024 Art. 22. Tier 1 = EthioTelecom Cloud, Tier 2 = on-premise, Tier 3 = Vercel/EU. Only 1 and 2 may hold patient data. |
+| **M6 — retention** | 12 months (founder decision, revised down from 24), with mandatory pre-erasure export. |
+
+**Both are dark launches.** The API enforces every rule; no UI exists. M3 is
+the surfacing phase.
+
+**Non-functional until `BLIND_INDEX_KEY` is set**, and it cannot go on Vercel
+— Tier 3 refuses patient data regardless. See the deferred ledger in
+PROJECT_GUIDELINES.md.
+
+### Security — 10 live defects fixed
+
+1. **Unsigned OAuth state** on all six integrations. `base64url` is an
+   encoding, not a signature: forging an `organizationId` connected an
+   attacker's workspace to another tenant, whose notifications then flowed to
+   them. Reachable by any authenticated user who knew one org id. **The worst
+   thing found.** Now HMAC-signed, ten-minute expiry, membership re-checked.
+2. `issues/[id]/watchers/[userId]` DELETE had **no authorization at all**.
+3. `tasks/[id]/attachments` — org membership only, so any member reached
+   PRIVATE/CONFIDENTIAL projects.
+4. `tasks/[id]/links` — same, both ends now checked.
+5. `issues/bulk` — org-scoped but not project-scoped; a GUEST could bulk-edit
+   or bulk-delete anything in the tenant.
+6. Expense **reject** had no authorization; **pay** was verified correct.
+7. Approver notifications never fired (`budgetAccess` compared to a literal
+   that is not in the enum — false for every member who ever existed).
+8. Three issue sub-routes authenticated but never authorized.
+9. `budgets/process-document` — unvalidated `projectId` on the only route that
+   spends money per request; now rate-limited and scoped.
+10. Integrations resolved the wrong organization for multi-org users.
+
+**The pattern, and the lesson:** every defect was found by asking a *different
+question* of code that had already passed a check — "is a guard called?" →
+"with the right argument?" → "is the value it guards carried safely?" → "what
+about resources reached *through* this one?". Three greps for a known list of
+helper names each missed live defects. The tests that now hold this ground are
+the inverted kind: enumerate everything in a category, require each item to be
+explicitly accounted for, so silence fails instead of passing.
+
+### Honesty pass
+
+- **13 fabricated pages deleted** — screens rendering invented colleagues
+  ("John Doe"), two clicks from the sidebar, in a product demoed to ministries.
+- **Goals List and Board rebuilt** against the real `Goal` model rather than
+  deleted (`DELETION_POLICY.md` — rebuild-first).
+- `/api/dashboard/activity` deleted: unused, and fabricated issue keys from a
+  cuid substring.
+
+### Activity trail — the founder-reported bug
+
+The PATCH route could change **fifteen** fields and recorded **five**. Title,
+description, due date, estimate, time spent, story points, type and labels
+produced no activity at all, so a project admin could not see what a member
+had done. It could not have recorded them either — the route only loaded the
+five fields it compared.
+
+Separately, the card required `metadata.field` and so rendered **two of the
+seven** shapes the routes emit; comments rendered blank despite their text
+having been stored all along.
+
+Both fixed. Comments and status/sprint/classification changes render
+**retroactively**; the eight newly-recorded fields apply **forward only** —
+past edits were never written and cannot be recovered.
+
+### Infrastructure findings
+
+- **Merging to master already runs `prisma migrate deploy`.** The manual DB
+  Migrate workflow is a backstop. Documented backwards until corrected, which
+  cost five unnecessary manual runs.
+- **`ignoreCommand` skips the build, not the deployment record.** The 100/day
+  cap counts creations, so it never addressed the quota complaint it was added
+  for. `git.deploymentEnabled` is the real lever (untested).
+- **Production deploys are NOT subject to that cap** — the pipeline uses the
+  Vercel CLI with a token, and deployed successfully while PR previews were
+  being rejected all evening.
+- Two Vercel projects build `apps/web`, doubling every deployment.
+
+### Standing rules added
+
+`PROJECT_GUIDELINES.md` gains Wave Delivery (batch pushes), the **Deferred /
+Unfinished Work ledger** (deferral is only safe if written down), and the
+corrected migration model.
+
+---
+
 ## SESSION LOG (2026-07-25) — Sprint & Settings Foundation (Phase 1)
 
 **Strategic decision (founder):** build the long-horizon foundation properly — Sprints and the settings hierarchy are "must build right" tools. Core Jira concepts adopted, implementation not copied.
