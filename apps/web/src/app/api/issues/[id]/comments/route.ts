@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveAuthUser } from '@/lib/api-organization';
+import { requireProjectAccess } from '@/lib/security/authorization';
 import { autoWatchMentionedUsers, extractMentions, resolveMentionsToUserIds } from '@/lib/mention-parser';
 import { logTaskActivity } from '@/lib/activity-logger';
 import { sendMentionEmail, userWantsNotification } from '@/lib/email';
@@ -51,6 +52,24 @@ export async function POST(
         { status: 400 }
       );
     }
+
+    // Authorize against the task's project before writing to it.
+    // resolveAuthUser only authenticates; without this, any signed-in user
+    // could comment on any issue in any organization — and the comment
+    // triggers that tenant's mentions, notifications and automations.
+    // Named distinctly from the richer `task` fetched further down for
+    // mention parsing — that one runs after the write and cannot gate it.
+    const taskForAuth = await prisma.task.findUnique({
+      where: { id: params.id },
+      select: { projectId: true },
+    });
+
+    if (!taskForAuth) {
+      return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+    }
+
+    const access = await requireProjectAccess(taskForAuth.projectId, user.id);
+    if (!access.authorized) return access.error!;
 
     // Create comment and auto-watch in a transaction
     const result = await prisma.$transaction(async (tx) => {
