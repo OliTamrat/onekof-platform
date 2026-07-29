@@ -1189,8 +1189,19 @@ function WatchersSection({
                     {(watcher.user?.name || 'U').split(' ').map(n => n[0]).join('')}
                   </div>
                 )}
-                <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{watcher.user?.name || 'Unknown'}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{watcher.user?.name || 'Unknown'}</p>
+                  {/*
+                    The email is shown because TaskWatcher is unique on
+                    (taskId, userId) — the same person CANNOT appear twice on
+                    one task. So two rows with the same name are two different
+                    accounts, and without a distinguishing detail the list is
+                    unreadable: it looks like a duplicate bug when it is
+                    actually two sign-ups by the same human.
+                  */}
+                  {watcher.user?.email && (
+                    <p className="text-xs text-gray-500 dark:text-gray-500 truncate">{watcher.user.email}</p>
+                  )}
                   <p className="text-xs text-gray-600 dark:text-gray-400">
                     {watcher.watchReason === 'MANUAL' && 'Watching manually'}
                     {watcher.watchReason === 'AUTO_ASSIGNED' && 'Auto-watching (assigned)'}

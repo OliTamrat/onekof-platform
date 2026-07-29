@@ -487,9 +487,24 @@ export function ActivityTimeline({
 
                       {/* Metadata and Impact Score */}
                       <div className="flex items-center justify-between gap-2">
-                        {/* Entity Info — show task key + title when available */}
+                        {/*
+                          Entity Info — task key + title.
+
+                          Suppressed in a scoped timeline. Inside the issue
+                          slideout every row named the very issue the reader
+                          had open, repeated once per activity: on
+                          CUSONBANDS-6 you saw "CUSONBANDS-6 · CSO-E2: …"
+                          twice under CUSONBANDS-6's own heading.
+
+                          That is not merely redundant. A key-and-title chip
+                          is the platform's standard way of pointing AT
+                          something, so it reads as a link to somewhere else
+                          — which is why the card looked broken when clicking
+                          it did nothing. Removing the chip removes the
+                          promise, rather than leaving a promise unkept.
+                        */}
                         <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 min-w-0 flex-1">
-                          {activity.entity ? (
+                          {entityId ? null : activity.entity ? (
                             <>
                               {activity.entity.project && (
                                 <span
