@@ -79,6 +79,37 @@ describe('team lifecycle is audited', () => {
   });
 });
 
+describe('organization membership changes are audited', () => {
+  const route = code('app/api/organization-members/route.ts');
+
+  it('records role changes with the previous role', () => {
+    expect(route).toContain('OrgActions.ORG_MEMBER_ROLE_CHANGED');
+    // "X is now an ADMIN" is far less useful to an investigator than
+    // "X was a MEMBER and was made an ADMIN by Y".
+    expect(route).toMatch(/before:\s*\{\s*role:\s*target\.role\s*\}/);
+  });
+
+  it('records removals with the role that was revoked', () => {
+    expect(route).toContain('OrgActions.ORG_MEMBER_REMOVED');
+  });
+
+  it('audits after the mutation, never instead of it', () => {
+    const update = route.indexOf('organizationMember.update');
+    const audit = route.indexOf('ORG_MEMBER_ROLE_CHANGED');
+    expect(update).toBeGreaterThan(-1);
+    expect(update).toBeLessThan(audit);
+  });
+});
+
+describe('team membership changes are audited', () => {
+  it('records team member removal', () => {
+    const route = code('app/api/teams/[id]/members/[userId]/route.ts');
+    expect(route).toContain('OrgActions.TEAM_MEMBER_REMOVED');
+    // Teams carry project access, so the revoked team role is the useful fact.
+    expect(route).toMatch(/before:\s*\{[^}]*role:\s*memberToRemove\.role/);
+  });
+});
+
 describe('audit logging never breaks the caller', () => {
   it('swallows its own failures', async () => {
     const src = read('lib/security/org-audit.ts');
