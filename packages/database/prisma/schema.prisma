@@ -411,6 +411,11 @@ model Patient {
   updatedAt DateTime @updatedAt @map("updated_at")
   createdBy String?  @map("created_by")
 
+  /// M2 — care items. onDelete: SetNull, never Cascade: erasing a patient
+  /// (M6) must leave the operational history intact and merely anonymous.
+  /// Cascading would delete the ward's work record along with the person.
+  careItems Task[]
+
   @@unique([organizationId, identifierIndex])
   @@index([organizationId, lastActivityAt])
   @@index([organizationId, erasedAt])
@@ -685,6 +690,21 @@ model Task {
   department String?
   workstream String?
 
+  /// M2 — care coordination. A task carrying a patientId is a care item.
+  ///
+  /// Deliberately a nullable column on Task rather than a separate CareItem
+  /// model: care work inherits the board, statuses, workflow enforcement,
+  /// sprints, assignment, comments, watchers, activity history and reporting
+  /// for free. A parallel model would duplicate that entire surface and then
+  /// drift from it — the same mistake the label-based department
+  /// classification made before D1 replaced it.
+  ///
+  /// Visibility is NOT implied by project access. A task with a patientId is
+  /// filtered out for members without patient access, and rendered with the
+  /// patient reference withheld for those with only LIMITED.
+  patientId String?  @map("patient_id")
+  patient   Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
+
   // Backlog ordering (drag-to-prioritize in backlog view)
   backlogOrder Int? @map("backlog_order")
 
@@ -724,6 +744,7 @@ model Task {
   @@index([projectId, status, backlogOrder]) // Backlog ordering
   @@index([sprintId, sprintOrder]) // Sprint board ordering
   @@index([projectId, department, workstream]) // Department lens queries
+  @@index([patientId]) // M2 — care items for a patient
   @@map("tasks")
   @@schema("public")
 }
