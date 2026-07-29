@@ -77,6 +77,7 @@ model Organization {
 
   // Relations
   members              OrganizationMember[]
+  patients             Patient[] // M1 — Tier 1/2 deployments only
   invitations          Invitation[]
   projects             Project[]
   teams                Team[]
@@ -230,6 +231,12 @@ model OrganizationMember {
   // 🚀 NEW: Budget access level
   budgetAccess BudgetAccess @default(NO_ACCESS) @map("budget_access")
 
+  // M3: patient access is its OWN ladder, deliberately not derived from role.
+  // An organization Owner does NOT get patient access by being an Owner —
+  // running the institution is not the same as having a clinical reason to
+  // read a patient's record. Granting it is an explicit, audited act.
+  patientAccess PatientAccess @default(NO_ACCESS) @map("patient_access")
+
   // Metadata
   joinedAt  DateTime @default(now()) @map("joined_at")
   invitedBy String?  @map("invited_by")
@@ -339,6 +346,72 @@ enum OrgRole {
   MEMBER
   GUEST
 
+  @@schema("public")
+}
+
+/// M3 — the patient access ladder. Separate from OrgRole on purpose: see the
+/// note on OrganizationMember.patientAccess.
+enum PatientAccess {
+  NO_ACCESS // Cannot see that patients exist. The default for everyone.
+  LIMITED // Can see a patient exists and their care items, NOT their identifiers
+  FULL // Can read decrypted identifiers. Every read is audited (M4)
+  MANAGE // FULL, plus create, correct and erase records
+
+  @@schema("public")
+}
+
+/// M1 — the patient registry.
+///
+/// Onekof holds healthcare OPERATIONS, not an Electronic Medical Record.
+/// There is deliberately NO field here for diagnoses, prescriptions,
+/// laboratory or imaging results, or clinical notes, and adding one is a
+/// decision about the regulatory class of the whole company, not a schema
+/// change. See docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md, M1.
+///
+/// This model may only hold data on Tier 1 or Tier 2 deployments — see
+/// canStorePatientData() in apps/web/src/lib/compliance/residency.ts.
+model Patient {
+  id String @id @default(cuid())
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  /// Encrypted at rest (encryptField). Never queried directly.
+  identifierEncrypted String? @map("identifier_encrypted")
+
+  /// Keyed HMAC of the normalised identifier (blindIndex). This is what
+  /// lookup matches on, so the plaintext never has to be decrypted to find
+  /// someone. Unique per organization: the same person registered twice is a
+  /// data-quality error, not two patients.
+  identifierIndex String? @map("identifier_index")
+
+  /// Encrypted. Held only to make a patient findable by a human.
+  displayNameEncrypted String? @map("display_name_encrypted")
+
+  /// Year only, not a full birth date. Enough to distinguish two people with
+  /// the same name; far less identifying than the exact date.
+  birthYear Int? @map("birth_year")
+
+  /// M6 — retention. Set when the last linked care item closes; erasure falls
+  /// due 12 months later by default, and never happens silently: the
+  /// organization is notified and given an export first.
+  lastActivityAt DateTime? @map("last_activity_at")
+  retentionMonths Int      @default(12) @map("retention_months")
+
+  /// M6 — real erasure. When identifiers are removed the row is kept as an
+  /// anonymised shell so historical operational statistics survive without
+  /// naming anybody. A patient with erasedAt set has no identifiers left.
+  erasedAt DateTime? @map("erased_at")
+  erasedBy String?   @map("erased_by")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+
+  @@unique([organizationId, identifierIndex])
+  @@index([organizationId, lastActivityAt])
+  @@index([organizationId, erasedAt])
+  @@map("patients")
   @@schema("public")
 }
 
