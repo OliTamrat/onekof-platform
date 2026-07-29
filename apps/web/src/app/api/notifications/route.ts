@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -49,12 +50,29 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
-    const relevantTaskIds = Array.from(
+    let relevantTaskIds = Array.from(
       new Set([
         ...watchedTasks.map((w: any) => w.taskId),
         ...relatedTasks.map((t: any) => t.id),
       ]),
     );
+
+    // M2 — being the assignee, reporter or a watcher of a care item does not
+    // confer patient access. Those are how you came to be involved in the
+    // work; the patient ladder is a separate grant, and a member whose access
+    // was revoked (or who never had it) must stop receiving notifications
+    // about care work even on tasks they are still assigned to.
+    //
+    // Filtering the id list rather than the activities is what makes this
+    // hold: every downstream query keys off relevantTaskIds.
+    const patientLevel = effectivePatientAccess(ctx.patientAccess);
+    if (relevantTaskIds.length > 0 && 'patientId' in careItemExclusion(patientLevel)) {
+      const visible = await prisma.task.findMany({
+        where: { id: { in: relevantTaskIds }, patientId: null },
+        select: { id: true },
+      });
+      relevantTaskIds = visible.map((t: { id: string }) => t.id);
+    }
 
     // Pull activities on relevant tasks.
     // Include self-actions so single-user orgs still see notifications (marked isSelf).

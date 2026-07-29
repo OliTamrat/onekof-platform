@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
+import { getPatientAccessLevel, careItemExclusion } from '@/lib/security/patient-access';
 import { summarizeChurn } from '@/components/sprints/insights';
 import logger from '@/lib/logger';
 
@@ -84,10 +85,22 @@ export async function GET(
     );
 
     // Resolve surviving issues for the drill-down (deleted ones drop out)
+    //
+    // M2: the drill-down names each issue, so care items drop out for a viewer
+    // below LIMITED. The `added` and `removed` counts above are deliberately
+    // left whole — they come from the activity trail, and a churn figure that
+    // silently shrank per viewer would make the sprint report unusable as an
+    // operational record. A count without names is not identifying.
     const issueIds = Array.from(summary.perIssue.keys());
     const tasks = issueIds.length
       ? await prisma.task.findMany({
-          where: { id: { in: issueIds }, deletedAt: null },
+          where: {
+            id: { in: issueIds },
+            deletedAt: null,
+            ...careItemExclusion(
+              await getPatientAccessLevel(sprint.project.organizationId, auth.session!.user.id)
+            ),
+          },
           select: { id: true, key: true, title: true },
         })
       : [];

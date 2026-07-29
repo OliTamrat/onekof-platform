@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,8 @@ export async function GET(_request: NextRequest) {
           deletedAt: null,
         },
         deletedAt: null,
+        // M2: this feed renders each task's title verbatim on the dashboard.
+        ...careItemExclusion(effectivePatientAccess(ctx.patientAccess)),
       },
       orderBy: {
         updatedAt: 'desc',
