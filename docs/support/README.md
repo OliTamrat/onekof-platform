@@ -68,6 +68,7 @@ switching, the sidebar and mobile navigation, command palette, notifications.
 |-------|------|--------|
 | Projects, Issues & Boards | `ONEKOF_SUPPORT_GUIDE_PROJECTS_ISSUES_BOARDS.docx` | ✅ v1.0 |
 | Sprints & Work Cycles | `ONEKOF_SUPPORT_GUIDE_SPRINTS.docx` | ✅ v1.0 |
+| Activity & Audit Trail | `ONEKOF_SUPPORT_GUIDE_ACTIVITY_AUDIT_TRAIL.docx` | ✅ v1.0 |
 | Goals & OKRs | `ONEKOF_SUPPORT_GUIDE_GOALS_OKRS.docx` | ⏳ Wave 2 |
 | Calendar & Timeline views | folded into Projects, Issues & Boards | — |
 
