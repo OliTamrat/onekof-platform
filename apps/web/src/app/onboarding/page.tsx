@@ -90,7 +90,7 @@ function OnboardingContent() {
       label: t('onboarding.healthcare'),
       icon: HeartPulse,
       color: 'red',
-      features: [t('onboarding.facilityManagement'), t('onboarding.medicalProjects'), t('onboarding.complianceTracking'), t('onboarding.resourceAllocation')],
+      features: [t('onboarding.hcOperations'), t('onboarding.hcInspections'), t('onboarding.hcBudgetApproval'), t('onboarding.hcCoordination')],
       description: t('onboarding.forHospitals')
     },
   ];

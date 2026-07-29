@@ -748,7 +748,11 @@
     "forConstruction": "Dhaabbilee ijaarsaa fi injinariingiif",
     "forHospitals": "Hospitaalota, kiliinikoota fi dhaabbilee fayyaaf",
     "educationalInstitution": "Dhaabbata Barnootaa",
-    "constructionEngineering": "Ijaarsaa/Injinariingii"
+    "constructionEngineering": "Ijaarsaa/Injinariingii",
+    "hcOperations": "Hojiiwwan balaa fi taarifa mirkaneessaa",
+    "hcInspections": "Qorannoo fi hordoffii qorannoo",
+    "hcBudgetApproval": "Baajata adeemsa mirkaneessaa waliin",
+    "hcCoordination": "Waltajjii garee fi pirojektii"
   },
   "selectOrg": {
     "loadingOrgs": "Dhaabbillee fe'aa jira...",

@@ -747,7 +747,11 @@
     "forConstruction": "For construction firms and engineering companies",
     "forHospitals": "For hospitals, clinics, and health organizations",
     "educationalInstitution": "Educational Institution",
-    "constructionEngineering": "Construction/Engineering"
+    "constructionEngineering": "Construction/Engineering",
+    "hcOperations": "Incident & checklist operations",
+    "hcInspections": "Inspections & research tracking",
+    "hcBudgetApproval": "Budget with approval workflow",
+    "hcCoordination": "Team & project coordination"
   },
   "selectOrg": {
     "loadingOrgs": "Loading organizations...",

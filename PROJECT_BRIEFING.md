@@ -32,6 +32,16 @@ INSA security code (P1-P6): all implemented and certified.
 
 ---
 
+## MEDICAL MODULE (design approved to proceed 2026-07-28 — build, do not withdraw)
+
+**Founder decision:** build the Medical vertical properly with design-doc discipline, rather than stripping the promise. Doc: `docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md` — **PROPOSED v1.0, decisions M1-M8 await approval.**
+
+**The gap founder testing exposed:** Healthcare orgs got correct gating (Operations/Research present, Development/Marketing absent) but the preset enabled `medical` + `compliance`, which **do not exist as sidebar sections at all** — dead switches. Behind them, `/dashboard/medical`, `/patients`, `/facilities`, `/equipment`, `/safety`, `/courses`, `/impact`, `/compliance` are ~19-line placeholders (title + empty state, button redirects to generic issue creation). Onboarding meanwhile promised Healthcare "Facility management, Medical projects, Compliance tracking, Resource allocation". This was **my incomplete Phase A work**: I added the vocabulary and the gates without the destinations.
+
+**M0 SHIPPED immediately (honesty first, independent of M1-M8 approval):** presets no longer enable destination-less sections (medical/compliance/courses/impact removed from Healthcare/Ministry/Education/NGO); Customization no longer shows toggles that do nothing; the Healthcare onboarding promise now names what actually ships (incident & checklist operations, inspections & research, budget approval workflow, team coordination — 4 keys x 5 locales). **New guard test:** `NAVIGABLE_SECTION_IDS` is exported from the sidebar module as the single source of truth, and a test asserts **every enabled section in every preset has a navigation destination** — the check that would have caught this originally. 352 tests green.
+
+**The decision that shapes the module (M1):** Onekof builds healthcare **operations**, NOT an EMR. Permanent non-goals: diagnoses, prescriptions, lab/imaging results, clinical notes. Crossing that line changes the regulatory class of the whole company. Other key proposals: patient identifiers encrypted at rest with a blind index (M2); patient access is its own ladder where **org Owner/Admin does NOT imply access** (M3); patient record **reads** are audited, not just writes (M4); **the module requires the Tier 2 sovereign deployment** because cloud-tier storage sits outside Ethiopia (M5); real hard-delete/retention rather than soft-delete (M6); care items are ordinary Tasks with a nullable `patientId` reusing board/sprints/workflow (M7); facilities/equipment/safety become Operations **workstreams**, not new departments (M8). Gate: M1 must not start until counsel confirms the residency position and the founder picks the retention default.
+
 ## NEXT TODO (priority order, as of 2026-07-28)
 
 **Founder actions (only you can do these):**

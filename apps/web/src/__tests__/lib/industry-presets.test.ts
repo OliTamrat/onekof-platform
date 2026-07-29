@@ -34,20 +34,18 @@ describe('industry presets (capability matrix, D8)', () => {
   const has = (preset: { enabledSections: readonly string[] }, id: string) =>
     preset.enabledSections.includes(id as never);
 
-  it('Government: operations + research + compliance; no development/marketing/automations', () => {
+  it('Government: operations + research; no development/marketing/automations', () => {
     expect(has(MINISTRY_PRESET, 'operations')).toBe(true);
     expect(has(MINISTRY_PRESET, 'research')).toBe(true);
-    expect(has(MINISTRY_PRESET, 'compliance')).toBe(true);
     expect(has(MINISTRY_PRESET, 'development')).toBe(false);
     expect(has(MINISTRY_PRESET, 'marketing')).toBe(false);
     expect(has(MINISTRY_PRESET, 'automations')).toBe(false);
   });
 
-  it('NGO: marketing + operations + research + impact + docs; no development', () => {
+  it('NGO: marketing + operations + research + docs; no development', () => {
     expect(has(NGO_PRESET, 'marketing')).toBe(true);
     expect(has(NGO_PRESET, 'operations')).toBe(true);
     expect(has(NGO_PRESET, 'research')).toBe(true);
-    expect(has(NGO_PRESET, 'impact')).toBe(true);
     expect(has(NGO_PRESET, 'docs')).toBe(true);
     expect(has(NGO_PRESET, 'development')).toBe(false);
   });
@@ -61,23 +59,30 @@ describe('industry presets (capability matrix, D8)', () => {
     expect(has(BUSINESS_PRESET, 'medical')).toBe(false);
   });
 
-  it('Education: research + courses; no operations/marketing/development', () => {
+  it('Education: research; no operations/marketing/development', () => {
     expect(has(EDUCATION_PRESET, 'research')).toBe(true);
-    expect(has(EDUCATION_PRESET, 'courses')).toBe(true);
     expect(has(EDUCATION_PRESET, 'operations')).toBe(false);
     expect(has(EDUCATION_PRESET, 'marketing')).toBe(false);
     expect(has(EDUCATION_PRESET, 'development')).toBe(false);
   });
 
-  it('Healthcare: operations + research + medical + compliance; no development/marketing/courses/automations', () => {
+  it('Healthcare: operations + research; no development/marketing/automations', () => {
     expect(has(HEALTHCARE_PRESET, 'operations')).toBe(true);
     expect(has(HEALTHCARE_PRESET, 'research')).toBe(true);
-    expect(has(HEALTHCARE_PRESET, 'medical')).toBe(true);
-    expect(has(HEALTHCARE_PRESET, 'compliance')).toBe(true);
     expect(has(HEALTHCARE_PRESET, 'development')).toBe(false);
     expect(has(HEALTHCARE_PRESET, 'marketing')).toBe(false);
-    expect(has(HEALTHCARE_PRESET, 'courses')).toBe(false);
     expect(has(HEALTHCARE_PRESET, 'automations')).toBe(false);
+  });
+
+  // The gap founder testing exposed: Healthcare enabled 'medical' and
+  // 'compliance', the Customization page showed toggles for them, and
+  // nothing happened because no navigation destination existed.
+  it('no preset enables an industry module whose pages are still placeholders', () => {
+    for (const preset of getAllPresets()) {
+      for (const id of ['medical', 'courses', 'compliance', 'impact']) {
+        expect(preset.enabledSections.includes(id as never), `${preset.name} enables unbuilt ${id}`).toBe(false);
+      }
+    }
   });
 
   it('org type mapping: healthcare aliases resolve; unknown falls back to Business', () => {
@@ -89,15 +94,30 @@ describe('industry presets (capability matrix, D8)', () => {
   });
 });
 
+describe('presets never enable dead switches', () => {
+  // A section id that is not navigable does nothing when enabled — the
+  // preset claims a capability the user can never reach. This test is the
+  // guard that would have caught the Healthcare medical/compliance gap.
+  it('every enabled section in every preset has a navigation destination', async () => {
+    const { NAVIGABLE_SECTION_IDS } = await import('@/lib/sidebar-navigation-dynamic');
+    const navigable = new Set<string>(NAVIGABLE_SECTION_IDS as readonly string[]);
+    for (const preset of getAllPresets()) {
+      for (const id of preset.enabledSections) {
+        expect(navigable.has(id), `${preset.name}: "${id}" is enabled but has no destination`).toBe(true);
+      }
+    }
+  });
+});
+
 describe('resolveEnabledSections (fail posture, D9)', () => {
   it('explicit settings always win', () => {
     expect(resolveEnabledSections(['teams'], 'ministry')).toEqual(['teams']);
   });
 
   it('falls back to the industry preset when settings are missing/empty', () => {
-    expect(resolveEnabledSections(null, 'healthcare')).toContain('medical');
+    expect(resolveEnabledSections(null, 'healthcare')).toContain('operations');
     expect(resolveEnabledSections([], 'ministry')).toContain('operations');
-    expect(resolveEnabledSections(undefined, 'education')).toContain('courses');
+    expect(resolveEnabledSections(undefined, 'education')).toContain('research');
   });
 
   it('returns null only when neither settings nor industry exist (legacy fail-open)', () => {

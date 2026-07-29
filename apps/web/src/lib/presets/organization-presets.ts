@@ -5,6 +5,13 @@
 
 import type { OrganizationPreset, OrganizationFeatures } from '@/types/organization-settings';
 
+// NOTE: presets must only enable sections that have a navigation
+// destination (see NAVIGABLE_SECTION_IDS in lib/sidebar-navigation-dynamic).
+// compliance / impact / medical / courses are intentionally NOT enabled:
+// their pages are placeholders today, and enabling them produced switches
+// that silently did nothing. They return in the change that makes them real
+// — see docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md.
+
 // ============================================
 // MINISTRY / GOVERNMENT PRESET
 // ============================================
@@ -59,7 +66,7 @@ export const MINISTRY_PRESET: OrganizationPreset = {
   description: 'Full-featured dashboard for government ministries with public budget transparency, procurement tracking, and compliance features.',
   nameKey: 'customization.presetMinistryName',
   descriptionKey: 'customization.presetMinistryDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
   features: MINISTRY_FEATURES,
   recommendedFor: ['ministry', 'government'],
 };
@@ -118,7 +125,7 @@ export const NGO_PRESET: OrganizationPreset = {
   description: 'Optimized for non-profits with grant tracking, donation management, and impact reporting.',
   nameKey: 'customization.presetNgoName',
   descriptionKey: 'customization.presetNgoDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'impact', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
   features: NGO_FEATURES,
   recommendedFor: ['ngo'],
 };
@@ -241,7 +248,7 @@ export const EDUCATION_PRESET: OrganizationPreset = {
   description: 'Simplified dashboard for educational institutions with grant tracking and document management.',
   nameKey: 'customization.presetEducationName',
   descriptionKey: 'customization.presetEducationDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research', 'courses'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research'],
   features: EDUCATION_FEATURES,
   recommendedFor: ['education'],
 };
@@ -300,7 +307,7 @@ export const HEALTHCARE_PRESET: OrganizationPreset = {
   description: 'Hospitals, clinics, and health programs: patient-linked operations, clinical research, and compliance posture.',
   nameKey: 'customization.presetHealthcareName',
   descriptionKey: 'customization.presetHealthcareDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research', 'medical'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research'],
   features: HEALTHCARE_FEATURES,
   recommendedFor: ['healthcare', 'hospital', 'clinic'],
 };

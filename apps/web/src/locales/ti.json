@@ -748,7 +748,11 @@
     "forConstruction": "ንናይ ህንጻ ትካላትን ናይ ኢንጂነሪንግ ትካላትን",
     "forHospitals": "ንሆስፒታላት፣ ክሊኒካትን ናይ ጥዕና ትካላትን",
     "educationalInstitution": "ናይ ትምህርቲ ትካል",
-    "constructionEngineering": "ህንጻ/ኢንጂነሪንግ"
+    "constructionEngineering": "ህንጻ/ኢንጂነሪንግ",
+    "hcOperations": "ስርሓት ሓደጋን ናይ መረጋገጺ ዝርዝርን",
+    "hcInspections": "ፍተሻታትን ምክትታል ምርምርን",
+    "hcBudgetApproval": "ባጀት ምስ መስርሕ ምጽዳቕ",
+    "hcCoordination": "ምውህሃድ ጋንታን ፕሮጀክትን"
   },
   "selectOrg": {
     "loadingOrgs": "ትካላት ይጸዓኑ ኣለዉ...",

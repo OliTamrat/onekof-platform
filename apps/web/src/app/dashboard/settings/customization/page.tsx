@@ -22,8 +22,6 @@ import {
   TrendingUp,
   Activity,
   FileSpreadsheet,
-  HeartPulse,
-  GraduationCap,
 } from 'lucide-react';
 import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
@@ -111,8 +109,9 @@ const SECTION_INFO = {
   marketing: { icon: TrendingUp, labelKey: 'sidebar.marketing', color: '#F97316', descKey: 'departments.marketingDesc' },
   operations: { icon: Activity, labelKey: 'sidebar.operations', color: '#EF4444', descKey: 'departments.operationsDesc' },
   research: { icon: FileSpreadsheet, labelKey: 'sidebar.research', color: '#0EA5E9', descKey: 'departments.researchDesc' },
-  medical: { icon: HeartPulse, labelKey: 'sidebar.medical', color: '#E11D48', descKey: 'departments.medicalDesc' },
-  courses: { icon: GraduationCap, labelKey: 'sidebar.courses', color: '#22C55E', descKey: 'departments.coursesDesc' },
+  // medical / courses intentionally absent: their pages are placeholders,
+  // so a toggle here would do nothing. Restored with the module —
+  // see docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md
 };
 
 export default function DashboardCustomizationPage() {

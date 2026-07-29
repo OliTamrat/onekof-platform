@@ -42,6 +42,23 @@ export interface SidebarSubItem {
   icon?: LucideIcon;
 }
 
+/**
+ * Section ids that actually change what the sidebar renders — either a
+ * top-level section or a gated sub-item. An id outside this set is a DEAD
+ * SWITCH: presets may enable it and the Customization page may toggle it,
+ * but nothing happens, because no navigation destination exists.
+ *
+ * Industry modules (medical, courses, compliance, impact) are deliberately
+ * ABSENT until their pages are real — see
+ * docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md. Add an id here in the
+ * same change that adds its navigation, never before.
+ */
+export const NAVIGABLE_SECTION_IDS = [
+  'projects', 'teams', 'budget', 'development', 'marketing', 'operations',
+  'research', 'goals', 'automations', 'documents', 'docs', 'issues',
+  'calendar', 'timeline', 'analytics',
+] as const;
+
 export interface SidebarSection {
   id: string;
   name: string;

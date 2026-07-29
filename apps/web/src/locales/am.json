@@ -748,7 +748,11 @@
     "forConstruction": "ለግንባታ ድርጅቶች እና ኢንጂነሪንግ ኩባንያዎች",
     "forHospitals": "ለሆስፒታሎች፣ ክሊኒኮች እና የጤና ድርጅቶች",
     "educationalInstitution": "የትምህርት ተቋም",
-    "constructionEngineering": "ግንባታ/ኢንጂነሪንግ"
+    "constructionEngineering": "ግንባታ/ኢንጂነሪንግ",
+    "hcOperations": "የአደጋ እና ማረጋገጫ ዝርዝር ሥራዎች",
+    "hcInspections": "ፍተሻዎች እና የምርምር ክትትል",
+    "hcBudgetApproval": "በጀት ከማጽደቅ ሂደት ጋር",
+    "hcCoordination": "የቡድን እና የፕሮጀክት ቅንጅት"
   },
   "selectOrg": {
     "loadingOrgs": "ድርጅቶችን በመጫን ላይ...",

@@ -748,7 +748,11 @@
     "forConstruction": "Shirkadaha dhismaha iyo shirkadaha injineernimada",
     "forHospitals": "Isbitaalada, rugaha caafimaadka, iyo hay'adaha caafimaadka",
     "educationalInstitution": "Hay'adda waxbarashada",
-    "constructionEngineering": "Dhismo/Injineernimo"
+    "constructionEngineering": "Dhismo/Injineernimo",
+    "hcOperations": "Hawlaha dhacdooyinka iyo liisaska hubinta",
+    "hcInspections": "Kormeerid iyo la socodka cilmi-baadhista",
+    "hcBudgetApproval": "Miisaaniyad leh habka ansixinta",
+    "hcCoordination": "Isku-duwidda kooxda iyo mashruuca"
   },
   "selectOrg": {
     "loadingOrgs": "Hay'adaha waa la soo rarayaa...",
