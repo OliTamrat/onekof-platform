@@ -86,6 +86,38 @@ describe('residency posture', () => {
   });
 });
 
+describe('the sovereign deployment declares its tier', () => {
+  // The gate is only useful if the deployment it protects actually reports
+  // an in-country tier. docker-compose.tier-sim.yml set APP_PLATFORM but
+  // docker-compose.prod.yml did not, so the simulation permitted patient
+  // data while the real Ethio Telecom deployment would have refused it.
+  // Nothing in the app could detect that; only the compose file shows it.
+  const compose = () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { readFileSync } = require('node:fs') as typeof import('node:fs');
+    const { join } = require('node:path') as typeof import('node:path');
+    return readFileSync(join(process.cwd(), '../../docker-compose.prod.yml'), 'utf8');
+  };
+
+  it('sets APP_PLATFORM on the production web service', () => {
+    expect(compose()).toMatch(/APP_PLATFORM:\s*self-hosted/);
+  });
+
+  it('sets a deployment tier that resolves in-country', () => {
+    const src = compose();
+    expect(src).toMatch(/APP_DEPLOYMENT_TIER:/);
+    // Default must be 1 or 2. A default of 3 would silently disable the
+    // patient features this deployment exists to host.
+    const match = src.match(/APP_DEPLOYMENT_TIER:\s*\$\{APP_DEPLOYMENT_TIER:-([123])\}/);
+    expect(match, 'APP_DEPLOYMENT_TIER must have an explicit default').toBeTruthy();
+    expect(['1', '2']).toContain(match![1]);
+  });
+
+  it('sets a region', () => {
+    expect(compose()).toMatch(/APP_REGION:/);
+  });
+});
+
 describe('patient data gate (M5)', () => {
   it('refuses patient storage on the EU cloud tier', () => {
     setEnv({ VERCEL: '1', VERCEL_REGION: 'fra1' });
