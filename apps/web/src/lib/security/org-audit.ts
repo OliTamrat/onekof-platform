@@ -83,6 +83,25 @@ export const OrgActions = {
   ORG_SETTINGS_UPDATED: 'ORG_SETTINGS_UPDATED',
   ORG_MEMBER_ROLE_CHANGED: 'ORG_MEMBER_ROLE_CHANGED',
   ORG_MEMBER_REMOVED: 'ORG_MEMBER_REMOVED',
+
+  // --- Patient data (M1/M4) -------------------------------------------------
+  // PATIENT_VIEWED is the unusual one: everywhere else in this catalogue only
+  // writes are audited, because a read of a task or a budget is unremarkable.
+  // Reading a patient record is not. Unauthorised access to health data is
+  // almost always a read, and an audit log that records only writes cannot
+  // detect it at all. M4 exists for exactly this case.
+  //
+  // The cost is real — a row per view — and is accepted deliberately: the
+  // volume is bounded by the small number of people who ever hold patient
+  // access, and entries are batched per session per patient rather than per
+  // render.
+  PATIENT_VIEWED: 'PATIENT_VIEWED',
+  PATIENT_CREATED: 'PATIENT_CREATED',
+  PATIENT_UPDATED: 'PATIENT_UPDATED',
+  PATIENT_ERASED: 'PATIENT_ERASED',
+  PATIENT_EXPORTED: 'PATIENT_EXPORTED',
+  PATIENT_ACCESS_GRANTED: 'PATIENT_ACCESS_GRANTED',
+  PATIENT_ACCESS_REVOKED: 'PATIENT_ACCESS_REVOKED',
 } as const;
 
 export type OrgAction = typeof OrgActions[keyof typeof OrgActions];
@@ -102,7 +121,8 @@ export type OrgResource =
   | 'automation'
   | 'expense'
   | 'budget'
-  | 'organization';
+  | 'organization'
+  | 'patient';
 
 // ---------------------------------------------------------------------------
 // Core logger — fire-and-forget, never throws
