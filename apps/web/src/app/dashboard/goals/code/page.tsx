@@ -30,12 +30,8 @@ export default function GoalsCodePage() {
 
   const TAB_ITEMS = [
     { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/goals/summary' },
-    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/goals/list' },
-    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/goals/board' },
     { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/goals/code', active: true },
     { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/goals/forms' },
-    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/goals/timeline' },
-    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/goals/pages' },
   ];
 
   const handleConnect = () => {

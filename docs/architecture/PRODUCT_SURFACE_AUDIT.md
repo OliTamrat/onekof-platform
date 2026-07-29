@@ -48,6 +48,11 @@ These pages contain hardcoded arrays — names like *John Smith*, *Sarah Johnson
 
 **66 fabricated rows across 11 pages.**
 
+> **RESOLVED 2026-07-29 — founder chose removal. All 13 pages deleted.**
+> The 11 above plus `goals/teams` and `goals/timeline`, which the first count missed: my detector keyed on `{ id: N,` row literals and those two used `teamName:` and a `TIMELINE_EVENTS` array instead. The corrected total is **13**.
+> Dead tab entries pruned from `TEAMS_TABS`, `GOALS_TABS`, `lib/dashboard-navigation.ts` and the inline tab bars in the five surviving pages, so nothing links to a 404.
+> Two guards added: no dashboard page may contain the invented names, and every Teams/Goals tab must resolve to a page that exists. Re-adding any of these routes is welcome — in the change that makes it query real data.
+
 ### They are fully reachable, and that is the problem
 
 `/dashboard/teams` and `/dashboard/goals/summary` are **real** — they query the organization's data. But both render a tab bar (`TEAMS_TABS`, `GOALS_TABS`) whose other tabs point at the pages above.
