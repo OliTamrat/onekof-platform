@@ -79,18 +79,48 @@ jobs:
           DATABASE_URL: ${{ secrets.DIRECT_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
+      # Verification was hard-coded to the sprint migration that first needed
+      # this workflow. Running it for anything else printed sprint indexes and
+      # said nothing about what had just been applied — a green run that
+      # verified the wrong thing, which is worse than no verification because
+      # it reads as confirmation.
+      #
+      # Now it reports what the named migration actually created, by diffing
+      # the objects the SQL file mentions against what exists.
       - name: Verify objects
         run: |
           echo "--- recorded migrations (latest 6):"
           psql -c "SELECT migration_name, finished_at FROM _prisma_migrations ORDER BY started_at DESC LIMIT 6;"
-          echo "--- sprints indexes:"
-          psql -c "SELECT indexname FROM pg_indexes WHERE schemaname='public' AND tablename='sprints';"
-          echo "--- new tasks columns:"
-          psql -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='tasks' AND (column_name LIKE 'sprint%' OR column_name='story_points');"
-          echo "--- project_settings table:"
-          psql -c "SELECT count(*) AS project_settings_exists FROM information_schema.tables WHERE table_schema='public' AND table_name='project_settings';"
-          echo "--- organization_settings new columns:"
-          psql -c "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='organization_settings' AND column_name IN ('sprints_enabled_default','estimation_unit_default','enforce_workflow_default','terminology_scheme');"
+
+          SQL="packages/database/prisma/migrations/${{ inputs.migration }}/migration.sql"
+
+          echo "--- tables this migration references, and whether they now exist:"
+          grep -oiE '(CREATE TABLE( IF NOT EXISTS)?|ALTER TABLE)[[:space:]]+"?public"?\."?[a-z_]+' "$SQL" \
+            | grep -oE '[a-z_]+$' | sort -u | while read -r t; do
+              n=$(psql -At -c "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='$t';")
+              echo "  $t: $( [ "$n" = "1" ] && echo present || echo MISSING )"
+            done
+
+          echo "--- columns this migration adds, and whether they now exist:"
+          grep -oiE 'ADD COLUMN( IF NOT EXISTS)? "[a-z_]+"' "$SQL" \
+            | grep -oE '"[a-z_]+"$' | tr -d '"' | sort -u | while read -r c; do
+              n=$(psql -At -c "SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND column_name='$c';")
+              echo "  $c: $( [ "$n" -ge 1 ] && echo present || echo MISSING )"
+            done
+
+          echo "--- indexes this migration creates:"
+          grep -oiE 'CREATE (UNIQUE )?INDEX( IF NOT EXISTS)? "[a-z_]+"' "$SQL" \
+            | grep -oE '"[a-z_]+"$' | tr -d '"' | sort -u | while read -r i; do
+              n=$(psql -At -c "SELECT count(*) FROM pg_indexes WHERE schemaname='public' AND indexname='$i';")
+              echo "  $i: $( [ "$n" = "1" ] && echo present || echo MISSING )"
+            done
+
+          echo "--- foreign keys this migration creates, with their delete rule:"
+          grep -oiE 'ADD CONSTRAINT "[a-z_]+"' "$SQL" \
+            | grep -oE '"[a-z_]+"$' | tr -d '"' | sort -u | while read -r fk; do
+              rule=$(psql -At -c "SELECT delete_rule FROM information_schema.referential_constraints WHERE constraint_name='$fk';")
+              echo "  $fk: ${rule:-MISSING}"
+            done
         env:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
