@@ -21,6 +21,12 @@ const ROUTES = [
   { path: 'app/api/issues/[id]/comments/route.ts', label: 'comments' },
   { path: 'app/api/issues/[id]/subtasks/route.ts', label: 'subtasks' },
   { path: 'app/api/issues/[id]/transitions/route.ts', label: 'transitions' },
+  // Found only by the systematic sweep. Three consecutive ad-hoc greps missed
+  // it because they required the exact string `where: { id: params.id }` and
+  // this route spans lines with a deletedAt clause — a formatting difference
+  // hid a live cross-tenant defect sitting in the same directory as the
+  // three above.
+  { path: 'app/api/issues/[id]/watchers/route.ts', label: 'watchers' },
 ];
 
 describe('issue sub-routes authorize against the task project', () => {

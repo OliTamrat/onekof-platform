@@ -141,7 +141,19 @@ Tasks are soft-deleted and recoverable — correct for work items, wrong for pat
 - A genuine **hard-delete path** that removes identifiers and leaves an anonymized shell so historical care items keep their statistics without naming anybody,
 - Deletion recorded in the audit log (who, when, authority).
 
-**v1.1 — the default is now recommended rather than left open: 24 months after the last linked care item closes.**
+**DECIDED (founder, 2026-07-29): 12 months after the last linked care item closes, with a mandatory export window before erasure.**
+
+I recommended 24 months. The founder chose **12**, and added a requirement I had not proposed: **the organization must be able to export or back up its data before anything is deleted.**
+
+That addition is the better half of the decision. My version treated erasure as a clean privacy win; it would also have been silent data loss for a hospital that still wanted its own operational history. Retention and erasure are the platform's duty — but the *records* belong to the institution, and a system that destroys them without warning is not protecting anyone. Shorter retention is only safe **because** the export exists; the two are one decision, not two.
+
+Implementation consequences (M1 scope):
+- Retention default **12 months**, org-configurable within 6–84, never "forever".
+- Before erasure the organization receives **notice and an export path** covering the patient-linked records due for deletion. Erasure does not proceed silently on a timer.
+- The export is itself patient data, so it is subject to the same residency and access rules as the registry — it may only be produced on a Tier 1/Tier 2 deployment, and only for someone holding patient access (M3), not merely an org Admin.
+- The export event is audited like any other patient-data read (M4).
+
+**Superseded recommendation (kept for the record): 24 months.**
 
 The Proclamation sets a *storage limitation* principle — personal data kept no longer than necessary for the purpose, then securely deleted or anonymised — but no fixed number. So the number has to be argued from what Onekof actually is.
 
@@ -214,7 +226,7 @@ Deployment identity is now declared explicitly in `docker-compose.prod.yml` rath
 | Gate condition | Status |
 |---|---|
 | (a) Counsel confirms the residency position in M5 | **Open.** Research done and cited; the brief in `docs/business/ONEKOF_DATA_RESIDENCY_COUNSEL_BRIEF.docx` reduces this to a yes/no on four specific questions. |
-| (b) Founder chooses the retention default in M6 | **Open, but now a decision rather than a blank.** Recommendation: 24 months, bounded 6–84, no "forever". Needs a yes or a different number. |
+| (b) Founder chooses the retention default in M6 | **CLOSED.** 12 months, bounded 6–84, no "forever", with a mandatory pre-erasure export window. |
 
 M1 must not start until both close. Building a patient registry before those answers is how avoidable regulatory debt is created — and unlike most of this plan, that debt would be attached to real patients.
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
+import { requireProjectAccess } from '@/lib/security/authorization';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import logger from '@/lib/logger';
@@ -45,6 +46,14 @@ export async function GET(
         { status: 404 }
       );
     }
+
+    // The query above already selected the owning organization, and the
+    // comment above it said "user has access" — but nothing ever checked.
+    // Without this, the watcher list (names and emails of another
+    // organization's members) was readable, and watchers were writable, for
+    // any task id.
+    const access = await requireProjectAccess(issue.projectId, authUser.id);
+    if (!access.authorized) return access.error!;
 
     // Get all watchers with user details
     const watchers = await prisma.taskWatcher.findMany({
@@ -153,6 +162,14 @@ export async function POST(
         { status: 404 }
       );
     }
+
+    // The query above already selected the owning organization, and the
+    // comment above it said "user has access" — but nothing ever checked.
+    // Without this, the watcher list (names and emails of another
+    // organization's members) was readable, and watchers were writable, for
+    // any task id.
+    const access = await requireProjectAccess(issue.projectId, authUser.id);
+    if (!access.authorized) return access.error!;
 
     // Check if already watching
     const existing = await prisma.taskWatcher.findUnique({
