@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import Anthropic from '@anthropic-ai/sdk';
 import { authOptions } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Get form data
+    // Cost control: this forwards a 10 MB file to the Anthropic API. It was
+    // reachable by any authenticated user with no limit, so one account could
+    // run up the bill by uploading repeatedly. Keyed per user, and checked
+    // AFTER authentication so the identity is known — an IP-keyed limit would
+    // punish a whole ministry behind one NAT.
+    const rateLimitError = await checkRateLimit(request, 'aiDocument', user.id);
+    if (rateLimitError) return rateLimitError;
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const projectId = formData.get('projectId') as string;

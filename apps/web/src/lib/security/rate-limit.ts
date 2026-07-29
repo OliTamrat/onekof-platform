@@ -130,6 +130,22 @@ export const rateLimitConfigs = {
     window: '1m', // 60 mutations per minute
     windowMs: 60 * 1000,
   },
+
+  // Endpoints that forward user content to a paid third-party API.
+  //
+  // budgets/process-document accepts a 10 MB file and sends it to Anthropic.
+  // It was reachable by any authenticated user with no limit at all, so a
+  // single account could run up the bill by uploading repeatedly. Unlike the
+  // other limits here the cost of abuse is money rather than load, which is
+  // why the ceiling is low.
+  //
+  // Per user, not per IP: an office behind one NAT would otherwise share a
+  // single allowance, the same trap orgCreate was fixed for.
+  aiDocument: {
+    requests: 20,
+    window: '60m', // 20 documents per hour per user
+    windowMs: 60 * 60 * 1000,
+  },
 };
 
 type RateLimitConfig = keyof typeof rateLimitConfigs;
@@ -162,6 +178,7 @@ const rateLimiters = {
   signup: createRateLimiter('signup'),
   orgCreate: createRateLimiter('orgCreate'),
   dataMutation: createRateLimiter('dataMutation'),
+  aiDocument: createRateLimiter('aiDocument'),
 };
 
 /**
