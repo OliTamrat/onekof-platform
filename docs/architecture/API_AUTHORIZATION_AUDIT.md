@@ -111,6 +111,30 @@ Deliberately **not** recommended: the sweeping "tenancy helper" proposed in my f
 
 ---
 
+## 5a. Second pass — are the guards called with the RIGHT argument? (2026-07-29)
+
+§6 below states the audit proves a guard is *called*, never that it is called correctly. That gap is now closed as far as it can be mechanically.
+
+Across all 164 routes there are **28 guard calls**. Each was classified by where its identifier comes from:
+
+| Source | Count | Verdict |
+|---|---|---|
+| Derived from the fetched resource (`task.projectId`, `expense.budget.projectId`, `team.organizationId`) | 17 | Correct by construction |
+| `params.id` where the route **is** that resource | 11 | Correct — the path parameter names the thing being acted on |
+| Arbitrary request input guarding a *different* resource | **0** | — |
+
+**No mismatches.** The dangerous shape — guard resource A, then act on resource B — does not occur.
+
+Worth recording that the first classifier flagged all 11 `params.id` cases as suspicious. They are not: `expenses/[id]/pay` guarding `params.id` *is* guarding the expense it pays, and `projects/[id]/settings` guarding `params.id` *is* guarding that project. A path parameter naming the route's own resource is not user input in the sense that matters. Reading them was what settled it — the same lesson as every other scan today.
+
+### Current state of the mutating set
+
+Re-running `scripts/audit-routes.py` after the fixes: **164 routes, 89 mutating, 4 with no guard and no membership lookup** — down from 6. All four (`push/register`, `user/avatar`, `user/change-password`, `user/update`) are user-self-scoped and have no tenant dimension. The read-only unguarded set fell from 24 to 8 when the integration routes were fixed.
+
+### What remains genuinely unprovable by tooling
+
+That a guard's *logic* is right — `requireProjectAccess` itself correctly resolving visibility and membership. That needs review of the helper, not of its call sites, and the helper is small enough to read.
+
 ## 6. Standing limitation
 
 This audit proves that a guard is called. It does not prove the guard is called with the right arguments, nor that its own logic is correct. `requireProjectAccess(someOtherProjectId, userId)` passes every check in this document.
