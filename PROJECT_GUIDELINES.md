@@ -22,6 +22,7 @@ These rules apply to any contributor or AI coding assistant working on this code
 
 ## Design System Rules
 
+- **`<Button>` wrapping anything other than a label needs `layout="block"`.** The base class carries `inline-flex justify-center whitespace-nowrap`, which is right for "Save" and wrong for a card, an option, or a stacked title-and-description. **`whitespace-nowrap` inherits** — a paragraph nested three levels inside still refuses to wrap, and the height collapse that follows reads as a styling accident rather than a component contract. This one class broke four screens in a single day (Customization presets, its toggles, its header, AI Insights cards, onboarding options). If the button contains a `<div>`, a `<p>`, or text that must wrap: `layout="block"`.
 - **Font**: Inter via `next/font/google` for Latin languages; Abyssinica SIL for Ge'ez script (AM/TI). Never use SF Pro (Apple-only, breaks on Windows).
 - **Modals**: Bottom sheet on mobile (rounded top + drag handle), centered dialog on desktop. Always include teal accent bar.
 - **Page headers**: Always use `UnifiedPageHeader` with the appropriate tab config from `config/department-tabs.ts`. Never build custom headers.
