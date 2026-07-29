@@ -20,6 +20,7 @@ import {
   Eye,
   Sparkles,
   ArrowLeft,
+  ArrowRight,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -50,6 +51,64 @@ interface Activity {
     title: string;
     project: { id: string; key: string; name: string; color: string };
   } | null;
+}
+
+/**
+ * What actually changed, from data the API has been returning all along.
+ *
+ * The card showed `aiSummary` and nothing else, and `aiSummary` is always
+ * null: there are two activity loggers in this codebase, and the one the
+ * issue routes call (lib/activity-logger) writes only `metadata` — never
+ * `before`, `after`, `aiSummary` or `impactScore`. The richer ActivityLogger
+ * class in packages/database populates those, and nothing routes through it.
+ *
+ * Meanwhile every field edit records `metadata: { field, from, to }`, the API
+ * returns it, and the Activity interface below declares it. It was simply
+ * never read. So "it doesn't show what was edited" was a missing render, not
+ * missing data.
+ */
+export function activityHref(
+  activity: Pick<Activity, 'entityType' | 'entityId' | 'entity'>,
+  scopedToOneEntity: boolean
+): string | null {
+  // Scoped timeline: the reader is already looking at this entity.
+  if (scopedToOneEntity) return null;
+
+  if (activity.entityType === 'TASK') {
+    // Without the enriched entity there is no project to land in, and the
+    // issues page would open on some other project's board.
+    if (!activity.entity) return null;
+    const projectId = activity.entity.project?.id;
+    return projectId
+      ? `/dashboard/issues?projectId=${projectId}&taskId=${activity.entityId}`
+      : `/dashboard/issues?taskId=${activity.entityId}`;
+  }
+
+  if (activity.entityType === 'PROJECT') {
+    return `/dashboard?projectId=${activity.entityId}`;
+  }
+
+  // GOAL, TEAM, BUDGET, EXPENSE, DOCUMENT, SPRINT: no destination exists yet.
+  // Returning null makes that visible as a non-interactive card rather than
+  // as a click that quietly fails.
+  return null;
+}
+
+export function describeChange(activity: Pick<Activity, 'metadata'>): { field: string; from?: string; to?: string } | null {
+  const m = activity.metadata;
+  if (!m || typeof m !== 'object' || typeof m.field !== 'string') return null;
+
+  // Only render a transition when there is one. Some activities record a
+  // field with no from/to (a classification change, an attachment), and
+  // "undefined → undefined" reads as a bug.
+  const fmt = (v: unknown): string | undefined => {
+    if (v === null) return 'none';
+    if (v === undefined) return undefined;
+    if (typeof v === 'string') return v.replace(/_/g, ' ').toLowerCase();
+    return String(v);
+  };
+
+  return { field: m.field.replace(/_/g, ' '), from: fmt(m.from), to: fmt(m.to) };
 }
 
 interface ActivityTimelineProps {
@@ -113,17 +172,25 @@ export function ActivityTimeline({
   const [selectedEntityType, setSelectedEntityType] = useState<string | undefined>(entityType);
   const [offset, setOffset] = useState(0);
 
-  const handleActivityClick = (activity: Activity) => {
-    if (activity.entityType === 'TASK' && activity.entity) {
-      const projectId = activity.entity.project?.id;
-      const url = projectId
-        ? `/dashboard/issues?projectId=${projectId}&taskId=${activity.entityId}`
-        : `/dashboard/issues?taskId=${activity.entityId}`;
-      router.push(url);
-    } else if (activity.entityType === 'PROJECT') {
-      router.push(`/dashboard?projectId=${activity.entityId}`);
-    }
-  };
+  /**
+   * Where does clicking this card go — or does it go nowhere?
+   *
+   * This used to be implicit, and that was the bug. Every card rendered with
+   * role="button", cursor-pointer and a hover highlight, while the handler
+   * returned silently for anything that was not a TASK-with-entity or a
+   * PROJECT. Clicking a GOAL, TEAM, BUDGET, EXPENSE or SPRINT activity did
+   * nothing and said nothing.
+   *
+   * Worse, and the case actually reported: inside the issue slideout this
+   * timeline is scoped to one task (`entityId` is set), so every card there
+   * pointed at the task already open behind it. On /dashboard/issues that is
+   * a push to the route you are already on — React does not remount, the URL
+   * initialisers do not re-read, and nothing happens at all.
+   *
+   * So the destination is computed once and drives BOTH the click and the
+   * styling. A card that cannot go anywhere no longer claims it can.
+   */
+  const drillDownHref = (activity: Activity) => activityHref(activity, Boolean(entityId));
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['activities', { entityType: selectedEntityType, entityId, userId, projectId, limit, offset }],
@@ -252,6 +319,8 @@ export function ActivityTimeline({
                 const EntityIcon = entityTypeIcons[activity.entityType] || FileText;
                 const ActionIcon = actionIcons[activity.action] || Edit3;
                 const actionColor = actionColors[activity.action] || actionColors.UPDATED;
+                const href = drillDownHref(activity);
+                const change = describeChange(activity);
 
                 return (
                   <div
@@ -266,13 +335,26 @@ export function ActivityTimeline({
                       </div>
                     </div>
 
-                    {/* Activity Card — clickable to drill down */}
+                    {/* Activity Card — interactive only when it can actually navigate */}
                     <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleActivityClick(activity)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleActivityClick(activity); }}
-                      className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 hover:shadow-md transition-all duration-200 hover:border-[#1C8C7D] cursor-pointer"
+                      {...(href
+                        ? {
+                            role: 'button',
+                            tabIndex: 0,
+                            onClick: () => router.push(href),
+                            onKeyDown: (e: React.KeyboardEvent) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                router.push(href);
+                              }
+                            },
+                          }
+                        : {})}
+                      className={`rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 transition-all duration-200 ${
+                        href
+                          ? 'hover:shadow-md hover:border-[#1C8C7D] cursor-pointer'
+                          : ''
+                      }`}
                     >
                       {/* Header */}
                       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 mb-2">
@@ -312,6 +394,28 @@ export function ActivityTimeline({
                           <span>{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
                         </div>
                       </div>
+
+                      {/* What changed — from metadata.field/from/to */}
+                      {change && (
+                        <div className="flex flex-wrap items-center gap-1.5 mb-3 text-sm">
+                          <span className="text-slate-500 dark:text-slate-400">{change.field}</span>
+                          {change.from !== undefined && change.to !== undefined ? (
+                            <>
+                              <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 line-through decoration-slate-400">
+                                {change.from}
+                              </span>
+                              <ArrowRight className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                              <span className="px-1.5 py-0.5 rounded bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium">
+                                {change.to}
+                              </span>
+                            </>
+                          ) : change.to !== undefined ? (
+                            <span className="px-1.5 py-0.5 rounded bg-[#1C8C7D]/10 text-[#1C8C7D] font-medium">
+                              {change.to}
+                            </span>
+                          ) : null}
+                        </div>
+                      )}
 
                       {/* AI Summary */}
                       {activity.aiSummary && (

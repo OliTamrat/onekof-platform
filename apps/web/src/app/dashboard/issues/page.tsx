@@ -173,14 +173,56 @@ export default function IssuesPage() {
   });
 
   // Auto-open task slideout from ?taskId= URL param (drill-down from activity)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const taskId = new URLSearchParams(window.location.search).get('taskId');
-    if (taskId && issuesData?.issues) {
-      const issue = issuesData.issues.find((i: Issue) => i.id === taskId);
-      if (issue) setSelectedIssue(issue);
+  //
+  // This used to be `issues.find(i => i.id === taskId)` and nothing else, so
+  // the drill-down silently did nothing whenever the task was not in the list
+  // the board happens to be showing. That is not a rare case:
+  //
+  //   - `hideSubtasks` defaults to TRUE, so the query sends topLevel=true and
+  //     every subtask is missing. Any activity on a subtask failed.
+  //   - the non-paginated list is capped at 500 rows.
+  //   - a status or priority filter narrows it further.
+  //
+  // So it now falls back to fetching the one task by id. The board keeps its
+  // filters; the slideout opens regardless.
+  const [pendingTaskId, setPendingTaskId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('taskId');
     }
-  }, [issuesData]);
+    return null;
+  });
+
+  useEffect(() => {
+    if (!pendingTaskId) return;
+
+    const inList = issuesData?.issues?.find((i: Issue) => i.id === pendingTaskId);
+    if (inList) {
+      setSelectedIssue(inList);
+      setPendingTaskId(null);
+      return;
+    }
+
+    // Not in the current view — fetch it directly. Guarded so a task the
+    // caller may not see (or one that no longer exists) fails quietly rather
+    // than leaving the request in flight forever.
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/issues/${pendingTaskId}`);
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        if (data?.issue && !cancelled) setSelectedIssue(data.issue);
+      } catch {
+        // Nothing to show; leaving the board as-is is the honest outcome.
+      } finally {
+        if (!cancelled) setPendingTaskId(null);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pendingTaskId, issuesData]);
 
   // Create issue mutation
   const createIssueMutation = useMutation({
