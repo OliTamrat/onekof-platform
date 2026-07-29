@@ -188,12 +188,14 @@ The Operations department already exists with Incidents / Monitoring / Checklist
 | **M1 — Registry dark launch** | `Patient` model + encrypted fields + blind index; `patientAccess` ladder; `PATIENT_VIEWED`/`PATIENT_*` audit types; API with access gates; idempotent migration. **Zero UI.** | Yes |
 | **M2 — Care coordination** | `Task.patientId`, patient-scoped task views, care-team assignment, redaction for members without access. | Yes (single nullable column) |
 | **M3 — Surfacing** | Medical section added to the sidebar (the gap found in testing), patient list/detail, referral tracking; i18n ×5; residency gate enforced in UI (Tier 1/2 only). | No |
-| **M4 — Facility operations** | Operations catalog gains facility/equipment/safety workstreams. **Shipped** — see note below. Maintenance scheduling on the recurring-work path remains outstanding. | No |
+| **M4 — Facility operations** | Operations catalog gains facility/equipment/safety workstreams. **Shipped** — see note below. Maintenance scheduling remains outstanding and is larger than v1.0 assumed. | No |
 | **M5 — Documentation** | Healthcare support guide in the Wave-3 template; Industry Editions reference updated; INSA/regulatory review pack. | No |
 
 **M4 shipped ahead of M1–M3, deliberately.** The phases were numbered in narrative order, but M4 touches **no patient data at all** — it is pure Operations vocabulary. It is therefore not behind the counsel gate, and holding it back would have meant waiting on a legal answer for work the answer cannot affect. `equipment`, `facility` and `safety` are now Operations workstreams (catalog extension, zero schema change — exactly the D1 extensibility argument), with three real pages on the existing `DepartmentTaskList` pattern, sidebar entries, and labels in all five locales reused from the retired placeholders.
 
 The old `/dashboard/facilities`, `/equipment` and `/safety` pages are now redirects. Worth recording why they were bad: each rendered **outside `AppLayout`**, so it had no sidebar and no way back — the same orphaning defect found earlier on the Customization page. That is now three occurrences of the same class, and it suggests a route-level guard is worth more than another one-off fix.
+
+**Correction to v1.0's M4 scope.** v1.0 said maintenance scheduling would ride "the existing recurring-work path." There is no such path. Tasks have no recurrence: the only recurrence in the codebase is the automations *Schedule trigger* (which is plan-gated to Pro/Enterprise) and billing intervals. So recurring preventive maintenance — the thing a hospital biomedical department or a contractor's plant manager actually wants — is **net-new work**, not a wiring exercise. Sized honestly it is its own phase, and it is a general platform capability (recurring tasks) rather than a healthcare feature. Recorded here so nobody plans M4's remainder as an afternoon.
 
 **M4 also serves Construction, not only Healthcare.** The edition audit found Construction promised sites, equipment, safety and progress photos — four of four unbuilt. Equipment and safety are now real for that sector too, from the same change.
 
