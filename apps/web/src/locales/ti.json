@@ -1534,7 +1534,10 @@
     "medicalDesc": "ክንክን ሕሙማት፣ ክሊኒካዊ ስርሓታትን መዛግብቲ ሕክምናን ኣመሓድሩ",
     "coursesDesc": "ኮርሳት፣ ጉጅለታትን መደባት ትምህርትን ኣመሓድሩ",
     "classifiedNote": "ኣብዚ ዝፍጠሩ ሓደስቲ ስራሓት ከም {label} ይምደቡ",
-    "classification": "ክፍሊ"
+    "classification": "ክፍሊ",
+    "facilitiesDesc": "ህንጻታት፣ ክፍልታት ከምኡ'ውን ናይ ትካል ጽገና ኣመሓድሩ",
+    "equipmentDesc": "ናይ መሳርሒ ቆጸራ፣ ጽገና ከምኡ'ውን ኣጠቓቕማ ተኸታተሉ",
+    "safetyDesc": "ናይ ድሕነት ፍጻመታት፣ መርመራታት ከምኡ'ውን ምእዛዝ ተኸታተሉ"
   },
   "operationsPage": {
     "title": "ስርሒታት",
@@ -1942,7 +1945,10 @@
     "templates": "ቅዳሓት",
     "team": "ጋንታ",
     "hierarchy": "ተዓራረብ",
-    "sprints": "ስፕሪንታት"
+    "sprints": "ስፕሪንታት",
+    "facilities": "ትካላት",
+    "equipment": "መሳርሒታት",
+    "safety": "ምሕደራ ድሕነት"
   },
   "sidebar": {
     "home": "መበገሲ",
@@ -1981,7 +1987,10 @@
     "docs": "ሰነዳት",
     "integrations": "ውህደታት",
     "medical": "ሕክምና",
-    "courses": "ኮርሳት"
+    "courses": "ኮርሳት",
+    "facilities": "ትካላት",
+    "equipment": "መሳርሒታት",
+    "safety": "ምሕደራ ድሕነት"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ ኣራኽብ",

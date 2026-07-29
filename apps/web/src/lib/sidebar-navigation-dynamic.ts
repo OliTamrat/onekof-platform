@@ -32,6 +32,9 @@ import {
   MessageSquare,
   GitBranch,
   Puzzle,
+  Building2,
+  Wrench,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -168,6 +171,10 @@ export function getSidebarNavigation(
         { name: 'Incidents', nameKey: 'sidebar.incidents', href: '/dashboard/operations/incidents', icon: AlertCircle },
         { name: 'Monitoring', nameKey: 'sidebar.monitoring', href: '/dashboard/operations/monitoring', icon: Activity },
         { name: 'Checklists', nameKey: 'sidebar.checklists', href: '/dashboard/operations/checklists', icon: CheckCircle2 },
+        // M4 — facility operations (MEDICAL_MODULE_ARCHITECTURE.md, M8)
+        { name: 'Facilities', nameKey: 'sidebar.facilities', href: '/dashboard/operations/facilities', icon: Building2 },
+        { name: 'Equipment', nameKey: 'sidebar.equipment', href: '/dashboard/operations/equipment', icon: Wrench },
+        { name: 'Safety Management', nameKey: 'sidebar.safety', href: '/dashboard/operations/safety', icon: ShieldCheck },
       ],
     },
 

@@ -1534,7 +1534,10 @@
     "medicalDesc": "Kunuunsa dhukkubsataa, hojiiwwan kilinikaa fi galmeewwan fayyaa bulchi",
     "coursesDesc": "Koorsota, gareewwan fi sagantaalee barnootaa bulchi",
     "classifiedNote": "Hojiiwwan haaraan asitti uumaman akka {label} ramadamu",
-    "classification": "Kutaa"
+    "classification": "Kutaa",
+    "facilitiesDesc": "Gamoo, kutaa fi suphaa dhaabbataa bulchi",
+    "equipmentDesc": "Herrega meeshaa, suphaa fi itti fayyadama hordofi",
+    "safetyDesc": "Balaa nageenyaa, sakatta'iinsa fi hordoffii hordofi"
   },
   "operationsPage": {
     "title": "Hojimaata",
@@ -1898,7 +1901,10 @@
     "templates": "Unkaawwan Moodeelii",
     "team": "Garee",
     "hierarchy": "Sadarkaa",
-    "sprints": "Ispiriintiiwwan"
+    "sprints": "Ispiriintiiwwan",
+    "facilities": "Dhaabbileen",
+    "equipment": "Meeshaalee",
+    "safety": "Bulchiinsa Nageenyaa"
   },
   "sidebar": {
     "home": "Fuula Jalqabaa",
@@ -1937,7 +1943,10 @@
     "docs": "Dokumantoota",
     "integrations": "Walitti Makamtii",
     "medical": "Fayyaa",
-    "courses": "Koorsota"
+    "courses": "Koorsota",
+    "facilities": "Dhaabbileen",
+    "equipment": "Meeshaalee",
+    "safety": "Bulchiinsa Nageenyaa"
   },
   "codeConnect": {
     "title": "Kuusaa Walitti Hidhi",

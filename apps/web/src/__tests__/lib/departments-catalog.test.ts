@@ -104,3 +104,67 @@ describe('workstream label keys (chip + slideout rendering)', () => {
     }
   });
 });
+
+describe('M4 — facility operations workstreams', () => {
+  const M4_WORKSTREAMS = ['equipment', 'facility', 'safety'] as const;
+
+  it('places facility work under Operations rather than a new department', () => {
+    // M8: facilities/equipment/safety are Operations workstreams. If someone
+    // promotes one to a top-level department, that is a design change and
+    // should fail here first.
+    expect(DEPARTMENTS.sort()).toEqual(['development', 'marketing', 'operations', 'research']);
+    for (const ws of M4_WORKSTREAMS) {
+      expect(isWorkstreamOf('operations', ws), ws).toBe(true);
+    }
+  });
+
+  it('does not attach facility workstreams to unrelated departments', () => {
+    for (const ws of M4_WORKSTREAMS) {
+      expect(isWorkstreamOf('development', ws), ws).toBe(false);
+      expect(isWorkstreamOf('marketing', ws), ws).toBe(false);
+      expect(isWorkstreamOf('research', ws), ws).toBe(false);
+    }
+  });
+
+  // The English-only guard above would pass while Amharic silently rendered a
+  // raw key. These pages ship to Ethiopian hospitals and contractors, so the
+  // check runs across every locale we claim to support.
+  it('resolves every workstream label in all five locales', async () => {
+    const { WORKSTREAM_LABEL_KEYS } = await import('@/lib/departments/catalog');
+    const locales = {
+      en: (await import('@/locales/en.json')).default as any,
+      am: (await import('@/locales/am.json')).default as any,
+      om: (await import('@/locales/om.json')).default as any,
+      ti: (await import('@/locales/ti.json')).default as any,
+      so: (await import('@/locales/so.json')).default as any,
+    };
+    for (const [code, dict] of Object.entries(locales)) {
+      for (const ws of M4_WORKSTREAMS) {
+        const key = WORKSTREAM_LABEL_KEYS[ws];
+        const [section, name] = key.split('.');
+        expect(dict[section]?.[name], `${code}: ${key}`).toBeTruthy();
+      }
+      for (const desc of ['facilitiesDesc', 'equipmentDesc', 'safetyDesc']) {
+        expect(dict.departments?.[desc], `${code}: departments.${desc}`).toBeTruthy();
+      }
+    }
+  });
+
+  it('gives every Operations tab a matching catalog workstream', async () => {
+    const { OPERATIONS_TABS } = await import('@/config/department-tabs');
+    // Tab ids are plural page slugs; workstreams are singular vocabulary.
+    const TAB_TO_WORKSTREAM: Record<string, string> = {
+      incidents: 'incident',
+      monitoring: 'monitoring',
+      checklists: 'checklist',
+      facilities: 'facility',
+      equipment: 'equipment',
+      safety: 'safety',
+    };
+    for (const tab of OPERATIONS_TABS) {
+      const ws = TAB_TO_WORKSTREAM[tab.id];
+      expect(ws, `no workstream mapped for tab "${tab.id}"`).toBeTruthy();
+      expect(isWorkstreamOf('operations', ws), tab.id).toBe(true);
+    }
+  });
+});

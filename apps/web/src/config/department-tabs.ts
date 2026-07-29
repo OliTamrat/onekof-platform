@@ -26,6 +26,9 @@ import {
   Workflow,
   Radio,
   LayoutTemplate,
+  Building2,
+  Wrench,
+  ShieldCheck,
 } from 'lucide-react';
 import type { TabDefinition } from '@/components/navigation/unified-page-header';
 
@@ -45,6 +48,12 @@ export const OPERATIONS_TABS: TabDefinition[] = [
   { id: 'incidents', label: 'Incidents', labelKey: 'departmentTabs.incidents', icon: AlertCircle, href: '/incidents' },
   { id: 'monitoring', label: 'Monitoring', labelKey: 'departmentTabs.monitoring', icon: Activity, href: '/monitoring' },
   { id: 'checklists', label: 'Checklists', labelKey: 'departmentTabs.checklists', icon: CheckCircle2, href: '/checklists' },
+  // M4 — facility operations. Replaces the orphaned /dashboard/facilities,
+  // /equipment and /safety placeholders, which rendered outside AppLayout
+  // and so had no sidebar at all.
+  { id: 'facilities', label: 'Facilities', labelKey: 'departmentTabs.facilities', icon: Building2, href: '/facilities' },
+  { id: 'equipment', label: 'Equipment', labelKey: 'departmentTabs.equipment', icon: Wrench, href: '/equipment' },
+  { id: 'safety', label: 'Safety Management', labelKey: 'departmentTabs.safety', icon: ShieldCheck, href: '/safety' },
 ];
 
 export const RESEARCH_TABS: TabDefinition[] = [
