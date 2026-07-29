@@ -3,6 +3,7 @@ import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -332,6 +333,19 @@ export async function POST(
         role,
         addedBy: authUser.id,
       },
+    });
+
+    // INSA audit trail: granting project access is a permissions event.
+    logOrgAction({
+      organizationId: project.organizationId,
+      actorId: authUser.id,
+      actorEmail: authUser.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.PROJECT_MEMBER_ADDED,
+      resource: 'project_member',
+      resourceId: userToAdd.id,
+      after: { projectId, role },
+      request: req,
     });
 
     return NextResponse.json({

@@ -3,6 +3,7 @@ import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -322,6 +323,21 @@ export async function POST(
         role,
         addedBy: authUser.id,
       },
+    });
+
+    // INSA audit trail: teams carry project access, so adding someone to one
+    // grants them whatever that team can reach. A permissions event, not
+    // bookkeeping.
+    logOrgAction({
+      organizationId: team.organizationId,
+      actorId: authUser.id,
+      actorEmail: authUser.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.TEAM_MEMBER_ADDED,
+      resource: 'team_member',
+      resourceId: userToAdd.id,
+      after: { teamId, role },
+      request: req,
     });
 
     return NextResponse.json({

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -79,6 +80,19 @@ export async function DELETE(
       },
     });
 
+    // INSA audit trail: removal revokes this person's access to the project.
+    logOrgAction({
+      organizationId: project.organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.PROJECT_MEMBER_REMOVED,
+      resource: 'project_member',
+      resourceId: params.userId,
+      before: { projectId, role: member.role },
+      request: req,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Error removing project member', { error: error instanceof Error ? error.message : error });
@@ -150,6 +164,15 @@ export async function PATCH(
       );
     }
 
+    // Capture the previous role before overwriting it. updateMany does not
+    // return the old value, and an audit entry saying only "X is now ADMIN"
+    // is far less useful to an investigator than "X was VIEWER and was made
+    // ADMIN by Y". One extra read is worth a usable record.
+    const priorMembership = await prisma.projectMember.findFirst({
+      where: { projectId, userId },
+      select: { role: true },
+    });
+
     // Update the member role
     const updatedMember = await prisma.projectMember.updateMany({
       where: {
@@ -167,6 +190,21 @@ export async function PATCH(
         { status: 404 }
       );
     }
+
+    // INSA audit trail: project role changes alter what this person can see
+    // and do inside the project.
+    logOrgAction({
+      organizationId: project.organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.PROJECT_MEMBER_ROLE_CHANGED,
+      resource: 'project_member',
+      resourceId: userId,
+      before: { projectId, role: priorMembership?.role ?? null },
+      after: { projectId, role },
+      request: req,
+    });
 
     return NextResponse.json({ role });
   } catch (error) {

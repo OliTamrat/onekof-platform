@@ -110,6 +110,60 @@ describe('team membership changes are audited', () => {
   });
 });
 
+describe('the full membership catalogue is now emitted', () => {
+  // The catalogue defined these and nothing wrote them. This asserts the set
+  // is complete rather than checking each in isolation, so the next action
+  // added to the catalogue without a writer shows up here.
+  const EMITTED: Record<string, string> = {
+    INVITATION_SENT: 'app/api/organizations/[organizationId]/invitations/route.ts',
+    INVITATION_REVOKED: 'app/api/organizations/[organizationId]/invitations/route.ts',
+    INVITATION_ACCEPTED: 'app/api/invitations/accept/route.ts',
+    TEAM_CREATED: 'app/api/teams/route.ts',
+    TEAM_DELETED: 'app/api/teams/[id]/route.ts',
+    TEAM_MEMBER_ADDED: 'app/api/teams/[id]/members/route.ts',
+    TEAM_MEMBER_REMOVED: 'app/api/teams/[id]/members/[userId]/route.ts',
+    TEAM_MEMBER_ROLE_CHANGED: 'app/api/teams/[id]/members/[userId]/route.ts',
+    PROJECT_MEMBER_ADDED: 'app/api/projects/[id]/members/route.ts',
+    PROJECT_MEMBER_REMOVED: 'app/api/projects/[id]/members/[userId]/route.ts',
+    PROJECT_MEMBER_ROLE_CHANGED: 'app/api/projects/[id]/members/[userId]/route.ts',
+    ORG_MEMBER_ROLE_CHANGED: 'app/api/organization-members/route.ts',
+    ORG_MEMBER_REMOVED: 'app/api/organization-members/route.ts',
+  };
+
+  for (const [action, file] of Object.entries(EMITTED)) {
+    it(`${action} is written by ${file.replace('app/api/', '')}`, () => {
+      expect(code(file)).toContain(`OrgActions.${action}`);
+    });
+  }
+});
+
+describe('role changes record what the role was before', () => {
+  // Without `before`, an entry says "X is now ADMIN" — which tells an
+  // investigator almost nothing. The delta is the record.
+  const ROLE_CHANGES = [
+    'app/api/organization-members/route.ts',
+    'app/api/teams/[id]/members/[userId]/route.ts',
+    'app/api/projects/[id]/members/[userId]/route.ts',
+  ];
+
+  for (const file of ROLE_CHANGES) {
+    it(`${file.replace('app/api/', '')} carries a before value`, () => {
+      const src = code(file);
+      expect(src).toMatch(/ROLE_CHANGED[\s\S]{0,400}?before:/);
+    });
+  }
+
+  it('the project role change reads the prior role before overwriting it', () => {
+    // updateMany does not return the old value, so the route takes one extra
+    // read rather than logging a half-useful entry.
+    const src = code('app/api/projects/[id]/members/[userId]/route.ts');
+    const read = src.indexOf('priorMembership');
+    const write = src.indexOf('projectMember.updateMany');
+    expect(read).toBeGreaterThan(-1);
+    expect(read).toBeLessThan(write);
+  });
+});
+
 describe('audit logging never breaks the caller', () => {
   it('swallows its own failures', async () => {
     const src = read('lib/security/org-audit.ts');
