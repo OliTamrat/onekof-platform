@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getOrganizationContext } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import { prisma } from '@onekof/database';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -145,6 +146,23 @@ export async function PATCH(request: NextRequest) {
       data: { role: role as any },
     });
 
+    // INSA audit trail: changing someone's organization role changes what
+    // they can reach. `before` carries the old role, because "X is now an
+    // ADMIN" is far less useful to an investigator than "X was a MEMBER and
+    // was made an ADMIN by Y".
+    logOrgAction({
+      organizationId: organization.id,
+      actorId: context.user.id,
+      actorEmail: context.user.email,
+      actorRole: callerMembership.role,
+      action: OrgActions.ORG_MEMBER_ROLE_CHANGED,
+      resource: 'organization',
+      resourceId: userId,
+      before: { role: target.role },
+      after: { role },
+      request,
+    });
+
     return NextResponse.json({ message: 'Role updated', userId, role });
   } catch (error) {
     logger.error('Update member role error', { error: error instanceof Error ? error.message : error });
@@ -191,6 +209,21 @@ export async function DELETE(request: NextRequest) {
 
     await prisma.organizationMember.delete({
       where: { organizationId_userId: { organizationId: organization.id, userId } },
+    });
+
+    // INSA audit trail: removal ends all access this person had. `before`
+    // records the role they held, since that is what an investigator needs to
+    // know was revoked.
+    logOrgAction({
+      organizationId: organization.id,
+      actorId: context.user.id,
+      actorEmail: context.user.email,
+      actorRole: callerMembership.role,
+      action: OrgActions.ORG_MEMBER_REMOVED,
+      resource: 'organization',
+      resourceId: userId,
+      before: { role: target.role },
+      request,
     });
 
     return NextResponse.json({ message: 'Member removed', userId });

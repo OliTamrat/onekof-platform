@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -78,6 +79,20 @@ export async function DELETE(
     // Delete the member
     await prisma.teamMember.delete({
       where: { id: memberToRemove.id },
+    });
+
+    // INSA audit trail: teams carry project access, so removing someone from
+    // one revokes whatever that team granted them.
+    logOrgAction({
+      organizationId: team.organizationId,
+      actorId: authUser.id,
+      actorEmail: authUser.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.TEAM_MEMBER_REMOVED,
+      resource: 'team_member',
+      resourceId: params.userId,
+      before: { teamId, role: memberToRemove.role },
+      request: req,
     });
 
     return NextResponse.json({
