@@ -355,19 +355,29 @@ export function hasRole(
 }
 
 /**
- * Helper function to check if user has budget access
+ * Does this member have any budget visibility at all?
+ *
+ * Both of these helpers compared against 'FULL' and 'VIEW', neither of which
+ * is a BudgetAccess value (the enum is NO_ACCESS | VIEW_ONLY | EDIT | APPROVE
+ * | FULL_CONTROL). They therefore returned false for every member who ever
+ * existed. Nothing calls them today, so nobody was locked out — but left as
+ * they were, the first caller to reach for an obvious-looking helper would
+ * have silently denied everyone.
  */
 export function hasBudgetAccess(membership: {
   budgetAccess: string | null;
 }): boolean {
-  return membership.budgetAccess === 'FULL' || membership.budgetAccess === 'VIEW';
+  return membership.budgetAccess != null && membership.budgetAccess !== 'NO_ACCESS';
 }
 
 /**
- * Helper function to check if user has full budget access
+ * Does this member have unrestricted budget management?
+ *
+ * FULL_CONTROL only. APPROVE can sign off on expenses but is deliberately not
+ * "full" — see the access ladder in lib/budget-access.ts.
  */
 export function hasFullBudgetAccess(membership: {
   budgetAccess: string | null;
 }): boolean {
-  return membership.budgetAccess === 'FULL';
+  return membership.budgetAccess === 'FULL_CONTROL';
 }

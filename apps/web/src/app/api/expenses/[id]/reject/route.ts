@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
+import { canApproveExpense } from '@/lib/budget-access';
 import { authOptions } from '@/lib/auth';
 import { sendExpenseDecisionEmail } from '@/lib/email';
 import logger from '@/lib/logger';
@@ -38,6 +39,30 @@ export async function POST(
 
     if (!expense || expense.deletedAt) {
       return NextResponse.json({ error: 'Expense not found' }, { status: 404 });
+    }
+
+    // Authorization. This route previously checked only that the caller was
+    // signed in — not that they belonged to the expense's organization, let
+    // alone that they could approve expenses. Any authenticated user of the
+    // platform could reject any expense by id, across tenants, which marked
+    // it REJECTED, stamped their name on it, wrote a budget revision and
+    // emailed the submitter.
+    //
+    // /approve applies canApproveExpense to its APPROVE *and* REJECT actions,
+    // so this standalone route uses exactly the same gate. Rejecting is a
+    // destructive decision on someone else's money and is not the lighter
+    // half of the pair.
+    const approvalCheck = await canApproveExpense(
+      user.id,
+      expense.budget.projectId,
+      Number(expense.amount)
+    );
+
+    if (!approvalCheck.canApprove) {
+      return NextResponse.json(
+        { error: approvalCheck.reason || 'Cannot reject this expense' },
+        { status: 403 }
+      );
     }
 
     if (expense.status !== 'PENDING') {
