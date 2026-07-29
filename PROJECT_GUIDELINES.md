@@ -82,9 +82,19 @@ On 2026-07-29 roughly twenty pushes produced ~130 minutes of Actions time and 40
 
 Local commits trigger nothing. A wave of six items can be six well-scoped commits with six clear messages and still cost **one** CI run. Granular history and cheap delivery are not in tension — the mistake is treating `git push` as part of `git commit`.
 
-### Deployment config: production only
+### Deployment config: production only — and what that does NOT buy
 
-`apps/web/vercel.json` sets `ignoreCommand` so **only production deploys**. Pull requests get no preview URLs; correctness is gated by the GitHub Actions build instead.
+`apps/web/vercel.json` sets `ignoreCommand` so **only production builds**. Pull requests get no preview URLs; correctness is gated by the GitHub Actions build instead.
+
+**It does not reduce the deployment count.** `ignoreCommand` skips the *build*; Vercel still **creates** a deployment record for every push, and the free-tier cap that bites is `api-deployments-free-per-day` — which counts creations. On 2026-07-29 previews were being skipped all day and the 100/day cap was still reached.
+
+So this setting saves build minutes and nothing else. It was added in response to a quota complaint and was measured against the wrong meter. The lever that would actually stop deployments being created is `git.deploymentEnabled` in `vercel.json`:
+
+```json
+"git": { "deploymentEnabled": { "claude/*": false } }
+```
+
+**Unverified** — not yet confirmed against Vercel's schema, and `vercel.json` has already rejected one unknown key this project tried (`"//ignoreCommand"`). Test it on a day with quota headroom.
 
 **Read this before touching that line.** Vercel **skips** the build when `ignoreCommand` exits **0** and **proceeds** when it exits **1**. The condition therefore looks inverted at a glance:
 
@@ -98,9 +108,32 @@ Getting it backwards disables **production**, not previews.
 
 Both Vercel projects (`onekof-platform`, `onekof-platform-web`) build `apps/web` and share this file, so it cannot distinguish them. Restoring previews for one project only is a dashboard change.
 
-### The structural fix, outstanding
+### Holding a wave back? Write it down here. (MANDATORY)
 
-Two Vercel projects building the same directory doubles every deployment permanently. Removing one would halve the cost with no change in behaviour — but that is a founder decision, not an engineering one (see `docs/architecture/DELETION_POLICY.md` §5).
+Batching creates a hazard the old push-everything habit did not have: **work that is finished locally but not merged is invisible.** A session ends, context is lost, and a real fix sits in a branch nobody remembers. The whole point of waves is deferral, so the ledger is not optional bookkeeping — it is the thing that makes deferral safe.
+
+**Whenever a push or merge is deliberately deferred**, add the item to *Deferred / Unfinished Work* below before ending the exchange. One line: what it is, why it was held, and what unblocks it.
+
+Remove the entry when it ships. An empty list is the goal, not an aspiration.
+
+This applies to a decision to wait — not to work still in progress within an active wave.
+
+---
+
+## Deferred / Unfinished Work
+
+*Held deliberately. Each entry needs a reason and an unblock condition.*
+
+| Item | Why held | Unblocks when |
+|---|---|---|
+| `BLIND_INDEX_KEY` not set in Vercel Production | Needs a secret only the founder can generate and set; no Vercel token in the agent environment | Founder runs `openssl rand -base64 48` and sets it. **Until then every patient write throws** — M1 is schema-ready but non-functional |
+| `git.deploymentEnabled` in `vercel.json` | Founder asked for no changes pending a conversation with the terminal agent about the duplicate Vercel project | That conversation concludes. Removing the duplicate project may make it unnecessary — it halves deployments on its own |
+| Duplicate Vercel project `onekof-platform-web` | Founder decision, not engineering — explicitly told not to delete anything | Founder decides. Doubles every deployment while it exists |
+| Task #71 — `/api/dashboard/activity` is dead and fabricates issue keys | Unused route, harms nobody today; not worth its own push under quota pressure | Next wave that touches `apps/web` |
+| Counsel brief on Art. 22 sectoral scope | Written and ready; blocks nothing — M5 already restricts to in-country, so counsel can only relax it | Founder sends it |
+| M3 — surfacing the Medical module | Not started. M1 and M2 are **dark launches**: the API enforces the rules, no UI exists | Next planned milestone |
+
+Two Vercel projects building the same directory doubles every deployment permanently — the third row above. Removing one would halve the cost with no change in behaviour, but that is a founder decision, not an engineering one (see `docs/architecture/DELETION_POLICY.md` §5).
 
 ## Security Rules
 
@@ -115,6 +148,28 @@ Two Vercel projects building the same directory doubles every deployment permane
 - **Email verification**: required on signup
 
 ## Database / Migration Rules
+
+### Merging to master ALREADY applies migrations
+
+`.github/workflows/deploy-production.yml` runs `prisma migrate deploy` on every
+push to `master` matching `apps/web/**`, `packages/**` or `pnpm-lock.yaml`.
+Migrations live under `packages/database/prisma/migrations/`, so **any PR
+carrying a migration applies it on merge**, one to two minutes later, before
+the build.
+
+Tier 1 / Tier 2 migrate separately: `deploy-et.yml` runs `prisma migrate
+deploy` inside the container on the ET VM, triggered by the Docker build
+workflow rather than by the push.
+
+The manual **DB Migrate** workflow is a **backstop**, not the mechanism. Reach
+for it only to apply a migration the pipeline does not reach, to re-run an
+idempotent migration to confirm state, or to use its per-object verify step.
+
+**This was documented backwards on 2026-07-29** and cost five manual workflow
+runs to apply migrations that had already been applied on merge — every one a
+no-op that "succeeded" because the SQL is idempotent. Before asking anyone to
+run a migration by hand, check `_prisma_migrations.finished_at` against the
+merge commit time; a delta of one to two minutes means the pipeline did it.
 
 - **Be cautious with migrations**: Always verify applied state with `prisma migrate status` first
 - **Supabase + Prisma + Vercel pooling**: `DATABASE_URL` must include `pgbouncer=true&connection_limit=1`

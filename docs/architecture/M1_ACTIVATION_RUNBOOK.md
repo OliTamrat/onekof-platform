@@ -1,17 +1,63 @@
 # Activating M1 — patient registry
 
-Two steps, in this order, both requiring credentials that only the founder
-holds. Neither can be done from a Claude Code session: the GitHub token here
-cannot dispatch workflows (403), the production `DIRECT_URL` is a repository
-secret, and there is no Vercel token in the environment.
-
-Everything below has been verified on a scratch Postgres 16 built from the
-true pre-M1 production schema (`e805746~1`). What has **not** happened is any
-change to a real database.
+> **Status: both migrations are applied to production.** `patients`,
+> `organization_members.patient_access`, `tasks.patient_id`, its index and
+> `tasks_patient_id_fkey` (SET NULL) are all present and were verified against
+> the live database on 2026-07-29. The only outstanding step is
+> `BLIND_INDEX_KEY` — see Step 2.
 
 ---
 
-## Step 1 — apply the two migrations, in this order
+## Read this first: migrations apply themselves on merge
+
+**Merging to `master` already runs `prisma migrate deploy`.** The manual
+DB Migrate workflow is a *backstop*, not the mechanism.
+
+`.github/workflows/deploy-production.yml` triggers on push to `master` for
+paths `apps/web/**`, `packages/**` and `pnpm-lock.yaml` — and every migration
+lives under `packages/database/prisma/migrations/`, so any PR carrying one
+matches. It runs migrations **before** building and deploying.
+
+The evidence, from `_prisma_migrations` against the merge commits:
+
+| migration | merged | recorded | delta |
+|---|---|---|---|
+| `20260729_add_patient_registry` | #182 @ 13:35:10 UTC | 13:36:43 | +1m33s |
+| `20260729_default_currency_etb` | #183 @ 13:45:27 UTC | 13:47:06 | +1m39s |
+| `20260729_add_task_patient_id` | #191 @ 16:13:52 UTC | 16:15:09 | +1m17s |
+
+One to two minutes after each merge — the time to install dependencies and
+run `migrate deploy`. Nothing else in the repository writes that table on
+that cadence.
+
+**This document originally said the opposite**, and sent the founder through
+five manual workflow runs (three of which failed on unrelated input bugs) to
+apply migrations that had already been applied on merge. Every one of those
+runs was a no-op that succeeded only because the SQL is idempotent. The
+correction is recorded here rather than quietly edited away, because the
+failure mode — telling someone to do work the pipeline already did — is worth
+recognising again.
+
+### Tier 1 / Tier 2 apply their own
+
+`.github/workflows/deploy-et.yml` runs `prisma migrate deploy` inside the
+container on the EthioTelecom VM. It is triggered by the Docker build
+workflow completing on `master`, not directly by the push, so a sovereign
+deployment migrates on its own schedule — the two paths are independent.
+
+### When the manual workflow IS the right tool
+
+- applying a migration to a database the deploy pipeline does not reach
+- re-running an idempotent migration to confirm state
+- a merge whose diff somehow misses the `deploy-production.yml` path filter
+- verifying what a migration created, via its per-object verify step
+
+---
+
+## Step 1 — the two migrations (DONE, kept for the record)
+
+Both are applied. This section documents the order dependency in case either
+is ever replayed against a fresh database.
 
 Order is not optional. `20260729_add_task_patient_id` adds a foreign key
 referencing `public.patients`, which the registry migration creates. Run it
@@ -45,6 +91,25 @@ tasks_patient_id_fkey: SET NULL
 stop — erasing a patient under M6 would delete the ward's work record along
 with the person, destroying the institution's own history in the name of
 protecting the individual's.
+
+**Two different foreign keys carry the word CASCADE and only one is wrong.**
+`patients_organization_id_fkey: CASCADE` is *correct* — an organization's
+patients should not outlive the organization. The one that must be `SET NULL`
+is `tasks_patient_id_fkey`. Naming the constraint, not just the rule, avoids
+a false alarm.
+
+### Actual production output, 2026-07-29
+
+```
+MIGRATION: 20260729_add_task_patient_id
+
+tasks:                 present
+patient_id:            present
+tasks_patient_id_idx:  present
+tasks_patient_id_fkey: SET NULL
+```
+
+Plus `Database schema is up to date!` across 21 migrations.
 
 ### Verified locally, on the real schema
 
