@@ -52,8 +52,21 @@ These rules apply to any contributor or AI coding assistant working on this code
 - **Entity IDs are cuids, not UUIDs** — validate route/body IDs with the shared `uuidSchema` (cuid-compatible token validator) from `lib/validation/schemas.ts`, never `z.string().uuid()`.
 - Architecture reference: `docs/architecture/SPRINT_AND_SETTINGS_ARCHITECTURE.md` (approved v1.2). Phases 2-4 need founder go-ahead per phase.
 
+## Deletion Rules (MANDATORY — read before removing anything user-facing)
+
+Full policy: `docs/architecture/DELETION_POLICY.md`. The short form:
+
+- **Classify first**: *fabricated* (hardcoded data, no query — delete), *honest empty* (empty state, promises nothing — keep), *dead* (no inbound references — delete after tracing the whole cluster), *real* (queries data — keep)
+- **Rebuild-first rule**: if a model and API already exist for the feature, **rebuild it, do not delete it**. Deleting a page whose model exists costs the rebuild plus the deletion plus a second review. This rule exists because Goals List and Board were deleted and rebuilt on the same day.
+- **Prune every reference in the same change** — grep the path, not just the import. A page may never be left unreachable-but-present; that state looks deleted and isn't.
+- **Guards state a re-entry condition, never a permanent ban.** "This must never exist" makes the guard an obstacle to correct work. Say what must be true for it to return, so a later change can *satisfy* the guard rather than delete it.
+- **Never delete infrastructure** (Vercel projects, databases, DNS). Code is restorable from git; those often are not, and may carry configuration recorded nowhere in the repo. Propose with evidence and stop.
+- **Batch pushes.** One push per coherent, verified piece of work — not per file. Cancelled CI runs produce nothing and burn build minutes and deployment quota.
+
 ## Security Rules
 
+- **`requireAuthentication()` only authenticates.** It answers "who is this?" and never "may they touch this?". Any route acting on an id from the URL must also call `requireProjectAccess`, `requireOrganizationMembership` or `requireExpenseAccess`. Every authorization defect found on 2026-07-29 was a route that stopped after the first one.
+- **Resolve tenancy from the request**, via `resolveUserOrganization()` — never `session.user.organizations[0]`, which is the user's first membership and ignores which workspace they are actually in
 - **RBAC enforcement**: `/api/projects` and `/api/issues` apply `buildProjectAccessFilter` based on org role + project visibility
 - **Project visibility**: PUBLIC (all org members see it), INTERNAL (project members + org admins), PRIVATE (explicit members only), CONFIDENTIAL (restricted + audit log)
 - **Default visibility** for new projects: PUBLIC (set in create-project-modal form state)
