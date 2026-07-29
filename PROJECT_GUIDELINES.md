@@ -126,11 +126,10 @@ This applies to a decision to wait — not to work still in progress within an a
 
 | Item | Why held | Unblocks when |
 |---|---|---|
-| `BLIND_INDEX_KEY` not set on any Tier 1/2 deployment | No Tier 1/2 deployment exists yet — the ECS VM is unprovisioned. **NOT Vercel:** that is Tier 3, patient routes 404 there regardless, so the key would sit unread | ECS VM provisioned, or a Tier 2 box / `docker-compose.tier-sim.yml` stood up locally. **Until then every patient write throws** — M1 and M2 are schema-ready but non-functional |
+| `BLIND_INDEX_KEY` not set on any Tier 1/2 deployment | No Tier 1/2 deployment exists yet — the ECS VM is unprovisioned. **NOT Vercel:** that is Tier 3, patient routes 404 there regardless, so the key would sit unread | ECS VM provisioned, or `docker-compose.tier-sim.yml` stood up locally — it now *requires* the key and resolves to Tier 2, so it runs the full M1/M2 surface. `GET /api/health` reports `patientFeatures.ready` and why not. **Until then every patient write throws** |
 | Docker image 64 commits stale (last tag v1.3.0, 2026-07-23) | `docker-build.yml` only fires on a `v*.*.*` tag or manual dispatch. The image predates sprints, departments, M1, M2, ETB currency and every 2026-07-29 authorization fix | A release is tagged. **Tag before any Tier 1/2 deploy** — the current image against today's migrated schema would be a week-old app on a new database |
 | `git.deploymentEnabled` in `vercel.json` | Founder asked for no changes pending a conversation with the terminal agent about the duplicate Vercel project | That conversation concludes. Removing the duplicate project may make it unnecessary — it halves deployments on its own |
 | Duplicate Vercel project `onekof-platform-web` | Founder decision, not engineering — explicitly told not to delete anything | Founder decides. Doubles every deployment while it exists |
-| Task #71 — `/api/dashboard/activity` is dead and fabricates issue keys | Unused route, harms nobody today; not worth its own push under quota pressure | Next wave that touches `apps/web` |
 | Counsel brief on Art. 22 sectoral scope | Written and ready; blocks nothing — M5 already restricts to in-country, so counsel can only relax it | Founder sends it |
 | M3 — surfacing the Medical module | Not started. M1 and M2 are **dark launches**: the API enforces the rules, no UI exists | Next planned milestone |
 

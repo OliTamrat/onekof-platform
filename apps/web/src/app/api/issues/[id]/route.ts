@@ -266,6 +266,13 @@ export async function PATCH(
       select: {
         assigneeId: true, projectId: true, status: true, priority: true, title: true,
         sprintId: true, department: true, workstream: true, patientId: true,
+        // Loaded so an edit can be COMPARED, not just applied. Without the
+        // prior value there is nothing to record a change against, which is
+        // why renaming a task, rewriting its description or moving its due
+        // date produced no activity at all: the route never knew what the
+        // field used to be.
+        description: true, dueDate: true, estimate: true, timeSpent: true,
+        storyPoints: true, type: true, labels: true,
         project: { select: { organizationId: true } },
       },
     });
@@ -579,6 +586,67 @@ export async function PATCH(
 
     if (projectWithOrg2?.organization) {
       const orgId = projectWithOrg2.organization.id;
+
+      // Every remaining editable field, recorded generically.
+      //
+      // Before this, five things were logged (status, priority, assignee,
+      // sprint, classification) out of fifteen the route can change. A member
+      // could rename an assigned task, rewrite its description, move its due
+      // date and revise the estimate, and the activity feed showed NOTHING —
+      // so a project admin had no way to see what had been done. That is the
+      // gap this closes; the drill-down was never the problem.
+      //
+      // Written as a table rather than another eight hand-copied blocks: the
+      // hand-written ones are how five got covered and ten did not.
+      const FIELD_CHANGES: Array<{
+        field: string;
+        next: unknown;
+        prev: unknown;
+        /** Long text is recorded as "changed" without the body. */
+        elide?: boolean;
+      }> = [
+        { field: 'title', next: title, prev: currentIssue.title },
+        { field: 'description', next: description, prev: currentIssue.description, elide: true },
+        { field: 'type', next: type, prev: currentIssue.type },
+        { field: 'due date', next: dueDate, prev: currentIssue.dueDate },
+        { field: 'estimate', next: estimate, prev: currentIssue.estimate },
+        { field: 'time spent', next: timeSpent, prev: currentIssue.timeSpent },
+        { field: 'story points', next: storyPoints, prev: currentIssue.storyPoints },
+        { field: 'labels', next: labels, prev: currentIssue.labels },
+      ];
+
+      // Dates arrive as ISO strings and are stored as Date; arrays need a
+      // value comparison. Normalising both sides prevents an activity being
+      // recorded for a field the user did not actually change — noise that
+      // would make the feed useless faster than silence does.
+      const norm = (v: unknown): string | null => {
+        if (v === null || v === undefined) return null;
+        if (v instanceof Date) return v.toISOString();
+        if (Array.isArray(v)) return v.join(', ');
+        return String(v);
+      };
+
+      for (const { field, next, prev, elide } of FIELD_CHANGES) {
+        if (next === undefined) continue;
+        const before = norm(prev);
+        const after = norm(next);
+        if (before === after) continue;
+
+        logTaskActivity({
+          organizationId: orgId,
+          userId: currentUser.id,
+          taskId: params.id,
+          taskTitle: currentIssue.title || '',
+          action: 'UPDATED',
+          metadata: elide
+            // The description can be thousands of characters. Recording it
+            // in full would bloat every activity row and put arbitrary user
+            // text into a feed rendered elsewhere; recording that it changed
+            // is what an admin needs in order to go and look.
+            ? { field, changed: true }
+            : { field, from: before, to: after },
+        }).catch(() => {});
+      }
 
       if (status !== undefined && status !== currentIssue.status) {
         logTaskActivity({

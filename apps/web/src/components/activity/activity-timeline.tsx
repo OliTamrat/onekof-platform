@@ -94,21 +94,83 @@ export function activityHref(
   return null;
 }
 
-export function describeChange(activity: Pick<Activity, 'metadata'>): { field: string; from?: string; to?: string } | null {
-  const m = activity.metadata;
-  if (!m || typeof m !== 'object' || typeof m.field !== 'string') return null;
+export interface ChangeDescription {
+  /** What changed — "status", "sprint", "classification", "comment". */
+  field: string;
+  from?: string;
+  to?: string;
+  /** Free text rather than a transition — a comment body, rendered quoted. */
+  text?: string;
+  /** A plain statement about the field, e.g. "edited". Never quoted. */
+  note?: string;
+}
 
-  // Only render a transition when there is one. Some activities record a
-  // field with no from/to (a classification change, an attachment), and
-  // "undefined → undefined" reads as a bug.
+/**
+ * The first version of this required `metadata.field` and rendered nothing
+ * without it. That covered **two** of the seven shapes the routes actually
+ * write, so most of the feed still said only "X updated" with the substance
+ * withheld — including comments, which is what the founder reported.
+ *
+ * The shapes, from the logTaskActivity call sites:
+ *
+ *   COMMENTED          { commentId, preview }              no `field`
+ *   UPDATED status     { field: 'status', from, to }       has `field`
+ *   UPDATED priority   { field: 'priority', from, to }     has `field`
+ *   ASSIGNED           { assigneeId }                      no transition
+ *   SPRINT_CHANGED     { from, to }                        no `field`
+ *   SPRINT bulk        { from, to, bulk }                  no `field`
+ *   DEPARTMENT_CHANGED { from: {…}, to: {…} }              nested objects
+ *
+ * I built against the first shape I read and wrote the tests from the same
+ * assumption, so they passed while five shapes rendered blank. Enumerating
+ * the call sites is what should have come first.
+ */
+export function describeChange(
+  activity: Pick<Activity, 'action' | 'metadata'>
+): ChangeDescription | null {
+  const m = activity.metadata;
+  if (!m || typeof m !== 'object') return null;
+
   const fmt = (v: unknown): string | undefined => {
     if (v === null) return 'none';
     if (v === undefined) return undefined;
     if (typeof v === 'string') return v.replace(/_/g, ' ').toLowerCase();
-    return String(v);
+    if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+    return undefined;
   };
 
-  return { field: m.field.replace(/_/g, ' '), from: fmt(m.from), to: fmt(m.to) };
+  // A comment carries its own text, not a transition.
+  if (typeof m.preview === 'string' && m.preview.trim().length > 0) {
+    return { field: 'comment', text: m.preview };
+  }
+
+  // Long text records that it changed, not what it became — the description
+  // can be thousands of characters. "description edited" is what an admin
+  // needs in order to know to go and look. `note`, not `text`: `text` is
+  // rendered as a quotation and this is not something anyone said.
+  if (m.changed === true && typeof m.field === 'string') {
+    return { field: m.field.replace(/_/g, ' '), note: 'edited' };
+  }
+
+  // Classification records nested {department, workstream} objects.
+  if (m.from && typeof m.from === 'object') {
+    const pair = (o: any) =>
+      [o?.department, o?.workstream].filter(Boolean).join(' / ') || 'none';
+    return { field: 'classification', from: pair(m.from), to: pair(m.to) };
+  }
+
+  // A scalar transition. `field` is present on status and priority and
+  // ABSENT on sprint changes, so the label falls back to the action verb
+  // rather than the row rendering blank.
+  if (m.from !== undefined || m.to !== undefined) {
+    const label =
+      typeof m.field === 'string'
+        ? m.field.replace(/_/g, ' ')
+        : activity.action.replace(/_CHANGED$/i, '').replace(/_/g, ' ').toLowerCase();
+    return { field: label, from: fmt(m.from), to: fmt(m.to) };
+  }
+
+  return null;
 }
 
 interface ActivityTimelineProps {
@@ -395,11 +457,21 @@ export function ActivityTimeline({
                         </div>
                       </div>
 
+                      {/* A comment: show the text, not a transition. */}
+                      {change?.text && (
+                        <div className="mb-3 pl-3 border-l-2 border-[#1C8C7D]/40 text-sm text-slate-700 dark:text-slate-300 italic">
+                          &ldquo;{change.text}
+                          {change.text.length >= 100 ? '…' : ''}&rdquo;
+                        </div>
+                      )}
+
                       {/* What changed — from metadata.field/from/to */}
-                      {change && (
+                      {change && !change.text && (
                         <div className="flex flex-wrap items-center gap-1.5 mb-3 text-sm">
                           <span className="text-slate-500 dark:text-slate-400">{change.field}</span>
-                          {change.from !== undefined && change.to !== undefined ? (
+                          {change.note ? (
+                            <span className="text-slate-600 dark:text-slate-300 font-medium">{change.note}</span>
+                          ) : change.from !== undefined && change.to !== undefined ? (
                             <>
                               <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 line-through decoration-slate-400">
                                 {change.from}
@@ -427,9 +499,24 @@ export function ActivityTimeline({
 
                       {/* Metadata and Impact Score */}
                       <div className="flex items-center justify-between gap-2">
-                        {/* Entity Info — show task key + title when available */}
+                        {/*
+                          Entity Info — task key + title.
+
+                          Suppressed in a scoped timeline. Inside the issue
+                          slideout every row named the very issue the reader
+                          had open, repeated once per activity: on
+                          CUSONBANDS-6 you saw "CUSONBANDS-6 · CSO-E2: …"
+                          twice under CUSONBANDS-6's own heading.
+
+                          That is not merely redundant. A key-and-title chip
+                          is the platform's standard way of pointing AT
+                          something, so it reads as a link to somewhere else
+                          — which is why the card looked broken when clicking
+                          it did nothing. Removing the chip removes the
+                          promise, rather than leaving a promise unkept.
+                        */}
                         <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 min-w-0 flex-1">
-                          {activity.entity ? (
+                          {entityId ? null : activity.entity ? (
                             <>
                               {activity.entity.project && (
                                 <span
