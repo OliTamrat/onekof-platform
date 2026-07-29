@@ -63,6 +63,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
     }
 
+    // The PUT sibling validates the project against the caller's organizations;
+    // POST did not. It was defensible on the narrow reading that POST only
+    // processes the uploaded file and never reads project data — but it left an
+    // unvalidated tenant id on the only route in the codebase that spends money
+    // per request, and it meant the rate limit above was the sole thing
+    // standing between one account and an unbounded bill.
+    const membership = await prisma.organizationMember.findFirst({
+      where: { userId: user.id, organization: { projects: { some: { id: projectId } } } },
+      select: { organizationId: true },
+    });
+    if (!membership) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
     // Check file type
     const allowedTypes = [
       'application/pdf',

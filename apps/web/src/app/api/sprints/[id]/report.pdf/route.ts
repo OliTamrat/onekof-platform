@@ -52,6 +52,14 @@ export async function GET(
     const language = (orgSettings?.language ?? 'EN').toLowerCase();
 
     // Delivered issues (post-rollover survivors for completed sprints)
+    //
+    // M2: deliberately NOT filtered for care items. The select below carries
+    // no title, key or patient reference — only status, effort and assignee,
+    // which roll straight into aggregates. Excluding care items here would
+    // make the sprint's delivered total depend on who exported the PDF, so
+    // the same report would disagree with itself between two readers. A
+    // velocity number is not identifying; a task list would be, which is why
+    // the churn drill-down next door IS filtered.
     const issues = await prisma.task.findMany({
       where: { sprintId: sprint.id, deletedAt: null },
       select: {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -34,6 +35,9 @@ export async function GET(request: NextRequest) {
       type: 'EPIC',
       deletedAt: null,
       project: projectAccessFilter,
+      // M2: an epic can carry a patient like any other task. Nothing stops a
+      // ward from tracking a long course of treatment as one.
+      ...careItemExclusion(effectivePatientAccess(ctx.patientAccess)),
     };
     if (projectIdParam) {
       where.projectId = projectIdParam;

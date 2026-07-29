@@ -185,6 +185,22 @@ model Task {
 
 A task with a `patientId` is visible only to members with patient access; to everyone else it appears with the patient reference withheld. **Rejected alternative:** a separate `CareItem` model. It would duplicate the entire work-management surface and immediately diverge from it — the same mistake the label-based department classification made, which we just spent a day undoing.
 
+#### M7a — Enforcement decisions, made while wiring it up
+
+The column and the visibility helper were built first and enforced nothing: for a while a care item could be stored and no route ever filtered it. Closing that raised four questions the design doc had not answered.
+
+**The exclusion belongs in the SQL `where`, not in a post-filter.** Filtering the returned array runs *after* `take`/`skip`, so a paginated response would carry a `total` counting rows the caller never receives — disclosing how many care items exist, and returning short pages. The count and the page must be computed over the same rows. Redaction (LIMITED sees the work, not whose it is) is the only part that legitimately happens on the way out.
+
+**Linking a task to a patient requires FULL, not LIMITED.** LIMITED is *defined* by not being allowed to know which patient a care item concerns; a LIMITED member who could set the link would have had to obtain the very id the level exists to withhold. Detaching requires FULL for the same reason in reverse — otherwise detaching is a way to launder a care item into an ordinary task and make it visible to everybody. Linking to an **erased** patient (M6) is refused: an erased row is an anonymised shell kept so operational statistics survive, and attaching new work would quietly rebuild a record about someone whose identifiers were destroyed on request.
+
+**Below LIMITED, a direct fetch answers 404, not 403.** The list omits the row; a 403 on the detail route would confirm the existence of something the board deliberately never showed. Wrong-organization, erased-patient and insufficient-access all answer identically, so patient ids cannot be probed.
+
+**Aggregates stay whole; named rows get filtered.** Sprint report totals, churn counts, dashboard statistics and per-project progress return no title, key or id — nothing about any individual is disclosed. Filtering them would make an operational report disagree with itself between two readers, and a dashboard reading "12 open" beside a board showing 10 is a worse product for every organization in order to protect nobody. The line is *identity*, not *arithmetic*: the churn drill-down, which names each issue, **is** filtered; the PDF's velocity number is not.
+
+**`requireTaskAccess` exists because `requireProjectAccess` structurally cannot answer this.** A task's sub-resources — comments, attachments, watchers, transitions, links — are reached by task id, and a route that looked the task up and checked its *project* would pass a project-level audit while leaking a patient's comment thread. Converting those routes also closed four pre-existing authorization defects unrelated to M2 (watcher removal had no authorization at all; attachments and links checked organization membership only; bulk operations were not scoped to project access) — evidence that the sub-resource layer was the weak one all along.
+
+Coverage is held by a sweep test that enumerates every route touching the task table and fails unless each either applies a control or carries a written exemption. The three previous audit passes on this codebase each missed live defects by grepping for a *known list* of helper names and treating anything unmatched as fine; inverting that is the only version that keeps working as routes are added.
+
 ### M8 — Facilities, equipment and safety are Operations workstreams, not new departments
 
 The Operations department already exists with Incidents / Monitoring / Checklists. Facility maintenance, equipment servicing and safety inspections are added as **workstreams within Operations** (catalog extension, zero schema change — this is exactly the extensibility D1 was designed for), rather than as separate top-level sections. This delivers the onboarding's "Facility management" promise using machinery that already works.
@@ -198,7 +214,7 @@ The Operations department already exists with Incidents / Monitoring / Checklist
 | **M0 — Honesty first** | Onboarding stops promising unbuilt capability; presets stop enabling destination-less sections. Ships immediately, independent of the rest. **Shipped** in #174 — with one part outstanding, see below. | No |
 | **M0a — Residency plumbing** | `lib/compliance/residency.ts`: deployment tier as a value the code can read, `isDataResidentInEthiopia()`, and the `canStorePatientData()` gate. Decision-independent — correct under any reading of Art. 22. **Shipped**, then corrected — see below. | No |
 | **M1 — Registry dark launch** | `Patient` model + encrypted fields + blind index; `patientAccess` ladder; `PATIENT_VIEWED`/`PATIENT_*` audit types; API with access gates; idempotent migration. **Zero UI.** | Yes |
-| **M2 — Care coordination** | `Task.patientId`, patient-scoped task views, care-team assignment, redaction for members without access. | Yes (single nullable column) |
+| **M2 — Care coordination** | `Task.patientId`, patient-scoped task views, care-team assignment, redaction for members without access. **Shipped** — enforcement decisions recorded in M7a. **Zero UI**, like M1: the API enforces the rule, and the pickers that would let a user set `patientId` from the board arrive with M3. | Yes (single nullable column) |
 | **M3 — Surfacing** | Medical section added to the sidebar (the gap found in testing), patient list/detail, referral tracking; i18n ×5; residency gate enforced in UI (Tier 1/2 only). | No |
 | **M4 — Facility operations** | Operations catalog gains facility/equipment/safety workstreams. **Shipped** — see note below. Maintenance scheduling remains outstanding and is larger than v1.0 assumed. | No |
 | **M5 — Documentation** | Healthcare support guide in the Wave-3 template; Industry Editions reference updated; INSA/regulatory review pack. | No |

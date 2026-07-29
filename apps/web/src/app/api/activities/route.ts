@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -105,6 +106,34 @@ export async function GET(request: NextRequest) {
       where.entityId = entityId;
     }
 
+    // M2 — care items must drop out of the feed itself, not merely lose their
+    // title during enrichment. An activity row carries `metadata`, and the
+    // comment route puts the first 100 characters of the comment in it, so an
+    // unenriched row on a care item can still disclose clinical detail.
+    //
+    // This has to go into the `where` rather than being filtered afterwards:
+    // the paginated branch below never enriches at all, and its `total` must
+    // count the same rows the caller receives.
+    //
+    // The cost is one query returning the organization's care-item ids, and
+    // only for viewers below LIMITED. That set is bounded by how much care
+    // work the institution tracks in a project tool — small in practice, but
+    // if it ever is not, this is the line that needs revisiting.
+    const patientLevel = effectivePatientAccess(ctx.patientAccess);
+    if ('patientId' in careItemExclusion(patientLevel)) {
+      const careItems = await prisma.task.findMany({
+        where: { project: { organizationId }, patientId: { not: null } },
+        select: { id: true },
+      });
+      if (careItems.length > 0) {
+        const careItemIds = careItems.map((t: { id: string }) => t.id);
+        where.NOT = [
+          ...(Array.isArray(where.NOT) ? where.NOT : where.NOT ? [where.NOT] : []),
+          { entityType: 'TASK', entityId: { in: careItemIds } },
+        ];
+      }
+    }
+
     const includeClause = {
       user: {
         select: {
@@ -164,7 +193,13 @@ export async function GET(request: NextRequest) {
     if (taskIds.length > 0) {
       // Single flat query with scalar projectId — no nested project join.
       const tasks = await prisma.task.findMany({
-        where: { id: { in: taskIds } },
+        where: {
+          id: { in: taskIds },
+          // Belt and braces on the exclusion above: even if a care item's
+          // activity row reached this point, it would not acquire a title
+          // here.
+          ...careItemExclusion(patientLevel),
+        },
         select: {
           id: true,
           key: true,

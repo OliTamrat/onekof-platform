@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectGoogleCalendar } from '@/lib/integrations/google-calendar';
 import type { OAuthState } from '@/lib/integrations/types';
 import { sanitizeRedirectUrl } from '@/lib/validation/schemas';
+import { verifyOAuthState, stateMembershipValid } from '@/lib/integrations/oauth-state';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -24,10 +25,22 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    let state: OAuthState;
-    try {
-      state = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
-    } catch {
+    // The state parameter is attacker-controlled: base64url is an encoding,
+    // not a signature. Before this was signed, forging an organizationId here
+    // connected the caller's own workspace to somebody else's tenant, after
+    // which that tenant's notifications flowed to the attacker.
+    const verified = verifyOAuthState(stateParam);
+    if (!verified.ok) {
+      return NextResponse.redirect(
+        new URL('/dashboard/settings/integrations?error=invalid_state', req.nextUrl.origin)
+      );
+    }
+    const state: OAuthState = verified.state;
+
+    // Signing proves we minted this state, not that the grant is still live.
+    // Someone removed from the organization between the redirect out and the
+    // redirect back must not be able to complete the connection.
+    if (!(await stateMembershipValid(state))) {
       return NextResponse.redirect(
         new URL('/dashboard/settings/integrations?error=invalid_state', req.nextUrl.origin)
       );

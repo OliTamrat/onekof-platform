@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveAuthUser } from '@/lib/api-organization';
-import { requireProjectAccess } from '@/lib/security/authorization';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import { getAllowedTransitions, WORKFLOW_STATUSES, type TaskStatus } from '@/lib/workflow-engine';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,11 @@ export async function GET(
     // existence and status — but it is the same missing check, and an
     // enumerable "does this id exist and what state is it in" endpoint is
     // still a disclosure. Scoped for the same reason as the others.
-    const access = await requireProjectAccess(task.projectId, authUser.id);
+    //
+    // requireTaskAccess rather than requireProjectAccess: for a care item,
+    // "does this id exist and what state is it in" is precisely the question
+    // a viewer without patient access must not be able to ask.
+    const access = await requireTaskAccess(params.id, authUser.id);
     if (!access.authorized) return access.error!;
 
     const currentStatus = task.status as TaskStatus;

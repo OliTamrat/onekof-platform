@@ -66,7 +66,7 @@ Fixed by calling `requireProjectAccess` after the task is loaded.
 
 **This one matters beyond itself:** it sits in the same directory as `comments`, `subtasks` and `transitions`, all fixed hours earlier the same day, and the ad-hoc grep missed it because that grep required the exact string `where: { id: params.id }` and this route spans several lines with a `deletedAt` clause. A one-character difference in formatting hid a live defect from three consecutive searches.
 
-### F2 — Integrations resolve the wrong organization — 16 routes, open
+### F2 — Integrations resolve the wrong organization — 16 routes, FIXED
 
 Every route under `app/api/integrations/` authorizes with `session.user.organizations?.[0]` — the user's **first** organization — rather than the organization of the current request.
 
@@ -74,13 +74,42 @@ This is **not** an IDOR: a user cannot reach an organization they do not belong 
 
 It is also inconsistent with the platform's own model: tenancy is resolved from the hostname everywhere else (`x-organization-slug`, `resolveUserOrganization`). These 16 routes predate that decision and were never brought in line.
 
-Affected: `email`, `github`, `google`, `google-calendar`, `jira`, `microsoft-teams`, `slack`, `webhooks`, `webhooks/endpoints`, and the `test` variants, plus the `integrations` index.
+Affected: `email`, `github`, `google`, `google-calendar`, `jira`, `microsoft-teams`, `slack`, `webhooks`, `webhooks/endpoints`, and the `test` variants, plus the `integrations` index. All now call `resolveUserOrganization()`.
 
-### F3 — `budgets/process-document` POST — cost exposure, not disclosure, open
+### F2a — The OAuth state was unsigned, and that was worse than F2
+
+Found while confirming F2 was actually closed. The six connect routes resolve the organization **correctly** and then hand it to the browser like this:
+
+```ts
+const state = Buffer.from(JSON.stringify({ organizationId, userId, ... })).toString('base64url');
+```
+
+and the six callbacks did this:
+
+```ts
+state = JSON.parse(Buffer.from(stateParam, 'base64url').toString());
+await connectSlack(state.organizationId, state.userId, code);
+```
+
+base64url is an **encoding, not a signature**. The organizationId in that blob is attacker-controlled.
+
+**The attack.** Authorise your own Slack workspace against the app to obtain a genuine `code`. Hand the callback a state naming somebody else's `organizationId`. The callback connects *your* workspace to *their* tenant — and Onekof then delivers that organization's task notifications, mentions and issue activity into your Slack channel. Organization ids are visible to any member of any organization, so this is cross-tenant exfiltration reachable by any authenticated user who knows one id.
+
+**The routes did generate a `nonce`.** Nothing ever stored or checked it. It made the state *look* defended without defending it, which is why the shape survived review.
+
+**Why F2's own analysis missed it.** F2 asked "does this route resolve the right organization?" and the answer was yes. Resolving correctly and *carrying* safely are different questions, and only the first was being asked. This is the same failure mode as the three ad-hoc greps in F1: a check that is precise about what it looks for and silent about everything else.
+
+Fixed in `lib/integrations/oauth-state.ts`: HMAC-SHA256 over the exact payload bytes (so key ordering cannot change what was verified versus what is used), a ten-minute expiry (a state captured from browser history would otherwise be valid forever), and a membership re-check at callback time — signing proves we minted the state, not that the person is still in the organization they were in when they left for the provider. Length is compared before `timingSafeEqual`, which throws on a mismatch and would otherwise 500 on attacker input.
+
+Guarded by a test that asserts no callback contains `JSON.parse(Buffer.from(stateParam`, and that reproduces the rewrite attack rather than asserting the helper is called.
+
+### F3 — `budgets/process-document` POST — cost exposure, not disclosure, FIXED
 
 Takes a `projectId` and never validates that the caller may use it. The `projectId` is not used to read project data — the route processes the *uploaded* file — so this is not a data-disclosure defect. Its PUT sibling does validate, against `userOrgIds`.
 
 The real exposure is different: **an authenticated user can send 10 MB files to the Anthropic API repeatedly**, with no organization check and no rate limit on the route. This is a billing and abuse concern rather than a tenancy one, and it is the only route of its kind found.
+
+Now rate-limited per user (keyed on identity rather than IP, so a whole ministry behind one NAT is not punished for one uploader) **and** the projectId is validated against the caller's memberships. The narrow reading — "POST never reads project data, so the id need not be checked" — was defensible and still wrong: it left an unvalidated tenant id on the only route in the codebase that spends money per request, with the rate limit as the sole thing between one account and an unbounded bill.
 
 ### F4 — `requireAuth` is named as though it authorizes
 
@@ -102,12 +131,31 @@ Read and confirmed properly authorized: `expenses/[id]` (read/update gated separ
 
 | # | Action | Why this order |
 |---|---|---|
-| 1 | **F1 watchers** — fixed in this change | Live cross-tenant read and write |
-| 2 | **F4 rename `requireAuth` → `requireAuthentication`** | Mechanical, low risk, and removes the cause of every defect found today rather than another symptom |
-| 3 | **F2 integrations tenancy** | 16 routes, one consistent pattern, wrong-tenant writes for multi-org users |
-| 4 | **F3 rate-limit `process-document`** | Billing exposure; no customer data at risk |
+| 1 | **F1 watchers** — DONE | Live cross-tenant read and write |
+| 2 | **F4 rename `requireAuth` → `requireAuthentication`** — DONE | Mechanical, low risk, and removes the cause of every defect found today rather than another symptom |
+| 3 | **F2 integrations tenancy** — DONE | 16 routes, one consistent pattern, wrong-tenant writes for multi-org users |
+| 4 | **F3 rate-limit `process-document`** — DONE | Billing exposure; no customer data at risk |
+| — | **F2a signed OAuth state** — DONE, and it outranked all of the above | Cross-tenant exfiltration reachable by any authenticated user; found only because F2 was re-checked rather than ticked off |
+
+Every item on this list is closed. Two later additions are recorded elsewhere and were found the same way — by re-examining something already marked correct:
+
+- **§5a** — the "is the guard called with the *right argument*" pass.
+- **M2's care-item sweep** (`__tests__/api/care-item-coverage.test.ts`) — which found that the task **sub-resource** layer was the weak one: watcher removal had no authorization at all, attachments and links checked organization membership only, and bulk operations were not scoped to project access. Four live defects in a directory this audit had already walked.
 
 Deliberately **not** recommended: the sweeping "tenancy helper" proposed in my first report. Four of five organization-path routes were already correct, and the real defects were in resource-id routes that a path-org helper would never have touched.
+
+### The pattern across every finding in this document
+
+Each defect was found by asking a *different question* of code that had already passed a check, never by running the same check more carefully:
+
+| Found by | What it caught |
+|---|---|
+| "is a guard called?" | F1, the original IDOR sweep |
+| "is it called with the right argument?" | §5a |
+| "is the value it guards carried safely?" | F2a — the unsigned state |
+| "what about resources reached *through* this one?" | M2's four sub-resource defects |
+
+Three separate greps for a known list of helper names missed live defects. The tests that now hold this ground are the inverted kind: enumerate everything in a category and require each item to be *explicitly* accounted for, so silence is a failure rather than a pass.
 
 ---
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +33,11 @@ export async function GET(request: NextRequest) {
         where: {
           deletedAt: null,
           project: projectAccessFilter,
+          // M2: search must obey the same care-item rule as the board. The
+          // select below never returns patientId, but a title is enough on
+          // its own — searching a ward or a procedure and getting hits back
+          // discloses that care work exists and roughly how much.
+          ...careItemExclusion(effectivePatientAccess(ctx.patientAccess)),
           AND: [
             {
               OR: [

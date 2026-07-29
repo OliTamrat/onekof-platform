@@ -14,6 +14,13 @@ import { validateStatusTransition, getAllowedTransitions, type TaskStatus } from
 import { resolveProjectSettings } from '@/lib/settings/resolve';
 import { deliverWebhook } from '@/lib/integrations/webhooks';
 import { triggerAutomations, type TriggerEvent } from '@/lib/automation-engine';
+import {
+  getPatientAccessLevel,
+  meetsPatientAccess,
+  canLinkCareItem,
+  type PatientAccessLevel,
+} from '@/lib/security/patient-access';
+import { applyCareItemVisibility, redactCareItem } from '@/lib/security/care-item-visibility';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +57,8 @@ export async function GET(
       },
       select: {
         projectId: true,
+        patientId: true,
+        project: { select: { organizationId: true } },
       },
     });
 
@@ -61,6 +70,33 @@ export async function GET(
     const projectAuthResult = await requireProjectAccess(issue.projectId, user.id);
     if (!projectAuthResult.authorized) {
       return projectAuthResult.error!;
+    }
+
+    // M2 — a care item needs patient access on top of project access.
+    //
+    // Resolved lazily and at most once. The overwhelming majority of tasks
+    // carry no patient, and those requests must not pay for a membership
+    // lookup whose answer nothing would use. But it cannot be decided from
+    // the parent alone: an ordinary task can have a care item as a subtask,
+    // and that subtask still has to be judged.
+    let patientLevel: PatientAccessLevel | null = null;
+    let patientLevelResolved = false;
+    const resolvePatientLevel = async (): Promise<PatientAccessLevel | null> => {
+      if (!patientLevelResolved) {
+        patientLevel = await getPatientAccessLevel(issue.project.organizationId, user.id);
+        patientLevelResolved = true;
+      }
+      return patientLevel;
+    };
+
+    if (issue.patientId) {
+      // Below LIMITED the care item is not "forbidden", it is not there. The
+      // list route omits it; answering 404 here keeps the two consistent, so
+      // a caller cannot learn from a direct fetch that a row the board never
+      // showed them exists.
+      if (!meetsPatientAccess(await resolvePatientLevel(), 'LIMITED')) {
+        return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+      }
     }
 
     // Get issue with all details
@@ -163,20 +199,32 @@ export async function GET(
       },
     });
 
-    // Calculate subtask completion percentage
-    const completedSubtasks = subtasks.filter(st => st.status === 'DONE').length;
-    const subtaskProgress = subtasks.length > 0
-      ? Math.round((completedSubtasks / subtasks.length) * 100)
+    // Subtasks are tasks, so a subtask can be a care item in its own right —
+    // including under an ordinary parent. Apply the same rule rather than
+    // assuming a child of a visible task is itself visible.
+    const visibleSubtasks = subtasks.some((st) => st.patientId)
+      ? applyCareItemVisibility(subtasks, await resolvePatientLevel())
+      : subtasks;
+
+    // Progress is computed over what the caller can actually see. Counting
+    // hidden subtasks would show "2 of 5 done" beside a list of three, which
+    // both looks broken and discloses that two rows were withheld.
+    const completedSubtasks = visibleSubtasks.filter(st => st.status === 'DONE').length;
+    const subtaskProgress = visibleSubtasks.length > 0
+      ? Math.round((completedSubtasks / visibleSubtasks.length) * 100)
       : 0;
 
     return NextResponse.json({
-      issue: {
-        ...issueDetailed,
-        subtasks,
-        subtaskProgress,
-        commentCount: issueDetailed.comments.length,
-        attachmentCount: issueDetailed.attachments.length,
-      },
+      issue: redactCareItem(
+        {
+          ...issueDetailed,
+          subtasks: visibleSubtasks,
+          subtaskProgress,
+          commentCount: issueDetailed.comments.length,
+          attachmentCount: issueDetailed.attachments.length,
+        },
+        patientLevel
+      ),
     });
   } catch (error) {
     log.error('Issue fetch error', { error: error instanceof Error ? error.message : error });
@@ -215,7 +263,11 @@ export async function PATCH(
     // Get the current issue to check project access and track changes
     const currentIssue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { assigneeId: true, projectId: true, status: true, priority: true, title: true, sprintId: true, department: true, workstream: true },
+      select: {
+        assigneeId: true, projectId: true, status: true, priority: true, title: true,
+        sprintId: true, department: true, workstream: true, patientId: true,
+        project: { select: { organizationId: true } },
+      },
     });
 
     if (!currentIssue) {
@@ -229,6 +281,17 @@ export async function PATCH(
     const projectAuthResult = await requireProjectAccess(currentIssue.projectId, currentUser.id, 'MEMBER');
     if (!projectAuthResult.authorized) {
       return projectAuthResult.error!;
+    }
+
+    // M2 — editing an existing care item. Same 404 as GET: a task the caller
+    // may not see is a task that does not exist as far as they are concerned,
+    // and a PATCH that answered 403 would confirm what the GET denied.
+    const organizationId = currentIssue.project.organizationId;
+    if (currentIssue.patientId) {
+      const level = await getPatientAccessLevel(organizationId, currentUser.id);
+      if (!meetsPatientAccess(level, 'LIMITED')) {
+        return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+      }
     }
 
     // Parse and validate request body
@@ -260,11 +323,29 @@ export async function PATCH(
       storyPoints,
       department,
       workstream,
+      patientId,
     } = validation.data as any;
     const { backlogOrder } = body;
 
+    // M2 — changing the patient link. Attaching and detaching are both FULL
+    // operations: a LIMITED member is not allowed to know which patient a
+    // care item concerns, so they must not be able to sever that link either.
+    // Detaching would otherwise be a way to launder a care item into an
+    // ordinary task and make it visible to everybody.
+    if (patientId !== undefined) {
+      const level = await getPatientAccessLevel(organizationId, currentUser.id);
+      if (patientId === null) {
+        if (!meetsPatientAccess(level, 'FULL')) {
+          return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
+        }
+      } else if (!(await canLinkCareItem(organizationId, patientId, level))) {
+        return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
+      }
+    }
+
     // Build update data
     const updateData: any = {};
+    if (patientId !== undefined) updateData.patientId = patientId;
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (type !== undefined) updateData.type = type;
@@ -604,14 +685,20 @@ export async function PATCH(
       }).catch(() => {});
     }
 
+    // The echo of the updated row is a read like any other: a LIMITED editor
+    // who just moved a care item across the board must not learn from the
+    // response whose task they moved.
     return NextResponse.json({
-      issue: {
-        ...issue,
-        commentCount: issue.comments.length,
-        attachmentCount: issue.attachments.length,
-        comments: undefined,
-        attachments: undefined,
-      },
+      issue: redactCareItem(
+        {
+          ...issue,
+          commentCount: issue.comments.length,
+          attachmentCount: issue.attachments.length,
+          comments: undefined,
+          attachments: undefined,
+        },
+        issue.patientId ? await getPatientAccessLevel(organizationId, currentUser.id) : null
+      ),
     });
   } catch (error) {
     log.error('Issue update error', { error: error instanceof Error ? error.message : error });
@@ -650,7 +737,11 @@ export async function DELETE(
     // Get issue to verify project access
     const issue = await prisma.task.findUnique({
       where: { id: params.id },
-      select: { projectId: true },
+      select: {
+        projectId: true,
+        patientId: true,
+        project: { select: { organizationId: true } },
+      },
     });
 
     if (!issue) {
@@ -661,6 +752,16 @@ export async function DELETE(
     const projectAuthResult = await requireProjectAccess(issue.projectId, user.id, 'MEMBER');
     if (!projectAuthResult.authorized) {
       return projectAuthResult.error!;
+    }
+
+    // M2 — you cannot delete what you are not allowed to see. Without this a
+    // NO_ACCESS member could destroy every care item on the board by id
+    // without ever being shown one.
+    if (issue.patientId) {
+      const level = await getPatientAccessLevel(issue.project.organizationId, user.id);
+      if (!meetsPatientAccess(level, 'LIMITED')) {
+        return NextResponse.json({ error: 'Issue not found' }, { status: 404 });
+      }
     }
 
     // Soft delete issue (set deletedAt)

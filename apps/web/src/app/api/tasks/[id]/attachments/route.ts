@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { storage } from '@/lib/storage';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -49,22 +50,13 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify task access via project org
-    const task = await prisma.task.findUnique({
-      where: { id: params.id },
-      select: { project: { select: { organizationId: true } } },
-    });
-    if (!task) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: task.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    // Organization membership alone was the whole check here, which let any
+    // member of the tenant read attachments on a PRIVATE or CONFIDENTIAL
+    // project they were never added to. requireTaskAccess applies the same
+    // project-visibility rules as the list endpoints, plus the M2 care-item
+    // rule — an attachment on a care item is very often a scan or a report.
+    const access = await requireTaskAccess(params.id, session.user.id);
+    if (!access.authorized) return access.error!;
 
     const attachments = await prisma.attachment.findMany({
       where: { taskId: params.id },
@@ -97,22 +89,11 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify task access via project org
-    const task = await prisma.task.findUnique({
-      where: { id: params.id },
-      select: { id: true, project: { select: { organizationId: true } } },
-    });
-    if (!task) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: task.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    // Same gap as GET: org membership was the only check, so any member could
+    // upload into a project they had no access to. MEMBER-level project
+    // access, plus the M2 care-item rule, before anything is written.
+    const access = await requireTaskAccess(params.id, session.user.id, 'MEMBER');
+    if (!access.authorized) return access.error!;
 
     // Parse multipart form
     const formData = await request.formData();
@@ -199,24 +180,19 @@ export async function DELETE(
       return NextResponse.json({ error: 'attachmentId required' }, { status: 400 });
     }
 
+    // Access is checked against the task in the URL before the attachment is
+    // even looked up, so a caller cannot probe attachment ids against a task
+    // they may not touch.
+    const access = await requireTaskAccess(params.id, session.user.id, 'MEMBER');
+    if (!access.authorized) return access.error!;
+
     const attachment = await prisma.attachment.findUnique({
       where: { id: attachmentId },
-      include: { task: { select: { id: true, project: { select: { organizationId: true } } } } },
+      select: { id: true, url: true, taskId: true },
     });
     if (!attachment || attachment.taskId !== params.id) {
       return NextResponse.json({ error: 'Attachment not found' }, { status: 404 });
     }
-
-    // Check org membership
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: attachment.task.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
     // Delete from underlying storage via the active driver. Drivers are
     // responsible for handling URLs created by any driver (a VercelBlob URL

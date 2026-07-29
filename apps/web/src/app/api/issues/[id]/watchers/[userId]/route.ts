@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import { authOptions } from '@/lib/auth';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -41,7 +42,14 @@ export async function DELETE(
       );
     }
 
-    // Verify issue exists
+    // The route verified only that the issue existed. Any signed-in user
+    // could therefore unsubscribe any other organization's members from any
+    // task by posting its id — a quiet way to make a team stop hearing about
+    // work in progress. requireTaskAccess supplies the missing check, and the
+    // M2 care-item rule along with it.
+    const access = await requireTaskAccess(params.id, currentUser.id);
+    if (!access.authorized) return access.error!;
+
     const issue = await prisma.task.findUnique({
       where: {
         id: params.id,
@@ -190,6 +198,11 @@ export async function PATCH(
         { status: 403 }
       );
     }
+
+    // Even for your own preferences, the task has to be one you may see —
+    // otherwise this endpoint confirms whether an arbitrary task id exists.
+    const access = await requireTaskAccess(params.id, currentUser.id);
+    if (!access.authorized) return access.error!;
 
     // Parse request body
     const body = await request.json();

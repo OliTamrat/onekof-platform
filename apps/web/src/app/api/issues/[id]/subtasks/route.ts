@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
-import { requireProjectAccess } from '@/lib/security/authorization';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import { prisma } from '@onekof/database';
 import logger from '@/lib/logger';
 
@@ -68,7 +68,10 @@ export async function POST(
     // resolveAuthUser only authenticates; without this, any signed-in user
     // could create a task inside any project in any organization by passing
     // that project's issue id.
-    const access = await requireProjectAccess(parentTask.projectId, authUser.id);
+    // M2: a subtask of a care item inherits its subject. Creating one is a
+    // write into that patient's record, so the parent must be visible to the
+    // caller before anything is created under it.
+    const access = await requireTaskAccess(params.id, authUser.id);
     if (!access.authorized) return access.error!;
 
     // Generate next issue key — use MAX to avoid race conditions

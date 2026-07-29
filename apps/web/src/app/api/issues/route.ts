@@ -10,6 +10,8 @@ import { createIssueSchema } from '@/lib/validation/schemas';
 import { validateClassification } from '@/lib/departments/catalog';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { deliverWebhook } from '@/lib/integrations/webhooks';
+import { effectivePatientAccess, careItemExclusion, canLinkCareItem } from '@/lib/security/patient-access';
+import { applyCareItemVisibility } from '@/lib/security/care-item-visibility';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,6 +68,13 @@ export async function GET(request: NextRequest) {
       });
       where.project = projectAccessFilter;
     }
+
+    // M2: care items are tasks carrying a patientId. Project access does not
+    // confer patient access, so a viewer below LIMITED must not see them at
+    // all — the exclusion goes into the query rather than being applied to the
+    // results, or `total` would count rows the caller never receives.
+    const patientLevel = effectivePatientAccess(ctx.patientAccess);
+    Object.assign(where, careItemExclusion(patientLevel));
 
     // Filter by specific project if specified — but still enforce access.
     // If the user requests a project they can't access, they'll just get no
@@ -232,7 +241,11 @@ export async function GET(request: NextRequest) {
         prisma.task.count({ where }),
       ]);
 
-      const issuesWithCounts = issues.map(transformIssue);
+      // The where clause already excluded care items for viewers below
+      // LIMITED; this pass withholds the patient reference from LIMITED
+      // viewers, who may see the work but not whose it is. Belt and braces on
+      // the exclusion too — a future edit to `where` cannot silently reopen it.
+      const issuesWithCounts = applyCareItemVisibility(issues.map(transformIssue), patientLevel);
       return NextResponse.json(buildPaginatedResponse(issuesWithCounts, total, { page, limit, skip }));
     }
 
@@ -243,7 +256,7 @@ export async function GET(request: NextRequest) {
       take: 500,
     });
 
-    const issuesWithCounts = issues.map(transformIssue);
+    const issuesWithCounts = applyCareItemVisibility(issues.map(transformIssue), patientLevel);
 
     return NextResponse.json({
       issues: issuesWithCounts,
@@ -302,6 +315,7 @@ export async function POST(request: NextRequest) {
       parentId,
       department,
       workstream,
+      patientId,
     } = validation.data;
 
     const { teamId, watchers, goalIds } = body;
@@ -339,6 +353,21 @@ export async function POST(request: NextRequest) {
         { error: 'Project not found' },
         { status: 404 }
       );
+    }
+
+    // M2 — creating a care item. Checked after the project so a caller cannot
+    // probe patient ids against a project they have no access to.
+    if (patientId) {
+      const linkable = await canLinkCareItem(
+        ctx.organizationId,
+        patientId,
+        effectivePatientAccess(ctx.patientAccess)
+      );
+      if (!linkable) {
+        // Deliberately the same answer whether the caller lacks access, the
+        // patient is another organization's, or the patient has been erased.
+        return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
+      }
     }
 
     // Generate next issue key using COUNT of all tasks (including deleted)
@@ -384,6 +413,7 @@ export async function POST(request: NextRequest) {
           parentId: parentId || null,
           department: department || null,
           workstream: workstream || null,
+          patientId: patientId || null,
         },
         include: {
           project: {

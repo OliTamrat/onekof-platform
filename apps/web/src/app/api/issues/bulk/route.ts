@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
-import { resolveUserOrganization } from '@/lib/api-organization';
+import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
+import { effectivePatientAccess, careItemExclusion } from '@/lib/security/patient-access';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { validateStatusTransition, type TaskStatus } from '@/lib/workflow-engine';
 import { resolveProjectSettings } from '@/lib/settings/resolve';
@@ -41,11 +42,25 @@ export async function POST(request: NextRequest) {
 
     const { issueIds, action, value } = validation.data;
 
+    // Scope to what this caller may actually act on. Organization membership
+    // alone is not enough: a GUEST, or any member who is not on a PRIVATE or
+    // CONFIDENTIAL project, must not be able to reach its issues by posting
+    // their ids here. Anything outside the filter simply does not come back,
+    // so the batch silently narrows rather than reporting what was excluded.
     const issues = await prisma.task.findMany({
       where: {
         id: { in: issueIds },
         deletedAt: null,
-        project: { organizationId: ctx.organizationId },
+        project: buildProjectAccessFilter({
+          organizationId: ctx.organizationId,
+          userId: ctx.user.id,
+          orgRole: ctx.role,
+        }),
+        // M2: care items drop out of the batch for a viewer below LIMITED,
+        // for the same reason they drop out of the list — including for
+        // `delete`, which would otherwise destroy rows the caller was never
+        // allowed to see.
+        ...careItemExclusion(effectivePatientAccess(ctx.patientAccess)),
       },
       select: { id: true, projectId: true, status: true, sprintId: true },
     });

@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { getSlackOAuthUrl, disconnectSlack, updateSlackConfig, updateSlackNotifications } from '@/lib/integrations/slack';
 import { getConnection } from '@/lib/integrations/store';
-import { randomBytes } from 'crypto';
+import { signOAuthState } from '@/lib/integrations/oauth-state';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -25,13 +25,12 @@ export async function GET(req: NextRequest) {
     const action = req.nextUrl.searchParams.get('action');
 
     if (action === 'oauth_url') {
-      const state = Buffer.from(JSON.stringify({
+      const state = signOAuthState({
         organizationId: ctx.organizationId,
         userId: session.user.id,
         provider: 'slack',
-        nonce: randomBytes(16).toString('hex'),
         redirectUrl: req.nextUrl.searchParams.get('redirect') || '/dashboard/settings/integrations',
-      })).toString('base64url');
+      });
 
       return NextResponse.json({ url: getSlackOAuthUrl(state) });
     }

@@ -269,6 +269,66 @@ export async function requireProjectAccess(
 }
 
 /**
+ * Verify user can access a task, including the M2 care-item rule.
+ *
+ * Every route that reaches a task by id should use this rather than looking
+ * the task up and calling `requireProjectAccess` on its project. The two are
+ * identical for the 99% of tasks that carry no patient; the difference is that
+ * a task's sub-resources — its comments, attachments, watchers, transitions —
+ * are exactly where the care-item check gets forgotten. A comment thread on a
+ * care item discloses everything the task itself would.
+ *
+ * Failing the patient check answers 404, matching what the list and detail
+ * routes do. A 403 here would confirm the existence of a task the board never
+ * showed the caller.
+ */
+export async function requireTaskAccess(
+  taskId: string,
+  userId: string,
+  requiredRole?: 'ADMIN' | 'MEMBER' | 'VIEWER'
+): Promise<AuthorizationResult & { task?: { id: string; projectId: string; patientId: string | null } }> {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    select: {
+      id: true,
+      projectId: true,
+      patientId: true,
+      project: { select: { organizationId: true } },
+    },
+  });
+
+  if (!task) {
+    return {
+      authorized: false,
+      error: NextResponse.json({ error: 'Not found' }, { status: 404 }),
+    };
+  }
+
+  const projectAuth = await requireProjectAccess(task.projectId, userId, requiredRole);
+  if (!projectAuth.authorized) return projectAuth;
+
+  if (task.patientId) {
+    // Imported here rather than at module scope: patient-access imports the
+    // residency module, and authorization.ts is pulled into nearly every
+    // route. Only a request that actually touches a care item pays for it.
+    const { getPatientAccessLevel, meetsPatientAccess } = await import('./patient-access');
+    const level = await getPatientAccessLevel(task.project.organizationId, userId);
+    if (!meetsPatientAccess(level, 'LIMITED')) {
+      return {
+        authorized: false,
+        error: NextResponse.json({ error: 'Not found' }, { status: 404 }),
+      };
+    }
+  }
+
+  return {
+    authorized: true,
+    membership: projectAuth.membership,
+    task: { id: task.id, projectId: task.projectId, patientId: task.patientId },
+  };
+}
+
+/**
  * Verify user can access a budget
  *
  * @param budgetId - Budget ID to check

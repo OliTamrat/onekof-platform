@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
-import { requireProjectAccess } from '@/lib/security/authorization';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import { prisma } from '@onekof/database';
 import { ActivityLogger } from '@onekof/database/src/services/activity-logger';
 import logger from '@/lib/logger';
@@ -52,7 +52,10 @@ export async function GET(
     // Without this, the watcher list (names and emails of another
     // organization's members) was readable, and watchers were writable, for
     // any task id.
-    const access = await requireProjectAccess(issue.projectId, authUser.id);
+    // M2: the watcher list on a care item names the people involved in that
+    // person's care, which is itself sensitive — and adding a watcher would
+    // subscribe them to notifications about it.
+    const access = await requireTaskAccess(params.id, authUser.id);
     if (!access.authorized) return access.error!;
 
     // Get all watchers with user details
@@ -168,7 +171,10 @@ export async function POST(
     // Without this, the watcher list (names and emails of another
     // organization's members) was readable, and watchers were writable, for
     // any task id.
-    const access = await requireProjectAccess(issue.projectId, authUser.id);
+    // M2: the watcher list on a care item names the people involved in that
+    // person's care, which is itself sensitive — and adding a watcher would
+    // subscribe them to notifications about it.
+    const access = await requireTaskAccess(params.id, authUser.id);
     if (!access.authorized) return access.error!;
 
     // Check if already watching

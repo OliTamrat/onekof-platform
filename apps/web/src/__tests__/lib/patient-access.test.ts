@@ -65,6 +65,60 @@ describe('residency is checked before identity', () => {
   });
 });
 
+describe('effective access folds residency into the level itself', () => {
+  it('is null for everybody on a deployment that may not hold patient data', async () => {
+    setTier('3');
+    const { effectivePatientAccess } = await import('@/lib/security/patient-access');
+    // Including a granted MANAGE — a member who kept their grant across a
+    // move to a non-sovereign deployment loses it in effect, not on paper.
+    expect(effectivePatientAccess('MANAGE')).toBeNull();
+  });
+
+  it('passes a real level through on an eligible deployment', async () => {
+    setTier('1');
+    const { effectivePatientAccess } = await import('@/lib/security/patient-access');
+    expect(effectivePatientAccess('LIMITED')).toBe('LIMITED');
+    expect(effectivePatientAccess('MANAGE')).toBe('MANAGE');
+  });
+
+  it('rejects a value that is not on the ladder', async () => {
+    setTier('1');
+    const { effectivePatientAccess } = await import('@/lib/security/patient-access');
+    // A column that somehow held junk must read as no access, not as a level
+    // that `meetsPatientAccess` would compare with indexOf(-1) semantics.
+    expect(effectivePatientAccess('SUPERUSER')).toBeNull();
+    expect(effectivePatientAccess('')).toBeNull();
+    expect(effectivePatientAccess(null)).toBeNull();
+  });
+});
+
+describe('care items are excluded in the query, not after it', () => {
+  it('emits a where fragment for viewers below LIMITED', async () => {
+    setTier('1');
+    const { careItemExclusion } = await import('@/lib/security/patient-access');
+    expect(careItemExclusion(null)).toEqual({ patientId: null });
+    expect(careItemExclusion('NO_ACCESS')).toEqual({ patientId: null });
+  });
+
+  it('emits nothing once the viewer holds LIMITED', async () => {
+    setTier('1');
+    const { careItemExclusion } = await import('@/lib/security/patient-access');
+    // Empty rather than `{ patientId: { not: null } }` — LIMITED sees care
+    // items *and* ordinary work, not care items instead of it.
+    expect(careItemExclusion('LIMITED')).toEqual({});
+    expect(careItemExclusion('FULL')).toEqual({});
+  });
+
+  it('is what keeps a paginated total honest', async () => {
+    setTier('1');
+    const { careItemExclusion } = await import('@/lib/security/patient-access');
+    // A post-filter would run after take/skip, so `total` would count rows the
+    // caller never receives — disclosing how many care items exist and
+    // returning short pages. The fragment exists to be merged into `where`.
+    expect(Object.keys(careItemExclusion('NO_ACCESS'))).toEqual(['patientId']);
+  });
+});
+
 describe('the ladder is deliberately not derived from organization role', () => {
   it('has no path from OWNER to patient access', async () => {
     // Guard by inspection: the module must not consult `role` at all. An
