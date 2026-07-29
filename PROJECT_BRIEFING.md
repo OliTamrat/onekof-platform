@@ -54,7 +54,11 @@ INSA security code (P1-P6): all implemented and certified.
 
 **Shipped 2026-07-29:** `apps/web/src/lib/compliance/residency.ts` — deployment tier as a machine-readable value with `isDataResidentInEthiopia()` and the single-point `canStorePatientData()` gate; local dev deliberately reports Tier 3 (least privileged) so the gate can't pass on a laptop and fail in production. 12 tests including one that fails if the tier ordering is ever inverted again. Also `docs/business/ONEKOF_DATA_RESIDENCY_COUNSEL_BRIEF.docx` — a branded instruction brief reducing counsel review to **four yes/no questions** instead of an open research request.
 
-**Gate to M1 — both still open:** (a) counsel confirms M5 (brief ready to send), (b) founder confirms the 24-month default or names a different number.
+**GATE REMOVED 2026-07-29 — M1 IS UNBLOCKED AND READY TO BUILD.** Founder decision: healthcare providers are hosted on **Tier 1 (EthioTelecom ECS) or Tier 2 (on-premise)**. Both in Ethiopia. Retention closed at 12 months with a pre-erasure export.
+
+The gate should never have existed. M5 already restricted patient data to in-country deployments before any legal research, so counsel's answer could only ever *relax* it, never tighten it — there was no outcome that changed what we build. A platform-wide question (does Tier 3 satisfy Art. 22 for **every** customer, ministry and NGO included) was attached to the Medical module and treated as a build blocker. That was my error; it cost time and delivered nothing, and it made healthcare look uniquely difficult when the question applies identically to the government and NGO customers already on the platform.
+
+The counsel brief still goes out, but as **M5a — an open platform decision about existing Tier 3 hosting**, never a Medical dependency.
 
 **Known outstanding from M0:** the Customization page still has no *user-facing* explanation of the residency requirement (only a developer comment). Deliberately held — an explanation naming a tier requirement is a compliance statement to customers, and publishing one before counsel confirms risks a retraction. Ships with M3 or sooner if counsel confirms first.
 
@@ -84,7 +88,8 @@ Placeholder pages confirmed (~19-23 lines, no data calls, empty state only): gra
 ## NEXT TODO (priority order, as of 2026-07-28)
 
 **Founder actions (only you can do these):**
-0. **Send the counsel brief** — `docs/business/ONEKOF_DATA_RESIDENCY_COUNSEL_BRIEF.docx`. This is now the top item: it gates the whole Medical build (M1), and its Question 1 may affect platform hosting for every Ethiopian customer, not just healthcare. Also decide the M6 retention default (recommendation: 24 months).
+0. **Send the counsel brief** — `docs/business/ONEKOF_DATA_RESIDENCY_COUNSEL_BRIEF.docx`. **It blocks nothing.** It answers a platform question about the Ethiopian customers already on Tier 3 (government, NGO, education, construction) and informs hosting strategy. Q3 now states the decided 12-month position, not my superseded 24.
+0b. **Decide the 11 fabricated pages** — see `docs/architecture/PRODUCT_SURFACE_AUDIT.md`. Teams is enabled for every customer and the List tab beside their real people shows six invented strangers. Remove the tabs, empty-state them, or build them.
 1. **Test the completed architecture on production** — new workspace shows the org-type question; existing orgs show the "choose your organization type" banner; department chips appear on cards; issue panel has the Department selector.
 2. **Linguist review** — a batch of new am/om/ti/so strings shipped today (departments.*, customization.chooseOrgType*, sidebar.medical/courses) plus the ~70 sprint/settings strings still pending from earlier. Export and review.
 3. **Repo hygiene** — enable GitHub setting *Automatically delete head branches* (Settings → General → Pull Requests) so this stale-branch pile-up stops recurring.
