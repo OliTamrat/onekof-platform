@@ -12,7 +12,11 @@ on:
       migration:
         description: 'Migration folder name to apply (must be idempotent SQL)'
         required: true
-        default: '20260727_add_sprint_budget_snapshot'
+        # No default. It used to be a real migration name, which meant tapping
+        # Run without editing re-applied a migration from two days earlier —
+        # harmless only because these are idempotent. An empty box cannot run
+        # the wrong thing by accident.
+        default: ''
 
 jobs:
   migrate:
@@ -37,6 +41,43 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Normalise the dispatch input BEFORE it reaches a shell.
+      #
+      # Typing a migration name into the GitHub mobile app appends a trailing
+      # space (autocomplete does it, and it is invisible in the field). That
+      # space went straight into the psql -f path, which failed with
+      # "No such file or directory" naming a folder that looks correct — twice
+      # in a row, with no hint that whitespace was the cause.
+      #
+      # It would also have poisoned `prisma migrate resolve --applied`, which
+      # takes the same value: had psql somehow succeeded, the migration would
+      # have been RECORDED under a name with a trailing space, and every later
+      # `migrate status` would report it as missing.
+      #
+      # The value is passed through the environment rather than interpolated
+      # into the run script, so a name containing shell metacharacters is data
+      # rather than code.
+      - name: Resolve and validate migration name
+        env:
+          RAW_MIGRATION: ${{ inputs.migration }}
+        run: |
+          MIGRATION="$(printf '%s' "$RAW_MIGRATION" | tr -d '[:space:]')"
+
+          if [ -z "$MIGRATION" ]; then
+            echo "::error::No migration name given."
+            exit 1
+          fi
+
+          DIR="packages/database/prisma/migrations/$MIGRATION"
+          if [ ! -f "$DIR/migration.sql" ]; then
+            echo "::error::No migration named '$MIGRATION'. Available:"
+            ls -1 packages/database/prisma/migrations | grep -v '^README' | sed 's/^/  /'
+            exit 1
+          fi
+
+          echo "MIGRATION=$MIGRATION" >> "$GITHUB_ENV"
+          echo "Applying: $MIGRATION"
 
       - name: Migration status (before)
         working-directory: packages/database
@@ -70,11 +111,11 @@ jobs:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       - name: Apply idempotent migration SQL
-        run: psql -v ON_ERROR_STOP=1 -f "packages/database/prisma/migrations/${{ inputs.migration }}/migration.sql"
+        run: psql -v ON_ERROR_STOP=1 -f "packages/database/prisma/migrations/$MIGRATION/migration.sql"
 
       - name: Record migration as applied
         working-directory: packages/database
-        run: pnpm exec prisma migrate resolve --applied "${{ inputs.migration }}" || echo "Already recorded in _prisma_migrations"
+        run: pnpm exec prisma migrate resolve --applied "$MIGRATION" || echo "Already recorded in _prisma_migrations"
         env:
           DATABASE_URL: ${{ secrets.DIRECT_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
@@ -92,7 +133,7 @@ jobs:
           echo "--- recorded migrations (latest 6):"
           psql -c "SELECT migration_name, finished_at FROM _prisma_migrations ORDER BY started_at DESC LIMIT 6;"
 
-          SQL="packages/database/prisma/migrations/${{ inputs.migration }}/migration.sql"
+          SQL="packages/database/prisma/migrations/$MIGRATION/migration.sql"
 
           echo "--- tables this migration references, and whether they now exist:"
           grep -oiE '(CREATE TABLE( IF NOT EXISTS)?|ALTER TABLE)[[:space:]]+"?public"?\."?[a-z_]+' "$SQL" \
