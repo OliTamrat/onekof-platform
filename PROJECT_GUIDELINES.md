@@ -61,7 +61,29 @@ Full policy: `docs/architecture/DELETION_POLICY.md`. The short form:
 - **Prune every reference in the same change** — grep the path, not just the import. A page may never be left unreachable-but-present; that state looks deleted and isn't.
 - **Guards state a re-entry condition, never a permanent ban.** "This must never exist" makes the guard an obstacle to correct work. Say what must be true for it to return, so a later change can *satisfy* the guard rather than delete it.
 - **Never delete infrastructure** (Vercel projects, databases, DNS). Code is restorable from git; those often are not, and may carry configuration recorded nowhere in the repo. Propose with evidence and stop.
-- **Batch pushes.** One push per coherent, verified piece of work — not per file. Cancelled CI runs produce nothing and burn build minutes and deployment quota.
+- **Batch pushes.** See "Wave Delivery" below — this is a hard rule, not a preference.
+
+## Wave Delivery (MANDATORY)
+
+**What a push actually costs:** one GitHub Actions run (~6.5 min) plus **two** Vercel deployments — the repo has two Vercel projects, `onekof-platform` and `onekof-platform-web`, both building `apps/web`.
+
+On 2026-07-29 roughly twenty pushes produced ~130 minutes of Actions time and 40+ deployments, several of them cancelling each other mid-run. Cancelled runs deliver nothing and cost the same. The Vercel free tier stopped at 100 deployments that day.
+
+### The rule
+
+1. **Work in waves.** A wave is a themed batch of related items — a *security* wave, an *M1* wave, a *UI* wave. Complete the whole wave locally before pushing anything.
+2. **Verify between items, push once.** Run `npx vitest run` and `npx tsc --noEmit` after each item. Commit locally as you go — commits are free. **Only the push costs.**
+3. **One push, one PR, one CI run per wave.** Target 3–6 items per wave.
+4. **Never push while CI is running** on the same branch unless the running build is already irrelevant. Concurrency cancellation means the earlier run is discarded — pure waste.
+5. **Exception, and only this one:** a live security hole or a production-breaking bug ships immediately as its own wave of one. Correctness outranks quota.
+
+### Why commits are free but pushes are not
+
+Local commits trigger nothing. A wave of six items can be six well-scoped commits with six clear messages and still cost **one** CI run. Granular history and cheap delivery are not in tension — the mistake is treating `git push` as part of `git commit`.
+
+### The structural fix, outstanding
+
+Two Vercel projects building the same directory doubles every deployment permanently. Removing one would halve the cost with no change in behaviour — but that is a founder decision, not an engineering one (see `docs/architecture/DELETION_POLICY.md` §5).
 
 ## Security Rules
 
