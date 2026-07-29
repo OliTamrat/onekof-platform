@@ -233,19 +233,35 @@ const doc = new Document({
       }),
 
       ...edition({
-        name: 'Healthcare Edition (new — the fifth preset)',
-        positioning: 'Hospitals, clinics, and health programs. Patient-linked operations, clinical research, compliance posture. The medical modules exist in the platform today; this edition is what finally switches them on for the right customers.',
+        name: 'Healthcare Edition (the fifth preset)',
+        positioning: 'Hospitals, clinics and health programs. Facility and equipment operations, safety management, clinical research support, and an approval-disciplined budget. Patient-linked features are NOT part of this edition today — see the note below.',
         terminology: 'Formal — "Work Cycle"',
-        sidebar: 'Core + Operations (Incidents, Monitoring, Checklists) · Research (clinical data, findings) · Compliance · Medical & Patients · Knowledge',
-        departments: 'operations, research — all workstreams',
+        sidebar: 'Core + Operations (Incidents, Monitoring, Checklists, Facilities, Equipment, Safety Management) · Research (Data, Findings, Plans, Materials, Inspections) · Knowledge',
+        departments: 'operations, research — all workstreams, including the facility/equipment/safety workstreams added by M4',
         budget: 'Approval workflow ON · single currency · transparency OFF',
         flags: 'Automations OFF · AI Assistant OFF · Integrations OFF · Analytics ON',
         future: [
-          ['Health data compliance checklists', 'Ethiopian health data regulations + HIPAA-aligned handling procedures as living Compliance checklists'],
-          ['Equipment maintenance schedules', 'preventive maintenance as recurring operations checklists tied to the equipment registry'],
+          ['Patient registry and care coordination', 'the Medical module proper. Gated on a data-residency opinion from counsel and a retention decision — see docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md. Onekof builds healthcare OPERATIONS and is deliberately not an Electronic Medical Record'],
+          ['Recurring preventive maintenance', 'scheduled servicing for facilities and equipment. Requires recurring tasks, which the platform does not have yet — a general capability, not a healthcare feature'],
+          ['Health data compliance checklists', 'Ethiopian health data regulations as living checklists, once the Compliance section is real'],
           ['Shift handover checklists', 'structured shift-change documentation in Operations'],
           ['Clinical research protocols', 'protocol templates and approval steps layered on Research workstreams'],
-          ['Referral tracking', 'inter-facility patient referral workflows on the Medical module'],
+        ],
+      }),
+
+      ...edition({
+        name: 'Construction / Infrastructure Edition (the sixth preset)',
+        positioning: 'Contractors and infrastructure programmes. Site delivery, materials and inspections, safety and incident discipline, and a procurement-aware budget. Added after an audit found the sector had no preset at all and fell through to Business — handing an Ethiopian contractor Code Review and Releases while the Research workstreams built for exactly this work never reached them.',
+        terminology: 'Agile — "Sprint" (contractors run delivery cycles, not formal work cycles)',
+        sidebar: 'Core + Operations (Incidents, Monitoring, Checklists, Facilities, Equipment, Safety Management) · Research (Plans, Materials, Inspections, Data, Findings) · Knowledge',
+        departments: 'operations, research — no development or marketing',
+        budget: 'Procurement ON · Multi-currency ON (imported materials are frequently priced in USD) · Approval workflow ON · Forecasting ON · Public transparency OFF (private contractor, unlike a ministry)',
+        flags: 'Automations OFF · AI Assistant OFF · Integrations OFF · Analytics ON · Document OCR ON',
+        future: [
+          ['Site vocabulary', 'contractors say "sites" where hospitals say "facilities". Whether that is a separate workstream or industry-specific wording for the same one is an open decision, not yet made'],
+          ['Progress photography', 'site progress captured as dated attachments on inspection items'],
+          ['Equipment utilisation', 'plant and machinery availability tracking on the equipment workstream'],
+          ['Subcontractor coordination', 'external party access scoped to specific projects'],
         ],
       }),
 
