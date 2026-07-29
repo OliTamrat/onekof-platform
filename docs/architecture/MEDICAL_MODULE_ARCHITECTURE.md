@@ -219,16 +219,36 @@ Deployment identity is now declared explicitly in `docker-compose.prod.yml` rath
 
 **Open question, not guessed at:** Construction says "sites" where Healthcare says "facilities". A construction site and a hospital wing are arguably the same workstream wearing different vocabulary, and the terminology layer (AGILE/FORMAL) is precedent for industry-specific wording. But inventing a fourth `site` workstream, or silently telling a contractor their sites are "facilities", are both decisions rather than obvious calls. Left open; the onboarding text no longer promises "sites", so there is no honesty debt while it waits.
 
-**Outstanding from M0.** M0 as written also promised that the Customization page would *explain* the residency requirement for patient features. That part did not ship in #174 — the page carries only a code comment for developers, with nothing user-facing. It is deliberately still outstanding: an explanation naming a tier requirement is a compliance statement to customers, and writing one before counsel confirms M5 risks publishing a claim we would then have to retract. It ships with M3, when the gate becomes visible in the UI, or sooner if counsel confirms first.
+**Outstanding from M0 — now unblocked too.** M0 promised that the Customization page would *explain* the residency requirement for patient features. It did not ship in #174, and I held it on the same false dependency: "wait for counsel before publishing a compliance statement."
 
-**Gate between M0 and M1 — current state:**
+That reasoning was wrong for the same reason the gate was. The statement we would publish — *patient features require an Ethiopian deployment* — is now a **decision**, not a prediction of what counsel might say. It cannot be contradicted by an answer that can only relax it. It ships with M3.
 
-| Gate condition | Status |
+## The gate is REMOVED. M1 is unblocked.
+
+**Founder decision, 2026-07-29: healthcare providers are hosted on Tier 1 (EthioTelecom ECS) or Tier 2 (on-premise / organizational data centre). Both are in Ethiopia. Building proceeds.**
+
+### The gate should never have existed, and this is why
+
+M5 already restricted patient data to in-country deployments — decided *before* any legal research. Given that, counsel's answer can only ever **relax** the restriction, never tighten it. There was no outcome in which the answer changed what we build. Waiting bought nothing.
+
+What happened instead: a **platform-wide** question — does Onekof storing Ethiopian personal data in Frankfurt satisfy Art. 22, for *every* customer — got attached to the Medical module and treated as a build blocker. That was my error. It cost real time and delivered nothing, and it made healthcare look like a uniquely difficult sector when the question applies identically to every ministry and NGO already on the platform.
+
+| Condition | Status |
 |---|---|
-| (a) Counsel confirms the residency position in M5 | **Open.** Research done and cited; the brief in `docs/business/ONEKOF_DATA_RESIDENCY_COUNSEL_BRIEF.docx` reduces this to a yes/no on four specific questions. |
-| (b) Founder chooses the retention default in M6 | **CLOSED.** 12 months, bounded 6–84, no "forever", with a mandatory pre-erasure export window. |
+| Residency position | **CLOSED by decision.** Tier 1 or Tier 2 only. Already how M5 was written; now stated as an operating decision rather than a pending question. |
+| Retention default (M6) | **CLOSED.** 12 months, bounded 6–84, no "forever", mandatory pre-erasure export. |
 
-M1 must not start until both close. Building a patient registry before those answers is how avoidable regulatory debt is created — and unlike most of this plan, that debt would be attached to real patients.
+**M1 may start immediately.** `canStorePatientData()` already returns true on Tier 1 and Tier 2 and false on Tier 3, so the code enforces this decision today with no further change.
+
+### What the counsel brief is still for
+
+The brief goes out, but it is **not** a Medical dependency. It answers a platform question about existing customers on Tier 3 — government, NGO, education, construction — and its answer affects hosting strategy, not whether the patient registry gets built. Tracked as M5a, an open platform decision, not a gate.
+
+### What was worth doing, and what was not
+
+Kept, and would do again: the M1 scope boundary (operations, not an EMR — this shapes the regulatory class of the whole company), M2 encrypted identifiers, M3 the access ladder, M4 audited reads, M6 retention with the founder's export requirement, and `lib/compliance/residency.ts`, which is needed regardless since Tier 1/2-only is the plan.
+
+Not worth doing: treating any of it as a reason to stop building.
 
 ---
 

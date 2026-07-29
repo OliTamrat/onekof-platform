@@ -80,24 +80,23 @@ export const BUDGET_TABS: TabDefinition[] = [
   { id: 'settings', label: 'Settings', labelKey: 'departmentTabs.settings', icon: Settings, href: '/settings' },
 ];
 
+// List / Board / Timeline / Pages removed: those pages rendered invented
+// people (John Smith, Sarah Johnson) with no data call, one click from the
+// real Teams page. See docs/architecture/PRODUCT_SURFACE_AUDIT.md.
+// Re-add a tab only in the change that makes its page query real data.
 export const TEAMS_TABS: TabDefinition[] = [
   { id: 'overview', label: 'Summary', labelKey: 'departmentTabs.overview', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
-  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
   { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
   { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
 ];
 
+// Same removal as TEAMS_TABS, same reason. Timeline went too — it rendered
+// fabricated events; leaving the page present but unreachable would have
+// been half a fix.
 export const GOALS_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '' },
-  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
-  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
   { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
   { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
-  { id: 'timeline', label: 'Timeline', labelKey: 'departmentTabs.timeline', icon: Clock, href: '/timeline' },
-  { id: 'pages', label: 'Pages', labelKey: 'departmentTabs.pages', icon: BookMarked, href: '/pages' },
 ];
 
 export const DOCUMENTS_TABS: TabDefinition[] = [

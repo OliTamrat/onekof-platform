@@ -47,11 +47,6 @@ export function getDashboardNavigation(
     // TEAMS SECTION
     teams: [
       { id: 'overview', label: 'Overview', icon: BarChart3, href: '/dashboard/teams' },
-      { id: 'members', label: 'Members', icon: Users, href: '/dashboard/teams/list' },
-      { id: 'board', label: 'Board', icon: FolderKanban, href: '/dashboard/teams/board' },
-      { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/teams/timeline' },
-      { id: 'goals', label: 'Goals', icon: Target, href: '/dashboard/teams/goals' },
-      { id: 'activity', label: 'Activity', icon: Activity, href: '/dashboard/teams/activity' },
       { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/teams/settings' },
     ],
 
@@ -68,10 +63,6 @@ export function getDashboardNavigation(
     // GOALS SECTION
     goals: [
       { id: 'overview', label: 'Overview', icon: BarChart3, href: '/dashboard/goals' },
-      { id: 'active', label: 'Active', icon: Target, href: '/dashboard/goals/active' },
-      { id: 'completed', label: 'Completed', icon: Target, href: '/dashboard/goals/completed' },
-      { id: 'timeline', label: 'Timeline', icon: Clock, href: '/dashboard/goals/timeline' },
-      { id: 'teams', label: 'Teams', icon: Users, href: '/dashboard/goals/teams' },
       { id: 'settings', label: 'Settings', icon: Settings, href: '/dashboard/goals/settings' },
     ],
 

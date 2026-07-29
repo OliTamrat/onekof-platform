@@ -30,12 +30,8 @@ export default function TeamsCodePage() {
 
   const TAB_ITEMS = [
     { id: 'summary', label: t('tabs.summary'), icon: BarChart3, href: '/dashboard/teams/overview' },
-    { id: 'list', label: t('tabs.list'), icon: null, href: '/dashboard/teams/list' },
-    { id: 'board', label: t('tabs.board'), icon: null, href: '/dashboard/teams/board' },
     { id: 'code', label: t('tabs.code'), icon: Code, href: '/dashboard/teams/code', active: true },
     { id: 'forms', label: t('tabs.forms'), icon: FileText, href: '/dashboard/teams/forms' },
-    { id: 'timeline', label: t('tabs.timeline'), icon: Clock, href: '/dashboard/teams/timeline' },
-    { id: 'pages', label: t('tabs.pages'), icon: Book, href: '/dashboard/teams/pages' },
   ];
 
   const handleConnect = () => {
