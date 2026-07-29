@@ -50,7 +50,7 @@ function OnboardingContent() {
       label: t('onboarding.govMinistry'),
       icon: Landmark,
       color: 'blue',
-      features: [t('onboarding.budgetTracking'), t('onboarding.complianceTools'), t('onboarding.publicProcurement'), t('onboarding.ethiopianCalendar')],
+      features: [t('onboarding.budgetTracking'), t('onboarding.capFormalCycles'), t('onboarding.capOperations'), t('onboarding.ethiopianCalendar')],
       description: t('onboarding.forEthGov')
     },
     {
@@ -58,7 +58,7 @@ function OnboardingContent() {
       label: t('onboarding.privateCompany'),
       icon: Briefcase,
       color: 'purple',
-      features: [t('onboarding.agileWorkflows'), t('onboarding.clientProjects'), t('onboarding.teamCollaboration'), t('onboarding.timeTracking')],
+      features: [t('onboarding.agileWorkflows'), t('onboarding.clientProjects'), t('onboarding.teamCollaboration'), t('onboarding.capAutomationsAi')],
       description: t('onboarding.forTechCompanies')
     },
     {
@@ -66,7 +66,7 @@ function OnboardingContent() {
       label: t('onboarding.ngoIngo'),
       icon: HeartHandshake,
       color: 'emerald',
-      features: [t('onboarding.grantManagement'), t('onboarding.impactTracking'), t('onboarding.donorReporting'), t('onboarding.multiCurrency')],
+      features: [t('onboarding.multiCurrency'), t('onboarding.capBudgetApproval'), t('onboarding.capFieldData'), t('onboarding.capCoordination')],
       description: t('onboarding.forNonProfit')
     },
     {
@@ -74,7 +74,7 @@ function OnboardingContent() {
       label: t('onboarding.educationalInstitution'),
       icon: GraduationCap,
       color: 'amber',
-      features: [t('onboarding.courseProjects'), t('onboarding.researchTracking'), t('onboarding.academicCalendar'), t('onboarding.studentCollaboration')],
+      features: [t('onboarding.researchTracking'), t('onboarding.ethiopianCalendar'), t('onboarding.capBudgetApproval'), t('onboarding.capCoordination')],
       description: t('onboarding.forUniversities')
     },
     {
@@ -82,7 +82,7 @@ function OnboardingContent() {
       label: t('onboarding.constructionEngineering'),
       icon: Construction,
       color: 'orange',
-      features: [t('onboarding.siteManagement'), t('onboarding.equipmentTracking'), t('onboarding.safetyCompliance'), t('onboarding.progressPhotos')],
+      features: [t('onboarding.capPlansMaterials'), t('onboarding.capInspections'), t('onboarding.capOperations'), t('onboarding.capBudgetApproval')],
       description: t('onboarding.forConstruction')
     },
     {
@@ -90,7 +90,7 @@ function OnboardingContent() {
       label: t('onboarding.healthcare'),
       icon: HeartPulse,
       color: 'red',
-      features: [t('onboarding.facilityManagement'), t('onboarding.medicalProjects'), t('onboarding.complianceTracking'), t('onboarding.resourceAllocation')],
+      features: [t('onboarding.capOperations'), t('onboarding.capInspections'), t('onboarding.capBudgetApproval'), t('onboarding.capCoordination')],
       description: t('onboarding.forHospitals')
     },
   ];

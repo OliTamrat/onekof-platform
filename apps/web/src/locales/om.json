@@ -748,7 +748,19 @@
     "forConstruction": "Dhaabbilee ijaarsaa fi injinariingiif",
     "forHospitals": "Hospitaalota, kiliinikoota fi dhaabbilee fayyaaf",
     "educationalInstitution": "Dhaabbata Barnootaa",
-    "constructionEngineering": "Ijaarsaa/Injinariingii"
+    "constructionEngineering": "Ijaarsaa/Injinariingii",
+    "hcOperations": "Hojiiwwan balaa fi taarifa mirkaneessaa",
+    "hcInspections": "Qorannoo fi hordoffii qorannoo",
+    "hcBudgetApproval": "Baajata adeemsa mirkaneessaa waliin",
+    "hcCoordination": "Waltajjii garee fi pirojektii",
+    "capOperations": "Hojiiwwan balaa fi taarifa mirkaneessaa",
+    "capInspections": "Hordoffii qorannoo fi argannoo",
+    "capBudgetApproval": "Baajata adeemsa mirkaneessaa waliin",
+    "capCoordination": "Waltajjii garee fi pirojektii",
+    "capPlansMaterials": "Hordoffii karoora fi meeshaalee",
+    "capFormalCycles": "Marsaa hojii idilee fi galmee odiitii",
+    "capAutomationsAi": "Ofumaan hojjachuu fi galmeewwan AI",
+    "capFieldData": "Funaansa ragaa dirree"
   },
   "selectOrg": {
     "loadingOrgs": "Dhaabbillee fe'aa jira...",
@@ -2392,7 +2404,9 @@
     "presetHealthcareDesc": "Hospitaalota, kilinikoota fi sagantaalee fayyaa — hojiiwwan dhukkubsataan walqabatan, qorannoo kilinikaa fi seeraan bulmaata.",
     "chooseOrgTypeTitle": "Gosa dhaabbata keessanii filadhaa",
     "chooseOrgTypeBody": "Onekof damee keessaniif sirreessaa — mootummaa, dhaabbata miti-mootummaa, daldala, barnoota yookaan fayyaa. Kutaaleen isin hin barbaachifne baafata irraa ni badu.",
-    "chooseOrgTypeAction": "Gosa dhaabbataa filadhu"
+    "chooseOrgTypeAction": "Gosa dhaabbataa filadhu",
+    "presetConstructionName": "Ijaarsa / Bu’uuraalee",
+    "presetConstructionDesc": "Kontiraaktaroota fi sagantaalee bu’uuraalee: karoora, meeshaalee fi qorannoo, taarifa balaa fi nageenyaa, baajata bittaa hammate."
   },
   "documentsSettings": {
     "title": "Qindaa'ina Dokumantoota",

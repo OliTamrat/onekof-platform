@@ -5,6 +5,13 @@
 
 import type { OrganizationPreset, OrganizationFeatures } from '@/types/organization-settings';
 
+// NOTE: presets must only enable sections that have a navigation
+// destination (see NAVIGABLE_SECTION_IDS in lib/sidebar-navigation-dynamic).
+// compliance / impact / medical / courses are intentionally NOT enabled:
+// their pages are placeholders today, and enabling them produced switches
+// that silently did nothing. They return in the change that makes them real
+// — see docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md.
+
 // ============================================
 // MINISTRY / GOVERNMENT PRESET
 // ============================================
@@ -59,7 +66,7 @@ export const MINISTRY_PRESET: OrganizationPreset = {
   description: 'Full-featured dashboard for government ministries with public budget transparency, procurement tracking, and compliance features.',
   nameKey: 'customization.presetMinistryName',
   descriptionKey: 'customization.presetMinistryDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
   features: MINISTRY_FEATURES,
   recommendedFor: ['ministry', 'government'],
 };
@@ -118,7 +125,7 @@ export const NGO_PRESET: OrganizationPreset = {
   description: 'Optimized for non-profits with grant tracking, donation management, and impact reporting.',
   nameKey: 'customization.presetNgoName',
   descriptionKey: 'customization.presetNgoDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'impact', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
   features: NGO_FEATURES,
   recommendedFor: ['ngo'],
 };
@@ -241,7 +248,7 @@ export const EDUCATION_PRESET: OrganizationPreset = {
   description: 'Simplified dashboard for educational institutions with grant tracking and document management.',
   nameKey: 'customization.presetEducationName',
   descriptionKey: 'customization.presetEducationDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research', 'courses'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research'],
   features: EDUCATION_FEATURES,
   recommendedFor: ['education'],
 };
@@ -300,9 +307,51 @@ export const HEALTHCARE_PRESET: OrganizationPreset = {
   description: 'Hospitals, clinics, and health programs: patient-linked operations, clinical research, and compliance posture.',
   nameKey: 'customization.presetHealthcareName',
   descriptionKey: 'customization.presetHealthcareDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'compliance', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research', 'medical'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research'],
   features: HEALTHCARE_FEATURES,
   recommendedFor: ['healthcare', 'hospital', 'clinic'],
+};
+
+// ============================================
+// CONSTRUCTION / INFRASTRUCTURE PRESET
+// ============================================
+// Added after an edition audit found `construction` had no preset and fell
+// through to Business — handing an Ethiopian contractor "Code Review" and
+// "Releases". The Research department's workstreams (Plans, Materials,
+// Inspections) were designed for exactly this sector; this preset is what
+// finally routes them to it.
+const CONSTRUCTION_FEATURES: OrganizationFeatures = {
+  budget: {
+    expenses: true,
+    income: true,
+    reports: true,
+    forecasting: true,
+    procurement: true,      // tenders and supplier contracts are core here
+    grants: false,
+    donations: false,
+    publicTransparency: false, // private contractor, unlike a ministry
+    multiCurrency: true,    // imported materials are frequently priced in USD
+    approvalWorkflow: true,
+  },
+  teams: { goals: true, activity: true, performance: true, workload: true },
+  goals: { activeGoals: true, completedGoals: true, teamGoals: true, okrs: false, milestones: true },
+  automations: null,
+  documents: { aiProcessing: true, templates: true, versionControl: true, collaboration: true, ocr: true },
+  docs: { wiki: true, search: true, publicDocs: false, apiDocs: false },
+  aiAssistant: false,
+  analytics: true,
+  integrations: false,
+  customBranding: true,
+};
+
+export const CONSTRUCTION_PRESET: OrganizationPreset = {
+  name: 'Construction / Infrastructure',
+  description: 'Site delivery for contractors and infrastructure programs: plans, materials and inspections, incident and safety checklists, procurement-aware budgets.',
+  nameKey: 'customization.presetConstructionName',
+  descriptionKey: 'customization.presetConstructionDesc',
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
+  features: CONSTRUCTION_FEATURES,
+  recommendedFor: ['construction'],
 };
 
 // ============================================
@@ -323,7 +372,7 @@ export const ORGANIZATION_PRESETS = {
   // them explicitly makes the intent visible and testable.
   private: BUSINESS_PRESET,
   personal: BUSINESS_PRESET,
-  construction: BUSINESS_PRESET,
+  construction: CONSTRUCTION_PRESET,
 } as const;
 
 /**
@@ -343,6 +392,7 @@ export function getAllPresets(): OrganizationPreset[] {
     BUSINESS_PRESET,
     EDUCATION_PRESET,
     HEALTHCARE_PRESET,
+    CONSTRUCTION_PRESET,
   ];
 }
 
