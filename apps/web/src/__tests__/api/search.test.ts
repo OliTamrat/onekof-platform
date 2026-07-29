@@ -26,7 +26,9 @@ describe('Search API Logic', () => {
 
   describe('Query validation', () => {
     it('rejects empty query', () => {
-      const q = '';
+      // Typed as string, not the literal '': TypeScript narrows the literal to
+      // `never` on the truthy side of &&, so q.trim() fails to compile.
+      const q: string = '';
       const isValid = q && q.trim().length >= 2;
       expect(isValid).toBeFalsy();
     });
