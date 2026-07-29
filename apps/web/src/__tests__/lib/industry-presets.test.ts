@@ -5,6 +5,7 @@ import {
   BUSINESS_PRESET,
   EDUCATION_PRESET,
   HEALTHCARE_PRESET,
+  CONSTRUCTION_PRESET,
   getPresetForOrgType,
   getAllPresets,
   resolveEnabledSections,
@@ -25,10 +26,28 @@ describe('industry presets (capability matrix, D8)', () => {
     }
   });
 
-  it('all five presets exist and are distinct', () => {
-    expect(getAllPresets()).toHaveLength(5);
+  it('all six presets exist and are distinct', () => {
+    expect(getAllPresets()).toHaveLength(6);
     const names = getAllPresets().map(p => p.name);
-    expect(new Set(names).size).toBe(5);
+    expect(new Set(names).size).toBe(6);
+  });
+
+  // An edition audit found `construction` had no preset and fell through to
+  // Business, handing a contractor Code Review and Releases.
+  it('Construction: operations + research; never development/marketing', () => {
+    expect(has(CONSTRUCTION_PRESET, 'operations')).toBe(true);
+    expect(has(CONSTRUCTION_PRESET, 'research')).toBe(true);
+    expect(has(CONSTRUCTION_PRESET, 'development')).toBe(false);
+    expect(has(CONSTRUCTION_PRESET, 'marketing')).toBe(false);
+    expect(getPresetForOrgType('construction').name).toBe('Construction / Infrastructure');
+  });
+
+  // Every sector-specific onboarding choice must reach a sector preset —
+  // silently inheriting Business is the failure this guards against.
+  it('no sector-specific onboarding type falls through to the Business fallback', () => {
+    for (const id of ['government', 'ngo', 'education', 'healthcare', 'construction']) {
+      expect(getPresetForOrgType(id).name, `${id} fell through`).not.toBe('Business / Startup');
+    }
   });
 
   const has = (preset: { enabledSections: readonly string[] }, id: string) =>

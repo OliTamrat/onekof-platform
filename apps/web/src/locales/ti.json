@@ -752,7 +752,15 @@
     "hcOperations": "ስርሓት ሓደጋን ናይ መረጋገጺ ዝርዝርን",
     "hcInspections": "ፍተሻታትን ምክትታል ምርምርን",
     "hcBudgetApproval": "ባጀት ምስ መስርሕ ምጽዳቕ",
-    "hcCoordination": "ምውህሃድ ጋንታን ፕሮጀክትን"
+    "hcCoordination": "ምውህሃድ ጋንታን ፕሮጀክትን",
+    "capOperations": "ስርሓት ሓደጋን ናይ መረጋገጺ ዝርዝርን",
+    "capInspections": "ምክትታል ፍተሻታትን ርኸባትን",
+    "capBudgetApproval": "ባጀት ምስ መስርሕ ምጽዳቕ",
+    "capCoordination": "ምውህሃድ ጋንታን ፕሮጀክትን",
+    "capPlansMaterials": "ምክትታል መደባትን ንዋትን",
+    "capFormalCycles": "ወግዓዊ ዑደታት ስራሕን መዝገብ ኦዲትን",
+    "capAutomationsAi": "ኣውቶሜሽንን ሰነዳት AIን",
+    "capFieldData": "ምእካብ ሓበሬታ ወፍሪ"
   },
   "selectOrg": {
     "loadingOrgs": "ትካላት ይጸዓኑ ኣለዉ...",
@@ -2440,7 +2448,9 @@
     "presetHealthcareDesc": "ሆስፒታላት፣ ክሊኒካትን መደባት ጥዕናን — ምስ ሕሙማት ዝተኣሳሰሩ ስርሓታት፣ ክሊኒካዊ ምርምርን ተገዛእነትን።",
     "chooseOrgTypeTitle": "ዓይነት ትካልኩም ምረጹ",
     "chooseOrgTypeBody": "ንOnekof ናብ ጽላትኩም ኣዐርይዎ — መንግስቲ፣ ዘይመንግስታዊ ትካል፣ ንግዲ፣ ትምህርቲ ወይ ጥዕና። ዘየድልዩኹም ክፋላት ካብ ዝርዝር ይእለዩ።",
-    "chooseOrgTypeAction": "ዓይነት ትካል ምረጽ"
+    "chooseOrgTypeAction": "ዓይነት ትካል ምረጽ",
+    "presetConstructionName": "ህንጻ / መሰረተ ልምዓት",
+    "presetConstructionDesc": "ንተቋረጽትን መደባት መሰረተ ልምዓትን፡ መደባት፣ ንዋትን ፍተሻታትን፣ ናይ ሓደጋን ድሕነትን ዝርዝራት፣ ዕዳጋ ዘማእከለ ባጀት።"
   },
   "documentsSettings": {
     "title": "ናይ ሰነዳት ቅጥዒታት",

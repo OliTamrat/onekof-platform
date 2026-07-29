@@ -13,6 +13,9 @@ export type OrganizationType =
   | 'healthcare'
   | 'hospital'
   | 'clinic'
+  | 'construction'
+  | 'private'
+  | 'personal'
   | 'other';
 
 export type DashboardSectionId =

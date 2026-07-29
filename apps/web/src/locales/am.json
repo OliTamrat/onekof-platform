@@ -752,7 +752,15 @@
     "hcOperations": "የአደጋ እና ማረጋገጫ ዝርዝር ሥራዎች",
     "hcInspections": "ፍተሻዎች እና የምርምር ክትትል",
     "hcBudgetApproval": "በጀት ከማጽደቅ ሂደት ጋር",
-    "hcCoordination": "የቡድን እና የፕሮጀክት ቅንጅት"
+    "hcCoordination": "የቡድን እና የፕሮጀክት ቅንጅት",
+    "capOperations": "የአደጋ እና ማረጋገጫ ዝርዝር ሥራዎች",
+    "capInspections": "ፍተሻዎች እና ግኝቶች ክትትል",
+    "capBudgetApproval": "በጀት ከማጽደቅ ሂደት ጋር",
+    "capCoordination": "የቡድን እና የፕሮጀክት ቅንጅት",
+    "capPlansMaterials": "የዕቅዶች እና የቁሳቁስ ክትትል",
+    "capFormalCycles": "መደበኛ የሥራ ዑደቶች እና የኦዲት መዝገብ",
+    "capAutomationsAi": "አውቶሜሽን እና የAI ሰነዶች",
+    "capFieldData": "የመስክ መረጃ አሰባሰብ"
   },
   "selectOrg": {
     "loadingOrgs": "ድርጅቶችን በመጫን ላይ...",
@@ -2434,7 +2442,9 @@
     "presetHealthcareDesc": "ሆስፒታሎች፣ ክሊኒኮች እና የጤና ፕሮግራሞች — ከታካሚ ጋር የተያያዙ ሥራዎች፣ ክሊኒካዊ ምርምር እና ተገዢነት።",
     "chooseOrgTypeTitle": "የድርጅትዎን ዓይነት ይምረጡ",
     "chooseOrgTypeBody": "Onekof ን ለዘርፍዎ ያስተካክሉ — መንግሥት፣ መንግሥታዊ ያልሆነ ድርጅት፣ ንግድ፣ ትምህርት ወይም ጤና። የማይፈልጓቸው ክፍሎች ከምናሌው ይወገዳሉ።",
-    "chooseOrgTypeAction": "የድርጅት ዓይነት ይምረጡ"
+    "chooseOrgTypeAction": "የድርጅት ዓይነት ይምረጡ",
+    "presetConstructionName": "ግንባታ / መሠረተ ልማት",
+    "presetConstructionDesc": "ለተቋራጮች እና ለመሠረተ ልማት ፕሮግራሞች፡ ዕቅዶች፣ ቁሳቁሶች እና ፍተሻዎች፣ የአደጋ እና የደህንነት ዝርዝሮች፣ ግዥን ያገናዘበ በጀት።"
   },
   "documentsSettings": {
     "title": "የሰነዶች ቅንብሮች",

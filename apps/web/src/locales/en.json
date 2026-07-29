@@ -751,7 +751,15 @@
     "hcOperations": "Incident & checklist operations",
     "hcInspections": "Inspections & research tracking",
     "hcBudgetApproval": "Budget with approval workflow",
-    "hcCoordination": "Team & project coordination"
+    "hcCoordination": "Team & project coordination",
+    "capOperations": "Incident & checklist operations",
+    "capInspections": "Inspections & findings tracking",
+    "capBudgetApproval": "Budget with approval workflow",
+    "capCoordination": "Team & project coordination",
+    "capPlansMaterials": "Plans & materials tracking",
+    "capFormalCycles": "Formal work cycles & audit trail",
+    "capAutomationsAi": "Automations & AI documents",
+    "capFieldData": "Field data collection"
   },
   "selectOrg": {
     "loadingOrgs": "Loading organizations...",
@@ -2389,7 +2397,9 @@
     "presetHealthcareDesc": "Hospitals, clinics, and health programs with patient-linked operations, clinical research, and compliance.",
     "chooseOrgTypeTitle": "Choose your organization type",
     "chooseOrgTypeBody": "Tailor Onekof to your sector — government, NGO, business, education, or healthcare. Sections you do not need disappear from the menu.",
-    "chooseOrgTypeAction": "Choose organization type"
+    "chooseOrgTypeAction": "Choose organization type",
+    "presetConstructionName": "Construction / Infrastructure",
+    "presetConstructionDesc": "Site delivery for contractors and infrastructure programs: plans, materials and inspections, incident and safety checklists, procurement-aware budgets."
   },
   "documentsSettings": {
     "title": "Documents Settings",

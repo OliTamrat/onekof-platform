@@ -752,7 +752,15 @@
     "hcOperations": "Hawlaha dhacdooyinka iyo liisaska hubinta",
     "hcInspections": "Kormeerid iyo la socodka cilmi-baadhista",
     "hcBudgetApproval": "Miisaaniyad leh habka ansixinta",
-    "hcCoordination": "Isku-duwidda kooxda iyo mashruuca"
+    "hcCoordination": "Isku-duwidda kooxda iyo mashruuca",
+    "capOperations": "Hawlaha dhacdooyinka iyo liisaska hubinta",
+    "capInspections": "La socodka kormeerida iyo natiijooyinka",
+    "capBudgetApproval": "Miisaaniyad leh habka ansixinta",
+    "capCoordination": "Isku-duwidda kooxda iyo mashruuca",
+    "capPlansMaterials": "La socodka qorshayaasha iyo agabka",
+    "capFormalCycles": "Wareegyo shaqo rasmi ah iyo diiwaan hanti-dhawr",
+    "capAutomationsAi": "Otomaatig iyo dukumiintiyo AI",
+    "capFieldData": "Ururinta xogta goobta"
   },
   "selectOrg": {
     "loadingOrgs": "Hay'adaha waa la soo rarayaa...",
@@ -2434,7 +2442,9 @@
     "presetHealthcareDesc": "Isbitaallo, kiliinikooyin iyo barnaamijyo caafimaad — hawlo bukaan-xidhiidh ah, cilmi-baadhis caafimaad iyo u hoggaansanaan.",
     "chooseOrgTypeTitle": "Dooro nooca ururkaaga",
     "chooseOrgTypeBody": "U habee Onekof qaybtaada — dawlad, urur samafal, ganacsi, waxbarasho ama caafimaad. Qaybaha aadan u baahnayn ayaa liiska ka baxaya.",
-    "chooseOrgTypeAction": "Dooro nooca ururka"
+    "chooseOrgTypeAction": "Dooro nooca ururka",
+    "presetConstructionName": "Dhisme / Kaabayaasha",
+    "presetConstructionDesc": "Qandaraasleyaasha iyo barnaamijyada kaabayaasha: qorshayaal, agab iyo kormeerid, liisaska dhacdo iyo badbaado, miisaaniyad iibsi-ogaal ah."
   },
   "documentsSettings": {
     "title": "Dejinta Dukumentiyada",

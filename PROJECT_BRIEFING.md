@@ -42,6 +42,29 @@ INSA security code (P1-P6): all implemented and certified.
 
 **The decision that shapes the module (M1):** Onekof builds healthcare **operations**, NOT an EMR. Permanent non-goals: diagnoses, prescriptions, lab/imaging results, clinical notes. Crossing that line changes the regulatory class of the whole company. Other key proposals: patient identifiers encrypted at rest with a blind index (M2); patient access is its own ladder where **org Owner/Admin does NOT imply access** (M3); patient record **reads** are audited, not just writes (M4); **the module requires the Tier 2 sovereign deployment** because cloud-tier storage sits outside Ethiopia (M5); real hard-delete/retention rather than soft-delete (M6); care items are ordinary Tasks with a nullable `patientId` reusing board/sprints/workflow (M7); facilities/equipment/safety become Operations **workstreams**, not new departments (M8). Gate: M1 must not start until counsel confirms the residency position and the founder picks the retention default.
 
+## EDITION AUDIT — ALL SIX ORGANIZATION TYPES (2026-07-28)
+
+Founder direction: "do not only focus on Healthcare — check all organizations and their assigned tools." Healthcare was not special; it was the one that happened to get tested. Every onboarding promise was checked against what the code actually delivers:
+
+| Edition | Promised before | Verdict |
+|---|---|---|
+| Personal | tasks / solo projects / quick setup / upgrade | all 4 real — unchanged |
+| Government | budget / **compliance tools** / **public procurement** / Ethiopian calendar | 2 of 4 were placeholder pages |
+| Private (Tech) | agile / client projects / team collab / **time tracking** | no timer or timesheet UI exists |
+| NGO | **grants** / **impact** / **donor reporting** / multi-currency | **3 of 4 false** |
+| Education | **course projects** / research / **academic calendar** / **student collab** | 1 of 4 clearly real |
+| Construction | **sites** / **equipment** / **safety** / **progress photos** | **4 of 4 false** |
+
+Placeholder pages confirmed (~19-23 lines, no data calls, empty state only): grants, procurement, sites, equipment, safety, courses, impact, compliance, medical, patients. Real: calendar (162L, live queries).
+
+**Second finding, worse than the first:** `construction` had **no preset at all** and fell through to Business — an Ethiopian contractor was handed *Code Review* and *Releases*, while the Research department's workstreams (Plans, Materials, Inspections), which were plainly designed for that sector, never reached them.
+
+**Shipped:**
+- All six edition promises rewritten to name only shipping capability, via 8 generic reusable `onboarding.cap*` keys x 5 locales (the healthcare-specific hc* keys were folded into them).
+- **New CONSTRUCTION_PRESET** (6th): operations + research, procurement + multi-currency budget (imported materials), no development/marketing/automations, no publicTransparency (private contractor, unlike a ministry). `construction` now routes to it.
+- `OrganizationType` extended with the live onboarding ids (construction/private/personal) — they were previously untyped strings resolving by fallback.
+- **New guard test:** no sector-specific onboarding type may resolve to the Business fallback. Combined with the earlier dead-switch guard, the two failure modes found today (enabling sections with no destination; sectors silently inheriting the wrong edition) are now both test-enforced. 354 tests green.
+
 ## NEXT TODO (priority order, as of 2026-07-28)
 
 **Founder actions (only you can do these):**
