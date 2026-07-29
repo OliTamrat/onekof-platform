@@ -1528,7 +1528,10 @@
     "medicalDesc": "Maamul daryeelka bukaanka, hawlaha caafimaadka iyo diiwaannada caafimaadka",
     "coursesDesc": "Maamul koorsooyinka, kooxaha iyo barnaamijyada waxbarashada",
     "classifiedNote": "Shaqooyinka cusub ee halkan lagu abuuro waxaa loo kala saaraa sida {label}",
-    "classification": "Waaxda"
+    "classification": "Waaxda",
+    "facilitiesDesc": "Dhismayaasha, qolalka iyo dayactirka xarunta maamul",
+    "equipmentDesc": "Liiska qalabka, dayactirka iyo isticmaalka la soco",
+    "safetyDesc": "Dhacdooyinka badbaadada, baadhitaannada iyo waafaqsanaan la soco"
   },
   "operationsPage": {
     "title": "Hawlgallada",
@@ -1936,7 +1939,10 @@
     "templates": "Qaababka",
     "team": "Koox",
     "hierarchy": "Kala Heerarka",
-    "sprints": "Sprints"
+    "sprints": "Sprints",
+    "facilities": "Xaruumaha",
+    "equipment": "Qalabka",
+    "safety": "Maamulka Badbaadada"
   },
   "sidebar": {
     "home": "Bogga hore",
@@ -1975,7 +1981,10 @@
     "docs": "Dukumentiyo",
     "integrations": "Isku xidhka",
     "medical": "Caafimaad",
-    "courses": "Koorsooyin"
+    "courses": "Koorsooyin",
+    "facilities": "Xaruumaha",
+    "equipment": "Qalabka",
+    "safety": "Maamulka Badbaadada"
   },
   "codeConnect": {
     "title": "Ku xidh Kaydka",

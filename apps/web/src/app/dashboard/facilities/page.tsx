@@ -1,19 +1,13 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { useRouter } from 'next/navigation';
-import { EmptyState } from '@/components/ui/empty-state';
-import { useLanguage } from '@/contexts/language-context';
-
-export default function FacilitiesPage() {
-  const { t } = useLanguage();
-  const router = useRouter();
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('facilitiesPage.title')}</h1>
-      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        {t('facilitiesPage.description')}
-      </p>
-      <EmptyState preset="facilities" className="mt-8" onAction={() => router.push('/dashboard/issues?create=issue')} />
-    </div>
-  );
+/**
+ * Retired by M4. Facility work is an Operations workstream, not a top-level
+ * page — see docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md (M8).
+ *
+ * The old page rendered outside AppLayout, so it had no sidebar and no way
+ * back. Kept as a redirect rather than deleted so existing links and
+ * bookmarks land somewhere real.
+ */
+export default function FacilitiesRedirect() {
+  redirect('/dashboard/operations/facilities');
 }

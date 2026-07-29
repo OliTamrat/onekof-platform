@@ -16,7 +16,10 @@
 export const DEPARTMENT_CATALOG = {
   development: ['backlog', 'code-review', 'release'],
   marketing: ['analytics', 'campaign', 'social-media'],
-  operations: ['checklist', 'incident', 'monitoring'],
+  // equipment/facility/safety added by M4 (see MEDICAL_MODULE_ARCHITECTURE.md,
+  // M8): facility work is Operations, not a new top-level department. This is
+  // the extensibility D1 was designed for — vocabulary only, no schema change.
+  operations: ['checklist', 'equipment', 'facility', 'incident', 'monitoring', 'safety'],
   research: ['data', 'findings', 'inspection', 'materials', 'plan'],
 } as const;
 
@@ -73,8 +76,11 @@ export const WORKSTREAM_LABEL_KEYS: Record<string, string> = {
   campaign: 'sidebar.campaigns',
   'social-media': 'sidebar.socialMedia',
   checklist: 'sidebar.checklists',
+  equipment: 'sidebar.equipment',
+  facility: 'sidebar.facilities',
   incident: 'sidebar.incidents',
   monitoring: 'sidebar.monitoring',
+  safety: 'sidebar.safety',
   data: 'sidebar.data',
   findings: 'sidebar.findings',
   inspection: 'sidebar.inspections',

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@/lib/prisma';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -247,6 +248,22 @@ export async function DELETE(
     await prisma.team.update({
       where: { id: params.id },
       data: { deletedAt: new Date() },
+    });
+
+    // INSA audit trail: deleting a team removes whatever access it carried.
+    // The team row is only soft-deleted, but the audit entry is the record
+    // that survives independently of it.
+    logOrgAction({
+      organizationId: team.organizationId,
+      actorId: authUser.id,
+      actorEmail: authUser.email || '',
+      actorRole: membership.role,
+      action: OrgActions.TEAM_DELETED,
+      resource: 'team',
+      resourceId: team.id,
+      resourceName: team.name,
+      before: { name: team.name, description: team.description },
+      request: req,
     });
 
     return NextResponse.json({ success: true });

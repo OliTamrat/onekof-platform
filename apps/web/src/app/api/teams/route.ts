@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -127,6 +128,21 @@ export async function POST(req: NextRequest) {
           },
         },
       },
+    });
+
+    // INSA audit trail: teams carry project access, so their creation is a
+    // permissions event, not just a piece of organizational furniture.
+    logOrgAction({
+      organizationId,
+      actorId: ctx.user.id,
+      actorEmail: ctx.user.email,
+      actorRole: ctx.role,
+      action: OrgActions.TEAM_CREATED,
+      resource: 'team',
+      resourceId: team.id,
+      resourceName: team.name,
+      after: { name: team.name, description: team.description },
+      request: req,
     });
 
     // Add creator as team lead

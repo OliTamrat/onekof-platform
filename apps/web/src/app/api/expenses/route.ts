@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@onekof/database';
+import { prisma, BudgetAccess } from '@onekof/database';
 import { resolveUserOrganization } from '@/lib/api-organization';
 import { parsePaginationParams, buildPaginatedResponse } from '@/lib/pagination';
 import { sendExpenseSubmittedEmail } from '@/lib/email';
@@ -199,7 +199,15 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Notify budget approvers (org members with budgetAccess='FULL', plus OWNER/ADMIN).
+    // Notify people who can actually act on the expense: APPROVE and
+    // FULL_CONTROL budget access, plus OWNER/ADMIN.
+    //
+    // This previously read `budgetAccess: 'FULL' as any`. There is no 'FULL'
+    // value in the BudgetAccess enum (NO_ACCESS | VIEW_ONLY | EDIT | APPROVE
+    // | FULL_CONTROL), so that clause matched nobody and a finance director
+    // who was not also an org OWNER/ADMIN was never notified. The `as any`
+    // is what stopped the compiler from saying so — hence the typed enum here.
+    //
     // Fire-and-forget: don't block the response on email sending.
     (async () => {
       try {
@@ -207,7 +215,7 @@ export async function POST(request: NextRequest) {
           where: {
             organizationId: ctx.organizationId,
             OR: [
-              { budgetAccess: 'FULL' as any },
+              { budgetAccess: { in: [BudgetAccess.APPROVE, BudgetAccess.FULL_CONTROL] } },
               { role: 'OWNER' },
               { role: 'ADMIN' },
             ],

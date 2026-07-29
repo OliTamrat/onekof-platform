@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@onekof/database';
 import { verifyTokenHash, isTokenExpired } from '@/lib/security/tokens';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -146,6 +147,30 @@ export async function POST(request: NextRequest) {
     }
 
     await prisma.$transaction(transactionOps);
+
+    // INSA audit trail: this is the moment someone actually gains access to
+    // the organization. The actor is the invitee accepting, which is why the
+    // `before` records who issued the invitation — otherwise the trail shows
+    // people joining with no record of who let them in.
+    logOrgAction({
+      organizationId: matchedInvitation.organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: matchedInvitation.role,
+      action: OrgActions.INVITATION_ACCEPTED,
+      resource: 'invitation',
+      resourceId: matchedInvitation.id,
+      resourceName: session.user.email || undefined,
+      before: { invitedBy: matchedInvitation.invitedBy },
+      after: {
+        role: matchedInvitation.role,
+        projectId: matchedInvitation.projectId || null,
+        projectRole: matchedInvitation.projectId
+          ? matchedInvitation.projectRole || 'MEMBER'
+          : null,
+      },
+      request,
+    });
 
     let projectName = null;
     if (matchedInvitation.projectId) {

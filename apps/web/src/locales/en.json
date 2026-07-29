@@ -1527,7 +1527,10 @@
     "medicalDesc": "Manage patient care, clinical operations, and medical records",
     "coursesDesc": "Manage courses, cohorts, and learning programs",
     "classifiedNote": "New items here are classified as {label}",
-    "classification": "Department"
+    "classification": "Department",
+    "facilitiesDesc": "Manage buildings, rooms, and facility maintenance",
+    "equipmentDesc": "Track equipment inventory, maintenance, and utilization",
+    "safetyDesc": "Monitor safety incidents, inspections, and compliance"
   },
   "operationsPage": {
     "title": "Operations",
@@ -1891,7 +1894,10 @@
     "templates": "Templates",
     "team": "Team",
     "hierarchy": "Hierarchy",
-    "sprints": "Sprints"
+    "sprints": "Sprints",
+    "facilities": "Facilities",
+    "equipment": "Equipment",
+    "safety": "Safety Management"
   },
   "sidebar": {
     "home": "Home",
@@ -1930,7 +1936,10 @@
     "docs": "Docs",
     "integrations": "Integrations",
     "medical": "Medical",
-    "courses": "Courses"
+    "courses": "Courses",
+    "facilities": "Facilities",
+    "equipment": "Equipment",
+    "safety": "Safety Management"
   },
   "codeConnect": {
     "title": "Connect Repository",

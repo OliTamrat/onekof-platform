@@ -1528,7 +1528,10 @@
     "medicalDesc": "የታካሚ እንክብካቤ፣ ክሊኒካዊ ሥራዎች እና የሕክምና መዛግብት ያስተዳድሩ",
     "coursesDesc": "ኮርሶችን፣ ቡድኖችን እና የትምህርት ፕሮግራሞችን ያስተዳድሩ",
     "classifiedNote": "እዚህ የሚፈጠሩ አዳዲስ ስራዎች እንደ {label} ይመደባሉ",
-    "classification": "ክፍል"
+    "classification": "ክፍል",
+    "facilitiesDesc": "ህንፃዎችን፣ ክፍሎችን እና የተቋም ጥገናን ያስተዳድሩ",
+    "equipmentDesc": "የመሳሪያ ቆጠራ፣ ጥገና እና አጠቃቀምን ይከታተሉ",
+    "safetyDesc": "የደህንነት ክስተቶችን፣ ፍተሻዎችን እና ተገዢነትን ይከታተሉ"
   },
   "operationsPage": {
     "title": "ተግባራት",
@@ -1936,7 +1939,10 @@
     "templates": "አብነቶች",
     "team": "ቡድን",
     "hierarchy": "ተዋረድ",
-    "sprints": "ስፕሪንቶች"
+    "sprints": "ስፕሪንቶች",
+    "facilities": "ተቋማት",
+    "equipment": "መሳሪያዎች",
+    "safety": "የደህንነት አስተዳደር"
   },
   "sidebar": {
     "home": "መነሻ",
@@ -1975,7 +1981,10 @@
     "docs": "ሰነዶች",
     "integrations": "ውህደቶች",
     "medical": "ሕክምና",
-    "courses": "ኮርሶች"
+    "courses": "ኮርሶች",
+    "facilities": "ተቋማት",
+    "equipment": "መሳሪያዎች",
+    "safety": "የደህንነት አስተዳደር"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ አገናኝ",

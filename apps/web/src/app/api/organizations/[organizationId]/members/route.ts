@@ -21,6 +21,15 @@ export async function GET(
 
     const { organizationId } = params;
 
+    // resolveUserOrganization authorizes against the organization in the
+    // x-organization-slug header (the subdomain the caller is on), not
+    // against the id in the path. Without this comparison a member of one
+    // organization could read another's member list — names, emails, roles
+    // and budget access — just by putting a different id in the URL.
+    if (organizationId !== ctx.organizationId) {
+      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
+
     // Fetch all members of the organization
     const members = await prisma.organizationMember.findMany({
       where: {
