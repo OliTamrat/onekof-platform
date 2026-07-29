@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { getGoogleCalendarOAuthUrl, disconnectGoogleCalendar, updateGoogleCalendarConfig } from '@/lib/integrations/google-calendar';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
@@ -15,14 +16,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const action = req.nextUrl.searchParams.get('action');
 
     if (action === 'oauth_url') {
       const state = Buffer.from(JSON.stringify({
-        organizationId: org.id,
+        organizationId: ctx.organizationId,
         userId: session.user.id,
         provider: 'google-calendar',
         nonce: randomBytes(16).toString('hex'),
@@ -32,7 +35,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ url: getGoogleCalendarOAuthUrl(state) });
     }
 
-    const connection = await getConnection(org.id, 'google-calendar');
+    const connection = await getConnection(ctx.organizationId, 'google-calendar');
     return NextResponse.json({
       connected: !!connection && connection.status === 'connected',
       connection: connection ? {
@@ -57,11 +60,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const body = await req.json();
-    await updateGoogleCalendarConfig(org.id, body);
+    await updateGoogleCalendarConfig(ctx.organizationId, body);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Google Calendar PUT error', { error: error instanceof Error ? error.message : error });
@@ -76,10 +81,12 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    await disconnectGoogleCalendar(org.id);
+    await disconnectGoogleCalendar(ctx.organizationId);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Google Calendar DELETE error', { error: error instanceof Error ? error.message : error });

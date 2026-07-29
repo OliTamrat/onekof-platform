@@ -90,11 +90,17 @@ export const TEAMS_TABS: TabDefinition[] = [
   { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
 ];
 
-// Same removal as TEAMS_TABS, same reason. Timeline went too — it rendered
-// fabricated events; leaving the page present but unreachable would have
-// been half a fix.
+// List and Board are back — rebuilt against the Goal model rather than
+// restored. Both query /api/goals and share their vocabulary through
+// lib/goals/types, so they cannot drift from the main Goals page the way the
+// deleted versions did.
+//
+// Timeline and Pages stay out: those rendered fabricated events and had no
+// model behind them. They return when something real backs them.
 export const GOALS_TABS: TabDefinition[] = [
   { id: 'summary', label: 'Summary', labelKey: 'departmentTabs.summary', icon: BarChart3, href: '' },
+  { id: 'list', label: 'List', labelKey: 'departmentTabs.list', icon: ListChecks, href: '/list' },
+  { id: 'board', label: 'Board', labelKey: 'departmentTabs.board', icon: LayoutDashboard, href: '/board' },
   { id: 'code', label: 'Code', labelKey: 'departmentTabs.code', icon: Code, href: '/code' },
   { id: 'forms', label: 'Forms', labelKey: 'departmentTabs.forms', icon: FileText, href: '/forms' },
 ];
