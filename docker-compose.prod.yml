@@ -118,6 +118,26 @@ services:
         condition: service_healthy
     env_file:
       - .env.production
+    environment:
+      # ---- DEPLOYMENT IDENTITY ----
+      # Declared here, not left to .env.production, because these decide
+      # whether the deployment is allowed to hold patient data.
+      #
+      # lib/compliance/residency.ts resolves the tier from these values. With
+      # APP_PLATFORM unset the runtime reports "local", which resolves to
+      # Tier 3 (Vercel/Supabase EU) and makes canStorePatientData() false —
+      # so this sovereign, in-country deployment would refuse the very
+      # patient features it exists to host. docker-compose.tier-sim.yml
+      # already set them, so the simulation passed while production would
+      # not have. Explicit here so the two cannot disagree.
+      #
+      # APP_REGION: use an `etc-` prefix for EthioTelecom Cloud (Tier 1);
+      # anything else is treated as Tier 2 (on-premise Ethiopia). Both are
+      # in-country and both may hold patient data.
+      APP_ENV: production
+      APP_PLATFORM: self-hosted
+      APP_REGION: ${APP_REGION:-et-addis-1}
+      APP_DEPLOYMENT_TIER: ${APP_DEPLOYMENT_TIER:-2}
     volumes:
       - onekof_blobs:/var/onekof/blobs
     expose:
