@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { requireAuthentication, requireProjectAccess } from '@/lib/security/authorization';
+import {
+  getPatientAccessLevel,
+  meetsPatientAccess,
+  careItemExclusion,
+} from '@/lib/security/patient-access';
+import { applyCareItemVisibility, redactCareItem } from '@/lib/security/care-item-visibility';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -56,6 +62,7 @@ export async function GET(
             name: true,
             key: true,
             color: true,
+            organizationId: true,
           },
         },
         assignee: {
@@ -77,12 +84,26 @@ export async function GET(
       return projectAuth.error!;
     }
 
+    // M2 — the epic itself may be a care item, and so may its children even
+    // when it is not. Resolved once here rather than lazily, because the
+    // children query below needs the answer either way.
+    const patientLevel = await getPatientAccessLevel(epic.project.organizationId, user.id);
+    if (epic.patientId && !meetsPatientAccess(patientLevel, 'LIMITED')) {
+      return NextResponse.json({ error: 'Epic not found' }, { status: 404 });
+    }
+
+    // The exclusion is applied to the children list AND to both aggregates.
+    // Counting hidden children into `total` would report an epic as 40% done
+    // beside a list of two tasks, and the gap is itself a disclosure.
+    const careItemFilter = careItemExclusion(patientLevel);
+
     // Fetch all child tasks in parallel with the aggregation
     const [children, statusGroups, estimateSums] = await Promise.all([
       prisma.task.findMany({
         where: {
           parentId: params.id,
           deletedAt: null,
+          ...careItemFilter,
         },
         select: {
           id: true,
@@ -95,6 +116,10 @@ export async function GET(
           timeSpent: true,
           dueDate: true,
           createdAt: true,
+          // Selected so the visibility helper below can actually recognise a
+          // care item. Without it every child looks ordinary and the LIMITED
+          // redaction pass silently does nothing.
+          patientId: true,
           assignee: {
             select: { id: true, name: true, email: true, avatar: true },
           },
@@ -109,6 +134,7 @@ export async function GET(
         where: {
           parentId: params.id,
           deletedAt: null,
+          ...careItemFilter,
         },
         _count: { _all: true },
       }),
@@ -116,6 +142,7 @@ export async function GET(
         where: {
           parentId: params.id,
           deletedAt: null,
+          ...careItemFilter,
         },
         _sum: {
           estimate: true,
@@ -144,8 +171,8 @@ export async function GET(
       : 0;
 
     return NextResponse.json({
-      epic,
-      children,
+      epic: redactCareItem(epic, patientLevel),
+      children: applyCareItemVisibility(children as any[], patientLevel),
       stats: {
         total,
         byStatus,

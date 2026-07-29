@@ -168,12 +168,20 @@ export async function getOrganizationContext(): Promise<{
  * Falls back to user's default org, then first org — safe for Vercel previews without subdomains.
  *
  * Returns the user (with organizations included) and the resolved organizationId + membership role.
+ *
+ * `patientAccess` is the raw column value from the same membership row. It is
+ * returned here rather than queried per route because the membership is
+ * already being loaded: a task list route that must exclude care items should
+ * not pay a second round trip for a field this query can select for free.
+ * Callers pass it through `effectivePatientAccess()` — the raw value means
+ * nothing on a deployment that may not hold patient data at all.
  */
 export async function resolveUserOrganization(): Promise<{
   data: {
     user: { id: string; email: string; name: string | null };
     organizationId: string;
     role: string;
+    patientAccess: string | null;
   } | null;
   error: NextResponse | null;
 }> {
@@ -200,6 +208,7 @@ export async function resolveUserOrganization(): Promise<{
         select: {
           role: true,
           organizationId: true,
+          patientAccess: true,
           user: { select: { id: true, email: true, name: true } },
         },
       });
@@ -210,6 +219,7 @@ export async function resolveUserOrganization(): Promise<{
             user: membership.user,
             organizationId: membership.organizationId,
             role: membership.role,
+            patientAccess: membership.patientAccess,
           },
           error: null,
         };
@@ -240,6 +250,7 @@ export async function resolveUserOrganization(): Promise<{
           select: {
             role: true,
             organizationId: true,
+            patientAccess: true,
           },
           take: 5,
         },
@@ -263,6 +274,7 @@ export async function resolveUserOrganization(): Promise<{
         user: { id: user.id, email: user.email, name: user.name },
         organizationId: membership.organizationId,
         role: membership.role,
+        patientAccess: membership.patientAccess,
       },
       error: null,
     };

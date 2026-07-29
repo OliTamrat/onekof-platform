@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma, TaskLinkType } from '@onekof/database';
+import { requireTaskAccess } from '@/lib/security/authorization';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -33,22 +34,12 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify task access
-    const task = await prisma.task.findUnique({
-      where: { id: params.id },
-      select: { project: { select: { organizationId: true } } },
-    });
-    if (!task) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: task.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    // Org membership was the only check, so any member could read the link
+    // graph of a project they had no access to — and a link carries the other
+    // task's key and title. requireTaskAccess applies project visibility and
+    // the M2 care-item rule.
+    const access = await requireTaskAccess(params.id, session.user.id);
+    if (!access.authorized) return access.error!;
 
     const links = await prisma.taskLink.findMany({
       where: { fromTaskId: params.id },
@@ -100,7 +91,17 @@ export async function POST(
       return NextResponse.json({ error: 'Cannot link task to itself' }, { status: 400 });
     }
 
-    // Verify both tasks exist and belong to the same organization
+    // BOTH ends are checked, not just the one in the URL. A link is readable
+    // from either side, so linking a task the caller may see to one they may
+    // not would surface the second task's key and title in the first task's
+    // link list — including, for a care item, the fact that it is one.
+    const [fromAccess, toAccess] = await Promise.all([
+      requireTaskAccess(params.id, session.user.id, 'MEMBER'),
+      requireTaskAccess(toTaskId, session.user.id, 'MEMBER'),
+    ]);
+    if (!fromAccess.authorized) return fromAccess.error!;
+    if (!toAccess.authorized) return toAccess.error!;
+
     const [fromTask, toTask] = await Promise.all([
       prisma.task.findUnique({
         where: { id: params.id },
@@ -119,17 +120,6 @@ export async function POST(
     if (fromTask.project.organizationId !== toTask.project.organizationId) {
       return NextResponse.json({ error: 'Cannot link tasks across organizations' }, { status: 400 });
     }
-
-    // Verify user has org access
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: fromTask.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
     // Create forward link
     const link = await prisma.taskLink.upsert({
@@ -193,23 +183,16 @@ export async function DELETE(
     const linkId = request.nextUrl.searchParams.get('linkId');
     if (!linkId) return NextResponse.json({ error: 'linkId required' }, { status: 400 });
 
+    const access = await requireTaskAccess(params.id, session.user.id, 'MEMBER');
+    if (!access.authorized) return access.error!;
+
     const link = await prisma.taskLink.findUnique({
       where: { id: linkId },
-      include: { fromTask: { select: { project: { select: { organizationId: true } } } } },
+      select: { id: true, type: true, fromTaskId: true, toTaskId: true },
     });
     if (!link || link.fromTaskId !== params.id) {
       return NextResponse.json({ error: 'Link not found' }, { status: 404 });
     }
-
-    const membership = await prisma.organizationMember.findUnique({
-      where: {
-        organizationId_userId: {
-          organizationId: link.fromTask.project.organizationId,
-          userId: session.user.id,
-        },
-      },
-    });
-    if (!membership) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
     // Delete forward and reciprocal
     await prisma.taskLink.delete({ where: { id: linkId } });

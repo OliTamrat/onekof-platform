@@ -193,6 +193,10 @@ export const createIssueSchema = z.object({
   // (pair rules need the task's post-update state, not just this payload)
   department: z.string().max(50).nullable().optional(),
   workstream: z.string().max(50).nullable().optional(),
+  // M2 — care item. Accepted here but authorized in the route: the caller
+  // needs FULL patient access and the patient must belong to the same
+  // organization, neither of which a schema can see.
+  patientId: uuidSchema.nullable().optional(),
 });
 
 export const updateIssueSchema = z.object({
@@ -217,6 +221,9 @@ export const updateIssueSchema = z.object({
   storyPoints: z.number().int().min(0).max(1000).nullable().optional(),
   department: z.string().max(50).nullable().optional(),
   workstream: z.string().max(50).nullable().optional(),
+  // M2 — care item. null detaches the task from the patient. Authorized in
+  // the route; see createIssueSchema.
+  patientId: uuidSchema.nullable().optional(),
 });
 
 // Sprint Schemas

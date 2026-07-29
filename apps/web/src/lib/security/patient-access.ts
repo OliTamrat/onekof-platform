@@ -106,3 +106,104 @@ export async function requirePatientAccess(
 export function canSeeIdentifiers(level: PatientAccessLevel | null | undefined): boolean {
   return meetsPatientAccess(level, 'FULL');
 }
+
+/**
+ * The viewer's effective patient access, with residency applied.
+ *
+ * The non-refusing companion to `requirePatientAccess`. A patient route should
+ * refuse outright; a task list must not — it carries ordinary work that has
+ * nothing to do with patients, and 404-ing the whole board because one row is
+ * a care item would break the product for everybody.
+ *
+ * So list routes resolve a level here and filter, rather than gate. The
+ * residency rule is identical either way: on a deployment that may not hold
+ * patient data, everybody's effective level is null, including an owner who
+ * was granted MANAGE before the deployment moved.
+ *
+ * Takes the raw column value (a string, from an already-loaded membership)
+ * rather than doing its own query, so the common path costs nothing.
+ */
+export function effectivePatientAccess(
+  raw: string | null | undefined
+): PatientAccessLevel | null {
+  if (!canStorePatientData()) return null;
+  if (!raw) return null;
+  return (LADDER as string[]).includes(raw) ? (raw as PatientAccessLevel) : null;
+}
+
+/**
+ * A Prisma `where` fragment that excludes care items from a task query for a
+ * viewer below LIMITED.
+ *
+ * Filtering in the database rather than in JavaScript is not an optimisation
+ * here — it is a correctness requirement. A post-filter applied after
+ * `take`/`skip` would return short pages and a `total` that counts rows the
+ * caller may not see, which both leaks the number of care items and breaks
+ * pagination. The count and the page must be computed over the same rows.
+ */
+export function careItemExclusion(
+  level: PatientAccessLevel | null | undefined
+): { patientId?: null } {
+  return meetsPatientAccess(level, 'LIMITED') ? {} : { patientId: null };
+}
+
+/**
+ * Look up a member's effective patient access.
+ *
+ * For routes that do not already hold a membership row — the single-issue
+ * routes authenticate through the session rather than
+ * `resolveUserOrganization`, so they have no `patientAccess` in hand.
+ *
+ * Callers should reach for this only once they know the record in question is
+ * a care item. On the overwhelming majority of tasks `patientId` is null and
+ * this query is pure cost for an answer nothing will use.
+ */
+export async function getPatientAccessLevel(
+  organizationId: string,
+  userId: string
+): Promise<PatientAccessLevel | null> {
+  if (!canStorePatientData()) return null;
+
+  const membership = await prisma.organizationMember.findUnique({
+    where: { organizationId_userId: { organizationId, userId } },
+    select: { patientAccess: true },
+  });
+
+  return effectivePatientAccess(membership?.patientAccess);
+}
+
+/**
+ * May this caller attach a task to this patient?
+ *
+ * FULL, not LIMITED. Linking work to a patient means naming them, and LIMITED
+ * is defined by not being allowed to know whose care item is whose — a LIMITED
+ * member who could set the link would have to have obtained a patient id the
+ * level exists to withhold.
+ *
+ * Three ways this fails, all answered the same way so none of them confirms
+ * that a given patient id exists in some other organization:
+ *
+ *   - the caller lacks FULL (or the deployment may not hold patient data)
+ *   - the patient belongs to a different organization
+ *   - the patient has been erased under M6
+ *
+ * The last one is not an edge case. An erased patient is an anonymised shell
+ * kept so operational statistics survive; attaching new work to it would
+ * quietly rebuild a record about someone whose identifiers were destroyed on
+ * request.
+ */
+export async function canLinkCareItem(
+  organizationId: string,
+  patientId: string,
+  level: PatientAccessLevel | null | undefined
+): Promise<boolean> {
+  if (!canStorePatientData()) return false;
+  if (!meetsPatientAccess(level, 'FULL')) return false;
+
+  const patient = await prisma.patient.findFirst({
+    where: { id: patientId, organizationId, erasedAt: null },
+    select: { id: true },
+  });
+
+  return Boolean(patient);
+}
