@@ -82,6 +82,22 @@ On 2026-07-29 roughly twenty pushes produced ~130 minutes of Actions time and 40
 
 Local commits trigger nothing. A wave of six items can be six well-scoped commits with six clear messages and still cost **one** CI run. Granular history and cheap delivery are not in tension — the mistake is treating `git push` as part of `git commit`.
 
+### Deployment config: production only
+
+`apps/web/vercel.json` sets `ignoreCommand` so **only production deploys**. Pull requests get no preview URLs; correctness is gated by the GitHub Actions build instead.
+
+**Read this before touching that line.** Vercel **skips** the build when `ignoreCommand` exits **0** and **proceeds** when it exits **1**. The condition therefore looks inverted at a glance:
+
+```
+if [ "$VERCEL_ENV" = "production" ]; then exit 1; else exit 0; fi
+```
+
+Getting it backwards disables **production**, not previews.
+
+`vercel.json` is validated against a strict schema that rejects unknown keys — including `//`-prefixed pseudo-comments, which is why this explanation lives here rather than beside the setting. A first attempt put a `"//ignoreCommand"` array in the file and failed the deployment outright.
+
+Both Vercel projects (`onekof-platform`, `onekof-platform-web`) build `apps/web` and share this file, so it cannot distinguish them. Restoring previews for one project only is a dashboard change.
+
 ### The structural fix, outstanding
 
 Two Vercel projects building the same directory doubles every deployment permanently. Removing one would halve the cost with no change in behaviour — but that is a founder decision, not an engineering one (see `docs/architecture/DELETION_POLICY.md` §5).

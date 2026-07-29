@@ -4,32 +4,26 @@
   "buildCommand": "pnpm exec prisma generate --schema=../../packages/database/prisma/schema.prisma && pnpm exec next build",
   "devCommand": "next dev",
   "installCommand": "pnpm install --no-frozen-lockfile",
-  "regions": ["fra1"],
-
-  "//ignoreCommand": [
-    "Production deployments only. Founder decision 2026-07-29.",
-    "",
-    "Two Vercel projects (onekof-platform and onekof-platform-web) both build",
-    "this directory, so every push deployed the same commit TWICE. Combined",
-    "with a rapid push cadence that exhausted the 100/day free-tier limit.",
-    "",
-    "Semantics, stated because getting them backwards would disable",
-    "PRODUCTION rather than previews: Vercel skips the build when this command",
-    "exits 0, and proceeds when it exits 1. So production exits 1 (build) and",
-    "everything else exits 0 (skip).",
-    "",
-    "TRADE-OFF, deliberate and accepted: pull requests no longer get preview",
-    "URLs. Correctness is still gated by the GitHub Actions build (typecheck +",
-    "full test suite), which is unaffected. If previews are wanted back on one",
-    "project only, that is a Vercel dashboard change - this file is shared by",
-    "both projects and cannot tell them apart."
+  "regions": [
+    "fra1"
   ],
   "ignoreCommand": "if [ \"$VERCEL_ENV\" = \"production\" ]; then exit 1; else exit 0; fi",
-
   "crons": [
-    { "path": "/api/cron/trial-drip", "schedule": "0 5 * * *" },
-    { "path": "/api/cron/trial-expiry", "schedule": "0 6 * * *" },
-    { "path": "/api/cron/subscription-renewal", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/usage-enforcement", "schedule": "0 8 * * *" }
+    {
+      "path": "/api/cron/trial-drip",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/trial-expiry",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/subscription-renewal",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/usage-enforcement",
+      "schedule": "0 8 * * *"
+    }
   ]
 }
