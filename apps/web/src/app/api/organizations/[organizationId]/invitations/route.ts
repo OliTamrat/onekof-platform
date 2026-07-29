@@ -5,6 +5,7 @@ import { prisma } from '@onekof/database';
 import { generateTokenPair } from '@/lib/security/tokens';
 import { sendInvitationEmail } from '@/lib/email';
 import { emailSchema } from '@/lib/validation/schemas';
+import { logOrgAction, OrgActions } from '@/lib/security/org-audit';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -241,6 +242,28 @@ export async function POST(
       },
     });
 
+    // INSA audit trail: granting someone access to the organization is a
+    // privileged action. Recorded at creation, before the email attempt, so
+    // an invitation that fails to send still leaves a trace of the grant.
+    logOrgAction({
+      organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: membership.role,
+      action: OrgActions.INVITATION_SENT,
+      resource: 'invitation',
+      resourceId: invitation.id,
+      resourceName: normalizedEmail,
+      after: {
+        email: normalizedEmail,
+        role,
+        projectId: projectId || null,
+        projectRole: projectRole || null,
+        expiresAt: invitation.expiresAt.toISOString(),
+      },
+      request,
+    });
+
     // Build invitation URL
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
     const invitationUrl = `${baseUrl}/auth/accept-invite?token=${invitationToken}`;
@@ -321,8 +344,38 @@ export async function DELETE(
       );
     }
 
+    // Scope the lookup to this organization. The delete previously ran on the
+    // id alone, so an admin of one organization could revoke an invitation
+    // belonging to another simply by passing its id.
+    const invitation = await prisma.invitation.findFirst({
+      where: { id: invitationId, organizationId },
+      select: { id: true, email: true, role: true, projectId: true },
+    });
+
+    if (!invitation) {
+      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
+    }
+
     await prisma.invitation.delete({
-      where: { id: invitationId },
+      where: { id: invitation.id },
+    });
+
+    // INSA audit trail: revoking access is as privileged as granting it.
+    logOrgAction({
+      organizationId,
+      actorId: session.user.id,
+      actorEmail: session.user.email || '',
+      actorRole: membership.role,
+      action: OrgActions.INVITATION_REVOKED,
+      resource: 'invitation',
+      resourceId: invitation.id,
+      resourceName: invitation.email,
+      before: {
+        email: invitation.email,
+        role: invitation.role,
+        projectId: invitation.projectId,
+      },
+      request,
     });
 
     return NextResponse.json({ message: 'Invitation revoked' });
