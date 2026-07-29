@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { getConnections, getEvents } from '@/lib/integrations/store';
 import logger from '@/lib/logger';
 
@@ -13,13 +14,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) {
-      return NextResponse.json({ error: 'No organization' }, { status: 403 });
-    }
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    const connections = await getConnections(org.id);
-    const events = await getEvents(org.id);
+    const connections = await getConnections(ctx.organizationId);
+    const events = await getEvents(ctx.organizationId);
 
     // Strip sensitive tokens from response
     const safeConnections = connections.map(c => ({

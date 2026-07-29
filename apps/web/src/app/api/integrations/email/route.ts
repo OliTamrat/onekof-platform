@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { connectEmail, disconnectEmail, updateEmailConfig, updateEmailNotifications } from '@/lib/integrations/email';
 import { getConnection } from '@/lib/integrations/store';
 import logger from '@/lib/logger';
@@ -14,18 +15,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const action = req.nextUrl.searchParams.get('action');
 
     // Email doesn't need OAuth — direct activation
     if (action === 'oauth_url') {
-      await connectEmail(org.id, session.user.id);
+      await connectEmail(ctx.organizationId, session.user.id);
       return NextResponse.json({ url: '/dashboard/settings/integrations?connected=email' });
     }
 
-    const connection = await getConnection(org.id, 'email');
+    const connection = await getConnection(ctx.organizationId, 'email');
     return NextResponse.json({
       connected: !!connection && connection.status === 'connected',
       connection: connection ? {
@@ -50,18 +53,20 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const body = await req.json();
     const { notifications, ...configUpdates } = body;
 
     if (notifications) {
-      await updateEmailNotifications(org.id, notifications);
+      await updateEmailNotifications(ctx.organizationId, notifications);
     }
 
     if (Object.keys(configUpdates).length > 0) {
-      await updateEmailConfig(org.id, configUpdates);
+      await updateEmailConfig(ctx.organizationId, configUpdates);
     }
 
     return NextResponse.json({ success: true });
@@ -78,10 +83,12 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    await disconnectEmail(org.id);
+    await disconnectEmail(ctx.organizationId);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Email DELETE error', { error: error instanceof Error ? error.message : error });

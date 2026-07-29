@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { addWebhookEndpoint, removeWebhookEndpoint, updateWebhookEndpoint } from '@/lib/integrations/webhooks';
 import { avatarUrlSchema } from '@/lib/validation/schemas';
 import logger from '@/lib/logger';
@@ -14,8 +15,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const body = await req.json();
     const { name, url, events } = body;
@@ -33,7 +36,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const endpoint = await addWebhookEndpoint(org.id, { name, url, events });
+    const endpoint = await addWebhookEndpoint(ctx.organizationId, { name, url, events });
     return NextResponse.json({ endpoint });
   } catch (error) {
     logger.error('Webhook endpoint POST error', { error: error instanceof Error ? error.message : error });
@@ -48,8 +51,10 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const body = await req.json();
     const { endpointId, ...updates } = body;
@@ -69,7 +74,7 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    await updateWebhookEndpoint(org.id, endpointId, updates);
+    await updateWebhookEndpoint(ctx.organizationId, endpointId, updates);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Webhook endpoint PUT error', { error: error instanceof Error ? error.message : error });
@@ -84,15 +89,17 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const endpointId = req.nextUrl.searchParams.get('id');
     if (!endpointId) {
       return NextResponse.json({ error: 'Missing endpoint id' }, { status: 400 });
     }
 
-    await removeWebhookEndpoint(org.id, endpointId);
+    await removeWebhookEndpoint(ctx.organizationId, endpointId);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Webhook endpoint DELETE error', { error: error instanceof Error ? error.message : error });

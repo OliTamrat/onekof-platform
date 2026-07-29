@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { getJiraOAuthUrl, disconnectJira, updateJiraConfig, refreshJiraProjects } from '@/lib/integrations/jira';
 import { getConnection } from '@/lib/integrations/store';
 import { randomBytes } from 'crypto';
@@ -15,14 +16,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const action = req.nextUrl.searchParams.get('action');
 
     if (action === 'oauth_url') {
       const state = Buffer.from(JSON.stringify({
-        organizationId: org.id,
+        organizationId: ctx.organizationId,
         userId: session.user.id,
         provider: 'jira',
         nonce: randomBytes(16).toString('hex'),
@@ -33,11 +36,11 @@ export async function GET(req: NextRequest) {
     }
 
     if (action === 'refresh_projects') {
-      const projects = await refreshJiraProjects(org.id);
+      const projects = await refreshJiraProjects(ctx.organizationId);
       return NextResponse.json({ projects });
     }
 
-    const connection = await getConnection(org.id, 'jira');
+    const connection = await getConnection(ctx.organizationId, 'jira');
     return NextResponse.json({
       connected: !!connection && connection.status === 'connected',
       connection: connection ? {
@@ -62,11 +65,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
     const body = await req.json();
-    await updateJiraConfig(org.id, body);
+    await updateJiraConfig(ctx.organizationId, body);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Jira PUT error', { error: error instanceof Error ? error.message : error });
@@ -81,10 +86,12 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    await disconnectJira(org.id);
+    await disconnectJira(ctx.organizationId);
     return NextResponse.json({ success: true });
   } catch (error) {
     logger.error('Jira DELETE error', { error: error instanceof Error ? error.message : error });

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { resolveUserOrganization } from '@/lib/api-organization';
 import { testTeamsConnection } from '@/lib/integrations/microsoft-teams';
 import logger from '@/lib/logger';
 
@@ -13,10 +14,12 @@ export async function POST() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const org = session.user.organizations?.[0];
-    if (!org) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    // Resolve the organization from the REQUEST (subdomain), not from the
+    // user's first membership. See docs/architecture/API_AUTHORIZATION_AUDIT.md F2.
+    const { data: ctx, error: orgError } = await resolveUserOrganization();
+    if (orgError || !ctx) return orgError!;
 
-    const result = await testTeamsConnection(org.id);
+    const result = await testTeamsConnection(ctx.organizationId);
     return NextResponse.json(result);
   } catch (error) {
     logger.error('Teams test error', { error: error instanceof Error ? error.message : error });
