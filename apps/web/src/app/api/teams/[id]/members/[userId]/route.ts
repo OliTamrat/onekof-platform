@@ -181,6 +181,21 @@ export async function PATCH(
       data: { role },
     });
 
+    // INSA audit trail: the previous role is the useful half. Promoting
+    // someone to LEAD changes who can add and remove people from the team.
+    logOrgAction({
+      organizationId: team.organizationId,
+      actorId: authUser.id,
+      actorEmail: authUser.email || '',
+      actorRole: orgMembership?.role ?? 'MEMBER',
+      action: OrgActions.TEAM_MEMBER_ROLE_CHANGED,
+      resource: 'team_member',
+      resourceId: params.userId,
+      before: { teamId, role: memberToUpdate.role },
+      after: { teamId, role },
+      request: req,
+    });
+
     return NextResponse.json({
       member: {
         id: updatedMember.id,
