@@ -129,20 +129,49 @@ Until this is set, `blindIndex()` throws and **every patient write fails**.
 That is deliberate: a missing key must not silently degrade to storing
 identifiers in a form that can be looked up without decryption.
 
-Generate it yourself rather than taking one from a transcript — a key pasted
-into a chat log, a terminal history or an issue comment is a key that has
-been disclosed:
+### NOT on Vercel
+
+An earlier version of this document said to set it in Vercel Production. That
+was wrong and would have achieved nothing.
+
+`residency.ts` resolves `platform === 'vercel'` to **Tier 3**, so
+`canStorePatientData()` returns false and every patient route answers 404 —
+for everybody, including an owner holding MANAGE. `requirePatientAccess`
+checks residency *before* identity, and `blindIndex()` is called only from
+`app/api/patients/route.ts`, which is behind that gate. **On Vercel the key
+would sit unread.**
+
+Setting it there is harmless but inert, and it invites the belief that the
+Vercel deployment can hold patient data. It cannot, by design.
+
+### Where it goes: a Tier 1 or Tier 2 deployment
+
+`docker-compose.prod.yml` loads `env_file: .env.production` from the
+deployment directory (`/opt/onekof` per `deploy-et.yml`).
 
 ```bash
-openssl rand -base64 48
+ssh <et-vm>
+cd /opt/onekof
+
+# Generate and append in one step so the key never enters shell history.
+echo "BLIND_INDEX_KEY=$(openssl rand -base64 48)" >> .env.production
+
+docker compose -f docker-compose.prod.yml up -d onekof-web
 ```
 
-Minimum 32 characters; the command above yields 64. Set it as
-`BLIND_INDEX_KEY` in **every** environment that may hold patient data:
+Minimum 32 characters; the command above yields 64.
 
-- Vercel → project → Settings → Environment Variables → Production
-- any Tier 1 (EthioTelecom Cloud) or Tier 2 (on-premise) deployment's
-  `.env.production` on the VM
+### Before the ECS VM exists
+
+The VM is not provisioned yet, but **M1 and M2 can be exercised today**.
+`docker-compose.tier-sim.yml` sets `APP_PLATFORM: self-hosted` with
+`APP_REGION: docker-local-1` — no `etc-` prefix, so it resolves to **Tier 2**,
+which is a tier permitted to hold patient data. Add `BLIND_INDEX_KEY` to that
+environment and the whole M1/M2 surface works locally.
+
+Use a **different, throwaway key** for the simulation. Tiers hold separate
+data, and a key that has been on a developer laptop should never be the one
+protecting a hospital's patients.
 
 ### The key is not rotatable in place
 

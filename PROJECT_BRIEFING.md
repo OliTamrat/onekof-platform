@@ -504,6 +504,50 @@ All docs organized in `docs/` — see `docs/INDEX.html` for full branded index.
 3. Order now (maximize INSA window) or wait for signed LOI?
 4. Which DAPS Analytics account covers the payment?
 
+### Waiting on this VM (2026-07-29)
+
+**`BLIND_INDEX_KEY` cannot be set until a Tier 1/2 deployment exists.**
+
+M1 (patient registry) and M2 (care coordination) are built, enforced and
+applied to the database. They are **non-functional** until this key is set,
+because `blindIndex()` throws without it — deliberately, so a missing key
+cannot silently degrade to storing identifiers in a lookup-able form.
+
+It does **not** go in Vercel. Vercel is Tier 3; `canStorePatientData()`
+returns false there and every patient route answers 404 regardless of the
+key. It goes in `/opt/onekof/.env.production` on the ET VM:
+
+```bash
+echo "BLIND_INDEX_KEY=$(openssl rand -base64 48)" >> .env.production
+```
+
+Not rotatable in place — changing it orphans every stored blind index.
+
+**Tier check when the VM is built.** `docker-compose.prod.yml` currently
+defaults to `APP_DEPLOYMENT_TIER=2` and `APP_REGION=et-addis-1`. If the ECS
+box is meant to report as Tier 1, set `APP_DEPLOYMENT_TIER=1` and an
+`etc-`-prefixed region. Both tiers may hold patient data, so this does not
+block anything — it changes the posture the platform reports, which matters
+in a compliance pack.
+
+Full detail: `docs/architecture/M1_ACTIVATION_RUNBOOK.md`.
+
+### Docker image is 64 commits stale
+
+Last tag **v1.3.0 (2026-07-23)**. `docker-build.yml` only fires on a
+`v*.*.*` tag or manual dispatch, so the image on GHCR predates everything
+built since: sprints, department/workstream classification, M1, M2, the ETB
+currency default, and every authorization fix from the 2026-07-29 audit.
+
+A Tier 1/2 deployment from the current image would ship a week-old app
+against a database migrated to today's schema. **Tag before deploying**, not
+after.
+
+Sequencing note: `deploy-et.yml` triggers on `docker-build.yml` completing on
+master, so tagging while no VM exists will build the image successfully and
+then fail at the SSH step. Either accept that noise or hold the tag until the
+VM is reachable.
+
 ---
 
 ## INSA TEST ACCOUNTS
