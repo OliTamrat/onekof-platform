@@ -99,8 +99,10 @@ export interface ChangeDescription {
   field: string;
   from?: string;
   to?: string;
-  /** Free text rather than a transition — a comment body. */
+  /** Free text rather than a transition — a comment body, rendered quoted. */
   text?: string;
+  /** A plain statement about the field, e.g. "edited". Never quoted. */
+  note?: string;
 }
 
 /**
@@ -140,6 +142,14 @@ export function describeChange(
   // A comment carries its own text, not a transition.
   if (typeof m.preview === 'string' && m.preview.trim().length > 0) {
     return { field: 'comment', text: m.preview };
+  }
+
+  // Long text records that it changed, not what it became — the description
+  // can be thousands of characters. "description edited" is what an admin
+  // needs in order to know to go and look. `note`, not `text`: `text` is
+  // rendered as a quotation and this is not something anyone said.
+  if (m.changed === true && typeof m.field === 'string') {
+    return { field: m.field.replace(/_/g, ' '), note: 'edited' };
   }
 
   // Classification records nested {department, workstream} objects.
@@ -459,7 +469,9 @@ export function ActivityTimeline({
                       {change && !change.text && (
                         <div className="flex flex-wrap items-center gap-1.5 mb-3 text-sm">
                           <span className="text-slate-500 dark:text-slate-400">{change.field}</span>
-                          {change.from !== undefined && change.to !== undefined ? (
+                          {change.note ? (
+                            <span className="text-slate-600 dark:text-slate-300 font-medium">{change.note}</span>
+                          ) : change.from !== undefined && change.to !== undefined ? (
                             <>
                               <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 line-through decoration-slate-400">
                                 {change.from}

@@ -150,3 +150,53 @@ describe('the card shows what changed — for every shape the routes emit', () =
     ).toBe('story points');
   });
 });
+
+/**
+ * The PATCH route can change fifteen fields and used to record five. A member
+ * could rename an assigned task, rewrite its description and move its due
+ * date with the feed showing nothing — which is the actual reason a project
+ * admin could not see what had been done. These are the shapes the generic
+ * recorder now emits.
+ */
+describe('field edits that previously produced no activity at all', () => {
+  it('title: from → to', () => {
+    expect(
+      describeChange({ action: 'UPDATED', metadata: { field: 'title', from: 'Old name', to: 'New name' } })
+    ).toEqual({ field: 'title', from: 'old name', to: 'new name' });
+  });
+
+  it('due date: from → to', () => {
+    expect(
+      describeChange({
+        action: 'UPDATED',
+        metadata: { field: 'due date', from: '2026-08-01T00:00:00.000Z', to: '2026-09-01T00:00:00.000Z' },
+      })
+    ).toMatchObject({ field: 'due date' });
+  });
+
+  it('estimate set where there was none reads "none → 8"', () => {
+    expect(
+      describeChange({ action: 'UPDATED', metadata: { field: 'estimate', from: null, to: '8' } })
+    ).toEqual({ field: 'estimate', from: 'none', to: '8' });
+  });
+
+  it('labels: joined rather than rendered as an array', () => {
+    expect(
+      describeChange({ action: 'UPDATED', metadata: { field: 'labels', from: 'bug', to: 'bug, urgent' } })
+    ).toEqual({ field: 'labels', from: 'bug', to: 'bug, urgent' });
+  });
+
+  it('description records THAT it changed, not the body', () => {
+    // A description can be thousands of characters. Recording it in full
+    // would bloat every row and push arbitrary user text into a feed
+    // rendered elsewhere. `note`, not `text`, so it is not quoted as though
+    // somebody said it.
+    const out = describeChange({ action: 'UPDATED', metadata: { field: 'description', changed: true } });
+    expect(out).toEqual({ field: 'description', note: 'edited' });
+    expect(out?.text).toBeUndefined();
+  });
+
+  it('an elided change without a field name is not renderable', () => {
+    expect(describeChange({ action: 'UPDATED', metadata: { changed: true } })).toBeNull();
+  });
+});
