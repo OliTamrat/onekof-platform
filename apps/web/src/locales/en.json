@@ -1942,7 +1942,10 @@
     "equipment": "Equipment",
     "safety": "Safety Management",
     "patients": "Patients",
-    "careWork": "Care work"
+    "careWork": "Care work",
+    "outreach": "Outreach",
+    "facilityOperations": "Facility Operations",
+    "siteOperations": "Site Operations"
   },
   "codeConnect": {
     "title": "Connect Repository",

@@ -7,6 +7,12 @@
       "items": []
     },
     {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -38,23 +44,6 @@
       ]
     },
     {
-      "id": "teams",
-      "nameKey": "sidebar.teams",
-      "href": "/dashboard/teams",
-      "items": [
-        {
-          "nameKey": "sidebar.members",
-          "href": "/dashboard/members"
-        }
-      ]
-    },
-    {
-      "id": "budget",
-      "nameKey": "sidebar.budget",
-      "href": "/dashboard/budget",
-      "items": []
-    },
-    {
       "id": "operations",
       "nameKey": "sidebar.operations",
       "href": "/dashboard/operations",
@@ -82,6 +71,17 @@
         {
           "nameKey": "sidebar.safety",
           "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
         }
       ]
     },
@@ -144,6 +144,12 @@
       "items": []
     },
     {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -175,23 +181,6 @@
       ]
     },
     {
-      "id": "teams",
-      "nameKey": "sidebar.teams",
-      "href": "/dashboard/teams",
-      "items": [
-        {
-          "nameKey": "sidebar.members",
-          "href": "/dashboard/members"
-        }
-      ]
-    },
-    {
-      "id": "budget",
-      "nameKey": "sidebar.budget",
-      "href": "/dashboard/budget",
-      "items": []
-    },
-    {
       "id": "operations",
       "nameKey": "sidebar.operations",
       "href": "/dashboard/operations",
@@ -219,6 +208,17 @@
         {
           "nameKey": "sidebar.safety",
           "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
         }
       ]
     },
@@ -312,6 +312,12 @@
       ]
     },
     {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
       "id": "teams",
       "nameKey": "sidebar.teams",
       "href": "/dashboard/teams",
@@ -323,14 +329,8 @@
       ]
     },
     {
-      "id": "budget",
-      "nameKey": "sidebar.budget",
-      "href": "/dashboard/budget",
-      "items": []
-    },
-    {
       "id": "marketing",
-      "nameKey": "sidebar.marketing",
+      "nameKey": "sidebar.outreach",
       "href": "/dashboard/marketing",
       "items": [
         {
@@ -616,23 +616,6 @@
       ]
     },
     {
-      "id": "teams",
-      "nameKey": "sidebar.teams",
-      "href": "/dashboard/teams",
-      "items": [
-        {
-          "nameKey": "sidebar.members",
-          "href": "/dashboard/members"
-        }
-      ]
-    },
-    {
-      "id": "budget",
-      "nameKey": "sidebar.budget",
-      "href": "/dashboard/budget",
-      "items": []
-    },
-    {
       "id": "research",
       "nameKey": "sidebar.research",
       "href": "/dashboard/research",
@@ -658,6 +641,23 @@
           "href": "/dashboard/research/inspections"
         }
       ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
     },
     {
       "id": "knowledge",
@@ -689,6 +689,52 @@
       "nameKey": "sidebar.home",
       "href": "/dashboard",
       "items": []
+    },
+    {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
     },
     {
       "id": "projects",
@@ -737,52 +783,6 @@
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
       "items": []
-    },
-    {
-      "id": "operations",
-      "nameKey": "sidebar.operations",
-      "href": "/dashboard/operations",
-      "items": [
-        {
-          "nameKey": "sidebar.incidents",
-          "href": "/dashboard/operations/incidents"
-        },
-        {
-          "nameKey": "sidebar.monitoring",
-          "href": "/dashboard/operations/monitoring"
-        },
-        {
-          "nameKey": "sidebar.checklists",
-          "href": "/dashboard/operations/checklists"
-        },
-        {
-          "nameKey": "sidebar.facilities",
-          "href": "/dashboard/operations/facilities"
-        },
-        {
-          "nameKey": "sidebar.equipment",
-          "href": "/dashboard/operations/equipment"
-        },
-        {
-          "nameKey": "sidebar.safety",
-          "href": "/dashboard/operations/safety"
-        }
-      ]
-    },
-    {
-      "id": "medical",
-      "nameKey": "sidebar.medical",
-      "href": "/dashboard/medical",
-      "items": [
-        {
-          "nameKey": "sidebar.patients",
-          "href": "/dashboard/patients"
-        },
-        {
-          "nameKey": "sidebar.careWork",
-          "href": "/dashboard/issues?department=medical"
-        }
-      ]
     },
     {
       "id": "research",
@@ -843,6 +843,52 @@
       "items": []
     },
     {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -889,52 +935,6 @@
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
       "items": []
-    },
-    {
-      "id": "operations",
-      "nameKey": "sidebar.operations",
-      "href": "/dashboard/operations",
-      "items": [
-        {
-          "nameKey": "sidebar.incidents",
-          "href": "/dashboard/operations/incidents"
-        },
-        {
-          "nameKey": "sidebar.monitoring",
-          "href": "/dashboard/operations/monitoring"
-        },
-        {
-          "nameKey": "sidebar.checklists",
-          "href": "/dashboard/operations/checklists"
-        },
-        {
-          "nameKey": "sidebar.facilities",
-          "href": "/dashboard/operations/facilities"
-        },
-        {
-          "nameKey": "sidebar.equipment",
-          "href": "/dashboard/operations/equipment"
-        },
-        {
-          "nameKey": "sidebar.safety",
-          "href": "/dashboard/operations/safety"
-        }
-      ]
-    },
-    {
-      "id": "medical",
-      "nameKey": "sidebar.medical",
-      "href": "/dashboard/medical",
-      "items": [
-        {
-          "nameKey": "sidebar.patients",
-          "href": "/dashboard/patients"
-        },
-        {
-          "nameKey": "sidebar.careWork",
-          "href": "/dashboard/issues?department=medical"
-        }
-      ]
     },
     {
       "id": "research",
@@ -995,6 +995,52 @@
       "items": []
     },
     {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -1041,52 +1087,6 @@
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
       "items": []
-    },
-    {
-      "id": "operations",
-      "nameKey": "sidebar.operations",
-      "href": "/dashboard/operations",
-      "items": [
-        {
-          "nameKey": "sidebar.incidents",
-          "href": "/dashboard/operations/incidents"
-        },
-        {
-          "nameKey": "sidebar.monitoring",
-          "href": "/dashboard/operations/monitoring"
-        },
-        {
-          "nameKey": "sidebar.checklists",
-          "href": "/dashboard/operations/checklists"
-        },
-        {
-          "nameKey": "sidebar.facilities",
-          "href": "/dashboard/operations/facilities"
-        },
-        {
-          "nameKey": "sidebar.equipment",
-          "href": "/dashboard/operations/equipment"
-        },
-        {
-          "nameKey": "sidebar.safety",
-          "href": "/dashboard/operations/safety"
-        }
-      ]
-    },
-    {
-      "id": "medical",
-      "nameKey": "sidebar.medical",
-      "href": "/dashboard/medical",
-      "items": [
-        {
-          "nameKey": "sidebar.patients",
-          "href": "/dashboard/patients"
-        },
-        {
-          "nameKey": "sidebar.careWork",
-          "href": "/dashboard/issues?department=medical"
-        }
-      ]
     },
     {
       "id": "research",
@@ -1147,6 +1147,37 @@
       "items": []
     },
     {
+      "id": "operations",
+      "nameKey": "sidebar.siteOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -1178,6 +1209,12 @@
       ]
     },
     {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
       "id": "teams",
       "nameKey": "sidebar.teams",
       "href": "/dashboard/teams",
@@ -1185,43 +1222,6 @@
         {
           "nameKey": "sidebar.members",
           "href": "/dashboard/members"
-        }
-      ]
-    },
-    {
-      "id": "budget",
-      "nameKey": "sidebar.budget",
-      "href": "/dashboard/budget",
-      "items": []
-    },
-    {
-      "id": "operations",
-      "nameKey": "sidebar.operations",
-      "href": "/dashboard/operations",
-      "items": [
-        {
-          "nameKey": "sidebar.incidents",
-          "href": "/dashboard/operations/incidents"
-        },
-        {
-          "nameKey": "sidebar.monitoring",
-          "href": "/dashboard/operations/monitoring"
-        },
-        {
-          "nameKey": "sidebar.checklists",
-          "href": "/dashboard/operations/checklists"
-        },
-        {
-          "nameKey": "sidebar.facilities",
-          "href": "/dashboard/operations/facilities"
-        },
-        {
-          "nameKey": "sidebar.equipment",
-          "href": "/dashboard/operations/equipment"
-        },
-        {
-          "nameKey": "sidebar.safety",
-          "href": "/dashboard/operations/safety"
         }
       ]
     },

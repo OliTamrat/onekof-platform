@@ -1987,7 +1987,10 @@
     "equipment": "መሳሪያዎች",
     "safety": "የደህንነት አስተዳደር",
     "patients": "ታካሚዎች",
-    "careWork": "የእንክብካቤ ሥራ"
+    "careWork": "የእንክብካቤ ሥራ",
+    "outreach": "ተደራሽነት",
+    "facilityOperations": "የተቋም ተግባራት",
+    "siteOperations": "የግንባታ ቦታ ተግባራት"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ አገናኝ",

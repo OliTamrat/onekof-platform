@@ -5,14 +5,20 @@ import { getAllEditions, getEdition, BASE_EDITION } from '@/lib/navigation/editi
 import fixture from './fixtures/sidebar-parity.json';
 
 /**
- * E1 parity proof (SIDEBAR_EDITIONS_ARCHITECTURE.md §5).
+ * Full-output regression net (SIDEBAR_EDITIONS_ARCHITECTURE.md §5).
  *
- * The fixture was captured from the PRE-editions renderer — the substring-
- * ladder implementation — immediately before the refactor, in this same
- * change. E1's contract is that replacing the mechanism changes NOTHING an
- * organization sees. When E2 adds per-edition order and vocabulary, the
- * fixture entries for the affected editions are regenerated in that same
- * commit, so the diff shows exactly which editions changed and how.
+ * History of the fixture, which is its chain of custody:
+ *  - E1: captured from the PRE-editions renderer (the substring ladder)
+ *    immediately before the refactor, proving the mechanism swap changed
+ *    nothing an organization sees.
+ *  - E2: regenerated in the commit that added per-edition order and
+ *    vocabulary — the five changed editions changed here ON PURPOSE, and
+ *    sidebar-editions.test.ts states each change by hand. Business, the
+ *    legacy fail-open path and the settings-win path are byte-identical
+ *    to the E1 capture.
+ *
+ * Any future diff to this file must come with a hand-written expectation
+ * in sidebar-editions.test.ts explaining it.
  */
 
 const shape = (orgType: string | null, industry: string | null) =>

@@ -16,10 +16,8 @@
  * resurrect one the customer disabled. Extras attach to a host section and
  * disappear with it.
  *
- * E1 STATE: all six editions are deliberately EMPTY. This phase ships the
- * mechanism with zero visible change, proven by parity fixtures captured
- * from the pre-refactor renderer. E2 fills order and vocabulary; E3 fills
- * sector extras.
+ * E2 STATE: order and vocabulary are live for all six editions; sector
+ * extras arrive in E3.
  */
 
 import type { LucideIcon } from 'lucide-react';
@@ -76,38 +74,64 @@ export const BASE_EDITION: SidebarEdition = {
   extras: [],
 };
 
+/**
+ * Ministry / Government. Budget leads: public-fund accountability is the
+ * job, so it sits where the eye lands first, ahead of generic PM.
+ */
 export const MINISTRY_EDITION: SidebarEdition = {
   id: 'ministry',
-  lead: [],
+  lead: ['budget', 'projects', 'operations'],
   vocabulary: {},
   extras: [],
 };
 
+/**
+ * NGO / Non-Profit. Projects and Budget lead (donor-funded delivery), and
+ * Marketing is renamed Outreach — no NGO calls stakeholder engagement
+ * "marketing".
+ */
 export const NGO_EDITION: SidebarEdition = {
   id: 'ngo',
-  lead: [],
-  vocabulary: {},
+  lead: ['projects', 'budget'],
+  vocabulary: { 'sidebar.marketing': 'sidebar.outreach' },
   extras: [],
 };
 
+/**
+ * Education. Research follows Projects — it is the department the sector
+ * runs on (Q3 is still open with the founder; membership is untouched
+ * here, only emphasis).
+ */
 export const EDUCATION_EDITION: SidebarEdition = {
   id: 'education',
-  lead: [],
+  lead: ['projects', 'research'],
   vocabulary: {},
   extras: [],
 };
 
+/**
+ * Healthcare. Medical leads — a hospital administrator should not scroll
+ * past generic PM sections to reach the module that names their work.
+ * Operations is renamed Facility Operations: that is what M4's
+ * Facilities/Equipment/Safety workstreams are to a hospital.
+ */
 export const HEALTHCARE_EDITION: SidebarEdition = {
   id: 'healthcare',
-  lead: [],
-  vocabulary: {},
+  lead: ['medical', 'operations', 'projects'],
+  vocabulary: { 'sidebar.operations': 'sidebar.facilityOperations' },
   extras: [],
 };
 
+/**
+ * Construction / Infrastructure. Operations leads (site delivery is the
+ * business) and is renamed Site Operations. This is the Q4 answer:
+ * Construction and Ministry carried byte-identical sidebars until this
+ * edition existed.
+ */
 export const CONSTRUCTION_EDITION: SidebarEdition = {
   id: 'construction',
-  lead: [],
-  vocabulary: {},
+  lead: ['operations', 'projects', 'budget'],
+  vocabulary: { 'sidebar.operations': 'sidebar.siteOperations' },
   extras: [],
 };
 
