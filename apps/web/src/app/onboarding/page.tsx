@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/language-context';
 import { findSubdomainBase } from '@/lib/routing/subdomain';
+import { getEditionHighlightKeys } from '@/lib/navigation/edition-summary';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
 // Color token map — used to build Tailwind classes for icon boxes per org type
@@ -35,14 +36,16 @@ function OnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Organization types with icons and features
+  // Organization types. The capability chips are GENERATED from the same
+  // preset + edition data that renders the sidebar (S7): what a card
+  // claims is what the sidebar shows after onboarding, by construction.
   const ORG_TYPES = [
     {
       id: 'personal',
       label: t('onboarding.personalWorkspace'),
       icon: Users,
       color: 'teal',
-      features: [t('onboarding.personalTasks'), t('onboarding.soloProjects'), t('onboarding.quickSetup'), t('onboarding.upgradeAnytime')],
+      features: getEditionHighlightKeys('personal').map((k) => t(k)),
       description: t('onboarding.forIndividual')
     },
     {
@@ -50,7 +53,7 @@ function OnboardingContent() {
       label: t('onboarding.govMinistry'),
       icon: Landmark,
       color: 'blue',
-      features: [t('onboarding.budgetTracking'), t('onboarding.capFormalCycles'), t('onboarding.capOperations'), t('onboarding.ethiopianCalendar')],
+      features: getEditionHighlightKeys('government').map((k) => t(k)),
       description: t('onboarding.forEthGov')
     },
     {
@@ -58,7 +61,7 @@ function OnboardingContent() {
       label: t('onboarding.privateCompany'),
       icon: Briefcase,
       color: 'purple',
-      features: [t('onboarding.agileWorkflows'), t('onboarding.clientProjects'), t('onboarding.teamCollaboration'), t('onboarding.capAutomationsAi')],
+      features: getEditionHighlightKeys('private').map((k) => t(k)),
       description: t('onboarding.forTechCompanies')
     },
     {
@@ -66,7 +69,7 @@ function OnboardingContent() {
       label: t('onboarding.ngoIngo'),
       icon: HeartHandshake,
       color: 'emerald',
-      features: [t('onboarding.multiCurrency'), t('onboarding.capBudgetApproval'), t('onboarding.capFieldData'), t('onboarding.capCoordination')],
+      features: getEditionHighlightKeys('ngo').map((k) => t(k)),
       description: t('onboarding.forNonProfit')
     },
     {
@@ -74,7 +77,7 @@ function OnboardingContent() {
       label: t('onboarding.educationalInstitution'),
       icon: GraduationCap,
       color: 'amber',
-      features: [t('onboarding.researchTracking'), t('onboarding.ethiopianCalendar'), t('onboarding.capBudgetApproval'), t('onboarding.capCoordination')],
+      features: getEditionHighlightKeys('education').map((k) => t(k)),
       description: t('onboarding.forUniversities')
     },
     {
@@ -82,7 +85,7 @@ function OnboardingContent() {
       label: t('onboarding.constructionEngineering'),
       icon: Construction,
       color: 'orange',
-      features: [t('onboarding.capPlansMaterials'), t('onboarding.capInspections'), t('onboarding.capOperations'), t('onboarding.capBudgetApproval')],
+      features: getEditionHighlightKeys('construction').map((k) => t(k)),
       description: t('onboarding.forConstruction')
     },
     {
@@ -90,7 +93,7 @@ function OnboardingContent() {
       label: t('onboarding.healthcare'),
       icon: HeartPulse,
       color: 'red',
-      features: [t('onboarding.capOperations'), t('onboarding.capInspections'), t('onboarding.capBudgetApproval'), t('onboarding.capCoordination')],
+      features: getEditionHighlightKeys('healthcare').map((k) => t(k)),
       description: t('onboarding.forHospitals')
     },
   ];
