@@ -1949,7 +1949,14 @@
     "equipment": "Meeshaalee",
     "safety": "Bulchiinsa Nageenyaa",
     "patients": "Dhukkubsattoota",
-    "careWork": "Hojii kunuunsaa"
+    "careWork": "Hojii kunuunsaa",
+    "outreach": "Qunnamtii Hawaasaa",
+    "facilityOperations": "Hojiiwwan Dhaabbataa",
+    "siteOperations": "Hojiiwwan Iddoo Ijaarsaa",
+    "procurement": "Bittaa",
+    "grants": "Deeggarsa",
+    "impact": "Dhiibbaa",
+    "sites": "Bakkeewwan"
   },
   "codeConnect": {
     "title": "Kuusaa Walitti Hidhi",

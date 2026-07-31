@@ -149,6 +149,14 @@ export interface OrganizationPreset {
   enabledSections: DashboardSectionId[];
   features: OrganizationFeatures;
   recommendedFor: OrganizationType[];
+  /**
+   * Which sidebar edition this preset renders under (S2). The preset owns
+   * MEMBERSHIP (enabledSections); the edition owns order, vocabulary and
+   * sector extras. Keeping the pointer on the preset means the org-type
+   * alias map (ministry/government, healthcare/hospital/clinic, …) is
+   * maintained in exactly one place.
+   */
+  editionId: import('@/lib/navigation/editions').SidebarEditionId;
 }
 
 // Default enabled features for each section

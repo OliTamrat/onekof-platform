@@ -1993,7 +1993,14 @@
     "equipment": "መሳርሒታት",
     "safety": "ምሕደራ ድሕነት",
     "patients": "ሕሙማት",
-    "careWork": "ናይ ክንክን ስራሕ"
+    "careWork": "ናይ ክንክን ስራሕ",
+    "outreach": "ተበጻሕነት",
+    "facilityOperations": "ስርሒታት ትካል",
+    "siteOperations": "ስርሒታት ቦታ ህንጻ",
+    "procurement": "ግዝኢ",
+    "grants": "ሓገዛት",
+    "impact": "ጽልዋ",
+    "sites": "ቦታታት"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ ኣራኽብ",

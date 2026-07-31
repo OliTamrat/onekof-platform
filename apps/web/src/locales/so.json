@@ -1987,7 +1987,14 @@
     "equipment": "Qalabka",
     "safety": "Maamulka Badbaadada",
     "patients": "Bukaanka",
-    "careWork": "Shaqada daryeelka"
+    "careWork": "Shaqada daryeelka",
+    "outreach": "Wacyigelin",
+    "facilityOperations": "Hawlgallada Xarunta",
+    "siteOperations": "Hawlgallada Goobta",
+    "procurement": "Iibsasho",
+    "grants": "Deeqaha",
+    "impact": "Saamaynta",
+    "sites": "Goobaha"
   },
   "codeConnect": {
     "title": "Ku xidh Kaydka",

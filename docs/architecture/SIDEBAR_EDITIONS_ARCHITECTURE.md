@@ -1,8 +1,26 @@
 # Sidebar Editions Architecture — Per-Organization-Type Navigation
 
-> **Status: v1.0 — PROPOSED (awaiting founder approval of Decisions S1–S9)**
+> **Status: v1.1 — APPROVED (S1–S9 approved by the founder, 2026-07-31) — E1–E4 BUILT**
 > Author: Oli Tamrat, CTO — DAPS Analytics PLC
 > Method follows `SPRINT_AND_SETTINGS_ARCHITECTURE.md`, `DEPARTMENT_WORKSTREAMS_ARCHITECTURE.md` and `MEDICAL_MODULE_ARCHITECTURE.md`: decisions stated explicitly, approved before building, phased.
+
+> **v1.1 — approval and build record (2026-07-31).**
+> The founder approved S1–S9 in full and authorized the build. All four
+> phases shipped the same day, each as its own commit with the promised
+> shape: E1 mechanism with parity fixtures proving zero visible change;
+> E2 order + vocabulary with hand-written expectations and the S6
+> five-locale guard; E3 sector extras (Procurement, Grants, Impact,
+> Courses, Sites) and the deletion of System B's navigation; E4 onboarding
+> chips generated from the editions — the S7 reachability test rejected a
+> drifted "Analytics" claim on its very first run.
+>
+> Open questions after approval: **Q1** (scope of `compliance` and
+> `resources`) remains open — both stay unwired per S8's own text.
+> **Q2** resolved as recommended: order is a sector property, no customer
+> override. **Q3** (Education's thinness) remains open — E2 changed its
+> emphasis only, membership untouched. **Q4** answered by the
+> Construction edition: Operations-led order, "Site Operations" naming,
+> and the Sites entry now distinguish it from Ministry.
 
 ---
 

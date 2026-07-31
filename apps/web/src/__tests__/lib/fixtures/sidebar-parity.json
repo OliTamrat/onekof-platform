@@ -1,0 +1,1828 @@
+{
+  "government": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": [
+        {
+          "nameKey": "sidebar.procurement",
+          "href": "/dashboard/procurement"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "ministry": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": [
+        {
+          "nameKey": "sidebar.procurement",
+          "href": "/dashboard/procurement"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "ngo": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        },
+        {
+          "nameKey": "sidebar.impact",
+          "href": "/dashboard/impact"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": [
+        {
+          "nameKey": "sidebar.grants",
+          "href": "/dashboard/grants"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nameKey": "sidebar.outreach",
+      "href": "/dashboard/marketing",
+      "items": [
+        {
+          "nameKey": "sidebar.socialMedia",
+          "href": "/dashboard/marketing/social"
+        },
+        {
+          "nameKey": "sidebar.analytics",
+          "href": "/dashboard/marketing/analytics"
+        },
+        {
+          "nameKey": "sidebar.campaigns",
+          "href": "/dashboard/marketing/campaigns"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "business": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "development",
+      "nameKey": "sidebar.development",
+      "href": "/dashboard/development",
+      "items": [
+        {
+          "nameKey": "sidebar.backlog",
+          "href": "/dashboard/development/backlog"
+        },
+        {
+          "nameKey": "sidebar.releases",
+          "href": "/dashboard/development/releases"
+        },
+        {
+          "nameKey": "sidebar.codeReview",
+          "href": "/dashboard/development/code"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nameKey": "sidebar.marketing",
+      "href": "/dashboard/marketing",
+      "items": [
+        {
+          "nameKey": "sidebar.socialMedia",
+          "href": "/dashboard/marketing/social"
+        },
+        {
+          "nameKey": "sidebar.analytics",
+          "href": "/dashboard/marketing/analytics"
+        },
+        {
+          "nameKey": "sidebar.campaigns",
+          "href": "/dashboard/marketing/campaigns"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.automation",
+          "href": "/dashboard/automations"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        },
+        {
+          "nameKey": "sidebar.courses",
+          "href": "/dashboard/courses"
+        }
+      ]
+    }
+  ],
+  "healthcare": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "hospital": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "clinic": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.facilityOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "construction": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.siteOperations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        },
+        {
+          "nameKey": "sidebar.sites",
+          "href": "/dashboard/sites"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "private": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "development",
+      "nameKey": "sidebar.development",
+      "href": "/dashboard/development",
+      "items": [
+        {
+          "nameKey": "sidebar.backlog",
+          "href": "/dashboard/development/backlog"
+        },
+        {
+          "nameKey": "sidebar.releases",
+          "href": "/dashboard/development/releases"
+        },
+        {
+          "nameKey": "sidebar.codeReview",
+          "href": "/dashboard/development/code"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nameKey": "sidebar.marketing",
+      "href": "/dashboard/marketing",
+      "items": [
+        {
+          "nameKey": "sidebar.socialMedia",
+          "href": "/dashboard/marketing/social"
+        },
+        {
+          "nameKey": "sidebar.analytics",
+          "href": "/dashboard/marketing/analytics"
+        },
+        {
+          "nameKey": "sidebar.campaigns",
+          "href": "/dashboard/marketing/campaigns"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.automation",
+          "href": "/dashboard/automations"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "personal": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "development",
+      "nameKey": "sidebar.development",
+      "href": "/dashboard/development",
+      "items": [
+        {
+          "nameKey": "sidebar.backlog",
+          "href": "/dashboard/development/backlog"
+        },
+        {
+          "nameKey": "sidebar.releases",
+          "href": "/dashboard/development/releases"
+        },
+        {
+          "nameKey": "sidebar.codeReview",
+          "href": "/dashboard/development/code"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nameKey": "sidebar.marketing",
+      "href": "/dashboard/marketing",
+      "items": [
+        {
+          "nameKey": "sidebar.socialMedia",
+          "href": "/dashboard/marketing/social"
+        },
+        {
+          "nameKey": "sidebar.analytics",
+          "href": "/dashboard/marketing/analytics"
+        },
+        {
+          "nameKey": "sidebar.campaigns",
+          "href": "/dashboard/marketing/campaigns"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.automation",
+          "href": "/dashboard/automations"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "__legacy_null": [
+    {
+      "id": "home",
+      "nameKey": "sidebar.home",
+      "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "nameKey": "sidebar.projects",
+      "href": "/dashboard/projects",
+      "items": [
+        {
+          "nameKey": "sidebar.allProjects",
+          "href": "/dashboard/projects"
+        },
+        {
+          "nameKey": "sidebar.issues",
+          "href": "/dashboard/issues"
+        },
+        {
+          "nameKey": "sidebar.calendar",
+          "href": "/dashboard/calendar"
+        },
+        {
+          "nameKey": "sidebar.timeline",
+          "href": "/dashboard/timeline"
+        },
+        {
+          "nameKey": "sidebar.goals",
+          "href": "/dashboard/goals"
+        },
+        {
+          "nameKey": "sidebar.reports",
+          "href": "/dashboard/reports"
+        }
+      ]
+    },
+    {
+      "id": "teams",
+      "nameKey": "sidebar.teams",
+      "href": "/dashboard/teams",
+      "items": [
+        {
+          "nameKey": "sidebar.members",
+          "href": "/dashboard/members"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "nameKey": "sidebar.budget",
+      "href": "/dashboard/budget",
+      "items": []
+    },
+    {
+      "id": "development",
+      "nameKey": "sidebar.development",
+      "href": "/dashboard/development",
+      "items": [
+        {
+          "nameKey": "sidebar.backlog",
+          "href": "/dashboard/development/backlog"
+        },
+        {
+          "nameKey": "sidebar.releases",
+          "href": "/dashboard/development/releases"
+        },
+        {
+          "nameKey": "sidebar.codeReview",
+          "href": "/dashboard/development/code"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "nameKey": "sidebar.marketing",
+      "href": "/dashboard/marketing",
+      "items": [
+        {
+          "nameKey": "sidebar.socialMedia",
+          "href": "/dashboard/marketing/social"
+        },
+        {
+          "nameKey": "sidebar.analytics",
+          "href": "/dashboard/marketing/analytics"
+        },
+        {
+          "nameKey": "sidebar.campaigns",
+          "href": "/dashboard/marketing/campaigns"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "nameKey": "sidebar.operations",
+      "href": "/dashboard/operations",
+      "items": [
+        {
+          "nameKey": "sidebar.incidents",
+          "href": "/dashboard/operations/incidents"
+        },
+        {
+          "nameKey": "sidebar.monitoring",
+          "href": "/dashboard/operations/monitoring"
+        },
+        {
+          "nameKey": "sidebar.checklists",
+          "href": "/dashboard/operations/checklists"
+        },
+        {
+          "nameKey": "sidebar.facilities",
+          "href": "/dashboard/operations/facilities"
+        },
+        {
+          "nameKey": "sidebar.equipment",
+          "href": "/dashboard/operations/equipment"
+        },
+        {
+          "nameKey": "sidebar.safety",
+          "href": "/dashboard/operations/safety"
+        }
+      ]
+    },
+    {
+      "id": "medical",
+      "nameKey": "sidebar.medical",
+      "href": "/dashboard/medical",
+      "items": [
+        {
+          "nameKey": "sidebar.patients",
+          "href": "/dashboard/patients"
+        },
+        {
+          "nameKey": "sidebar.careWork",
+          "href": "/dashboard/issues?department=medical"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "nameKey": "sidebar.research",
+      "href": "/dashboard/research",
+      "items": [
+        {
+          "nameKey": "sidebar.data",
+          "href": "/dashboard/research/data"
+        },
+        {
+          "nameKey": "sidebar.findings",
+          "href": "/dashboard/research/findings"
+        },
+        {
+          "nameKey": "sidebar.plans",
+          "href": "/dashboard/research/plans"
+        },
+        {
+          "nameKey": "sidebar.materials",
+          "href": "/dashboard/research/materials"
+        },
+        {
+          "nameKey": "sidebar.inspections",
+          "href": "/dashboard/research/inspections"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "nameKey": "sidebar.knowledge",
+      "href": "/dashboard/documents",
+      "items": [
+        {
+          "nameKey": "sidebar.aiDocuments",
+          "href": "/dashboard/documents"
+        },
+        {
+          "nameKey": "sidebar.automation",
+          "href": "/dashboard/automations"
+        },
+        {
+          "nameKey": "sidebar.wiki",
+          "href": "/dashboard/wiki"
+        },
+        {
+          "nameKey": "sidebar.docs",
+          "href": "/dashboard/docs"
+        },
+        {
+          "nameKey": "sidebar.integrations",
+          "href": "/dashboard/settings/integrations"
+        }
+      ]
+    }
+  ],
+  "__settings_teams_only": [
+    {
+      "id": "home",
+      "items": []
+    },
+    {
+      "id": "projects",
+      "items": [
+        "/dashboard/projects"
+      ]
+    },
+    {
+      "id": "teams",
+      "items": [
+        "/dashboard/members"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "items": [
+        "/dashboard/settings/integrations"
+      ]
+    }
+  ]
+}

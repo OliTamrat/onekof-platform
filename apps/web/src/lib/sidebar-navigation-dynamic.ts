@@ -1,13 +1,24 @@
 /**
  * Dynamic Sidebar Navigation
  *
- * Comprehensive sidebar with 21+ pages organized into collapsible categories
- * Includes all project management tools needed for Ministry projects (water dam, irrigation, etc.)
- * Now integrated with organization settings and feature flags
+ * One base structure; per-organization variation is applied in two layers
+ * (docs/architecture/SIDEBAR_EDITIONS_ARCHITECTURE.md, S1–S9 APPROVED):
+ *
+ *   1. MEMBERSHIP — resolveEnabledSections(): explicit org settings win,
+ *      else the industry preset, else legacy fail-open (D9). Every section
+ *      and sub-item declares its gate explicitly via `requires` (S4) — the
+ *      old itemPath.includes('/budget') substring ladder is gone; it worked
+ *      by luck of the path set and inherited gates silently.
+ *   2. EDITION — order, vocabulary and sector extras from
+ *      lib/navigation/editions.ts (S2). An edition can only reorder,
+ *      rename and decorate what membership granted (S3).
  */
 
-import { getNavigationForType } from '@/config/organization-types';
-import { resolveEnabledSections } from '@/lib/presets/organization-presets';
+import {
+  resolveEnabledSections,
+  getPresetForOrgType,
+} from '@/lib/presets/organization-presets';
+import { getEdition, type SidebarEdition } from '@/lib/navigation/editions';
 import type { OrganizationSettings } from '@/types/organization-settings';
 import {
   Home,
@@ -45,26 +56,13 @@ export interface SidebarSubItem {
   nameKey?: string;
   href: string;
   icon?: LucideIcon;
+  /**
+   * Section id that must be enabled for this item to render, or null for
+   * always-on (S4). Explicit on every entry: an item with no declared gate
+   * is a type error, not a silent pass.
+   */
+  requires?: string | null;
 }
-
-/**
- * Section ids that actually change what the sidebar renders — either a
- * top-level section or a gated sub-item. An id outside this set is a DEAD
- * SWITCH: presets may enable it and the Customization page may toggle it,
- * but nothing happens, because no navigation destination exists.
- *
- * Industry modules (medical, courses, compliance, impact) are deliberately
- * ABSENT until their pages are real — see
- * docs/architecture/MEDICAL_MODULE_ARCHITECTURE.md. Add an id here in the
- * same change that adds its navigation, never before.
- */
-export const NAVIGABLE_SECTION_IDS = [
-  'projects', 'teams', 'budget', 'development', 'marketing', 'operations',
-  // M3 made the Medical pages real, so the id stops being a dead switch.
-  'medical',
-  'research', 'goals', 'automations', 'documents', 'docs', 'issues',
-  'calendar', 'timeline', 'analytics',
-] as const;
 
 export interface SidebarSection {
   id: string;
@@ -73,44 +71,56 @@ export interface SidebarSection {
   icon: LucideIcon;
   href?: string;
   items: SidebarSubItem[];
+  /** Section-level membership gate, or null for always-on (S4). */
+  requires?: string | null;
 }
 
+/** Internal: SidebarSubItem with the gate made mandatory. */
+type GatedItem = SidebarSubItem & { requires: string | null };
+type GatedSection = Omit<SidebarSection, 'items' | 'requires'> & {
+  requires: string | null;
+  items: GatedItem[];
+};
+
 /**
- * Get comprehensive sidebar navigation with all project management tools
- * Perfect for Ministry projects like water dams, irrigation, infrastructure, etc.
- * Filters based on organization settings and feature flags
+ * The base structure every edition starts from. Gate values preserve the
+ * exact semantics of the pre-editions renderer, parity-proven by
+ * __tests__/lib/fixtures/sidebar-parity.json:
+ *
+ * - `home`, `projects` and `knowledge` are ungated sections (always kept).
+ * - Sub-items either share a feature gate (Reports → analytics) or are
+ *   always-on within their section (requires: null).
+ * - Medical's Care work rides the `issues` gate because it IS the issue
+ *   board, filtered to the medical department (M7: care items are Tasks).
  */
-export function getSidebarNavigation(
-  organizationType?: string | null,
-  organizationSettings?: OrganizationSettings,
-  industry?: string | null
-): SidebarSection[] {
-  // Build comprehensive 7-category structure with 21+ pages
-  const allSections: SidebarSection[] = [
-    // 1. HOME (No collapse - single item)
+function baseSections(): GatedSection[] {
+  return [
+    // 1. HOME
     {
       id: 'home',
       name: 'Home',
       nameKey: 'sidebar.home',
       icon: Home,
       href: '/dashboard',
+      requires: null,
       items: [],
     },
 
-    // 2. CORE PROJECT MANAGEMENT (6 sub-pages)
+    // 2. CORE PROJECT MANAGEMENT
     {
       id: 'projects',
       name: 'Projects',
       nameKey: 'sidebar.projects',
       icon: FolderKanban,
       href: '/dashboard/projects',
+      requires: null,
       items: [
-        { name: 'All Projects', nameKey: 'sidebar.allProjects', href: '/dashboard/projects', icon: FolderKanban },
-        { name: 'Issues', nameKey: 'sidebar.issues', href: '/dashboard/issues', icon: ListChecks },
-        { name: 'Calendar', nameKey: 'sidebar.calendar', href: '/dashboard/calendar', icon: Calendar },
-        { name: 'Timeline', nameKey: 'sidebar.timeline', href: '/dashboard/timeline', icon: Calendar },
-        { name: 'Goals', nameKey: 'sidebar.goals', href: '/dashboard/goals', icon: Target },
-        { name: 'Reports', nameKey: 'sidebar.reports', href: '/dashboard/reports', icon: BarChart3 },
+        { name: 'All Projects', nameKey: 'sidebar.allProjects', href: '/dashboard/projects', icon: FolderKanban, requires: null },
+        { name: 'Issues', nameKey: 'sidebar.issues', href: '/dashboard/issues', icon: ListChecks, requires: 'issues' },
+        { name: 'Calendar', nameKey: 'sidebar.calendar', href: '/dashboard/calendar', icon: Calendar, requires: 'calendar' },
+        { name: 'Timeline', nameKey: 'sidebar.timeline', href: '/dashboard/timeline', icon: Calendar, requires: 'timeline' },
+        { name: 'Goals', nameKey: 'sidebar.goals', href: '/dashboard/goals', icon: Target, requires: 'goals' },
+        { name: 'Reports', nameKey: 'sidebar.reports', href: '/dashboard/reports', icon: BarChart3, requires: 'analytics' },
       ],
     },
 
@@ -121,218 +131,233 @@ export function getSidebarNavigation(
       nameKey: 'sidebar.teams',
       icon: Users,
       href: '/dashboard/teams',
+      requires: 'teams',
       items: [
-        { name: 'Members', nameKey: 'sidebar.members', href: '/dashboard/members', icon: UserPlus },
+        { name: 'Members', nameKey: 'sidebar.members', href: '/dashboard/members', icon: UserPlus, requires: null },
       ],
     },
 
-    // 4. BUDGET (Top-level)
+    // 4. BUDGET
     {
       id: 'budget',
       name: 'Budget',
       nameKey: 'sidebar.budget',
       icon: DollarSign,
       href: '/dashboard/budget',
+      requires: 'budget',
       items: [],
     },
 
-    // 5. DEVELOPMENT (3 sub-pages) - For software/technical projects
+    // 5. DEVELOPMENT — software/technical projects
     {
       id: 'development',
       name: 'Development',
       nameKey: 'sidebar.development',
       icon: GitBranch,
       href: '/dashboard/development',
+      requires: 'development',
       items: [
-        { name: 'Backlog', nameKey: 'sidebar.backlog', href: '/dashboard/development/backlog', icon: ListChecks },
-        { name: 'Releases', nameKey: 'sidebar.releases', href: '/dashboard/development/releases', icon: GitBranch },
-        { name: 'Code Review', nameKey: 'sidebar.codeReview', href: '/dashboard/development/code', icon: FileText },
+        { name: 'Backlog', nameKey: 'sidebar.backlog', href: '/dashboard/development/backlog', icon: ListChecks, requires: null },
+        { name: 'Releases', nameKey: 'sidebar.releases', href: '/dashboard/development/releases', icon: GitBranch, requires: null },
+        { name: 'Code Review', nameKey: 'sidebar.codeReview', href: '/dashboard/development/code', icon: FileText, requires: null },
       ],
     },
 
-    // 6. MARKETING (3 sub-pages) - For public relations & stakeholder engagement
+    // 6. MARKETING — public relations & stakeholder engagement
     {
       id: 'marketing',
       name: 'Marketing',
       nameKey: 'sidebar.marketing',
       icon: TrendingUp,
       href: '/dashboard/marketing',
+      requires: 'marketing',
       items: [
-        { name: 'Social Media', nameKey: 'sidebar.socialMedia', href: '/dashboard/marketing/social', icon: MessageSquare },
-        { name: 'Analytics', nameKey: 'sidebar.analytics', href: '/dashboard/marketing/analytics', icon: TrendingUp },
-        { name: 'Campaigns', nameKey: 'sidebar.campaigns', href: '/dashboard/marketing/campaigns', icon: Map },
+        { name: 'Social Media', nameKey: 'sidebar.socialMedia', href: '/dashboard/marketing/social', icon: MessageSquare, requires: null },
+        { name: 'Analytics', nameKey: 'sidebar.analytics', href: '/dashboard/marketing/analytics', icon: TrendingUp, requires: 'analytics' },
+        { name: 'Campaigns', nameKey: 'sidebar.campaigns', href: '/dashboard/marketing/campaigns', icon: Map, requires: null },
       ],
     },
 
-    // 7. OPERATIONS (3 sub-pages) - Critical for infrastructure projects
+    // 7. OPERATIONS — incidents, monitoring, M4 facility workstreams
     {
       id: 'operations',
       name: 'Operations',
       nameKey: 'sidebar.operations',
       icon: Activity,
       href: '/dashboard/operations',
+      requires: 'operations',
       items: [
-        { name: 'Incidents', nameKey: 'sidebar.incidents', href: '/dashboard/operations/incidents', icon: AlertCircle },
-        { name: 'Monitoring', nameKey: 'sidebar.monitoring', href: '/dashboard/operations/monitoring', icon: Activity },
-        { name: 'Checklists', nameKey: 'sidebar.checklists', href: '/dashboard/operations/checklists', icon: CheckCircle2 },
-        // M4 — facility operations (MEDICAL_MODULE_ARCHITECTURE.md, M8)
-        { name: 'Facilities', nameKey: 'sidebar.facilities', href: '/dashboard/operations/facilities', icon: Building2 },
-        { name: 'Equipment', nameKey: 'sidebar.equipment', href: '/dashboard/operations/equipment', icon: Wrench },
-        { name: 'Safety Management', nameKey: 'sidebar.safety', href: '/dashboard/operations/safety', icon: ShieldCheck },
+        { name: 'Incidents', nameKey: 'sidebar.incidents', href: '/dashboard/operations/incidents', icon: AlertCircle, requires: null },
+        { name: 'Monitoring', nameKey: 'sidebar.monitoring', href: '/dashboard/operations/monitoring', icon: Activity, requires: null },
+        { name: 'Checklists', nameKey: 'sidebar.checklists', href: '/dashboard/operations/checklists', icon: CheckCircle2, requires: null },
+        { name: 'Facilities', nameKey: 'sidebar.facilities', href: '/dashboard/operations/facilities', icon: Building2, requires: null },
+        { name: 'Equipment', nameKey: 'sidebar.equipment', href: '/dashboard/operations/equipment', icon: Wrench, requires: null },
+        { name: 'Safety Management', nameKey: 'sidebar.safety', href: '/dashboard/operations/safety', icon: ShieldCheck, requires: null },
       ],
     },
 
-    // 7b. MEDICAL (M3) — healthcare organizations only.
-    //
-    // Added in the same change that made its pages real, which is the rule
-    // stated on NAVIGABLE_SECTION_IDS below. M3 built the pages and the API
-    // and did NOT do this, so the registry shipped with no way to reach it
-    // from the product — reachable only by typing the URL.
-    //
-    // Care work is deliberately a link INTO the issue board rather than its
-    // own list: M7 decided care items are Tasks, so they inherit statuses,
-    // sprints, assignment and reporting. A second board here would duplicate
-    // that surface and drift from it.
+    // 7b. MEDICAL (M3) — healthcare organizations only
     {
       id: 'medical',
       name: 'Medical',
       nameKey: 'sidebar.medical',
       icon: Stethoscope,
       href: '/dashboard/medical',
+      requires: 'medical',
       items: [
-        { name: 'Patients', nameKey: 'sidebar.patients', href: '/dashboard/patients', icon: Users },
-        { name: 'Care work', nameKey: 'sidebar.careWork', href: '/dashboard/issues?department=medical', icon: ClipboardList },
+        { name: 'Patients', nameKey: 'sidebar.patients', href: '/dashboard/patients', icon: Users, requires: null },
+        { name: 'Care work', nameKey: 'sidebar.careWork', href: '/dashboard/issues?department=medical', icon: ClipboardList, requires: 'issues' },
       ],
     },
 
-    // 8. RESEARCH & DATA (5 sub-pages) - For feasibility studies, surveys, inspections
+    // 8. RESEARCH & DATA
     {
       id: 'research',
       name: 'Research',
       nameKey: 'sidebar.research',
       icon: FileSpreadsheet,
       href: '/dashboard/research',
+      requires: 'research',
       items: [
-        { name: 'Data', nameKey: 'sidebar.data', href: '/dashboard/research/data', icon: FileSpreadsheet },
-        { name: 'Findings', nameKey: 'sidebar.findings', href: '/dashboard/research/findings', icon: FileText },
-        { name: 'Plans', nameKey: 'sidebar.plans', href: '/dashboard/research/plans', icon: Map },
-        { name: 'Materials', nameKey: 'sidebar.materials', href: '/dashboard/research/materials', icon: FileSpreadsheet },
-        { name: 'Inspections', nameKey: 'sidebar.inspections', href: '/dashboard/research/inspections', icon: CheckCircle2 },
+        { name: 'Data', nameKey: 'sidebar.data', href: '/dashboard/research/data', icon: FileSpreadsheet, requires: null },
+        { name: 'Findings', nameKey: 'sidebar.findings', href: '/dashboard/research/findings', icon: FileText, requires: null },
+        { name: 'Plans', nameKey: 'sidebar.plans', href: '/dashboard/research/plans', icon: Map, requires: null },
+        { name: 'Materials', nameKey: 'sidebar.materials', href: '/dashboard/research/materials', icon: FileSpreadsheet, requires: null },
+        { name: 'Inspections', nameKey: 'sidebar.inspections', href: '/dashboard/research/inspections', icon: CheckCircle2, requires: null },
       ],
     },
 
-    // 9. KNOWLEDGE & AUTOMATION (4 sub-pages)
+    // 9. KNOWLEDGE & AUTOMATION
     {
       id: 'knowledge',
       name: 'Knowledge',
       nameKey: 'sidebar.knowledge',
       icon: BookOpen,
       href: '/dashboard/documents',
+      requires: null,
       items: [
-        { name: 'AI Documents', nameKey: 'sidebar.aiDocuments', href: '/dashboard/documents', icon: Sparkles },
-        { name: 'Automation', nameKey: 'sidebar.automation', href: '/dashboard/automations', icon: Zap },
-        { name: 'Wiki', nameKey: 'sidebar.wiki', href: '/dashboard/wiki', icon: BookOpen },
-        { name: 'Docs', nameKey: 'sidebar.docs', href: '/dashboard/docs', icon: BookOpen },
-        { name: 'Integrations', nameKey: 'sidebar.integrations', href: '/dashboard/settings/integrations', icon: Puzzle },
+        { name: 'AI Documents', nameKey: 'sidebar.aiDocuments', href: '/dashboard/documents', icon: Sparkles, requires: 'documents' },
+        { name: 'Automation', nameKey: 'sidebar.automation', href: '/dashboard/automations', icon: Zap, requires: 'automations' },
+        { name: 'Wiki', nameKey: 'sidebar.wiki', href: '/dashboard/wiki', icon: BookOpen, requires: 'docs' },
+        { name: 'Docs', nameKey: 'sidebar.docs', href: '/dashboard/docs', icon: BookOpen, requires: 'docs' },
+        { name: 'Integrations', nameKey: 'sidebar.integrations', href: '/dashboard/settings/integrations', icon: Puzzle, requires: null },
       ],
     },
   ];
-
-  // D9 fail posture: explicit settings win; without them, derive from the
-  // org's industry preset; only with neither (legacy orgs) fail open so
-  // navigation always works even if settings fail to load.
-  const enabled = resolveEnabledSections(
-    organizationSettings?.enabledSections,
-    industry ?? organizationType
-  );
-  if (!enabled) {
-    return allSections;
-  }
-  const enabledSet = new Set(enabled);
-
-  // Filter sections and items based on organization settings
-  return allSections
-    .map((section) => {
-      // Filter sub-items based on enabled sections
-      const filteredItems = section.items.filter((item) => {
-        const itemPath = item.href;
-
-        // Check if the main section is enabled
-        if (itemPath.includes('/teams')) {
-          return enabledSet.has('teams');
-        }
-        if (itemPath.includes('/budget')) {
-          return enabledSet.has('budget');
-        }
-        if (itemPath.includes('/goals')) {
-          return enabledSet.has('goals');
-        }
-        if (itemPath.includes('/automations')) {
-          return enabledSet.has('automations');
-        }
-        if (itemPath.includes('/documents')) {
-          return enabledSet.has('documents');
-        }
-        if (itemPath.includes('/docs') || itemPath.includes('/wiki')) {
-          return enabledSet.has('docs');
-        }
-        if (itemPath.includes('/issues')) {
-          return enabledSet.has('issues');
-        }
-        if (itemPath.includes('/calendar')) {
-          return enabledSet.has('calendar');
-        }
-        if (itemPath.includes('/timeline')) {
-          return enabledSet.has('timeline');
-        }
-        if (itemPath.includes('/reports') || itemPath.includes('/analytics')) {
-          return enabledSet.has('analytics');
-        }
-
-        // For sections that don't map to feature flags, show them all
-        return true;
-      });
-
-      return {
-        ...section,
-        items: filteredItems,
-      };
-    })
-    .filter((section) => {
-      // Filter top-level sections based on enabled feature flags
-      if (section.id === 'teams') {
-        return enabledSet.has('teams');
-      }
-      if (section.id === 'budget') {
-        return enabledSet.has('budget');
-      }
-      // Department sections are industry-gated (D6) — same rule as the rest.
-      // 'medical' belongs here and nowhere else: without it the section falls
-      // through to the "has an href" branch below and every organization —
-      // ministry, school, contractor — gets a Patients link.
-      if (
-        section.id === 'development' ||
-        section.id === 'marketing' ||
-        section.id === 'operations' ||
-        section.id === 'research' ||
-        section.id === 'medical'
-      ) {
-        return enabledSet.has(section.id);
-      }
-
-      // Remove sections that have no items and no direct href
-      // Or keep sections that have either a href or at least one item
-      return section.href || section.items.length > 0;
-    });
 }
 
 /**
- * Check if a navigation item should be visible for this organization type
+ * Section ids that actually change what the sidebar renders — either a
+ * top-level section gate or a gated sub-item. An id outside this set is a
+ * DEAD SWITCH: presets may enable it and the Customization page may toggle
+ * it, but nothing happens.
+ *
+ * S5: DERIVED from the base structure above (plus edition extras' gates),
+ * so it cannot drift from the navigation the way the old hand-maintained
+ * list did. `projects` is included by declaration: every preset enables it
+ * and its section deliberately always renders, so it is navigable by
+ * definition even though nothing gates on it today.
  */
-export function isNavigationItemVisible(
-  itemId: string,
-  organizationType?: string | null
-): boolean {
-  const navigation = getNavigationForType(organizationType);
-  return navigation.some(item => item.id === itemId);
+export const NAVIGABLE_SECTION_IDS: readonly string[] = (() => {
+  const ids = new Set<string>(['projects']);
+  for (const section of baseSections()) {
+    if (section.requires) ids.add(section.requires);
+    for (const item of section.items) {
+      if (item.requires) ids.add(item.requires);
+    }
+  }
+  return Array.from(ids);
+})();
+
+/** Home is always first; then the edition's lead; then base order (S2). */
+function applyOrder(sections: GatedSection[], edition: SidebarEdition): GatedSection[] {
+  if (edition.lead.length === 0) return sections;
+  const rank = (s: GatedSection, baseIndex: number): number => {
+    if (s.id === 'home') return -1;
+    const lead = edition.lead.indexOf(s.id);
+    return lead >= 0 ? lead : edition.lead.length + baseIndex;
+  };
+  return sections
+    .map((s, i) => ({ s, r: rank(s, i) }))
+    .sort((a, b) => a.r - b.r)
+    .map((x) => x.s);
+}
+
+/** Rename section nameKeys per the edition's vocabulary (S2 axis 3). */
+function applyVocabulary(sections: GatedSection[], edition: SidebarEdition): GatedSection[] {
+  const vocab = edition.vocabulary;
+  if (Object.keys(vocab).length === 0) return sections;
+  return sections.map((s) =>
+    s.nameKey && vocab[s.nameKey] ? { ...s, nameKey: vocab[s.nameKey] } : s
+  );
+}
+
+/**
+ * Append the edition's sector items to their host sections (S2 axis 4).
+ * S3: an extra renders only if its host section survived membership
+ * filtering, and its own `requires` gate is also honoured — an edition can
+ * never add what membership did not grant.
+ */
+function applyExtras(
+  sections: GatedSection[],
+  edition: SidebarEdition,
+  enabledSet: Set<string> | null
+): GatedSection[] {
+  if (edition.extras.length === 0) return sections;
+  return sections.map((section) => {
+    const extras = edition.extras.filter(
+      (e) =>
+        e.section === section.id &&
+        (e.item.requires === null || enabledSet === null || enabledSet.has(e.item.requires))
+    );
+    if (extras.length === 0) return section;
+    return { ...section, items: [...section.items, ...extras.map((e) => ({ ...e.item }))] };
+  });
+}
+
+/**
+ * Get the sidebar for an organization.
+ *
+ * `industry` takes precedence over `organizationType` for resolving both
+ * membership (the preset) and the edition — an org onboarded as "private"
+ * can still be a clinic.
+ */
+export function getSidebarNavigation(
+  organizationType?: string | null,
+  organizationSettings?: OrganizationSettings,
+  industry?: string | null
+): SidebarSection[] {
+  const sectorKey = industry ?? organizationType ?? null;
+  const edition = getEdition(sectorKey ? getPresetForOrgType(sectorKey).editionId : 'base');
+
+  // D9 fail posture: explicit settings win; without them, derive from the
+  // org's industry preset; only with neither (legacy orgs) fail open so
+  // navigation always works even if settings fail to load. The legacy path
+  // resolves to the base edition, so fail-open can never reorder or rename.
+  const enabled = resolveEnabledSections(organizationSettings?.enabledSections, sectorKey);
+  const enabledSet = enabled ? new Set(enabled) : null;
+
+  let sections = baseSections();
+
+  if (enabledSet) {
+    sections = sections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter(
+          (item) => item.requires === null || enabledSet.has(item.requires)
+        ),
+      }))
+      .filter((section) => {
+        if (section.requires !== null) return enabledSet.has(section.requires);
+        // Ungated sections (home, projects, knowledge) keep the legacy rule:
+        // present if they have a destination or anything left to show.
+        return Boolean(section.href) || section.items.length > 0;
+      });
+  }
+
+  sections = applyExtras(sections, edition, enabledSet);
+  sections = applyVocabulary(sections, edition);
+  sections = applyOrder(sections, edition);
+
+  return sections;
 }

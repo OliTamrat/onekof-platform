@@ -129,6 +129,30 @@ gh pr list --state merged --json number,headRefName --limit 200
 
 ---
 
+## SESSION LOG (2026-07-31) — M3 surfaced, sidebar editions S1–S9 built
+
+**Shipped:** PR #199 (Medical wired into the sidebar — four independent gaps,
+any one of which kept M3 invisible; verified live on beki-health.onekof.com)
+and the sidebar editions build (E1–E4 in four commits, S1–S9 APPROVED same
+day). Every org type now gets a real edition: per-sector order (Ministry
+leads with Budget, Healthcare with Medical, Construction with Site
+Operations), per-sector vocabulary in five locales (Outreach, Facility
+Operations, Site Operations), sector entries (Procurement, Grants, Impact,
+Courses, Sites), and onboarding capability chips generated from the same
+data that renders the sidebar. System B's dead navigation config is deleted.
+Full detail: `docs/architecture/SIDEBAR_EDITIONS_ARCHITECTURE.md` v1.1.
+
+**Open:** Q1 (compliance/resources scope) and Q3 (Education thinness) in the
+Deferred ledger. **GitHub Actions receives no runners for this repo since
+2026-07-29 ~20:00 UTC** — proven infrastructure-side (0ms billable, no
+logs, docs-only commits fail identically); founder to read the run-page
+banner in a browser and open a GitHub Support ticket. Until resolved,
+merges do NOT run `prisma migrate deploy` — do not merge migrations.
+Vercel's Git integration deploys app code independently, which is how
+everything above shipped.
+
+---
+
 ## SESSION LOG (2026-07-29) — Medical M1/M2, security audit, activity trail
 
 **23 PRs merged (#174–#196).** Everything below is on `master` and deployed to
