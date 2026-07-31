@@ -1943,11 +1943,13 @@
     "wiki": "Wiikii",
     "docs": "Dokumantoota",
     "integrations": "Walitti Makamtii",
-    "medical": "Fayyaa",
+    "medical": "Yaalaa",
     "courses": "Koorsota",
     "facilities": "Dhaabbileen",
     "equipment": "Meeshaalee",
-    "safety": "Bulchiinsa Nageenyaa"
+    "safety": "Bulchiinsa Nageenyaa",
+    "patients": "Dhukkubsattoota",
+    "careWork": "Hojii kunuunsaa"
   },
   "codeConnect": {
     "title": "Kuusaa Walitti Hidhi",

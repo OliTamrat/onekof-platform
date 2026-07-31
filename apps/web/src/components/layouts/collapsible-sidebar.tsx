@@ -69,9 +69,15 @@ export function CollapsibleSidebar({ className, collapsed = false }: Collapsible
     settings = undefined;
   }
 
-  // Get dynamic navigation based on organization type AND settings
-  // If settings are undefined or not loaded, getSidebarNavigation will return all sections
-  const sidebarNavigation = getSidebarNavigation((currentOrganization as unknown as Record<string, unknown> | null)?.type as string | undefined, settings);
+  // Get dynamic navigation based on organization type AND settings.
+  // If settings are undefined or not loaded, getSidebarNavigation returns all
+  // sections. `industry` is passed because it takes precedence over `type`:
+  // an org onboarded as "private" can still be a clinic.
+  const sidebarNavigation = getSidebarNavigation(
+    currentOrganization?.type,
+    settings,
+    currentOrganization?.industry
+  );
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>

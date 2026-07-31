@@ -10,6 +10,7 @@ import {
   getAllPresets,
   resolveEnabledSections,
 } from '@/lib/presets/organization-presets';
+import { NAVIGABLE_SECTION_IDS } from '@/lib/sidebar-navigation-dynamic';
 
 const VALID_SECTION_IDS = new Set([
   'teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'projects',
@@ -96,12 +97,34 @@ describe('industry presets (capability matrix, D8)', () => {
   // The gap founder testing exposed: Healthcare enabled 'medical' and
   // 'compliance', the Customization page showed toggles for them, and
   // nothing happened because no navigation destination existed.
-  it('no preset enables an industry module whose pages are still placeholders', () => {
+  //
+  // Originally this asserted a HARDCODED list of unbuilt modules stayed
+  // disabled. That went stale the moment M3 built the Medical pages — the
+  // guard failed for a section that had become legitimate, which is a guard
+  // reporting yesterday's truth.
+  //
+  // Rewritten to check the actual invariant: a preset may enable a section
+  // only if the sidebar can navigate to it. NAVIGABLE_SECTION_IDS is the
+  // list maintained beside the navigation itself, so this now tracks
+  // reality rather than a snapshot of it.
+  it('no preset enables a section the sidebar cannot navigate to', () => {
+    const navigable = new Set<string>(NAVIGABLE_SECTION_IDS);
     for (const preset of getAllPresets()) {
-      for (const id of ['medical', 'courses', 'compliance', 'impact']) {
-        expect(preset.enabledSections.includes(id as never), `${preset.name} enables unbuilt ${id}`).toBe(false);
+      for (const id of preset.enabledSections) {
+        expect(
+          navigable.has(id as string),
+          `${preset.name} enables "${id}", which has no navigation destination — ` +
+            'either add it to the sidebar in this same change, or do not enable it'
+        ).toBe(true);
       }
     }
+  });
+
+  it('Healthcare enables medical now that M3 made its pages real', () => {
+    // The other half of the same rule: the section is navigable AND enabled.
+    // Wiring the sidebar without enabling the section leaves a healthcare
+    // customer with no Medical entry, which is exactly what shipped in M3.
+    expect(has(HEALTHCARE_PRESET, 'medical')).toBe(true);
   });
 
   it('org type mapping: healthcare aliases resolve; unknown falls back to Business', () => {
@@ -110,21 +133,6 @@ describe('industry presets (capability matrix, D8)', () => {
     expect(getPresetForOrgType('clinic').name).toBe('Healthcare');
     expect(getPresetForOrgType('ministry').name).toBe('Ministry / Government');
     expect(getPresetForOrgType('something-else').name).toBe('Business / Startup');
-  });
-});
-
-describe('presets never enable dead switches', () => {
-  // A section id that is not navigable does nothing when enabled — the
-  // preset claims a capability the user can never reach. This test is the
-  // guard that would have caught the Healthcare medical/compliance gap.
-  it('every enabled section in every preset has a navigation destination', async () => {
-    const { NAVIGABLE_SECTION_IDS } = await import('@/lib/sidebar-navigation-dynamic');
-    const navigable = new Set<string>(NAVIGABLE_SECTION_IDS as readonly string[]);
-    for (const preset of getAllPresets()) {
-      for (const id of preset.enabledSections) {
-        expect(navigable.has(id), `${preset.name}: "${id}" is enabled but has no destination`).toBe(true);
-      }
-    }
   });
 });
 

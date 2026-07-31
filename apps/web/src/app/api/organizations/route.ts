@@ -56,6 +56,11 @@ export async function GET(req: NextRequest) {
       logo: (m.organization as any).logo,
       description: (m.organization as any).description,
       type: m.organization.type || null,
+      // The sidebar prefers `industry` over `type` when deciding which
+      // industry edition to render. Without it here, a clinic onboarded as
+      // type "private" with industry "healthcare" renders the Business
+      // edition and never sees Medical.
+      industry: m.organization.industry || null,
       plan: m.organization.plan || 'FREE',
       status: m.organization.status || 'ACTIVE',
       maxMembers: m.organization.maxMembers ?? 5,
