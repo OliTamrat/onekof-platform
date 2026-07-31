@@ -121,7 +121,8 @@
     "noMatchFilters": "No tasks match your current filters.",
     "createFirstTask": "Create your first task",
     "pages": "pages",
-    "selectDate": "Select date"
+    "selectDate": "Select date",
+    "clear": "Clear"
   },
   "nav": {
     "home": "Home",
@@ -3145,5 +3146,23 @@
     "dateLabel": "Date",
     "generatedOn": "Generated {date}",
     "exportPdf": "Export PDF"
+  },
+  "medical": {
+    "birthYearUnknown": "Birth year not recorded",
+    "bornIn": "Born {year}",
+    "careWorkDesc": "Care tasks on the ordinary board — same statuses, sprints and reporting as all other work.",
+    "careWorkTitle": "Care work",
+    "erased": "Erased",
+    "identityWithheld": "Identity withheld",
+    "limitedNotice": "You can see that a patient exists, but not who they are.",
+    "lookup": "Look up",
+    "lookupPlaceholder": "Exact patient identifier",
+    "noAccessBody": "Patient access is granted separately from your organization role — being an owner or administrator does not include it. Ask the organization owner to grant you access.",
+    "noAccessTitle": "You do not have patient access",
+    "noMatch": "No patient with that identifier",
+    "noMatchDesc": "Lookup matches the full identifier exactly. Partial text and names will not match.",
+    "residencyBlockedBody": "Ethiopian law requires patient data to be stored inside the country. This installation runs outside Ethiopia, so patient records cannot be held or shown here. Ask your administrator about the in-country deployment.",
+    "residencyBlockedTitle": "Patient records are not available on this deployment",
+    "unnamed": "Unnamed record"
   }
 }
