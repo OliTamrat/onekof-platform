@@ -69,6 +69,7 @@ export const MINISTRY_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
   features: MINISTRY_FEATURES,
   recommendedFor: ['ministry', 'government'],
+  editionId: 'ministry',
 };
 
 // ============================================
@@ -128,6 +129,7 @@ export const NGO_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'marketing', 'operations', 'research'],
   features: NGO_FEATURES,
   recommendedFor: ['ngo'],
+  editionId: 'ngo',
 };
 
 // ============================================
@@ -192,6 +194,7 @@ export const BUSINESS_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'analytics', 'projects', 'issues', 'calendar', 'timeline', 'development', 'marketing', 'operations'],
   features: BUSINESS_FEATURES,
   recommendedFor: ['business', 'startup'],
+  editionId: 'base',
 };
 
 // ============================================
@@ -251,6 +254,7 @@ export const EDUCATION_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'research'],
   features: EDUCATION_FEATURES,
   recommendedFor: ['education'],
+  editionId: 'education',
 };
 
 // ============================================
@@ -314,6 +318,7 @@ export const HEALTHCARE_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research', 'medical'],
   features: HEALTHCARE_FEATURES,
   recommendedFor: ['healthcare', 'hospital', 'clinic'],
+  editionId: 'healthcare',
 };
 
 // ============================================
@@ -356,6 +361,7 @@ export const CONSTRUCTION_PRESET: OrganizationPreset = {
   enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'timeline', 'calendar', 'issues', 'analytics', 'operations', 'research'],
   features: CONSTRUCTION_FEATURES,
   recommendedFor: ['construction'],
+  editionId: 'construction',
 };
 
 // ============================================
