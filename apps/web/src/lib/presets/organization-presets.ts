@@ -307,7 +307,11 @@ export const HEALTHCARE_PRESET: OrganizationPreset = {
   description: 'Hospitals, clinics, and health programs: patient-linked operations, clinical research, and compliance posture.',
   nameKey: 'customization.presetHealthcareName',
   descriptionKey: 'customization.presetHealthcareDesc',
-  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research'],
+  // `medical` added by M3, when the Patients and Medical pages became real.
+  // It was correctly absent before that: enabling a section whose pages do
+  // not exist produces a sidebar entry leading nowhere, which is the
+  // fabricated-navigation problem the 2026-07-29 audit removed 13 pages for.
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'timeline', 'issues', 'analytics', 'operations', 'research', 'medical'],
   features: HEALTHCARE_FEATURES,
   recommendedFor: ['healthcare', 'hospital', 'clinic'],
 };

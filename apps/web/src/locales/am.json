@@ -1985,7 +1985,9 @@
     "courses": "ኮርሶች",
     "facilities": "ተቋማት",
     "equipment": "መሳሪያዎች",
-    "safety": "የደህንነት አስተዳደር"
+    "safety": "የደህንነት አስተዳደር",
+    "patients": "ታካሚዎች",
+    "careWork": "የእንክብካቤ ሥራ"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ አገናኝ",

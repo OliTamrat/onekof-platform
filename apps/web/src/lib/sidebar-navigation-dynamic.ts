@@ -35,6 +35,8 @@ import {
   Building2,
   Wrench,
   ShieldCheck,
+  Stethoscope,
+  ClipboardList,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -58,6 +60,8 @@ export interface SidebarSubItem {
  */
 export const NAVIGABLE_SECTION_IDS = [
   'projects', 'teams', 'budget', 'development', 'marketing', 'operations',
+  // M3 made the Medical pages real, so the id stops being a dead switch.
+  'medical',
   'research', 'goals', 'automations', 'documents', 'docs', 'issues',
   'calendar', 'timeline', 'analytics',
 ] as const;
@@ -178,6 +182,29 @@ export function getSidebarNavigation(
       ],
     },
 
+    // 7b. MEDICAL (M3) — healthcare organizations only.
+    //
+    // Added in the same change that made its pages real, which is the rule
+    // stated on NAVIGABLE_SECTION_IDS below. M3 built the pages and the API
+    // and did NOT do this, so the registry shipped with no way to reach it
+    // from the product — reachable only by typing the URL.
+    //
+    // Care work is deliberately a link INTO the issue board rather than its
+    // own list: M7 decided care items are Tasks, so they inherit statuses,
+    // sprints, assignment and reporting. A second board here would duplicate
+    // that surface and drift from it.
+    {
+      id: 'medical',
+      name: 'Medical',
+      nameKey: 'sidebar.medical',
+      icon: Stethoscope,
+      href: '/dashboard/medical',
+      items: [
+        { name: 'Patients', nameKey: 'sidebar.patients', href: '/dashboard/patients', icon: Users },
+        { name: 'Care work', nameKey: 'sidebar.careWork', href: '/dashboard/issues?department=medical', icon: ClipboardList },
+      ],
+    },
+
     // 8. RESEARCH & DATA (5 sub-pages) - For feasibility studies, surveys, inspections
     {
       id: 'research',
@@ -279,12 +306,16 @@ export function getSidebarNavigation(
       if (section.id === 'budget') {
         return enabledSet.has('budget');
       }
-      // Department sections are industry-gated (D6) — same rule as the rest
+      // Department sections are industry-gated (D6) — same rule as the rest.
+      // 'medical' belongs here and nowhere else: without it the section falls
+      // through to the "has an href" branch below and every organization —
+      // ministry, school, contractor — gets a Patients link.
       if (
         section.id === 'development' ||
         section.id === 'marketing' ||
         section.id === 'operations' ||
-        section.id === 'research'
+        section.id === 'research' ||
+        section.id === 'medical'
       ) {
         return enabledSet.has(section.id);
       }

@@ -22,6 +22,12 @@ export interface Organization {
   maxStorage?: number;
   trialEndsAt?: string | null;
   role?: string;
+  // Onboarding categorisation. Both drive which industry edition the sidebar
+  // renders, so both have to survive the trip from the API to the client —
+  // `type` was arriving untyped and reached the sidebar through a cast, and
+  // `industry` was not being returned at all.
+  type?: string | null;
+  industry?: string | null;
 }
 
 export interface Project {

@@ -1940,7 +1940,9 @@
     "courses": "Courses",
     "facilities": "Facilities",
     "equipment": "Equipment",
-    "safety": "Safety Management"
+    "safety": "Safety Management",
+    "patients": "Patients",
+    "careWork": "Care work"
   },
   "codeConnect": {
     "title": "Connect Repository",

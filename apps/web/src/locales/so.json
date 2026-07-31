@@ -1985,7 +1985,9 @@
     "courses": "Koorsooyin",
     "facilities": "Xaruumaha",
     "equipment": "Qalabka",
-    "safety": "Maamulka Badbaadada"
+    "safety": "Maamulka Badbaadada",
+    "patients": "Bukaanka",
+    "careWork": "Shaqada daryeelka"
   },
   "codeConnect": {
     "title": "Ku xidh Kaydka",

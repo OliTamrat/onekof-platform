@@ -1991,7 +1991,9 @@
     "courses": "ኮርሳት",
     "facilities": "ትካላት",
     "equipment": "መሳርሒታት",
-    "safety": "ምሕደራ ድሕነት"
+    "safety": "ምሕደራ ድሕነት",
+    "patients": "ሕሙማት",
+    "careWork": "ናይ ክንክን ስራሕ"
   },
   "codeConnect": {
     "title": "ሪፖዚቶሪ ኣራኽብ",
