@@ -10,7 +10,12 @@
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
-      "items": []
+      "items": [
+        {
+          "nameKey": "sidebar.procurement",
+          "href": "/dashboard/procurement"
+        }
+      ]
     },
     {
       "id": "projects",
@@ -147,7 +152,12 @@
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
-      "items": []
+      "items": [
+        {
+          "nameKey": "sidebar.procurement",
+          "href": "/dashboard/procurement"
+        }
+      ]
     },
     {
       "id": "projects",
@@ -308,6 +318,10 @@
         {
           "nameKey": "sidebar.reports",
           "href": "/dashboard/reports"
+        },
+        {
+          "nameKey": "sidebar.impact",
+          "href": "/dashboard/impact"
         }
       ]
     },
@@ -315,7 +329,12 @@
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
-      "items": []
+      "items": [
+        {
+          "nameKey": "sidebar.grants",
+          "href": "/dashboard/grants"
+        }
+      ]
     },
     {
       "id": "teams",
@@ -679,6 +698,10 @@
         {
           "nameKey": "sidebar.integrations",
           "href": "/dashboard/settings/integrations"
+        },
+        {
+          "nameKey": "sidebar.courses",
+          "href": "/dashboard/courses"
         }
       ]
     }
@@ -1174,6 +1197,10 @@
         {
           "nameKey": "sidebar.safety",
           "href": "/dashboard/operations/safety"
+        },
+        {
+          "nameKey": "sidebar.sites",
+          "href": "/dashboard/sites"
         }
       ]
     },

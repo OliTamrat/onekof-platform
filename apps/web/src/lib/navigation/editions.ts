@@ -16,11 +16,21 @@
  * resurrect one the customer disabled. Extras attach to a host section and
  * disappear with it.
  *
- * E2 STATE: order and vocabulary are live for all six editions; sector
- * extras arrive in E3.
+ * Sector extras (E3) live under an existing host section rather than as
+ * top-level entries, so they inherit the host's membership gate and the
+ * customer's ability to turn the whole area off. compliance and resources
+ * remain deliberately unwired pending the founder's Q1 scope decision
+ * (SIDEBAR_EDITIONS_ARCHITECTURE.md Section 6).
  */
 
 import type { LucideIcon } from 'lucide-react';
+import {
+  ShoppingCart,
+  Heart,
+  TrendingUp,
+  GraduationCap,
+  Construction,
+} from 'lucide-react';
 
 export type SidebarEditionId =
   | 'base'          // Business / Startup — the default product IS the base
@@ -82,7 +92,20 @@ export const MINISTRY_EDITION: SidebarEdition = {
   id: 'ministry',
   lead: ['budget', 'projects', 'operations'],
   vocabulary: {},
-  extras: [],
+  extras: [
+    // Tenders and supplier contracts are a spending process, so
+    // Procurement lives under Budget — the section a ministry leads with.
+    {
+      section: 'budget',
+      item: {
+        name: 'Procurement',
+        nameKey: 'sidebar.procurement',
+        href: '/dashboard/procurement',
+        icon: ShoppingCart,
+        requires: null,
+      },
+    },
+  ],
 };
 
 /**
@@ -94,7 +117,29 @@ export const NGO_EDITION: SidebarEdition = {
   id: 'ngo',
   lead: ['projects', 'budget'],
   vocabulary: { 'sidebar.marketing': 'sidebar.outreach' },
-  extras: [],
+  extras: [
+    {
+      section: 'budget',
+      item: {
+        name: 'Grants',
+        nameKey: 'sidebar.grants',
+        href: '/dashboard/grants',
+        icon: Heart,
+        requires: null,
+      },
+    },
+    {
+      section: 'projects',
+      item: {
+        name: 'Impact',
+        nameKey: 'sidebar.impact',
+        href: '/dashboard/impact',
+        icon: TrendingUp,
+        // Impact is outcome reporting — it rides the same gate as Reports.
+        requires: 'analytics',
+      },
+    },
+  ],
 };
 
 /**
@@ -106,7 +151,20 @@ export const EDUCATION_EDITION: SidebarEdition = {
   id: 'education',
   lead: ['projects', 'research'],
   vocabulary: {},
-  extras: [],
+  extras: [
+    // Teaching material is knowledge content; Courses shares the docs gate
+    // with Wiki and Docs rather than inventing a new switch.
+    {
+      section: 'knowledge',
+      item: {
+        name: 'Courses',
+        nameKey: 'sidebar.courses',
+        href: '/dashboard/courses',
+        icon: GraduationCap,
+        requires: 'docs',
+      },
+    },
+  ],
 };
 
 /**
@@ -132,7 +190,20 @@ export const CONSTRUCTION_EDITION: SidebarEdition = {
   id: 'construction',
   lead: ['operations', 'projects', 'budget'],
   vocabulary: { 'sidebar.operations': 'sidebar.siteOperations' },
-  extras: [],
+  extras: [
+    // The sector's own word for where work happens, beside the M4
+    // Facilities/Equipment/Safety workstreams it coordinates with.
+    {
+      section: 'operations',
+      item: {
+        name: 'Sites',
+        nameKey: 'sidebar.sites',
+        href: '/dashboard/sites',
+        icon: Construction,
+        requires: null,
+      },
+    },
+  ],
 };
 
 const EDITIONS: Record<SidebarEditionId, SidebarEdition> = {
@@ -151,6 +222,3 @@ export function getEdition(id: SidebarEditionId | null | undefined): SidebarEdit
 export function getAllEditions(): SidebarEdition[] {
   return Object.values(EDITIONS);
 }
-
-// Referenced so the type is used before E3 fills extras (keeps lint honest).
-export type { LucideIcon as _EditionIcon };

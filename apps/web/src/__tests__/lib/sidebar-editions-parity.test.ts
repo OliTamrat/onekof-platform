@@ -16,6 +16,9 @@ import fixture from './fixtures/sidebar-parity.json';
  *    sidebar-editions.test.ts states each change by hand. Business, the
  *    legacy fail-open path and the settings-win path are byte-identical
  *    to the E1 capture.
+ *  - E3: regenerated when sector extras landed (Procurement, Grants,
+ *    Impact, Courses, Sites) — again with hand-written expectations
+ *    beside it. Business and legacy remain identical to E1.
  *
  * Any future diff to this file must come with a hand-written expectation
  * in sidebar-editions.test.ts explaining it.

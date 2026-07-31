@@ -14,7 +14,6 @@
  *      rename and decorate what membership granted (S3).
  */
 
-import { getNavigationForType } from '@/config/organization-types';
 import {
   resolveEnabledSections,
   getPresetForOrgType,
@@ -361,15 +360,4 @@ export function getSidebarNavigation(
   sections = applyOrder(sections, edition);
 
   return sections;
-}
-
-/**
- * Check if a navigation item should be visible for this organization type
- */
-export function isNavigationItemVisible(
-  itemId: string,
-  organizationType?: string | null
-): boolean {
-  const navigation = getNavigationForType(organizationType);
-  return navigation.some(item => item.id === itemId);
 }

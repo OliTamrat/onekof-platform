@@ -1952,7 +1952,11 @@
     "careWork": "Hojii kunuunsaa",
     "outreach": "Qunnamtii Hawaasaa",
     "facilityOperations": "Hojiiwwan Dhaabbataa",
-    "siteOperations": "Hojiiwwan Iddoo Ijaarsaa"
+    "siteOperations": "Hojiiwwan Iddoo Ijaarsaa",
+    "procurement": "Bittaa",
+    "grants": "Deeggarsa",
+    "impact": "Dhiibbaa",
+    "sites": "Bakkeewwan"
   },
   "codeConnect": {
     "title": "Kuusaa Walitti Hidhi",

@@ -68,6 +68,65 @@ describe('E2 vocabulary: sector naming (S2 axis 3)', () => {
   });
 });
 
+describe('E3 extras: sector entries live under their host section (S2 axis 4)', () => {
+  const itemHrefs = (t: string, sectionId: string, settings?: string[]) =>
+    getSidebarNavigation(t, settings ? ({ enabledSections: settings } as never) : undefined, t)
+      .find((s) => s.id === sectionId)
+      ?.items.map((i) => i.href);
+
+  it('Ministry: Procurement under Budget', () => {
+    expect(itemHrefs('ministry', 'budget')).toContain('/dashboard/procurement');
+  });
+
+  it('NGO: Grants under Budget, Impact under Projects', () => {
+    expect(itemHrefs('ngo', 'budget')).toContain('/dashboard/grants');
+    expect(itemHrefs('ngo', 'projects')).toContain('/dashboard/impact');
+  });
+
+  it('Education: Courses under Knowledge', () => {
+    expect(itemHrefs('education', 'knowledge')).toContain('/dashboard/courses');
+  });
+
+  it('Construction: Sites under Operations', () => {
+    expect(itemHrefs('construction', 'operations')).toContain('/dashboard/sites');
+  });
+
+  it('extras do not leak across editions sharing a section', () => {
+    // Construction and Business both have Budget; only the Ministry
+    // edition carries Procurement.
+    expect(itemHrefs('construction', 'budget') ?? []).not.toContain('/dashboard/procurement');
+    expect(itemHrefs('business', 'budget') ?? []).not.toContain('/dashboard/grants');
+    expect(itemHrefs('healthcare', 'operations') ?? []).not.toContain('/dashboard/sites');
+  });
+
+  it('S3: an extra dies with its host section', () => {
+    // A ministry that disabled Budget in Customization loses Procurement
+    // with it — the edition cannot resurrect what membership removed.
+    const sections = getSidebarNavigation('ministry', { enabledSections: ['teams', 'projects', 'issues'] } as never, 'ministry');
+    expect(sections.map((s) => s.id)).not.toContain('budget');
+    expect(sections.flatMap((s) => s.items.map((i) => i.href))).not.toContain('/dashboard/procurement');
+  });
+
+  it("S3: an extra's own requires gate is honoured", () => {
+    // Impact rides the analytics gate like Reports. An NGO without
+    // analytics keeps Projects but loses both.
+    const hrefs = itemHrefs('ngo', 'projects', ['projects', 'budget', 'issues', 'teams']);
+    expect(hrefs).not.toContain('/dashboard/impact');
+    expect(hrefs).not.toContain('/dashboard/reports');
+    // And Courses rides docs: education without docs keeps Knowledge
+    // (Integrations remains) but loses Courses.
+    const knowledge = itemHrefs('education', 'knowledge', ['projects', 'teams', 'documents']);
+    expect(knowledge).not.toContain('/dashboard/courses');
+  });
+
+  it('S3: extras never create a section', () => {
+    // With only Teams enabled, no extra host exists for the ministry
+    // edition — nothing appears from nowhere.
+    const ids2 = getSidebarNavigation('ministry', { enabledSections: ['teams'] } as never, 'ministry').map((s) => s.id);
+    expect(ids2).toEqual(['home', 'projects', 'teams', 'knowledge']);
+  });
+});
+
 describe('S6: every vocabulary target key exists in all five locales', () => {
   const locales: Record<string, Record<string, Record<string, string>>> = {
     en: en as never, am: am as never, om: om as never, ti: ti as never, so: so as never,

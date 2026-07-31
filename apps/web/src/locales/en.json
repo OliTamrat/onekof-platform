@@ -1945,7 +1945,11 @@
     "careWork": "Care work",
     "outreach": "Outreach",
     "facilityOperations": "Facility Operations",
-    "siteOperations": "Site Operations"
+    "siteOperations": "Site Operations",
+    "procurement": "Procurement",
+    "grants": "Grants",
+    "impact": "Impact",
+    "sites": "Sites"
   },
   "codeConnect": {
     "title": "Connect Repository",
