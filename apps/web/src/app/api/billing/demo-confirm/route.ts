@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
-import { getPlanById, getPlanLimits } from '@/lib/billing/plans';
+import { getPlanById, getPlanLimits, checkoutablePlanIds } from '@/lib/billing/plans';
 import { z } from 'zod';
 
 const isStripeConfigured = !!process.env.STRIPE_SECRET_KEY;
@@ -9,7 +9,10 @@ const isChapaConfigured = !!process.env.CHAPA_SECRET_KEY;
 
 const DemoConfirmSchema = z.object({
   organizationId: z.string().min(1),
-  planId: z.enum(['STARTER', 'PROFESSIONAL', 'ENTERPRISE']),
+  // Same derivation as the live checkout route — see the note there.
+  planId: z.string().refine((id) => checkoutablePlanIds().includes(id), {
+    message: 'This plan is not available for self-serve purchase',
+  }),
   interval: z.enum(['monthly', 'yearly']),
   provider: z.enum(['stripe', 'chapa']),
   cardLast4: z.string().length(4).optional(),

@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveAuthUser } from '@/lib/api-organization';
 import { prisma } from '@onekof/database';
-import { getPlanById } from '@/lib/billing/plans';
+import { getPlanById, checkoutablePlanIds } from '@/lib/billing/plans';
 import { z } from 'zod';
 
+// Derived from the plan definitions rather than hard-coded, so a tier added to
+// plans.ts cannot be silently left un-purchasable — and, more importantly, so a
+// contact-sales tier priced at zero can never be submitted to a payment
+// provider as a zero-amount charge.
 const CheckoutSchema = z.object({
   organizationId: z.string().min(1),
-  planId: z.enum(['STARTER', 'PROFESSIONAL', 'ENTERPRISE']),
+  planId: z.string().refine((id) => checkoutablePlanIds().includes(id), {
+    message: 'This plan is not available for self-serve purchase',
+  }),
   interval: z.enum(['monthly', 'yearly']),
   provider: z.enum(['stripe', 'chapa']),
 });

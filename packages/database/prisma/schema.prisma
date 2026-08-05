@@ -329,7 +329,10 @@ enum Plan {
   FREE
   STARTER
   PROFESSIONAL
+  BUSINESS
+  REGIONAL
   ENTERPRISE
+  GOVERNMENT
 
   @@schema("public")
 }
