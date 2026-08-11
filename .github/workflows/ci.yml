@@ -8,6 +8,11 @@ on:
       - 'packages/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/ci.yml'
+      # Without these, the docs-truth job can never run on the PRs that
+      # change what it checks — a checker that skips exactly when it
+      # matters is worse than none.
+      - 'docs/**'
+      - 'scripts/docs-truth.mjs'
 
 concurrency:
   group: ci-${{ github.ref }}
