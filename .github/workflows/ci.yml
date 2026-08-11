@@ -59,3 +59,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DIRECT_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+  docs-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      # Zero-dependency by design: runs before (and without) pnpm install,
+      # so it can never rot behind a broken dependency tree.
+      - run: node scripts/docs-truth.mjs
