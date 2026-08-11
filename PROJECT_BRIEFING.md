@@ -3,6 +3,16 @@
 
 ---
 
+## Durable knowledge — OKM
+
+**`docs/` now carries the OKM taxonomy additions (see `docs/README.md`):**
+the index over the nine existing sections, and `docs/decisions/` — ADRs
+recording *why* the load-bearing choices were made (two-tier deployment,
+INSA-as-feature, D1–D9, the medical build-not-withdraw decision, and the
+no-vocabulary-without-destinations rule). When a session makes a real
+decision, end it by appending an ADR. `scripts/docs-truth.mjs` (a CI job)
+holds ADR numbering, the index, and every design doc an ADR references.
+
 ## CURRENT STATUS (2026-07-28)
 
 ### Master HEAD: `8fead29` (609 commits, 148 PRs merged)
