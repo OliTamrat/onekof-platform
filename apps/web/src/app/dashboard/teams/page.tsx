@@ -56,11 +56,16 @@ import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface TeamMember {
+  /** TeamMember row id — not valid for the /members/[userId] routes. */
   id: string;
+  userId: string;
   name: string;
   email: string;
   avatar?: string;
-  role: 'OWNER' | 'ADMIN' | 'MEMBER';
+  // What the API actually sends. The old declaration listed OWNER/ADMIN —
+  // values TeamRole has never contained — which is how the badge that
+  // matched on OWNER slipped past the type checker.
+  role: 'LEAD' | 'MEMBER';
   joinedAt: string;
 }
 
@@ -203,6 +208,30 @@ export default function TeamsPage() {
         invited: data.invited || false,
       });
       setIsSuccessModalOpen(true);
+    },
+  });
+
+  // Change a member's role. The PATCH endpoint has existed all along —
+  // this page just never called it, which is why roles could not be
+  // updated from the UI. Errors are surfaced, not swallowed: the most
+  // common failure is the 403 for non-admins, and a select that silently
+  // snaps back reads as a broken product.
+  const changeRoleMutation = useMutation({
+    mutationFn: async ({ teamId, userId, role }: { teamId: string; userId: string; role: string }) => {
+      const res = await fetch(`/api/teams/${teamId}/members/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Failed to change role');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['team-members', selectedTeam?.id] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 
@@ -628,18 +657,25 @@ export default function TeamsPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                              {member.role === 'OWNER' && (
-                                <div className="flex items-center gap-1 rounded-full bg-yellow-400/20 px-2 py-1 text-xs font-medium text-yellow-400">
-                                  <Crown className="h-3 w-3" />
-                                  Lead
-                                </div>
-                              )}
-                              {member.role === 'MEMBER' && (
-                                <div className="flex items-center gap-1 rounded-full bg-gray-200 dark:bg-white/[0.08] px-2 py-1 text-xs font-medium text-gray-700 dark:text-white/70">
-                                  <Users className="h-3 w-3" />
-                                  Member
-                                </div>
-                              )}
+                              {/* The old badges checked role === 'OWNER', a value
+                                  the TeamRole enum has never contained, so leads
+                                  rendered with no badge at all. The select shows
+                                  the real role and is the missing way to change it. */}
+                              <select
+                                value={member.role}
+                                disabled={changeRoleMutation.isPending}
+                                onChange={(e) =>
+                                  changeRoleMutation.mutate({
+                                    teamId: selectedTeam.id,
+                                    userId: member.userId,
+                                    role: e.target.value,
+                                  })
+                                }
+                                className="rounded-md border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[#1B1F23] px-2 py-1 text-xs font-medium text-gray-700 dark:text-white/80 focus:border-[#1C8C7D] focus:outline-none"
+                              >
+                                <option value="LEAD">{t('teams.roleLead')}</option>
+                                <option value="MEMBER">{t('teams.roleMember')}</option>
+                              </select>
 
                               <Button
                                 size="sm"
@@ -652,7 +688,9 @@ export default function TeamsPage() {
                                   ) {
                                     removeMemberMutation.mutate({
                                       teamId: selectedTeam.id,
-                                      userId: member.id,
+                                      // The route matches on the user id; the
+                                      // row id 404'd on every removal.
+                                      userId: member.userId,
                                     });
                                   }
                                 }}
@@ -663,6 +701,11 @@ export default function TeamsPage() {
                             </div>
                           </div>
                         ))}
+                        {changeRoleMutation.isError && (
+                          <p className="px-4 py-2 text-xs text-red-500">
+                            {(changeRoleMutation.error as Error)?.message || t('teams.roleChangeFailed')}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <div className="p-8 text-center text-sm text-gray-600 dark:text-white/70">

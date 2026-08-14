@@ -65,6 +65,7 @@ export function ProjectManagementDialog({
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('details');
   const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [roleError, setRoleError] = useState<string | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const queryClient = useQueryClient();
 
@@ -586,14 +587,26 @@ export function ProjectManagementDialog({
                       <select
                         value={member.role || 'MEMBER'}
                         onChange={async (e) => {
+                          // A non-ok response used to be swallowed, so a 403
+                          // (only project/org admins may change roles) looked
+                          // like the select snapping back for no reason —
+                          // reported as "unable to update the member's role".
                           try {
-                            await fetch(`/api/projects/${project?.id}/members/${member.userId}`, {
+                            const res = await fetch(`/api/projects/${project?.id}/members/${member.userId}`, {
                               method: 'PATCH',
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({ role: e.target.value }),
                             });
+                            if (!res.ok) {
+                              const body = await res.json().catch(() => ({}));
+                              throw new Error(body.error || 'Failed to change role');
+                            }
+                            setRoleError(null);
+                          } catch (err) {
+                            setRoleError(err instanceof Error ? err.message : 'Failed to change role');
+                          } finally {
                             queryClient.invalidateQueries({ queryKey: ['project-members', project?.id] });
-                          } catch {}
+                          }
                         }}
                         className="text-xs rounded border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#1B1F23] text-gray-700 dark:text-slate-300 px-2 py-1"
                       >
@@ -617,6 +630,9 @@ export function ProjectManagementDialog({
                 <p className="text-center text-sm text-gray-600 dark:text-slate-400 py-8">
                   No members assigned to this project yet
                 </p>
+              )}
+              {roleError && (
+                <p className="text-xs text-red-500 px-1">{roleError}</p>
               )}
             </div>
           </TabsContent>

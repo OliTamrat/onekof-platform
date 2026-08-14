@@ -621,7 +621,10 @@
     "searchActivity": "Dhaqdhaqaaqa raadi...",
     "activityDetails": "Faahfaahinta Dhaqdhaqaaqa",
     "activityInformation": "Macluumaadka Dhaqdhaqaaqa",
-    "addMember": "Ku Dar Xubin"
+    "addMember": "Ku Dar Xubin",
+    "roleLead": "Hoggaamiye",
+    "roleMember": "Xubin",
+    "roleChangeFailed": "Doorka lama bedeli karin"
   },
   "goals": {
     "title": "Hadafyada",
@@ -3213,5 +3216,21 @@
     "nothingViewed": "Dhawaan waxba lama eegin",
     "notification": "Ogeysiis",
     "loadError": "Lama soo rari karin shaqadaada"
+  },
+  "timeTracking": {
+    "title": "La socodka waqtiga",
+    "logged": "la diiwaangeliyay",
+    "logTime": "Diiwaangeli waqtiga",
+    "hours": "Saacado",
+    "hoursShort": "s",
+    "minutes": "Daqiiqado",
+    "minutesShort": "d",
+    "workedOn": "Taariikhda shaqada",
+    "notePlaceholder": "Maxaad ka shaqeysay? (ikhtiyaari)",
+    "noEntries": "Weli waqti lama diiwaangelin",
+    "enterSomeTime": "Geli ugu yaraan hal daqiiqo",
+    "logFailed": "Waqtiga lama diiwaangelin karin",
+    "deleteFailed": "Diiwaanka lama saari karin",
+    "deleteEntry": "Saar diiwaanka"
   }
 }
