@@ -2305,7 +2305,8 @@
     "fromStatus": "ከ",
     "toStatuses": "የተፈቀደ ወደ",
     "saved": "ቅንብሮች ተቀምጠዋል",
-    "saveFailed": "ማስቀመጥ አልተሳካም። የፕሮጀክት አስተዳዳሪ ፈቃድ ሊያስፈልግ ይችላል።"
+    "saveFailed": "ማስቀመጥ አልተሳካም። የፕሮጀክት አስተዳዳሪ ፈቃድ ሊያስፈልግ ይችላል።",
+    "requireApprovalHint": "ተግባራት ከመጠናቀቃቸው በፊት በግምገማ ወቅት የተሰጠ የተመዘገበ ማጽደቅ ሊኖራቸው ይገባል።"
   },
   "projectsSummary": {
     "title": "የፕሮጀክቶች አጠቃላይ እይታ",
@@ -3234,5 +3235,14 @@
     "logFailed": "ጊዜ መመዝገብ አልተቻለም",
     "deleteFailed": "መዝገቡን ማስወገድ አልተቻለም",
     "deleteEntry": "መዝገብ አስወግድ"
+  },
+  "approval": {
+    "title": "ማጽደቅ",
+    "approve": "አጽድቅ",
+    "revoke": "ሰርዝ",
+    "approvedBy": "ያጸደቀው",
+    "awaitingRequired": "ማጽደቅ በመጠበቅ ላይ — ይህ ተግባር ከመጠናቀቁ በፊት ያስፈልጋል",
+    "awaitingOptional": "በግምገማ ላይ — ማጽደቅ መመዝገብ ይቻላል",
+    "actionFailed": "የማጽደቅ ተግባሩ አልተሳካም"
   }
 }

@@ -303,7 +303,7 @@ export default function DashboardPage() {
                       <Folder className="h-4 w-4 text-white/70" />
                       {t('nav.allProjects')}
                     </button>
-                    <div className="border-t border-slate-100 dark:border-white/[0.08]/50" />
+                    <div className="border-t border-slate-100" />
                     {projects.map((project) => (
                       <button
                         key={project.id}
@@ -390,7 +390,7 @@ export default function DashboardPage() {
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Recent Activity - AI-Powered Timeline */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
               <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
@@ -414,7 +414,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Types of Work */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
               <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
               <div className="relative z-10">
                 <div className="mb-4 flex items-center justify-between">
@@ -445,7 +445,7 @@ export default function DashboardPage() {
 
             {/* Favorite Projects */}
             {favoriteProjects.length > 0 && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-white/[0.08]/50 overflow-hidden">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
                 <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -697,7 +697,7 @@ function StatCard({
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}
-      className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 dark:border-white/[0.08]/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
+      className="group relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-3 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer text-left w-full overflow-hidden border border-slate-200/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]"
     >
       {/* Subtle gradient overlay on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

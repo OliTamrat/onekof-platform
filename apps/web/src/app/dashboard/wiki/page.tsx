@@ -180,7 +180,7 @@ export default function WikiPage() {
 
       <div className="flex h-full flex-col bg-gray-50 dark:bg-[#0B0E11]">
         {/* Search + Action Bar */}
-        <div className="border-b border-gray-200 dark:border-white/[0.08]/50 bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
+        <div className="border-b border-gray-200 bg-white dark:bg-[#12161B] px-3 md:px-6 py-3">
           <div className="flex items-center gap-3">
             <div className="flex-1 relative max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -248,7 +248,7 @@ export default function WikiPage() {
                       href={`/dashboard/docs/pages/${article.id}`}
                       className={cn(
                         'group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-[#181D23] transition-colors',
-                        idx !== categoryArticles.length - 1 && 'border-b border-gray-100 dark:border-white/[0.08]/50'
+                        idx !== categoryArticles.length - 1 && 'border-b border-gray-100'
                       )}
                     >
                       <FileText className="h-4 w-4 text-[#1C8C7D] shrink-0" />
@@ -301,7 +301,7 @@ export default function WikiPage() {
                         onClick={() => setSelectedCategoryId(category.id)}
                         className={cn(
                           'group flex items-center gap-4 px-4 md:px-5 py-4 hover:bg-gray-50 dark:hover:bg-[#181D23] cursor-pointer transition-colors',
-                          idx !== filteredCategories.length - 1 && 'border-b border-gray-100 dark:border-white/[0.08]/50'
+                          idx !== filteredCategories.length - 1 && 'border-b border-gray-100'
                         )}
                       >
                         <div className="rounded-lg h-10 w-10 flex items-center justify-center shrink-0" style={{ backgroundColor: category.color + '15' }}>

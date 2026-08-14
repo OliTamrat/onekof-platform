@@ -115,6 +115,17 @@ describe('Settings inheritance (computeEffectiveSettings)', () => {
     expect(effective.estimationUnit).toBe('HOURS');
     expect(effective.enforceWorkflow).toBe(false);
     expect(effective.workflowTransitions).toBeNull();
+    // Board approval has no org-level default — off unless the project says so.
+    expect(effective.requireApproval).toBe(false);
+  });
+
+  it('requireApproval is a project-level choice', () => {
+    const effective = computeEffectiveSettings(
+      org,
+      { sprintsEnabled: null, estimationUnit: null, enforceWorkflow: null, requireApproval: true, workflowTransitions: null },
+      'KANBAN'
+    );
+    expect(effective.requireApproval).toBe(true);
   });
 
   it('project override wins over org default', () => {

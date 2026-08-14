@@ -183,6 +183,29 @@ export function ProjectWorkConfig({ projectId }: { projectId: string }) {
           />
         </div>
 
+        {/* Board approval: gate the transition into DONE behind a recorded
+            sign-off granted while the item is in review. */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-300">
+              {t('projectSettings.requireApproval')}
+            </label>
+            <p className="mt-0.5 text-xs text-gray-500 dark:text-white/70">
+              {t('projectSettings.requireApprovalHint')}
+            </p>
+            <div className="mt-1">
+              <InheritBadge
+                overridden={overrides.requireApproval !== null}
+                onReset={() => apply({ requireApproval: null })}
+              />
+            </div>
+          </div>
+          <Toggle
+            checked={effective.requireApproval}
+            onChange={() => apply({ requireApproval: !effective.requireApproval })}
+          />
+        </div>
+
         {/* Transition matrix (read-only view) */}
         <div>
           <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-slate-300">

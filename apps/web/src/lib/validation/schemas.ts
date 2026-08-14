@@ -254,6 +254,7 @@ export const updateProjectSettingsSchema = z.object({
   sprintsEnabled: z.boolean().nullable().optional(),
   estimationUnit: z.enum(['HOURS', 'POINTS']).nullable().optional(),
   enforceWorkflow: z.boolean().nullable().optional(),
+  requireApproval: z.boolean().nullable().optional(),
   workflowTransitions: z.record(z.array(z.string().max(30)).max(10)).nullable().optional(),
 });
 

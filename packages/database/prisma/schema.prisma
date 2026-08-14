@@ -732,6 +732,9 @@ model ProjectSettings {
   sprintsEnabled      Boolean?        @map("sprints_enabled")
   estimationUnit      EstimationUnit? @map("estimation_unit")
   enforceWorkflow     Boolean?        @map("enforce_workflow")
+  /// Gate the transition into DONE behind a recorded approval ("board
+  /// approval: after review, before done"). Null inherits the default (off).
+  requireApproval     Boolean?        @map("require_approval")
   workflowTransitions Json?           @map("workflow_transitions") // null = engine default table
   extra               Json            @default("{}")
 
@@ -798,6 +801,15 @@ model Task {
   dueDate     DateTime? @map("due_date")
   startDate   DateTime? @map("start_date")
   completedAt DateTime? @map("completed_at")
+
+  /// Board approval: who signed off the review, and when. Set by the approve
+  /// endpoint while the task is IN_REVIEW; consumed by the workflow gate on
+  /// the transition into DONE when the project requires approval. Kept after
+  /// completion as the audit record of who approved; cleared when the task
+  /// moves back into active work, so a stale sign-off can never satisfy a
+  /// later gate.
+  approvedBy String?   @map("approved_by")
+  approvedAt DateTime? @map("approved_at")
 
   // Labels and custom fields
   labels       Json @default("[]")

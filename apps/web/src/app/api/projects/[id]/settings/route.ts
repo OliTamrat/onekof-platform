@@ -39,6 +39,7 @@ export async function GET(
         sprintsEnabled: null,
         estimationUnit: null,
         enforceWorkflow: null,
+        requireApproval: null,
         workflowTransitions: null,
       },
       effective,
@@ -111,7 +112,7 @@ export async function PATCH(
       resource: 'project_settings',
       resourceId: params.id,
       resourceName: project.name,
-      before: before ? { sprintsEnabled: before.sprintsEnabled, estimationUnit: before.estimationUnit, enforceWorkflow: before.enforceWorkflow } : undefined,
+      before: before ? { sprintsEnabled: before.sprintsEnabled, estimationUnit: before.estimationUnit, enforceWorkflow: before.enforceWorkflow, requireApproval: before.requireApproval } : undefined,
       after: data as Record<string, unknown>,
       request: req,
     });

@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         // allowed to see.
         ...careItemExclusion(effectivePatientAccess(ctx.patientAccess)),
       },
-      select: { id: true, projectId: true, status: true, sprintId: true },
+      select: { id: true, projectId: true, status: true, sprintId: true, approvedAt: true },
     });
 
     if (issues.length === 0) {
@@ -75,6 +75,7 @@ export async function POST(request: NextRequest) {
     const accessibleIds = issues.map(i => i.id);
     let updated = 0;
     let workflowBlocked = 0;
+    let approvalBlocked = 0;
 
     switch (action) {
       case 'updateStatus': {
@@ -92,14 +93,28 @@ export async function POST(request: NextRequest) {
             projectIds.map(async (pid) => [pid, await resolveProjectSettings(pid)] as const)
           )
         );
-        const passing = issues.filter((i) => {
+        const workflowPassing = issues.filter((i) => {
           const s = settingsByProject.get(i.projectId);
           return validateStatusTransition(i.status as TaskStatus, value as TaskStatus, {
             enforceWorkflow: s?.enforceWorkflow ?? false,
             transitions: s?.workflowTransitions ?? null,
           }).allowed;
         });
-        workflowBlocked = issues.length - passing.length;
+        workflowBlocked = issues.length - workflowPassing.length;
+
+        // Board approval gate — the bulk path must not be a way around it.
+        // Entering DONE on a project that requires approval demands the
+        // recorded sign-off, exactly as the single-issue route enforces.
+        // Blocked items are counted separately from workflow rejections so
+        // the caller can tell "invalid transition" from "missing sign-off".
+        const passing =
+          value === 'DONE'
+            ? workflowPassing.filter((i) => {
+                const s = settingsByProject.get(i.projectId);
+                return !s?.requireApproval || i.approvedAt != null || i.status === 'DONE';
+              })
+            : workflowPassing;
+        approvalBlocked = workflowPassing.length - passing.length;
 
         // completedAt semantics: set only on the transition INTO DONE (so an
         // already-DONE task keeps its original completion date), cleared only
@@ -113,6 +128,9 @@ export async function POST(request: NextRequest) {
             data: {
               status: value as any,
               ...(value !== 'DONE' && { completedAt: null }),
+              // Reopening voids the consumed sign-off — same rule as the
+              // single-issue route.
+              ...(value !== 'DONE' && value !== 'IN_REVIEW' && { approvedBy: null, approvedAt: null }),
             },
           }),
           prisma.task.updateMany({
@@ -120,6 +138,7 @@ export async function POST(request: NextRequest) {
             data: {
               status: value as any,
               ...(value === 'DONE' && { completedAt: new Date() }),
+              ...(value !== 'DONE' && value !== 'IN_REVIEW' && { approvedBy: null, approvedAt: null }),
             },
           }),
         ]);
@@ -232,6 +251,7 @@ export async function POST(request: NextRequest) {
       updated,
       skipped: issueIds.length - accessibleIds.length,
       workflowBlocked,
+      approvalBlocked,
     });
   } catch (error) {
     logger.error('Bulk operation error', { error: error instanceof Error ? error.message : error });

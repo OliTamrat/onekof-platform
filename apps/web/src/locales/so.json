@@ -2305,7 +2305,8 @@
     "fromStatus": "Ka",
     "toStatuses": "Loo oggol yahay",
     "saved": "Dejinta waa la keydiyay",
-    "saveFailed": "Keydintu way fashilantay. Waxaa laga yaabaa inaad u baahan tahay xuquuqda maamulaha mashruuca."
+    "saveFailed": "Keydintu way fashilantay. Waxaa laga yaabaa inaad u baahan tahay xuquuqda maamulaha mashruuca.",
+    "requireApprovalHint": "Hawlaha waa inay wataan ansixin diiwaangashan, oo la bixiyay inta dib-u-eegistu socoto, ka hor inta aan la dhammaystirin."
   },
   "projectsSummary": {
     "title": "Guud Mar Mashruucyada",
@@ -3234,5 +3235,14 @@
     "logFailed": "Waqtiga lama diiwaangelin karin",
     "deleteFailed": "Diiwaanka lama saari karin",
     "deleteEntry": "Saar diiwaanka"
+  },
+  "approval": {
+    "title": "Ansixin",
+    "approve": "Ansixi",
+    "revoke": "Ka noqo",
+    "approvedBy": "Waxaa ansixiyay",
+    "awaitingRequired": "Sugaya ansixin — waa loo baahan yahay ka hor inta aan la dhammaystirin",
+    "awaitingOptional": "Dib-u-eegis ku jira — ansixin waa la diiwaangelin karaa",
+    "actionFailed": "Ficilka ansixintu wuu fashilmay"
   }
 }
