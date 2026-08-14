@@ -233,7 +233,13 @@
     "noTasks": "Hawl ma jirto",
     "addTask": "Hawl ku dar",
     "allProjects": "Dhammaan mashruucyada",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "Mashaariicda",
+    "projectStatusOverview": "Guudmarka Xaaladda Mashruuca",
+    "projectStatusDescription": "Caafimaadka gudbinta mashaariicdaada. Dooro qaybta si aad u aragto mashaariicda ka dambeeya.",
+    "projectStatusError": "Lama soo rari karin xaaladda mashruuca",
+    "noProjectsYet": "Wali ma jiraan mashaariic firfircoon",
+    "setManually": "hoggaamiye ayaa dejiyay"
   },
   "status": {
     "todo": "La qaban doono",

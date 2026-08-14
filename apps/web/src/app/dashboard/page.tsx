@@ -13,6 +13,7 @@ import { SlideoutPanel, SlideoutPanelContent, SlideoutPanelSection } from '@/com
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
+import { ProjectStatusOverview } from '@/components/dashboard/project-status-overview';
 import {
   TrendingUp,
   Clock,
@@ -603,6 +604,12 @@ export default function DashboardPage() {
                 </div>
               </div>
               </div>
+            </div>
+
+            {/* Project-level companion to the task Status Overview above:
+                leaders track projects, not individual work items. */}
+            <div className="mt-6">
+              <ProjectStatusOverview />
             </div>
           </div>
 

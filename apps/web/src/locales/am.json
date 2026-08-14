@@ -233,7 +233,13 @@
     "noTasks": "ተግባር የለም",
     "addTask": "ተግባር ጨምር",
     "allProjects": "ሁሉም ፕሮጀክቶች",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "ፕሮጀክቶች",
+    "projectStatusOverview": "የፕሮጀክት ሁኔታ አጠቃላይ እይታ",
+    "projectStatusDescription": "የፕሮጀክቶችዎ የአፈጻጸም ሁኔታ። ከኋላው ያሉትን ፕሮጀክቶች ለማየት ክፍሉን ይምረጡ።",
+    "projectStatusError": "የፕሮጀክት ሁኔታን መጫን አልተቻለም",
+    "noProjectsYet": "እስካሁን ንቁ ፕሮጀክቶች የሉም",
+    "setManually": "በመሪው የተቀመጠ"
   },
   "status": {
     "todo": "የሚሠራ",

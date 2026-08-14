@@ -232,7 +232,13 @@
     "noTasks": "No tasks",
     "addTask": "Add task",
     "allProjects": "All Projects",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "Projects",
+    "projectStatusOverview": "Project Status Overview",
+    "projectStatusDescription": "Delivery health across your projects. Select a band to see the projects behind it.",
+    "projectStatusError": "Could not load project status",
+    "noProjectsYet": "No active projects yet",
+    "setManually": "set by lead"
   },
   "status": {
     "todo": "To Do",

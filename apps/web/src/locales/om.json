@@ -233,7 +233,13 @@
     "noTasks": "Hojiin hin jiru",
     "addTask": "Hojii dabali",
     "allProjects": "Pirojektota Hundaa",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "Piroojektoota",
+    "projectStatusOverview": "Ilaalcha Waliigalaa Haala Piroojektii",
+    "projectStatusDescription": "Haala raawwii piroojektoota keessanii. Piroojektoota isa duuba jiran ilaaluuf kutaa filadhu.",
+    "projectStatusError": "Haala piroojektii fe'uun hin danda'amne",
+    "noProjectsYet": "Hanga ammaatti piroojektiin hojiirra jiru hin jiru",
+    "setManually": "geggeessaadhaan kaa’ame"
   },
   "status": {
     "todo": "Kan Hojjetamu",
