@@ -129,6 +129,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
+# The docker-build workflow has passed BUILD_SHA=${{ github.sha }} since it
+# was written, but nothing here declared the ARG, so Docker silently dropped
+# it and /api/health on a Tier 2 deployment could not say which commit it was
+# running. Declared in this stage because an ARG is scoped to the stage that
+# names it — declaring it at the top of the file would not reach the runner.
+ARG BUILD_SHA=""
+ENV GIT_COMMIT_SHA=$BUILD_SHA
+
 # Copy standalone output — Next.js traces only the files actually imported
 # at runtime, producing a self-contained server (~300 MB vs 2.6 GB full copy).
 # The standalone folder includes its own node_modules with only needed deps.
