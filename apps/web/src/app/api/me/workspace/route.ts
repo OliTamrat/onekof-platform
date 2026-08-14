@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@onekof/database';
 import { resolveUserOrganization, buildProjectAccessFilter } from '@/lib/api-organization';
+import { careItemExclusion, effectivePatientAccess } from '@/lib/security/patient-access';
 import logger from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -45,7 +46,20 @@ export async function GET(_request: NextRequest) {
     // workspace is still not a way around project visibility — an item
     // assigned to you in a project you have since lost access to must not
     // reappear here.
-    const visibleTask = { deletedAt: null, project: projectAccess };
+    //
+    // careItemExclusion is the same reasoning applied to patient data. A task
+    // can be a care item, and every feed below reads tasks — assigned, due
+    // soon, overdue, starred, worked on, viewed. Without this, a viewer below
+    // LIMITED patient access who was assigned a care item, or merely opened
+    // one, would see it surface on their own home page. Excluded in the query
+    // rather than filtered afterwards, so the take/limit counts the same rows
+    // the caller is allowed to receive.
+    const patientLevel = effectivePatientAccess(ctx.patientAccess);
+    const visibleTask = {
+      deletedAt: null,
+      project: projectAccess,
+      ...careItemExclusion(patientLevel),
+    };
 
     const dueSoonCutoff = new Date();
     dueSoonCutoff.setDate(dueSoonCutoff.getDate() + DUE_SOON_DAYS);
