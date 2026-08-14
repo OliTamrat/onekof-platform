@@ -46,7 +46,6 @@ export async function GET(_request: NextRequest) {
     // assigned to you in a project you have since lost access to must not
     // reappear here.
     const visibleTask = { deletedAt: null, project: projectAccess };
-    const OPEN = { notIn: ['DONE'] as string[] };
 
     const dueSoonCutoff = new Date();
     dueSoonCutoff.setDate(dueSoonCutoff.getDate() + DUE_SOON_DAYS);
@@ -54,7 +53,12 @@ export async function GET(_request: NextRequest) {
     const [assigned, dueSoon, overdue, unreadNotifications, stars, activity, views] =
       await Promise.all([
         prisma.task.findMany({
-          where: { ...visibleTask, assigneeId: userId, status: OPEN },
+          // The status filter is written inline at each of the three call
+          // sites rather than hoisted into a shared constant. Prisma narrows
+          // the string literal to TaskStatus through the contextual type of
+          // the `where` clause; a standalone constant loses that context,
+          // widens to string[], and stops being assignable to the enum filter.
+          where: { ...visibleTask, assigneeId: userId, status: { notIn: ['DONE'] } },
           select: TASK_CARD,
           orderBy: [{ dueDate: { sort: 'asc', nulls: 'last' } }, { updatedAt: 'desc' }],
           take: FEED_LIMIT,
@@ -64,7 +68,7 @@ export async function GET(_request: NextRequest) {
           where: {
             ...visibleTask,
             assigneeId: userId,
-            status: OPEN,
+            status: { notIn: ['DONE'] },
             dueDate: { gte: new Date(), lte: dueSoonCutoff },
           },
           select: TASK_CARD,
@@ -76,7 +80,7 @@ export async function GET(_request: NextRequest) {
           where: {
             ...visibleTask,
             assigneeId: userId,
-            status: OPEN,
+            status: { notIn: ['DONE'] },
             dueDate: { lt: new Date() },
           },
           select: TASK_CARD,
