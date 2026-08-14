@@ -3265,5 +3265,23 @@
     "awaitingRequired": "Mirkaneessa eegaa jira — hojiin kun osoo hin xumuramin dura barbaachisa",
     "awaitingOptional": "Gamaaggama irra jira — mirkaneessi galmaaʼuu dandaʼa",
     "actionFailed": "Gochi mirkaneessaa hin milkoofne"
+  },
+  "productivity": {
+    "title": "Oomishtummaa",
+    "subtitle": "Saʼaatiin eessa akka deeme, akkasumas bifti isaa maal akka agarsiisu.",
+    "lastDays": "guyyaa {n}",
+    "totalLogged": "Galmaaʼe",
+    "measured": "Safarame",
+    "vsPrevious": "kan darbee wajjin",
+    "overEstimate": "Tilmaama ol",
+    "byProject": "Piroojektiin",
+    "byPerson": "Namaan",
+    "yourTime": "Yeroo kee",
+    "aiReading": "Dubbisa AI",
+    "mostlySelfReported": "Yerooon kun irra caalaan saatiidhaan kan hin safaramne, harkaan kan galfamedha; kanaaf agarsiiftuu malee sirrii guutuu miti.",
+    "measuredShareHint": "Qooda tarree kanaa kan saatiidhaan safarame",
+    "noTimeLogged": "Yeroo kana keessatti yeroon galmaaʼe hin jiru.",
+    "aiUnavailable": "Cuunfaan barreeffamaa hin argamne; lakkoofsonni olii guutuu dha.",
+    "loadError": "Cuunfaa oomishtummaa fe’uun hin dandaʼamne"
   }
 }

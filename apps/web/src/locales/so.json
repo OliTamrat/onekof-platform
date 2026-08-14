@@ -3259,5 +3259,23 @@
     "awaitingRequired": "Sugaya ansixin — waa loo baahan yahay ka hor inta aan la dhammaystirin",
     "awaitingOptional": "Dib-u-eegis ku jira — ansixin waa la diiwaangelin karaa",
     "actionFailed": "Ficilka ansixintu wuu fashilmay"
+  },
+  "productivity": {
+    "title": "Wax-soo-saarnimo",
+    "subtitle": "Meesha saacadaha ay tageen, iyo waxa qaabku muujinayo.",
+    "lastDays": "{n}mln",
+    "totalLogged": "La diiwaangeliyay",
+    "measured": "La cabbiray",
+    "vsPrevious": "marka la barbardhigo",
+    "overEstimate": "Qiyaasta ka badan",
+    "byProject": "Mashruuc ahaan",
+    "byPerson": "Qof ahaan",
+    "yourTime": "Waqtigaaga",
+    "aiReading": "Akhriska AI",
+    "mostlySelfReported": "Waqtigan intiisa badan gacan ayaa lagu geliyay, laguma cabbirin saacad, sidaas darteed u qaado mid tilmaamaya oo aan sax buuxa ahayn.",
+    "measuredShareHint": "Qaybta safkan ee saacad lagu cabbiray",
+    "noTimeLogged": "Waqti lama diiwaangelin muddadan.",
+    "aiUnavailable": "Soo koobidda qoran ma jirto; tirooyinka kore waa buuxaan.",
+    "loadError": "Lama soo bandhigi karin soo koobidda wax-soo-saarka"
   }
 }

@@ -3258,5 +3258,23 @@
     "awaitingRequired": "Awaiting approval — required before this item can be completed",
     "awaitingOptional": "In review — approval can be recorded",
     "actionFailed": "Approval action failed"
+  },
+  "productivity": {
+    "title": "Productivity",
+    "subtitle": "Where the hours went, and what the pattern suggests.",
+    "lastDays": "{n}d",
+    "totalLogged": "Logged",
+    "measured": "Measured",
+    "vsPrevious": "vs previous",
+    "overEstimate": "Over estimate",
+    "byProject": "By project",
+    "byPerson": "By person",
+    "yourTime": "Your time",
+    "aiReading": "AI reading",
+    "mostlySelfReported": "Most of this time was typed in rather than measured by a timer, so read it as indicative rather than exact.",
+    "measuredShareHint": "Share of this row measured by a timer",
+    "noTimeLogged": "No time logged in this period yet.",
+    "aiUnavailable": "The written summary is unavailable; the figures above are complete.",
+    "loadError": "Could not load the productivity summary"
   }
 }

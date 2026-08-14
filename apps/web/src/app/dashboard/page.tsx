@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
 import { ProjectStatusOverview } from '@/components/dashboard/project-status-overview';
 import { TaskStatusOverview } from '@/components/dashboard/task-status-overview';
+import { ProductivityInsight } from '@/components/dashboard/productivity-insight';
 import { CARD_SUBTITLE, CARD_SURFACE, CARD_TITLE } from '@/components/ui/card-surface';
 import {
   TrendingUp,
@@ -384,6 +385,9 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <TaskStatusOverview projectId={selectedProjectId} />
           <ProjectStatusOverview />
+          {/* Effort, below the two status pictures: what the work cost comes
+              after what state the work is in. */}
+          <ProductivityInsight projectId={selectedProjectId} />
         </div>
 
         {/*

@@ -3259,5 +3259,23 @@
     "awaitingRequired": "ማጽደቅ በመጠበቅ ላይ — ይህ ተግባር ከመጠናቀቁ በፊት ያስፈልጋል",
     "awaitingOptional": "በግምገማ ላይ — ማጽደቅ መመዝገብ ይቻላል",
     "actionFailed": "የማጽደቅ ተግባሩ አልተሳካም"
+  },
+  "productivity": {
+    "title": "ምርታማነት",
+    "subtitle": "ሰዓታቱ ወዴት እንደሄዱ እና ንድፉ ምን እንደሚያሳይ።",
+    "lastDays": "{n}ቀን",
+    "totalLogged": "የተመዘገበ",
+    "measured": "የተለካ",
+    "vsPrevious": "ካለፈው ጋር",
+    "overEstimate": "ከግምት በላይ",
+    "byProject": "በፕሮጀክት",
+    "byPerson": "በሰው",
+    "yourTime": "የእርስዎ ጊዜ",
+    "aiReading": "የAI ንባብ",
+    "mostlySelfReported": "ይህ ጊዜ አብዛኛው በሰዓት ቆጣሪ ያልተለካ በእጅ የገባ ነው፤ ስለዚህ እንደ አመላካች እንጂ እንደ ትክክለኛ አይቆጠር።",
+    "measuredShareHint": "በዚህ ረድፍ በሰዓት ቆጣሪ የተለካው ድርሻ",
+    "noTimeLogged": "በዚህ ወቅት ገና የተመዘገበ ጊዜ የለም።",
+    "aiUnavailable": "የተጻፈው ማጠቃለያ አልተገኘም፤ ከላይ ያሉት አኃዞች ግን ሙሉ ናቸው።",
+    "loadError": "የምርታማነት ማጠቃለያውን መጫን አልተቻለም"
   }
 }
