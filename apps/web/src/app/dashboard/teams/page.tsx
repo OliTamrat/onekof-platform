@@ -56,11 +56,16 @@ import { useLanguage } from '@/contexts/language-context';
 
 // Types
 interface TeamMember {
+  /** TeamMember row id — not valid for the /members/[userId] routes. */
   id: string;
+  userId: string;
   name: string;
   email: string;
   avatar?: string;
-  role: 'OWNER' | 'ADMIN' | 'MEMBER';
+  // What the API actually sends. The old declaration listed OWNER/ADMIN —
+  // values TeamRole has never contained — which is how the badge that
+  // matched on OWNER slipped past the type checker.
+  role: 'LEAD' | 'MEMBER';
   joinedAt: string;
 }
 
