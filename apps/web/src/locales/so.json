@@ -248,7 +248,9 @@
     "itemsComplete": "Dhammaystiran",
     "itemsOverdue": "Waqtigoodu dhaafay",
     "itemsBlocked": "Xannibman",
-    "itemsRemaining": "Hadhay"
+    "itemsRemaining": "Hadhay",
+    "statsError": "Lama soo rari karin tirakoobka",
+    "moreOnIssuesPage": "oo dheeraad ah — fur bogga hawlaha si aad u aragto dhammaan"
   },
   "status": {
     "todo": "La qaban doono",

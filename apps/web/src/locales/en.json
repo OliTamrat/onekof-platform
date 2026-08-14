@@ -247,7 +247,9 @@
     "itemsComplete": "Complete",
     "itemsOverdue": "Overdue",
     "itemsBlocked": "Blocked",
-    "itemsRemaining": "Remaining"
+    "itemsRemaining": "Remaining",
+    "statsError": "Could not load statistics",
+    "moreOnIssuesPage": "more — open the Issues page to see all"
   },
   "status": {
     "todo": "To Do",
