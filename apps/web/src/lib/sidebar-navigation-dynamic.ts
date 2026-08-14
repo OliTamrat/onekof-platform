@@ -22,7 +22,6 @@ import { getEdition, type SidebarEdition } from '@/lib/navigation/editions';
 import type { OrganizationSettings } from '@/types/organization-settings';
 import {
   Home,
-  CircleUser,
   FolderKanban,
   ListChecks,
   Calendar,
@@ -136,25 +135,6 @@ function baseSections(): GatedSection[] {
       items: [
         { name: 'Members', nameKey: 'sidebar.members', href: '/dashboard/members', icon: UserPlus, requires: null },
       ],
-    },
-
-    // 3b. MY WORK — a personal workspace, placed beside Teams: Teams is the
-    // org's roster, My work is the reader's own slice of it. Gated like
-    // every other section (requires its own id) rather than pinned like
-    // Home — an organization decides whether it wants this in Customization
-    // the same way it decides about Teams or Budget, and every preset
-    // defaults it on. Declared right after Teams (not given a special rank
-    // in applyOrder) so it lands directly below Teams under every edition:
-    // Teams never appears in an edition's lead list, so it and whatever
-    // follows it in this array stay adjacent in the trailing group.
-    {
-      id: 'my-work',
-      name: 'My work',
-      nameKey: 'sidebar.myWork',
-      icon: CircleUser,
-      href: '/dashboard/my-work',
-      requires: 'my-work',
-      items: [],
     },
 
     // 4. BUDGET

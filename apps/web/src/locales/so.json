@@ -1972,7 +1972,6 @@
   },
   "sidebar": {
     "home": "Bogga hore",
-    "myWork": "Shaqadayda",
     "projects": "Mashruucyo",
     "allProjects": "Dhammaan mashruucyada",
     "issues": "Arrimaha",
@@ -2418,8 +2417,6 @@
     "networkError": "Khalad shabakad. Fadlan mar kale isku day."
   },
   "customization": {
-    "myWork": "Shaqadayda",
-    "myWorkDesc": "Goob shaqo shakhsi ah: waxyaabaha lagu xilsaaray, waxa dhowaan dhici doona, iyo waxa aad xiddigeysay.",
     "title": "Habeynta Dashboorkka",
     "description": "Habeyn sifooyinka loo heli karo ururkiina",
     "loading": "Waa la soo rarayaa...",

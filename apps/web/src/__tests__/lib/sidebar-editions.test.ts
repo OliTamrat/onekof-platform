@@ -18,23 +18,19 @@ const keyOf = (t: string, id: string) =>
   getSidebarNavigation(t, undefined, t).find((s) => s.id === id)?.nameKey;
 
 describe('E2 order: what leads reflects what the sector is for (S2 axis 2)', () => {
-  // My work is a gated section like Teams or Budget now (Customization
-  // decides it, not a pin), so it takes an ordinary trailing rank and its
-  // position varies by how long each edition's lead list is — it is not
-  // pinned near the top the way Home is.
   it('Ministry leads with Budget — public-fund accountability is the job', () => {
-    expect(ids('ministry')).toEqual(['home', 'budget', 'projects', 'operations', 'teams', 'my-work', 'research', 'knowledge']);
+    expect(ids('ministry')).toEqual(['home', 'budget', 'projects', 'operations', 'teams', 'research', 'knowledge']);
     expect(ids('government')).toEqual(ids('ministry'));
   });
 
   it('Healthcare leads with Medical, then Facility Operations', () => {
-    expect(ids('healthcare')).toEqual(['home', 'medical', 'operations', 'projects', 'teams', 'my-work', 'budget', 'research', 'knowledge']);
+    expect(ids('healthcare')).toEqual(['home', 'medical', 'operations', 'projects', 'teams', 'budget', 'research', 'knowledge']);
     expect(ids('hospital')).toEqual(ids('healthcare'));
     expect(ids('clinic')).toEqual(ids('healthcare'));
   });
 
   it('Construction leads with Site Operations — Q4: no longer identical to Ministry', () => {
-    expect(ids('construction')).toEqual(['home', 'operations', 'projects', 'budget', 'teams', 'my-work', 'research', 'knowledge']);
+    expect(ids('construction')).toEqual(['home', 'operations', 'projects', 'budget', 'teams', 'research', 'knowledge']);
     expect(ids('construction')).not.toEqual(ids('ministry'));
   });
 
@@ -44,10 +40,7 @@ describe('E2 order: what leads reflects what the sector is for (S2 axis 2)', () 
   });
 
   it('Business IS the base: untouched order', () => {
-    // Business/base has no lead list, so applyOrder never runs — sections
-    // stay in baseSections() declaration order, where My work is declared
-    // right after Teams.
-    expect(ids('business')).toEqual(['home', 'projects', 'teams', 'my-work', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
+    expect(ids('business')).toEqual(['home', 'projects', 'teams', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
   });
 
   it('Home is pinned first in every edition — lead cannot displace it', () => {
@@ -128,8 +121,7 @@ describe('E3 extras: sector entries live under their host section (S2 axis 4)', 
 
   it('S3: extras never create a section', () => {
     // With only Teams enabled, no extra host exists for the ministry
-    // edition — nothing appears from nowhere. My work is gated too, so it
-    // drops out here along with everything else Teams-only excludes.
+    // edition — nothing appears from nowhere.
     const ids2 = getSidebarNavigation('ministry', { enabledSections: ['teams'] } as never, 'ministry').map((s) => s.id);
     expect(ids2).toEqual(['home', 'projects', 'teams', 'knowledge']);
   });
