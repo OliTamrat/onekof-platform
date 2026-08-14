@@ -32,10 +32,13 @@
 > every organization today, but a customer can turn it off from
 > Customization the same way they can turn off Teams or Budget. It carries
 > no `lead` entry in any edition, so its position is the ordinary trailing
-> rank every other non-led section gets — it does not sit pinned near the
-> top the way Home does. `NAVIGABLE_SECTION_IDS` picked it up automatically
-> once it declared a gate; the parity fixture and the hand-written E2/E3
-> expectations were regenerated to match.
+> rank every other non-led section gets — declared in `baseSections()`
+> directly after Teams (not Home), so it lands immediately below Teams
+> under every edition: Teams itself is never in any edition's `lead` list,
+> so the two stay adjacent in the trailing group regardless of how each
+> sector reorders everything else. `NAVIGABLE_SECTION_IDS` picked it up
+> automatically once it declared a gate; the parity fixture and the
+> hand-written E2/E3 expectations were regenerated to match.
 
 ---
 

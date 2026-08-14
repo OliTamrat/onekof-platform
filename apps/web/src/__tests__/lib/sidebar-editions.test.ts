@@ -23,18 +23,18 @@ describe('E2 order: what leads reflects what the sector is for (S2 axis 2)', () 
   // position varies by how long each edition's lead list is — it is not
   // pinned near the top the way Home is.
   it('Ministry leads with Budget — public-fund accountability is the job', () => {
-    expect(ids('ministry')).toEqual(['home', 'budget', 'projects', 'operations', 'my-work', 'teams', 'research', 'knowledge']);
+    expect(ids('ministry')).toEqual(['home', 'budget', 'projects', 'operations', 'teams', 'my-work', 'research', 'knowledge']);
     expect(ids('government')).toEqual(ids('ministry'));
   });
 
   it('Healthcare leads with Medical, then Facility Operations', () => {
-    expect(ids('healthcare')).toEqual(['home', 'medical', 'operations', 'projects', 'my-work', 'teams', 'budget', 'research', 'knowledge']);
+    expect(ids('healthcare')).toEqual(['home', 'medical', 'operations', 'projects', 'teams', 'my-work', 'budget', 'research', 'knowledge']);
     expect(ids('hospital')).toEqual(ids('healthcare'));
     expect(ids('clinic')).toEqual(ids('healthcare'));
   });
 
   it('Construction leads with Site Operations — Q4: no longer identical to Ministry', () => {
-    expect(ids('construction')).toEqual(['home', 'operations', 'projects', 'budget', 'my-work', 'teams', 'research', 'knowledge']);
+    expect(ids('construction')).toEqual(['home', 'operations', 'projects', 'budget', 'teams', 'my-work', 'research', 'knowledge']);
     expect(ids('construction')).not.toEqual(ids('ministry'));
   });
 
@@ -45,9 +45,9 @@ describe('E2 order: what leads reflects what the sector is for (S2 axis 2)', () 
 
   it('Business IS the base: untouched order', () => {
     // Business/base has no lead list, so applyOrder never runs — sections
-    // stay in baseSections() declaration order, where My work sits right
-    // after Home.
-    expect(ids('business')).toEqual(['home', 'my-work', 'projects', 'teams', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
+    // stay in baseSections() declaration order, where My work is declared
+    // right after Teams.
+    expect(ids('business')).toEqual(['home', 'projects', 'teams', 'my-work', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
   });
 
   it('Home is pinned first in every edition — lead cannot displace it', () => {
