@@ -41,6 +41,38 @@ function patientFeatureReadiness() {
 }
 
 /**
+ * Which build is actually serving this request.
+ *
+ * Exists because of a real incident: the dashboard work was reviewed against
+ * a feature branch while production served an older master, and the only way
+ * to discover that was to compare screenshots against source. One URL that
+ * names the running commit turns that investigation into a single request —
+ * check /api/health, compare `commit` to the branch head, done.
+ *
+ * Two deployment shapes, two sources:
+ *  - Vercel injects VERCEL_GIT_COMMIT_SHA (requires "Automatically expose
+ *    System Environment Variables", on by default for new projects).
+ *  - The Docker image bakes GIT_COMMIT_SHA in via the BUILD_SHA build arg
+ *    that the docker-build workflow passes.
+ * Null means neither was present — a local dev server, or a build produced
+ * outside both pipelines — and is reported as-is rather than faked, because
+ * "unknown build" is itself the finding.
+ */
+function deploymentIdentity() {
+  const commit = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT_SHA || null;
+  return {
+    commit,
+    commitShort: commit ? commit.slice(0, 7) : null,
+    branch: process.env.VERCEL_GIT_COMMIT_REF || null,
+    platform: process.env.VERCEL_ENV
+      ? `vercel:${process.env.VERCEL_ENV}`
+      : process.env.GIT_COMMIT_SHA
+        ? 'docker'
+        : null,
+  };
+}
+
+/**
  * GET /api/health
  * Basic health check endpoint
  * Returns 200 if service is healthy
@@ -61,6 +93,7 @@ export async function GET(req: NextRequest) {
       responseTime: `${responseTime}ms`,
       service: 'onekof-platform',
       version: process.env.NEXT_PUBLIC_APP_VERSION || '0.1.0',
+      deployment: deploymentIdentity(),
       environment: process.env.NODE_ENV,
       patientFeatures: patientFeatureReadiness(),
     });
@@ -72,6 +105,10 @@ export async function GET(req: NextRequest) {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
         responseTime: `${responseTime}ms`,
+        // Reported on failure as well — an unhealthy deployment is precisely
+        // when "which build is this?" matters most, and identity comes from
+        // env vars, not from the database that just failed.
+        deployment: deploymentIdentity(),
         error: 'Database connection failed',
       },
       { status: 503 }
