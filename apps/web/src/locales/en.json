@@ -1927,6 +1927,7 @@
   },
   "sidebar": {
     "home": "Home",
+    "myWork": "My work",
     "projects": "Projects",
     "allProjects": "All Projects",
     "issues": "Issues",

@@ -22,6 +22,7 @@ import { getEdition, type SidebarEdition } from '@/lib/navigation/editions';
 import type { OrganizationSettings } from '@/types/organization-settings';
 import {
   Home,
+  CircleUser,
   FolderKanban,
   ListChecks,
   Calendar,
@@ -87,7 +88,8 @@ type GatedSection = Omit<SidebarSection, 'items' | 'requires'> & {
  * exact semantics of the pre-editions renderer, parity-proven by
  * __tests__/lib/fixtures/sidebar-parity.json:
  *
- * - `home`, `projects` and `knowledge` are ungated sections (always kept).
+ * - `home`, `my-work`, `projects` and `knowledge` are ungated sections
+ *   (always kept).
  * - Sub-items either share a feature gate (Reports → analytics) or are
  *   always-on within their section (requires: null).
  * - Medical's Care work rides the `issues` gate because it IS the issue
@@ -102,6 +104,19 @@ function baseSections(): GatedSection[] {
       nameKey: 'sidebar.home',
       icon: Home,
       href: '/dashboard',
+      requires: null,
+      items: [],
+    },
+
+    // 1b. MY WORK — a personal workspace, not a sector concern. Ungated like
+    // Home: it has nothing to do with what industry the organization is in,
+    // so no preset lists it and no edition leads with it (see applyOrder).
+    {
+      id: 'my-work',
+      name: 'My work',
+      nameKey: 'sidebar.myWork',
+      icon: CircleUser,
+      href: '/dashboard/my-work',
       requires: null,
       items: [],
     },
@@ -269,11 +284,21 @@ export const NAVIGABLE_SECTION_IDS: readonly string[] = (() => {
   return Array.from(ids);
 })();
 
-/** Home is always first; then the edition's lead; then base order (S2). */
+/**
+ * Home is always first, My work always second, then the edition's lead,
+ * then base order (S2).
+ *
+ * My work is pinned the same way Home is, and for the same reason: it is
+ * not a sector property, so no edition's `lead` array should have to name
+ * it to keep it near the top. Sections not in `baseSections()` at all when
+ * this array runs (dropped by membership filtering) never enter this
+ * function, so a disabled section cannot end up ranked either way.
+ */
 function applyOrder(sections: GatedSection[], edition: SidebarEdition): GatedSection[] {
   if (edition.lead.length === 0) return sections;
   const rank = (s: GatedSection, baseIndex: number): number => {
     if (s.id === 'home') return -1;
+    if (s.id === 'my-work') return -0.5;
     const lead = edition.lead.indexOf(s.id);
     return lead >= 0 ? lead : edition.lead.length + baseIndex;
   };
@@ -349,7 +374,8 @@ export function getSidebarNavigation(
       }))
       .filter((section) => {
         if (section.requires !== null) return enabledSet.has(section.requires);
-        // Ungated sections (home, projects, knowledge) keep the legacy rule:
+        // Ungated sections (home, my-work, projects, knowledge) keep the
+        // legacy rule:
         // present if they have a destination or anything left to show.
         return Boolean(section.href) || section.items.length > 0;
       });

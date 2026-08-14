@@ -19,33 +19,34 @@ const keyOf = (t: string, id: string) =>
 
 describe('E2 order: what leads reflects what the sector is for (S2 axis 2)', () => {
   it('Ministry leads with Budget — public-fund accountability is the job', () => {
-    expect(ids('ministry')).toEqual(['home', 'budget', 'projects', 'operations', 'teams', 'research', 'knowledge']);
+    expect(ids('ministry')).toEqual(['home', 'my-work', 'budget', 'projects', 'operations', 'teams', 'research', 'knowledge']);
     expect(ids('government')).toEqual(ids('ministry'));
   });
 
   it('Healthcare leads with Medical, then Facility Operations', () => {
-    expect(ids('healthcare')).toEqual(['home', 'medical', 'operations', 'projects', 'teams', 'budget', 'research', 'knowledge']);
+    expect(ids('healthcare')).toEqual(['home', 'my-work', 'medical', 'operations', 'projects', 'teams', 'budget', 'research', 'knowledge']);
     expect(ids('hospital')).toEqual(ids('healthcare'));
     expect(ids('clinic')).toEqual(ids('healthcare'));
   });
 
   it('Construction leads with Site Operations — Q4: no longer identical to Ministry', () => {
-    expect(ids('construction')).toEqual(['home', 'operations', 'projects', 'budget', 'teams', 'research', 'knowledge']);
+    expect(ids('construction')).toEqual(['home', 'my-work', 'operations', 'projects', 'budget', 'teams', 'research', 'knowledge']);
     expect(ids('construction')).not.toEqual(ids('ministry'));
   });
 
   it('NGO: Projects then Budget; Education: Projects then Research', () => {
-    expect(ids('ngo').slice(0, 3)).toEqual(['home', 'projects', 'budget']);
-    expect(ids('education').slice(0, 3)).toEqual(['home', 'projects', 'research']);
+    expect(ids('ngo').slice(0, 4)).toEqual(['home', 'my-work', 'projects', 'budget']);
+    expect(ids('education').slice(0, 4)).toEqual(['home', 'my-work', 'projects', 'research']);
   });
 
   it('Business IS the base: untouched order', () => {
-    expect(ids('business')).toEqual(['home', 'projects', 'teams', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
+    expect(ids('business')).toEqual(['home', 'my-work', 'projects', 'teams', 'budget', 'development', 'marketing', 'operations', 'knowledge']);
   });
 
-  it('Home is pinned first in every edition — lead cannot displace it', () => {
+  it('Home is pinned first, My work always second — lead cannot displace either', () => {
     for (const t of ['ministry', 'ngo', 'education', 'healthcare', 'construction', 'business']) {
       expect(ids(t)[0], t).toBe('home');
+      expect(ids(t)[1], t).toBe('my-work');
     }
   });
 });
@@ -121,9 +122,10 @@ describe('E3 extras: sector entries live under their host section (S2 axis 4)', 
 
   it('S3: extras never create a section', () => {
     // With only Teams enabled, no extra host exists for the ministry
-    // edition — nothing appears from nowhere.
+    // edition — nothing appears from nowhere. My work still renders: it is
+    // ungated, the same as Home and Knowledge.
     const ids2 = getSidebarNavigation('ministry', { enabledSections: ['teams'] } as never, 'ministry').map((s) => s.id);
-    expect(ids2).toEqual(['home', 'projects', 'teams', 'knowledge']);
+    expect(ids2).toEqual(['home', 'my-work', 'projects', 'teams', 'knowledge']);
   });
 });
 

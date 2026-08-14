@@ -21,6 +21,19 @@
 > emphasis only, membership untouched. **Q4** answered by the
 > Construction edition: Operations-led order, "Site Operations" naming,
 > and the Sites entry now distinguish it from Ministry.
+>
+> **v1.2 — My work added as a third ungated section (2026-08-14).**
+> The personal workspace page (`/dashboard/my-work`) shipped earlier with no
+> sidebar entry — reachable only by URL, the same gap M3 hit for Medical.
+> Fixed the same way §2's findings say it should be: `my-work` joins `home`
+> and `knowledge` as an always-on section (`requires: null`), not a fourth
+> navigation system. It carries no sector meaning, so no preset's
+> `enabledSections` names it and no edition's `lead` array names it either —
+> `applyOrder` pins it second, immediately after Home, the same way Home
+> itself is pinned first, rather than asking every edition to repeat that
+> choice. Membership, vocabulary and every edition's composition are
+> untouched; the parity fixture and the hand-written E2 expectations were
+> regenerated to include it.
 
 ---
 

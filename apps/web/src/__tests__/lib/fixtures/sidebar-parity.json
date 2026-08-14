@@ -7,6 +7,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -149,6 +155,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -288,6 +300,12 @@
       "id": "home",
       "nameKey": "sidebar.home",
       "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
       "items": []
     },
     {
@@ -456,6 +474,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -608,6 +632,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -711,6 +741,12 @@
       "id": "home",
       "nameKey": "sidebar.home",
       "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
       "items": []
     },
     {
@@ -866,6 +902,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "medical",
       "nameKey": "sidebar.medical",
       "href": "/dashboard/medical",
@@ -1015,6 +1057,12 @@
       "id": "home",
       "nameKey": "sidebar.home",
       "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
       "items": []
     },
     {
@@ -1170,6 +1218,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "operations",
       "nameKey": "sidebar.siteOperations",
       "href": "/dashboard/operations",
@@ -1308,6 +1362,12 @@
       "id": "home",
       "nameKey": "sidebar.home",
       "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
       "items": []
     },
     {
@@ -1463,6 +1523,12 @@
       "items": []
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "projects",
       "nameKey": "sidebar.projects",
       "href": "/dashboard/projects",
@@ -1612,6 +1678,12 @@
       "id": "home",
       "nameKey": "sidebar.home",
       "href": "/dashboard",
+      "items": []
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
       "items": []
     },
     {
@@ -1804,6 +1876,10 @@
   "__settings_teams_only": [
     {
       "id": "home",
+      "items": []
+    },
+    {
+      "id": "my-work",
       "items": []
     },
     {
