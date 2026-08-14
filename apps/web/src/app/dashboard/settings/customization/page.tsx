@@ -22,7 +22,6 @@ import {
   TrendingUp,
   Activity,
   FileSpreadsheet,
-  CircleUser,
 } from 'lucide-react';
 import { getAllPresets, getPresetForOrgType } from '@/lib/presets/organization-presets';
 import { useOrganizationSettings } from '@/contexts/organization-settings-context';
@@ -31,7 +30,7 @@ import { useLanguage } from '@/contexts/language-context';
 
 // Mock current organization settings (replace with real data from API/context)
 const INITIAL_SETTINGS: OrganizationSettings = {
-  enabledSections: ['my-work', 'teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'analytics', 'automations'],
+  enabledSections: ['teams', 'budget', 'goals', 'projects', 'documents', 'docs', 'calendar', 'issues', 'timeline', 'analytics', 'automations'],
   features: {
     budget: {
       expenses: true,
@@ -97,7 +96,6 @@ const INITIAL_SETTINGS: OrganizationSettings = {
 };
 
 const SECTION_INFO = {
-  'my-work': { icon: CircleUser, labelKey: 'customization.myWork', color: '#0EA5E9', descKey: 'customization.myWorkDesc' },
   teams: { icon: Users, labelKey: 'customization.teams', color: '#10B981', descKey: 'customization.teamsDesc' },
   budget: { icon: DollarSign, labelKey: 'customization.budget', color: '#F59E0B', descKey: 'customization.budgetDesc' },
   goals: { icon: Target, labelKey: 'customization.goals', color: '#8B5CF6', descKey: 'customization.goalsDesc' },
