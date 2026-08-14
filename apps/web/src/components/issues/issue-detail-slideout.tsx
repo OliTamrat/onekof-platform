@@ -11,6 +11,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
+import { TimeTrackingSection } from '@/components/issues/time-tracking-section';
 import { DEPARTMENTS, DEPARTMENT_CATALOG, WORKSTREAM_LABEL_KEYS, isDepartment, type Department } from '@/lib/departments/catalog';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -513,15 +514,18 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {activeTab === 'details' && (
-            <DetailsTab
-              issue={issue}
-              watchers={watchers}
-              updateIssue={updateIssueMutation}
-              addWatcher={addWatcherMutation}
-              removeWatcher={removeWatcherMutation}
-              members={members}
-              onSubtaskClick={(id) => setViewingIssueId(id)}
-            />
+            <>
+              <DetailsTab
+                issue={issue}
+                watchers={watchers}
+                updateIssue={updateIssueMutation}
+                addWatcher={addWatcherMutation}
+                removeWatcher={removeWatcherMutation}
+                members={members}
+                onSubtaskClick={(id) => setViewingIssueId(id)}
+              />
+              {issue?.id && <TimeTrackingSection taskId={issue.id} />}
+            </>
           )}
           {activeTab === 'settings' && <SettingsTab issue={issue} updateIssue={updateIssueMutation} />}
         </div>

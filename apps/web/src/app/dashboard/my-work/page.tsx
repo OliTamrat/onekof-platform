@@ -43,7 +43,10 @@ interface Workspace {
 type Tab = 'recommended' | 'assigned' | 'starred' | 'viewed';
 
 const CARD =
-  'rounded-xl border border-slate-200/60 dark:border-white/[0.08] bg-white dark:bg-[#12161B]';
+  'rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] ' +
+  'shadow-md hover:shadow-xl transition-all duration-300 ' +
+  'border border-slate-200/50 dark:border-white/[0.08] ' +
+  'hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]';
 
 export default function MyWorkPage() {
   const router = useRouter();

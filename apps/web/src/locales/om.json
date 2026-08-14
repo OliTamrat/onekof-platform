@@ -621,7 +621,10 @@
     "searchActivity": "Sochii barbaadi...",
     "activityDetails": "Ibsa Sochii",
     "activityInformation": "Odeeffannoo Sochii",
-    "addMember": "Miseensa Dabaluu"
+    "addMember": "Miseensa Dabaluu",
+    "roleLead": "Geggeessaa",
+    "roleMember": "Miseensa",
+    "roleChangeFailed": "Gahee jijjiiruun hin dandaʼamne"
   },
   "goals": {
     "title": "Galmoota",
@@ -3219,5 +3222,21 @@
     "nothingViewed": "Dhiheenya kan ilaalame hin jiru",
     "notification": "Beeksisa",
     "loadError": "Hojii kee fe'uun hin danda'amne"
+  },
+  "timeTracking": {
+    "title": "Hordoffii yeroo",
+    "logged": "galmeeffame",
+    "logTime": "Yeroo galmeessi",
+    "hours": "Sa'aatii",
+    "hoursShort": "s",
+    "minutes": "Daqiiqaa",
+    "minutesShort": "d",
+    "workedOn": "Guyyaa hojjetame",
+    "notePlaceholder": "Maal irratti hojjette? (filannoo)",
+    "noEntries": "Hanga ammaatti yeroon galmeeffame hin jiru",
+    "enterSomeTime": "Yoo xiqqaate daqiiqaa tokko galchi",
+    "logFailed": "Yeroo galmeessuun hin danda'amne",
+    "deleteFailed": "Galmee haquun hin danda'amne",
+    "deleteEntry": "Galmee haqi"
   }
 }

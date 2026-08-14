@@ -621,7 +621,10 @@
     "searchActivity": "እንቅስቃሴ ይፈልጉ...",
     "activityDetails": "የእንቅስቃሴ ዝርዝሮች",
     "activityInformation": "የእንቅስቃሴ መረጃ",
-    "addMember": "አባል ጨምር"
+    "addMember": "አባል ጨምር",
+    "roleLead": "መሪ",
+    "roleMember": "አባል",
+    "roleChangeFailed": "ሚናውን መቀየር አልተቻለም"
   },
   "goals": {
     "title": "ግቦች",
@@ -3213,5 +3216,21 @@
     "nothingViewed": "በቅርቡ የታየ የለም",
     "notification": "ማሳወቂያ",
     "loadError": "ሥራዎን መጫን አልተቻለም"
+  },
+  "timeTracking": {
+    "title": "የጊዜ መከታተያ",
+    "logged": "ተመዝግቧል",
+    "logTime": "ጊዜ መዝግብ",
+    "hours": "ሰዓታት",
+    "hoursShort": "ሰ",
+    "minutes": "ደቂቃዎች",
+    "minutesShort": "ደ",
+    "workedOn": "የሥራ ቀን",
+    "notePlaceholder": "ምን ላይ ሠሩ? (አማራጭ)",
+    "noEntries": "እስካሁን የተመዘገበ ጊዜ የለም",
+    "enterSomeTime": "ቢያንስ አንድ ደቂቃ ያስገቡ",
+    "logFailed": "ጊዜ መመዝገብ አልተቻለም",
+    "deleteFailed": "መዝገቡን ማስወገድ አልተቻለም",
+    "deleteEntry": "መዝገብ አስወግድ"
   }
 }

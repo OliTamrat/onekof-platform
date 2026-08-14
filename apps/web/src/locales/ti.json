@@ -621,7 +621,10 @@
     "searchActivity": "ንጥፈት ድለዩ...",
     "activityDetails": "ዝርዝር ንጥፈት",
     "activityInformation": "ሓበሬታ ንጥፈት",
-    "addMember": "ኣባል ወስኽ"
+    "addMember": "ኣባል ወስኽ",
+    "roleLead": "መራሒ",
+    "roleMember": "ኣባል",
+    "roleChangeFailed": "ተራ ክቕየር ኣይከኣለን"
   },
   "goals": {
     "title": "ዕላማታት",
@@ -3219,5 +3222,21 @@
     "nothingViewed": "ኣብ ቀረባ ዝተራእየ የለን",
     "notification": "ሓበሬታ",
     "loadError": "ስራሕኩም ክጽዓን ኣይከኣለን"
+  },
+  "timeTracking": {
+    "title": "መከታተሊ ግዜ",
+    "logged": "ተመዝጊቡ",
+    "logTime": "ግዜ መዝግብ",
+    "hours": "ሰዓታት",
+    "hoursShort": "ሰ",
+    "minutes": "ደቓይቕ",
+    "minutesShort": "ደ",
+    "workedOn": "ዕለት ስራሕ",
+    "notePlaceholder": "ኣብ ምንታይ ሰሪሕኩም? (ኣማራጺ)",
+    "noEntries": "ክሳብ ሕጂ እተመዝገበ ግዜ የለን",
+    "enterSomeTime": "ብውሑዱ ሓደ ደቒቕ ኣእትዉ",
+    "logFailed": "ግዜ ክምዝገብ ኣይከኣለን",
+    "deleteFailed": "እቲ መዝገብ ክውገድ ኣይከኣለን",
+    "deleteEntry": "መዝገብ ኣወግድ"
   }
 }

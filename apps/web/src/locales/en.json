@@ -620,7 +620,10 @@
     "searchActivity": "Search activity...",
     "activityDetails": "Activity Details",
     "activityInformation": "Activity Information",
-    "addMember": "Add Member"
+    "addMember": "Add Member",
+    "roleLead": "Lead",
+    "roleMember": "Member",
+    "roleChangeFailed": "Could not change the role"
   },
   "goals": {
     "title": "Goals",
@@ -3212,5 +3215,21 @@
     "nothingViewed": "Nothing viewed recently",
     "notification": "Notification",
     "loadError": "Could not load your work"
+  },
+  "timeTracking": {
+    "title": "Time tracking",
+    "logged": "logged",
+    "logTime": "Log time",
+    "hours": "Hours",
+    "hoursShort": "h",
+    "minutes": "Minutes",
+    "minutesShort": "m",
+    "workedOn": "Date worked",
+    "notePlaceholder": "What did you work on? (optional)",
+    "noEntries": "No time logged yet",
+    "enterSomeTime": "Enter at least one minute",
+    "logFailed": "Could not log time",
+    "deleteFailed": "Could not remove the entry",
+    "deleteEntry": "Remove entry"
   }
 }
