@@ -13,7 +13,7 @@ import {
 import { NAVIGABLE_SECTION_IDS } from '@/lib/sidebar-navigation-dynamic';
 
 const VALID_SECTION_IDS = new Set([
-  'teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'projects',
+  'my-work', 'teams', 'budget', 'goals', 'automations', 'documents', 'docs', 'projects',
   'issues', 'calendar', 'timeline', 'analytics', 'compliance', 'impact',
   'development', 'marketing', 'operations', 'research', 'medical', 'courses',
 ]);

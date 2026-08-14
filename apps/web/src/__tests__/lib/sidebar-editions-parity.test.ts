@@ -62,7 +62,7 @@ describe('S5: NAVIGABLE_SECTION_IDS is derived, and still complete', () => {
     const before = [
       'projects', 'teams', 'budget', 'development', 'marketing', 'operations',
       'medical', 'research', 'goals', 'automations', 'documents', 'docs',
-      'issues', 'calendar', 'timeline', 'analytics',
+      'issues', 'calendar', 'timeline', 'analytics', 'my-work',
     ];
     expect([...NAVIGABLE_SECTION_IDS].sort()).toEqual(before.sort());
   });

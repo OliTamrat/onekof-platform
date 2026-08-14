@@ -91,6 +91,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "research",
       "nameKey": "sidebar.research",
       "href": "/dashboard/research",
@@ -233,6 +239,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "research",
       "nameKey": "sidebar.research",
       "href": "/dashboard/research",
@@ -346,6 +358,12 @@
           "href": "/dashboard/members"
         }
       ]
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
     },
     {
       "id": "marketing",
@@ -496,6 +514,12 @@
           "href": "/dashboard/members"
         }
       ]
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
     },
     {
       "id": "budget",
@@ -673,6 +697,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -800,6 +830,12 @@
           "href": "/dashboard/members"
         }
       ]
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
     },
     {
       "id": "budget",
@@ -954,6 +990,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -1106,6 +1148,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -1253,6 +1301,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "research",
       "nameKey": "sidebar.research",
       "href": "/dashboard/research",
@@ -1351,6 +1405,12 @@
           "href": "/dashboard/members"
         }
       ]
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
     },
     {
       "id": "budget",
@@ -1505,6 +1565,12 @@
       ]
     },
     {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
+    },
+    {
       "id": "budget",
       "nameKey": "sidebar.budget",
       "href": "/dashboard/budget",
@@ -1655,6 +1721,12 @@
           "href": "/dashboard/members"
         }
       ]
+    },
+    {
+      "id": "my-work",
+      "nameKey": "sidebar.myWork",
+      "href": "/dashboard/my-work",
+      "items": []
     },
     {
       "id": "budget",
