@@ -208,6 +208,8 @@ model User {
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
   workLogs       WorkLog[]       @relation("UserWorkLog") // Time this user has logged
+  stars          Star[]          @relation("UserStar") // Items this user pinned
+  recentViews    RecentView[]    @relation("UserRecentView") // Items this user opened
   notifications  Notification[]  @relation("UserNotifications")
   pushTokens     PushToken[]     @relation("UserPushTokens")
   taskLinks      TaskLink[]      @relation("TaskLinkCreator") // Task relationships created by this user
@@ -325,6 +327,55 @@ model VerificationToken {
 // ============================================================================
 // ENUMS
 // ============================================================================
+
+/// An item a user pinned to their personal workspace.
+///
+/// Polymorphic by (entityType, entityId) rather than a foreign key per type:
+/// stars are a personal bookmark with no referential meaning to the entity,
+/// and a column per starrable type would need a migration every time another
+/// kind of thing becomes starrable.
+model Star {
+  id String @id @default(cuid())
+
+  userId String @map("user_id")
+  user   User   @relation("UserStar", fields: [userId], references: [id], onDelete: Cascade)
+
+  /// TASK, PROJECT, GOAL, DOCUMENT …
+  entityType String @map("entity_type")
+  entityId   String @map("entity_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  /// Starring twice is the same as starring once — the unique constraint makes
+  /// the toggle idempotent rather than relying on the caller to check first.
+  @@unique([userId, entityType, entityId])
+  @@index([userId, createdAt])
+  @@map("stars")
+  @@schema("public")
+}
+
+/// The last time a user opened something, for the "Viewed" feed.
+///
+/// UserActivity cannot serve this: it records mutations (created, updated,
+/// assigned…), so an item you read but did not change never appears there.
+/// One row per user and entity, updated in place — this is "when did you last
+/// look at this", not an audit trail of every glance.
+model RecentView {
+  id String @id @default(cuid())
+
+  userId String @map("user_id")
+  user   User   @relation("UserRecentView", fields: [userId], references: [id], onDelete: Cascade)
+
+  entityType String @map("entity_type")
+  entityId   String @map("entity_id")
+
+  viewedAt DateTime @default(now()) @map("viewed_at")
+
+  @@unique([userId, entityType, entityId])
+  @@index([userId, viewedAt])
+  @@map("recent_views")
+  @@schema("public")
+}
 
 /// An individual entry of time worked on a task.
 ///

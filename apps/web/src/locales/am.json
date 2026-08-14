@@ -192,7 +192,8 @@
     "safety": "ደህንነት",
     "facilities": "ተቋማት",
     "medical": "ሕክምና",
-    "resources": "ሀብቶች"
+    "resources": "ሀብቶች",
+    "myWork": "የእኔ ሥራ"
   },
   "dashboard": {
     "title": "ዳሽቦርድ",
@@ -3188,5 +3189,29 @@
     "residencyBlockedBody": "የኢትዮጵያ ሕግ የታካሚ መረጃ በአገር ውስጥ እንዲቀመጥ ይጠይቃል። ይህ ተከላ ከኢትዮጵያ ውጭ ስለሚሠራ የታካሚ መዝገቦች እዚህ ሊቀመጡ ወይም ሊታዩ አይችሉም። ስለ አገር ውስጥ ተከላ አስተዳዳሪዎን ይጠይቁ።",
     "residencyBlockedTitle": "የታካሚ መዝገቦች በዚህ ተከላ ላይ አይገኙም",
     "unnamed": "ስም የሌለው መዝገብ"
+  },
+  "myWork": {
+    "greeting": "የእርስዎ ሥራ",
+    "greetingNamed": "ሰላም {name}፣ ሥራዎ ይህ ነው",
+    "subtitle": "ለእርስዎ የተመደበ፣ እርስዎን የሚጠብቅ ወይም በቅርቡ የነበሩበት ሁሉ።",
+    "recommended": "የተመከሩ",
+    "assignedToMe": "ለእኔ የተመደበ",
+    "starredAndWorkedOn": "የተመረጡና የተሠሩ",
+    "viewed": "የታዩ",
+    "overdue": "ጊዜው ያለፈበት",
+    "dueSoon": "በቅርቡ የሚደርስ",
+    "waitingOnYou": "እርስዎን የሚጠብቅ",
+    "starredProjects": "የተመረጡ ፕሮጀክቶች",
+    "starredItems": "የተመረጡ ንጥሎች",
+    "workedOn": "በቅርቡ የተሠራ",
+    "noOverdue": "ጊዜው ያለፈበት የለም",
+    "nothingDueSoon": "በሚቀጥለው ሳምንት የሚደርስ የለም",
+    "nothingWaiting": "እርስዎን የሚጠብቅ የለም",
+    "nothingAssigned": "ለእርስዎ የተመደበ የለም",
+    "nothingStarred": "እስካሁን የተመረጠ የለም",
+    "nothingWorkedOn": "በቅርቡ የተሠራ የለም",
+    "nothingViewed": "በቅርቡ የታየ የለም",
+    "notification": "ማሳወቂያ",
+    "loadError": "ሥራዎን መጫን አልተቻለም"
   }
 }

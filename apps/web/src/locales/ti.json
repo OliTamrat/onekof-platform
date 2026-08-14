@@ -192,7 +192,8 @@
     "safety": "ድሕነት",
     "facilities": "ትካላት",
     "medical": "ሕክምና",
-    "resources": "ጸጋታት"
+    "resources": "ጸጋታት",
+    "myWork": "ናተይ ስራሕ"
   },
   "dashboard": {
     "title": "ዳሽቦርድ",
@@ -3194,5 +3195,29 @@
     "residencyBlockedBody": "ሕጊ ኢትዮጵያ ሓበሬታ ሕሙማት ኣብ ውሽጢ ሃገር ክቕመጥ ይጠልብ። እዚ ትካል ካብ ኢትዮጵያ ወጻኢ ስለ ዝሰርሕ መዝገባት ሕሙማት ኣብዚ ክቕመጡ ወይ ክርኣዩ ኣይክእሉን። ብዛዕባ ውሽጢ ሃገር ትካል ንኣመሓዳሪኻ ሕተት።",
     "residencyBlockedTitle": "መዝገባት ሕሙማት ኣብዚ ትካል ኣይርከቡን",
     "unnamed": "ስም ዘይብሉ መዝገብ"
+  },
+  "myWork": {
+    "greeting": "ስራኹም",
+    "greetingNamed": "ሰላም {name}፡ ስራኹም እዚ እዩ",
+    "subtitle": "ንዓኹም እተመደበ፡ ንዓኹም ዝጽበ ወይ ኣብ ቀረባ እዋን ዝነበርኩምዎ ኩሉ።",
+    "recommended": "ዝተመኽሩ",
+    "assignedToMe": "ንዓይ እተመደበ",
+    "starredAndWorkedOn": "ዝተመርጹን ዝተሰርሑን",
+    "viewed": "ዝተራእዩ",
+    "overdue": "ግዜኡ ዝሓለፈ",
+    "dueSoon": "ኣብ ቀረባ ዝበጽሕ",
+    "waitingOnYou": "ንዓኹም ዝጽበ",
+    "starredProjects": "ዝተመርጹ ፕሮጀክትታት",
+    "starredItems": "ዝተመርጹ ንጥፈታት",
+    "workedOn": "ኣብ ቀረባ እተሰርሐ",
+    "noOverdue": "ግዜኡ ዝሓለፈ የለን",
+    "nothingDueSoon": "ኣብ ዝመጽእ ሰሙን ዝበጽሕ የለን",
+    "nothingWaiting": "ንዓኹም ዝጽበ የለን",
+    "nothingAssigned": "ንዓኹም እተመደበ የለን",
+    "nothingStarred": "ክሳብ ሕጂ ዝተመርጸ የለን",
+    "nothingWorkedOn": "ኣብ ቀረባ እተሰርሐ የለን",
+    "nothingViewed": "ኣብ ቀረባ ዝተራእየ የለን",
+    "notification": "ሓበሬታ",
+    "loadError": "ስራሕኩም ክጽዓን ኣይከኣለን"
   }
 }

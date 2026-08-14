@@ -192,7 +192,8 @@
     "safety": "Nageenya",
     "facilities": "Dhaabbilee",
     "medical": "Yaalaa",
-    "resources": "Qabeenya"
+    "resources": "Qabeenya",
+    "myWork": "Hojii koo"
   },
   "dashboard": {
     "title": "Daashboordii",
@@ -3194,5 +3195,29 @@
     "residencyBlockedBody": "Seerri Itoophiyaa odeeffannoon dhukkubsataa biyya keessatti akka kuufamu barbaada. Ijaarsi kun Itoophiyaan alatti waan hojjetuuf galmeewwan dhukkubsataa asitti kuufamuu yookaan agarsiifamuu hin danda'an. Waa'ee ijaarsa biyya keessaa bulchaa keessan gaafadhaa.",
     "residencyBlockedTitle": "Galmeewwan dhukkubsataa ijaarsa kana irratti hin argaman",
     "unnamed": "Galmee maqaa hin qabne"
+  },
+  "myWork": {
+    "greeting": "Hojii kee",
+    "greetingNamed": "Akkam {name}, hojiin kee kunooti",
+    "subtitle": "Wanti siif ramadame, si eegu, yookaan dhiheenya kana keessa turte hundi.",
+    "recommended": "Kan gorfaman",
+    "assignedToMe": "Kan naaf ramadame",
+    "starredAndWorkedOn": "Kan filataman fi hojjetaman",
+    "viewed": "Kan ilaalaman",
+    "overdue": "Yeroon darbe",
+    "dueSoon": "Dhiyootti kan geessu",
+    "waitingOnYou": "Si eegaa jira",
+    "starredProjects": "Piroojektoota filataman",
+    "starredItems": "Wantoota filataman",
+    "workedOn": "Dhiheenya kan hojjetame",
+    "noOverdue": "Kan yeroon darbe hin jiru",
+    "nothingDueSoon": "Torban dhufu keessa kan geessu hin jiru",
+    "nothingWaiting": "Kan si eegu hin jiru",
+    "nothingAssigned": "Kan siif ramadame hin jiru",
+    "nothingStarred": "Hanga ammaa kan filatame hin jiru",
+    "nothingWorkedOn": "Dhiheenya kan hojjetame hin jiru",
+    "nothingViewed": "Dhiheenya kan ilaalame hin jiru",
+    "notification": "Beeksisa",
+    "loadError": "Hojii kee fe'uun hin danda'amne"
   }
 }
