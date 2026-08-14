@@ -3,8 +3,14 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { BarChart3, ChevronRight, ListChecks, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
+import {
+  CARD_ICON_CHIP,
+  CARD_SUBTITLE,
+  CARD_SURFACE,
+  CARD_TITLE,
+} from '@/components/ui/card-surface';
 
 type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'BLOCKED' | 'BACKLOG';
 
@@ -55,18 +61,10 @@ const PRIORITY_ROWS: { key: string; labelKey: string; color: string }[] = [
   { key: 'LOWEST', labelKey: 'priority.lowest', color: '#94A3B8' },
 ];
 
-const CARD =
-  'rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] ' +
-  'p-6 shadow-md hover:shadow-xl transition-all duration-300 ' +
-  // Product-wide card rule: one visible slate-200/50 edge in BOTH themes,
-  // no dark: override. Codified after the invalid dark-border classes were
-  // removed everywhere — the light edge is the deliberate look, not a
-  // fallback.
-  'border border-slate-200/50 ' +
-  'hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]';
+const CARD = CARD_SURFACE + ' flex h-full flex-col p-6';
 
-const SECTION_LABEL =
-  'text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-white/50';
+/** 10% tint of a hex accent, for the icon chip behind its icon. */
+const tint = (hex: string) => `${hex}1A`;
 
 /**
  * Task-level status overview in the drill-down style of the project one.
@@ -155,10 +153,16 @@ export function TaskStatusOverview({ projectId }: { projectId?: string | null })
   );
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* ---------------- Donut + legend ---------------- */}
       <div className={CARD}>
-        <h2 className={SECTION_LABEL}>{t('dashboard.statusOverview')}</h2>
+        <div className="flex items-center gap-2.5">
+          <span className={CARD_ICON_CHIP} style={{ backgroundColor: tint('#1C8C7D'), color: '#1C8C7D' }}>
+            <ListChecks className="h-4 w-4" />
+          </span>
+          <h2 className={CARD_TITLE}>{t('dashboard.taskStatusOverview')}</h2>
+        </div>
+        <p className={CARD_SUBTITLE + ' mt-1.5'}>{t('dashboard.statusDescription')}</p>
 
         {isLoading && (
           <div className="flex h-44 items-center justify-center">
@@ -252,11 +256,24 @@ export function TaskStatusOverview({ projectId }: { projectId?: string | null })
       {/* ---------------- Companion panel ---------------- */}
       <div className={CARD}>
         <div className="flex items-center justify-between gap-3">
-          <h2 className={SECTION_LABEL}>
-            {selected
-              ? `${statusLabel(selected)} · ${chosenCount}`
-              : t('dashboard.priorityBreakdown')}
-          </h2>
+          <div className="flex min-w-0 items-center gap-2.5">
+            {/* The chip carries the selected band's colour, so the panel and
+                the slice the reader clicked stay visibly the same subject. */}
+            <span
+              className={CARD_ICON_CHIP}
+              style={{
+                backgroundColor: tint(selected ? STATUS_COLOR[selected] : '#1C8C7D'),
+                color: selected ? STATUS_COLOR[selected] : '#1C8C7D',
+              }}
+            >
+              <BarChart3 className="h-4 w-4" />
+            </span>
+            <h2 className={CARD_TITLE + ' truncate'}>
+              {selected
+                ? `${statusLabel(selected)} · ${chosenCount}`
+                : t('dashboard.priorityBreakdown')}
+            </h2>
+          </div>
           {selected && (
             <button
               onClick={() => setSelected(null)}
@@ -266,8 +283,13 @@ export function TaskStatusOverview({ projectId }: { projectId?: string | null })
             </button>
           )}
         </div>
+        {/* Both cards carry a title and one line of description, so their
+            content starts on the same baseline across the gutter. */}
+        <p className={CARD_SUBTITLE + ' mt-1.5'}>
+          {selected ? t('dashboard.selectedStatusHint') : t('dashboard.priorityDescription')}
+        </p>
         <div
-          className="mt-2 h-[3px] w-16 rounded-full transition-colors"
+          className="mt-3 h-[3px] w-16 rounded-full transition-colors"
           style={{ backgroundColor: selected ? STATUS_COLOR[selected] : 'transparent' }}
         />
 
