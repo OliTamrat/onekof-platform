@@ -192,7 +192,8 @@
     "safety": "ድሕነት",
     "facilities": "ትካላት",
     "medical": "ሕክምና",
-    "resources": "ጸጋታት"
+    "resources": "ጸጋታት",
+    "myWork": "ናተይ ስራሕ"
   },
   "dashboard": {
     "title": "ዳሽቦርድ",
@@ -233,7 +234,21 @@
     "noTasks": "ተግባራት የለን",
     "addTask": "ተግባር ወስኽ",
     "allProjects": "ኩሎም ፕሮጀክትታት",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "ፕሮጀክትታት",
+    "projectStatusOverview": "ሓፈሻዊ ትሕዝቶ ኩነታት ፕሮጀክት",
+    "projectStatusDescription": "ኩነታት ኣፈጻጽማ ፕሮጀክትታትኩም። ነቶም ኣብ ድሕሪኡ ዘለዉ ፕሮጀክትታት ንምርኣይ ክፍሊ ምረጽ።",
+    "projectStatusError": "ኩነታት ፕሮጀክት ክጽዓን ኣይከኣለን",
+    "noProjectsYet": "ክሳብ ሕጂ ንጡፋት ፕሮጀክትታት የለዉን",
+    "setManually": "ብመሪሒ እተቐመጠ",
+    "projectStatusFootnote": "ኩነታት ካብ ግዜኦም ዝሓለፉ ዕዮታት፡ ዕጉታት ዕዮታትን ኣብ ግዜ ሰሌዳ ዘሎ ኣፈጻጽማን ይውሰድ። መሪሒ ፕሮጀክት ክቕይሮ ይኽእል።",
+    "workAcrossProjects": "ኣብ ኩሎም ፕሮጀክትታት ዘሎ ስራሕ",
+    "workBreakdownFootnote": "ኣብ ላዕሊ ዘለዉ ፕሮጀክትታት ዘለዉ ኩሎም ዕዮታት ይቖጽር። እቶም ዝተረፉ ግዜኦም ዝሓለፈን ዕጉታትን ኣየጠቓልልን።",
+    "projectsThatAre": "ፕሮጀክትታት",
+    "itemsComplete": "ዝተዛዘሙ",
+    "itemsOverdue": "ግዜኦም ዝሓለፈ",
+    "itemsBlocked": "ዕጉታት",
+    "itemsRemaining": "ዝተረፉ"
   },
   "status": {
     "todo": "ዝግበር",
@@ -3180,5 +3195,29 @@
     "residencyBlockedBody": "ሕጊ ኢትዮጵያ ሓበሬታ ሕሙማት ኣብ ውሽጢ ሃገር ክቕመጥ ይጠልብ። እዚ ትካል ካብ ኢትዮጵያ ወጻኢ ስለ ዝሰርሕ መዝገባት ሕሙማት ኣብዚ ክቕመጡ ወይ ክርኣዩ ኣይክእሉን። ብዛዕባ ውሽጢ ሃገር ትካል ንኣመሓዳሪኻ ሕተት።",
     "residencyBlockedTitle": "መዝገባት ሕሙማት ኣብዚ ትካል ኣይርከቡን",
     "unnamed": "ስም ዘይብሉ መዝገብ"
+  },
+  "myWork": {
+    "greeting": "ስራኹም",
+    "greetingNamed": "ሰላም {name}፡ ስራኹም እዚ እዩ",
+    "subtitle": "ንዓኹም እተመደበ፡ ንዓኹም ዝጽበ ወይ ኣብ ቀረባ እዋን ዝነበርኩምዎ ኩሉ።",
+    "recommended": "ዝተመኽሩ",
+    "assignedToMe": "ንዓይ እተመደበ",
+    "starredAndWorkedOn": "ዝተመርጹን ዝተሰርሑን",
+    "viewed": "ዝተራእዩ",
+    "overdue": "ግዜኡ ዝሓለፈ",
+    "dueSoon": "ኣብ ቀረባ ዝበጽሕ",
+    "waitingOnYou": "ንዓኹም ዝጽበ",
+    "starredProjects": "ዝተመርጹ ፕሮጀክትታት",
+    "starredItems": "ዝተመርጹ ንጥፈታት",
+    "workedOn": "ኣብ ቀረባ እተሰርሐ",
+    "noOverdue": "ግዜኡ ዝሓለፈ የለን",
+    "nothingDueSoon": "ኣብ ዝመጽእ ሰሙን ዝበጽሕ የለን",
+    "nothingWaiting": "ንዓኹም ዝጽበ የለን",
+    "nothingAssigned": "ንዓኹም እተመደበ የለን",
+    "nothingStarred": "ክሳብ ሕጂ ዝተመርጸ የለን",
+    "nothingWorkedOn": "ኣብ ቀረባ እተሰርሐ የለን",
+    "nothingViewed": "ኣብ ቀረባ ዝተራእየ የለን",
+    "notification": "ሓበሬታ",
+    "loadError": "ስራሕኩም ክጽዓን ኣይከኣለን"
   }
 }

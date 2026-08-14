@@ -28,6 +28,9 @@ const ROLE_CONFIG = {
 const PLAN_CONFIG = {
   ENTERPRISE: { color: 'emerald', label: 'Enterprise' },
   PROFESSIONAL: { color: 'blue', label: 'Professional' },
+  BUSINESS: { color: 'teal', label: 'Business' },
+  REGIONAL: { color: 'cyan', label: 'Regional' },
+  GOVERNMENT: { color: 'emerald', label: 'Government' },
   FREE: { color: 'gray', label: 'Free' },
 };
 

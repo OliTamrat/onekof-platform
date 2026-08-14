@@ -192,7 +192,8 @@
     "safety": "Nageenya",
     "facilities": "Dhaabbilee",
     "medical": "Yaalaa",
-    "resources": "Qabeenya"
+    "resources": "Qabeenya",
+    "myWork": "Hojii koo"
   },
   "dashboard": {
     "title": "Daashboordii",
@@ -233,7 +234,21 @@
     "noTasks": "Hojiin hin jiru",
     "addTask": "Hojii dabali",
     "allProjects": "Pirojektota Hundaa",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "Piroojektoota",
+    "projectStatusOverview": "Ilaalcha Waliigalaa Haala Piroojektii",
+    "projectStatusDescription": "Haala raawwii piroojektoota keessanii. Piroojektoota isa duuba jiran ilaaluuf kutaa filadhu.",
+    "projectStatusError": "Haala piroojektii fe'uun hin danda'amne",
+    "noProjectsYet": "Hanga ammaatti piroojektiin hojiirra jiru hin jiru",
+    "setManually": "geggeessaadhaan kaa’ame",
+    "projectStatusFootnote": "Haalli kun hojiiwwan yeroon isaanii darbe, kanneen ugguraman fi deemsa sagantaa irraa argama. Geggeessaan piroojektii jijjiiruu danda'a.",
+    "workAcrossProjects": "Hojii piroojektoota hunda keessaa",
+    "workBreakdownFootnote": "Hojiiwwan piroojektoota armaan olii hunda lakkaaʼa. Kan hafan yeroon darbe fi kan ugguraman hin dabalatu.",
+    "projectsThatAre": "Piroojektoonni",
+    "itemsComplete": "Xumuraman",
+    "itemsOverdue": "Yeroon darbe",
+    "itemsBlocked": "Ugguraman",
+    "itemsRemaining": "Kan hafan"
   },
   "status": {
     "todo": "Kan Hojjetamu",
@@ -3180,5 +3195,29 @@
     "residencyBlockedBody": "Seerri Itoophiyaa odeeffannoon dhukkubsataa biyya keessatti akka kuufamu barbaada. Ijaarsi kun Itoophiyaan alatti waan hojjetuuf galmeewwan dhukkubsataa asitti kuufamuu yookaan agarsiifamuu hin danda'an. Waa'ee ijaarsa biyya keessaa bulchaa keessan gaafadhaa.",
     "residencyBlockedTitle": "Galmeewwan dhukkubsataa ijaarsa kana irratti hin argaman",
     "unnamed": "Galmee maqaa hin qabne"
+  },
+  "myWork": {
+    "greeting": "Hojii kee",
+    "greetingNamed": "Akkam {name}, hojiin kee kunooti",
+    "subtitle": "Wanti siif ramadame, si eegu, yookaan dhiheenya kana keessa turte hundi.",
+    "recommended": "Kan gorfaman",
+    "assignedToMe": "Kan naaf ramadame",
+    "starredAndWorkedOn": "Kan filataman fi hojjetaman",
+    "viewed": "Kan ilaalaman",
+    "overdue": "Yeroon darbe",
+    "dueSoon": "Dhiyootti kan geessu",
+    "waitingOnYou": "Si eegaa jira",
+    "starredProjects": "Piroojektoota filataman",
+    "starredItems": "Wantoota filataman",
+    "workedOn": "Dhiheenya kan hojjetame",
+    "noOverdue": "Kan yeroon darbe hin jiru",
+    "nothingDueSoon": "Torban dhufu keessa kan geessu hin jiru",
+    "nothingWaiting": "Kan si eegu hin jiru",
+    "nothingAssigned": "Kan siif ramadame hin jiru",
+    "nothingStarred": "Hanga ammaa kan filatame hin jiru",
+    "nothingWorkedOn": "Dhiheenya kan hojjetame hin jiru",
+    "nothingViewed": "Dhiheenya kan ilaalame hin jiru",
+    "notification": "Beeksisa",
+    "loadError": "Hojii kee fe'uun hin danda'amne"
   }
 }

@@ -29,6 +29,7 @@ import {
 import {
   Home,
   ListChecks,
+  CircleUser,
   Star,
   FolderKanban,
   List,
@@ -108,6 +109,7 @@ export function JiraStyleLayout({ children }: JiraStyleLayoutProps) {
 
   const dashboardNav = [
     { name: t('nav.home'), href: addScope('/dashboard'), icon: Home },
+    { name: t('nav.myWork'), href: '/dashboard/my-work', icon: CircleUser },
     { name: t('nav.projects'), href: '/dashboard/projects', icon: FolderKanban },
     { name: t('nav.issues'), href: addScope('/dashboard/issues'), icon: ListChecks },
     { name: t('nav.budget'), href: addScope('/dashboard/budget'), icon: BarChart3 },

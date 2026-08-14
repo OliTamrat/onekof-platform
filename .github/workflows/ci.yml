@@ -51,13 +51,20 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
+      # Must precede the build. The web app imports Prisma types through
+      # packages/database, which re-exports @prisma/client, and those types
+      # only exist once the client is generated from the current schema.
+      # Generating afterwards meant the build depended on @prisma/client's own
+      # install hook happening to run first — so adding a model or enum to the
+      # schema could fail the build with a confusing "not exported" error while
+      # the step meant to prevent exactly that sat two steps too late.
+      - name: Generate Prisma Client
+        run: pnpm --filter=database exec prisma generate
+
       - name: Build web app
         run: pnpm --filter=web run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-
-      - name: Generate Prisma Client
-        run: pnpm --filter=database exec prisma generate
 
       - name: Run unit tests
         run: pnpm --filter=web run test

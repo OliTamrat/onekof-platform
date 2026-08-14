@@ -152,6 +152,22 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
   const originalId = initialIssue?.id || issueId;
   const resolvedId = viewingIssueId || originalId;
   const toast = useToast();
+
+  // Record that this issue was opened, so it lands in the Viewed feed on the
+  // personal workspace. UserActivity cannot supply this — it only records
+  // changes, so an issue you read without editing would never appear.
+  //
+  // Fire-and-forget: a convenience feed missing an entry must never surface an
+  // error, and must never delay the panel the user is trying to read.
+  useEffect(() => {
+    if (!resolvedId) return;
+    fetch('/api/me/views', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entityType: 'TASK', entityId: resolvedId }),
+    }).catch(() => {});
+  }, [resolvedId]);
+
   const { data: session } = useSession();
   const currentUserId = (session?.user as any)?.id;
   const [activeTab, setActiveTab] = useState<Tab>('details');

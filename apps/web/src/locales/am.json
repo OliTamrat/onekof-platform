@@ -192,7 +192,8 @@
     "safety": "ደህንነት",
     "facilities": "ተቋማት",
     "medical": "ሕክምና",
-    "resources": "ሀብቶች"
+    "resources": "ሀብቶች",
+    "myWork": "የእኔ ሥራ"
   },
   "dashboard": {
     "title": "ዳሽቦርድ",
@@ -233,7 +234,21 @@
     "noTasks": "ተግባር የለም",
     "addTask": "ተግባር ጨምር",
     "allProjects": "ሁሉም ፕሮጀክቶች",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "ፕሮጀክቶች",
+    "projectStatusOverview": "የፕሮጀክት ሁኔታ አጠቃላይ እይታ",
+    "projectStatusDescription": "የፕሮጀክቶችዎ የአፈጻጸም ሁኔታ። ከኋላው ያሉትን ፕሮጀክቶች ለማየት ክፍሉን ይምረጡ።",
+    "projectStatusError": "የፕሮጀክት ሁኔታን መጫን አልተቻለም",
+    "noProjectsYet": "እስካሁን ንቁ ፕሮጀክቶች የሉም",
+    "setManually": "በመሪው የተቀመጠ",
+    "projectStatusFootnote": "ሁኔታው ካለፈባቸው ተግባራት፣ ከታገዱ ተግባራትና ከጊዜ ሰሌዳ እድገት ይወሰዳል። የፕሮጀክት መሪ ሊለውጠው ይችላል።",
+    "workAcrossProjects": "በሁሉም ፕሮጀክቶች ውስጥ ያለ ሥራ",
+    "workBreakdownFootnote": "ከላይ ባሉት ፕሮጀክቶች ውስጥ ያሉ ሁሉንም ተግባራት ይቆጥራል። የቀሩት ያለፈባቸውንና የታገዱትን አያካትትም።",
+    "projectsThatAre": "ፕሮጀክቶች",
+    "itemsComplete": "የተጠናቀቁ",
+    "itemsOverdue": "ያለፈባቸው",
+    "itemsBlocked": "የታገዱ",
+    "itemsRemaining": "የቀሩ"
   },
   "status": {
     "todo": "የሚሠራ",
@@ -3174,5 +3189,29 @@
     "residencyBlockedBody": "የኢትዮጵያ ሕግ የታካሚ መረጃ በአገር ውስጥ እንዲቀመጥ ይጠይቃል። ይህ ተከላ ከኢትዮጵያ ውጭ ስለሚሠራ የታካሚ መዝገቦች እዚህ ሊቀመጡ ወይም ሊታዩ አይችሉም። ስለ አገር ውስጥ ተከላ አስተዳዳሪዎን ይጠይቁ።",
     "residencyBlockedTitle": "የታካሚ መዝገቦች በዚህ ተከላ ላይ አይገኙም",
     "unnamed": "ስም የሌለው መዝገብ"
+  },
+  "myWork": {
+    "greeting": "የእርስዎ ሥራ",
+    "greetingNamed": "ሰላም {name}፣ ሥራዎ ይህ ነው",
+    "subtitle": "ለእርስዎ የተመደበ፣ እርስዎን የሚጠብቅ ወይም በቅርቡ የነበሩበት ሁሉ።",
+    "recommended": "የተመከሩ",
+    "assignedToMe": "ለእኔ የተመደበ",
+    "starredAndWorkedOn": "የተመረጡና የተሠሩ",
+    "viewed": "የታዩ",
+    "overdue": "ጊዜው ያለፈበት",
+    "dueSoon": "በቅርቡ የሚደርስ",
+    "waitingOnYou": "እርስዎን የሚጠብቅ",
+    "starredProjects": "የተመረጡ ፕሮጀክቶች",
+    "starredItems": "የተመረጡ ንጥሎች",
+    "workedOn": "በቅርቡ የተሠራ",
+    "noOverdue": "ጊዜው ያለፈበት የለም",
+    "nothingDueSoon": "በሚቀጥለው ሳምንት የሚደርስ የለም",
+    "nothingWaiting": "እርስዎን የሚጠብቅ የለም",
+    "nothingAssigned": "ለእርስዎ የተመደበ የለም",
+    "nothingStarred": "እስካሁን የተመረጠ የለም",
+    "nothingWorkedOn": "በቅርቡ የተሠራ የለም",
+    "nothingViewed": "በቅርቡ የታየ የለም",
+    "notification": "ማሳወቂያ",
+    "loadError": "ሥራዎን መጫን አልተቻለም"
   }
 }

@@ -52,10 +52,25 @@ const PLAN_COLORS: Record<string, { bar: string; badge: string; dot: string }> =
     badge: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
     dot: 'bg-purple-500',
   },
+  BUSINESS: {
+    bar: 'bg-teal-500',
+    badge: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+    dot: 'bg-teal-500',
+  },
+  REGIONAL: {
+    bar: 'bg-cyan-500',
+    badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
+    dot: 'bg-cyan-500',
+  },
   ENTERPRISE: {
     bar: 'bg-amber-500',
     badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
     dot: 'bg-amber-500',
+  },
+  GOVERNMENT: {
+    bar: 'bg-emerald-500',
+    badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    dot: 'bg-emerald-500',
   },
 };
 
@@ -182,7 +197,7 @@ export default function AdminDashboardPage() {
   const totalOrgsByPlan = Object.values(stats.planBreakdown).reduce((a, b) => a + b, 0) || 1;
   const totalOrgsByStatus = Object.values(stats.statusBreakdown).reduce((a, b) => a + b, 0) || 1;
 
-  const planOrder = ['FREE', 'STARTER', 'PROFESSIONAL', 'ENTERPRISE'];
+  const planOrder = ['FREE', 'STARTER', 'PROFESSIONAL', 'BUSINESS', 'REGIONAL', 'ENTERPRISE', 'GOVERNMENT'];
   const statusOrder = ['ACTIVE', 'TRIAL', 'SUSPENDED', 'CANCELLED'];
 
   const sortedPlans = planOrder

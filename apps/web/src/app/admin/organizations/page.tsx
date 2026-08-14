@@ -61,7 +61,10 @@ const PLAN_BADGE: Record<string, { style: string; icon: typeof Star }> = {
   FREE: { style: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300', icon: Star },
   STARTER: { style: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: Zap },
   PROFESSIONAL: { style: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Shield },
+  BUSINESS: { style: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', icon: Shield },
+  REGIONAL: { style: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', icon: Shield },
   ENTERPRISE: { style: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Crown },
+  GOVERNMENT: { style: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: Crown },
 };
 
 const STATUS_DOTS: Record<string, string> = {
@@ -193,7 +196,10 @@ export default function AdminOrganizationsPage() {
           <option value="FREE">Free</option>
           <option value="STARTER">Starter</option>
           <option value="PROFESSIONAL">Professional</option>
+          <option value="BUSINESS">Business</option>
+          <option value="REGIONAL">Regional</option>
           <option value="ENTERPRISE">Enterprise</option>
+          <option value="GOVERNMENT">Government</option>
         </select>
       </div>
 
@@ -316,7 +322,7 @@ export default function AdminOrganizationsPage() {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel className="text-[11px]">{t('admin.changePlan')}</DropdownMenuLabel>
-                            {['FREE', 'STARTER', 'PROFESSIONAL', 'ENTERPRISE'].map(plan => (
+                            {['FREE', 'STARTER', 'PROFESSIONAL', 'BUSINESS', 'REGIONAL', 'ENTERPRISE', 'GOVERNMENT'].map(plan => (
                               <DropdownMenuItem key={plan} onClick={() => updateMutation.mutate({ id: org.id, plan })} disabled={org.plan === plan}>
                                 {plan}
                               </DropdownMenuItem>

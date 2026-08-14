@@ -191,7 +191,8 @@
     "safety": "Safety",
     "facilities": "Facilities",
     "medical": "Medical",
-    "resources": "Resources"
+    "resources": "Resources",
+    "myWork": "My work"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -232,7 +233,21 @@
     "noTasks": "No tasks",
     "addTask": "Add task",
     "allProjects": "All Projects",
-    "filterByProject": "Filter by project"
+    "filterByProject": "Filter by project",
+    "projects": "Projects",
+    "projectStatusOverview": "Project Status Overview",
+    "projectStatusDescription": "Delivery health across your projects. Select a band to see the projects behind it.",
+    "projectStatusError": "Could not load project status",
+    "noProjectsYet": "No active projects yet",
+    "setManually": "set by lead",
+    "projectStatusFootnote": "Health is derived from overdue items, blocked items and schedule progress. A project lead can override it.",
+    "workAcrossProjects": "Work across all projects",
+    "workBreakdownFootnote": "Counts every work item in the projects above. Remaining excludes overdue and blocked items.",
+    "projectsThatAre": "Projects that are",
+    "itemsComplete": "Complete",
+    "itemsOverdue": "Overdue",
+    "itemsBlocked": "Blocked",
+    "itemsRemaining": "Remaining"
   },
   "status": {
     "todo": "To Do",
@@ -3173,5 +3188,29 @@
     "residencyBlockedBody": "Ethiopian law requires patient data to be stored inside the country. This installation runs outside Ethiopia, so patient records cannot be held or shown here. Ask your administrator about the in-country deployment.",
     "residencyBlockedTitle": "Patient records are not available on this deployment",
     "unnamed": "Unnamed record"
+  },
+  "myWork": {
+    "greeting": "Your work",
+    "greetingNamed": "Hi {name}, here is your work",
+    "subtitle": "Everything assigned to you, waiting on you, or you were recently in.",
+    "recommended": "Recommended",
+    "assignedToMe": "Assigned to me",
+    "starredAndWorkedOn": "Starred & worked on",
+    "viewed": "Viewed",
+    "overdue": "Overdue",
+    "dueSoon": "Due soon",
+    "waitingOnYou": "Waiting on you",
+    "starredProjects": "Starred projects",
+    "starredItems": "Starred items",
+    "workedOn": "Recently worked on",
+    "noOverdue": "Nothing overdue",
+    "nothingDueSoon": "Nothing due in the next week",
+    "nothingWaiting": "Nothing waiting on you",
+    "nothingAssigned": "Nothing assigned to you",
+    "nothingStarred": "Nothing starred yet",
+    "nothingWorkedOn": "Nothing worked on recently",
+    "nothingViewed": "Nothing viewed recently",
+    "notification": "Notification",
+    "loadError": "Could not load your work"
   }
 }
