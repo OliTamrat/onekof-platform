@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
 import { ProjectStatusOverview } from '@/components/dashboard/project-status-overview';
+import { TaskStatusOverview } from '@/components/dashboard/task-status-overview';
 import {
   TrendingUp,
   Clock,
@@ -173,51 +174,26 @@ export default function DashboardPage() {
   const issues = issuesData?.issues || [];
 
   // Calculate statistics from real data — all-time totals
-  const tasksCompleted = issues.filter(
-    (i: any) => i.status === 'DONE'
-  ).length;
+  // Tile figures come from the server-side aggregates, not from the fetched
+  // issues array. The unpaginated list endpoint caps at 500 rows, so counting
+  // the array froze every figure at exactly 500 once an organization grew
+  // past it — reading, from the outside, as "task creation stopped working".
+  const sb: Record<string, number> = stats?.statusBreakdown ?? {};
+  const tasksCompleted = sb.DONE ?? 0;
+  const tasksInProgress = sb.IN_PROGRESS ?? 0;
+  const tasksTodo = (sb.TODO ?? 0) + (sb.BACKLOG ?? 0);
+  const tasksOverdue = stats?.stats?.dueSoon ?? 0;
 
-  const tasksInProgress = issues.filter(
-    (i: any) => i.status === 'IN_PROGRESS' || i.status === 'IN_REVIEW'
-  ).length;
-
-  const tasksTodo = issues.filter(
-    (i: any) => i.status === 'TODO' || i.status === 'BACKLOG'
-  ).length;
-
-  const tasksOverdue = issues.filter(
-    (i: any) => i.dueDate &&
-    new Date(i.dueDate) < new Date() &&
-    i.status !== 'DONE'
-  ).length;
-
-  // Get status counts
-  const statusCounts = {
-    TODO: issues.filter((i: any) => i.status === 'TODO').length,
-    IN_PROGRESS: issues.filter((i: any) => i.status === 'IN_PROGRESS').length,
-    IN_REVIEW: issues.filter((i: any) => i.status === 'IN_REVIEW').length,
-    DONE: issues.filter((i: any) => i.status === 'DONE').length,
-  };
-
-  // Priority counts
-  const priorityCounts = {
-    HIGHEST: issues.filter((i: any) => i.priority === 'HIGHEST').length,
-    HIGH: issues.filter((i: any) => i.priority === 'HIGH').length,
-    MEDIUM: issues.filter((i: any) => i.priority === 'MEDIUM').length,
-    LOW: issues.filter((i: any) => i.priority === 'LOW').length,
-    LOWEST: issues.filter((i: any) => i.priority === 'LOWEST').length,
-  };
-
-  // Type counts
+  // Type counts — server aggregate, same cap reasoning as the tiles above.
+  const tb: Record<string, number> = stats?.typeBreakdown ?? {};
   const typeCounts = {
-    TASK: issues.filter((i: any) => i.type === 'TASK').length,
-    STORY: issues.filter((i: any) => i.type === 'STORY').length,
-    BUG: issues.filter((i: any) => i.type === 'BUG').length,
-    EPIC: issues.filter((i: any) => i.type === 'EPIC').length,
+    TASK: tb.TASK ?? 0,
+    STORY: tb.STORY ?? 0,
+    BUG: tb.BUG ?? 0,
+    EPIC: tb.EPIC ?? 0,
   };
 
-  const totalIssues = issues.length;
-  const maxPriority = Math.max(...Object.values(priorityCounts), 1);
+  const totalIssues = stats?.totalTasks ?? issues.length;
 
   // Get favorite projects
   const favoriteProjects = projects.filter(p => p.isFavorite).slice(0, 3);
@@ -261,51 +237,6 @@ export default function DashboardPage() {
     );
     setFilteredTasks(overdue);
     setFilterTitle(`${t('dashboard.dueSoon')} • ${overdue.length}`);
-    setIsFilterModalOpen(true);
-  };
-
-  const handleShowStatusTasks = (status: string, statusLabel: string) => {
-    const filtered = issues.filter((i: any) => i.status === status);
-
-    // AI-Powered Analytics: Calculate metrics for this status
-    const totalTasks = filtered.length;
-    const withAssignee = filtered.filter((i: any) => i.assignee).length;
-    const unassigned = totalTasks - withAssignee;
-
-    // Priority breakdown
-    const highPriority = filtered.filter((i: any) => i.priority === 'HIGHEST' || i.priority === 'HIGH').length;
-    const mediumPriority = filtered.filter((i: any) => i.priority === 'MEDIUM').length;
-    const lowPriority = filtered.filter((i: any) => i.priority === 'LOW' || i.priority === 'LOWEST').length;
-
-    // Overdue tasks (tasks with due date in the past)
-    const overdue = filtered.filter((i: any) => i.dueDate && new Date(i.dueDate) < new Date()).length;
-
-    // Average age of tasks in this status
-    const now = new Date().getTime();
-    const ages = filtered.map((i: any) => {
-      const updated = new Date(i.updatedAt).getTime();
-      return (now - updated) / (1000 * 60 * 60 * 24); // days
-    });
-    const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
-
-    // Build AI insights subtitle
-    let insights = [];
-    if (overdue > 0) insights.push(`${overdue} overdue`);
-    if (unassigned > 0) insights.push(`${unassigned} unassigned`);
-    if (highPriority > 0) insights.push(`${highPriority} high priority`);
-    if (avgAge > 0) insights.push(`avg ${avgAge}d old`);
-
-    const subtitle = insights.length > 0 ? insights.join(' • ') : `${totalTasks} tasks in ${statusLabel.toLowerCase()} status`;
-
-    setFilteredTasks(filtered);
-    setFilterTitle(`${statusLabel} Tasks • ${totalTasks}`);
-    setIsFilterModalOpen(true);
-  };
-
-  const handleShowAllStatusOverview = () => {
-    // Show all tasks grouped by status
-    setFilteredTasks(issues);
-    setFilterTitle(`Status Overview • ${totalIssues} Total Tasks`);
     setIsFilterModalOpen(true);
   };
 
@@ -447,164 +378,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Status Overview */}
           <div className="lg:col-span-2">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={handleShowAllStatusOverview}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleShowAllStatusOverview(); }}
-              className="group relative w-full text-left rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200/50 dark:border-white/[0.08]/50 hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D] overflow-hidden"
-            >
-              {/* 3D depth effect */}
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/50 to-slate-300/50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-xl -z-10 group-hover:translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1C8C7D]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-              <div className="relative z-10">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                  {t('dashboard.statusOverview')}
-                </h2>
-                <div className="text-xs text-[#1C8C7D] dark:text-[#1C8C7D] font-medium">
-                  {t('dashboard.clickToViewDetails')}
-                </div>
-              </div>
-              <p className="mb-6 text-sm text-slate-600 dark:text-white/70">
-                {t('dashboard.statusDescription')}
-              </p>
-
-              {/* Donut Chart - Responsive Layout */}
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-                <div className="relative h-40 w-40 md:h-48 md:w-48 shrink-0">
-                  <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
-                    {/* Background circle */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="35"
-                      fill="none"
-                      stroke="currentColor"
-                      className="text-slate-200 dark:text-slate-700"
-                      strokeWidth="15"
-                    />
-                    {/* Segments based on real data */}
-                    {totalIssues > 0 && (
-                      <>
-                        {/* TODO segment */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="35"
-                          fill="none"
-                          stroke="#22C55E"
-                          strokeWidth="15"
-                          strokeDasharray={`${(statusCounts.TODO / totalIssues) * 220} 220`}
-                          strokeDashoffset="0"
-                        />
-                        {/* IN_PROGRESS segment */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="35"
-                          fill="none"
-                          stroke="#3B82F6"
-                          strokeWidth="15"
-                          strokeDasharray={`${(statusCounts.IN_PROGRESS / totalIssues) * 220} 220`}
-                          strokeDashoffset={-((statusCounts.TODO / totalIssues) * 220)}
-                        />
-                        {/* IN_REVIEW segment */}
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="35"
-                          fill="none"
-                          stroke="#F59E0B"
-                          strokeWidth="15"
-                          strokeDasharray={`${(statusCounts.IN_REVIEW / totalIssues) * 220} 220`}
-                          strokeDashoffset={-(((statusCounts.TODO + statusCounts.IN_PROGRESS) / totalIssues) * 220)}
-                        />
-                      </>
-                    )}
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{totalIssues}</div>
-                    <div className="text-xs md:text-sm text-white/30 dark:text-white/70">{t('dashboard.totalItems')}</div>
-                  </div>
-                </div>
-
-                {/* Legend - Properly aligned */}
-                <div className="flex-1 w-full space-y-2 md:space-y-3">
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('TODO', 'To Do'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-green-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.todo")}</span>
-                    </div>
-                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.TODO}</span>
-                  </div>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_PROGRESS', 'In Progress'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-blue-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inProgress")}</span>
-                    </div>
-                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_PROGRESS}</span>
-                  </div>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('IN_REVIEW', 'In Review'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-yellow-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.inReview")}</span>
-                    </div>
-                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.IN_REVIEW}</span>
-                  </div>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); }}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); handleShowStatusTasks('DONE', 'Done'); } }}
-                    className="flex items-center justify-between w-full hover:bg-slate-50 dark:hover:bg-[#181D23] p-2 md:p-2.5 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                      <div className="h-3 w-3 md:h-3.5 md:w-3.5 rounded-full bg-emerald-500 shrink-0"></div>
-                      <span className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{t("status.done")}</span>
-                    </div>
-                    <span className="text-sm md:text-base font-semibold text-slate-900 dark:text-white ml-4">{statusCounts.DONE}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Priority Breakdown */}
-              <div className="mt-8">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900 dark:text-white">{t('dashboard.priorityBreakdown')}</h3>
-                </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
-                  {t('dashboard.priorityDescription')}
-                </p>
-                <div className="space-y-2">
-                  <PriorityBar label={t('priority.highest')} value={priorityCounts.HIGHEST} max={maxPriority} color="bg-red-500" />
-                  <PriorityBar label={t('priority.high')} value={priorityCounts.HIGH} max={maxPriority} color="bg-orange-500" />
-                  <PriorityBar label={t('priority.medium')} value={priorityCounts.MEDIUM} max={maxPriority} color="bg-yellow-500" />
-                  <PriorityBar label={t('priority.low')} value={priorityCounts.LOW} max={maxPriority} color="bg-green-500" />
-                  <PriorityBar label={t('priority.lowest')} value={priorityCounts.LOWEST} max={maxPriority} color="bg-gray-400" />
-                </div>
-              </div>
-              </div>
-            </div>
+            <TaskStatusOverview projectId={selectedProjectId} />
 
             {/* Project-level companion to the task Status Overview above:
                 leaders track projects, not individual work items. */}
@@ -944,37 +718,6 @@ function StatCard({
         <div className="text-2xl md:text-4xl font-bold bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">{value}</div>
         <div className="mt-0.5 md:mt-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{label}</div>
         <div className="text-[10px] md:text-xs text-white/30 dark:text-white/70 hidden sm:block mt-1">{sublabel}</div>
-      </div>
-    </div>
-  );
-}
-
-function PriorityBar({
-  label,
-  value,
-  max,
-  color = 'bg-slate-300 dark:bg-slate-600',
-}: {
-  label: string;
-  value: number;
-  max: number;
-  color?: string;
-}) {
-  const percentage = max > 0 ? (value / max) * 100 : 0;
-
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-20 text-sm text-slate-700 dark:text-slate-300">{label}</div>
-      <div className="flex-1 h-6 bg-slate-100 dark:bg-[#181D23] rounded-full overflow-hidden">
-        {percentage > 0 && (
-          <div
-            className={`h-full ${color} transition-all duration-300`}
-            style={{ width: `${percentage}%` }}
-          />
-        )}
-      </div>
-      <div className="w-8 text-right text-sm font-medium text-slate-900 dark:text-white">
-        {value}
       </div>
     </div>
   );

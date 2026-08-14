@@ -248,7 +248,9 @@
     "itemsComplete": "ዝተዛዘሙ",
     "itemsOverdue": "ግዜኦም ዝሓለፈ",
     "itemsBlocked": "ዕጉታት",
-    "itemsRemaining": "ዝተረፉ"
+    "itemsRemaining": "ዝተረፉ",
+    "statsError": "ስታቲስቲክስ ክጽዓን ኣይከኣለን",
+    "moreOnIssuesPage": "ተወሳኺ — ኩሉ ንምርኣይ ገጽ ዕዮታት ክፈቱ"
   },
   "status": {
     "todo": "ዝግበር",

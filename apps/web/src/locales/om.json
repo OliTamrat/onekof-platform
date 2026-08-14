@@ -248,7 +248,9 @@
     "itemsComplete": "Xumuraman",
     "itemsOverdue": "Yeroon darbe",
     "itemsBlocked": "Ugguraman",
-    "itemsRemaining": "Kan hafan"
+    "itemsRemaining": "Kan hafan",
+    "statsError": "Istaatistiksii fe'uun hin danda'amne",
+    "moreOnIssuesPage": "dabalataa — hunda ilaaluuf fuula dhimmootaa banaa"
   },
   "status": {
     "todo": "Kan Hojjetamu",

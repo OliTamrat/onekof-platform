@@ -54,6 +54,7 @@ export async function GET(_request: NextRequest) {
       dueSoon,
       statusGroups,
       priorityGroups,
+      typeGroups,
       totalTasks,
     ] = await Promise.all([
       prisma.task.count({
@@ -82,6 +83,11 @@ export async function GET(_request: NextRequest) {
         where: baseWhere,
         _count: { _all: true },
       }),
+      prisma.task.groupBy({
+        by: ['type'],
+        where: baseWhere,
+        _count: { _all: true },
+      }),
       prisma.task.count({ where: baseWhere }),
     ]);
 
@@ -104,13 +110,12 @@ export async function GET(_request: NextRequest) {
       },
       statusBreakdown,
       priorityBreakdown,
-      typeBreakdown: {
-        TASK: totalTasks,
-        STORY: 0,
-        BUG: 0,
-        EPIC: 0,
-        FEATURE: 0,
-      },
+      // Real per-type counts. This used to report every task as TASK with the
+      // other types hardcoded to zero, so the Types of Work card was fiction.
+      typeBreakdown: typeGroups.reduce((acc: Record<string, number>, g: any) => {
+        acc[g.type] = g._count._all;
+        return acc;
+      }, {}),
       totalTasks,
     });
   } catch (error) {

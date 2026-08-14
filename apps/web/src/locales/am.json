@@ -248,7 +248,9 @@
     "itemsComplete": "የተጠናቀቁ",
     "itemsOverdue": "ያለፈባቸው",
     "itemsBlocked": "የታገዱ",
-    "itemsRemaining": "የቀሩ"
+    "itemsRemaining": "የቀሩ",
+    "statsError": "ስታቲስቲክስን መጫን አልተቻለም",
+    "moreOnIssuesPage": "ተጨማሪ — ሁሉንም ለማየት የተግባራት ገጹን ይክፈቱ"
   },
   "status": {
     "todo": "የሚሠራ",
