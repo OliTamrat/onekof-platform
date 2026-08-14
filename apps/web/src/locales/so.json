@@ -239,7 +239,15 @@
     "projectStatusDescription": "Caafimaadka gudbinta mashaariicdaada. Dooro qaybta si aad u aragto mashaariicda ka dambeeya.",
     "projectStatusError": "Lama soo rari karin xaaladda mashruuca",
     "noProjectsYet": "Wali ma jiraan mashaariic firfircoon",
-    "setManually": "hoggaamiye ayaa dejiyay"
+    "setManually": "hoggaamiye ayaa dejiyay",
+    "projectStatusFootnote": "Caafimaadka waxaa laga soo saaray shaqooyinka waqtigoodu dhaafay, kuwa xannibman iyo horumarka jadwalka. Hoggaamiyaha mashruuca wuu bedeli karaa.",
+    "workAcrossProjects": "Shaqada dhammaan mashaariicda",
+    "workBreakdownFootnote": "Waxay tirisaa dhammaan shaqooyinka mashaariicda kore. Kuwa hadhay kuma jiraan kuwa waqtigoodu dhaafay iyo kuwa xannibman.",
+    "projectsThatAre": "Mashaariicda ah",
+    "itemsComplete": "Dhammaystiran",
+    "itemsOverdue": "Waqtigoodu dhaafay",
+    "itemsBlocked": "Xannibman",
+    "itemsRemaining": "Hadhay"
   },
   "status": {
     "todo": "La qaban doono",

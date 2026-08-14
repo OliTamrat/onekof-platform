@@ -239,7 +239,15 @@
     "projectStatusDescription": "የፕሮጀክቶችዎ የአፈጻጸም ሁኔታ። ከኋላው ያሉትን ፕሮጀክቶች ለማየት ክፍሉን ይምረጡ።",
     "projectStatusError": "የፕሮጀክት ሁኔታን መጫን አልተቻለም",
     "noProjectsYet": "እስካሁን ንቁ ፕሮጀክቶች የሉም",
-    "setManually": "በመሪው የተቀመጠ"
+    "setManually": "በመሪው የተቀመጠ",
+    "projectStatusFootnote": "ሁኔታው ካለፈባቸው ተግባራት፣ ከታገዱ ተግባራትና ከጊዜ ሰሌዳ እድገት ይወሰዳል። የፕሮጀክት መሪ ሊለውጠው ይችላል።",
+    "workAcrossProjects": "በሁሉም ፕሮጀክቶች ውስጥ ያለ ሥራ",
+    "workBreakdownFootnote": "ከላይ ባሉት ፕሮጀክቶች ውስጥ ያሉ ሁሉንም ተግባራት ይቆጥራል። የቀሩት ያለፈባቸውንና የታገዱትን አያካትትም።",
+    "projectsThatAre": "ፕሮጀክቶች",
+    "itemsComplete": "የተጠናቀቁ",
+    "itemsOverdue": "ያለፈባቸው",
+    "itemsBlocked": "የታገዱ",
+    "itemsRemaining": "የቀሩ"
   },
   "status": {
     "todo": "የሚሠራ",

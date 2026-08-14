@@ -239,7 +239,15 @@
     "projectStatusDescription": "ኩነታት ኣፈጻጽማ ፕሮጀክትታትኩም። ነቶም ኣብ ድሕሪኡ ዘለዉ ፕሮጀክትታት ንምርኣይ ክፍሊ ምረጽ።",
     "projectStatusError": "ኩነታት ፕሮጀክት ክጽዓን ኣይከኣለን",
     "noProjectsYet": "ክሳብ ሕጂ ንጡፋት ፕሮጀክትታት የለዉን",
-    "setManually": "ብመሪሒ እተቐመጠ"
+    "setManually": "ብመሪሒ እተቐመጠ",
+    "projectStatusFootnote": "ኩነታት ካብ ግዜኦም ዝሓለፉ ዕዮታት፡ ዕጉታት ዕዮታትን ኣብ ግዜ ሰሌዳ ዘሎ ኣፈጻጽማን ይውሰድ። መሪሒ ፕሮጀክት ክቕይሮ ይኽእል።",
+    "workAcrossProjects": "ኣብ ኩሎም ፕሮጀክትታት ዘሎ ስራሕ",
+    "workBreakdownFootnote": "ኣብ ላዕሊ ዘለዉ ፕሮጀክትታት ዘለዉ ኩሎም ዕዮታት ይቖጽር። እቶም ዝተረፉ ግዜኦም ዝሓለፈን ዕጉታትን ኣየጠቓልልን።",
+    "projectsThatAre": "ፕሮጀክትታት",
+    "itemsComplete": "ዝተዛዘሙ",
+    "itemsOverdue": "ግዜኦም ዝሓለፈ",
+    "itemsBlocked": "ዕጉታት",
+    "itemsRemaining": "ዝተረፉ"
   },
   "status": {
     "todo": "ዝግበር",

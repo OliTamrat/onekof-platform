@@ -239,7 +239,15 @@
     "projectStatusDescription": "Haala raawwii piroojektoota keessanii. Piroojektoota isa duuba jiran ilaaluuf kutaa filadhu.",
     "projectStatusError": "Haala piroojektii fe'uun hin danda'amne",
     "noProjectsYet": "Hanga ammaatti piroojektiin hojiirra jiru hin jiru",
-    "setManually": "geggeessaadhaan kaa’ame"
+    "setManually": "geggeessaadhaan kaa’ame",
+    "projectStatusFootnote": "Haalli kun hojiiwwan yeroon isaanii darbe, kanneen ugguraman fi deemsa sagantaa irraa argama. Geggeessaan piroojektii jijjiiruu danda'a.",
+    "workAcrossProjects": "Hojii piroojektoota hunda keessaa",
+    "workBreakdownFootnote": "Hojiiwwan piroojektoota armaan olii hunda lakkaaʼa. Kan hafan yeroon darbe fi kan ugguraman hin dabalatu.",
+    "projectsThatAre": "Piroojektoonni",
+    "itemsComplete": "Xumuraman",
+    "itemsOverdue": "Yeroon darbe",
+    "itemsBlocked": "Ugguraman",
+    "itemsRemaining": "Kan hafan"
   },
   "status": {
     "todo": "Kan Hojjetamu",

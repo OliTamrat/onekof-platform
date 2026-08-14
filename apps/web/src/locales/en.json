@@ -238,7 +238,15 @@
     "projectStatusDescription": "Delivery health across your projects. Select a band to see the projects behind it.",
     "projectStatusError": "Could not load project status",
     "noProjectsYet": "No active projects yet",
-    "setManually": "set by lead"
+    "setManually": "set by lead",
+    "projectStatusFootnote": "Health is derived from overdue items, blocked items and schedule progress. A project lead can override it.",
+    "workAcrossProjects": "Work across all projects",
+    "workBreakdownFootnote": "Counts every work item in the projects above. Remaining excludes overdue and blocked items.",
+    "projectsThatAre": "Projects that are",
+    "itemsComplete": "Complete",
+    "itemsOverdue": "Overdue",
+    "itemsBlocked": "Blocked",
+    "itemsRemaining": "Remaining"
   },
   "status": {
     "todo": "To Do",
