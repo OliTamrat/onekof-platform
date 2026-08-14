@@ -244,7 +244,7 @@ export default function BudgetExpensesPage() {
       <div className="p-4 md:p-6">
         {/* Stats Cards */}
         <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-4 md:gap-4 mb-6 scrollbar-hide">
-          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[160px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                 <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
@@ -255,7 +255,7 @@ export default function BudgetExpensesPage() {
               {isLoading ? '...' : `ETB ${formatCompact(totalExpenses)}`}
             </div>
           </div>
-          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -266,7 +266,7 @@ export default function BudgetExpensesPage() {
               {isLoading ? '...' : approvedCount}
             </div>
           </div>
-          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-4 shadow-sm">
+          <div className="flex-shrink-0 w-[140px] md:w-auto rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 p-3 md:p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-7 w-7 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />

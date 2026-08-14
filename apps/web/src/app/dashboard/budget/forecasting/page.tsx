@@ -166,7 +166,7 @@ export default function BudgetForecastingPage() {
           <>
             {/* Summary Cards */}
             <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-4 md:gap-4 mb-6 scrollbar-hide">
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                     <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -177,7 +177,7 @@ export default function BudgetForecastingPage() {
                 <div className="text-xs text-slate-500 mt-1">avg over {monthsElapsed.toFixed(1)} months</div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                     <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
@@ -190,7 +190,7 @@ export default function BudgetForecastingPage() {
                 <div className="text-xs text-slate-500 mt-1">at current burn rate</div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                     <Target className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -205,7 +205,7 @@ export default function BudgetForecastingPage() {
                 <div className="text-xs text-slate-500 mt-1">budget exhaustion date</div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
                     <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
@@ -218,7 +218,7 @@ export default function BudgetForecastingPage() {
             </div>
 
             {/* Monthly Projections Table */}
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl overflow-hidden shadow-sm mb-6">
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl overflow-hidden shadow-sm mb-6">
               <div className="px-6 py-4 border-b border-gray-200 dark:border-white/[0.08] flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Projections</h2>
                 <span className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-2 py-1 rounded-full">
@@ -276,7 +276,7 @@ export default function BudgetForecastingPage() {
             </div>
 
             {/* Category Risk Forecast */}
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-5 md:p-6 shadow-sm mb-6">
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-5 md:p-6 shadow-sm mb-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Category Burn Forecast</h2>
                 <span className="text-xs text-slate-500">{categoryForecasts.length} categories</span>
@@ -340,7 +340,7 @@ export default function BudgetForecastingPage() {
             </div>
 
             {/* Burn Rate Visualization */}
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-5 md:p-6 shadow-sm">
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-5 md:p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Budget Burn Progress</h2>
               <div className="space-y-4">
                 {/* Overall progress bar */}
