@@ -12,6 +12,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { TimeTrackingSection } from '@/components/issues/time-tracking-section';
+import { ApprovalSection } from '@/components/issues/approval-section';
 import { DEPARTMENTS, DEPARTMENT_CATALOG, WORKSTREAM_LABEL_KEYS, isDepartment, type Department } from '@/lib/departments/catalog';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -524,6 +525,7 @@ export function IssueDetailSlideout({ issue: initialIssue, issueId, onClose }: I
                 members={members}
                 onSubtaskClick={(id) => setViewingIssueId(id)}
               />
+              {issue?.id && <ApprovalSection taskId={issue.id} />}
               {issue?.id && <TimeTrackingSection taskId={issue.id} />}
             </>
           )}

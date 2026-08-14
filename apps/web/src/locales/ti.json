@@ -2311,7 +2311,8 @@
     "fromStatus": "ካብ",
     "toStatuses": "ዝተፈቕደ ናብ",
     "saved": "ቅንብራት ተቐሚጡ",
-    "saveFailed": "ምቕማጥ ኣይተዓወተን። ፍቓድ ኣመሓዳሪ ፕሮጀክት ከድሊ ይኽእል።"
+    "saveFailed": "ምቕማጥ ኣይተዓወተን። ፍቓድ ኣመሓዳሪ ፕሮጀክት ከድሊ ይኽእል።",
+    "requireApprovalHint": "ዕዮታት ቅድሚ ምዝዛሞም ኣብ ግምገማ እተዋህበ እተመዝገበ ጽዳቐ ክህልዎም ይግባእ።"
   },
   "projectsSummary": {
     "title": "ሓፈሻዊ ትዕዝብቲ ፕሮጀክትታት",
@@ -3240,5 +3241,14 @@
     "logFailed": "ግዜ ክምዝገብ ኣይከኣለን",
     "deleteFailed": "እቲ መዝገብ ክውገድ ኣይከኣለን",
     "deleteEntry": "መዝገብ ኣወግድ"
+  },
+  "approval": {
+    "title": "ጽዳቐ",
+    "approve": "ኣጽድቕ",
+    "revoke": "ሰርዝ",
+    "approvedBy": "ዘጽደቐ",
+    "awaitingRequired": "ጽዳቐ ይጽበ ኣሎ — እዚ ዕዮ ቅድሚ ምዝዛሙ የድሊ",
+    "awaitingOptional": "ኣብ ግምገማ — ጽዳቐ ክምዝገብ ይከኣል",
+    "actionFailed": "ናይ ጽዳቐ ተግባር ኣይተዓወተን"
   }
 }

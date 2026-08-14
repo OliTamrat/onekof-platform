@@ -11,6 +11,8 @@ export interface EffectiveProjectSettings {
   sprintsEnabled: boolean;
   estimationUnit: EstimationUnit;
   enforceWorkflow: boolean;
+  /** Gate the transition into DONE behind a recorded approval. */
+  requireApproval: boolean;
   /** null = use the workflow engine's default transition table */
   workflowTransitions: Record<string, string[]> | null;
   terminologyScheme: TerminologyScheme;
@@ -35,6 +37,7 @@ export interface ProjectSettingsLayer {
   sprintsEnabled: boolean | null;
   estimationUnit: EstimationUnit | string | null;
   enforceWorkflow: boolean | null;
+  requireApproval?: boolean | null;
   workflowTransitions: unknown;
 }
 
@@ -57,6 +60,9 @@ export function computeEffectiveSettings(
       (proj?.estimationUnit as EstimationUnit | null) ??
       (org.estimationUnitDefault as EstimationUnit),
     enforceWorkflow: proj?.enforceWorkflow ?? org.enforceWorkflowDefault,
+    // Project-level only, default off. Approval is a governance choice made
+    // per board, not an organization-wide default to inherit silently.
+    requireApproval: proj?.requireApproval ?? false,
     workflowTransitions:
       (proj?.workflowTransitions as Record<string, string[]> | null) ?? null,
     terminologyScheme: org.terminologyScheme as TerminologyScheme,

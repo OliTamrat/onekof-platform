@@ -2267,7 +2267,8 @@
     "fromStatus": "Irraa",
     "toStatuses": "Gara hayyamame",
     "saved": "Qindaa'inni kuufameera",
-    "saveFailed": "Kuusuun hin milkoofne. Mirga bulchaa pirojektii barbaachisuu danda'a."
+    "saveFailed": "Kuusuun hin milkoofne. Mirga bulchaa pirojektii barbaachisuu danda'a.",
+    "requireApprovalHint": "Hojiiwwan osoo hin xumuramin dura mirkaneessa galmeeffame, yeroo gamaaggamaa kenname, qabaachuu qabu."
   },
   "projectsSummary": {
     "title": "Ilaalcha Waliigalaa Pirojektota",
@@ -3240,5 +3241,14 @@
     "logFailed": "Yeroo galmeessuun hin danda'amne",
     "deleteFailed": "Galmee haquun hin danda'amne",
     "deleteEntry": "Galmee haqi"
+  },
+  "approval": {
+    "title": "Mirkaneessa",
+    "approve": "Mirkaneessi",
+    "revoke": "Haqi",
+    "approvedBy": "Kan mirkaneesse",
+    "awaitingRequired": "Mirkaneessa eegaa jira — hojiin kun osoo hin xumuramin dura barbaachisa",
+    "awaitingOptional": "Gamaaggama irra jira — mirkaneessi galmaaʼuu dandaʼa",
+    "actionFailed": "Gochi mirkaneessaa hin milkoofne"
   }
 }

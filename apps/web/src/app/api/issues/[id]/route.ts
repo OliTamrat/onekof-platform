@@ -273,6 +273,7 @@ export async function PATCH(
         // field used to be.
         description: true, dueDate: true, estimate: true, timeSpent: true,
         storyPoints: true, type: true, labels: true,
+        approvedAt: true,
         project: { select: { organizationId: true } },
       },
     });
@@ -383,6 +384,22 @@ export async function PATCH(
         }
       }
 
+      // Board approval gate: entering DONE on a project that requires
+      // approval demands a recorded sign-off. Checked after the workflow
+      // rules so a caller failing both sees the more fundamental error.
+      if (status === 'DONE' && currentIssue.status !== 'DONE') {
+        const effective = await resolveProjectSettings(currentIssue.projectId);
+        if (effective?.requireApproval && !currentIssue.approvedAt) {
+          return NextResponse.json(
+            {
+              error: 'This project requires approval before an item can be completed',
+              requiresApproval: true,
+            },
+            { status: 400 }
+          );
+        }
+      }
+
       updateData.status = status;
       // Set completedAt only on the transition INTO DONE (an already-DONE
       // task keeps its original completion date); clear it when leaving DONE.
@@ -390,6 +407,19 @@ export async function PATCH(
         updateData.completedAt = new Date();
       } else if (status !== 'DONE') {
         updateData.completedAt = null;
+      }
+      // A sign-off belongs to one review cycle. The moment the item returns
+      // to active work — reopened from DONE, or pulled back out of review —
+      // the approval is void, so a stale one can never satisfy a later gate.
+      // Entering DONE keeps it as the audit record of who approved.
+      if (
+        currentIssue.status !== status &&
+        status !== 'DONE' &&
+        status !== 'IN_REVIEW' &&
+        currentIssue.approvedAt
+      ) {
+        updateData.approvedBy = null;
+        updateData.approvedAt = null;
       }
     }
     if (priority !== undefined) updateData.priority = priority;

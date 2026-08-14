@@ -32,6 +32,7 @@ export interface EffectiveProjectSettings {
   sprintsEnabled: boolean;
   estimationUnit: 'HOURS' | 'POINTS';
   enforceWorkflow: boolean;
+  requireApproval: boolean;
   workflowTransitions: Record<string, string[]> | null;
   terminologyScheme: 'AGILE' | 'FORMAL';
 }
@@ -40,6 +41,7 @@ export interface ProjectSettingsOverrides {
   sprintsEnabled: boolean | null;
   estimationUnit: 'HOURS' | 'POINTS' | null;
   enforceWorkflow: boolean | null;
+  requireApproval: boolean | null;
   workflowTransitions: Record<string, string[]> | null;
 }
 

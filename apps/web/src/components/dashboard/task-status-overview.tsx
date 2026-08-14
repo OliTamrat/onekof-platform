@@ -58,10 +58,10 @@ const PRIORITY_ROWS: { key: string; labelKey: string; color: string }[] = [
 const CARD =
   'rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] ' +
   'p-6 shadow-md hover:shadow-xl transition-all duration-300 ' +
-  // No dark: override, deliberately. The established cards' dark border
-  // class is invalid Tailwind and silently drops, so they render the
-  // light-mode slate-200/50 line in dark mode too — the visible white
-  // edge requested. Matching the render, not the (broken) intent.
+  // Product-wide card rule: one visible slate-200/50 edge in BOTH themes,
+  // no dark: override. Codified after the invalid dark-border classes were
+  // removed everywhere — the light edge is the deliberate look, not a
+  // fallback.
   'border border-slate-200/50 ' +
   'hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]';
 

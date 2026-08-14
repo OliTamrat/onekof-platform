@@ -2260,7 +2260,8 @@
     "fromStatus": "From",
     "toStatuses": "Allowed to",
     "saved": "Settings saved",
-    "saveFailed": "Failed to save. You may need project admin rights."
+    "saveFailed": "Failed to save. You may need project admin rights.",
+    "requireApprovalHint": "Items must carry a recorded sign-off, granted while in review, before they can be completed."
   },
   "projectsSummary": {
     "title": "Projects Overview",
@@ -3233,5 +3234,14 @@
     "logFailed": "Could not log time",
     "deleteFailed": "Could not remove the entry",
     "deleteEntry": "Remove entry"
+  },
+  "approval": {
+    "title": "Approval",
+    "approve": "Approve",
+    "revoke": "Revoke",
+    "approvedBy": "Approved by",
+    "awaitingRequired": "Awaiting approval — required before this item can be completed",
+    "awaitingOptional": "In review — approval can be recorded",
+    "actionFailed": "Approval action failed"
   }
 }
