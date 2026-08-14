@@ -207,6 +207,7 @@ model User {
   taskWatchers   TaskWatcher[]   @relation("TaskWatcher") // 🚀 NEW: Tasks this user is watching
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
+  workLogs       WorkLog[]       @relation("UserWorkLog") // Time this user has logged
   notifications  Notification[]  @relation("UserNotifications")
   pushTokens     PushToken[]     @relation("UserPushTokens")
   taskLinks      TaskLink[]      @relation("TaskLinkCreator") // Task relationships created by this user
@@ -324,6 +325,58 @@ model VerificationToken {
 // ============================================================================
 // ENUMS
 // ============================================================================
+
+/// An individual entry of time worked on a task.
+///
+/// Task.timeSpent used to be the only record of effort: a single cumulative
+/// integer that could not say who worked, when, or on what. That is unusable
+/// for effort reporting and unauditable — so time is recorded here per entry
+/// and Task.timeSpent is maintained as a cached sum for cheap board queries.
+model WorkLog {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  /// Who did the work. Not necessarily the assignee — several people may log
+  /// against one task, which is the case Task.timeSpent could never represent.
+  userId String @map("user_id")
+  user   User   @relation("UserWorkLog", fields: [userId], references: [id])
+
+  /// Effort in minutes rather than hours. Hours were too coarse to log a
+  /// fifteen-minute review, and an Int of hours silently truncated anything
+  /// shorter to zero. Presentation converts to hours; storage stays exact.
+  minutes Int
+
+  /// The day the work happened, which is often not the day it was entered.
+  /// Backdating is normal and effort reports must attribute to the work date.
+  workedOn DateTime @map("worked_on") @db.Date
+
+  description String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  /// Soft delete: removing effort changes historical reports, so entries are
+  /// retained and excluded from sums rather than destroyed.
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([taskId, deletedAt])
+  @@index([userId, workedOn]) // "my logged time this week"
+  @@index([workedOn]) // organization-wide effort reporting by period
+  @@map("work_logs")
+  @@schema("public")
+}
+
+enum ProjectHealth {
+  ON_TRACK
+  AT_RISK
+  OFF_TRACK
+  BLOCKED
+  NOT_STARTED
+  COMPLETE
+
+  @@schema("public")
+}
 
 enum Plan {
   FREE
@@ -498,6 +551,19 @@ model Project {
   type       ProjectType     @default(BUSINESS)
   template   ProjectTemplate @default(KANBAN)
   status     String          @default("ACTIVE") // ACTIVE, ARCHIVED, ON_HOLD
+
+  /// Delivery health, distinct from `status` above. `status` is lifecycle
+  /// (is this project open?); health is "is it going well?". Leadership needs
+  /// the second and the schema only carried the first.
+  ///
+  /// Null means "derive it" — computed from schedule and task data so the
+  /// rollup works on day one without anyone filling in a form. A non-null
+  /// value is a deliberate override by the project lead, who sometimes needs
+  /// to say the figures look bad but the project is fine, or the reverse.
+  healthOverride       ProjectHealth? @map("health_override")
+  healthOverrideReason String?        @map("health_override_reason")
+  healthOverrideBy     String?        @map("health_override_by")
+  healthOverrideAt     DateTime?      @map("health_override_at")
   isArchived Boolean         @default(false) @map("is_archived")
   isFavorite Boolean         @default(false) @map("is_favorite")
   settings   Json            @default("{}") // Extended metadata
@@ -729,6 +795,7 @@ model Task {
   comments          Comment[]
   attachments       Attachment[]
   watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
+  workLogs          WorkLog[] // Individual time entries; Task.timeSpent is their cached sum
   budgetAllocations TaskBudget[] // 🚀 NEW: Budget category allocations
   linksFrom         TaskLink[]    @relation("TaskLinkFrom")
   linksTo           TaskLink[]    @relation("TaskLinkTo")
