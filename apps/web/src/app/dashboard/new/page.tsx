@@ -385,7 +385,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 p-3 md:p-6 shadow-sm hover:shadow-md transition-all">
+    <div className="rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 p-3 md:p-6 shadow-sm hover:shadow-md transition-all">
       <div className="mb-2 md:mb-4 flex items-center justify-between">
         <div className={`p-1.5 md:p-2 rounded-lg bg-slate-100 dark:bg-[#181D23]/50 ${color}`}>{icon}</div>
         <Button variant="ghost" size="icon" className="h-6 w-6 hidden md:flex">

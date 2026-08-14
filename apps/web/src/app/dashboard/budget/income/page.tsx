@@ -146,7 +146,7 @@ export default function BudgetIncomePage() {
           <>
             {/* Stats Cards */}
             <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0 md:grid md:grid-cols-3 md:gap-4 mb-6 scrollbar-hide">
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
                     <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -157,7 +157,7 @@ export default function BudgetIncomePage() {
                 <div className="text-xs text-slate-500 mt-1">{sourceCount} funding sources</div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -170,7 +170,7 @@ export default function BudgetIncomePage() {
                 </div>
               </div>
 
-              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 shadow-sm">
+              <div className="flex-shrink-0 w-[180px] md:w-auto bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
                     <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
@@ -183,7 +183,7 @@ export default function BudgetIncomePage() {
             </div>
 
             {/* Search Bar */}
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 mb-6 shadow-sm">
+            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 mb-6 shadow-sm">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
@@ -204,7 +204,7 @@ export default function BudgetIncomePage() {
                   <div
                     key={source.id}
                     onClick={() => { setSelectedSource(source); setIsSlideoutOpen(true); }}
-                    className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-4 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
+                    className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-4 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">

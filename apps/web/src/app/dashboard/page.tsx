@@ -519,7 +519,7 @@ export default function DashboardPage() {
             const avgAge = ages.length > 0 ? Math.round(ages.reduce((a: number, b: number) => a + b, 0) / ages.length) : 0;
 
             return (
-              <div className="rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50 border border-slate-200/60 dark:border-white/[0.08]/60 p-4 mb-6">
+              <div className="rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50 border border-slate-200/60 p-4 mb-6">
                 <div className="flex flex-wrap items-center gap-3 md:gap-5 text-xs md:text-sm">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-[#1C8C7D]" />
@@ -583,7 +583,7 @@ export default function DashboardPage() {
                     setIsFilterModalOpen(false);
                   }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setSelectedIssue(task); setIsFilterModalOpen(false); } }}
-                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all cursor-pointer"
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

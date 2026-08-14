@@ -509,7 +509,7 @@ export default function BudgetPage() {
           {/* Budget Overview - 2 columns */}
           <div className="lg:col-span-2 space-y-6">
             {/* Budget Overview Card */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 md:p-6 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 md:p-6 shadow-md border border-slate-200/50">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('budget.budgetOverview')}</h3>
                 {hasBudgets && (
@@ -660,7 +660,7 @@ export default function BudgetPage() {
 
                       {/* Key Insights Grid — data-driven from real budget data */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60 dark:border-white/[0.08]/60">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="h-6 w-6 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                               <TrendingUp className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
@@ -698,7 +698,7 @@ export default function BudgetPage() {
                             )}
                           </ul>
                         </div>
-                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60 dark:border-white/[0.08]/60">
+                        <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#181D23]/30 border border-slate-200/60">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="h-6 w-6 rounded-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                               <DollarSign className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
@@ -772,7 +772,7 @@ export default function BudgetPage() {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/50">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                   <Sparkles className="h-3.5 w-3.5 text-[#1C8C7D]" />
@@ -804,7 +804,7 @@ export default function BudgetPage() {
             </div>
 
             {/* Recent Activity */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
+            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/50">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('budget.recentActivity')}</h3>
                 <span className="flex items-center gap-1 text-[11px] text-[#1C8C7D] font-medium bg-[#1C8C7D]/10 px-2 py-0.5 rounded-full">
@@ -875,7 +875,7 @@ export default function BudgetPage() {
 
             {/* Project Financial Summary */}
             {hasBudgets && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/60 dark:border-white/[0.08]/60">
+              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-5 shadow-md border border-slate-200/50">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                   <div className="h-6 w-6 rounded-md bg-[#1C8C7D]/10 flex items-center justify-center">
                     <TrendingUp className="h-3.5 w-3.5 text-[#1C8C7D]" />
@@ -1271,7 +1271,7 @@ export default function BudgetPage() {
               {slideoutData.map((item: any) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all"
+                  className="p-4 rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 hover:shadow-md hover:border-[#1C8C7D]/40 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">

@@ -211,7 +211,7 @@ export default function BudgetReportsPage() {
                 <div
                   key={report.id}
                   onClick={() => { setSelectedReport(report); setIsSlideoutOpen(true); }}
-                  className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/60 dark:border-white/[0.08]/60 rounded-xl p-5 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
+                  className="bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] border border-slate-200/50 rounded-xl p-5 hover:shadow-lg hover:border-[#1C8C7D]/40 transition-all cursor-pointer shadow-sm"
                 >
                   <div className="flex items-start gap-3 mb-4">
                     <div className="h-10 w-10 rounded-lg bg-[#1C8C7D]/10 flex items-center justify-center flex-shrink-0">

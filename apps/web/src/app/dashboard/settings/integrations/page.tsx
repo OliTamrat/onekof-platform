@@ -728,10 +728,10 @@ function IntegrationCard({
         isSelected
           ? 'border-[#1C8C7D] dark:border-[#1C8C7D] ring-2 ring-[#1C8C7D]/20 shadow-md'
           : isComingSoon
-            ? 'border-slate-200/60 dark:border-white/[0.08]/60 opacity-70 hover:opacity-90'
+            ? 'border-slate-200/60 opacity-70 hover:opacity-90'
             : isConnected
               ? 'border-emerald-300/60 dark:border-emerald-700/60 hover:shadow-lg hover:border-[#1C8C7D]/40 hover:-translate-y-0.5'
-              : 'border-slate-200/60 dark:border-white/[0.08]/60 hover:border-[#1C8C7D]/40 hover:shadow-lg hover:-translate-y-0.5',
+              : 'border-slate-200/60 hover:border-[#1C8C7D]/40 hover:shadow-lg hover:-translate-y-0.5',
       )}
     >
       {/* Connected indicator line */}
