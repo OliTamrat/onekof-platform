@@ -24,6 +24,11 @@ export const dynamic = 'force-dynamic';
  * The rounding loss lives only in the cache; the entries stay exact.
  */
 
+/** A person has one day per day, however many tasks they touched in it. */
+const MINUTES_IN_DAY = 1440;
+/** Beyond this, a forgotten entry is a correction for an admin, not a log. */
+const MAX_BACKDATE_DAYS = 90;
+
 const CreateWorkLogSchema = z.object({
   /** 1 minute to 24 hours. A single entry longer than a day is a typo. */
   minutes: z.number().int().min(1).max(1440),
@@ -53,6 +58,9 @@ export async function GET(
         workedOn: true,
         description: true,
         createdAt: true,
+        source: true,
+        startedAt: true,
+        endedAt: true,
         user: { select: { id: true, name: true, email: true, avatar: true } },
       },
     });
@@ -88,6 +96,54 @@ export async function POST(
     }
     const { minutes, workedOn, description } = parsed.data;
 
+    // Guardrails on typed time. None of these can make an asserted figure
+    // true — only the timer does that — but they rule out the entries that
+    // are certainly wrong, and an effort report is worth more without them.
+    const workedOnDate = workedOn ? new Date(workedOn) : new Date();
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+    if (workedOnDate > endOfToday) {
+      return NextResponse.json(
+        { error: 'Time cannot be logged against a future date' },
+        { status: 400 }
+      );
+    }
+    const earliest = new Date();
+    earliest.setDate(earliest.getDate() - MAX_BACKDATE_DAYS);
+    if (workedOnDate < earliest) {
+      return NextResponse.json(
+        { error: `Time can only be backdated ${MAX_BACKDATE_DAYS} days` },
+        { status: 400 }
+      );
+    }
+
+    // A person has one day per day. The per-entry cap alone never caught the
+    // real error — ten separate entries against one Tuesday — so the check
+    // that matters is the running total for that person on that date, across
+    // every task rather than this one.
+    const dayStart = new Date(workedOnDate);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(workedOnDate);
+    dayEnd.setHours(23, 59, 59, 999);
+    const already = await prisma.workLog.aggregate({
+      where: {
+        userId: ctx.user.id,
+        deletedAt: null,
+        workedOn: { gte: dayStart, lte: dayEnd },
+      },
+      _sum: { minutes: true },
+    });
+    const dayTotal = (already._sum.minutes ?? 0) + minutes;
+    if (dayTotal > MINUTES_IN_DAY) {
+      return NextResponse.json(
+        {
+          error: `That would put you over 24 hours logged for one day (${Math.round(dayTotal / 60)}h)`,
+          dayTotalMinutes: already._sum.minutes ?? 0,
+        },
+        { status: 400 }
+      );
+    }
+
     // The entry and the cache move together or not at all. A log written
     // without the cache update would make the board disagree with the
     // task's own history — the exact inconsistency this feature exists
@@ -98,7 +154,7 @@ export async function POST(
           taskId: params.id,
           userId: ctx.user.id,
           minutes,
-          workedOn: workedOn ? new Date(workedOn) : new Date(),
+          workedOn: workedOnDate,
           description: description || null,
         },
       });

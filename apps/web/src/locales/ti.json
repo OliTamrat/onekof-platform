@@ -3245,7 +3245,17 @@
     "enterSomeTime": "ብውሑዱ ሓደ ደቒቕ ኣእትዉ",
     "logFailed": "ግዜ ክምዝገብ ኣይከኣለን",
     "deleteFailed": "እቲ መዝገብ ክውገድ ኣይከኣለን",
-    "deleteEntry": "መዝገብ ኣወግድ"
+    "deleteEntry": "መዝገብ ኣወግድ",
+    "startTimer": "ሰዓት ቆጻሪ ጀምር",
+    "stopTimer": "ደው ኣብል",
+    "switchTimer": "ናብዚ ቀይር",
+    "timerRunning": "ሕጂ ይሰርሕ ኣሎ",
+    "timerIdle": "ክትሰርሕ ከለኻ ግዜ ተኸታተል",
+    "timerOnOtherItem": "ሰዓት ቆጻሪ ኣብ {key} ይሰርሕ ኣሎ",
+    "timerFailed": "ነቲ ሰዓት ቆጻሪ ከነሓድሶ ኣይከኣልናን",
+    "measured": "ዝተለክዐ",
+    "entered": "ዝኣተወ",
+    "enteredByHand": "ብኢድ ዝኣተወ"
   },
   "approval": {
     "title": "ጽዳቐ",
@@ -3255,5 +3265,23 @@
     "awaitingRequired": "ጽዳቐ ይጽበ ኣሎ — እዚ ዕዮ ቅድሚ ምዝዛሙ የድሊ",
     "awaitingOptional": "ኣብ ግምገማ — ጽዳቐ ክምዝገብ ይከኣል",
     "actionFailed": "ናይ ጽዳቐ ተግባር ኣይተዓወተን"
+  },
+  "productivity": {
+    "title": "ምህርታዊነት",
+    "subtitle": "እተን ሰዓታት ናበይ ከም ዝኸዳን እቲ ቅዲ እንታይ ከም ዝሕብርን።",
+    "lastDays": "{n}መዓልቲ",
+    "totalLogged": "ዝተመዝገበ",
+    "measured": "ዝተለክዐ",
+    "vsPrevious": "ምስ ዝሓለፈ",
+    "overEstimate": "ልዕሊ ግምት",
+    "byProject": "ብፕሮጀክት",
+    "byPerson": "ብሰብ",
+    "yourTime": "ግዜኻ",
+    "aiReading": "ንባብ AI",
+    "mostlySelfReported": "መብዛሕትኡ እዚ ግዜ ብሰዓት ቆጻሪ ዘይተለክዐ ብኢድ ዝኣተወ እዩ፤ ስለዚ ከም ኣመልካቲ እምበር ከም ልክዕ ኣይትውሰዶ።",
+    "measuredShareHint": "ኣብዚ መስመር ብሰዓት ቆጻሪ ዝተለክዐ ብጽሒት",
+    "noTimeLogged": "ኣብዚ እዋን እዚ ዝተመዝገበ ግዜ የለን።",
+    "aiUnavailable": "እቲ ዝተጻሕፈ ጽሟቕ ኣይተረኽበን፤ እቶም ላዕለዎት ቁጽርታት ግን ምሉኣት እዮም።",
+    "loadError": "ጽሟቕ ምህርታዊነት ክንጽዕን ኣይከኣልናን"
   }
 }

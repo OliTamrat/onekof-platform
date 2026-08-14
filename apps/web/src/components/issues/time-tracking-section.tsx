@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
-import { Clock, Loader2, Trash2 } from 'lucide-react';
+import { Clock, Loader2, Play, Square, Timer, Trash2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 interface WorkLogEntry {
@@ -12,7 +12,18 @@ interface WorkLogEntry {
   workedOn: string;
   description: string | null;
   createdAt: string;
+  source: 'MANUAL' | 'TIMER';
+  startedAt: string | null;
+  endedAt: string | null;
   user: { id: string; name: string | null; email: string; avatar: string | null };
+}
+
+interface RunningTimer {
+  id: string;
+  taskId: string;
+  task?: { id: string; key: string; title: string } | null;
+  startedAt: string;
+  elapsedMinutes: number;
 }
 
 /** "3h 20m" / "45m" — minutes are the stored truth, hours are presentation. */
@@ -26,6 +37,16 @@ function fmtMinutes(total: number): string {
 
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+/** "01:24:07" — a running clock reads better counting seconds than minutes. */
+function fmtElapsed(startedAt: string, now: number): string {
+  const secs = Math.max(0, Math.floor((now - new Date(startedAt).getTime()) / 1000));
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
 /**
@@ -49,6 +70,10 @@ export function TimeTrackingSection({ taskId }: { taskId: string }) {
   const [workedOn, setWorkedOn] = useState(todayISO());
   const [note, setNote] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  // Ticks the running clock. The figure that gets logged is computed by the
+  // server from its own startedAt, so this is display only — a slow or
+  // sleeping tab cannot shorten or pad the entry it eventually writes.
+  const [now, setNow] = useState(() => Date.now());
 
   const { data, isLoading } = useQuery<{ logs: WorkLogEntry[]; totalMinutes: number }>({
     queryKey: ['worklogs', taskId],
@@ -59,13 +84,68 @@ export function TimeTrackingSection({ taskId }: { taskId: string }) {
     },
   });
 
+  const { data: timerData } = useQuery<{ timer: RunningTimer | null }>({
+    queryKey: ['my-timer'],
+    queryFn: async () => {
+      const res = await fetch('/api/me/timer');
+      if (!res.ok) throw new Error('Failed to read timer');
+      return res.json();
+    },
+    // Another tab or device may have started or stopped it.
+    refetchInterval: 60000,
+    refetchOnWindowFocus: true,
+  });
+  const running = timerData?.timer ?? null;
+  const runningHere = running?.taskId === taskId;
+
+  useEffect(() => {
+    if (!running) return undefined;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['worklogs', taskId] });
     // The cached sum on the task changed too — anything showing timeSpent
     // (boards, dashboard, sprint views) is stale until refetched.
     queryClient.invalidateQueries({ queryKey: ['issues'] });
     queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+    queryClient.invalidateQueries({ queryKey: ['my-timer'] });
   };
+
+  const startMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/me/timer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskId }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || t('timeTracking.timerFailed'));
+      }
+      return res.json();
+    },
+    onSuccess: () => { setFormError(null); invalidate(); },
+    onError: (err) => setFormError(err instanceof Error ? err.message : t('timeTracking.timerFailed')),
+  });
+
+  const stopMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/me/timer', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: note.trim() || undefined }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || t('timeTracking.timerFailed'));
+      }
+      return res.json();
+    },
+    onSuccess: () => { setNote(''); setFormError(null); invalidate(); },
+    onError: (err) => setFormError(err instanceof Error ? err.message : t('timeTracking.timerFailed')),
+  });
 
   const logMutation = useMutation({
     mutationFn: async () => {
@@ -135,6 +215,48 @@ export function TimeTrackingSection({ taskId }: { taskId: string }) {
         )}
       </div>
 
+      {/*
+        The timer. Measured time sits above typed time deliberately: it is the
+        better evidence, and the layout should make it the easier habit.
+      */}
+      <div className="mb-3 flex flex-wrap items-center gap-2.5 rounded-lg border border-slate-200/70 bg-slate-50 px-3 py-2.5 dark:border-white/[0.08] dark:bg-white/[0.03]">
+        <Timer className={'h-4 w-4 shrink-0 ' + (runningHere ? 'text-[#1C8C7D]' : 'text-slate-400 dark:text-white/40')} />
+        {runningHere ? (
+          <>
+            <span className="font-mono text-base font-semibold tabular-nums text-[#1C8C7D]">
+              {fmtElapsed(running!.startedAt, now)}
+            </span>
+            <span className="text-xs text-slate-500 dark:text-white/50">
+              {t('timeTracking.timerRunning')}
+            </span>
+            <button
+              onClick={() => stopMutation.mutate()}
+              disabled={stopMutation.isPending}
+              className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-600 disabled:opacity-50"
+            >
+              {stopMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Square className="h-3.5 w-3.5" />}
+              {t('timeTracking.stopTimer')}
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-slate-600 dark:text-white/60">
+              {running
+                ? t('timeTracking.timerOnOtherItem').replace('{key}', running.task?.key || '')
+                : t('timeTracking.timerIdle')}
+            </span>
+            <button
+              onClick={() => startMutation.mutate()}
+              disabled={startMutation.isPending}
+              className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-[#1C8C7D] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#177567] disabled:opacity-50"
+            >
+              {startMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+              {running ? t('timeTracking.switchTimer') : t('timeTracking.startTimer')}
+            </button>
+          </>
+        )}
+      </div>
+
       {/* Entry form */}
       <div className="flex flex-wrap items-center gap-2">
         <input
@@ -199,6 +321,23 @@ export function TimeTrackingSection({ taskId }: { taskId: string }) {
             <li key={log.id} className="flex items-center gap-2.5 py-2">
               <span className="w-14 shrink-0 text-sm font-medium tabular-nums text-slate-800 dark:text-white/85">
                 {fmtMinutes(log.minutes)}
+              </span>
+              {/* Measured or entered — the distinction a report needs and the
+                  old list could not make. */}
+              <span
+                title={
+                  log.source === 'TIMER' && log.startedAt && log.endedAt
+                    ? `${new Date(log.startedAt).toLocaleTimeString()} – ${new Date(log.endedAt).toLocaleTimeString()}`
+                    : t('timeTracking.enteredByHand')
+                }
+                className={
+                  'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ' +
+                  (log.source === 'TIMER'
+                    ? 'bg-[#1C8C7D]/10 text-[#1C8C7D]'
+                    : 'bg-slate-100 text-slate-500 dark:bg-white/[0.07] dark:text-white/45')
+                }
+              >
+                {log.source === 'TIMER' ? t('timeTracking.measured') : t('timeTracking.entered')}
               </span>
               <span className="min-w-0 flex-1 truncate text-sm text-slate-600 dark:text-white/60">
                 {log.user.name || log.user.email}
