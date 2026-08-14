@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ActivityTimeline } from '@/components/activity/activity-timeline';
 import { ProjectStatusOverview } from '@/components/dashboard/project-status-overview';
 import { TaskStatusOverview } from '@/components/dashboard/task-status-overview';
+import { CARD_SUBTITLE, CARD_SURFACE, CARD_TITLE } from '@/components/ui/card-surface';
 import {
   TrendingUp,
   Clock,
@@ -374,119 +375,108 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Status Overview */}
-          <div className="lg:col-span-2">
-            <TaskStatusOverview projectId={selectedProjectId} />
+        {/*
+          The two status overviews run the full page width. Each is a donut
+          card plus a companion panel side by side; inside a two-thirds column
+          they were a third of the page each, which squeezed the legend until
+          every status label truncated to its first letter.
+        */}
+        <div className="space-y-6">
+          <TaskStatusOverview projectId={selectedProjectId} />
+          <ProjectStatusOverview />
+        </div>
 
-            {/* Project-level companion to the task Status Overview above:
-                leaders track projects, not individual work items. */}
-            <div className="mt-6">
-              <ProjectStatusOverview />
+        {/*
+          Supporting cards share one row, so their top edges line up and every
+          gutter is the same 24px as the rows above. With no starred projects
+          the activity card takes the free column instead of leaving a hole.
+        */}
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Recent Activity - AI-Powered Timeline */}
+          <div
+            className={
+              CARD_SURFACE + ' p-6 ' +
+              (favoriteProjects.length > 0 ? '' : 'lg:col-span-2')
+            }
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className={CARD_TITLE}>{t('dashboard.recentActivity')}</h2>
+              <div className="flex shrink-0 items-center gap-1 text-xs font-medium text-[#1C8C7D]">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>{t('dashboard.aiPowered')}</span>
+              </div>
+            </div>
+            <p className={CARD_SUBTITLE + ' mb-4'}>
+              {t('dashboard.recentActivityDescription')}
+            </p>
+            <div className="max-h-[420px] overflow-y-auto pr-1 scrollbar-thin">
+              <ActivityTimeline limit={10} showFilters={true} projectId={selectedProjectId || undefined} />
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="space-y-6">
-            {/* Recent Activity - AI-Powered Timeline */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
-              <div className="relative z-10">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    {t('dashboard.recentActivity')}
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 text-xs text-[#1C8C7D] font-medium">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      <span>{t('dashboard.aiPowered')}</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
-                  {t('dashboard.recentActivityDescription')}
-                </p>
-                <div className="max-h-[500px] overflow-y-auto pr-1 scrollbar-thin">
-                  <ActivityTimeline limit={10} showFilters={true} projectId={selectedProjectId || undefined} />
-                </div>
-              </div>
+          {/* Types of Work */}
+          <div className={CARD_SURFACE + ' p-6'}>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className={CARD_TITLE}>{t('dashboard.typesOfWork')}</h2>
+              <a href="/dashboard/issues" className="shrink-0 text-sm text-[#1C8C7D] hover:underline">
+                {t('dashboard.viewAllItems')}
+              </a>
             </div>
-
-            {/* Types of Work */}
-            <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
-              <div className="relative z-10">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    {t('dashboard.typesOfWork')}
-                  </h2>
-                  <a href="/dashboard/issues" className="text-sm text-[#1C8C7D] hover:underline">
-                    {t('dashboard.viewAllItems')}
-                  </a>
-                </div>
-                <p className="mb-4 text-sm text-slate-600 dark:text-white/70">
-                  {t('dashboard.statusDescription')}
-                </p>
-                <div className="space-y-2">
-                  {totalIssues > 0 ? (
-                    <>
-                      <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
-                      <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
-                      <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
-                      <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
-                    </>
-                  ) : (
-                    <p className="text-sm text-white/70">{t('common.noData')}</p>
-                  )}
-                </div>
-              </div>
+            <p className={CARD_SUBTITLE + ' mb-4'}>{t('dashboard.typesOfWorkDescription')}</p>
+            <div className="space-y-2">
+              {totalIssues > 0 ? (
+                <>
+                  <TypeBar label="Task" percentage={(typeCounts.TASK / totalIssues) * 100} color="bg-blue-500" />
+                  <TypeBar label="Story" percentage={(typeCounts.STORY / totalIssues) * 100} color="bg-green-500" />
+                  <TypeBar label="Bug" percentage={(typeCounts.BUG / totalIssues) * 100} color="bg-red-500" />
+                  <TypeBar label="Epic" percentage={(typeCounts.EPIC / totalIssues) * 100} color="bg-purple-500" />
+                </>
+              ) : (
+                <p className="text-sm text-slate-500 dark:text-white/70">{t('common.noData')}</p>
+              )}
             </div>
+          </div>
 
-            {/* Favorite Projects */}
-            {favoriteProjects.length > 0 && (
-              <div className="relative rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200/50 overflow-hidden">
-                <div className="absolute -bottom-1 -right-1 w-full h-full bg-gradient-to-br from-slate-200/30 to-slate-300/30 dark:from-slate-800/30 dark:to-slate-900/30 rounded-xl -z-10"></div>
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                    {t('nav.starred')}
-                  </h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.push('/dashboard/projects')}
+          {/* Favorite Projects */}
+          {favoriteProjects.length > 0 && (
+            <div className={CARD_SURFACE + ' p-6'}>
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className={CARD_TITLE}>{t('nav.starred')}</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/dashboard/projects')}
+                >
+                  {t('common.viewAll')}
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {favoriteProjects.map(project => (
+                  <div
+                    key={project.id}
+                    onClick={() => router.push(`/dashboard/projects/${project.key}`)}
+                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] cursor-pointer"
                   >
-                    {t('common.viewAll')}
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  {favoriteProjects.map(project => (
                     <div
-                      key={project.id}
-                      onClick={() => router.push(`/dashboard/projects/${project.key}`)}
-                      className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-[#181D23] cursor-pointer"
+                      className="flex h-8 w-8 items-center justify-center rounded text-sm"
+                      style={{ backgroundColor: project.color || '#3B82F6' }}
                     >
-                      <div
-                        className="flex h-8 w-8 items-center justify-center rounded text-sm"
-                        style={{ backgroundColor: project.color || '#3B82F6' }}
-                      >
-                        <Folder className="h-4 w-4 text-white" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                          {project.name}
-                        </p>
-                        <p className="text-xs text-white/30 dark:text-white/70">
-                          {project.key}
-                        </p>
-                      </div>
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Folder className="h-4 w-4 text-white" />
                     </div>
-                  ))}
-                </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                        {project.name}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-white/70">
+                        {project.key}
+                      </p>
+                    </div>
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layouts/app-layout';
 import { useLanguage } from '@/contexts/language-context';
+import { CARD_SURFACE } from '@/components/ui/card-surface';
 
 interface TaskCard {
   id: string;
@@ -42,15 +43,7 @@ interface Workspace {
 
 type Tab = 'recommended' | 'assigned' | 'starred' | 'viewed';
 
-const CARD =
-  'rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] ' +
-  'shadow-md hover:shadow-xl transition-all duration-300 ' +
-  // Product-wide card rule: one visible slate-200/50 edge in BOTH themes,
-  // no dark: override. Codified after the invalid dark-border classes were
-  // removed everywhere — the light edge is the deliberate look, not a
-  // fallback.
-  'border border-slate-200/50 ' +
-  'hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]';
+const CARD = CARD_SURFACE;
 
 export default function MyWorkPage() {
   const router = useRouter();

@@ -3,10 +3,16 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight, FolderKanban, Layers, Loader2 } from 'lucide-react';
 import type { ProjectHealth } from '@onekof/database';
 import { HEALTH_COLOR, HEALTH_LABEL, HEALTH_ORDER } from '@/lib/project-health';
 import { useLanguage } from '@/contexts/language-context';
+import {
+  CARD_ICON_CHIP,
+  CARD_SUBTITLE,
+  CARD_SURFACE,
+  CARD_TITLE,
+} from '@/components/ui/card-surface';
 
 interface ProjectSummary {
   id: string;
@@ -38,18 +44,10 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 /** Gap between segments so adjacent bands stay visually distinct. */
 const GAP = 1.5;
 
-const CARD =
-  'rounded-xl bg-gradient-to-br from-white to-slate-50 dark:from-[#12161B] dark:to-[#0B0E11] ' +
-  'p-6 shadow-md hover:shadow-xl transition-all duration-300 ' +
-  // Product-wide card rule: one visible slate-200/50 edge in BOTH themes,
-  // no dark: override. Codified after the invalid dark-border classes were
-  // removed everywhere — the light edge is the deliberate look, not a
-  // fallback.
-  'border border-slate-200/50 ' +
-  'hover:border-[#1C8C7D] dark:hover:border-[#1C8C7D]';
+const CARD = CARD_SURFACE + ' flex h-full flex-col p-6';
 
-const SECTION_LABEL =
-  'text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-white/50';
+/** 10% tint of a hex accent, for the icon chip behind its icon. */
+const tint = (hex: string) => `${hex}1A`;
 
 /**
  * Project delivery health, for leaders who track projects rather than tasks.
@@ -134,10 +132,16 @@ export function ProjectStatusOverview() {
   const barMax = Math.max(1, ...portfolio.rows.map((r) => r.value));
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* ---------------- Donut + legend ---------------- */}
       <div className={CARD}>
-        <h2 className={SECTION_LABEL}>{t('dashboard.projectStatusOverview')}</h2>
+        <div className="flex items-center gap-2.5">
+          <span className={CARD_ICON_CHIP} style={{ backgroundColor: tint('#1C8C7D'), color: '#1C8C7D' }}>
+            <FolderKanban className="h-4 w-4" />
+          </span>
+          <h2 className={CARD_TITLE}>{t('dashboard.projectStatusOverview')}</h2>
+        </div>
+        <p className={CARD_SUBTITLE + ' mt-1.5'}>{t('dashboard.projectStatusDescription')}</p>
 
         {isLoading && (
           <div className="flex h-44 items-center justify-center">
@@ -258,11 +262,24 @@ export function ProjectStatusOverview() {
       {/* ---------------- Companion detail panel ---------------- */}
       <div className={CARD}>
         <div className="flex items-center justify-between gap-3">
-          <h2 className={SECTION_LABEL}>
-            {chosen
-              ? `${t('dashboard.projectsThatAre')} ${HEALTH_LABEL[chosen.health].toLowerCase()}`
-              : t('dashboard.workAcrossProjects')}
-          </h2>
+          <div className="flex min-w-0 items-center gap-2.5">
+            {/* The chip carries the selected band's colour, so the panel and
+                the segment the reader clicked stay visibly one subject. */}
+            <span
+              className={CARD_ICON_CHIP}
+              style={{
+                backgroundColor: tint(chosen ? HEALTH_COLOR[chosen.health] : '#1C8C7D'),
+                color: chosen ? HEALTH_COLOR[chosen.health] : '#1C8C7D',
+              }}
+            >
+              <Layers className="h-4 w-4" />
+            </span>
+            <h2 className={CARD_TITLE + ' truncate'}>
+              {chosen
+                ? `${t('dashboard.projectsThatAre')} ${HEALTH_LABEL[chosen.health].toLowerCase()}`
+                : t('dashboard.workAcrossProjects')}
+            </h2>
+          </div>
           {chosen && (
             <button
               onClick={() => setSelected(null)}
@@ -273,9 +290,15 @@ export function ProjectStatusOverview() {
           )}
         </div>
 
+        {/* Both cards carry a title and one line of description, so their
+            content starts on the same baseline across the gutter. */}
+        <p className={CARD_SUBTITLE + ' mt-1.5'}>
+          {chosen ? t('dashboard.selectedProjectsHint') : t('dashboard.workBreakdownHint')}
+        </p>
+
         {/* Accent rule in the selected band's colour, tying panel to segment. */}
         <div
-          className="mt-2 h-[3px] w-16 rounded-full transition-colors"
+          className="mt-3 h-[3px] w-16 rounded-full transition-colors"
           style={{
             backgroundColor: chosen ? HEALTH_COLOR[chosen.health] : 'transparent',
           }}
