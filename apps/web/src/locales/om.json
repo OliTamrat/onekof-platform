@@ -2380,6 +2380,8 @@
     "networkError": "Dogoggora neetworkii. Maaloo irra deebi'ii yaali."
   },
   "customization": {
+    "myWork": "Hojii Koo",
+    "myWorkDesc": "Bakka hojii dhuunfaa: wantoota siif ramadaman, kan dhiyootti xumuramu, kanneen kokkee ittiin mallatteessite.",
     "title": "Jijjiirraa Daashboordii",
     "description": "Amaloota dhaabbata keessaniif jiran qindeessi",
     "loading": "Fe'aa jira...",

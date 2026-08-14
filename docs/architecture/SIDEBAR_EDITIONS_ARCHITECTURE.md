@@ -22,18 +22,20 @@
 > Construction edition: Operations-led order, "Site Operations" naming,
 > and the Sites entry now distinguish it from Ministry.
 >
-> **v1.2 — My work added as a third ungated section (2026-08-14).**
+> **v1.2 — My work added as an ordinary gated section (2026-08-14).**
 > The personal workspace page (`/dashboard/my-work`) shipped earlier with no
 > sidebar entry — reachable only by URL, the same gap M3 hit for Medical.
-> Fixed the same way §2's findings say it should be: `my-work` joins `home`
-> and `knowledge` as an always-on section (`requires: null`), not a fourth
-> navigation system. It carries no sector meaning, so no preset's
-> `enabledSections` names it and no edition's `lead` array names it either —
-> `applyOrder` pins it second, immediately after Home, the same way Home
-> itself is pinned first, rather than asking every edition to repeat that
-> choice. Membership, vocabulary and every edition's composition are
-> untouched; the parity fixture and the hand-written E2 expectations were
-> regenerated to include it.
+> Fixed the same way §2's findings say it should be: `my-work` is a normal
+> membership-gated section (`requires: 'my-work'`), not a pinned always-on
+> one like Home or Knowledge and not a fourth navigation system. Every
+> preset enables it by default (S2 axis 1 — membership), so it renders for
+> every organization today, but a customer can turn it off from
+> Customization the same way they can turn off Teams or Budget. It carries
+> no `lead` entry in any edition, so its position is the ordinary trailing
+> rank every other non-led section gets — it does not sit pinned near the
+> top the way Home does. `NAVIGABLE_SECTION_IDS` picked it up automatically
+> once it declared a gate; the parity fixture and the hand-written E2/E3
+> expectations were regenerated to match.
 
 ---
 
