@@ -3239,7 +3239,17 @@
     "enterSomeTime": "Geli ugu yaraan hal daqiiqo",
     "logFailed": "Waqtiga lama diiwaangelin karin",
     "deleteFailed": "Diiwaanka lama saari karin",
-    "deleteEntry": "Saar diiwaanka"
+    "deleteEntry": "Saar diiwaanka",
+    "startTimer": "Bilow saacadda",
+    "stopTimer": "Jooji",
+    "switchTimer": "U beddel kan",
+    "timerRunning": "hadda socda",
+    "timerIdle": "Waqtiga la soco markaad shaqaynayso",
+    "timerOnOtherItem": "Saacadda ayaa ku socota {key}",
+    "timerFailed": "Lama cusboonaysiin karin saacadda",
+    "measured": "La cabbiray",
+    "entered": "La geliyay",
+    "enteredByHand": "Gacan lagu geliyay"
   },
   "approval": {
     "title": "Ansixin",

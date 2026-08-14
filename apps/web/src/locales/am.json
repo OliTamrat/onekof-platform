@@ -3239,7 +3239,17 @@
     "enterSomeTime": "ቢያንስ አንድ ደቂቃ ያስገቡ",
     "logFailed": "ጊዜ መመዝገብ አልተቻለም",
     "deleteFailed": "መዝገቡን ማስወገድ አልተቻለም",
-    "deleteEntry": "መዝገብ አስወግድ"
+    "deleteEntry": "መዝገብ አስወግድ",
+    "startTimer": "ሰዓት ቆጣሪ ጀምር",
+    "stopTimer": "አቁም",
+    "switchTimer": "ወደዚህ ቀይር",
+    "timerRunning": "አሁን እየሄደ ነው",
+    "timerIdle": "በሚሠሩበት ጊዜ ሰዓቱን ይከታተሉ",
+    "timerOnOtherItem": "ሰዓት ቆጣሪ በ{key} ላይ እየሄደ ነው",
+    "timerFailed": "ሰዓት ቆጣሪውን ማዘመን አልተቻለም",
+    "measured": "የተለካ",
+    "entered": "የገባ",
+    "enteredByHand": "በእጅ የገባ"
   },
   "approval": {
     "title": "ማጽደቅ",

@@ -3245,7 +3245,17 @@
     "enterSomeTime": "Yoo xiqqaate daqiiqaa tokko galchi",
     "logFailed": "Yeroo galmeessuun hin danda'amne",
     "deleteFailed": "Galmee haquun hin danda'amne",
-    "deleteEntry": "Galmee haqi"
+    "deleteEntry": "Galmee haqi",
+    "startTimer": "Saatii jalqabi",
+    "stopTimer": "Dhaabi",
+    "switchTimer": "Gara kanaatti jijjiiri",
+    "timerRunning": "amma deemaa jira",
+    "timerIdle": "Yeroo hojjettu yeroo hordofi",
+    "timerOnOtherItem": "Saatiin {key} irratti deemaa jira",
+    "timerFailed": "Saatii haaromsuun hin dandaʼamne",
+    "measured": "Safarame",
+    "entered": "Galfame",
+    "enteredByHand": "Harkaan galfame"
   },
   "approval": {
     "title": "Mirkaneessa",

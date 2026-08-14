@@ -208,6 +208,7 @@ model User {
   goalWatchers   GoalWatcher[]   @relation("GoalWatcher") // 🚀 NEW: Goals this user is watching
   activities     UserActivity[]  @relation("UserActivity") // 🚀 NEW: All activities by this user
   workLogs       WorkLog[]       @relation("UserWorkLog") // Time this user has logged
+  timerSession   TimerSession?   @relation("UserTimerSession") // At most one running timer
   stars          Star[]          @relation("UserStar") // Items this user pinned
   recentViews    RecentView[]    @relation("UserRecentView") // Items this user opened
   notifications  Notification[]  @relation("UserNotifications")
@@ -405,6 +406,19 @@ model WorkLog {
 
   description String?
 
+  /// How this figure came to exist. A number the system observed and a number
+  /// somebody typed are both useful, but they are not the same evidence, and
+  /// an effort report that cannot tell them apart invites exactly the doubt
+  /// this field removes. Existing rows default to MANUAL, which is what they
+  /// were.
+  source WorkLogSource @default(MANUAL)
+
+  /// The measured interval, present only on TIMER entries. `minutes` stays the
+  /// figure every report sums; these two are the evidence behind it, kept so a
+  /// reviewer can see the work happened between two real clock times.
+  startedAt DateTime? @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   /// Soft delete: removing effort changes historical reports, so entries are
@@ -415,6 +429,41 @@ model WorkLog {
   @@index([userId, workedOn]) // "my logged time this week"
   @@index([workedOn]) // organization-wide effort reporting by period
   @@map("work_logs")
+  @@schema("public")
+}
+
+/// Where a time figure came from.
+enum WorkLogSource {
+  /// Typed in by a person. Trusted, but asserted rather than observed.
+  MANUAL
+  /// Measured by the running timer: start and stop are real clock readings.
+  TIMER
+
+  @@schema("public")
+}
+
+/// A timer currently running.
+///
+/// Only running timers live here — stopping one writes a WorkLog carrying the
+/// measured interval and deletes the row. That keeps the table tiny, makes
+/// "what am I running right now" a single indexed lookup, and means effort
+/// history has exactly one home rather than two tables that could disagree.
+///
+/// One per person, enforced by the unique on userId: a second concurrent timer
+/// would double-count a single human being's afternoon.
+model TimerSession {
+  id String @id @default(cuid())
+
+  taskId String @map("task_id")
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String @unique @map("user_id")
+  user   User   @relation("UserTimerSession", fields: [userId], references: [id], onDelete: Cascade)
+
+  startedAt DateTime @default(now()) @map("started_at")
+
+  @@index([taskId])
+  @@map("timer_sessions")
   @@schema("public")
 }
 
@@ -859,6 +908,7 @@ model Task {
   attachments       Attachment[]
   watchers          TaskWatcher[] // 🚀 NEW: Smart watchers with notification preferences
   workLogs          WorkLog[] // Individual time entries; Task.timeSpent is their cached sum
+  timerSessions     TimerSession[] // Timers running against this task right now
   budgetAllocations TaskBudget[] // 🚀 NEW: Budget category allocations
   linksFrom         TaskLink[]    @relation("TaskLinkFrom")
   linksTo           TaskLink[]    @relation("TaskLinkTo")

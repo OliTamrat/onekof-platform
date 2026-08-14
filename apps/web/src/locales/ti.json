@@ -3245,7 +3245,17 @@
     "enterSomeTime": "ብውሑዱ ሓደ ደቒቕ ኣእትዉ",
     "logFailed": "ግዜ ክምዝገብ ኣይከኣለን",
     "deleteFailed": "እቲ መዝገብ ክውገድ ኣይከኣለን",
-    "deleteEntry": "መዝገብ ኣወግድ"
+    "deleteEntry": "መዝገብ ኣወግድ",
+    "startTimer": "ሰዓት ቆጻሪ ጀምር",
+    "stopTimer": "ደው ኣብል",
+    "switchTimer": "ናብዚ ቀይር",
+    "timerRunning": "ሕጂ ይሰርሕ ኣሎ",
+    "timerIdle": "ክትሰርሕ ከለኻ ግዜ ተኸታተል",
+    "timerOnOtherItem": "ሰዓት ቆጻሪ ኣብ {key} ይሰርሕ ኣሎ",
+    "timerFailed": "ነቲ ሰዓት ቆጻሪ ከነሓድሶ ኣይከኣልናን",
+    "measured": "ዝተለክዐ",
+    "entered": "ዝኣተወ",
+    "enteredByHand": "ብኢድ ዝኣተወ"
   },
   "approval": {
     "title": "ጽዳቐ",

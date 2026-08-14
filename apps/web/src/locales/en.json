@@ -3238,7 +3238,17 @@
     "enterSomeTime": "Enter at least one minute",
     "logFailed": "Could not log time",
     "deleteFailed": "Could not remove the entry",
-    "deleteEntry": "Remove entry"
+    "deleteEntry": "Remove entry",
+    "startTimer": "Start timer",
+    "stopTimer": "Stop",
+    "switchTimer": "Switch to this",
+    "timerRunning": "running now",
+    "timerIdle": "Track time as you work",
+    "timerOnOtherItem": "Timer running on {key}",
+    "timerFailed": "Could not update the timer",
+    "measured": "Measured",
+    "entered": "Entered",
+    "enteredByHand": "Entered by hand"
   },
   "approval": {
     "title": "Approval",
