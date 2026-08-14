@@ -21,7 +21,7 @@
 
 ## About
 
-Onekof is a **132,000+ line production platform** that combines project management, budget tracking, team collaboration, and knowledge management into a single workspace. It is the only PM tool that supports on-premise deployment in Ethiopia, 4 local languages, Ethiopian Birr, and offline operation — from a single 408 MB Docker image.
+Onekof is a **~153,000-line production platform** (`.ts`/`.tsx`/`.js`/`.py`, measured 2026-08-11) that combines project management, budget tracking, team collaboration, and knowledge management into a single workspace. It is the only PM tool that supports on-premise deployment in Ethiopia, 4 local languages, Ethiopian Birr, and offline operation — from a single 408 MB Docker image.
 
 ### Why Onekof Exists
 
@@ -449,14 +449,30 @@ ADMIN_USERS=""                # Admin credentials (bcrypt hashes)
 
 ## Documentation
 
+`docs/overview.md` and `docs/architecture.md` are the front door — one page
+in, pointing to the deeper sections below rather than duplicating them, so
+the site this platform links out to (or the internal OKM portal, see below)
+has the same shape as every other Olink product's docs. Onekof's own tree
+predates OKM and stays in its own shape underneath that front door — it was
+already the deepest in the fleet before OKM arrived.
+
 | Document | Description |
 |----------|-------------|
 | [`PROJECT_GUIDELINES.md`](PROJECT_GUIDELINES.md) | Development rules, design system, security policies |
 | [`docs/architecture/three-tier-federation.md`](docs/architecture/three-tier-federation.md) | Complete architecture reference |
 | [`docs/deployment/tier-2-runbook.md`](docs/deployment/tier-2-runbook.md) | Ubuntu server deployment (671 lines) |
 | [`docs/deployment/windows-deployment-guide.md`](docs/deployment/windows-deployment-guide.md) | Windows Docker Desktop deployment |
+| [`docs/business/`, `docs/support/`, `docs/legal-ip/`](docs/) | Business reports, support guides, IP deposit filings — currently `.docx`, **not yet rendered by the OKM portal** (it only reads markdown; tracked as a known gap) |
 | [`.env.tier2.example`](.env.tier2.example) | On-premise environment template |
 | [`.env.tier3.example`](.env.tier3.example) | Cloud environment reference |
+
+`docs/decisions/` holds the ADRs — dated, numbered, append-only. All seven
+Olink products follow this same taxonomy and aggregate into one searchable
+portal at [`olink-knowledge`](https://github.com/OliTamrat/olink-knowledge),
+which currently shows 81 pages for this repo. That number tracks curated
+*documentation about* the platform, not the ~153,000 lines of source code
+above it — nothing generates a page from source, so page count was never
+meant to scale with codebase size.
 
 ---
 

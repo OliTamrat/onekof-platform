@@ -524,10 +524,11 @@ npx prisma migrate deploy
 ## Additional Resources
 
 ### Documentation
-- [Environment Variables Guide](.env.example)
-- [Security Fixes Documentation](CRITICAL_SECURITY_FIXES_COMPLETE.md)
-- [Week 2 Security Fixes](WEEK_2_HIGH_PRIORITY_SECURITY_FIXES_COMPLETE.md)
-- [Database Schema](packages/database/prisma/schema.prisma)
+- Environment variables: `.env.example` at the repo root
+- Security posture: `docs/security/` (the two original fix-log files,
+  CRITICAL_SECURITY_FIXES_COMPLETE and WEEK_2_HIGH_PRIORITY_SECURITY_FIXES_COMPLETE,
+  were removed; their content is superseded by the INSA P1-P6 material)
+- Database schema: `packages/database/prisma/schema.prisma`
 
 ### External Services
 - [Vercel Documentation](https://vercel.com/docs)
