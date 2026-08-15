@@ -121,13 +121,6 @@ export default function SelectOrganizationPage() {
         <LanguageSwitcher />
       </div>
 
-      {/* Ethiopian flag accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 flex z-50">
-        <div className="flex-1 bg-[#078930]" />
-        <div className="flex-1 bg-[#FCDD09]" />
-        <div className="flex-1 bg-[#DA121A]" />
-      </div>
-
       {/* Ambient background glows */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-[#1C8C7D]/20 to-emerald-600/10 blur-3xl animate-pulse" />
