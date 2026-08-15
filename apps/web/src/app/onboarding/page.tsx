@@ -290,13 +290,6 @@ function OnboardingContent() {
         <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-gradient-to-tr from-primary-500/[0.06] to-primary-700/[0.04] blur-3xl animate-pulse sm:-bottom-40 sm:-left-40 sm:h-96 sm:w-96" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* Ethiopian flag accent */}
-      <div className="fixed top-0 left-0 right-0 h-0.5 flex z-50">
-        <div className="flex-1 bg-[#078930]" />
-        <div className="flex-1 bg-[#FCDD09]" />
-        <div className="flex-1 bg-[#DA121A]" />
-      </div>
-
       <div className="relative z-10 flex min-h-screen items-center justify-center p-4 pt-8">
         <div className="w-full max-w-4xl">
           {/* Header */}
