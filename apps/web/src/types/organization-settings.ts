@@ -19,6 +19,7 @@ export type OrganizationType =
   | 'other';
 
 export type DashboardSectionId =
+  | 'my-work'
   | 'teams'
   | 'budget'
   | 'goals'
