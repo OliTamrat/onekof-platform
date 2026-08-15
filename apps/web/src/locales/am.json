@@ -3230,7 +3230,14 @@
     "nothingWorkedOn": "በቅርቡ የተሠራ የለም",
     "nothingViewed": "በቅርቡ የታየ የለም",
     "notification": "ማሳወቂያ",
-    "loadError": "ሥራዎን መጫን አልተቻለም"
+    "loadError": "ሥራዎን መጫን አልተቻለም",
+    "yourPerformance": "የእርስዎ አፈጻጸም",
+    "completed": "የተጠናቀቀ",
+    "onTime": "በሰዓቱ",
+    "onTimeNoData": "እስካሁን የመጨረሻ ቀን ያላቸው ዕቃዎች የሉም",
+    "hoursLogged": "የተመዘገበ ሰዓት",
+    "dayStreak": "ተከታታይ ቀናት",
+    "streakNone": "ዛሬ እስካሁን ምንም እንቅስቃሴ የለም"
   },
   "timeTracking": {
     "title": "የጊዜ መከታተያ",

@@ -3230,7 +3230,14 @@
     "nothingWorkedOn": "Dhawaan waxba lagama shaqeyn",
     "nothingViewed": "Dhawaan waxba lama eegin",
     "notification": "Ogeysiis",
-    "loadError": "Lama soo rari karin shaqadaada"
+    "loadError": "Lama soo rari karin shaqadaada",
+    "yourPerformance": "Waxqabadkaaga",
+    "completed": "La dhammeeyay",
+    "onTime": "Waqtiga",
+    "onTimeNoData": "Weli ma jiraan waxyaabo taariikh dhammaad leh",
+    "hoursLogged": "Saacadaha la diiwaangeliyay",
+    "dayStreak": "Maalmo Isku Xigta",
+    "streakNone": "Maanta wax dhaqdhaqaaq ah weli lama arag"
   },
   "timeTracking": {
     "title": "La socodka waqtiga",

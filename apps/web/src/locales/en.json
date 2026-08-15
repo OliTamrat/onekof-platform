@@ -3229,7 +3229,14 @@
     "nothingWorkedOn": "Nothing worked on recently",
     "nothingViewed": "Nothing viewed recently",
     "notification": "Notification",
-    "loadError": "Could not load your work"
+    "loadError": "Could not load your work",
+    "yourPerformance": "Your performance",
+    "completed": "Completed",
+    "onTime": "On time",
+    "onTimeNoData": "No due-dated items yet",
+    "hoursLogged": "Hours logged",
+    "dayStreak": "Day streak",
+    "streakNone": "No activity yet today"
   },
   "timeTracking": {
     "title": "Time tracking",

@@ -3236,7 +3236,14 @@
     "nothingWorkedOn": "Dhiheenya kan hojjetame hin jiru",
     "nothingViewed": "Dhiheenya kan ilaalame hin jiru",
     "notification": "Beeksisa",
-    "loadError": "Hojii kee fe'uun hin danda'amne"
+    "loadError": "Hojii kee fe'uun hin danda'amne",
+    "yourPerformance": "Raawwii Kee",
+    "completed": "Xumurame",
+    "onTime": "Yeroodhaan",
+    "onTimeNoData": "Hanga ammaatti wantoota guyyaa dhumaa qaban hin jiran",
+    "hoursLogged": "Saatii Galmaa'e",
+    "dayStreak": "Guyyoota Walitti Fufan",
+    "streakNone": "Har'a hanga ammaatti sochiin hin jiru"
   },
   "timeTracking": {
     "title": "Hordoffii yeroo",

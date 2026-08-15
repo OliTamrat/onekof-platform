@@ -3236,7 +3236,14 @@
     "nothingWorkedOn": "ኣብ ቀረባ እተሰርሐ የለን",
     "nothingViewed": "ኣብ ቀረባ ዝተራእየ የለን",
     "notification": "ሓበሬታ",
-    "loadError": "ስራሕኩም ክጽዓን ኣይከኣለን"
+    "loadError": "ስራሕኩም ክጽዓን ኣይከኣለን",
+    "yourPerformance": "ኣፈጻጽማኻ",
+    "completed": "ዝተዛዘመ",
+    "onTime": "ኣብ ሰዓቱ",
+    "onTimeNoData": "ክሳብ ሕጂ ዕለት መወዳእታ ዘለዎም ኣቑሑት የለዉን",
+    "hoursLogged": "ዝተመዝገበ ሰዓት",
+    "dayStreak": "ተኸታታሊ መዓልትታት",
+    "streakNone": "ሎሚ ክሳብ ሕጂ ንጥፈት የለን"
   },
   "timeTracking": {
     "title": "መከታተሊ ግዜ",

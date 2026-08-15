@@ -11,6 +11,7 @@ import {
 import { AppLayout } from '@/components/layouts/app-layout';
 import { useLanguage } from '@/contexts/language-context';
 import { CARD_SURFACE, CARD_ICON_CHIP } from '@/components/ui/card-surface';
+import { PersonalPerformance } from '@/components/dashboard/personal-performance';
 
 interface TaskCard {
   id: string;
@@ -174,6 +175,12 @@ export default function MyWorkPage() {
             />
           </div>
         )}
+
+        {/* Your own completion, on-time and time-logged read — visible above
+            the tabs since it is about the person, not any one feed. */}
+        <div className="mt-5">
+          <PersonalPerformance />
+        </div>
 
         {/* Tabs */}
         <div
