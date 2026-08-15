@@ -164,6 +164,15 @@ export async function GET(_request: NextRequest) {
       return ids.map((id) => m.get(id)).filter((x): x is T => x != null);
     };
 
+    // When each item was worked on or viewed — not the task's own updatedAt
+    // (which moves on anyone's edit), but this user's own activity/view
+    // timestamp. The UI groups by day (Today / Yesterday / This week), and
+    // the task's updatedAt would group by the wrong event entirely.
+    const workedAtByTaskId = new Map(activity.map((a) => [a.entityId, a.createdAt]));
+    const viewedAtByTaskId = new Map(views.map((v) => [v.entityId, v.viewedAt]));
+    const withWhen = <T extends { id: string }>(rows: T[], whenById: Map<string, Date>) =>
+      rows.map((r) => ({ ...r, when: whenById.get(r.id)?.toISOString() ?? null }));
+
     return NextResponse.json({
       recommended: {
         overdue,
@@ -175,8 +184,8 @@ export async function GET(_request: NextRequest) {
         tasks: orderBy(starTasks, starTaskIds),
         projects: orderBy(starProjects, starProjectIds),
       },
-      workedOn: orderBy(workedTasks, workedOnIds),
-      viewed: orderBy(viewTasks, viewTaskIds),
+      workedOn: withWhen(orderBy(workedTasks, workedOnIds), workedAtByTaskId),
+      viewed: withWhen(orderBy(viewTasks, viewTaskIds), viewedAtByTaskId),
       counts: {
         assigned: assigned.length,
         overdue: overdue.length,
