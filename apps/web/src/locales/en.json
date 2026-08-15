@@ -1927,6 +1927,7 @@
   },
   "sidebar": {
     "home": "Home",
+    "myWork": "My work",
     "projects": "Projects",
     "allProjects": "All Projects",
     "issues": "Issues",
@@ -2372,6 +2373,8 @@
     "networkError": "Network error. Please try again."
   },
   "customization": {
+    "myWork": "My work",
+    "myWorkDesc": "A personal workspace: your assigned items, what is due soon, and what you starred.",
     "title": "Dashboard Customization",
     "description": "Configure which features are available for your organization",
     "loading": "Loading...",
